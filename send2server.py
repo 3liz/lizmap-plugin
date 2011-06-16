@@ -76,7 +76,31 @@ class send2server:
         self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
         
         return True
-            
+        
+        
+    # Returns the absolute legend index of
+    # a group name.
+    # (c) Stefan Ziegler
+    def getGroupIndex(iface, groupName):
+        relationList = iface.legendInterface().groupLayerRelationship()
+        i = 0
+        for item in relationList:
+            if item[0] == groupName:
+                i = i  + 1
+                return i
+            i = i + 1
+        return 0
+
+    # Test de fonction récursive sur liste
+    # exemple : test(qgis.utils.iface.legendInterface().groupLayerRelationship())
+    def test(truc):
+      for a in truc:
+          if isinstance(a, list):
+              test(a)
+          else:
+              print(a)
+      return 1
+      
 
     # Save Qgis project and modify the xml
     def prepareSync(self):
