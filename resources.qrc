@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/send2server" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
