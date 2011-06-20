@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Thu Jun 16 17:30:52 2011
+# Created: Mon Jun 20 17:30:43 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,9 +17,9 @@ except AttributeError:
 class Ui_send2server(object):
     def setupUi(self, send2server):
         send2server.setObjectName(_fromUtf8("send2server"))
-        send2server.resize(481, 422)
+        send2server.resize(589, 427)
         self.tabWidget = QtGui.QTabWidget(send2server)
-        self.tabWidget.setGeometry(QtCore.QRect(10, 10, 461, 401))
+        self.tabWidget.setGeometry(QtCore.QRect(10, 10, 571, 401))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab_ftp = QtGui.QWidget()
         self.tab_ftp.setObjectName(_fromUtf8("tab_ftp"))
@@ -97,6 +97,38 @@ class Ui_send2server(object):
         self.inRemotedir.setObjectName(_fromUtf8("inRemotedir"))
         self.horizontalLayout_6.addWidget(self.inRemotedir)
         self.tabWidget.addTab(self.tab_ftp, _fromUtf8(""))
+        self.tab_2 = QtGui.QWidget()
+        self.tab_2.setObjectName(_fromUtf8("tab_2"))
+        self.treeLayer = QtGui.QTreeWidget(self.tab_2)
+        self.treeLayer.setGeometry(QtCore.QRect(10, 10, 350, 351))
+        self.treeLayer.setColumnCount(1)
+        self.treeLayer.setObjectName(_fromUtf8("treeLayer"))
+        self.treeLayer.headerItem().setText(0, _fromUtf8("Name"))
+        self.treeLayer.header().setDefaultSectionSize(50)
+        self.treeLayer.header().setMinimumSectionSize(50)
+        self.treeLayer.header().setStretchLastSection(True)
+        self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 161))
+        self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.label_7 = QtGui.QLabel(self.verticalLayoutWidget)
+        self.label_7.setObjectName(_fromUtf8("label_7"))
+        self.verticalLayout.addWidget(self.label_7)
+        self.inLayerTitle = QtGui.QLineEdit(self.verticalLayoutWidget)
+        self.inLayerTitle.setObjectName(_fromUtf8("inLayerTitle"))
+        self.verticalLayout.addWidget(self.inLayerTitle)
+        self.label_8 = QtGui.QLabel(self.verticalLayoutWidget)
+        self.label_8.setObjectName(_fromUtf8("label_8"))
+        self.verticalLayout.addWidget(self.label_8)
+        self.teLayerAbstract = QtGui.QTextEdit(self.verticalLayoutWidget)
+        self.teLayerAbstract.setObjectName(_fromUtf8("teLayerAbstract"))
+        self.verticalLayout.addWidget(self.teLayerAbstract)
+        self.btJson = QtGui.QPushButton(self.tab_2)
+        self.btJson.setGeometry(QtCore.QRect(390, 240, 97, 27))
+        self.btJson.setObjectName(_fromUtf8("btJson"))
+        self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
         self.horizontalLayoutWidget_7 = QtGui.QWidget(self.tab_main)
@@ -122,9 +154,15 @@ class Ui_send2server(object):
         self.textEdit.setGeometry(QtCore.QRect(10, 10, 441, 351))
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
+        self.tab_3 = QtGui.QWidget()
+        self.tab_3.setObjectName(_fromUtf8("tab_3"))
+        self.teJson = QtGui.QTextEdit(self.tab_3)
+        self.teJson.setGeometry(QtCore.QRect(10, 10, 541, 341))
+        self.teJson.setObjectName(_fromUtf8("teJson"))
+        self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
 
         self.retranslateUi(send2server)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(send2server)
 
     def retranslateUi(self, send2server):
@@ -136,6 +174,10 @@ class Ui_send2server(object):
         self.label_4.setText(QtGui.QApplication.translate("send2server", "Password", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("send2server", "Remote Dir", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_ftp), QtGui.QApplication.translate("send2server", "FTP configuration", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("send2server", "Title", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_8.setText(QtGui.QApplication.translate("send2server", "Abstract", None, QtGui.QApplication.UnicodeUTF8))
+        self.btJson.setText(QtGui.QApplication.translate("send2server", "JSON", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("send2server", "Layers", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("send2server", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("send2server", "Run", None, QtGui.QApplication.UnicodeUTF8))
@@ -174,6 +216,7 @@ class Ui_send2server(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">WARNING</span> : all the content of the server directory not related to you local project will be lost !</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("send2server", "Help", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("send2server", "JSON", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

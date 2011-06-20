@@ -2,21 +2,21 @@
 """
 /***************************************************************************
  send2server
-                                 A QGIS plugin
+                 A QGIS plugin
  Sends a local qgis project and related files to a qgismapserver server installation using FTP
-                              -------------------
-        begin                : 2011-04-01
-        copyright            : (C) 2011 by 3liz
-        email                : mdouchin@3liz.org
+                -------------------
+    begin        : 2011-04-01
+    copyright      : (C) 2011 by 3liz
+    email        : mdouchin@3liz.org
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
+ *                                     *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
+ *   the Free Software Foundation; either version 2 of the License, or   *
+ *   (at your option) any later version.                   *
+ *                                     *
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
@@ -36,340 +36,452 @@ from SimpleFTPMirror import *
 
 class send2server:
 
-    def __init__(self, iface):
-        # Save reference to the QGIS interface
-        self.iface = iface
+  def __init__(self, iface):
+    # Save reference to the QGIS interface
+    self.iface = iface
 
-    def initGui(self):
-        # Create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/send2server/icon.png"), \
-            "send2server", self.iface.mainWindow())
-        # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+  def initGui(self):
+    # Create action that will start plugin configuration
+    self.action = QAction(QIcon(":/plugins/send2server/icon.png"), \
+      "send2server", self.iface.mainWindow())
+    # connect the action to the run method
+    QObject.connect(self.action, SIGNAL("triggered()"), self.run)
 
-        # Add toolbar button and menu item
-        self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu("&send2server", self.action)
+    # Add toolbar button and menu item
+    self.iface.addToolBarIcon(self.action)
+    self.iface.addPluginToMenu("&send2server", self.action)
 
-    def unload(self):
-        # Remove the plugin menu item and icon
-        self.iface.removePluginMenu("&send2server",self.action)
-        self.iface.removeToolBarIcon(self.action)
-       
-                
-#    # Choose some directory from UI
-#    def chooseLocalDirectory(self):
-#        localDir = QFileDialog.getExistingDirectory( None,QString("Choose the local data folder"),"" )
-#        if os.path.exists(unicode(localDir)):
-#            self.dlg.ui.inLocaldir.setText(localDir)
+  def unload(self):
+    # Remove the plugin menu item and icon
+    self.iface.removePluginMenu("&send2server",self.action)
+    self.iface.removeToolBarIcon(self.action)
+     
+        
+#  # Choose some directory from UI
+#  def chooseLocalDirectory(self):
+#    localDir = QFileDialog.getExistingDirectory( None,QString("Choose the local data folder"),"" )
+#    if os.path.exists(unicode(localDir)):
+#      self.dlg.ui.inLocaldir.setText(localDir)
+    
+
+  # Populate the Ftp configuration input from config file
+  def getConfig(self):
+    # Get the config file data
+    cfg = ConfigParser.ConfigParser()
+    configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
+    cfg.read(configPath)
+    self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
+    self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
+    self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
+    self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
+    
+    return True
+    
+  # Get a layer by its Id
+  def getQgisLayerById(self, myId):
+    for layer in self.iface.legendInterface().layers():
+      if myId == layer.id():
+        return layer
+    return None
+
+  # Populate the layer tree of the plugin from the legend
+  def populateLayerTree(self):
+    myTree = self.dlg.ui.treeLayer
+    myTree.headerItem().setText(0, 'Liste des couches')
+    myDic = {}
+    myGroups = self.iface.legendInterface().groups()
+    for a in self.iface.legendInterface().groupLayerRelationship():
+      # initialize values
+      parentItem = None
+      myId = a[0]
+      
+      # select an existing item, select the header item or create the item
+      if myId in myDic:
+        # if the item already exists in myDic, select it
+        parentItem = myDic[myId]['item']
+      elif myId == '':
+        # if the id is empty string, this is a root layer, select the headerItem
+        parentItem = myTree.headerItem()
+      else:
+        # else create the item and add it to the header item
+        # add the item to the dictionary
+        myDic[myId] = {'id' : myId}
+        if myId in myGroups:
+          # it's a group
+          myDic[myId]['type'] = 'group'
+          myDic[myId]['name'] = myId
+          myDic[myId]['minScale'] = 1
+          myDic[myId]['maxScale'] = 1000000000000
+          myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
+        else:
+          # it's a layer
+          myDic[myId]['type'] = 'layer'
+          layer = self.getQgisLayerById(myId)
+          myDic[myId]['name'] = layer.name()
+          myDic[myId]['minScale'] = layer.minimumScale()
+          myDic[myId]['maxScale'] = layer.maximumScale()
+          myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+        myDic[myId]['title'] = myDic[myId]['name']
+        myDic[myId]['abstract'] = ''
+          
+        parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
+        myTree.addTopLevelItem(parentItem)
+        myDic[myId]['item'] = parentItem
+      
+      # loop through the children and add children to the parent item
+      for b in a[1]:
+        myDic[b] = {'id' : b}
+        if b in myGroups:
+          # it's a group
+          myDic[b]['type'] = 'group'
+          myDic[b]['name'] = b
+          myDic[b]['minScale'] = 1
+          myDic[b]['maxScale'] = 1000000000000
+          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
+        else:
+          # it's a layer
+          myDic[b]['type'] = 'layer'
+          layer = self.getQgisLayerById(b)
+          myDic[b]['name'] = layer.name()
+          myDic[b]['minScale'] = layer.minimumScale()
+          myDic[b]['maxScale'] = layer.maximumScale()
+          myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+        myDic[b]['title'] = myDic[b]['name']
+        myDic[b]['abstract'] = ''
+                    
+        childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
+        if myId == '':
+          myTree.addTopLevelItem(childItem)
+        else:
+          parentItem.addChild(childItem)
+        myDic[b]['item'] = childItem
+
+    # Add the myDic to the global layerList dictionary
+    self.layerList = myDic
+
+    # Action on click
+    QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.itemMetadata)
+    QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
+    QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
+    # export json button clicked
+    QObject.connect(self.dlg.ui.btJson, SIGNAL("clicked()"), self.layerListToJson)
+    
+
+  # Display metadata on click of a tree item in the layer tree
+  def itemMetadata(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    myLayerTitle = self.dlg.ui.inLayerTitle
+    myLayerAbstract = self.dlg.ui.teLayerAbstract
+    # get information about the layer or the group
+    selectedItem = self.layerList[item.text(1)]
+    # set the title
+    myLayerTitle.setText(selectedItem['title'])
+    # set the abstract
+    myLayerAbstract.setText(selectedItem['abstract'])
+      
+      
+  # Set a layer title when a item title is edited
+  def setLayerTitle(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the title for the selected item
+    self.layerList[item.text(1)]['title'] = self.dlg.ui.inLayerTitle.text()
+    
+  # Set a layer abstract when a item abstract is edited
+  def setLayerAbstract(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the abstract for the selected item
+    self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
+    
+  def layerListToJson(self):
+    myJson = '{'
+    myVirg = ''
+    for k,v in self.layerList.items():
+      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "minScale":%d, "maxScale":%d, "toggled":%s}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), v['minScale'], v['maxScale'] , str(v['toggled']))
+      myVirg = ','
+    myJson+= '}'
+    self.dlg.ui.teJson.setText(unicode(myJson))
       
 
-    # Populate the Ftp configuration input from config file
-    def getConfig(self):
-        # Get the config file data
+
+  # Save Qgis project
+  def prepareSync(self):
+    
+    isok = True;
+    
+    # Get the project data
+    p = QgsProject.instance()
+    if not p.fileName():
+      QMessageBox.critical(self.dlg, "Send2Server Error", ("You need to open a qgis project first."), QMessageBox.Ok)
+      isok = False
+      
+    if isok:
+      # Get the project folder
+      projectDir, projectName = os.path.split(os.path.abspath(str(p.fileName())))
+      self.dlg.ui.inLocaldir.setText(projectDir)
+      
+    # Check relative/absolute path    
+    if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
+      QMessageBox.critical(self.dlg, "Send2Server Error", ("The layers paths must be relative to the project file. Please change this options in the project settings."), QMessageBox.Ok)
+      isok = False
+      
+    # check active layers path layer by layer
+    layerSourcesOk = []
+    layerSourcesBad = []
+    mc = self.iface.mapCanvas()
+    for i in range(mc.layerCount()):
+      layerSource =  str(mc.layer( i ).source())
+      if layerSource.startswith(projectDir):
+        layerSourcesOk.append(layerSource)
+      else:
+        layerSourcesBad.append(layerSource)
+        isok = False
+    if len(layerSourcesBad) > 0:
+      QMessageBox.critical(self.dlg, "Send2Server Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
+      log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
+
+      
+    if isok:
+      
+      # Save the current project
+      if p.isDirty():
+        saveIt = QMessageBox.question(self.dlg, 'Send2server - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if saveIt == QMessageBox.Yes:
+          p.write()
+      
+    return isok
+
+    
+  # Process the sync
+  def processSync(self):
+  
+    # pre-sync checkings
+    isok = self.prepareSync()
+    
+    if isok:
+      letsGo = QMessageBox.question(self.dlg, 'Send2server - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory  \n\nThis will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % self.dlg.ui.inLocaldir.text(), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+      if letsGo == QMessageBox.Yes:
+        isok = True
+      else:
+        isok = False
+    
+    if isok:
+      # Get configuration from input fields
+      in_username = self.dlg.ui.inUsername.text()
+      in_password = self.dlg.ui.inPassword.text()
+      in_account = ''
+      in_host = self.dlg.ui.inHost.text()
+      in_port = self.dlg.ui.inPort.text()
+      in_localdir = self.dlg.ui.inLocaldir.text()
+      in_remotedir = self.dlg.ui.inRemotedir.text()
+      isok = True
+      
+      # log
+      self.dlg.ui.outLog.append('=' * 20)
+      self.dlg.ui.outLog.append('Checking configuration data')
+      self.dlg.ui.outLog.append('=' * 20)
+      
+      # Checking configuration data
+      # host
+      if len(in_host) == 0:
+        log('Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
+      elif len(in_host) < 4:
+        log('Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
+      else:
+        host = unicode(in_host)
+        log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
+        
+      # port
+      port = 21
+      if len(in_port) > 0:
+        try:
+          port = int(in_port)
+        except (ValueError, IndexError):
+          port = 21
+          self.dlg.ui.inPort.setText('21')
+          
+      log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
+      
+      # remote directory
+      remotedir = os.path.normpath(unicode(in_remotedir))
+      # windows bug
+      remotedir.replace('\\', '/')
+      if not str(remotedir).startswith('/'):
+        remotedir = '/' + remotedir 
+      log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
+      
+      # local directory    
+      localdir = in_localdir
+      if not os.path.isdir(localdir):
+        log('Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
+      else:
+        log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
+      
+      # username
+      if len(in_username) > 0:
+        username = unicode(in_username)
+        log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
+      else:
+        log('Missing username !', abort=True, textarea=self.dlg.ui.outLog)
+      
+      # password  
+      if len(in_password) > 0:
+        password = unicode(in_password)
+        log('password ok', abort=False, textarea=self.dlg.ui.outLog)
+      else:
+        log('Missing password !', abort=True, textarea=self.dlg.ui.outLog)
+      
+      # account  
+      if len(in_account) > 0:
+        account = in_account
+  #      log('account = %' % accout, abort=False, textarea=self.dlg.ui.outLog)
+      else:
+        account = ''
+      
+      
+      if globals['isok']:
+      
+        # write data in config file
         cfg = ConfigParser.ConfigParser()
         configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
         cfg.read(configPath)
-        self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
-        self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
-        self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
-        self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
-        
-        return True
-        
-        
-    # Returns the absolute legend index of
-    # a group name.
-    # (c) Stefan Ziegler
-    def getGroupIndex(iface, groupName):
-        relationList = iface.legendInterface().groupLayerRelationship()
-        i = 0
-        for item in relationList:
-            if item[0] == groupName:
-                i = i  + 1
-                return i
-            i = i + 1
-        return 0
-
-    # Test de fonction récursive sur liste
-    # exemple : test(qgis.utils.iface.legendInterface().groupLayerRelationship())
-    def test(truc):
-      for a in truc:
-          if isinstance(a, list):
-              test(a)
-          else:
-              print(a)
-      return 1
+        cfg.set('Ftp', 'host', host)
+        cfg.set('Ftp', 'username', username)
+        cfg.set('Ftp', 'port', port)
+        cfg.set('Ftp', 'remotedir', in_remotedir)
+        cfg.write(open(configPath,"w"))
+        cfg.read(configPath)
       
-
-    # Save Qgis project and modify the xml
-    def prepareSync(self):
+        log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
         
-        isok = True;
+        self.dlg.ui.outLog.append('')
+        self.dlg.ui.outLog.append('=' * 20)
+        self.dlg.ui.outLog.append('Synchronisation')
+        self.dlg.ui.outLog.append('=' * 20)
         
-        # Get the project data
-        p = QgsProject.instance()
-        if not p.fileName():
-            QMessageBox.critical(self.iface.mainWindow(), "Send2Server Error", ("You need to open a qgis project first."), QMessageBox.Ok)
-            isok = False
-            
-        if isok:
-            # Get the project folder
-            projectDir, projectName = os.path.split(os.path.abspath(str(p.fileName())))
-            self.dlg.ui.inLocaldir.setText(projectDir)
-            
-        # Check relative/absolute path      
-        if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
-            QMessageBox.critical(self.iface.mainWindow(), "Send2Server Error", ("The layers paths must be relative to the project file. Please change this options in the project settings."), QMessageBox.Ok)
-            isok = False
-            
-        # check active layers path layer by layer
-        layerSourcesOk = []
-        layerSourcesBad = []
-        mc = self.iface.mapCanvas()
-        for i in range(mc.layerCount()):
-            layerSource =  str(mc.layer( i ).source())
-            if layerSource.startswith(projectDir):
-                layerSourcesOk.append(layerSource)
+        ftp = ftplib.FTP()
+        # Connection to FTP host
+        try:
+          ftp.connect(host, port)
+          ftp.login(username, password, account)
+        except:
+          log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
+        
+        # Check that the remotedir exists  
+        if globals['isok']:
+          try:
+            ftp.cwd(remotedir)
+            log('Connected to FTP host. Remote dir access ok.', abort=False, textarea=self.dlg.ui.outLog)
+          except ftplib.error_perm, err:
+            if err[0].startswith('550'):
+              log('Remotedir does not exist: %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
+              ftp.mkd(remotedir)
             else:
-                layerSourcesBad.append(layerSource)
-                isok = False
-        if len(layerSourcesBad) > 0:
-            QMessageBox.critical(self.iface.mainWindow(), "Send2Server Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
-            log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
-
-            
-        if isok:
+              raise
+          ftp.cwd('/')
+        
+        # Process the sync
+        if globals['isok']:
+          # Get SimpleFTPMirror handlers
+          local = localHandler(ftp, localdir)
+          remote = remoteHandler(ftp, remotedir)
+          subdir=''
+          src_path = os.path.normpath('%s/%s' % (local.root, subdir))
+          src_dirs, src_files = local.list(src_path)
+          # Mirror the local directory to the remote
+          action = 'store'
+          if action == 'store':
+            mirror(local, remote, subdir='', textarea=self.dlg.ui.outLog)
+          elif action == 'retrieve':
+            mirror(remote, local, subdir='', textarea=self.dlg.ui.outLog)
+          elif action == 'remove':
+            remove(remote)
+          elif action == 'info':
+            info(remote)
+            ftp.quit()
+            return
           
-            # Save the current project
-            if p.isDirty():
-                saveIt = QMessageBox.question(self.dlg, 'Send2server - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if saveIt == QMessageBox.Yes:
-                    p.write()
-            
-        return isok
+          ftp.quit()
 
+        # Final log
+        if globals['isok']:
+          status = globals['status']
+          status['time_finished'] = datetime.datetime.now()
+          self.dlg.ui.outLog.append('\n')
+          self.dlg.ui.outLog.append('=' * 20)
+          self.dlg.ui.outLog.append('Processing Summary')
+          self.dlg.ui.outLog.append('=' * 20)
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Directories created', status['dirs_created']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Directories removed', status['dirs_removed']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Directories total', status['dirs_total']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Files created', status['files_created']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Files updated', status['files_updated']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Files removed', status['files_removed']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Files total', status['files_total']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Bytes transfered', strfbytes(status['bytes_transfered'])))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Bytes total', strfbytes(status['bytes_total'])))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Time started', status['time_started']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', status['time_finished']))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', status['time_finished']-status['time_started']))
+          
+          self.dlg.ui.outLog.append('')
+          self.dlg.ui.outLog.append('=' * 20)
+          self.dlg.ui.outLog.append('Information : server side commands to run with root permissions after the first time')
+          self.dlg.ui.outLog.append('=' * 20)
+          self.dlg.ui.outLog.append('cp /usr/lib/cgi-bin/wms_metadata.xml /home/mdouchin%s/' % remotedir)
+          self.dlg.ui.outLog.append('ln -s /home/mdouchin%s /usr/lib/cgi-bin/' % remotedir)
+          self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.fcgi /usr/lib/cgi-bin/qgis_mapserv.cgi')
+          self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.fcgi /usr/lib/cgi-bin%s/' % remotedir)
+          self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.cgi /usr/lib/cgi-bin%s/' % remotedir)
+          self.dlg.ui.outLog.append('/etc/init.d/apache2 reload')
+          self.dlg.ui.outLog.append('')
+          
+          self.dlg.ui.outLog.append('=' * 20)
+          self.dlg.ui.outLog.append('WMS URL')
+          self.dlg.ui.outLog.append('=' * 20)
+          self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin%s/qgis_mapserv.fcgi?' % (host, remotedir))
+          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin%s/qgis_mapserv.cgi?' % (host, remotedir))
+
+          self.dlg.ui.outLog.append('')
+        
+        globals['isok'] = 1
+
+      else:
+        QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors"), QMessageBox.Ok)
+        globals['isok'] = 1
       
-    # Process the sync
-    def processSync(self):
+
+  # run method
+  def run(self):
+
+    # create and show the dialog
+    self.dlg = send2serverDialog()
+    # show the dialog
+    self.dlg.show()
     
-        # pre-sync checkings
-        isok = self.prepareSync()
-        
-        if isok:
-            letsGo = QMessageBox.question(self.dlg, 'Send2server - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory  \n\nThis will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % self.dlg.ui.inLocaldir.text(), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if letsGo == QMessageBox.Yes:
-                isok = True
-            else:
-                isok = False
-        
-        if isok:
-            # Get configuration from input fields
-            in_username = self.dlg.ui.inUsername.text()
-            in_password = self.dlg.ui.inPassword.text()
-            in_account = ''
-            in_host = self.dlg.ui.inHost.text()
-            in_port = self.dlg.ui.inPort.text()
-            in_localdir = self.dlg.ui.inLocaldir.text()
-            in_remotedir = self.dlg.ui.inRemotedir.text()
-            isok = True
-            
-            # log
-            self.dlg.ui.outLog.append('=' * 20)
-            self.dlg.ui.outLog.append('Checking configuration data')
-            self.dlg.ui.outLog.append('=' * 20)
-            
-            # Checking configuration data
-            # host
-            if len(in_host) == 0:
-                log('Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
-            elif len(in_host) < 4:
-                log('Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
-            else:
-                host = unicode(in_host)
-                log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
-                
-            # port
-            port = 21
-            if len(in_port) > 0:
-              try:
-                  port = int(in_port)
-              except (ValueError, IndexError):
-                  port = 21
-                  self.dlg.ui.inPort.setText('21')
-                  
-            log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
-            
-            # remote directory
-            remotedir = os.path.normpath(unicode(in_remotedir))
-            # windows bug
-            remotedir.replace('\\', '/')
-            if not str(remotedir).startswith('/'):
-                remotedir = '/' + remotedir 
-            log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
-            
-            # local directory      
-            localdir = in_localdir
-            if not os.path.isdir(localdir):
-                log('Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
-            else:
-                log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
-            
-            # username
-            if len(in_username) > 0:
-                username = unicode(in_username)
-                log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
-            else:
-                log('Missing username !', abort=True, textarea=self.dlg.ui.outLog)
-            
-            # password    
-            if len(in_password) > 0:
-                password = unicode(in_password)
-                log('password ok', abort=False, textarea=self.dlg.ui.outLog)
-            else:
-                log('Missing password !', abort=True, textarea=self.dlg.ui.outLog)
-            
-            # account    
-            if len(in_account) > 0:
-                account = in_account
-    #            log('account = %' % accout, abort=False, textarea=self.dlg.ui.outLog)
-            else:
-                account = ''
-            
-            
-            if globals['isok']:
-            
-              # write data in config file
-              cfg = ConfigParser.ConfigParser()
-              configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
-              cfg.read(configPath)
-              cfg.set('Ftp', 'host', host)
-              cfg.set('Ftp', 'username', username)
-              cfg.set('Ftp', 'port', port)
-              cfg.set('Ftp', 'remotedir', in_remotedir)
-              cfg.write(open(configPath,"w"))
-              cfg.read(configPath)
-            
-              log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
-              
-              self.dlg.ui.outLog.append('')
-              self.dlg.ui.outLog.append('=' * 20)
-              self.dlg.ui.outLog.append('Synchronisation')
-              self.dlg.ui.outLog.append('=' * 20)
-              
-              ftp = ftplib.FTP()
-              # Connection to FTP host
-              try:
-                  ftp.connect(host, port)
-                  ftp.login(username, password, account)
-              except:
-                  log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
-              
-              # Check that the remotedir exists    
-              if globals['isok']:
-                  try:
-                      ftp.cwd(remotedir)
-                      log('Connected to FTP host. Remote dir access ok.', abort=False, textarea=self.dlg.ui.outLog)
-                  except ftplib.error_perm, err:
-                      if err[0].startswith('550'):
-                          log('Remotedir does not exist: %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
-                          ftp.mkd(remotedir)
-                      else:
-                          raise
-                  ftp.cwd('/')
-              
-              # Process the sync
-              if globals['isok']:
-                  # Get SimpleFTPMirror handlers
-                  local = localHandler(ftp, localdir)
-                  remote = remoteHandler(ftp, remotedir)
-                  subdir=''
-                  src_path = os.path.normpath('%s/%s' % (local.root, subdir))
-                  src_dirs, src_files = local.list(src_path)
-                  # Mirror the local directory to the remote
-                  action = 'store'
-                  if action == 'store':
-                      mirror(local, remote, subdir='', textarea=self.dlg.ui.outLog)
-                  elif action == 'retrieve':
-                      mirror(remote, local, subdir='', textarea=self.dlg.ui.outLog)
-                  elif action == 'remove':
-                      remove(remote)
-                  elif action == 'info':
-                      info(remote)
-                      ftp.quit()
-                      return
-                  
-                  ftp.quit()
+    # Get config file data and set the Ftp Configuration input fields
+    self.getConfig()
+    
+    self.layerList = {}
+    
+    # Fill the layer tree
+    self.populateLayerTree()
+    
+    # pre-sync checkings
+    prepareSync = self.prepareSync()
+    
+    # connect signals and functions
+    # synchronize button clicked
+    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
+    # clear log button clicked
+    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)
 
-              # Final log
-              if globals['isok']:
-                  status = globals['status']
-                  status['time_finished'] = datetime.datetime.now()
-                  self.dlg.ui.outLog.append('\n')
-                  self.dlg.ui.outLog.append('=' * 20)
-                  self.dlg.ui.outLog.append('Processing Summary')
-                  self.dlg.ui.outLog.append('=' * 20)
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Directories created', status['dirs_created']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Directories removed', status['dirs_removed']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Directories total', status['dirs_total']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Files created', status['files_created']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Files updated', status['files_updated']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Files removed', status['files_removed']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Files total', status['files_total']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Bytes transfered', strfbytes(status['bytes_transfered'])))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Bytes total', strfbytes(status['bytes_total'])))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Time started', status['time_started']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', status['time_finished']))
-                  self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', status['time_finished']-status['time_started']))
-                  
-                  self.dlg.ui.outLog.append('')
-                  self.dlg.ui.outLog.append('=' * 20)
-                  self.dlg.ui.outLog.append('Information : server side commands to run with root permissions after the first time')
-                  self.dlg.ui.outLog.append('=' * 20)
-                  self.dlg.ui.outLog.append('cp /usr/lib/cgi-bin/wms_metadata.xml /home/mdouchin%s/' % remotedir)
-                  self.dlg.ui.outLog.append('ln -s /home/mdouchin%s /usr/lib/cgi-bin/' % remotedir)
-                  self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.fcgi /usr/lib/cgi-bin/qgis_mapserv.cgi')
-                  self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.fcgi /usr/lib/cgi-bin%s/' % remotedir)
-                  self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.cgi /usr/lib/cgi-bin%s/' % remotedir)
-                  self.dlg.ui.outLog.append('/etc/init.d/apache2 reload')
-                  self.dlg.ui.outLog.append('')
-                  
-                  self.dlg.ui.outLog.append('=' * 20)
-                  self.dlg.ui.outLog.append('WMS URL')
-                  self.dlg.ui.outLog.append('=' * 20)
-                  self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin%s/qgis_mapserv.fcgi?' % (host, remotedir))
-                  self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin%s/qgis_mapserv.cgi?' % (host, remotedir))
-
-                  self.dlg.ui.outLog.append('')
-              
-              globals['isok'] = 1
-
-            else:
-                QMessageBox.critical(self.iface.mainWindow(), "Error", ("Wrong parameters : please read the log and correct the printed errors"), QMessageBox.Ok)
-                globals['isok'] = 1
-            
-
-    # run method
-    def run(self):
-
-        # create and show the dialog
-        self.dlg = send2serverDialog()
-        # show the dialog
-        self.dlg.show()
-        
-        # Get config file data and set the Ftp Configuration input fields
-        self.getConfig()
-        
-        # pre-sync checkings
-        prepareSync = self.prepareSync()
-        
-        # connect signals and functions
-        # synchronize button clicked
-        QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
-        # clear log button clicked
-        QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)
-        
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result == 1: 
-          QMessageBox.warning(self.iface.mainWindow(), "Debug", ("Voulez allez quitter le plugin !"), QMessageBox.Ok)
+    
+    
+    
+    result = self.dlg.exec_()
+    # See if OK was pressed
+    if result == 1: 
+      QMessageBox.warning(self.dlg, "Debug", ("Voulez allez quitter le plugin !"), QMessageBox.Ok)
