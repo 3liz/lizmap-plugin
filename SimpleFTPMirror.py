@@ -243,9 +243,7 @@ def mirror(src, dst, subdir='', textarea=False):
     src_path = os.path.normpath('%s/%s' % (src.root, subdir))
     dst_path = os.path.normpath('%s/%s' % (dst.root, subdir))
     dst_path = '%s/%s' % (dst.root, subdir)
-    #
-#    log('Working on %s%s' % (src.host, src_path), abort=False, textarea=textarea)
-    
+
     src_dirs, src_files = src.list(src_path)
     if '.sfmstat' in src_files:
         del src_files['.sfmstat']
@@ -253,7 +251,7 @@ def mirror(src, dst, subdir='', textarea=False):
     globals['status']['dirs_total'] += len(src_dirs)
     globals['status']['files_total'] += len(src_files)
     
-    dst_dirs, dst_files = dst.list(dst_path, True)
+    dst_dirs, dst_files = dst.list(dst_path, False)
     if '.sfmstat' in dst_files:
         sfmstat = dst.readlines(os.path.join(dst_path, '.sfmstat'))
         sfmstat = dst.readlines( '%s/.sfmstat' % dst_path)

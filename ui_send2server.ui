@@ -27,7 +27,7 @@
    </property>
    <widget class="QWidget" name="tab_ftp">
     <attribute name="title">
-     <string>FTP configuration</string>
+     <string>FTP options</string>
     </attribute>
     <widget class="QWidget" name="horizontalLayoutWidget_3">
      <property name="geometry">
@@ -243,9 +243,24 @@
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>JSON</string>
+    </attribute>
+    <widget class="QTextEdit" name="teJson">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>541</width>
+       <height>341</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="tab_main">
     <attribute name="title">
-     <string>Run</string>
+     <string>Synchronize</string>
     </attribute>
     <widget class="QWidget" name="horizontalLayoutWidget_7">
      <property name="geometry">
@@ -335,21 +350,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note that only the modified files will be sent to prevent unwanted network usage. &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WARNING&lt;/span&gt; : all the content of the server directory not related to you local project will be lost !&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_3">
-    <attribute name="title">
-     <string>JSON</string>
-    </attribute>
-    <widget class="QTextEdit" name="teJson">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>541</width>
-       <height>341</height>
-      </rect>
      </property>
     </widget>
    </widget>

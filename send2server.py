@@ -113,6 +113,7 @@ class send2server:
           myDic[myId]['minScale'] = 1
           myDic[myId]['maxScale'] = 1000000000000
           myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
+          myDic[myId]['isBaseLayer'] = False
         else:
           # it's a layer
           myDic[myId]['type'] = 'layer'
@@ -121,6 +122,7 @@ class send2server:
           myDic[myId]['minScale'] = layer.minimumScale()
           myDic[myId]['maxScale'] = layer.maximumScale()
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+          myDic[myId]['isBaseLayer'] = False
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
           
@@ -138,6 +140,7 @@ class send2server:
           myDic[b]['minScale'] = 1
           myDic[b]['maxScale'] = 1000000000000
           myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
+          myDic[b]['isBaseLayer'] = False
         else:
           # it's a layer
           myDic[b]['type'] = 'layer'
@@ -146,6 +149,7 @@ class send2server:
           myDic[b]['minScale'] = layer.minimumScale()
           myDic[b]['maxScale'] = layer.maximumScale()
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+          myDic[b]['isBaseLayer'] = False
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
                     
@@ -197,10 +201,24 @@ class send2server:
     
   def layerListToJson(self):
     myJson = '{'
+    # options
+    r = QgsMapRenderer()
+    r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
+    myJson+= '"options" : {'
+    myJson+= '"bbox":"%s,%s,%s,%s"' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
+    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
+    myJson+= ', "scales": ['
+    
+    myJson+= ']'
+    myJson+= '},'
+    
+    # layers
+    myJson+= '"layers" : {'
     myVirg = ''
     for k,v in self.layerList.items():
       myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "minScale":%d, "maxScale":%d, "toggled":%s}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), v['minScale'], v['maxScale'] , str(v['toggled']))
       myVirg = ','
+    myJson+= '}'
     myJson+= '}'
     self.dlg.ui.teJson.setText(unicode(myJson))
       
@@ -426,23 +444,11 @@ class send2server:
           self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', status['time_finished']))
           self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', status['time_finished']-status['time_started']))
           
-          self.dlg.ui.outLog.append('')
-          self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('Information : server side commands to run with root permissions after the first time')
-          self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('cp /usr/lib/cgi-bin/wms_metadata.xml /home/mdouchin%s/' % remotedir)
-          self.dlg.ui.outLog.append('ln -s /home/mdouchin%s /usr/lib/cgi-bin/' % remotedir)
-          self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.fcgi /usr/lib/cgi-bin/qgis_mapserv.cgi')
-          self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.fcgi /usr/lib/cgi-bin%s/' % remotedir)
-          self.dlg.ui.outLog.append('ln -s /usr/lib/cgi-bin/qgis_mapserv.cgi /usr/lib/cgi-bin%s/' % remotedir)
-          self.dlg.ui.outLog.append('/etc/init.d/apache2 reload')
-          self.dlg.ui.outLog.append('')
-          
           self.dlg.ui.outLog.append('=' * 20)
           self.dlg.ui.outLog.append('WMS URL')
           self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin%s/qgis_mapserv.fcgi?' % (host, remotedir))
-          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin%s/qgis_mapserv.cgi?' % (host, remotedir))
+          self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin/qgis_mapserv.fcgi?map=/home/%s%s' % (host, username, remotedir))
+          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin/qgis_mapserv.cgi?map=/home/%s%s' % (host, username, remotedir))
 
           self.dlg.ui.outLog.append('')
         
