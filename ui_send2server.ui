@@ -203,7 +203,7 @@
        <x>370</x>
        <y>10</y>
        <width>191</width>
-       <height>161</height>
+       <height>215</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -226,6 +226,13 @@
       </item>
       <item>
        <widget class="QTextEdit" name="teLayerAbstract"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbLayerIsBaseLayer">
+        <property name="text">
+         <string>Base layer ?</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

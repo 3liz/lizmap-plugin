@@ -113,7 +113,7 @@ class send2server:
           myDic[myId]['minScale'] = 1
           myDic[myId]['maxScale'] = 1000000000000
           myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
-          myDic[myId]['isBaseLayer'] = False
+          myDic[myId]['baseLayer'] = False
         else:
           # it's a layer
           myDic[myId]['type'] = 'layer'
@@ -122,7 +122,7 @@ class send2server:
           myDic[myId]['minScale'] = layer.minimumScale()
           myDic[myId]['maxScale'] = layer.maximumScale()
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          myDic[myId]['isBaseLayer'] = False
+          myDic[myId]['baseLayer'] = False
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
           
@@ -140,7 +140,7 @@ class send2server:
           myDic[b]['minScale'] = 1
           myDic[b]['maxScale'] = 1000000000000
           myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
-          myDic[b]['isBaseLayer'] = False
+          myDic[b]['baseLayer'] = False
         else:
           # it's a layer
           myDic[b]['type'] = 'layer'
@@ -149,7 +149,7 @@ class send2server:
           myDic[b]['minScale'] = layer.minimumScale()
           myDic[b]['maxScale'] = layer.maximumScale()
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          myDic[b]['isBaseLayer'] = False
+          myDic[b]['baseLayer'] = False
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
                     
@@ -167,6 +167,7 @@ class send2server:
     QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.itemMetadata)
     QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
     QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
+    QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
     # export json button clicked
     QObject.connect(self.dlg.ui.btJson, SIGNAL("clicked()"), self.layerListToJson)
     
@@ -175,14 +176,14 @@ class send2server:
   def itemMetadata(self):
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
-    myLayerTitle = self.dlg.ui.inLayerTitle
-    myLayerAbstract = self.dlg.ui.teLayerAbstract
     # get information about the layer or the group
     selectedItem = self.layerList[item.text(1)]
     # set the title
-    myLayerTitle.setText(selectedItem['title'])
+    self.dlg.ui.inLayerTitle.setText(selectedItem['title'])
     # set the abstract
-    myLayerAbstract.setText(selectedItem['abstract'])
+    self.dlg.ui.teLayerAbstract.setText(selectedItem['abstract'])
+    # set the baseLayer
+    self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
       
       
   # Set a layer title when a item title is edited
@@ -198,6 +199,13 @@ class send2server:
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the abstract for the selected item
     self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
+    
+  # Set a layer "IsBaseLayer" property when an item "Is Base layer" checkbox state has changed
+  def setLayerIsBaseLayer(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the baseLayer property for the selected item
+    self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
     
   def layerListToJson(self):
     myJson = '{'
@@ -216,7 +224,7 @@ class send2server:
     myJson+= '"layers" : {'
     myVirg = ''
     for k,v in self.layerList.items():
-      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "minScale":%d, "maxScale":%d, "toggled":%s}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), v['minScale'], v['maxScale'] , str(v['toggled']))
+      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "minScale":%d, "maxScale":%d, "toggled":%s, "baseLayer":%s}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
       myVirg = ','
     myJson+= '}'
     myJson+= '}'
