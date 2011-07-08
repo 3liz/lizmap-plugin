@@ -228,7 +228,7 @@ class send2server:
     myJson+= '"projection" : {"proj4":"%s", "ref":"%s"},' % (pProj4, pAuthid)
 #    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
     myJson+= '"bbox":[%s,%s,%s,%s]' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
-    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
+#    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
     myJson+= ', "scales": ['
     
     myJson+= ']'
