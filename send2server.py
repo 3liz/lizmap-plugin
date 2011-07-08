@@ -213,7 +213,7 @@ class send2server:
     r = QgsMapRenderer()
     r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
     myJson+= '"options" : {'
-    myJson+= '"bbox":"%s,%s,%s,%s"' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
+    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
     myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
     myJson+= ', "scales": ['
     
