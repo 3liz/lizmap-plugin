@@ -209,11 +209,25 @@ class send2server:
     
   def layerListToJson(self):
     myJson = '{'
-    # options
+    
+    # get information from Qgis api
     r = QgsMapRenderer()
+    # add all the layers to the renderer
     r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
+    # Get the project data
+    p = QgsProject.instance()
+    # project projection
+    mc = self.iface.mapCanvas()
+    pSrs = mc.mapRenderer().destinationSrs()
+    pAuthid = pSrs.authid()
+    pProj4 = pSrs.toProj4()
+    # wms extent
+    pWmsExtent = p.readListEntry('WMSExtent','')[0]
+    # options
     myJson+= '"options" : {'
-    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
+    myJson+= '"projection" : {"proj4":"%s", "ref":"%s"},' % (pProj4, pAuthid)
+#    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
+    myJson+= '"bbox":[%s,%s,%s,%s]' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
     myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
     myJson+= ', "scales": ['
     
