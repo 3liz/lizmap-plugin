@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Fri Jun 24 09:42:39 2011
+# Created: Wed Jul 20 18:09:01 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -128,16 +128,10 @@ class Ui_send2server(object):
         self.cbLayerIsBaseLayer = QtGui.QCheckBox(self.verticalLayoutWidget)
         self.cbLayerIsBaseLayer.setObjectName(_fromUtf8("cbLayerIsBaseLayer"))
         self.verticalLayout.addWidget(self.cbLayerIsBaseLayer)
-        self.btJson = QtGui.QPushButton(self.tab_2)
-        self.btJson.setGeometry(QtCore.QRect(390, 240, 97, 27))
-        self.btJson.setObjectName(_fromUtf8("btJson"))
+        self.cbGroupAsLayer = QtGui.QCheckBox(self.verticalLayoutWidget)
+        self.cbGroupAsLayer.setObjectName(_fromUtf8("cbGroupAsLayer"))
+        self.verticalLayout.addWidget(self.cbGroupAsLayer)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
-        self.tab_3 = QtGui.QWidget()
-        self.tab_3.setObjectName(_fromUtf8("tab_3"))
-        self.teJson = QtGui.QTextEdit(self.tab_3)
-        self.teJson.setGeometry(QtCore.QRect(10, 10, 541, 341))
-        self.teJson.setObjectName(_fromUtf8("teJson"))
-        self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
         self.horizontalLayoutWidget_7 = QtGui.QWidget(self.tab_main)
@@ -180,9 +174,8 @@ class Ui_send2server(object):
         self.label_7.setText(QtGui.QApplication.translate("send2server", "Title", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("send2server", "Abstract", None, QtGui.QApplication.UnicodeUTF8))
         self.cbLayerIsBaseLayer.setText(QtGui.QApplication.translate("send2server", "Base layer ?", None, QtGui.QApplication.UnicodeUTF8))
-        self.btJson.setText(QtGui.QApplication.translate("send2server", "JSON", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbGroupAsLayer.setText(QtGui.QApplication.translate("send2server", "Group as a layer ?", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("send2server", "Layers", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("send2server", "JSON", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("send2server", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))

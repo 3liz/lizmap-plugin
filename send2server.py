@@ -114,6 +114,7 @@ class send2server:
           myDic[myId]['maxScale'] = 1000000000000
           myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
           myDic[myId]['baseLayer'] = False
+          myDic[myId]['groupAsLayer'] = False
         else:
           # it's a layer
           myDic[myId]['type'] = 'layer'
@@ -123,6 +124,7 @@ class send2server:
           myDic[myId]['maxScale'] = layer.maximumScale()
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
           myDic[myId]['baseLayer'] = False
+          myDic[myId]['groupAsLayer'] = True
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
           
@@ -141,6 +143,7 @@ class send2server:
           myDic[b]['maxScale'] = 1000000000000
           myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
           myDic[b]['baseLayer'] = False
+          myDic[b]['groupAsLayer'] = False
         else:
           # it's a layer
           myDic[b]['type'] = 'layer'
@@ -150,6 +153,7 @@ class send2server:
           myDic[b]['maxScale'] = layer.maximumScale()
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
           myDic[b]['baseLayer'] = False
+          myDic[b]['groupAsLayer'] = True
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
                     
@@ -168,8 +172,7 @@ class send2server:
     QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
     QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
     QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
-    # export json button clicked
-    QObject.connect(self.dlg.ui.btJson, SIGNAL("clicked()"), self.layerListToJson)
+    QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
     
 
   # Display metadata on click of a tree item in the layer tree
@@ -184,7 +187,8 @@ class send2server:
     self.dlg.ui.teLayerAbstract.setText(selectedItem['abstract'])
     # set the baseLayer
     self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
-      
+    # set the groupAsLayer
+    self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])      
       
   # Set a layer title when a item title is edited
   def setLayerTitle(self):
@@ -206,6 +210,15 @@ class send2server:
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the baseLayer property for the selected item
     self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
+    
+  # Set the "group as a layer" property when an item "Group As Layer" checkbox state has changed
+  def setGroupAsLayer(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
+    # modify the type property for the selected item
+    if self.dlg.ui.cbGroupAsLayer.isChecked() and self.layerList[item.text(1)]['type'] == 'group':
+      self.layerList[item.text(1)]['type'] = 'layer'
     
   def layerListToJson(self):
     myJson = '{'
@@ -242,8 +255,15 @@ class send2server:
       myVirg = ','
     myJson+= '}'
     myJson+= '}'
-    self.dlg.ui.teJson.setText(unicode(myJson))
-      
+    
+    # Write json to the cfg file
+    # Get the project data
+    p = QgsProject.instance()
+    jsonFile = "%s.cfg" % p.fileName()
+    f = open(jsonFile, 'w')
+#    f.write(unicode(myJson))    
+    f.write(myJson.encode('utf-8'))
+    f.close()
 
 
   # Save Qgis project
@@ -380,10 +400,9 @@ class send2server:
       else:
         account = ''
       
-      
       if globals['isok']:
       
-        # write data in config file
+        # write data in the python plugin config file
         cfg = ConfigParser.ConfigParser()
         configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
         cfg.read(configPath)
@@ -395,6 +414,9 @@ class send2server:
         cfg.read(configPath)
       
         log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
+        
+        # write data in the QgisWebClient json config file (to be send with the project file)
+        self.layerListToJson()
         
         self.dlg.ui.outLog.append('')
         self.dlg.ui.outLog.append('=' * 20)

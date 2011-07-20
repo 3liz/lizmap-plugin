@@ -234,35 +234,14 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="cbGroupAsLayer">
+        <property name="text">
+         <string>Group as a layer ?</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-    </widget>
-    <widget class="QPushButton" name="btJson">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>240</y>
-       <width>97</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>JSON</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_3">
-    <attribute name="title">
-     <string>JSON</string>
-    </attribute>
-    <widget class="QTextEdit" name="teJson">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>541</width>
-       <height>341</height>
-      </rect>
-     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_main">
