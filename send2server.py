@@ -112,7 +112,8 @@ class send2server:
           myDic[myId]['name'] = myId
           myDic[myId]['minScale'] = 1
           myDic[myId]['maxScale'] = 1000000000000
-          myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
+#          myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
+          myDic[myId]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
           myDic[myId]['baseLayer'] = False
           myDic[myId]['groupAsLayer'] = False
         else:
@@ -141,7 +142,8 @@ class send2server:
           myDic[b]['name'] = b
           myDic[b]['minScale'] = 1
           myDic[b]['maxScale'] = 1000000000000
-          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
+#          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
+          myDic[b]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
           myDic[b]['baseLayer'] = False
           myDic[b]['groupAsLayer'] = False
         else:
@@ -173,6 +175,7 @@ class send2server:
     QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
     QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
     QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
+    QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
     
 
   # Display metadata on click of a tree item in the layer tree
@@ -188,7 +191,9 @@ class send2server:
     # set the baseLayer
     self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
     # set the groupAsLayer
-    self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])      
+    self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])
+    # set the toggled
+    self.dlg.ui.cbToggled.setChecked(selectedItem['toggled'])     
       
   # Set a layer title when a item title is edited
   def setLayerTitle(self):
@@ -219,6 +224,13 @@ class send2server:
     # modify the type property for the selected item
     if self.dlg.ui.cbGroupAsLayer.isChecked() and self.layerList[item.text(1)]['type'] == 'group':
       self.layerList[item.text(1)]['type'] = 'layer'
+      
+  # Set a layer or group "toggled" property when an item "toggled" checkbox state has changed
+  def setToggled(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the toggled property for the selected item
+    self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
     
   def layerListToJson(self):
     myJson = '{'

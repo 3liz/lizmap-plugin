@@ -203,7 +203,7 @@
        <x>370</x>
        <y>10</y>
        <width>191</width>
-       <height>215</height>
+       <height>243</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -238,6 +238,13 @@
        <widget class="QCheckBox" name="cbGroupAsLayer">
         <property name="text">
          <string>Group as a layer ?</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbToggled">
+        <property name="text">
+         <string>Toggled ?</string>
         </property>
        </widget>
       </item>

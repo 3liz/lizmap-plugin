@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Wed Jul 20 18:09:01 2011
+# Created: Tue Jul 26 17:56:23 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -108,7 +108,7 @@ class Ui_send2server(object):
         self.treeLayer.header().setMinimumSectionSize(50)
         self.treeLayer.header().setStretchLastSection(True)
         self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 215))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 243))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -131,6 +131,9 @@ class Ui_send2server(object):
         self.cbGroupAsLayer = QtGui.QCheckBox(self.verticalLayoutWidget)
         self.cbGroupAsLayer.setObjectName(_fromUtf8("cbGroupAsLayer"))
         self.verticalLayout.addWidget(self.cbGroupAsLayer)
+        self.cbToggled = QtGui.QCheckBox(self.verticalLayoutWidget)
+        self.cbToggled.setObjectName(_fromUtf8("cbToggled"))
+        self.verticalLayout.addWidget(self.cbToggled)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
@@ -175,6 +178,7 @@ class Ui_send2server(object):
         self.label_8.setText(QtGui.QApplication.translate("send2server", "Abstract", None, QtGui.QApplication.UnicodeUTF8))
         self.cbLayerIsBaseLayer.setText(QtGui.QApplication.translate("send2server", "Base layer ?", None, QtGui.QApplication.UnicodeUTF8))
         self.cbGroupAsLayer.setText(QtGui.QApplication.translate("send2server", "Group as a layer ?", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbToggled.setText(QtGui.QApplication.translate("send2server", "Toggled ?", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("send2server", "Layers", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("send2server", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
