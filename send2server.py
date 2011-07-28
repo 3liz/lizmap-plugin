@@ -305,7 +305,7 @@ class send2server:
     mc = self.iface.mapCanvas()
     for i in range(mc.layerCount()):
       layerSource =  str(mc.layer( i ).source())
-      if layerSource.startswith(projectDir):
+      if layerSource.startswith(projectDir) or layerSource.startswith('dbname='):
         layerSourcesOk.append(layerSource)
       else:
         layerSourcesBad.append(layerSource)
