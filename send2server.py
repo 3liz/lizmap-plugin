@@ -74,6 +74,12 @@ class send2server:
     self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
     self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
+    self.imageFormatDic = {'png' : 0, 'jpg' : 1}
+    self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[cfg.get('Map', 'imageFormat')])
+    self.dlg.ui.cbSingleTile.setChecked(cfg.get('Map', 'singleTile').lower() in ("yes", "true", "t", "1"))
+    self.dlg.ui.inMinScale.setText(cfg.get('Map', 'minScale'))  
+    self.dlg.ui.inMaxScale.setText(cfg.get('Map', 'maxScale')) 
+    self.dlg.ui.inZoomLevelNumber.setText(cfg.get('Map', 'zoomLevelNumber'))
     
     return True
     
@@ -252,9 +258,17 @@ class send2server:
     myJson+= '"options" : {'
     myJson+= '"projection" : {"proj4":"%s", "ref":"%s"},' % (pProj4, pAuthid)
 #    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
-    myJson+= '"bbox":[%s,%s,%s,%s]' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
+    myJson+= '"bbox":[%s,%s,%s,%s],' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
 #    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
-    myJson+= ', "scales": ['
+
+    in_imageFormat = self.dlg.ui.liImageFormat.currentText()
+    in_singleTile = self.dlg.ui.cbSingleTile.isChecked()
+    in_minScale = self.dlg.ui.inMinScale.text()
+    in_maxScale = self.dlg.ui.inMaxScale.text()
+    in_zoomLevelNumber = self.dlg.ui.inZoomLevelNumber.text()
+    myJson+= ' "imageFormat" : "%s", "singleTile" : "%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s,' % (in_imageFormat, in_singleTile, in_minScale, in_maxScale, in_zoomLevelNumber)
+
+    myJson+= '"scales": ['
     
     myJson+= ']'
     myJson+= '},'
@@ -322,6 +336,8 @@ class send2server:
         saveIt = QMessageBox.question(self.dlg, 'Send2server - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if saveIt == QMessageBox.Yes:
           p.write()
+        else:
+          isOk = False
       
     return isok
 
@@ -341,6 +357,7 @@ class send2server:
     
     if isok:
       # Get configuration from input fields
+      # FTP
       in_username = self.dlg.ui.inUsername.text()
       in_password = self.dlg.ui.inPassword.text()
       in_account = ''
@@ -348,6 +365,13 @@ class send2server:
       in_port = self.dlg.ui.inPort.text()
       in_localdir = self.dlg.ui.inLocaldir.text()
       in_remotedir = self.dlg.ui.inRemotedir.text()
+      # Map
+      in_imageFormat = self.dlg.ui.liImageFormat.currentText()
+      in_singleTile = self.dlg.ui.cbSingleTile.isChecked()
+      in_minScale = self.dlg.ui.inMinScale.text()
+      in_maxScale = self.dlg.ui.inMaxScale.text()
+      in_zoomLevelNumber = self.dlg.ui.inZoomLevelNumber.text()
+      
       isok = True
       
       # log
@@ -411,6 +435,44 @@ class send2server:
   #      log('account = %' % accout, abort=False, textarea=self.dlg.ui.outLog)
       else:
         account = ''
+        
+      # Map config
+      # image format
+      if in_imageFormat == 'png' or in_imageFormat == 'jpg':
+        imageFormat = in_imageFormat
+#        log('password ok', abort=False, textarea=self.dlg.ui.outLog)
+      else:
+        log('Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
+        
+      # singletile
+      singleTile = in_singleTile
+      
+      # minScale
+      minScale = 1
+      if len(in_minScale) > 0:
+        try:
+          minScale = int(in_minScale)
+        except (ValueError, IndexError):
+          self.dlg.ui.inMinScale.setText(minScale)   
+      log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
+      
+      # maxScale
+      maxScale = 1000000
+      if len(in_maxScale) > 0:
+        try:
+          maxScale = int(in_maxScale)
+        except (ValueError, IndexError):
+          self.dlg.ui.inMaxScale.setText(maxScale)   
+      log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
+      
+      # zoom levels number
+      zoomLevelNumber = 10
+      if len(in_zoomLevelNumber) > 0:
+        try:
+          zoomLevelNumber = int(in_zoomLevelNumber)
+        except (ValueError, IndexError):
+          self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)   
+      log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
       
       if globals['isok']:
       
@@ -422,6 +484,11 @@ class send2server:
         cfg.set('Ftp', 'username', username)
         cfg.set('Ftp', 'port', port)
         cfg.set('Ftp', 'remotedir', in_remotedir)
+        cfg.set('Map', 'imageFormat', in_imageFormat)
+        cfg.set('Map', 'singleTile', in_singleTile)
+        cfg.set('Map', 'minScale', in_minScale)
+        cfg.set('Map', 'maxScale', in_maxScale)
+        cfg.set('Map', 'zoomLevelNumber', in_zoomLevelNumber)
         cfg.write(open(configPath,"w"))
         cfg.read(configPath)
       
