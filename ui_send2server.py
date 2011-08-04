@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Tue Aug  2 12:03:48 2011
+# Created: Thu Aug  4 14:59:13 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -138,7 +138,7 @@ class Ui_send2server(object):
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.tab_3)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(20, 20, 291, 216))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(20, 20, 531, 280))
         self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setMargin(0)
@@ -167,6 +167,8 @@ class Ui_send2server(object):
         self.verticalLayout_2.addWidget(self.cbSingleTile)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
+        spacerItem1 = QtGui.QSpacerItem(20, 60, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem1)
         self.label_15 = QtGui.QLabel(self.verticalLayoutWidget_2)
         font = QtGui.QFont()
         font.setWeight(75)
@@ -207,6 +209,23 @@ class Ui_send2server(object):
         self.inZoomLevelNumber.setObjectName(_fromUtf8("inZoomLevelNumber"))
         self.horizontalLayout_14.addWidget(self.inZoomLevelNumber)
         self.verticalLayout_2.addLayout(self.horizontalLayout_14)
+        self.label_18 = QtGui.QLabel(self.verticalLayoutWidget_2)
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setBold(True)
+        self.label_18.setFont(font)
+        self.label_18.setObjectName(_fromUtf8("label_18"))
+        self.verticalLayout_2.addWidget(self.label_18)
+        self.horizontalLayout_15 = QtGui.QHBoxLayout()
+        self.horizontalLayout_15.setObjectName(_fromUtf8("horizontalLayout_15"))
+        self.label_19 = QtGui.QLabel(self.verticalLayoutWidget_2)
+        self.label_19.setObjectName(_fromUtf8("label_19"))
+        self.horizontalLayout_15.addWidget(self.label_19)
+        self.inMapScales = QtGui.QLineEdit(self.verticalLayoutWidget_2)
+        self.inMapScales.setInputMethodHints(QtCore.Qt.ImhDigitsOnly)
+        self.inMapScales.setObjectName(_fromUtf8("inMapScales"))
+        self.horizontalLayout_15.addWidget(self.inMapScales)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_15)
         self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
@@ -262,6 +281,8 @@ class Ui_send2server(object):
         self.label_13.setText(QtGui.QApplication.translate("send2server", "Min. Scale :  1/", None, QtGui.QApplication.UnicodeUTF8))
         self.label_14.setText(QtGui.QApplication.translate("send2server", "Max. Scale : 1/", None, QtGui.QApplication.UnicodeUTF8))
         self.label_17.setText(QtGui.QApplication.translate("send2server", "Zoom levels number", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_18.setText(QtGui.QApplication.translate("send2server", "  or", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_19.setText(QtGui.QApplication.translate("send2server", "Scales (ex:100000,20000)", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("send2server", "Map options", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("send2server", "Clear log", None, QtGui.QApplication.UnicodeUTF8))

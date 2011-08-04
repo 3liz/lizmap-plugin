@@ -31,6 +31,8 @@ from send2serverdialog import send2serverDialog
 import sys, os, glob
 # configuration parser
 import ConfigParser
+# json handling
+import simplejson
 # Importing SimpleFTPMirror class
 from SimpleFTPMirror import *
 
@@ -80,6 +82,8 @@ class send2server:
     self.dlg.ui.inMinScale.setText(cfg.get('Map', 'minScale'))  
     self.dlg.ui.inMaxScale.setText(cfg.get('Map', 'maxScale')) 
     self.dlg.ui.inZoomLevelNumber.setText(cfg.get('Map', 'zoomLevelNumber'))
+    self.dlg.ui.inMapScales.setText(cfg.get('Map', 'mapScales'))
+    
     
     return True
     
@@ -96,6 +100,23 @@ class send2server:
     myTree.headerItem().setText(0, 'Liste des couches')
     myDic = {}
     myGroups = self.iface.legendInterface().groups()
+
+    # Check if a *.qgs.cfg exists
+    p = QgsProject.instance()
+    jsonFile = "%s.cfg" % p.fileName()
+    jsonLayers = {}
+    if os.path.exists(unicode(jsonFile)):
+      f = open(jsonFile, 'r')
+      json = f.read()
+      sjson = simplejson.loads(json)
+      jsonLayers = sjson['layers']
+#      self.dlg.ui.outLog.append(str(jsonLayers))
+#      for k,v in sjson.items():
+#        if k == 'layers':
+#          for key,val in v.items():
+#            self.dlg.ui.outLog.append(key)
+      f.close()    
+    
     for a in self.iface.legendInterface().groupLayerRelationship():
       # initialize values
       parentItem = None
@@ -120,8 +141,17 @@ class send2server:
           myDic[myId]['maxScale'] = 1000000000000
 #          myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
           myDic[myId]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['toggled'] = True
           myDic[myId]['baseLayer'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['baseLayer'] = True
           myDic[myId]['groupAsLayer'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['groupAsLayer'] = True
         else:
           # it's a layer
           myDic[myId]['type'] = 'layer'
@@ -130,10 +160,22 @@ class send2server:
           myDic[myId]['minScale'] = layer.minimumScale()
           myDic[myId]['maxScale'] = layer.maximumScale()
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['toggled'] = True
           myDic[myId]['baseLayer'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['baseLayer'] = True
           myDic[myId]['groupAsLayer'] = True
+          
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
+        if(jsonLayers.has_key('%s' % myId)):
+          if jsonLayers['%s' % myId]['title'] != '':
+            myDic[myId]['title'] = True
+          if jsonLayers['%s' % myId]['abstract'] != '':
+            myDic[myId]['abstract'] = True
           
         parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
         myTree.addTopLevelItem(parentItem)
@@ -150,8 +192,17 @@ class send2server:
           myDic[b]['maxScale'] = 1000000000000
 #          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
           myDic[b]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['toggled'] = True
           myDic[b]['baseLayer'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['baseLayer'] = True
           myDic[b]['groupAsLayer'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['groupAsLayer'] = True
         else:
           # it's a layer
           myDic[b]['type'] = 'layer'
@@ -160,10 +211,22 @@ class send2server:
           myDic[b]['minScale'] = layer.minimumScale()
           myDic[b]['maxScale'] = layer.maximumScale()
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['toggled'] = True
           myDic[b]['baseLayer'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['baseLayer'] = True
           myDic[b]['groupAsLayer'] = True
+          
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
+        if(jsonLayers.has_key('%s' % b)):
+          if jsonLayers['%s' % b]['title'] != '':
+            myDic[b]['title'] = True
+          if jsonLayers['%s' % b]['abstract'] != '':
+            myDic[b]['abstract'] = True
                     
         childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
         if myId == '':
@@ -266,11 +329,9 @@ class send2server:
     in_minScale = self.dlg.ui.inMinScale.text()
     in_maxScale = self.dlg.ui.inMaxScale.text()
     in_zoomLevelNumber = self.dlg.ui.inZoomLevelNumber.text()
-    myJson+= ' "imageFormat" : "%s", "singleTile" : "%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s,' % (in_imageFormat, in_singleTile, in_minScale, in_maxScale, in_zoomLevelNumber)
+    in_mapScales = self.dlg.ui.inMapScales.text()
+    myJson+= ' "imageFormat" : "image/%s", "singleTile" : "%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s]' % (in_imageFormat, in_singleTile, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales)
 
-    myJson+= '"scales": ['
-    
-    myJson+= ']'
     myJson+= '},'
     
     # layers
@@ -371,6 +432,7 @@ class send2server:
       in_minScale = self.dlg.ui.inMinScale.text()
       in_maxScale = self.dlg.ui.inMaxScale.text()
       in_zoomLevelNumber = self.dlg.ui.inZoomLevelNumber.text()
+      in_mapScales = self.dlg.ui.inMapScales.text()
       
       isok = True
       
@@ -489,6 +551,7 @@ class send2server:
         cfg.set('Map', 'minScale', in_minScale)
         cfg.set('Map', 'maxScale', in_maxScale)
         cfg.set('Map', 'zoomLevelNumber', in_zoomLevelNumber)
+        cfg.set('Map', 'mapScales', in_mapScales)
         cfg.write(open(configPath,"w"))
         cfg.read(configPath)
       
@@ -606,6 +669,7 @@ class send2server:
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
     # clear log button clicked
     QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)
+    QObject.connect(self.dlg.ui.pushButton, SIGNAL("clicked()"), self.populateLayerTree)
 
     
     
