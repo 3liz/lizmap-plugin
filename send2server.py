@@ -357,6 +357,8 @@ class send2server:
     myJson+= '"layers" : {'
     myVirg = ''
     for k,v in self.layerList.items():
+      if v['groupAsLayer']:
+        v['type'] = 'layer'
       myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
       myVirg = ','
     myJson+= '}'
