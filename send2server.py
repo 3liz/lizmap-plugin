@@ -144,13 +144,17 @@ class send2server:
           if(jsonLayers.has_key('%s' % myId)):
             if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
               myDic[myId]['toggled'] = True
+            else:
+              myDic[myId]['toggled'] = False
+              
           myDic[myId]['baseLayer'] = False
           if(jsonLayers.has_key('%s' % myId)):
             if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
               myDic[myId]['baseLayer'] = True
+              
           myDic[myId]['groupAsLayer'] = False
           if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
+            if jsonLayers['%s' % myId]['type'] == 'layer':
               myDic[myId]['groupAsLayer'] = True
         else:
           # it's a layer
@@ -159,23 +163,26 @@ class send2server:
           myDic[myId]['name'] = layer.name()
           myDic[myId]['minScale'] = layer.minimumScale()
           myDic[myId]['maxScale'] = layer.maximumScale()
+          
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
           if(jsonLayers.has_key('%s' % myId)):
             if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
               myDic[myId]['toggled'] = True
+              
           myDic[myId]['baseLayer'] = False
           if(jsonLayers.has_key('%s' % myId)):
             if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
               myDic[myId]['baseLayer'] = True
+              
           myDic[myId]['groupAsLayer'] = True
           
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
         if(jsonLayers.has_key('%s' % myId)):
           if jsonLayers['%s' % myId]['title'] != '':
-            myDic[myId]['title'] = True
+            myDic[myId]['title'] = jsonLayers['%s' % myId]['title']
           if jsonLayers['%s' % myId]['abstract'] != '':
-            myDic[myId]['abstract'] = True
+            myDic[myId]['abstract'] = jsonLayers['%s' % myId]['abstract']
           
         parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
         myTree.addTopLevelItem(parentItem)
@@ -190,18 +197,23 @@ class send2server:
           myDic[b]['name'] = b
           myDic[b]['minScale'] = 1
           myDic[b]['maxScale'] = 1000000000000
+          
 #          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
           myDic[b]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
           if(jsonLayers.has_key('%s' % b)):
             if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
               myDic[b]['toggled'] = True
+            else:
+              myDic[b]['toggled'] = False
+              
           myDic[b]['baseLayer'] = False
           if(jsonLayers.has_key('%s' % b)):
             if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
               myDic[b]['baseLayer'] = True
+              
           myDic[b]['groupAsLayer'] = False
           if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
+            if jsonLayers['%s' % b]['type'] == 'layer':
               myDic[b]['groupAsLayer'] = True
         else:
           # it's a layer
@@ -210,23 +222,26 @@ class send2server:
           myDic[b]['name'] = layer.name()
           myDic[b]['minScale'] = layer.minimumScale()
           myDic[b]['maxScale'] = layer.maximumScale()
+          
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
           if(jsonLayers.has_key('%s' % b)):
             if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
               myDic[b]['toggled'] = True
+              
           myDic[b]['baseLayer'] = False
           if(jsonLayers.has_key('%s' % b)):
             if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
               myDic[b]['baseLayer'] = True
+              
           myDic[b]['groupAsLayer'] = True
           
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
         if(jsonLayers.has_key('%s' % b)):
           if jsonLayers['%s' % b]['title'] != '':
-            myDic[b]['title'] = True
+            myDic[b]['title'] = jsonLayers['%s' % b]['title']
           if jsonLayers['%s' % b]['abstract'] != '':
-            myDic[b]['abstract'] = True
+            myDic[b]['abstract'] = jsonLayers['%s' % b]['abstract']
                     
         childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
         if myId == '':
@@ -291,7 +306,7 @@ class send2server:
     item = self.dlg.ui.treeLayer.currentItem()
     self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
     # modify the type property for the selected item
-    if self.dlg.ui.cbGroupAsLayer.isChecked() and self.layerList[item.text(1)]['type'] == 'group':
+    if self.dlg.ui.cbGroupAsLayer.isChecked():
       self.layerList[item.text(1)]['type'] = 'layer'
       
   # Set a layer or group "toggled" property when an item "toggled" checkbox state has changed
@@ -300,6 +315,7 @@ class send2server:
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the toggled property for the selected item
     self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
+#    self.dlg.ui.outLog.append('%s : %s' % (item.text(1), str(self.dlg.ui.cbToggled.isChecked())))
     
   def layerListToJson(self):
     myJson = '{'
@@ -321,7 +337,10 @@ class send2server:
     myJson+= '"options" : {'
     myJson+= '"projection" : {"proj4":"%s", "ref":"%s"},' % (pProj4, pAuthid)
 #    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
-    myJson+= '"bbox":[%s,%s,%s,%s],' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
+    if len(pWmsExtent) > 1:
+      myJson+= '"bbox":[%s,%s,%s,%s],' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
+    else:
+      myJson+= '"bbox":[],'
 #    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
 
     in_imageFormat = self.dlg.ui.liImageFormat.currentText()
@@ -388,7 +407,12 @@ class send2server:
     if len(layerSourcesBad) > 0:
       QMessageBox.critical(self.dlg, "Send2Server Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
       log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
-
+      
+    # check if a bbox has been given
+    pWmsExtent = p.readListEntry('WMSExtent','')[0]
+    if len(pWmsExtent) <1 :
+      QMessageBox.critical(self.dlg, "Send2Server Error", ("The project WMS extent must be set. Please change this options in the project settings."), QMessageBox.Ok)
+      isok = False
       
     if isok:
       
@@ -669,7 +693,6 @@ class send2server:
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
     # clear log button clicked
     QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)
-    QObject.connect(self.dlg.ui.pushButton, SIGNAL("clicked()"), self.populateLayerTree)
 
     
     
