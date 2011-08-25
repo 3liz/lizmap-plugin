@@ -89,12 +89,12 @@
       <item>
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Url</string>
+         <string>Link</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="inLayerUrl"/>
+       <widget class="QLineEdit" name="inLayerLink"/>
       </item>
       <item>
        <widget class="QCheckBox" name="cbLayerIsBaseLayer">

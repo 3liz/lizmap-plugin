@@ -178,11 +178,14 @@ class send2server:
           
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
+        myDic[myId]['link'] = ''
         if(jsonLayers.has_key('%s' % myId)):
-          if jsonLayers['%s' % myId]['title'] != '':
+          if jsonLayers['%s' % myId].has_key('title') and jsonLayers['%s' % myId]['title'] != '':
             myDic[myId]['title'] = jsonLayers['%s' % myId]['title']
-          if jsonLayers['%s' % myId]['abstract'] != '':
+          if jsonLayers['%s' % myId].has_key('abstract') and jsonLayers['%s' % myId]['abstract'] != '':
             myDic[myId]['abstract'] = jsonLayers['%s' % myId]['abstract']
+          if jsonLayers['%s' % myId].has_key('link') and jsonLayers['%s' % myId]['link'] != '':
+            myDic[myId]['link'] = jsonLayers['%s' % myId]['link']
           
         parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
         myTree.addTopLevelItem(parentItem)
@@ -237,11 +240,14 @@ class send2server:
           
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
+        myDic[b]['link'] = ''
         if(jsonLayers.has_key('%s' % b)):
-          if jsonLayers['%s' % b]['title'] != '':
+          if jsonLayers['%s' % b].has_key('title') and jsonLayers['%s' % b]['title'] != '':
             myDic[b]['title'] = jsonLayers['%s' % b]['title']
-          if jsonLayers['%s' % b]['abstract'] != '':
+          if jsonLayers['%s' % b].has_key('abstract') and jsonLayers['%s' % b]['abstract'] != '':
             myDic[b]['abstract'] = jsonLayers['%s' % b]['abstract']
+          if jsonLayers['%s' % b].has_key('link') and jsonLayers['%s' % b]['link'] != '':
+            myDic[b]['link'] = jsonLayers['%s' % b]['link']
                     
         childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
         if myId == '':
@@ -257,6 +263,7 @@ class send2server:
     QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.itemMetadata)
     QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
     QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
+    QObject.connect(self.dlg.ui.inLayerLink, SIGNAL("editingFinished()"), self.setLayerLink)
     QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
     QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
     QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
@@ -272,6 +279,8 @@ class send2server:
     self.dlg.ui.inLayerTitle.setText(selectedItem['title'])
     # set the abstract
     self.dlg.ui.teLayerAbstract.setText(selectedItem['abstract'])
+    # set the link
+    self.dlg.ui.inLayerLink.setText(selectedItem['link'])    
     # set the baseLayer
     self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
     # set the groupAsLayer
@@ -292,7 +301,14 @@ class send2server:
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the abstract for the selected item
     self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
-    
+
+  # Set a layer link when a item link is edited
+  def setLayerLink(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the link for the selected item
+    self.layerList[item.text(1)]['link'] = self.dlg.ui.inLayerLink.text()
+     
   # Set a layer "IsBaseLayer" property when an item "Is Base layer" checkbox state has changed
   def setLayerIsBaseLayer(self):
     # get the selected item
@@ -359,7 +375,7 @@ class send2server:
     for k,v in self.layerList.items():
       if v['groupAsLayer']:
         v['type'] = 'layer'
-      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
+      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
       myVirg = ','
     myJson+= '}'
     myJson+= '}'

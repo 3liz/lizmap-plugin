@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Thu Aug  4 14:59:13 2011
+# Created: Thu Aug 25 18:08:09 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,7 +32,7 @@ class Ui_send2server(object):
         self.treeLayer.header().setMinimumSectionSize(50)
         self.treeLayer.header().setStretchLastSection(True)
         self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 243))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 299))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -49,6 +49,12 @@ class Ui_send2server(object):
         self.teLayerAbstract = QtGui.QTextEdit(self.verticalLayoutWidget)
         self.teLayerAbstract.setObjectName(_fromUtf8("teLayerAbstract"))
         self.verticalLayout.addWidget(self.teLayerAbstract)
+        self.label_10 = QtGui.QLabel(self.verticalLayoutWidget)
+        self.label_10.setObjectName(_fromUtf8("label_10"))
+        self.verticalLayout.addWidget(self.label_10)
+        self.inLayerLink = QtGui.QLineEdit(self.verticalLayoutWidget)
+        self.inLayerLink.setObjectName(_fromUtf8("inLayerLink"))
+        self.verticalLayout.addWidget(self.inLayerLink)
         self.cbLayerIsBaseLayer = QtGui.QCheckBox(self.verticalLayoutWidget)
         self.cbLayerIsBaseLayer.setObjectName(_fromUtf8("cbLayerIsBaseLayer"))
         self.verticalLayout.addWidget(self.cbLayerIsBaseLayer)
@@ -261,6 +267,7 @@ class Ui_send2server(object):
         send2server.setWindowTitle(QtGui.QApplication.translate("send2server", "send2server", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("send2server", "Title", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("send2server", "Abstract", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_10.setText(QtGui.QApplication.translate("send2server", "Link", None, QtGui.QApplication.UnicodeUTF8))
         self.cbLayerIsBaseLayer.setText(QtGui.QApplication.translate("send2server", "Base layer ?", None, QtGui.QApplication.UnicodeUTF8))
         self.cbGroupAsLayer.setText(QtGui.QApplication.translate("send2server", "Group as a layer ?", None, QtGui.QApplication.UnicodeUTF8))
         self.cbToggled.setText(QtGui.QApplication.translate("send2server", "Toggled ?", None, QtGui.QApplication.UnicodeUTF8))

@@ -1,0 +1,10 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.o
+*.swp
+*.pyc
+
+syntax: regexp
+(^|/)\.DS_Store$
