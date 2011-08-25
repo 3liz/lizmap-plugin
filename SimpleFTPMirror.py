@@ -243,7 +243,7 @@ def mirror(src, dst, subdir='', textarea=False):
     src_path = os.path.normpath('%s/%s' % (src.root, subdir))
     dst_path = os.path.normpath('%s/%s' % (dst.root, subdir))
     dst_path = '%s/%s' % (dst.root, subdir)
-
+    log('*** DEBUG src_path, dst_pathh: %s , %s' % (src_path, dst_path), abort=False, textarea=textarea)
     src_dirs, src_files = src.list(src_path)
     if '.sfmstat' in src_files:
         del src_files['.sfmstat']
@@ -298,6 +298,7 @@ def mirror(src, dst, subdir='', textarea=False):
     
     newstat = ['%i %s%s' % (int(time.time()), src.host, src_path)]
     for file in src_files:
+        log('*** DEBUG file: %s' % (file), abort=False, textarea=textarea)
         if (file not in dst_files or src_files[file]['mtime'] > dst_files[file]['mtime'] or src_files[file]['size'] != dst_files[file]['size']) and file != 'wms_metadata.xml' and file != 'qgis_mapserv.fcgi' and file != 'qgis_mapserv.cgi':
             src_file = os.path.join(src_path, file)
             dst_file = os.path.join(dst_path, file)

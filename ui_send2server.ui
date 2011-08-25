@@ -62,7 +62,7 @@
        <x>370</x>
        <y>10</y>
        <width>191</width>
-       <height>243</height>
+       <height>299</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -85,6 +85,16 @@
       </item>
       <item>
        <widget class="QTextEdit" name="teLayerAbstract"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Url</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inLayerUrl"/>
       </item>
       <item>
        <widget class="QCheckBox" name="cbLayerIsBaseLayer">
