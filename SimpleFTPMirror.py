@@ -244,7 +244,7 @@ def mirror(src, dst, subdir='', textarea=False):
   dst_path = os.path.normpath('%s/%s' % (dst.root, subdir))
   dst_path = '%s/%s' % (dst.root, subdir)
   src_dirs, src_files = src.list(src_path)
-  log('**DEBUG** sub %s' % src_files['.sfmstat'], abort=False, textarea=textarea)
+  log('**DEBUG** sub %s' % subdir, abort=False, textarea=textarea)
 
   isok = 1
   if '.sfmstat' in src_files:

@@ -102,14 +102,20 @@ class send2server:
     myGroups = self.iface.legendInterface().groups()
 
     # Check if a *.qgs.cfg exists
+    isok = 1
     p = QgsProject.instance()
     jsonFile = "%s.cfg" % p.fileName()
     jsonLayers = {}
     if os.path.exists(unicode(jsonFile)):
       f = open(jsonFile, 'r')
       json = f.read()
-      sjson = simplejson.loads(json)
-      jsonLayers = sjson['layers']
+      try:
+        sjson = simplejson.loads(json)
+        jsonLayers = sjson['layers']
+      except:
+        isok=0
+        QMessageBox.critical(self.dlg, "Send2Server Error", ("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
+        log("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
 #      self.dlg.ui.outLog.append(str(jsonLayers))
 #      for k,v in sjson.items():
 #        if k == 'layers':
@@ -361,10 +367,16 @@ class send2server:
 
     in_imageFormat = self.dlg.ui.liImageFormat.currentText()
     in_singleTile = self.dlg.ui.cbSingleTile.isChecked()
-    in_minScale = self.dlg.ui.inMinScale.text()
-    in_maxScale = self.dlg.ui.inMaxScale.text()
-    in_zoomLevelNumber = self.dlg.ui.inZoomLevelNumber.text()
-    in_mapScales = self.dlg.ui.inMapScales.text()
+    in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
+    in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
+    in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
+    in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
+    if len(in_minScale) == 0:
+      in_minScale = 10000
+    if len(in_maxScale) == 0:
+      in_maxScale = 10000000
+    if len(in_zoomLevelNumber) == 0:
+      in_zoomLevelNumber = 10
     myJson+= ' "imageFormat" : "image/%s", "singleTile" : "%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s]' % (in_imageFormat, in_singleTile, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales)
 
     myJson+= '},'
@@ -461,20 +473,20 @@ class send2server:
     if isok:
       # Get configuration from input fields
       # FTP
-      in_username = self.dlg.ui.inUsername.text()
-      in_password = self.dlg.ui.inPassword.text()
+      in_username = str(self.dlg.ui.inUsername.text()).strip(' \t')
+      in_password = str(self.dlg.ui.inPassword.text()).strip(' \t')
       in_account = ''
-      in_host = self.dlg.ui.inHost.text()
-      in_port = self.dlg.ui.inPort.text()
-      in_localdir = self.dlg.ui.inLocaldir.text()
-      in_remotedir = self.dlg.ui.inRemotedir.text()
+      in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
+      in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
+      in_localdir = str(self.dlg.ui.inLocaldir.text()).strip(' \t')
+      in_remotedir = str(self.dlg.ui.inRemotedir.text()).strip(' \t')
       # Map
-      in_imageFormat = self.dlg.ui.liImageFormat.currentText()
-      in_singleTile = self.dlg.ui.cbSingleTile.isChecked()
-      in_minScale = self.dlg.ui.inMinScale.text()
-      in_maxScale = self.dlg.ui.inMaxScale.text()
-      in_zoomLevelNumber = self.dlg.ui.inZoomLevelNumber.text()
-      in_mapScales = self.dlg.ui.inMapScales.text()
+      in_imageFormat = str(self.dlg.ui.liImageFormat.currentText()).strip(' \t')
+      in_singleTile = str(self.dlg.ui.cbSingleTile.isChecked()).strip(' \t')
+      in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
+      in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
+      in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
+      in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
       
       isok = True
       
@@ -551,6 +563,10 @@ class send2server:
       # singletile
       singleTile = in_singleTile
       
+      # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
+      if len(in_mapScales) == 0 and ( len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
+        log('** ERROR ** : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
+      
       # minScale
       minScale = 1
       if len(in_minScale) > 0:
@@ -576,7 +592,7 @@ class send2server:
           zoomLevelNumber = int(in_zoomLevelNumber)
         except (ValueError, IndexError):
           self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)   
-      log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
+      log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)    
       
       if globals['isok']:
       
