@@ -244,114 +244,132 @@ def mirror(src, dst, subdir='', textarea=False):
   dst_path = os.path.normpath('%s/%s' % (dst.root, subdir))
   dst_path = '%s/%s' % (dst.root, subdir)
   src_dirs, src_files = src.list(src_path)
+  log('**DEBUG** sub %s' % src_files['.sfmstat'], abort=False, textarea=textarea)
+
+  isok = 1
   if '.sfmstat' in src_files:
     try:
       del src_files['.sfmstat']
     except:
       log('**ERROR** deleting source %s' % src_files['.sfmstat'], abort=False, textarea=textarea)
+      isok = 0
+      
+  if isok:
   
-  globals['status']['dirs_total'] += len(src_dirs)
-  globals['status']['files_total'] += len(src_files)
-  
-  dst_dirs, dst_files = dst.list(dst_path, False)
-  if '.sfmstat' in dst_files:
-    sfmstat = dst.readlines(os.path.join(dst_path, '.sfmstat'))
-    sfmstat = dst.readlines( '%s/.sfmstat' % dst_path)
-    try:
-      del dst_files['.sfmstat']
-    except:
-      log('**ERROR** deleting distant %s' % dst_files['.sfmstat'], abort=False, textarea=textarea)
+    globals['status']['dirs_total'] += len(src_dirs)
+    globals['status']['files_total'] += len(src_files)
     
-  else:
-#    if dst_path == dst.root and (dst_dirs or dst_files):
-#      if globals['verbose']: abort = False
-#      else: abort = True
-#      log('New mirror, but target directory not empty!', abort=abort, textarea=textarea)
-#      result = raw_input('Do you really want to replace this directory? [y|n]: ')
-#      if result.lower() not in ('y', 'yes'):
-#        log('Aborted', abort=True, textarea=textarea)
-    sfmstat = ['0 %s%s' % (src.host, src_path)]
+    dst_dirs, dst_files = dst.list(dst_path, False)
+    if '.sfmstat' in dst_files:
+  #    sfmstat = dst.readlines(os.path.join(dst_path, '.sfmstat'))
+      try:
+        sfmstat = dst.readlines( '%s/.sfmstat' % dst_path)
+      except:
+        log('**ERROR** readlines distant %s/.sfmstat' % dst_path, abort=False, textarea=textarea)
+        isok=0
+      if isok:
+        try:
+          del dst_files['.sfmstat']
+        except:
+          log('**ERROR** deleting distant %s' % dst_files['.sfmstat'], abort=False, textarea=textarea)
+          isok=0
+      
+    else:
+  #    if dst_path == dst.root and (dst_dirs or dst_files):
+  #      if globals['verbose']: abort = False
+  #      else: abort = True
+  #      log('New mirror, but target directory not empty!', abort=abort, textarea=textarea)
+  #      result = raw_input('Do you really want to replace this directory? [y|n]: ')
+  #      if result.lower() not in ('y', 'yes'):
+  #        log('Aborted', abort=True, textarea=textarea)
+      sfmstat = ['0 %s%s' % (src.host, src_path)]
   
   try:
     last_updated, mirror_path = sfmstat[0].split(None, 1)
   except:
     log('**ERROR** Unexpected error: %s' % sys.exc_info()[0], abort=False, textarea=textarea)
+    isok=0
     
-  if mirror_path != (src.host + src_path):
-#    if globals['verbose']: abort = False
-#    else: abort = True
-#    error = 'Mirror mismatch!\n%s already contains another mirror of %s' % (dst_path, mirror_path)
-#    log(error, abort=abort, textarea=textarea)
-#    result = raw_input('Do you really want to replace this mirror? [y|n]: ')
-#    if result.lower() not in ('y', 'yes'):
-#      log('Aborted', abort=True, textarea=textarea)
-    sfmstat = ['0 %s%s' % (src.host, src_path)]
-  
-  for line in sfmstat[1:]:
-    mtime, file = line.split(None, 1)
-    if file in dst_files:
-      dst_files[file]['mtime'] = int(mtime)
-  
-  for dir in dst_dirs:
-    if dir not in src_dirs:
-      path = os.path.join(dst_path, dir)
-      path = '%s/%s' % (dst_path, dir)
-      log('-> Remove directory %s' % path, abort=False, textarea=textarea)
-      try:
-        dst.removedir(path)
-      except:
-        log('**ERROR** removing dir: %s' % path, abort=False, textarea=textarea)
-  
-  for file in dst_files:
-    if file not in src_files and file != 'wms_metadata.xml' and file != 'qgis_mapserv.fcgi' and file != 'qgis_mapserv.cgi':
-      dst_file = os.path.join(dst_path, file)
-      dst_file = '%s/%s' % (dst_path, file)
-      log('-> Remove file %s: %s' % (dst_file, strfbytes(dst_files[file]['size'])), abort=False, textarea=textarea)
-      try:
-        dst.removefile(dst_file)
-      except:
-        log('**ERROR** removing file: %s' % dst_file, abort=False, textarea=textarea)
-  
-  newstat = ['%i %s%s' % (int(time.time()), src.host, src_path)]
-  for file in src_files:
-#    log('*** DEBUG file: %s' % (file), abort=False, textarea=textarea)
-    if (file not in dst_files or src_files[file]['mtime'] > dst_files[file]['mtime'] or src_files[file]['size'] != dst_files[file]['size']) and file != 'wms_metadata.xml' and file != 'qgis_mapserv.fcgi' and file != 'qgis_mapserv.cgi':
-      src_file = os.path.join(src_path, file)
-      dst_file = os.path.join(dst_path, file)
-      dst_file = '%s/%s' % (dst_path, file)
+  if isok:
+    
+    if mirror_path != (src.host + src_path):
+  #    if globals['verbose']: abort = False
+  #    else: abort = True
+  #    error = 'Mirror mismatch!\n%s already contains another mirror of %s' % (dst_path, mirror_path)
+  #    log(error, abort=abort, textarea=textarea)
+  #    result = raw_input('Do you really want to replace this mirror? [y|n]: ')
+  #    if result.lower() not in ('y', 'yes'):
+  #      log('Aborted', abort=True, textarea=textarea)
+      sfmstat = ['0 %s%s' % (src.host, src_path)]
+    
+    for line in sfmstat[1:]:
+      mtime, file = line.split(None, 1)
       if file in dst_files:
-        log('-> Update file %s: %s' % (dst_file, strfbytes(src_files[file]['size'])), abort=False, textarea=textarea)
-        globals['status']['files_updated'] += 1
-        faction = 'updating'
-      else:
-        log('-> Create file %s: %s' % (dst_file, strfbytes(src_files[file]['size'])), abort=False, textarea=textarea)
-        globals['status']['files_created'] += 1
-        faction = 'creating'
-      try:
-        dst.storefile(src_file, dst_file)
-      except:
-        log('**ERROR** %s file %s into %' % (faction, src_file, dst_file), abort=False, textarea=textarea)
-        
-      globals['status']['bytes_transfered'] += src_files[file]['size']
-    globals['status']['bytes_total'] += src_files[file]['size']
-    newstat.append('%i %s' % (src_files[file]['mtime'], file))
-  #dst.storetext('\n'.join(newstat), os.path.join(dst_path, '.sfmstat'))
-  try:
-    dst.storetext('\n'.join(newstat), '%s/%s' % (dst_path, '.sfmstat'))
-  except:
-    log('**ERROR** saving stats for distant %s/%s' % (dst_path, '.sfmstat'), abort=False, textarea=textarea)
-  
-  for dir in src_dirs:
-    if dir not in dst_dirs:
-      dst_dir = os.path.join(dst_path, dir)
-      dst_dir = '%s/%s' % (dst_path, dir)
-      try:
-        dst.makedir(dst_dir)
-        log('-> Create directory %s' % dst_dir, abort=False, textarea=textarea)
-      except:
-        log('**ERROR** creating dir: %s' % dst_dir, abort=False, textarea=textarea)
-    #mirror(src, dst, os.path.join(subdir, dir), textarea=textarea)
-    mirror(src, dst, '%s/%s' %(subdir, dir), textarea=textarea)
+        dst_files[file]['mtime'] = int(mtime)
+    
+    for dir in dst_dirs:
+      if dir not in src_dirs:
+        path = os.path.join(dst_path, dir)
+        path = '%s/%s' % (dst_path, dir)
+        log('-> Remove directory %s' % path, abort=False, textarea=textarea)
+        try:
+          dst.removedir(path)
+        except:
+          log('**ERROR** removing dir: %s' % path, abort=False, textarea=textarea)
+    
+    for file in dst_files:
+      if file not in src_files and file != 'wms_metadata.xml' and file != 'qgis_mapserv.fcgi' and file != 'qgis_mapserv.cgi':
+        dst_file = os.path.join(dst_path, file)
+        dst_file = '%s/%s' % (dst_path, file)
+        log('-> Remove file %s: %s' % (dst_file, strfbytes(dst_files[file]['size'])), abort=False, textarea=textarea)
+        try:
+          dst.removefile(dst_file)
+        except:
+          log('**ERROR** removing file: %s' % dst_file, abort=False, textarea=textarea)
+    
+    newstat = ['%i %s%s' % (int(time.time()), src.host, src_path)]
+    for file in src_files:
+  #    log('*** DEBUG file: %s' % (file), abort=False, textarea=textarea)
+      if (file not in dst_files or src_files[file]['mtime'] > dst_files[file]['mtime'] or src_files[file]['size'] != dst_files[file]['size']) and file != 'wms_metadata.xml' and file != 'qgis_mapserv.fcgi' and file != 'qgis_mapserv.cgi':
+        src_file = os.path.join(src_path, file)
+        dst_file = os.path.join(dst_path, file)
+        dst_file = '%s/%s' % (dst_path, file)
+        if file in dst_files:
+          log('-> Update file %s: %s' % (dst_file, strfbytes(src_files[file]['size'])), abort=False, textarea=textarea)
+          globals['status']['files_updated'] += 1
+          faction = 'updating'
+        else:
+          log('-> Create file %s: %s' % (dst_file, strfbytes(src_files[file]['size'])), abort=False, textarea=textarea)
+          globals['status']['files_created'] += 1
+          faction = 'creating'
+        try:
+          dst.storefile(src_file, dst_file)
+        except:
+          log('**ERROR** %s file %s into %' % (faction, src_file, dst_file), abort=False, textarea=textarea)
+          
+        globals['status']['bytes_transfered'] += src_files[file]['size']
+      globals['status']['bytes_total'] += src_files[file]['size']
+      newstat.append('%i %s' % (src_files[file]['mtime'], file))
+    #dst.storetext('\n'.join(newstat), os.path.join(dst_path, '.sfmstat'))
+    try:
+      dst.storetext('\n'.join(newstat), '%s/%s' % (dst_path, '.sfmstat'))
+    except:
+      log('**ERROR** saving stats for distant %s/%s' % (dst_path, '.sfmstat'), abort=False, textarea=textarea)
+    
+    for dir in src_dirs:
+      if dir not in dst_dirs:
+        dst_dir = os.path.join(dst_path, dir)
+        dst_dir = '%s/%s' % (dst_path, dir)
+        try:
+          dst.makedir(dst_dir)
+          log('-> Create directory %s' % dst_dir, abort=False, textarea=textarea)
+        except:
+          log('**ERROR** creating dir: %s' % dst_dir, abort=False, textarea=textarea)
+      #mirror(src, dst, os.path.join(subdir, dir), textarea=textarea)
+      mirror(src, dst, '%s/%s' %(subdir, dir), textarea=textarea)
+    
+    else:
+      log('**ERROR** with subdir %s' % subdir, abort=False, textarea=textarea)
 
 
 def info(remote):
