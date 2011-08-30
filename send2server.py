@@ -498,9 +498,9 @@ class send2server:
       # Checking configuration data
       # host
       if len(in_host) == 0:
-        log('Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
+        log('** WARNING ** Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
       elif len(in_host) < 4:
-        log('Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
+        log('** WARNING **Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
       else:
         host = unicode(in_host)
         log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
@@ -521,13 +521,15 @@ class send2server:
       # windows bug
       remotedir.replace('\\', '/')
       if not str(remotedir).startswith('/'):
-        remotedir = '/' + remotedir 
+        remotedir = '/' + remotedir
+      if not str(remotedir).endswith('/'):
+        remotedir = remotedir + '/'
       log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
       
       # local directory    
       localdir = in_localdir
       if not os.path.isdir(localdir):
-        log('Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
+        log('** WARNING ** Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
       else:
         log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
       
@@ -536,14 +538,14 @@ class send2server:
         username = unicode(in_username)
         log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
       else:
-        log('Missing username !', abort=True, textarea=self.dlg.ui.outLog)
+        log('** WARNING ** Missing username !', abort=True, textarea=self.dlg.ui.outLog)
       
       # password  
       if len(in_password) > 0:
         password = unicode(in_password)
         log('password ok', abort=False, textarea=self.dlg.ui.outLog)
       else:
-        log('Missing password !', abort=True, textarea=self.dlg.ui.outLog)
+        log('** WARNING ** Missing password !', abort=True, textarea=self.dlg.ui.outLog)
       
       # account  
       if len(in_account) > 0:
@@ -558,14 +560,14 @@ class send2server:
         imageFormat = in_imageFormat
 #        log('password ok', abort=False, textarea=self.dlg.ui.outLog)
       else:
-        log('Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
+        log('** WARNING ** Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
         
       # singletile
       singleTile = in_singleTile
       
       # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
       if len(in_mapScales) == 0 and ( len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
-        log('** ERROR ** : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
+        log('** WARNING ** : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
       
       # minScale
       minScale = 1
@@ -573,7 +575,8 @@ class send2server:
         try:
           minScale = int(in_minScale)
         except (ValueError, IndexError):
-          self.dlg.ui.inMinScale.setText(minScale)   
+          self.dlg.ui.inMinScale.setText(minScale)
+          log('** WARNING ** : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
       log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # maxScale
@@ -582,7 +585,8 @@ class send2server:
         try:
           maxScale = int(in_maxScale)
         except (ValueError, IndexError):
-          self.dlg.ui.inMaxScale.setText(maxScale)   
+          self.dlg.ui.inMaxScale.setText(maxScale)
+          log('** WARNING ** : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
       log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # zoom levels number
@@ -591,7 +595,8 @@ class send2server:
         try:
           zoomLevelNumber = int(in_zoomLevelNumber)
         except (ValueError, IndexError):
-          self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)   
+          self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)
+          log('** WARNING ** : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
       log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)    
       
       if globals['isok']:
@@ -688,11 +693,11 @@ class send2server:
           self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', status['time_finished']))
           self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', status['time_finished']-status['time_started']))
           
-          self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('WMS URL')
-          self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin/qgis_mapserv.fcgi?map=/home/%s%s' % (host, username, remotedir))
-          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin/qgis_mapserv.cgi?map=/home/%s%s' % (host, username, remotedir))
+#          self.dlg.ui.outLog.append('=' * 20)
+#          self.dlg.ui.outLog.append('WMS URL')
+#          self.dlg.ui.outLog.append('=' * 20)
+#          self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin/qgis_mapserv.fcgi?map=/home/%s%s' % (host, username, remotedir))
+#          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin/qgis_mapserv.cgi?map=/home/%s%s' % (host, username, remotedir))
 
           self.dlg.ui.outLog.append('')
         

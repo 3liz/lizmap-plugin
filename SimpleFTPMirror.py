@@ -184,6 +184,9 @@ class remoteHandler:
     except ftplib.error_temp:
       buffer = []
       self.ftp.dir(dir, buffer.append)
+    except:
+      buffer = []
+      
     dirs = []
     files = {}
     for line in buffer:
@@ -244,7 +247,7 @@ def mirror(src, dst, subdir='', textarea=False):
   dst_path = os.path.normpath('%s/%s' % (dst.root, subdir))
   dst_path = '%s/%s' % (dst.root, subdir)
   src_dirs, src_files = src.list(src_path)
-  log('**DEBUG** sub %s' % subdir, abort=False, textarea=textarea)
+#  log('**DEBUG** sub %s' % subdir, abort=False, textarea=textarea)
 
   isok = 1
   if '.sfmstat' in src_files:
@@ -263,7 +266,10 @@ def mirror(src, dst, subdir='', textarea=False):
     if '.sfmstat' in dst_files:
   #    sfmstat = dst.readlines(os.path.join(dst_path, '.sfmstat'))
       try:
-        sfmstat = dst.readlines( '%s/.sfmstat' % dst_path)
+        if dst_files['.sfmstat']['size'] > 0:
+          sfmstat = dst.readlines( '%s/.sfmstat' % dst_path)
+        else:
+          sfmstat = ['0 %s%s' % (src.host, src_path)]
       except:
         log('**ERROR** readlines distant %s/.sfmstat' % dst_path, abort=False, textarea=textarea)
         isok=0
@@ -312,9 +318,16 @@ def mirror(src, dst, subdir='', textarea=False):
         path = os.path.join(dst_path, dir)
         path = '%s/%s' % (dst_path, dir)
         log('-> Remove directory %s' % path, abort=False, textarea=textarea)
-        try:
-          dst.removedir(path)
-        except:
+        i=1
+        while i<=3:
+          try:
+            dst.removedir(path)
+            ii = True
+            i = 4
+          except:
+            i=i+1
+            ii = False
+        if not ii:
           log('**ERROR** removing dir: %s' % path, abort=False, textarea=textarea)
     
     for file in dst_files:
@@ -322,9 +335,16 @@ def mirror(src, dst, subdir='', textarea=False):
         dst_file = os.path.join(dst_path, file)
         dst_file = '%s/%s' % (dst_path, file)
         log('-> Remove file %s: %s' % (dst_file, strfbytes(dst_files[file]['size'])), abort=False, textarea=textarea)
-        try:
-          dst.removefile(dst_file)
-        except:
+        i=1
+        while i<=3:
+          try:
+            dst.removefile(dst_file)
+            ii = True
+            i = 4
+          except:
+            i=i+1
+            ii = False
+        if not ii:
           log('**ERROR** removing file: %s' % dst_file, abort=False, textarea=textarea)
     
     newstat = ['%i %s%s' % (int(time.time()), src.host, src_path)]
@@ -342,34 +362,55 @@ def mirror(src, dst, subdir='', textarea=False):
           log('-> Create file %s: %s' % (dst_file, strfbytes(src_files[file]['size'])), abort=False, textarea=textarea)
           globals['status']['files_created'] += 1
           faction = 'creating'
-        try:
-          dst.storefile(src_file, dst_file)
-        except:
-          log('**ERROR** %s file %s into %' % (faction, src_file, dst_file), abort=False, textarea=textarea)
+        i=1
+        while i<=3:
+          try:
+            dst.storefile(src_file, dst_file)
+            ii = True
+            i = 4
+          except:
+            i=i+1
+            ii = False
+        if not ii:
+          log('**ERROR** %s file %s into %s' % (faction, src_file, dst_file), abort=False, textarea=textarea)
           
         globals['status']['bytes_transfered'] += src_files[file]['size']
       globals['status']['bytes_total'] += src_files[file]['size']
       newstat.append('%i %s' % (src_files[file]['mtime'], file))
     #dst.storetext('\n'.join(newstat), os.path.join(dst_path, '.sfmstat'))
-    try:
-      dst.storetext('\n'.join(newstat), '%s/%s' % (dst_path, '.sfmstat'))
-    except:
+    i=1
+    while i<=3:
+      try:
+        dst.storetext('\n'.join(newstat), '%s/%s' % (dst_path, '.sfmstat'))
+        ii = True
+        i = 4
+      except:
+        i=i+1
+        ii = False
+    if not ii:
       log('**ERROR** saving stats for distant %s/%s' % (dst_path, '.sfmstat'), abort=False, textarea=textarea)
     
     for dir in src_dirs:
       if dir not in dst_dirs:
         dst_dir = os.path.join(dst_path, dir)
         dst_dir = '%s/%s' % (dst_path, dir)
-        try:
-          dst.makedir(dst_dir)
-          log('-> Create directory %s' % dst_dir, abort=False, textarea=textarea)
-        except:
+        i=1
+        while i<=3:
+          try:
+            dst.makedir(dst_dir)
+            log('-> Create directory %s' % dst_dir, abort=False, textarea=textarea)
+            ii = True
+            i = 4
+          except:
+            i=i+1
+            ii = False
+        if not ii:
           log('**ERROR** creating dir: %s' % dst_dir, abort=False, textarea=textarea)
       #mirror(src, dst, os.path.join(subdir, dir), textarea=textarea)
       mirror(src, dst, '%s/%s' %(subdir, dir), textarea=textarea)
     
-    else:
-      log('**ERROR** with subdir %s' % subdir, abort=False, textarea=textarea)
+  else:
+    log('**ERROR** with subdir %s' % subdir, abort=False, textarea=textarea)
 
 
 def info(remote):
