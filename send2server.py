@@ -597,7 +597,24 @@ class send2server:
         except (ValueError, IndexError):
           self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)
           log('** WARNING ** : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
-      log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)    
+      log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
+      
+      # mapScales
+      if len(in_mapScales) > 0:
+        good = 1
+        sp = in_mapScales.split(',')
+        # check that every mapScales item is an integer
+        for p in sp:
+          try:
+            test = int(p.strip(' \t'))
+          except (ValueError, IndexError):
+            good = 0
+            
+        if good:
+          log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)      
+        else:
+          log('** WARNING ** : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
+        
       
       if globals['isok']:
       
