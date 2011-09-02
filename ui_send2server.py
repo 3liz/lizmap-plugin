@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Thu Aug 25 18:08:09 2011
+# Created: Fri Sep  2 18:36:59 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_send2server(object):
     def setupUi(self, send2server):
         send2server.setObjectName(_fromUtf8("send2server"))
-        send2server.resize(589, 427)
+        send2server.resize(589, 434)
         self.tabWidget = QtGui.QTabWidget(send2server)
         self.tabWidget.setGeometry(QtCore.QRect(10, 0, 571, 401))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
@@ -247,20 +247,33 @@ class Ui_send2server(object):
         self.btClearlog = QtGui.QPushButton(self.horizontalLayoutWidget_7)
         self.btClearlog.setObjectName(_fromUtf8("btClearlog"))
         self.horizontalLayout_7.addWidget(self.btClearlog)
+        self.btTest = QtGui.QPushButton(self.horizontalLayoutWidget_7)
+        self.btTest.setObjectName(_fromUtf8("btTest"))
+        self.horizontalLayout_7.addWidget(self.btTest)
         self.outLog = QtGui.QTextEdit(self.tab_main)
-        self.outLog.setGeometry(QtCore.QRect(10, 60, 441, 301))
+        self.outLog.setGeometry(QtCore.QRect(10, 110, 551, 251))
         self.outLog.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         self.outLog.setObjectName(_fromUtf8("outLog"))
+        self.inSyncCommand = QtGui.QLineEdit(self.tab_main)
+        self.inSyncCommand.setGeometry(QtCore.QRect(10, 70, 551, 27))
+        self.inSyncCommand.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.inSyncCommand.setObjectName(_fromUtf8("inSyncCommand"))
+        self.progressBar = QtGui.QProgressBar(self.tab_main)
+        self.progressBar.setEnabled(True)
+        self.progressBar.setGeometry(QtCore.QRect(460, 30, 101, 20))
+        self.progressBar.setProperty(_fromUtf8("value"), 0)
+        self.progressBar.setFormat(_fromUtf8(""))
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.tabWidget.addTab(self.tab_main, _fromUtf8(""))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
         self.textEdit = QtGui.QTextEdit(self.tab)
-        self.textEdit.setGeometry(QtCore.QRect(10, 10, 441, 351))
+        self.textEdit.setGeometry(QtCore.QRect(10, 10, 551, 351))
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
 
         self.retranslateUi(send2server)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(send2server)
 
     def retranslateUi(self, send2server):
@@ -293,6 +306,7 @@ class Ui_send2server(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("send2server", "Map options", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("send2server", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
+        self.btTest.setText(QtGui.QApplication.translate("send2server", "test", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setHtml(QtGui.QApplication.translate("send2server", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

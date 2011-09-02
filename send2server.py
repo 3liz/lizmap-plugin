@@ -35,6 +35,8 @@ import ConfigParser
 import simplejson
 # Importing SimpleFTPMirror class
 from SimpleFTPMirror import *
+# supprocess module, to load external command line tools
+import subprocess
 
 class send2server:
 
@@ -725,6 +727,51 @@ class send2server:
         globals['isok'] = 1
       
 
+  # Process the sync
+  def processSync2(self):
+
+    # pre-sync checkings
+    isok = self.prepareSync()
+
+
+    username='mdouchin'
+    password='kimai0106!'
+    host='178.32.101.237'
+    localdir='/home/kimaidou/tmp/pnrbv/pnr_V2/'
+    in_remotedir = '/mytest/'
+    
+    lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+    
+    workingDir = os.getcwd()
+    
+
+    self.dlg.ui.inSyncCommand.setText("Synchronisation launched !")
+    proc = subprocess.Popen( lftpStr, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    
+    myOutput = 'Synchronisation launched !\n%s' % lftpStr
+    i=33
+    while True:
+      # progressBar (needed to avoid the ui freezing)
+      if i == 33:
+        i=66
+      else:
+        i=33
+      self.dlg.ui.progressBar.setValue(i)
+      
+      output = proc.stdout.readline().strip(' \t\n')
+      output = str(output).replace('du fichier', 'de')
+      output = str(output).replace('Â', '')
+      self.dlg.ui.inSyncCommand.setText(output)
+      myOutput+=output + '\n'
+
+      if output == "":
+        self.dlg.ui.progressBar.setValue(100)
+        myOutput+="Synchronisation done !"
+        self.dlg.ui.inSyncCommand.setText("Synchronisation done !")
+        break
+      
+    self.dlg.ui.outLog.setText(myOutput)
+
   # run method
   def run(self):
 
@@ -749,6 +796,9 @@ class send2server:
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
     # clear log button clicked
     QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)
+    
+    # test button clicked
+    QObject.connect(self.dlg.ui.btTest, SIGNAL("clicked()"), self.processSync2)
 
     
     

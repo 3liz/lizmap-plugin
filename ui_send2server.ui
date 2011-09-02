@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>589</width>
-    <height>427</height>
+    <height>434</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -487,19 +487,58 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="btTest">
+        <property name="text">
+         <string>test</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
     <widget class="QTextEdit" name="outLog">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
-       <width>441</width>
-       <height>301</height>
+       <y>110</y>
+       <width>551</width>
+       <height>251</height>
       </rect>
      </property>
      <property name="lineWrapMode">
       <enum>QTextEdit::NoWrap</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="inSyncCommand">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>551</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>30</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="format">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -512,7 +551,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>441</width>
+       <width>551</width>
        <height>351</height>
       </rect>
      </property>
