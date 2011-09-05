@@ -72,9 +72,15 @@ class send2server:
     if textarea:
       textarea.append(msg)
     if abort:
-      self.isOk = 0
-
-        
+      self.isok = 0
+      
+  # Clear mpg
+  def clearLog(self):
+    self.dlg.ui.outLog.clear()
+    self.dlg.ui.progressBar.setValue(0)
+    self.dlg.ui.outState.setText('<font color="green"></font>')
+    self.dlg.ui.outSyncCommand.setText('')
+    
 #  # Choose some directory from UI
 #  def chooseLocalDirectory(self):
 #    localDir = QFileDialog.getExistingDirectory( None,QString("Choose the local data folder"),"" )
@@ -476,6 +482,12 @@ class send2server:
   # Process the sync
   def processSync(self):
   
+    self.dlg.ui.outSyncCommand.setText("Synchronisation launched !")
+    # display the stateLabel
+    self.dlg.ui.outState.setText('<font color="orange">running</font>')
+    # setting progressbar refreshes the plygin ui
+    self.dlg.ui.progressBar.setValue(0)
+  
     # pre-sync checkings
     isok = self.prepareSync()
     
@@ -661,22 +673,25 @@ class send2server:
         self.dlg.ui.outLog.append('Synchronisation')
         self.dlg.ui.outLog.append('=' * 20)
         
-        ftp = ftplib.FTP()
-        # Connection to FTP host
-        try:
-          ftp.connect(host, port)
-          ftp.login(username, password, account)
-        except:
-          self.log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
+        if self.isok:
+          self.dlg.ui.progressBar.setValue(33)
+          ftp = ftplib.FTP()
+          # Connection to FTP host
+          try:
+            ftp.connect(host, port)
+            ftp.login(username, password, account)
+          except:
+            self.log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
         
         # Process the sync with lftp
         if self.isok:
+          self.dlg.ui.progressBar.setValue(0)
           time_started = datetime.datetime.now()
           # constructio of lftp command line
           lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
           workingDir = os.getcwd()
-          self.dlg.ui.inSyncCommand.setText("Synchronisation launched !")
           time.sleep(0.2)
+          
           
           # run lftp
           proc = subprocess.Popen( lftpStr, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -697,13 +712,13 @@ class send2server:
               output = output.strip(' \t\n')
               output = output.replace(u'du fichier', 'de')
               output = output.replace(u'Â ', '')
-              self.dlg.ui.inSyncCommand.setText(output)
+              self.dlg.ui.outSyncCommand.setText(output)
               myOutput+=output + '\n'
               # if output empty --> break the loop - opeartion complete
               if output == "":
                 self.dlg.ui.progressBar.setValue(100)
                 myOutput+="Synchronisation completed !"
-                self.dlg.ui.inSyncCommand.setText("Synchronisation completed !")
+                self.dlg.ui.outSyncCommand.setText("Synchronisation completed !")
                 break
             except:
               anerror = True
@@ -726,12 +741,15 @@ class send2server:
 #          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin/qgis_mapserv.cgi?map=/home/%s%s' % (host, username, remotedir))
 
           self.dlg.ui.outLog.append('')
+          
+          self.dlg.ui.outState.setText('<font color="green">completed</font>')
         
         self.isok = 1
 
       else:
         QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors"), QMessageBox.Ok)
         self.isok = 1
+        self.dlg.ui.outState.setText('<font color="green"></font>')
 
 
   # run method
@@ -759,7 +777,7 @@ class send2server:
     # synchronize button clicked
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
     # clear log button clicked
-    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)    
+    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)    
     
     result = self.dlg.exec_()
     # See if OK was pressed

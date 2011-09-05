@@ -468,7 +468,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>441</width>
+       <width>381</width>
        <height>52</height>
       </rect>
      </property>
@@ -502,7 +502,7 @@
       <enum>QTextEdit::NoWrap</enum>
      </property>
     </widget>
-    <widget class="QLineEdit" name="inSyncCommand">
+    <widget class="QLineEdit" name="outSyncCommand">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -521,9 +521,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>30</y>
-       <width>101</width>
+       <width>81</width>
        <height>20</height>
       </rect>
      </property>
@@ -531,6 +531,26 @@
       <number>0</number>
      </property>
      <property name="format">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="outState">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>30</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
       <string/>
      </property>
     </widget>

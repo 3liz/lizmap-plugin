@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Mon Sep  5 09:16:36 2011
+# Created: Mon Sep  5 11:08:51 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -236,7 +236,7 @@ class Ui_send2server(object):
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
         self.horizontalLayoutWidget_7 = QtGui.QWidget(self.tab_main)
-        self.horizontalLayoutWidget_7.setGeometry(QtCore.QRect(10, 10, 441, 52))
+        self.horizontalLayoutWidget_7.setGeometry(QtCore.QRect(10, 10, 381, 52))
         self.horizontalLayoutWidget_7.setObjectName(_fromUtf8("horizontalLayoutWidget_7"))
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_7)
         self.horizontalLayout_7.setMargin(0)
@@ -251,16 +251,25 @@ class Ui_send2server(object):
         self.outLog.setGeometry(QtCore.QRect(10, 110, 551, 251))
         self.outLog.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         self.outLog.setObjectName(_fromUtf8("outLog"))
-        self.inSyncCommand = QtGui.QLineEdit(self.tab_main)
-        self.inSyncCommand.setGeometry(QtCore.QRect(10, 70, 551, 27))
-        self.inSyncCommand.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.inSyncCommand.setObjectName(_fromUtf8("inSyncCommand"))
+        self.outSyncCommand = QtGui.QLineEdit(self.tab_main)
+        self.outSyncCommand.setGeometry(QtCore.QRect(10, 70, 551, 27))
+        self.outSyncCommand.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.outSyncCommand.setObjectName(_fromUtf8("outSyncCommand"))
         self.progressBar = QtGui.QProgressBar(self.tab_main)
         self.progressBar.setEnabled(True)
-        self.progressBar.setGeometry(QtCore.QRect(460, 30, 101, 20))
+        self.progressBar.setGeometry(QtCore.QRect(480, 30, 81, 20))
         self.progressBar.setProperty(_fromUtf8("value"), 0)
         self.progressBar.setFormat(_fromUtf8(""))
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
+        self.outState = QtGui.QLabel(self.tab_main)
+        self.outState.setGeometry(QtCore.QRect(400, 30, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        font.setWeight(75)
+        font.setBold(True)
+        self.outState.setFont(font)
+        self.outState.setText(_fromUtf8(""))
+        self.outState.setObjectName(_fromUtf8("outState"))
         self.tabWidget.addTab(self.tab_main, _fromUtf8(""))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
