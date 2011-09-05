@@ -190,7 +190,7 @@ class send2server:
           myDic[myId]['type'] = 'layer'
           layer = self.getQgisLayerById(myId)
           myDic[myId]['name'] = layer.name()
-          if layer.toggleScaleBasedVisibility():
+          if layer.hasScaleBasedVisibility():
             myDic[myId]['minScale'] = layer.minimumScale()
             myDic[myId]['maxScale'] = layer.maximumScale()
           else:
@@ -256,7 +256,7 @@ class send2server:
           myDic[b]['type'] = 'layer'
           layer = self.getQgisLayerById(b)
           myDic[b]['name'] = layer.name()
-          if layer.toggleScaleBasedVisibility():
+          if layer.hasScaleBasedVisibility():
             myDic[b]['minScale'] = layer.minimumScale()
             myDic[b]['maxScale'] = layer.maximumScale()
           else:
