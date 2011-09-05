@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Fri Sep  2 18:36:59 2011
+# Created: Mon Sep  5 09:16:36 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -247,9 +247,6 @@ class Ui_send2server(object):
         self.btClearlog = QtGui.QPushButton(self.horizontalLayoutWidget_7)
         self.btClearlog.setObjectName(_fromUtf8("btClearlog"))
         self.horizontalLayout_7.addWidget(self.btClearlog)
-        self.btTest = QtGui.QPushButton(self.horizontalLayoutWidget_7)
-        self.btTest.setObjectName(_fromUtf8("btTest"))
-        self.horizontalLayout_7.addWidget(self.btTest)
         self.outLog = QtGui.QTextEdit(self.tab_main)
         self.outLog.setGeometry(QtCore.QRect(10, 110, 551, 251))
         self.outLog.setLineWrapMode(QtGui.QTextEdit.NoWrap)
@@ -306,7 +303,6 @@ class Ui_send2server(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("send2server", "Map options", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("send2server", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
-        self.btTest.setText(QtGui.QApplication.translate("send2server", "test", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("send2server", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setHtml(QtGui.QApplication.translate("send2server", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

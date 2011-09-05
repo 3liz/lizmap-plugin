@@ -487,13 +487,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="btTest">
-        <property name="text">
-         <string>test</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QTextEdit" name="outLog">

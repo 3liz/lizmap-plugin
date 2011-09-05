@@ -1,4 +1,6 @@
+#!/usr/bin/python2.4
 # -*- coding: utf-8 -*-
+
 """
 /***************************************************************************
  send2server
@@ -29,12 +31,14 @@ import resources
 from send2serverdialog import send2serverDialog
 # import other needed tool
 import sys, os, glob
+# ftp lib
+import ftplib
 # configuration parser
 import ConfigParser
+# date and time
+import time, datetime
 # json handling
 import simplejson
-# Importing SimpleFTPMirror class
-from SimpleFTPMirror import *
 # supprocess module, to load external command line tools
 import subprocess
 
@@ -59,7 +63,17 @@ class send2server:
     # Remove the plugin menu item and icon
     self.iface.removePluginMenu("&send2server",self.action)
     self.iface.removeToolBarIcon(self.action)
-     
+
+
+  # Logging method
+  def log(self,msg, level=1, abort=False, textarea=False):
+    if abort:
+      sys.stdout = sys.stderr
+    if textarea:
+      textarea.append(msg)
+    if abort:
+      self.isOk = 0
+
         
 #  # Choose some directory from UI
 #  def chooseLocalDirectory(self):
@@ -117,7 +131,7 @@ class send2server:
       except:
         isok=0
         QMessageBox.critical(self.dlg, "Send2Server Error", ("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
-        log("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
+        self.log("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
 #      self.dlg.ui.outLog.append(str(jsonLayers))
 #      for k,v in sjson.items():
 #        if k == 'layers':
@@ -438,7 +452,7 @@ class send2server:
         isok = False
     if len(layerSourcesBad) > 0:
       QMessageBox.critical(self.dlg, "Send2Server Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
-      log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
+      self.log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
       
     # check if a bbox has been given
     pWmsExtent = p.readListEntry('WMSExtent','')[0]
@@ -466,7 +480,7 @@ class send2server:
     isok = self.prepareSync()
     
     if isok:
-      letsGo = QMessageBox.question(self.dlg, 'Send2server - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory  \n\nThis will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % self.dlg.ui.inLocaldir.text(), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+      letsGo = QMessageBox.question(self.dlg, 'Send2server - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
       if letsGo == QMessageBox.Yes:
         isok = True
       else:
@@ -500,12 +514,12 @@ class send2server:
       # Checking configuration data
       # host
       if len(in_host) == 0:
-        log('** WARNING ** Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
+        self.log('** WARNING ** Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
       elif len(in_host) < 4:
-        log('** WARNING **Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
+        self.log('** WARNING **Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
       else:
         host = unicode(in_host)
-        log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
+        self.log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
         
       # port
       port = 21
@@ -516,7 +530,7 @@ class send2server:
           port = 21
           self.dlg.ui.inPort.setText('21')
           
-      log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
+      self.log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
       
       # remote directory
       remotedir = os.path.normpath(unicode(in_remotedir))
@@ -526,33 +540,33 @@ class send2server:
         remotedir = '/' + remotedir
       if not str(remotedir).endswith('/'):
         remotedir = remotedir + '/'
-      log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
+      self.log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
       
       # local directory    
       localdir = in_localdir
       if not os.path.isdir(localdir):
-        log('** WARNING ** Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
+        self.log('** WARNING ** Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
       else:
-        log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
+        self.log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
       
       # username
       if len(in_username) > 0:
         username = unicode(in_username)
-        log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
+        self.log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
       else:
-        log('** WARNING ** Missing username !', abort=True, textarea=self.dlg.ui.outLog)
+        self.log('** WARNING ** Missing username !', abort=True, textarea=self.dlg.ui.outLog)
       
       # password  
       if len(in_password) > 0:
         password = unicode(in_password)
-        log('password ok', abort=False, textarea=self.dlg.ui.outLog)
+        self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
       else:
-        log('** WARNING ** Missing password !', abort=True, textarea=self.dlg.ui.outLog)
+        self.log('** WARNING ** Missing password !', abort=True, textarea=self.dlg.ui.outLog)
       
       # account  
       if len(in_account) > 0:
         account = in_account
-  #      log('account = %' % accout, abort=False, textarea=self.dlg.ui.outLog)
+  #      self.log('account = %' % accout, abort=False, textarea=self.dlg.ui.outLog)
       else:
         account = ''
         
@@ -560,16 +574,16 @@ class send2server:
       # image format
       if in_imageFormat == 'png' or in_imageFormat == 'jpg':
         imageFormat = in_imageFormat
-#        log('password ok', abort=False, textarea=self.dlg.ui.outLog)
+#        self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
       else:
-        log('** WARNING ** Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
+        self.log('** WARNING ** Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
         
       # singletile
       singleTile = in_singleTile
       
       # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
       if len(in_mapScales) == 0 and ( len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
-        log('** WARNING ** : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
+        self.log('** WARNING ** : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
       
       # minScale
       minScale = 1
@@ -578,8 +592,8 @@ class send2server:
           minScale = int(in_minScale)
         except (ValueError, IndexError):
           self.dlg.ui.inMinScale.setText(minScale)
-          log('** WARNING ** : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
-      log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
+          self.log('** WARNING ** : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
+      self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # maxScale
       maxScale = 1000000
@@ -588,8 +602,8 @@ class send2server:
           maxScale = int(in_maxScale)
         except (ValueError, IndexError):
           self.dlg.ui.inMaxScale.setText(maxScale)
-          log('** WARNING ** : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
-      log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
+          self.log('** WARNING ** : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
+      self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # zoom levels number
       zoomLevelNumber = 10
@@ -598,8 +612,8 @@ class send2server:
           zoomLevelNumber = int(in_zoomLevelNumber)
         except (ValueError, IndexError):
           self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)
-          log('** WARNING ** : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
-      log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
+          self.log('** WARNING ** : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
+      self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
       
       # mapScales
       if len(in_mapScales) > 0:
@@ -613,12 +627,12 @@ class send2server:
             good = 0
             
         if good:
-          log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)      
+          self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)      
         else:
-          log('** WARNING ** : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log('** WARNING ** : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
         
       
-      if globals['isok']:
+      if self.isok:
       
         # write data in the python plugin config file
         cfg = ConfigParser.ConfigParser()
@@ -637,7 +651,7 @@ class send2server:
         cfg.write(open(configPath,"w"))
         cfg.read(configPath)
       
-        log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
+        self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
         
         # write data in the QgisWebClient json config file (to be send with the project file)
         self.layerListToJson()
@@ -653,64 +667,57 @@ class send2server:
           ftp.connect(host, port)
           ftp.login(username, password, account)
         except:
-          log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
+          self.log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
         
-        # Check that the remotedir exists  
-        if globals['isok']:
-          try:
-            ftp.cwd(remotedir)
-            log('Connected to FTP host. Remote dir access ok.', abort=False, textarea=self.dlg.ui.outLog)
-          except ftplib.error_perm, err:
-            if err[0].startswith('550'):
-              log('Remotedir does not exist: %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
-              ftp.mkd(remotedir)
+        # Process the sync with lftp
+        if self.isok:
+          time_started = datetime.datetime.now()
+          # constructio of lftp command line
+          lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+          workingDir = os.getcwd()
+          self.dlg.ui.inSyncCommand.setText("Synchronisation launched !")
+          time.sleep(0.2)
+          
+          # run lftp
+          proc = subprocess.Popen( lftpStr, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+          # read output
+          myOutput = 'LFTP Command = \n%s\n\n' % lftpStr
+          i=33
+          while True:
+            # progressBar (needed to avoid the ui freezing)
+            if i == 33:
+              i=66
             else:
-              raise
-          ftp.cwd('/')
-        
-        # Process the sync
-        if globals['isok']:
-          # Get SimpleFTPMirror handlers
-          local = localHandler(ftp, localdir)
-          remote = remoteHandler(ftp, remotedir)
-          subdir=''
-          src_path = os.path.normpath('%s/%s' % (local.root, subdir))
-          src_dirs, src_files = local.list(src_path)
-          # Mirror the local directory to the remote
-          action = 'store'
-          if action == 'store':
-            mirror(local, remote, subdir='', textarea=self.dlg.ui.outLog)
-          elif action == 'retrieve':
-            mirror(remote, local, subdir='', textarea=self.dlg.ui.outLog)
-          elif action == 'remove':
-            remove(remote)
-          elif action == 'info':
-            info(remote)
-            ftp.quit()
-            return
+              i=33
+            self.dlg.ui.progressBar.setValue(i)
+            # output formating
+            try:
+              output = proc.stdout.readline()
+              output = output.decode('utf-8')
+              output = output.strip(' \t\n')
+              output = output.replace(u'du fichier', 'de')
+              output = output.replace(u'Â ', '')
+              self.dlg.ui.inSyncCommand.setText(output)
+              myOutput+=output + '\n'
+              # if output empty --> break the loop - opeartion complete
+              if output == "":
+                self.dlg.ui.progressBar.setValue(100)
+                myOutput+="Synchronisation completed !"
+                self.dlg.ui.inSyncCommand.setText("Synchronisation completed !")
+                break
+            except:
+              anerror = True
+
+          self.dlg.ui.outLog.append(myOutput)
           
           ftp.quit()
 
         # Final log
-        if globals['isok']:
-          status = globals['status']
-          status['time_finished'] = datetime.datetime.now()
-          self.dlg.ui.outLog.append('\n')
-          self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('Processing Summary')
-          self.dlg.ui.outLog.append('=' * 20)
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Directories created', status['dirs_created']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Directories removed', status['dirs_removed']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Directories total', status['dirs_total']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Files created', status['files_created']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Files updated', status['files_updated']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Files removed', status['files_removed']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Files total', status['files_total']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Bytes transfered', strfbytes(status['bytes_transfered'])))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Bytes total', strfbytes(status['bytes_total'])))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Time started', status['time_started']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', status['time_finished']))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', status['time_finished']-status['time_started']))
+        if self.isok:
+          time_finished = datetime.datetime.now()
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Time started', time_started))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', time_finished))
+          self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', time_finished-time_started))
           
 #          self.dlg.ui.outLog.append('=' * 20)
 #          self.dlg.ui.outLog.append('WMS URL')
@@ -720,57 +727,12 @@ class send2server:
 
           self.dlg.ui.outLog.append('')
         
-        globals['isok'] = 1
+        self.isok = 1
 
       else:
         QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors"), QMessageBox.Ok)
-        globals['isok'] = 1
-      
+        self.isok = 1
 
-  # Process the sync
-  def processSync2(self):
-
-    # pre-sync checkings
-    isok = self.prepareSync()
-
-
-    username='mdouchin'
-    password='kimai0106!'
-    host='178.32.101.237'
-    localdir='/home/kimaidou/tmp/pnrbv/pnr_V2/'
-    in_remotedir = '/mytest/'
-    
-    lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
-    
-    workingDir = os.getcwd()
-    
-
-    self.dlg.ui.inSyncCommand.setText("Synchronisation launched !")
-    proc = subprocess.Popen( lftpStr, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    
-    myOutput = 'Synchronisation launched !\n%s' % lftpStr
-    i=33
-    while True:
-      # progressBar (needed to avoid the ui freezing)
-      if i == 33:
-        i=66
-      else:
-        i=33
-      self.dlg.ui.progressBar.setValue(i)
-      
-      output = proc.stdout.readline().strip(' \t\n')
-      output = str(output).replace('du fichier', 'de')
-      output = str(output).replace('Â', '')
-      self.dlg.ui.inSyncCommand.setText(output)
-      myOutput+=output + '\n'
-
-      if output == "":
-        self.dlg.ui.progressBar.setValue(100)
-        myOutput+="Synchronisation done !"
-        self.dlg.ui.inSyncCommand.setText("Synchronisation done !")
-        break
-      
-    self.dlg.ui.outLog.setText(myOutput)
 
   # run method
   def run(self):
@@ -788,6 +750,8 @@ class send2server:
     # Fill the layer tree
     self.populateLayerTree()
     
+    self.isok = 1
+    
     # pre-sync checkings
     prepareSync = self.prepareSync()
     
@@ -795,13 +759,7 @@ class send2server:
     # synchronize button clicked
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
     # clear log button clicked
-    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)
-    
-    # test button clicked
-    QObject.connect(self.dlg.ui.btTest, SIGNAL("clicked()"), self.processSync2)
-
-    
-    
+    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.dlg.ui.outLog.clear)    
     
     result = self.dlg.exec_()
     # See if OK was pressed
