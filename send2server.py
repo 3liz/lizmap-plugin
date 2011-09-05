@@ -190,8 +190,12 @@ class send2server:
           myDic[myId]['type'] = 'layer'
           layer = self.getQgisLayerById(myId)
           myDic[myId]['name'] = layer.name()
-          myDic[myId]['minScale'] = layer.minimumScale()
-          myDic[myId]['maxScale'] = layer.maximumScale()
+          if layer.toggleScaleBasedVisibility():
+            myDic[myId]['minScale'] = layer.minimumScale()
+            myDic[myId]['maxScale'] = layer.maximumScale()
+          else:
+            myDic[myId]['minScale'] = 1
+            myDic[myId]['maxScale'] = 1000000000000           
           
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
           if(jsonLayers.has_key('%s' % myId)):
@@ -252,8 +256,12 @@ class send2server:
           myDic[b]['type'] = 'layer'
           layer = self.getQgisLayerById(b)
           myDic[b]['name'] = layer.name()
-          myDic[b]['minScale'] = layer.minimumScale()
-          myDic[b]['maxScale'] = layer.maximumScale()
+          if layer.toggleScaleBasedVisibility():
+            myDic[b]['minScale'] = layer.minimumScale()
+            myDic[b]['maxScale'] = layer.maximumScale()
+          else:
+            myDic[b]['minScale'] = 1
+            myDic[b]['maxScale'] = 1000000000000   
           
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
           if(jsonLayers.has_key('%s' % b)):
