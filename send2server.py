@@ -687,16 +687,27 @@ class send2server:
         if self.isok:
           self.dlg.ui.progressBar.setValue(0)
           time_started = datetime.datetime.now()
-          # constructio of lftp command line
-          lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
-          workingDir = os.getcwd()
-          time.sleep(0.2)
           
           
+          # construction of lftp command line
+          # check the current OS to adapt the command or abort
+          if os.name == 'nt':
+            workingDir = os.getcwd()
+            lftp_windir = os.path.join(workingDir,lftp_win)
+            os.chdir(lftp_windir)
+            lftpStr = 'lftp.exe ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+          elif os.name == 'posix':
+            workingDir = os.getcwd()
+            lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+          else:
+            self.log('You cannot run the plugin on your operating system : %s' % os.name, abort=True, textarea=self.dlg.ui.outLog)
+          
+          myOutput = 'LFTP Command = \n%s\n\n' % lftpStr
+
+        if self.isok:          
           # run lftp
           proc = subprocess.Popen( lftpStr, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
           # read output
-          myOutput = 'LFTP Command = \n%s\n\n' % lftpStr
           i=33
           while True:
             # progressBar (needed to avoid the ui freezing)
