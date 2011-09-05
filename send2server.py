@@ -558,12 +558,14 @@ class send2server:
       remotedir = unicode(in_remotedir)
       if not str(remotedir).startswith('/'):
         remotedir = '/' + remotedir
-      if not str(remotedir).endswith('/'):
-        remotedir = remotedir + '/'
+      if str(remotedir).endswith('/'):
+        remotedir = remotedir.rstrip('/')
       self.log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
       
       # local directory    
       localdir = in_localdir
+      if not str(localdir).endswith('/'):
+        localdir = localdir + '/'
       if not os.path.isdir(localdir):
         self.log('** WARNING ** Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
       else:
@@ -704,16 +706,16 @@ class send2server:
             cygLocalDir = localdir.replace("\\", "/")
             cygLocalDir = cygLocalDir.replace("C:", "cydrive/c")
             winLftp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/send2server/lftp_win/lftp.exe")
-            lftpStr = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, in_remotedir)
+            lftpStr = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
             workingDir = os.path.expanduser("~")
           elif os.name == 'posix':
-            lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+            lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, remotedir)
             workingDir = os.getcwd()
           else:
             self.log('You cannot run the plugin on your operating system : %s' % os.name, abort=True, textarea=self.dlg.ui.outLog)
           
           myOutput = 'LFTP Command = \n%s\n\n' % lftpStr
-          self.log('command = %s'  % lftpStr, abort=True, textarea=self.dlg.ui.outLog)
+#          self.log('command = %s'  % lftpStr, abort=True, textarea=self.dlg.ui.outLog)
 
         if self.isok:          
           # run lftp
