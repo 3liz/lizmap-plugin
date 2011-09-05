@@ -96,6 +96,7 @@ class send2server:
     cfg.read(configPath)
     self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
     self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
+    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
     self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
     self.imageFormatDic = {'png' : 0, 'jpg' : 1}
@@ -451,6 +452,7 @@ class send2server:
     mc = self.iface.mapCanvas()
     for i in range(mc.layerCount()):
       layerSource =  str(mc.layer( i ).source())
+      layerSource = os.path.abspath(layerSource)
       if layerSource.startswith(projectDir) or layerSource.startswith('dbname='):
         layerSourcesOk.append(layerSource)
       else:
@@ -545,9 +547,7 @@ class send2server:
       self.log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
       
       # remote directory
-      remotedir = os.path.normpath(unicode(in_remotedir))
-      # windows bug
-      remotedir.replace('\\', '/')
+      remotedir = unicode(in_remotedir)
       if not str(remotedir).startswith('/'):
         remotedir = '/' + remotedir
       if not str(remotedir).endswith('/'):
@@ -652,6 +652,7 @@ class send2server:
         cfg.read(configPath)
         cfg.set('Ftp', 'host', host)
         cfg.set('Ftp', 'username', username)
+        cfg.set('Ftp', 'password', password)
         cfg.set('Ftp', 'port', port)
         cfg.set('Ftp', 'remotedir', in_remotedir)
         cfg.set('Map', 'imageFormat', in_imageFormat)
@@ -692,17 +693,19 @@ class send2server:
           # construction of lftp command line
           # check the current OS to adapt the command or abort
           if os.name == 'nt':
-            workingDir = os.getcwd()
-            lftp_windir = os.path.join(workingDir,lftp_win)
-            os.chdir(lftp_windir)
-            lftpStr = 'lftp.exe ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+            cygLocalDir = localdir.replace("\\", "/")
+            cygLocalDir = cygLocalDir.replace("C:", "cydrive/c")
+            winLftp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/send2server/lftp_win/lftp.exe")
+            lftpStr = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, in_remotedir)
+            workingDir = os.path.expanduser("~")
           elif os.name == 'posix':
-            workingDir = os.getcwd()
             lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, in_remotedir)
+            workingDir = os.getcwd()
           else:
             self.log('You cannot run the plugin on your operating system : %s' % os.name, abort=True, textarea=self.dlg.ui.outLog)
           
           myOutput = 'LFTP Command = \n%s\n\n' % lftpStr
+          self.log('command = %s'  % lftpStr, abort=True, textarea=self.dlg.ui.outLog)
 
         if self.isok:          
           # run lftp
