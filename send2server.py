@@ -163,6 +163,7 @@ class send2server:
         # add the item to the dictionary
         myDic[myId] = {'id' : myId}
         if myId in myGroups:
+          lname = myId
           # it's a group
           myDic[myId]['type'] = 'group'
           myDic[myId]['name'] = myId
@@ -189,6 +190,7 @@ class send2server:
           # it's a layer
           myDic[myId]['type'] = 'layer'
           layer = self.getQgisLayerById(myId)
+          lname = '%s' % layer.name()
           myDic[myId]['name'] = layer.name()
           if layer.hasScaleBasedVisibility():
             myDic[myId]['minScale'] = layer.minimumScale()
@@ -198,13 +200,13 @@ class send2server:
             myDic[myId]['maxScale'] = 1000000000000           
           
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
+          if(jsonLayers.has_key('%s' % lname)):
+            if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
               myDic[myId]['toggled'] = True
               
           myDic[myId]['baseLayer'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+          if(jsonLayers.has_key('%s' % lname)):
+            if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
               myDic[myId]['baseLayer'] = True
               
           myDic[myId]['groupAsLayer'] = True
@@ -212,12 +214,12 @@ class send2server:
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
         myDic[myId]['link'] = ''
-        if(jsonLayers.has_key('%s' % myId)):
-          if jsonLayers['%s' % myId].has_key('title') and jsonLayers['%s' % myId]['title'] != '':
+        if(jsonLayers.has_key('%s' % lname)):
+          if jsonLayers['%s' % lname].has_key('title') and jsonLayers['%s' % myId]['title'] != '':
             myDic[myId]['title'] = jsonLayers['%s' % myId]['title']
-          if jsonLayers['%s' % myId].has_key('abstract') and jsonLayers['%s' % myId]['abstract'] != '':
+          if jsonLayers['%s' % lname].has_key('abstract') and jsonLayers['%s' % myId]['abstract'] != '':
             myDic[myId]['abstract'] = jsonLayers['%s' % myId]['abstract']
-          if jsonLayers['%s' % myId].has_key('link') and jsonLayers['%s' % myId]['link'] != '':
+          if jsonLayers['%s' % lname].has_key('link') and jsonLayers['%s' % myId]['link'] != '':
             myDic[myId]['link'] = jsonLayers['%s' % myId]['link']
           
         parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
@@ -229,6 +231,7 @@ class send2server:
         myDic[b] = {'id' : b}
         if b in myGroups:
           # it's a group
+          lname = '%s' % b
           myDic[b]['type'] = 'group'
           myDic[b]['name'] = b
           myDic[b]['minScale'] = 1
@@ -255,6 +258,7 @@ class send2server:
           # it's a layer
           myDic[b]['type'] = 'layer'
           layer = self.getQgisLayerById(b)
+          lname = '%s' % layer.name()
           myDic[b]['name'] = layer.name()
           if layer.hasScaleBasedVisibility():
             myDic[b]['minScale'] = layer.minimumScale()
@@ -264,13 +268,13 @@ class send2server:
             myDic[b]['maxScale'] = 1000000000000   
           
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
+          if(jsonLayers.has_key('%s' % lname)):
+            if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
               myDic[b]['toggled'] = True
               
           myDic[b]['baseLayer'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+          if(jsonLayers.has_key('%s' % lname)):
+            if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
               myDic[b]['baseLayer'] = True
               
           myDic[b]['groupAsLayer'] = True
@@ -278,13 +282,13 @@ class send2server:
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
         myDic[b]['link'] = ''
-        if(jsonLayers.has_key('%s' % b)):
-          if jsonLayers['%s' % b].has_key('title') and jsonLayers['%s' % b]['title'] != '':
-            myDic[b]['title'] = jsonLayers['%s' % b]['title']
-          if jsonLayers['%s' % b].has_key('abstract') and jsonLayers['%s' % b]['abstract'] != '':
-            myDic[b]['abstract'] = jsonLayers['%s' % b]['abstract']
-          if jsonLayers['%s' % b].has_key('link') and jsonLayers['%s' % b]['link'] != '':
-            myDic[b]['link'] = jsonLayers['%s' % b]['link']
+        if(jsonLayers.has_key('%s' % lname)):
+          if jsonLayers[lname].has_key('title') and jsonLayers[lname]['title'] != '':
+            myDic[b]['title'] = jsonLayers[lname]['title']
+          if jsonLayers[lname].has_key('abstract') and jsonLayers[lname]['abstract'] != '':
+            myDic[b]['abstract'] = jsonLayers[lname]['abstract']
+          if jsonLayers[lname].has_key('link') and jsonLayers[lname]['link'] != '':
+            myDic[b]['link'] = jsonLayers[lname]['link']
                     
         childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
         if myId == '':

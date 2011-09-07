@@ -1,0 +1,4 @@
+* toutes les couches doivent avoir une projection spécifiée
+* un groupe Overview doit exister et contenir des couches
+* paramètres du projet doivent être complets
+
