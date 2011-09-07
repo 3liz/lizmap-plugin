@@ -706,20 +706,22 @@ class send2server:
             cygLocalDir = localdir.replace("\\", "/")
             cygLocalDir = cygLocalDir.replace("C:", "cydrive/c")
             winLftp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/send2server/lftp_win/lftp.exe")
-            lftpStr = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
+            lftpStr1 = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
+            lftpStr2 = '%s ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
             workingDir = os.path.expanduser("~")
           elif os.name == 'posix':
-            lftpStr = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, remotedir)
+            lftpStr1 = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, remotedir)
+            lftpStr2 = 'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
             workingDir = os.getcwd()
           else:
             self.log('You cannot run the plugin on your operating system : %s' % os.name, abort=True, textarea=self.dlg.ui.outLog)
           
-          myOutput = 'LFTP Command = \n%s\n\n' % lftpStr
+          myOutput = 'LFTP Command = \n%s\n\n' % lftpStr1
 #          self.log('command = %s'  % lftpStr, abort=True, textarea=self.dlg.ui.outLog)
 
         if self.isok:          
           # run lftp
-          proc = subprocess.Popen( lftpStr, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+          proc = subprocess.Popen( lftpStr1, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
           # read output
           i=33
           while True:
@@ -748,6 +750,8 @@ class send2server:
               anerror = True
 
           self.dlg.ui.outLog.append(myOutput)
+          
+          proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
           
           ftp.quit()
 
