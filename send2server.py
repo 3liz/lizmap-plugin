@@ -1,4 +1,3 @@
-#!/usr/bin/python2.4
 # -*- coding: utf-8 -*-
 
 """
@@ -122,6 +121,7 @@ class send2server:
     myTree = self.dlg.ui.treeLayer
     myTree.headerItem().setText(0, 'Liste des couches')
     myDic = {}
+#    myDic = {"root" : {"children":[]}}
     myGroups = self.iface.legendInterface().groups()
 
     # Check if a *.qgs.cfg exists
@@ -146,6 +146,7 @@ class send2server:
 #            self.dlg.ui.outLog.append(key)
       f.close()    
     
+    
     for a in self.iface.legendInterface().groupLayerRelationship():
       # initialize values
       parentItem = None
@@ -163,8 +164,8 @@ class send2server:
         # add the item to the dictionary
         myDic[myId] = {'id' : myId}
         if myId in myGroups:
-          lname = myId
           # it's a group
+          lname = myId
           myDic[myId]['type'] = 'group'
           myDic[myId]['name'] = myId
           myDic[myId]['minScale'] = 1
@@ -291,10 +292,20 @@ class send2server:
             myDic[b]['link'] = jsonLayers[lname]['link']
                     
         childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
+        
+
         if myId == '':
           myTree.addTopLevelItem(childItem)
+#          if myDic['root'].has_key('children'):
+#            myDic['root']['children'].append(myDic[b])
+#          else:
+#            myDic['root']['children'] = [myDic[b]]
         else:
           parentItem.addChild(childItem)
+#          if myDic[myId].has_key('children'):
+#            myDic[myId]['children'].append(myDic[b])
+#          else:
+#            myDic[myId]['children'] = [myDic[b]]
         myDic[b]['item'] = childItem
 
     # Add the myDic to the global layerList dictionary
@@ -420,9 +431,17 @@ class send2server:
     myJson+= '"layers" : {'
     myVirg = ''
     for k,v in self.layerList.items():
-      if v['groupAsLayer']:
-        v['type'] = 'layer'
-      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), v['type'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
+      ltype = v['type']
+      gal = v['groupAsLayer']
+      if gal:
+        ltype = 'layer'
+      else:
+        ltype = 'group'
+      if self.getQgisLayerById(k):
+        ltype = 'layer'
+        gal = True
+        
+      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
       myVirg = ','
     myJson+= '}'
     myJson+= '}'
@@ -783,6 +802,35 @@ class send2server:
         self.isok = 1
         self.dlg.ui.outState.setText('<font color="green"></font>')
 
+#  # Construction of the web renderered treenode 
+#  def treenodeBuild(self, treeItem = None):
+#    
+#    if not treeItem:
+#      # root
+#      self.log("%s" % '{"name":"root", "children":[', abort=False, textarea=self.dlg.ui.outLog)
+#      virg = ''
+#      for i in range(self.dlg.ui.treeLayer.topLevelItemCount()):
+#        it = self.dlg.ui.treeLayer.topLevelItem(i)
+#        if it.text(0) != 'Overview':
+#          self.log('%s {"name":"%s", "children":[' % (virg, it.text(0)), abort=False, textarea=self.dlg.ui.outLog)
+#          self.treenodeBuild(it)
+#          
+#        virg = ', '
+#      self.log("%s" % ']}', abort=False, textarea=self.dlg.ui.outLog)
+#    else:
+#      # tree item
+#      virg = ''
+#      if not self.layerList[treeItem.text(1)]['groupAsLayer']:
+#        for i in range(treeItem.childCount()):
+#          it = treeItem.child(i)
+##          if self.layerList[it.text(1)]['baseLayer']:
+##            self.log("%s" % 'BASELAYER', abort=False, textarea=self.dlg.ui.outLog)
+#          self.log('%s {"name":"%s", "children":[' % (virg, it.text(0)), abort=False, textarea=self.dlg.ui.outLog)
+#          self.treenodeBuild(it)
+#          virg = ', '
+#      self.log("%s" % ']}', abort=False, textarea=self.dlg.ui.outLog)
+
+  
 
   # run method
   def run(self):
@@ -809,7 +857,8 @@ class send2server:
     # synchronize button clicked
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
     # clear log button clicked
-    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)    
+    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
+#    QObject.connect(self.dlg.ui.btTest, SIGNAL("clicked()"), self.treenodeBuild )
     
     result = self.dlg.exec_()
     # See if OK was pressed

@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -608,6 +608,33 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>treeLayer</tabstop>
+  <tabstop>inLayerTitle</tabstop>
+  <tabstop>teLayerAbstract</tabstop>
+  <tabstop>inLayerLink</tabstop>
+  <tabstop>cbLayerIsBaseLayer</tabstop>
+  <tabstop>cbGroupAsLayer</tabstop>
+  <tabstop>cbToggled</tabstop>
+  <tabstop>inHost</tabstop>
+  <tabstop>inPort</tabstop>
+  <tabstop>inUsername</tabstop>
+  <tabstop>inPassword</tabstop>
+  <tabstop>inRemotedir</tabstop>
+  <tabstop>inLocaldir</tabstop>
+  <tabstop>liImageFormat</tabstop>
+  <tabstop>cbSingleTile</tabstop>
+  <tabstop>inMinScale</tabstop>
+  <tabstop>inMaxScale</tabstop>
+  <tabstop>inZoomLevelNumber</tabstop>
+  <tabstop>inMapScales</tabstop>
+  <tabstop>btSync</tabstop>
+  <tabstop>btClearlog</tabstop>
+  <tabstop>outSyncCommand</tabstop>
+  <tabstop>outLog</tabstop>
+  <tabstop>textEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

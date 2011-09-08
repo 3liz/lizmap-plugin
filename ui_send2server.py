@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Mon Sep  5 11:08:51 2011
+# Created: Thu Sep  8 14:32:16 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -279,8 +279,32 @@ class Ui_send2server(object):
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
 
         self.retranslateUi(send2server)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(send2server)
+        send2server.setTabOrder(self.tabWidget, self.treeLayer)
+        send2server.setTabOrder(self.treeLayer, self.inLayerTitle)
+        send2server.setTabOrder(self.inLayerTitle, self.teLayerAbstract)
+        send2server.setTabOrder(self.teLayerAbstract, self.inLayerLink)
+        send2server.setTabOrder(self.inLayerLink, self.cbLayerIsBaseLayer)
+        send2server.setTabOrder(self.cbLayerIsBaseLayer, self.cbGroupAsLayer)
+        send2server.setTabOrder(self.cbGroupAsLayer, self.cbToggled)
+        send2server.setTabOrder(self.cbToggled, self.inHost)
+        send2server.setTabOrder(self.inHost, self.inPort)
+        send2server.setTabOrder(self.inPort, self.inUsername)
+        send2server.setTabOrder(self.inUsername, self.inPassword)
+        send2server.setTabOrder(self.inPassword, self.inRemotedir)
+        send2server.setTabOrder(self.inRemotedir, self.inLocaldir)
+        send2server.setTabOrder(self.inLocaldir, self.liImageFormat)
+        send2server.setTabOrder(self.liImageFormat, self.cbSingleTile)
+        send2server.setTabOrder(self.cbSingleTile, self.inMinScale)
+        send2server.setTabOrder(self.inMinScale, self.inMaxScale)
+        send2server.setTabOrder(self.inMaxScale, self.inZoomLevelNumber)
+        send2server.setTabOrder(self.inZoomLevelNumber, self.inMapScales)
+        send2server.setTabOrder(self.inMapScales, self.btSync)
+        send2server.setTabOrder(self.btSync, self.btClearlog)
+        send2server.setTabOrder(self.btClearlog, self.outSyncCommand)
+        send2server.setTabOrder(self.outSyncCommand, self.outLog)
+        send2server.setTabOrder(self.outLog, self.textEdit)
 
     def retranslateUi(self, send2server):
         send2server.setWindowTitle(QtGui.QApplication.translate("send2server", "send2server", None, QtGui.QApplication.UnicodeUTF8))
