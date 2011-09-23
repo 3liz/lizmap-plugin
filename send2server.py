@@ -474,7 +474,7 @@ class send2server:
       
     # Check relative/absolute path    
     if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
-      QMessageBox.critical(self.dlg, "Send2Server Error", ("The layers paths must be relative to the project file. Please change this options in the project settings."), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, "Send2Server Error", ("The project layer paths must be set to relative. Please change this options in the project settings."), QMessageBox.Ok)
       isok = False
       
     # check active layers path layer by layer
@@ -482,10 +482,10 @@ class send2server:
     layerSourcesBad = []
     mc = self.iface.mapCanvas()
     for i in range(mc.layerCount()):
-      layerSource =  str(mc.layer( i ).source())
+      layerSource =  unicode('%s' % mc.layer( i ).source() )
       if os.path.abspath(layerSource).startswith(projectDir):
         layerSourcesOk.append(os.path.abspath(layerSource))
-      elif layerSource.startswith('dbname='):
+      elif layerSource.startswith('dbname=') or layerSource.startswith('http'):
         layerSourcesOk.append(layerSource)
       else:
         layerSourcesBad.append(layerSource)
