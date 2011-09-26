@@ -62,7 +62,7 @@
        <x>370</x>
        <y>10</y>
        <width>191</width>
-       <height>299</height>
+       <height>355</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -114,6 +114,20 @@
        <widget class="QCheckBox" name="cbToggled">
         <property name="text">
          <string>Toggled ?</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbSingleTile">
+        <property name="text">
+         <string>Singletile ?</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbCached">
+        <property name="text">
+         <string>Cached ?</string>
         </property>
        </widget>
       </item>
@@ -312,16 +326,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbSingleTile">
-        <property name="text">
-         <string>SingleTile</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
       </item>
       <item>
        <spacer name="verticalSpacer">
@@ -624,7 +628,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>inRemotedir</tabstop>
   <tabstop>inLocaldir</tabstop>
   <tabstop>liImageFormat</tabstop>
-  <tabstop>cbSingleTile</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inZoomLevelNumber</tabstop>

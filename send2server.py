@@ -100,7 +100,6 @@ class send2server:
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
     self.imageFormatDic = {'png' : 0, 'jpg' : 1}
     self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[cfg.get('Map', 'imageFormat')])
-    self.dlg.ui.cbSingleTile.setChecked(cfg.get('Map', 'singleTile').lower() in ("yes", "true", "t", "1"))
     self.dlg.ui.inMinScale.setText(cfg.get('Map', 'minScale'))  
     self.dlg.ui.inMaxScale.setText(cfg.get('Map', 'maxScale')) 
     self.dlg.ui.inZoomLevelNumber.setText(cfg.get('Map', 'zoomLevelNumber'))
@@ -187,6 +186,16 @@ class send2server:
           if(jsonLayers.has_key('%s' % myId)):
             if jsonLayers['%s' % myId]['type'] == 'layer':
               myDic[myId]['groupAsLayer'] = True
+
+          myDic[myId]['singleTile'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['singleTile'] = True
+
+          myDic[myId]['cached'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['cached'] = True
         else:
           # it's a layer
           myDic[myId]['type'] = 'layer'
@@ -211,6 +220,16 @@ class send2server:
               myDic[myId]['baseLayer'] = True
               
           myDic[myId]['groupAsLayer'] = True
+          
+          myDic[myId]['singleTile'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['singleTile'] = True
+
+          myDic[myId]['cached'] = False
+          if(jsonLayers.has_key('%s' % myId)):
+            if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
+              myDic[myId]['cached'] = True
           
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
@@ -255,6 +274,16 @@ class send2server:
           if(jsonLayers.has_key('%s' % b)):
             if jsonLayers['%s' % b]['type'] == 'layer':
               myDic[b]['groupAsLayer'] = True
+              
+          myDic[b]['singleTile'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['singleTile'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['singleTile'] = True
+
+          myDic[b]['cached'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['cached'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['cached'] = True
         else:
           # it's a layer
           myDic[b]['type'] = 'layer'
@@ -279,6 +308,16 @@ class send2server:
               myDic[b]['baseLayer'] = True
               
           myDic[b]['groupAsLayer'] = True
+          
+          myDic[b]['singleTile'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['singleTile'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['singleTile'] = True
+
+          myDic[b]['cached'] = False
+          if(jsonLayers.has_key('%s' % b)):
+            if jsonLayers['%s' % b]['cached'].lower() in ("yes", "true", "t", "1"):
+              myDic[b]['cached'] = True
           
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
@@ -319,6 +358,8 @@ class send2server:
     QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
     QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
     QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
+    QObject.connect(self.dlg.ui.cbSingleTile, SIGNAL("stateChanged(int)"), self.setSingleTile)
+    QObject.connect(self.dlg.ui.cbCached, SIGNAL("stateChanged(int)"), self.setCached)
     
 
   # Display metadata on click of a tree item in the layer tree
@@ -338,7 +379,11 @@ class send2server:
     # set the groupAsLayer
     self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])
     # set the toggled
-    self.dlg.ui.cbToggled.setChecked(selectedItem['toggled'])     
+    self.dlg.ui.cbToggled.setChecked(selectedItem['toggled'])
+    # set the singleTile
+    self.dlg.ui.cbSingleTile.setChecked(selectedItem['singleTile'])  
+    # set the cached
+    self.dlg.ui.cbCached.setChecked(selectedItem['cached'])
       
   # Set a layer title when a item title is edited
   def setLayerTitle(self):
@@ -383,7 +428,20 @@ class send2server:
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the toggled property for the selected item
     self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
-#    self.dlg.ui.outLog.append('%s : %s' % (item.text(1), str(self.dlg.ui.cbToggled.isChecked())))
+
+  # Set a layer or group "singleTile" property when an item "singleTile" checkbox state has changed
+  def setSingleTile(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the singleTile property for the selected item
+    self.layerList[item.text(1)]['singleTile'] = self.dlg.ui.cbSingleTile.isChecked()
+
+  # Set a layer or group "cached" property when an item "cached" checkbox state has changed
+  def setCached(self):
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the cached property for the selected item
+    self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
     
   def layerListToJson(self):
     myJson = '{'
@@ -412,7 +470,6 @@ class send2server:
 #    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
 
     in_imageFormat = self.dlg.ui.liImageFormat.currentText()
-    in_singleTile = self.dlg.ui.cbSingleTile.isChecked()
     in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
     in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
     in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
@@ -423,7 +480,7 @@ class send2server:
       in_maxScale = 10000000
     if len(in_zoomLevelNumber) == 0:
       in_zoomLevelNumber = 10
-    myJson+= ' "imageFormat" : "image/%s", "singleTile" : "%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s]' % (in_imageFormat, in_singleTile, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales)
+    myJson+= ' "imageFormat" : "image/%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s]' % (in_imageFormat, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales)
 
     myJson+= '},'
     
@@ -441,7 +498,7 @@ class send2server:
         ltype = 'layer'
         gal = True
         
-      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']) )
+      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s", "singleTile" : "%s", "cached" : "%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']), str(v['singleTile']), str(v['cached']) )
       myVirg = ','
     myJson+= '}'
     myJson+= '}'
@@ -544,7 +601,6 @@ class send2server:
       in_remotedir = str(self.dlg.ui.inRemotedir.text()).strip(' \t')
       # Map
       in_imageFormat = str(self.dlg.ui.liImageFormat.currentText()).strip(' \t')
-      in_singleTile = str(self.dlg.ui.cbSingleTile.isChecked()).strip(' \t')
       in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
       in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
       in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
@@ -624,8 +680,6 @@ class send2server:
       else:
         self.log('** WARNING ** Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
         
-      # singletile
-      singleTile = in_singleTile
       
       # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
       if len(in_mapScales) == 0 and ( len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
@@ -690,7 +744,6 @@ class send2server:
         cfg.set('Ftp', 'port', port)
         cfg.set('Ftp', 'remotedir', in_remotedir)
         cfg.set('Map', 'imageFormat', in_imageFormat)
-        cfg.set('Map', 'singleTile', in_singleTile)
         cfg.set('Map', 'minScale', in_minScale)
         cfg.set('Map', 'maxScale', in_maxScale)
         cfg.set('Map', 'zoomLevelNumber', in_zoomLevelNumber)

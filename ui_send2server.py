@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_send2server.ui'
 #
-# Created: Thu Sep  8 14:32:16 2011
+# Created: Mon Sep 26 11:58:36 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,7 +32,7 @@ class Ui_send2server(object):
         self.treeLayer.header().setMinimumSectionSize(50)
         self.treeLayer.header().setStretchLastSection(True)
         self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 299))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(370, 10, 191, 355))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -64,6 +64,12 @@ class Ui_send2server(object):
         self.cbToggled = QtGui.QCheckBox(self.verticalLayoutWidget)
         self.cbToggled.setObjectName(_fromUtf8("cbToggled"))
         self.verticalLayout.addWidget(self.cbToggled)
+        self.cbSingleTile = QtGui.QCheckBox(self.verticalLayoutWidget)
+        self.cbSingleTile.setObjectName(_fromUtf8("cbSingleTile"))
+        self.verticalLayout.addWidget(self.cbSingleTile)
+        self.cbCached = QtGui.QCheckBox(self.verticalLayoutWidget)
+        self.cbCached.setObjectName(_fromUtf8("cbCached"))
+        self.verticalLayout.addWidget(self.cbCached)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.tab_ftp = QtGui.QWidget()
         self.tab_ftp.setObjectName(_fromUtf8("tab_ftp"))
@@ -167,10 +173,6 @@ class Ui_send2server(object):
         self.liImageFormat.addItem(_fromUtf8(""))
         self.horizontalLayout_8.addWidget(self.liImageFormat)
         self.verticalLayout_2.addLayout(self.horizontalLayout_8)
-        self.cbSingleTile = QtGui.QCheckBox(self.verticalLayoutWidget_2)
-        self.cbSingleTile.setChecked(True)
-        self.cbSingleTile.setObjectName(_fromUtf8("cbSingleTile"))
-        self.verticalLayout_2.addWidget(self.cbSingleTile)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
         spacerItem1 = QtGui.QSpacerItem(20, 60, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -295,8 +297,7 @@ class Ui_send2server(object):
         send2server.setTabOrder(self.inPassword, self.inRemotedir)
         send2server.setTabOrder(self.inRemotedir, self.inLocaldir)
         send2server.setTabOrder(self.inLocaldir, self.liImageFormat)
-        send2server.setTabOrder(self.liImageFormat, self.cbSingleTile)
-        send2server.setTabOrder(self.cbSingleTile, self.inMinScale)
+        send2server.setTabOrder(self.liImageFormat, self.inMinScale)
         send2server.setTabOrder(self.inMinScale, self.inMaxScale)
         send2server.setTabOrder(self.inMaxScale, self.inZoomLevelNumber)
         send2server.setTabOrder(self.inZoomLevelNumber, self.inMapScales)
@@ -314,6 +315,8 @@ class Ui_send2server(object):
         self.cbLayerIsBaseLayer.setText(QtGui.QApplication.translate("send2server", "Base layer ?", None, QtGui.QApplication.UnicodeUTF8))
         self.cbGroupAsLayer.setText(QtGui.QApplication.translate("send2server", "Group as a layer ?", None, QtGui.QApplication.UnicodeUTF8))
         self.cbToggled.setText(QtGui.QApplication.translate("send2server", "Toggled ?", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbSingleTile.setText(QtGui.QApplication.translate("send2server", "Singletile ?", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbCached.setText(QtGui.QApplication.translate("send2server", "Cached ?", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("send2server", "Layers", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("send2server", "Username", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("send2server", "Port", None, QtGui.QApplication.UnicodeUTF8))
@@ -326,7 +329,6 @@ class Ui_send2server(object):
         self.label_9.setText(QtGui.QApplication.translate("send2server", "Image format", None, QtGui.QApplication.UnicodeUTF8))
         self.liImageFormat.setItemText(0, QtGui.QApplication.translate("send2server", "png", None, QtGui.QApplication.UnicodeUTF8))
         self.liImageFormat.setItemText(1, QtGui.QApplication.translate("send2server", "jpg", None, QtGui.QApplication.UnicodeUTF8))
-        self.cbSingleTile.setText(QtGui.QApplication.translate("send2server", "SingleTile", None, QtGui.QApplication.UnicodeUTF8))
         self.label_15.setText(QtGui.QApplication.translate("send2server", "Scales", None, QtGui.QApplication.UnicodeUTF8))
         self.label_13.setText(QtGui.QApplication.translate("send2server", "Min. Scale :  1/", None, QtGui.QApplication.UnicodeUTF8))
         self.label_14.setText(QtGui.QApplication.translate("send2server", "Max. Scale : 1/", None, QtGui.QApplication.UnicodeUTF8))
