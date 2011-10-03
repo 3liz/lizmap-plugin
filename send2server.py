@@ -89,21 +89,39 @@ class send2server:
 
   # Populate the Ftp configuration input from config file
   def getConfig(self):
-    # Get the config file data
+    # Get the project config file
+    p = QgsProject.instance()
+    jsonFile = "%s.cfg" % p.fileName()
+    jsonOptions = {}
+    if os.path.exists(unicode(jsonFile)):
+      f = open(jsonFile, 'r')
+      json = f.read()
+      try:
+        sjson = simplejson.loads(json)
+        jsonOptions = sjson['options']
+      except:
+        isok=0
+        QMessageBox.critical(self.dlg, "Send2Server Error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
+        self.log(u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
+    
+    # get the global config file 
     cfg = ConfigParser.ConfigParser()
     configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
     cfg.read(configPath)
+    
+    # set the input data according to config files
     self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
     self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
     self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
     self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
-    self.imageFormatDic = {'png' : 0, 'jpg' : 1}
-    self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[cfg.get('Map', 'imageFormat')])
-    self.dlg.ui.inMinScale.setText(cfg.get('Map', 'minScale'))  
-    self.dlg.ui.inMaxScale.setText(cfg.get('Map', 'maxScale')) 
-    self.dlg.ui.inZoomLevelNumber.setText(cfg.get('Map', 'zoomLevelNumber'))
-    self.dlg.ui.inMapScales.setText(cfg.get('Map', 'mapScales'))
+    
+    self.imageFormatDic = {'image/png' : 0, 'image/jpg' : 1}
+    self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[jsonOptions['imageFormat']])
+    self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
+    self.dlg.ui.inMaxScale.setText(str(jsonOptions['maxScale'])) 
+    self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
+    self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
     
     
     return True
@@ -136,8 +154,8 @@ class send2server:
         jsonLayers = sjson['layers']
       except:
         isok=0
-        QMessageBox.critical(self.dlg, "Send2Server Error", ("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
-        self.log("Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
+        QMessageBox.critical(self.dlg, "Send2Server Error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
+        self.log(u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
 #      self.dlg.ui.outLog.append(str(jsonLayers))
 #      for k,v in sjson.items():
 #        if k == 'layers':
@@ -171,31 +189,32 @@ class send2server:
           myDic[myId]['maxScale'] = 1000000000000
 #          myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
           myDic[myId]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['toggled'] = True
-            else:
-              myDic[myId]['toggled'] = False
-              
           myDic[myId]['baseLayer'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['baseLayer'] = True
-              
           myDic[myId]['groupAsLayer'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['type'] == 'layer':
-              myDic[myId]['groupAsLayer'] = True
-
           myDic[myId]['singleTile'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['singleTile'] = True
-
           myDic[myId]['cached'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['cached'] = True
+          
+          # if the there are configuration for myid
+          if jsonLayers.has_key('%s' % myId):
+            if jsonLayers['%s' % myId].has_key('toggled'):
+              if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['toggled'] = True
+                        
+            if jsonLayers['%s' % myId].has_key('baseLayer'):
+              if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['baseLayer'] = True
+              
+            if jsonLayers['%s' % myId].has_key('groupAsLayer'):
+              if jsonLayers['%s' % myId]['type'] == 'layer':
+                myDic[myId]['groupAsLayer'] = True
+
+            if jsonLayers['%s' % myId].has_key('singleTile'):
+              if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['singleTile'] = True
+
+            if jsonLayers['%s' % myId].has_key('cached'):
+              if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['cached'] = True
         else:
           # it's a layer
           myDic[myId]['type'] = 'layer'
@@ -210,26 +229,28 @@ class send2server:
             myDic[myId]['maxScale'] = 1000000000000           
           
           myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          if(jsonLayers.has_key('%s' % lname)):
-            if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['toggled'] = True
-              
           myDic[myId]['baseLayer'] = False
-          if(jsonLayers.has_key('%s' % lname)):
-            if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['baseLayer'] = True
-              
           myDic[myId]['groupAsLayer'] = True
-          
           myDic[myId]['singleTile'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['singleTile'] = True
-
           myDic[myId]['cached'] = False
-          if(jsonLayers.has_key('%s' % myId)):
-            if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
-              myDic[myId]['cached'] = True
+          
+          # if the there are configuration for lname
+          if jsonLayers.has_key('%s' % lname):
+            if jsonLayers['%s' % lname].has_key('toggled'):
+              if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['toggled'] = True
+                
+            if jsonLayers['%s' % lname].has_key('baseLayer'):
+              if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['baseLayer'] = True
+                     
+            if jsonLayers['%s' % lname].has_key('singleTile'):
+              if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['singleTile'] = True
+
+            if jsonLayers['%s' % lname].has_key('cached'):
+              if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
+                myDic[myId]['cached'] = True
           
         myDic[myId]['title'] = myDic[myId]['name']
         myDic[myId]['abstract'] = ''
@@ -259,31 +280,34 @@ class send2server:
           
 #          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
           myDic[b]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['toggled'] = True
-            else:
-              myDic[b]['toggled'] = False
-              
           myDic[b]['baseLayer'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['baseLayer'] = True
-              
           myDic[b]['groupAsLayer'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['type'] == 'layer':
-              myDic[b]['groupAsLayer'] = True
-              
           myDic[b]['singleTile'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['singleTile'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['singleTile'] = True
-
           myDic[b]['cached'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['cached'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['cached'] = True
+          
+          # if the there are configuration for b
+          if jsonLayers.has_key('%s' % b):
+            if jsonLayers['%s' % b].has_key('toggled'):
+              if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['toggled'] = True
+              else:
+                myDic[b]['toggled'] = False
+                
+            if jsonLayers['%s' % b].has_key('baseLayer'):
+              if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['baseLayer'] = True
+                
+            if jsonLayers['%s' % b].has_key('groupAsLayer'):
+              if jsonLayers['%s' % b]['type'] == 'layer':
+                myDic[b]['groupAsLayer'] = True
+                
+            if jsonLayers['%s' % b].has_key('singleTile'):
+              if jsonLayers['%s' % b]['singleTile'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['singleTile'] = True
+
+            if jsonLayers['%s' % b].has_key('cached'):
+              if jsonLayers['%s' % b]['cached'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['cached'] = True
         else:
           # it's a layer
           myDic[b]['type'] = 'layer'
@@ -298,26 +322,28 @@ class send2server:
             myDic[b]['maxScale'] = 1000000000000   
           
           myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          if(jsonLayers.has_key('%s' % lname)):
-            if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['toggled'] = True
-              
           myDic[b]['baseLayer'] = False
-          if(jsonLayers.has_key('%s' % lname)):
-            if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['baseLayer'] = True
-              
           myDic[b]['groupAsLayer'] = True
-          
           myDic[b]['singleTile'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['singleTile'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['singleTile'] = True
-
           myDic[b]['cached'] = False
-          if(jsonLayers.has_key('%s' % b)):
-            if jsonLayers['%s' % b]['cached'].lower() in ("yes", "true", "t", "1"):
-              myDic[b]['cached'] = True
+          
+          # if the there are configuration for lname
+          if jsonLayers.has_key('%s' % lname):
+            if jsonLayers['%s' % lname].has_key('toggled'):
+              if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['toggled'] = True
+                
+            if jsonLayers['%s' % lname].has_key('baseLayer'):
+              if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['baseLayer'] = True
+                
+            if jsonLayers['%s' % lname].has_key('singleTile'):
+              if jsonLayers['%s' % lname]['singleTile'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['singleTile'] = True
+
+            if jsonLayers['%s' % lname].has_key('cached'):
+              if jsonLayers['%s' % lname]['cached'].lower() in ("yes", "true", "t", "1"):
+                myDic[b]['cached'] = True
           
         myDic[b]['title'] = myDic[b]['name']
         myDic[b]['abstract'] = ''
@@ -526,7 +552,7 @@ class send2server:
       
     if isok:
       # Get the project folder
-      projectDir, projectName = os.path.split(os.path.abspath(str(p.fileName())))
+      projectDir, projectName = os.path.split(os.path.abspath('%s' % p.fileName()))
       self.dlg.ui.inLocaldir.setText(projectDir)
       
     # Check relative/absolute path    
@@ -597,7 +623,7 @@ class send2server:
       in_account = ''
       in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
       in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
-      in_localdir = str(self.dlg.ui.inLocaldir.text()).strip(' \t')
+      in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
       in_remotedir = str(self.dlg.ui.inRemotedir.text()).strip(' \t')
       # Map
       in_imageFormat = str(self.dlg.ui.liImageFormat.currentText()).strip(' \t')
@@ -743,11 +769,6 @@ class send2server:
         cfg.set('Ftp', 'password', password)
         cfg.set('Ftp', 'port', port)
         cfg.set('Ftp', 'remotedir', in_remotedir)
-        cfg.set('Map', 'imageFormat', in_imageFormat)
-        cfg.set('Map', 'minScale', in_minScale)
-        cfg.set('Map', 'maxScale', in_maxScale)
-        cfg.set('Map', 'zoomLevelNumber', in_zoomLevelNumber)
-        cfg.set('Map', 'mapScales', in_mapScales)
         cfg.write(open(configPath,"w"))
         cfg.read(configPath)
       
@@ -780,15 +801,17 @@ class send2server:
           # construction of lftp command line
           # check the current OS to adapt the command or abort
           if os.name == 'nt':
-            cygLocalDir = localdir.replace("\\", "/")
-            cygLocalDir = cygLocalDir.replace("C:", "cydrive/c")
-            winLftp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/send2server/lftp_win/lftp.exe")
-            lftpStr1 = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
-            lftpStr2 = '%s ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
-            workingDir = os.path.expanduser("~")
+#            cygLocalDir = localdir.replace("\\", "/")
+#            cygLocalDir = cygLocalDir.replace("C:", "cydrive/c")
+#            winLftp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/send2server/lftp_win/lftp.exe")
+#            lftpStr1 = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
+#            lftpStr2 = '%s ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
+#            workingDir = os.path.expanduser("~")
+            self.log('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir), abort=True, textarea=self.dlg.ui.outLog)
+            QMessageBox.warning(self.dlg, "One step left", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
           elif os.name == 'posix':
-            lftpStr1 = 'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir, remotedir)
-            lftpStr2 = 'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
+            lftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir)
+            lftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
             workingDir = os.getcwd()
           else:
             self.log('You cannot run the plugin on your operating system : %s' % os.name, abort=True, textarea=self.dlg.ui.outLog)
@@ -796,7 +819,7 @@ class send2server:
           myOutput = 'LFTP Command = \n%s\n\n' % lftpStr1
 #          self.log('command = %s'  % lftpStr, abort=True, textarea=self.dlg.ui.outLog)
 
-        if self.isok:          
+        if self.isok and os.name == 'posix':          
           # run lftp
           proc = subprocess.Popen( lftpStr1, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
           # read output
