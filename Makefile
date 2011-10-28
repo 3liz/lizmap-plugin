@@ -1,11 +1,11 @@
 #/***************************************************************************
-# send2server
-# 
-# Sends a local qgis project and related files to a qgismapserver server installation using FTP
-#                             -------------------
-#        begin                : 2011-04-01
-#        copyright            : (C) 2011 by 3liz
-#        email                : mdouchin@3liz.org
+# Lizmap
+#                 A QGIS plugin
+# Publication plugin for Lizmap web application, by 3liz.com
+#                -------------------
+#    begin        : 2011-04-01
+#    copyright      : (C) 2011 by 3liz
+#    email        : mdouchin@3liz.com
 # ***************************************************************************/
 # 
 #/***************************************************************************
@@ -19,13 +19,13 @@
 
 # Makefile for a PyQGIS plugin 
 
-PLUGINNAME = send2server
+PLUGINNAME = lizmap
 
-PY_FILES = send2server.py send2serverdialog.py __init__.py
+PY_FILES = lizmap.py lizmapdialog.py __init__.py
 
 EXTRAS = icon.png 
 
-UI_FILES = ui_send2server.py
+UI_FILES = ui_lizmap.py
 
 RESOURCE_FILES = resources.py
 

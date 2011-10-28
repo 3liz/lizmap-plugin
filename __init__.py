@@ -1,12 +1,12 @@
 """
 /***************************************************************************
- send2server
-                                 A QGIS plugin
- Sends a local qgis project and related files to a qgismapserver server installation using FTP
-                             -------------------
-        begin                : 2011-04-01
-        copyright            : (C) 2011 by 3liz
-        email                : mdouchin@3liz.org
+ Lizmap
+                 A QGIS plugin
+ Publication plugin for Lizmap web application, by 3liz.com
+                -------------------
+    begin        : 2011-04-01
+    copyright      : (C) 2011 by 3liz
+    email        : mdouchin@3liz.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,9 +20,9 @@
  This script initializes the plugin, making it known to QGIS.
 """
 def name():
-    return "send2server"
+    return "lizmap"
 def description():
-    return "Sends a local qgis project and related files to a qgismapserver server installation using FTP"
+    return "Publication plugin for Lizmap web application, by 3liz.com"
 def version():
     return "Version 0.1"
 def icon():
@@ -30,6 +30,6 @@ def icon():
 def qgisMinimumVersion():
     return "1.6"
 def classFactory(iface):
-    # load send2server class from file send2server
-    from send2server import send2server
-    return send2server(iface)
+    # load lizmap class from file lizmap
+    from lizmap import lizmap
+    return lizmap(iface)

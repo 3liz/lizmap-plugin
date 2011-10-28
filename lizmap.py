@@ -2,13 +2,13 @@
 
 """
 /***************************************************************************
- send2server
+ Lizmap
                  A QGIS plugin
- Sends a local qgis project and related files to a qgismapserver server installation using FTP
+ Publication plugin for Lizmap web application, by 3liz.com
                 -------------------
     begin        : 2011-04-01
     copyright      : (C) 2011 by 3liz
-    email        : mdouchin@3liz.org
+    email        : mdouchin@3liz.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,7 +27,7 @@ from qgis.core import *
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
-from send2serverdialog import send2serverDialog
+from lizmapdialog import lizmapDialog
 # import other needed tool
 import sys, os, glob
 # ftp lib
@@ -41,31 +41,31 @@ import simplejson
 # supprocess module, to load external command line tools
 import subprocess
 
-class send2server:
+class lizmap:
 
   def __init__(self, iface):
-    # Save reference to the QGIS interface
+    '''Save reference to the QGIS interface'''
     self.iface = iface
 
   def initGui(self):
-    # Create action that will start plugin configuration
-    self.action = QAction(QIcon(":/plugins/send2server/icon.png"), \
-      "send2server", self.iface.mainWindow())
+    '''Create action that will start plugin configuration'''
+    self.action = QAction(QIcon(":/plugins/lizmap/icon.png"), \
+      "lizmap", self.iface.mainWindow())
     # connect the action to the run method
     QObject.connect(self.action, SIGNAL("triggered()"), self.run)
 
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.action)
-    self.iface.addPluginToMenu("&send2server", self.action)
+    self.iface.addPluginToMenu("&lizmap", self.action)
 
   def unload(self):
-    # Remove the plugin menu item and icon
-    self.iface.removePluginMenu("&send2server",self.action)
+    '''Remove the plugin menu item and icon'''
+    self.iface.removePluginMenu("&lizmap",self.action)
     self.iface.removeToolBarIcon(self.action)
 
 
-  # Logging method
   def log(self,msg, level=1, abort=False, textarea=False):
+    '''Log the actions and errors and optionnaly print them in given textarea'''
     if abort:
       sys.stdout = sys.stderr
     if textarea:
@@ -73,23 +73,29 @@ class send2server:
     if abort:
       self.isok = 0
       
-  # Clear mpg
   def clearLog(self):
+    '''Clear the content of the textarea log'''
     self.dlg.ui.outLog.clear()
     self.dlg.ui.progressBar.setValue(0)
     self.dlg.ui.outState.setText('<font color="green"></font>')
     self.dlg.ui.outSyncCommand.setText('')
     
-#  # Choose some directory from UI
-#  def chooseLocalDirectory(self):
-#    localDir = QFileDialog.getExistingDirectory( None,QString("Choose the local data folder"),"" )
-#    if os.path.exists(unicode(localDir)):
-#      self.dlg.ui.inLocaldir.setText(localDir)
-    
-
-  # Populate the Ftp configuration input from config file
   def getConfig(self):
-    # Get the project config file
+    ''' Get the saved configuration from lizmap.cfg file and from the projet.qgs.cfg config file. Populate the gui fields accordingly'''
+    
+    # Get the global config file 
+    cfg = ConfigParser.ConfigParser()
+    configPath = os.path.expanduser("~/.qgis/python/plugins/lizmap/lizmap.cfg")
+    cfg.read(configPath)
+    
+    # Set the FTP tab fields values
+    self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
+    self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
+    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
+    self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
+    self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
+
+    # Get the project config file (projectname.qgs.cfg)
     p = QgsProject.instance()
     jsonFile = "%s.cfg" % p.fileName()
     jsonOptions = {}
@@ -101,44 +107,39 @@ class send2server:
         jsonOptions = sjson['options']
       except:
         isok=0
-        QMessageBox.critical(self.dlg, "Send2Server Error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
+        QMessageBox.critical(self.dlg, "Lizmap error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
         self.log(u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
     
-    # get the global config file 
-    cfg = ConfigParser.ConfigParser()
-    configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
-    cfg.read(configPath)
-    
-    # set the input data according to config files
-    self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
-    self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
-    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
-    self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
-    self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
-    
+    # Set the Map options tab fields values
     self.imageFormatDic = {'image/png' : 0, 'image/jpg' : 1}
-    self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[jsonOptions['imageFormat']])
-    self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
-    self.dlg.ui.inMaxScale.setText(str(jsonOptions['maxScale'])) 
-    self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
-    self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
-    
-    
+    if jsonOptions.has_key('imageFormat'):
+      self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[jsonOptions['imageFormat']])
+    if jsonOptions.has_key('minScale'):
+      self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
+    if jsonOptions.has_key('maxScale'):
+      self.dlg.ui.inMaxScale.setText(str(jsonOptions['maxScale'])) 
+    if jsonOptions.has_key('zoomLevelNumber'):
+      self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
+    if jsonOptions.has_key('mapScales'):
+      self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
+        
     return True
     
-  # Get a layer by its Id
+    
   def getQgisLayerById(self, myId):
+    '''Get a QgsLayer by its Id'''
     for layer in self.iface.legendInterface().layers():
       if myId == layer.id():
         return layer
     return None
 
-  # Populate the layer tree of the plugin from the legend
+
   def populateLayerTree(self):
+    '''Populate the layer tree of the Layers tab from Qgis legend interface'''
     myTree = self.dlg.ui.treeLayer
+    myTree.clear()
     myTree.headerItem().setText(0, 'Liste des couches')
     myDic = {}
-#    myDic = {"root" : {"children":[]}}
     myGroups = self.iface.legendInterface().groups()
 
     # Check if a *.qgs.cfg exists
@@ -154,16 +155,11 @@ class send2server:
         jsonLayers = sjson['layers']
       except:
         isok=0
-        QMessageBox.critical(self.dlg, "Send2Server Error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
+        QMessageBox.critical(self.dlg, "Lizmap Error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
         self.log(u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
-#      self.dlg.ui.outLog.append(str(jsonLayers))
-#      for k,v in sjson.items():
-#        if k == 'layers':
-#          for key,val in v.items():
-#            self.dlg.ui.outLog.append(key)
       f.close()    
     
-    
+    # Loop through groupLayerRelationship to reconstruct the tree
     for a in self.iface.legendInterface().groupLayerRelationship():
       # initialize values
       parentItem = None
@@ -279,7 +275,7 @@ class send2server:
           myDic[b]['maxScale'] = 1000000000000
           
 #          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
-          myDic[b]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
+          myDic[b]['toggled'] = True # Method isGroupVisible seems to be not reliable, so set all to true
           myDic[b]['baseLayer'] = False
           myDic[b]['groupAsLayer'] = False
           myDic[b]['singleTile'] = False
@@ -361,23 +357,15 @@ class send2server:
 
         if myId == '':
           myTree.addTopLevelItem(childItem)
-#          if myDic['root'].has_key('children'):
-#            myDic['root']['children'].append(myDic[b])
-#          else:
-#            myDic['root']['children'] = [myDic[b]]
         else:
           parentItem.addChild(childItem)
-#          if myDic[myId].has_key('children'):
-#            myDic[myId]['children'].append(myDic[b])
-#          else:
-#            myDic[myId]['children'] = [myDic[b]]
         myDic[b]['item'] = childItem
 
     # Add the myDic to the global layerList dictionary
     self.layerList = myDic
 
-    # Action on click
-    QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.itemMetadata)
+    # Catch user interaction on layer tree and inputs
+    QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
     QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
     QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
     QObject.connect(self.dlg.ui.inLayerLink, SIGNAL("editingFinished()"), self.setLayerLink)
@@ -388,8 +376,9 @@ class send2server:
     QObject.connect(self.dlg.ui.cbCached, SIGNAL("stateChanged(int)"), self.setCached)
     
 
-  # Display metadata on click of a tree item in the layer tree
-  def itemMetadata(self):
+
+  def setItemOptions(self):
+    '''Refresh layer/group metadata and options on click of a layer tree item'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # get information about the layer or the group
@@ -411,36 +400,37 @@ class send2server:
     # set the cached
     self.dlg.ui.cbCached.setChecked(selectedItem['cached'])
       
-  # Set a layer title when a item title is edited
+
   def setLayerTitle(self):
+    '''Set a layer title when a item title is edited'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the title for the selected item
     self.layerList[item.text(1)]['title'] = self.dlg.ui.inLayerTitle.text()
     
-  # Set a layer abstract when a item abstract is edited
   def setLayerAbstract(self):
+    '''Set a layer abstract when a item abstract is edited'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the abstract for the selected item
     self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
 
-  # Set a layer link when a item link is edited
   def setLayerLink(self):
+    '''Set a layer link when a item link is edited'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the link for the selected item
     self.layerList[item.text(1)]['link'] = self.dlg.ui.inLayerLink.text()
      
-  # Set a layer "IsBaseLayer" property when an item "Is Base layer" checkbox state has changed
   def setLayerIsBaseLayer(self):
+    '''Set a layer "IsBaseLayer" property when an item "Is Base layer" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the baseLayer property for the selected item
     self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
     
-  # Set the "group as a layer" property when an item "Group As Layer" checkbox state has changed
   def setGroupAsLayer(self):
+    '''Set the "group as a layer" property when an item "Group As Layer" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
@@ -448,28 +438,30 @@ class send2server:
     if self.dlg.ui.cbGroupAsLayer.isChecked():
       self.layerList[item.text(1)]['type'] = 'layer'
       
-  # Set a layer or group "toggled" property when an item "toggled" checkbox state has changed
   def setToggled(self):
+    '''Set a layer or group "toggled" property when an item "toggled" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the toggled property for the selected item
     self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
 
-  # Set a layer or group "singleTile" property when an item "singleTile" checkbox state has changed
   def setSingleTile(self):
+    '''Set a layer or group "singleTile" property when an item "singleTile" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the singleTile property for the selected item
     self.layerList[item.text(1)]['singleTile'] = self.dlg.ui.cbSingleTile.isChecked()
 
-  # Set a layer or group "cached" property when an item "cached" checkbox state has changed
   def setCached(self):
+    '''Set a layer or group "cached" property when an item "cached" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the cached property for the selected item
     self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
+
     
-  def layerListToJson(self):
+  def writeProjectConfigFile(self):
+    '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
     myJson = '{'
     
     # get information from Qgis api
@@ -488,13 +480,12 @@ class send2server:
     # options
     myJson+= '"options" : {'
     myJson+= '"projection" : {"proj4":"%s", "ref":"%s"},' % (pProj4, pAuthid)
-#    myJson+= '"bbox":[%s,%s,%s,%s]' % (r.fullExtent().xMinimum(), r.fullExtent().yMinimum(), r.fullExtent().xMaximum(), r.fullExtent().yMaximum())
     if len(pWmsExtent) > 1:
       myJson+= '"bbox":[%s,%s,%s,%s],' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
     else:
       myJson+= '"bbox":[],'
-#    myJson+= ', "center" : {"lon":%s, "lat":%s}' % (r.fullExtent().center().x(), r.fullExtent().center().y())
-
+    
+    # gui user defined options
     in_imageFormat = self.dlg.ui.liImageFormat.currentText()
     in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
     in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
@@ -510,7 +501,7 @@ class send2server:
 
     myJson+= '},'
     
-    # layers
+    # gui user defined layers options
     myJson+= '"layers" : {'
     myVirg = ''
     for k,v in self.layerList.items():
@@ -534,20 +525,19 @@ class send2server:
     p = QgsProject.instance()
     jsonFile = "%s.cfg" % p.fileName()
     f = open(jsonFile, 'w')
-#    f.write(unicode(myJson))    
     f.write(myJson.encode('utf-8'))
     f.close()
 
 
-  # Save Qgis project
-  def prepareSync(self):
+
+  def checkGlobalProjectOptions(self):
+    ''' Checks that the needed options are correctly set : relative path, project saved, etc.'''
     
     isok = True;
-    
-    # Get the project data
+    # Get the project data from api
     p = QgsProject.instance()
     if not p.fileName():
-      QMessageBox.critical(self.dlg, "Send2Server Error", ("You need to open a qgis project first."), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, "Lizmap Error", ("You need to open a qgis project first."), QMessageBox.Ok)
       isok = False
       
     if isok:
@@ -557,7 +547,7 @@ class send2server:
       
     # Check relative/absolute path    
     if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
-      QMessageBox.critical(self.dlg, "Send2Server Error", ("The project layer paths must be set to relative. Please change this options in the project settings."), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, "Lizmap Error", ("The project layer paths must be set to relative. Please change this options in the project settings."), QMessageBox.Ok)
       isok = False
       
     # check active layers path layer by layer
@@ -574,20 +564,19 @@ class send2server:
         layerSourcesBad.append(layerSource)
         isok = False
     if len(layerSourcesBad) > 0:
-      QMessageBox.critical(self.dlg, "Send2Server Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, "Lizmap Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
       self.log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
       
-    # check if a bbox has been given
+    # check if a bbox has been given in the project WMS tab configuration
     pWmsExtent = p.readListEntry('WMSExtent','')[0]
     if len(pWmsExtent) <1 :
-      QMessageBox.critical(self.dlg, "Send2Server Error", ("The project WMS extent must be set. Please change this options in the project settings."), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, "Lizmap Error", ("The project WMS extent must be set. Please change this options in the project settings."), QMessageBox.Ok)
       isok = False
       
     if isok:
-      
-      # Save the current project
+      # Check the project state (saved or not)
       if p.isDirty():
-        saveIt = QMessageBox.question(self.dlg, 'Send2server - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        saveIt = QMessageBox.question(self.dlg, 'Lizmap - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if saveIt == QMessageBox.Yes:
           p.write()
         else:
@@ -596,31 +585,17 @@ class send2server:
     return isok
 
     
-  # Process the sync
-  def processSync(self):
-  
-    self.dlg.ui.outSyncCommand.setText("Synchronisation launched !")
-    # display the stateLabel
-    self.dlg.ui.outState.setText('<font color="orange">running</font>')
-    # setting progressbar refreshes the plygin ui
-    self.dlg.ui.progressBar.setValue(0)
-  
-    # pre-sync checkings
-    isok = self.prepareSync()
-    
-    if isok:
-      letsGo = QMessageBox.question(self.dlg, 'Send2server - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-      if letsGo == QMessageBox.Yes:
-        isok = True
-      else:
-        isok = False
+  def getGuiConfig(self):
+    '''Check the user defined data from gui and save them to both global and project config files'''
+    self.isok = 1
+    # global project option checking
+    isok = self.checkGlobalProjectOptions()
     
     if isok:
       # Get configuration from input fields
       # FTP
       in_username = str(self.dlg.ui.inUsername.text()).strip(' \t')
       in_password = str(self.dlg.ui.inPassword.text()).strip(' \t')
-      in_account = ''
       in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
       in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
       in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
@@ -690,19 +665,11 @@ class send2server:
         self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
       else:
         self.log('** WARNING ** Missing password !', abort=True, textarea=self.dlg.ui.outLog)
-      
-      # account  
-      if len(in_account) > 0:
-        account = in_account
-  #      self.log('account = %' % accout, abort=False, textarea=self.dlg.ui.outLog)
-      else:
-        account = ''
         
       # Map config
       # image format
       if in_imageFormat == 'png' or in_imageFormat == 'jpg':
         imageFormat = in_imageFormat
-#        self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
       else:
         self.log('** WARNING ** Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
         
@@ -762,7 +729,7 @@ class send2server:
       
         # write data in the python plugin config file
         cfg = ConfigParser.ConfigParser()
-        configPath = os.path.expanduser("~/.qgis/python/plugins/send2server/send2server.cfg")
+        configPath = os.path.expanduser("~/.qgis/python/plugins/lizmap/lizmap.cfg")
         cfg.read(configPath)
         cfg.set('Ftp', 'host', host)
         cfg.set('Ftp', 'username', username)
@@ -771,149 +738,120 @@ class send2server:
         cfg.set('Ftp', 'remotedir', in_remotedir)
         cfg.write(open(configPath,"w"))
         cfg.read(configPath)
-      
-        self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
         
         # write data in the QgisWebClient json config file (to be send with the project file)
-        self.layerListToJson()
+        self.writeProjectConfigFile()
         
-        self.dlg.ui.outLog.append('')
-        self.dlg.ui.outLog.append('=' * 20)
-        self.dlg.ui.outLog.append('Synchronisation')
-        self.dlg.ui.outLog.append('=' * 20)
-        
-        if self.isok:
-          self.dlg.ui.progressBar.setValue(33)
-          ftp = ftplib.FTP()
-          # Connection to FTP host
-          try:
-            ftp.connect(host, port)
-            ftp.login(username, password, account)
-          except:
-            self.log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
-        
-        # Process the sync with lftp
-        if self.isok:
-          self.dlg.ui.progressBar.setValue(0)
-          time_started = datetime.datetime.now()
-          
-          
-          # construction of lftp command line
-          # check the current OS to adapt the command or abort
-          if os.name == 'nt':
-#            cygLocalDir = localdir.replace("\\", "/")
-#            cygLocalDir = cygLocalDir.replace("C:", "cydrive/c")
-#            winLftp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/send2server/lftp_win/lftp.exe")
-#            lftpStr1 = '%s ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
-#            lftpStr2 = '%s ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (winLftp, username, password, host, cygLocalDir, remotedir)
-#            workingDir = os.path.expanduser("~")
-            self.log('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir), abort=True, textarea=self.dlg.ui.outLog)
-            QMessageBox.warning(self.dlg, "One step left", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
-          elif os.name == 'posix':
-            lftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir)
-            lftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
-            workingDir = os.getcwd()
-          else:
-            self.log('You cannot run the plugin on your operating system : %s' % os.name, abort=True, textarea=self.dlg.ui.outLog)
-          
-          myOutput = 'LFTP Command = \n%s\n\n' % lftpStr1
-#          self.log('command = %s'  % lftpStr, abort=True, textarea=self.dlg.ui.outLog)
-
-        if self.isok and os.name == 'posix':          
-          # run lftp
-          proc = subprocess.Popen( lftpStr1, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-          # read output
-          i=33
-          while True:
-            # progressBar (needed to avoid the ui freezing)
-            if i == 33:
-              i=66
-            else:
-              i=33
-            self.dlg.ui.progressBar.setValue(i)
-            # output formating
-            try:
-              output = proc.stdout.readline()
-              output = output.decode('utf-8')
-              output = output.strip(' \t\n')
-              output = output.replace(u'du fichier', 'de')
-              output = output.replace(u'Â ', '')
-              self.dlg.ui.outSyncCommand.setText(output)
-              myOutput+=output + '\n'
-              # if output empty --> break the loop - opeartion complete
-              if output == "":
-                self.dlg.ui.progressBar.setValue(100)
-                myOutput+="Synchronisation completed !"
-                self.dlg.ui.outSyncCommand.setText("Synchronisation completed !")
-                break
-            except:
-              anerror = True
-
-          self.dlg.ui.outLog.append(myOutput)
-          
-          proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-          
-          ftp.quit()
-
-        # Final log
-        if self.isok:
-          time_finished = datetime.datetime.now()
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Time started', time_started))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Time finished', time_finished))
-          self.dlg.ui.outLog.append('%-10s%10s' % ('Duration', time_finished-time_started))
-          
-#          self.dlg.ui.outLog.append('=' * 20)
-#          self.dlg.ui.outLog.append('WMS URL')
-#          self.dlg.ui.outLog.append('=' * 20)
-#          self.dlg.ui.outLog.append('Fast CGI (needs Apache reload) = http://%s/cgi-bin/qgis_mapserv.fcgi?map=/home/%s%s' % (host, username, remotedir))
-#          self.dlg.ui.outLog.append('simple CGI (no reload needed) = http://%s/cgi-bin/qgis_mapserv.cgi?map=/home/%s%s' % (host, username, remotedir))
-
-          self.dlg.ui.outLog.append('')
-          
-          self.dlg.ui.outState.setText('<font color="green">completed</font>')
-        
-        self.isok = 1
-
+        self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
       else:
-        QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors"), QMessageBox.Ok)
-        self.isok = 1
-        self.dlg.ui.outState.setText('<font color="green"></font>')
+        QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
+        
+    return self.isok
+    
 
-#  # Construction of the web renderered treenode 
-#  def treenodeBuild(self, treeItem = None):
-#    
-#    if not treeItem:
-#      # root
-#      self.log("%s" % '{"name":"root", "children":[', abort=False, textarea=self.dlg.ui.outLog)
-#      virg = ''
-#      for i in range(self.dlg.ui.treeLayer.topLevelItemCount()):
-#        it = self.dlg.ui.treeLayer.topLevelItem(i)
-#        if it.text(0) != 'Overview':
-#          self.log('%s {"name":"%s", "children":[' % (virg, it.text(0)), abort=False, textarea=self.dlg.ui.outLog)
-#          self.treenodeBuild(it)
-#          
-#        virg = ', '
-#      self.log("%s" % ']}', abort=False, textarea=self.dlg.ui.outLog)
-#    else:
-#      # tree item
-#      virg = ''
-#      if not self.layerList[treeItem.text(1)]['groupAsLayer']:
-#        for i in range(treeItem.childCount()):
-#          it = treeItem.child(i)
-##          if self.layerList[it.text(1)]['baseLayer']:
-##            self.log("%s" % 'BASELAYER', abort=False, textarea=self.dlg.ui.outLog)
-#          self.log('%s {"name":"%s", "children":[' % (virg, it.text(0)), abort=False, textarea=self.dlg.ui.outLog)
-#          self.treenodeBuild(it)
-#          virg = ', '
-#      self.log("%s" % ']}', abort=False, textarea=self.dlg.ui.outLog)
+  def ftpSync(self):
+    '''Synchronize data (project file, project config file and all data contained in the project file folder) from local computer to remote host.
+    Based on lftp library : only works on linux...
+    '''
+    
+    if isok:
+      letsGo = QMessageBox.question(self.dlg, 'Lizmap - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+      if letsGo == QMessageBox.Yes:
+        isok = True
+      else:
+        isok = False
+            
+    self.isok = 1
+    # Check user defined options
+    if not self.getGuiConfig() or not isok:
+      return False
+    
+    # Check the platform
+    # FTP Sync only active for linux users. For windows users
+    if sys.platform != 'linux2':
+      QMessageBox.warning(self.dlg, "Lizmap", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
+      return False
+  
+    myOutput = ''
+    # display the stateLabel
+    self.dlg.ui.outState.setText('<font color="orange">running</font>')
+    # setting progressbar refreshes the plygin ui
+    self.dlg.ui.progressBar.setValue(0)  
+    self.dlg.ui.outLog.append('')
+    self.dlg.ui.outLog.append('=' * 20)
+    self.dlg.ui.outLog.append('FTP Synchronisation')
+    self.dlg.ui.outLog.append('=' * 20)
+    
+    if self.isok:
+      self.dlg.ui.progressBar.setValue(33)
+      ftp = ftplib.FTP()
+      # Connection to FTP host
+      try:
+        ftp.connect(host, port)
+        ftp.login(username, password, '')
+        self.log('FTP connection OK', abort=False, textarea=self.dlg.ui.outLog)
+      except:
+        self.log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
+    
+    # Process the sync with lftp
+    if self.isok:
+      self.dlg.ui.progressBar.setValue(0)
+      time_started = datetime.datetime.now()
+      
+      # construction of lftp command line
+      lftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir)
+      lftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
+      workingDir = os.getcwd()
+      
+      # run lftp
+      proc = subprocess.Popen( lftpStr1, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+      # read output
+      i=33
+      while True:
+        # progressBar (needed to avoid the ui freezing)
+        if i == 33:
+          i=66
+        else:
+          i=33
+        self.dlg.ui.progressBar.setValue(i)
+        # output formating
+        try:
+          output = proc.stdout.readline()
+          output = output.decode('utf-8')
+          output = output.strip(' \t\n')
+          output = output.replace(u'du fichier', 'de')
+          output = output.replace(u'Â ', '')
+          self.dlg.ui.outSyncCommand.setText(output)
+          myOutput+=output + '\n'
+          # if output empty --> break the loop - opeartion complete
+          if output == "":
+            self.dlg.ui.progressBar.setValue(100)
+            myOutput+="Synchronisation completed !"
+            self.dlg.ui.outSyncCommand.setText("Synchronisation completed !")
+            break
+        except:
+          anerror = True
 
+#      # Run lftp with QProcess
+#      self.lftpProcess = QProcess(self)
+#      QObject.connect(self.lftpProcess, SIGNAL("finished(int)"), self.lftpFinished)
+#      QObject.connect(self.lftpProcess, SIGNAL("readyReadStandardOutput()"), self.OnLftpProcessOutputReady)
+#      self.lftpProcess.start()
+
+      self.dlg.ui.outLog.append(myOutput)
+      
+      proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+      
+      ftp.quit()
+      
+    return self.isok
   
 
-  # run method
   def run(self):
+    '''Plugin run method : launch the gui and some tests'''
 
     # create and show the dialog
-    self.dlg = send2serverDialog()
+    self.dlg = lizmapDialog()
     # show the dialog
     self.dlg.show()
     
@@ -928,16 +866,21 @@ class send2server:
     self.isok = 1
     
     # pre-sync checkings
-    prepareSync = self.prepareSync()
+    checkGlobalProjectOptions = self.checkGlobalProjectOptions()
     
     # connect signals and functions
-    # synchronize button clicked
-    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.processSync)
+    # save button clicked
+    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getGuiConfig)
+    # ftp sync button clicked
+    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
     # clear log button clicked
     QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
-#    QObject.connect(self.dlg.ui.btTest, SIGNAL("clicked()"), self.treenodeBuild )
+    # refresh layer tree button click
+    QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.populateLayerTree )
     
     result = self.dlg.exec_()
     # See if OK was pressed
     if result == 1: 
       QMessageBox.warning(self.dlg, "Debug", ("Voulez allez quitter le plugin !"), QMessageBox.Ok)
+      
+      

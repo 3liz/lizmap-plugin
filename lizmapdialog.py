@@ -1,12 +1,12 @@
 """
 /***************************************************************************
- send2serverDialog
-                                 A QGIS plugin
- Sends a local qgis project and related files to a qgismapserver server installation using FTP
-                             -------------------
-        begin                : 2011-04-01
-        copyright            : (C) 2011 by 3liz
-        email                : mdouchin@3liz.org
+ lizmapDialog
+                 A QGIS plugin
+ Publication plugin for Lizmap web application, by 3liz.com
+                -------------------
+    begin        : 2011-04-01
+    copyright      : (C) 2011 by 3liz
+    email        : mdouchin@3liz.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,11 +20,11 @@
 """
 
 from PyQt4 import QtCore, QtGui
-from ui_send2server import Ui_send2server
+from ui_lizmap import Ui_lizmap
 # create the dialog for zoom to point
-class send2serverDialog(QtGui.QDialog):
+class lizmapDialog(QtGui.QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
-        self.ui = Ui_send2server()
+        self.ui = Ui_lizmap()
         self.ui.setupUi(self)

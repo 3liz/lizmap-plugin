@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/send2server" >
+    <qresource prefix="/plugins/lizmap" >
         <file>icon.png</file>
     </qresource>
 </RCC>
