@@ -746,32 +746,49 @@ class lizmap:
       else:
         QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
         
-    return self.isok
+      self.dlg.ui.progressBar.setValue(0)
+      self.dlg.ui.outState.setText('<font color="green"></font>')
+      self.dlg.ui.outSyncCommand.setText('')
+      # Go to Log tab
+      self.dlg.ui.tabWidget.setCurrentIndex(3)
+        
+    return [self.isok, host, port, username, password, localdir, remotedir]
     
 
   def ftpSync(self):
     '''Synchronize data (project file, project config file and all data contained in the project file folder) from local computer to remote host.
     Based on lftp library : only works on linux...
     '''
+    # Ask for confirmation
+    letsGo = QMessageBox.question(self.dlg, 'Lizmap - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    if letsGo == QMessageBox.Yes:
+      isok = True
+    else:
+      isok = False
     
-    if isok:
-      letsGo = QMessageBox.question(self.dlg, 'Lizmap - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-      if letsGo == QMessageBox.Yes:
-        isok = True
-      else:
-        isok = False
-            
     self.isok = 1
     # Check user defined options
-    if not self.getGuiConfig() or not isok:
+    getGuiConfig = self.getGuiConfig()
+    if not getGuiConfig[0] or not isok:
       return False
+    
+    # Go to Log tab
+    self.dlg.ui.tabWidget.setCurrentIndex(3)
     
     # Check the platform
     # FTP Sync only active for linux users. For windows users
     if sys.platform != 'linux2':
       QMessageBox.warning(self.dlg, "Lizmap", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
       return False
-  
+
+    # Get ftp user entered data from getGuiConfig()
+    host = getGuiConfig[1]
+    port = getGuiConfig[2]
+    username = getGuiConfig[3]
+    password = getGuiConfig[4]
+    localdir = getGuiConfig[5]
+    remotedir = getGuiConfig[6]
+
     myOutput = ''
     # display the stateLabel
     self.dlg.ui.outState.setText('<font color="orange">running</font>')
@@ -843,6 +860,8 @@ class lizmap:
       proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
       
       ftp.quit()
+      self.dlg.ui.progressBar.setValue(0)
+      self.dlg.ui.outSyncCommand.setText('')
       
     return self.isok
   
