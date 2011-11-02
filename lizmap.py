@@ -59,15 +59,10 @@ class lizmap:
     self.iface.addPluginToMenu("&lizmap", self.action)
 
 
-
-
   def unload(self):
     '''Remove the plugin menu item and icon'''
     self.iface.removePluginMenu("&lizmap",self.action)
     self.iface.removeToolBarIcon(self.action)
-
-
-
 
 
   def log(self,msg, level=1, abort=False, textarea=False):
@@ -78,9 +73,6 @@ class lizmap:
       textarea.append(msg)
     if abort:
       self.isok = 0
-
-
-
       
   def clearLog(self):
     '''Clear the content of the textarea log'''
@@ -91,7 +83,7 @@ class lizmap:
 
 
 
-    
+
   def getConfig(self):
     ''' Get the saved configuration from lizmap.cfg file and from the projet.qgs.cfg config file. Populate the gui fields accordingly'''
     
@@ -138,7 +130,6 @@ class lizmap:
     return True
     
 
-
     
   def getQgisLayerById(self, myId):
     '''Get a QgsLayer by its Id'''
@@ -146,8 +137,6 @@ class lizmap:
       if myId == layer.id():
         return layer
     return None
-
-
 
 
 
@@ -478,7 +467,6 @@ class lizmap:
 
 
 
-    
   def writeProjectConfigFile(self):
     '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
     myJson = '{'
@@ -607,7 +595,7 @@ class lizmap:
 
 
     
-  def getGuiConfig(self):
+  def getMapOptions(self):
     '''Check the user defined data from gui and save them to both global and project config files'''
     self.isok = 1
     # global project option checking
@@ -615,13 +603,6 @@ class lizmap:
     
     if isok:
       # Get configuration from input fields
-      # FTP
-      in_username = str(self.dlg.ui.inUsername.text()).strip(' \t')
-      in_password = str(self.dlg.ui.inPassword.text()).strip(' \t')
-      in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
-      in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
-      in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
-      in_remotedir = str(self.dlg.ui.inRemotedir.text()).strip(' \t')
       # Map
       in_imageFormat = str(self.dlg.ui.liImageFormat.currentText()).strip(' \t')
       in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
@@ -633,72 +614,20 @@ class lizmap:
       
       # log
       self.dlg.ui.outLog.append('=' * 20)
-      self.dlg.ui.outLog.append('Checking configuration data')
+      self.dlg.ui.outLog.append('<b>Map options</b>')
       self.dlg.ui.outLog.append('=' * 20)
       
       # Checking configuration data
-      # host
-      if len(in_host) == 0:
-        self.log('** WARNING ** Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
-      elif len(in_host) < 4:
-        self.log('** WARNING **Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
-      else:
-        host = unicode(in_host)
-        self.log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
-        
-      # port
-      port = 21
-      if len(in_port) > 0:
-        try:
-          port = int(in_port)
-        except (ValueError, IndexError):
-          port = 21
-          self.dlg.ui.inPort.setText('21')
-          
-      self.log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
-      
-      # remote directory
-      remotedir = unicode(in_remotedir)
-      if not str(remotedir).startswith('/'):
-        remotedir = '/' + remotedir
-      if str(remotedir).endswith('/'):
-        remotedir = remotedir.rstrip('/')
-      self.log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
-      
-      # local directory    
-      localdir = in_localdir
-      if not str(localdir).endswith('/'):
-        localdir = localdir + '/'
-      if not os.path.isdir(localdir):
-        self.log('** WARNING ** Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
-      else:
-        self.log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
-      
-      # username
-      if len(in_username) > 0:
-        username = unicode(in_username)
-        self.log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
-      else:
-        self.log('** WARNING ** Missing username !', abort=True, textarea=self.dlg.ui.outLog)
-      
-      # password  
-      if len(in_password) > 0:
-        password = unicode(in_password)
-        self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
-      else:
-        self.log('** WARNING ** Missing password !', abort=True, textarea=self.dlg.ui.outLog)
-        
       # Map config
       # image format
       if in_imageFormat == 'png' or in_imageFormat == 'jpg':
         imageFormat = in_imageFormat
       else:
-        self.log('** WARNING ** Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
+        self.log('<b>** WARNING **</b> Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
         
-      
       # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
       if len(in_mapScales) == 0 and ( len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
-        self.log('** WARNING ** : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
+        self.log('<b>** WARNING **</b> : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
       
       # minScale
       minScale = 1
@@ -707,7 +636,7 @@ class lizmap:
           minScale = int(in_minScale)
         except (ValueError, IndexError):
           self.dlg.ui.inMinScale.setText(minScale)
-          self.log('** WARNING ** : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log('<b>** WARNING **</b> : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
       self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # maxScale
@@ -717,7 +646,7 @@ class lizmap:
           maxScale = int(in_maxScale)
         except (ValueError, IndexError):
           self.dlg.ui.inMaxScale.setText(maxScale)
-          self.log('** WARNING ** : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
+          self.log('<b>** WARNING **</b> : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
       self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # zoom levels number
@@ -727,7 +656,7 @@ class lizmap:
           zoomLevelNumber = int(in_zoomLevelNumber)
         except (ValueError, IndexError):
           self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)
-          self.log('** WARNING ** : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log('<b>** WARNING **</b> : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
       self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
       
       # mapScales
@@ -744,26 +673,12 @@ class lizmap:
         if good:
           self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)      
         else:
-          self.log('** WARNING ** : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log('<b>** WARNING **</b> : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
         
       
-      if self.isok:
-      
-        # write data in the python plugin config file
-        cfg = ConfigParser.ConfigParser()
-        configPath = os.path.expanduser("~/.qgis/python/plugins/lizmap/lizmap.cfg")
-        cfg.read(configPath)
-        cfg.set('Ftp', 'host', host)
-        cfg.set('Ftp', 'username', username)
-#        cfg.set('Ftp', 'password', password)
-        cfg.set('Ftp', 'port', port)
-        cfg.set('Ftp', 'remotedir', in_remotedir)
-        cfg.write(open(configPath,"w"))
-        cfg.read(configPath)
-        
+      if self.isok:        
         # write data in the QgisWebClient json config file (to be send with the project file)
         self.writeProjectConfigFile()
-        
         self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
       else:
         QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
@@ -774,26 +689,127 @@ class lizmap:
       # Go to Log tab
       self.dlg.ui.tabWidget.setCurrentIndex(3)
         
-    return [self.isok, host, port, username, password, localdir, remotedir]
+    return self.isok
     
 
+  def getFtpOptions(self):
+    '''Get and check FTP options defined by user. Returns FTP options'''
+    # Get FTP options
+    in_username = str(self.dlg.ui.inUsername.text()).strip(' \t')
+    in_password = str(self.dlg.ui.inPassword.text()).strip(' \t')
+    in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
+    in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
+    in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
+    in_remotedir = str(self.dlg.ui.inRemotedir.text()).strip(' \t')
+
+    self.dlg.ui.outLog.append('')
+    self.dlg.ui.outLog.append('=' * 20)
+    self.dlg.ui.outLog.append('<b>FTP options</b>')
+    self.dlg.ui.outLog.append('=' * 20)
+    
+    # Check FTP options
+    # host
+    if len(in_host) == 0:
+      host = ''
+      self.log('<b>** WARNING **</b> Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
+    elif len(in_host) < 4:
+      host=''
+      self.log('<b>** WARNING **</b>Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
+    else:
+      host = unicode(in_host)
+      self.log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
+      
+    # port
+    port = 21
+    if len(in_port) > 0:
+      try:
+        port = int(in_port)
+      except (ValueError, IndexError):
+        port = 21
+        self.dlg.ui.inPort.setText('21')
+        
+    self.log('port = %d' % port, abort=False, textarea=self.dlg.ui.outLog)
+    
+    # remote directory
+    if len(in_remotedir) > 0:
+      remotedir = unicode(in_remotedir)
+      if not str(remotedir).startswith('/'):
+        remotedir = '/' + remotedir
+      if str(remotedir).endswith('/'):
+        remotedir = remotedir.rstrip('/')
+      self.log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
+    else:
+      remotedir=''
+      self.log('<b>** WARNING **</b> Remote directory must be set', abort=True, textarea=self.dlg.ui.outLog)
+    
+    # local directory    
+    localdir = in_localdir
+    if not str(localdir).endswith('/'):
+      localdir = localdir + '/'
+    if not os.path.isdir(localdir):
+      localdir=''
+      self.log('<b>** WARNING **</b> Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
+    else:
+      self.log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
+    
+    # username
+    if len(in_username) > 0:
+      username = unicode(in_username)
+      self.log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
+    else:
+      username=''
+      self.log('<b>** WARNING **</b> Missing username !', abort=True, textarea=self.dlg.ui.outLog)
+    
+    # password  
+    if len(in_password) > 0:
+      password = unicode(in_password)
+      self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
+    else:
+      password=''
+      self.log('<b>** WARNING **</b> Missing password !', abort=True, textarea=self.dlg.ui.outLog)
+      
+    if self.isok:
+      # write FTP options data in the python plugin config file
+      cfg = ConfigParser.ConfigParser()
+      configPath = os.path.expanduser("~/.qgis/python/plugins/lizmap/lizmap.cfg")
+      cfg.read(configPath)
+      cfg.set('Ftp', 'host', host)
+      cfg.set('Ftp', 'username', username)
+#        cfg.set('Ftp', 'password', password)
+      cfg.set('Ftp', 'port', port)
+      cfg.set('Ftp', 'remotedir', in_remotedir)
+      cfg.write(open(configPath,"w"))
+      cfg.read(configPath)
+      # log the errors
+      self.log('All the FTP parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
+    else:
+      QMessageBox.critical(self.dlg, "Error", ("Wrong FTP parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
+    
+    return [self.isok, host, port, username, password, localdir, remotedir]
 
 
   def ftpSync(self):
     '''Synchronize data (project file, project config file and all data contained in the project file folder) from local computer to remote host.
-    Based on lftp library : only works on linux...
+    Based on lftp library : only works on linux.
     '''
     # Ask for confirmation
-    letsGo = QMessageBox.question(self.dlg, 'Lizmap - Send the current project to the server ?', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    letsGo = QMessageBox.question(self.dlg, 'Lizmap', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     if letsGo == QMessageBox.Yes:
       isok = True
     else:
       isok = False
+      return False
     
     self.isok = 1
+    
     # Check user defined options
-    getGuiConfig = self.getGuiConfig()
-    if not getGuiConfig[0] or not isok:
+    getMapOptions = self.getMapOptions()    
+    if not getMapOptions:
+      return False
+      
+    # Check FTP user defined options
+    getFtpOptions = self.getFtpOptions()
+    if not getFtpOptions[0]:
       return False
     
     # Go to Log tab
@@ -805,13 +821,13 @@ class lizmap:
       QMessageBox.warning(self.dlg, "Lizmap", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
       return False
 
-    # Get ftp user entered data from getGuiConfig()
-    host = getGuiConfig[1]
-    port = getGuiConfig[2]
-    username = getGuiConfig[3]
-    password = getGuiConfig[4]
-    localdir = getGuiConfig[5]
-    remotedir = getGuiConfig[6]
+    # Get ftp user entered data from getMapOptions()
+    host = getFtpOptions[1]
+    port = getFtpOptions[2]
+    username = getFtpOptions[3]
+    password = getFtpOptions[4]
+    localdir = getFtpOptions[5]
+    remotedir = getFtpOptions[6]
 
     myOutput = ''
     # display the stateLabel
@@ -874,16 +890,8 @@ class lizmap:
         except:
           anerror = True
 
-#      # Run lftp with QProcess
-#      self.lftpProcess = QProcess(self)
-#      QObject.connect(self.lftpProcess, SIGNAL("finished(int)"), self.lftpFinished)
-#      QObject.connect(self.lftpProcess, SIGNAL("readyReadStandardOutput()"), self.OnLftpProcessOutputReady)
-#      self.lftpProcess.start()
-
-      self.dlg.ui.outLog.append(myOutput)
-      
+      self.dlg.ui.outLog.append(myOutput)      
       proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-      
       ftp.quit()
       self.dlg.ui.progressBar.setValue(0)
       self.dlg.ui.outSyncCommand.setText('')
@@ -914,7 +922,7 @@ class lizmap:
     
     # connect signals and functions
     # save button clicked
-    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getGuiConfig)
+    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
     # ftp sync button clicked
     QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
     # clear log button clicked

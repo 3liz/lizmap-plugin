@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Wed Nov  2 10:54:04 2011
+# Created: Wed Nov  2 11:24:55 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -241,21 +241,21 @@ class Ui_lizmap(object):
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
         self.outLog = QtGui.QTextEdit(self.tab_main)
-        self.outLog.setGeometry(QtCore.QRect(10, 110, 551, 251))
+        self.outLog.setGeometry(QtCore.QRect(10, 50, 551, 291))
         self.outLog.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         self.outLog.setObjectName(_fromUtf8("outLog"))
         self.outSyncCommand = QtGui.QLineEdit(self.tab_main)
-        self.outSyncCommand.setGeometry(QtCore.QRect(10, 70, 551, 27))
+        self.outSyncCommand.setGeometry(QtCore.QRect(10, 10, 551, 27))
         self.outSyncCommand.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.outSyncCommand.setObjectName(_fromUtf8("outSyncCommand"))
         self.progressBar = QtGui.QProgressBar(self.tab_main)
         self.progressBar.setEnabled(True)
-        self.progressBar.setGeometry(QtCore.QRect(500, 30, 61, 20))
+        self.progressBar.setGeometry(QtCore.QRect(500, 353, 61, 20))
         self.progressBar.setProperty(_fromUtf8("value"), 0)
         self.progressBar.setFormat(_fromUtf8(""))
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.outState = QtGui.QLabel(self.tab_main)
-        self.outState.setGeometry(QtCore.QRect(400, 30, 81, 21))
+        self.outState.setGeometry(QtCore.QRect(400, 353, 81, 21))
         font = QtGui.QFont()
         font.setPointSize(9)
         font.setWeight(75)
@@ -264,7 +264,7 @@ class Ui_lizmap(object):
         self.outState.setText(_fromUtf8(""))
         self.outState.setObjectName(_fromUtf8("outState"))
         self.btClearlog = QtGui.QPushButton(self.tab_main)
-        self.btClearlog.setGeometry(QtCore.QRect(10, 30, 379, 27))
+        self.btClearlog.setGeometry(QtCore.QRect(10, 350, 379, 27))
         self.btClearlog.setObjectName(_fromUtf8("btClearlog"))
         self.tabWidget.addTab(self.tab_main, _fromUtf8(""))
         self.tab = QtGui.QWidget()
