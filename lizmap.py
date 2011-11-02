@@ -58,10 +58,16 @@ class lizmap:
     self.iface.addToolBarIcon(self.action)
     self.iface.addPluginToMenu("&lizmap", self.action)
 
+
+
+
   def unload(self):
     '''Remove the plugin menu item and icon'''
     self.iface.removePluginMenu("&lizmap",self.action)
     self.iface.removeToolBarIcon(self.action)
+
+
+
 
 
   def log(self,msg, level=1, abort=False, textarea=False):
@@ -72,6 +78,9 @@ class lizmap:
       textarea.append(msg)
     if abort:
       self.isok = 0
+
+
+
       
   def clearLog(self):
     '''Clear the content of the textarea log'''
@@ -79,6 +88,9 @@ class lizmap:
     self.dlg.ui.progressBar.setValue(0)
     self.dlg.ui.outState.setText('<font color="green"></font>')
     self.dlg.ui.outSyncCommand.setText('')
+
+
+
     
   def getConfig(self):
     ''' Get the saved configuration from lizmap.cfg file and from the projet.qgs.cfg config file. Populate the gui fields accordingly'''
@@ -125,6 +137,8 @@ class lizmap:
         
     return True
     
+
+
     
   def getQgisLayerById(self, myId):
     '''Get a QgsLayer by its Id'''
@@ -132,6 +146,9 @@ class lizmap:
       if myId == layer.id():
         return layer
     return None
+
+
+
 
 
   def populateLayerTree(self):
@@ -459,6 +476,8 @@ class lizmap:
     # modify the cached property for the selected item
     self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
 
+
+
     
   def writeProjectConfigFile(self):
     '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
@@ -530,6 +549,7 @@ class lizmap:
 
 
 
+
   def checkGlobalProjectOptions(self):
     ''' Checks that the needed options are correctly set : relative path, project saved, etc.'''
     
@@ -583,6 +603,8 @@ class lizmap:
           isOk = False
       
     return isok
+
+
 
     
   def getGuiConfig(self):
@@ -755,6 +777,8 @@ class lizmap:
     return [self.isok, host, port, username, password, localdir, remotedir]
     
 
+
+
   def ftpSync(self):
     '''Synchronize data (project file, project config file and all data contained in the project file folder) from local computer to remote host.
     Based on lftp library : only works on linux...
@@ -844,6 +868,7 @@ class lizmap:
           if output == "":
             self.dlg.ui.progressBar.setValue(100)
             myOutput+="Synchronisation completed !"
+            self.dlg.ui.outState.setText('<font color="green">completed</font>')
             self.dlg.ui.outSyncCommand.setText("Synchronisation completed !")
             break
         except:

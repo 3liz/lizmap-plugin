@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Thu Oct 27 18:05:51 2011
+# Created: Wed Nov  2 10:54:04 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -237,9 +237,6 @@ class Ui_lizmap(object):
         self.inRemotedir = QtGui.QLineEdit(self.horizontalLayoutWidget_6)
         self.inRemotedir.setObjectName(_fromUtf8("inRemotedir"))
         self.horizontalLayout_6.addWidget(self.inRemotedir)
-        self.btSync = QtGui.QPushButton(self.tab_ftp)
-        self.btSync.setGeometry(QtCore.QRect(200, 250, 187, 27))
-        self.btSync.setObjectName(_fromUtf8("btSync"))
         self.tabWidget.addTab(self.tab_ftp, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
@@ -277,8 +274,11 @@ class Ui_lizmap(object):
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.btSave = QtGui.QPushButton(lizmap)
-        self.btSave.setGeometry(QtCore.QRect(498, 430, 81, 31))
+        self.btSave.setGeometry(QtCore.QRect(340, 426, 85, 31))
         self.btSave.setObjectName(_fromUtf8("btSave"))
+        self.btSync = QtGui.QPushButton(lizmap)
+        self.btSync.setGeometry(QtCore.QRect(431, 426, 154, 31))
+        self.btSync.setObjectName(_fromUtf8("btSync"))
 
         self.retranslateUi(lizmap)
         self.tabWidget.setCurrentIndex(0)
@@ -332,8 +332,7 @@ class Ui_lizmap(object):
         self.label_5.setText(QtGui.QApplication.translate("lizmap", "Local Dir", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("lizmap", "Password", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("lizmap", "Remote Dir", None, QtGui.QApplication.UnicodeUTF8))
-        self.btSync.setText(QtGui.QApplication.translate("lizmap", "Synchronize", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_ftp), QtGui.QApplication.translate("lizmap", "FTP Sync", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_ftp), QtGui.QApplication.translate("lizmap", "FTP options", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("lizmap", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("lizmap", "Log", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setHtml(QtGui.QApplication.translate("lizmap", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -372,6 +371,7 @@ class Ui_lizmap(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("lizmap", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.btSave.setText(QtGui.QApplication.translate("lizmap", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.btSync.setText(QtGui.QApplication.translate("lizmap", "Save and synchronize", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
