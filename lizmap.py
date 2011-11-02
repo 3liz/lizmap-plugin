@@ -144,7 +144,7 @@ class lizmap:
     '''Populate the layer tree of the Layers tab from Qgis legend interface'''
     myTree = self.dlg.ui.treeLayer
     myTree.clear()
-    myTree.headerItem().setText(0, 'Liste des couches')
+    myTree.headerItem().setText(0, 'List of layers')
     myDic = {}
     myGroups = self.iface.legendInterface().groups()
 
@@ -367,6 +367,8 @@ class lizmap:
           parentItem.addChild(childItem)
         myDic[b]['item'] = childItem
 
+    myTree.expandAll()
+    
     # Add the myDic to the global layerList dictionary
     self.layerList = myDic
 
@@ -816,7 +818,7 @@ class lizmap:
     self.dlg.ui.tabWidget.setCurrentIndex(3)
     
     # Check the platform
-    # FTP Sync only active for linux users. For windows users
+    # FTP Sync only active for linux users.
     if sys.platform != 'linux2':
       QMessageBox.warning(self.dlg, "Lizmap", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
       return False
@@ -906,6 +908,11 @@ class lizmap:
     self.dlg = lizmapDialog()
     # show the dialog
     self.dlg.show()
+    
+    # FTP Sync only active for linux users.
+    if sys.platform != 'linux2':
+      self.dlg.ui.tabWidget.setTabEnabled(2, False)
+      self.dlg.ui.btSync.setEnabled(False)
     
     # Get config file data and set the Ftp Configuration input fields
     self.getConfig()
