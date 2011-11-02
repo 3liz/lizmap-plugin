@@ -103,7 +103,7 @@ class lizmap:
     # Set the FTP tab fields values
     self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
     self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
-    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
+#    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
     self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
 
@@ -755,7 +755,7 @@ class lizmap:
         cfg.read(configPath)
         cfg.set('Ftp', 'host', host)
         cfg.set('Ftp', 'username', username)
-        cfg.set('Ftp', 'password', password)
+#        cfg.set('Ftp', 'password', password)
         cfg.set('Ftp', 'port', port)
         cfg.set('Ftp', 'remotedir', in_remotedir)
         cfg.write(open(configPath,"w"))
