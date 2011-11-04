@@ -575,6 +575,14 @@ class lizmap:
       QMessageBox.critical(self.dlg, "Lizmap Error", ("You need to open a qgis project first."), QMessageBox.Ok)
       isok = False
       
+    # Check the project state (saved or not)
+    if isok and p.isDirty():
+      saveIt = QMessageBox.question(self.dlg, 'Lizmap - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+      if saveIt == QMessageBox.Yes:
+        p.write()
+      else:
+        isok = False
+      
     if isok:
       # Get the project folder
       projectDir, projectName = os.path.split(os.path.abspath('%s' % p.fileName()))
@@ -586,36 +594,41 @@ class lizmap:
       isok = False
       
     # check active layers path layer by layer
-    layerSourcesOk = []
-    layerSourcesBad = []
-    mc = self.iface.mapCanvas()
-    for i in range(mc.layerCount()):
-      layerSource =  unicode('%s' % mc.layer( i ).source() )
-      if os.path.abspath(layerSource).startswith(projectDir):
-        layerSourcesOk.append(os.path.abspath(layerSource))
-      elif layerSource.startswith('dbname=') or layerSource.startswith('http'):
-        layerSourcesOk.append(layerSource)
-      else:
-        layerSourcesBad.append(layerSource)
-        isok = False
-    if len(layerSourcesBad) > 0:
-      QMessageBox.critical(self.dlg, "Lizmap Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
-      self.log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
+    if isok:
+      layerSourcesOk = []
+      layerSourcesBad = []
+      mc = self.iface.mapCanvas()
+      for i in range(mc.layerCount()):
+        layerSource =  unicode('%s' % mc.layer( i ).source() )
+        if os.path.abspath(layerSource).startswith(projectDir):
+          layerSourcesOk.append(os.path.abspath(layerSource))
+        elif layerSource.startswith('dbname=') or layerSource.startswith('http'):
+          layerSourcesOk.append(layerSource)
+        else:
+          layerSourcesBad.append(layerSource)
+          isok = False
+      if len(layerSourcesBad) > 0:
+        QMessageBox.critical(self.dlg, "Lizmap Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
+        self.log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
       
     # check if a bbox has been given in the project WMS tab configuration
-    pWmsExtent = p.readListEntry('WMSExtent','')[0]
-    if len(pWmsExtent) <1 :
-      QMessageBox.critical(self.dlg, "Lizmap Error", ("The project WMS extent must be set. Please change this options in the project settings."), QMessageBox.Ok)
-      isok = False
-      
     if isok:
-      # Check the project state (saved or not)
-      if p.isDirty():
-        saveIt = QMessageBox.question(self.dlg, 'Lizmap - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if saveIt == QMessageBox.Yes:
-          p.write()
-        else:
-          isOk = False
+      pWmsExtent = p.readListEntry('WMSExtent','')[0]
+      if len(pWmsExtent) <1 :
+        QMessageBox.critical(self.dlg, "Lizmap Error", ("The project WMS extent must be set. Please change this options in the project settings."), QMessageBox.Ok)
+        isok = False
+        
+    # for linux users, check if lftp has been installed
+    if isok and sys.platform == 'linux2':
+      lftpCheck = u'lftp --version'
+      workingDir = os.getcwd()
+      proc = subprocess.Popen( lftpCheck, cwd=workingDir, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+      output = proc.communicate()
+      proc.wait()
+      if "LFTP" not in output[0]:
+        QMessageBox.critical(self.dlg, "Lizmap Warning", ("Lftp is not installed. You won't be able to synchronize your project from the plugin. You can install lftp and reload the plugin, or use another FTP client to synchronize your local project to the server"), QMessageBox.Ok)
+        self.dlg.ui.tabWidget.setTabEnabled(2, False)
+        self.dlg.ui.btSync.setEnabled(False)
       
     return isok
 
@@ -707,6 +720,7 @@ class lizmap:
         # write data in the QgisWebClient json config file (to be send with the project file)
         self.writeProjectConfigFile()
         self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
+        self.log('<b>Lizmap configuration file has been updated</b>' , abort=False, textarea=self.dlg.ui.outLog)
       else:
         QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
         
@@ -912,7 +926,7 @@ class lizmap:
             self.dlg.ui.progressBar.setValue(100)
             myOutput+="Synchronisation completed !"
             self.dlg.ui.outState.setText('<font color="green">completed</font>')
-            self.dlg.ui.outSyncCommand.setText("Synchronisation completed !")
+            self.dlg.ui.outSyncCommand.setText("<b>Synchronisation completed !</b>")
             break
         except:
           anerror = True
@@ -931,40 +945,42 @@ class lizmap:
 
     # create and show the dialog
     self.dlg = lizmapDialog()
-    # show the dialog
-    self.dlg.show()
-    
-    # FTP Sync only active for linux users.
-    if sys.platform != 'linux2':
-      self.dlg.ui.tabWidget.setTabEnabled(2, False)
-      self.dlg.ui.btSync.setEnabled(False)
-    
-    # Get config file data and set the Ftp Configuration input fields
-    self.getConfig()
-    
-    self.layerList = {}
-    
-    # Fill the layer tree
-    self.populateLayerTree()
-    
-    self.isok = 1
-    
-    # pre-sync checkings
+
+    # checkings
     checkGlobalProjectOptions = self.checkGlobalProjectOptions()
     
-    # connect signals and functions
-    # save button clicked
-    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
-    # ftp sync button clicked
-    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
-    # clear log button clicked
-    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
-    # refresh layer tree button click
-    QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.populateLayerTree )
+    # show the dialog only if checkGlobalProjectOptions is true
+    if checkGlobalProjectOptions:
+      self.dlg.show()
+      
+      # FTP Sync only active for linux users.
+      if sys.platform != 'linux2':
+        self.dlg.ui.tabWidget.setTabEnabled(2, False)
+        self.dlg.ui.btSync.setEnabled(False)
+      
+      # Get config file data and set the Ftp Configuration input fields
+      self.getConfig()
+      
+      self.layerList = {}
+      
+      # Fill the layer tree
+      self.populateLayerTree()
+      
+      self.isok = 1
+      
+      # connect signals and functions
+      # save button clicked
+      QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
+      # ftp sync button clicked
+      QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
+      # clear log button clicked
+      QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
+      # refresh layer tree button click
+      QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.populateLayerTree )
     
-    result = self.dlg.exec_()
-    # See if OK was pressed
-    if result == 1: 
-      QMessageBox.warning(self.dlg, "Debug", ("Voulez allez quitter le plugin !"), QMessageBox.Ok)
+      result = self.dlg.exec_()
+      # See if OK was pressed
+      if result == 1: 
+        QMessageBox.warning(self.dlg, "Debug", ("Voulez allez quitter le plugin !"), QMessageBox.Ok)
       
       
