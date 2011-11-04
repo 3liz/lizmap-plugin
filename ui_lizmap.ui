@@ -484,7 +484,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>10</y>
        <width>551</width>
        <height>291</height>
       </rect>
@@ -500,7 +500,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>310</y>
        <width>551</width>
        <height>27</height>
       </rect>
@@ -811,18 +811,27 @@ p, li { white-space: pre-wrap; }
   <tabstop>cbLayerIsBaseLayer</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
   <tabstop>cbToggled</tabstop>
-  <tabstop>inUsername</tabstop>
-  <tabstop>inPassword</tabstop>
-  <tabstop>inRemotedir</tabstop>
-  <tabstop>inLocaldir</tabstop>
+  <tabstop>cbSingleTile</tabstop>
+  <tabstop>cbCached</tabstop>
+  <tabstop>btRefreshTree</tabstop>
   <tabstop>liImageFormat</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inZoomLevelNumber</tabstop>
   <tabstop>inMapScales</tabstop>
-  <tabstop>outSyncCommand</tabstop>
+  <tabstop>inHost</tabstop>
+  <tabstop>inPort</tabstop>
+  <tabstop>inUsername</tabstop>
+  <tabstop>inPassword</tabstop>
+  <tabstop>inRemotedir</tabstop>
+  <tabstop>inLocaldir</tabstop>
   <tabstop>outLog</tabstop>
+  <tabstop>outSyncCommand</tabstop>
+  <tabstop>btClearlog</tabstop>
   <tabstop>textEdit</tabstop>
+  <tabstop>txtAbout</tabstop>
+  <tabstop>btSave</tabstop>
+  <tabstop>btSync</tabstop>
  </tabstops>
  <resources/>
  <connections/>

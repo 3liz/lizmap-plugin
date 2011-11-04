@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Wed Nov  2 17:22:28 2011
+# Created: Fri Nov  4 11:43:08 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -241,12 +241,12 @@ class Ui_lizmap(object):
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
         self.outLog = QtGui.QTextEdit(self.tab_main)
-        self.outLog.setGeometry(QtCore.QRect(10, 50, 551, 291))
+        self.outLog.setGeometry(QtCore.QRect(10, 10, 551, 291))
         self.outLog.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         self.outLog.setReadOnly(True)
         self.outLog.setObjectName(_fromUtf8("outLog"))
         self.outSyncCommand = QtGui.QLineEdit(self.tab_main)
-        self.outSyncCommand.setGeometry(QtCore.QRect(10, 10, 551, 27))
+        self.outSyncCommand.setGeometry(QtCore.QRect(10, 310, 551, 27))
         self.outSyncCommand.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.outSyncCommand.setObjectName(_fromUtf8("outSyncCommand"))
         self.progressBar = QtGui.QProgressBar(self.tab_main)
@@ -302,18 +302,27 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.inLayerLink, self.cbLayerIsBaseLayer)
         lizmap.setTabOrder(self.cbLayerIsBaseLayer, self.cbGroupAsLayer)
         lizmap.setTabOrder(self.cbGroupAsLayer, self.cbToggled)
-        lizmap.setTabOrder(self.cbToggled, self.inUsername)
-        lizmap.setTabOrder(self.inUsername, self.inPassword)
-        lizmap.setTabOrder(self.inPassword, self.inRemotedir)
-        lizmap.setTabOrder(self.inRemotedir, self.inLocaldir)
-        lizmap.setTabOrder(self.inLocaldir, self.liImageFormat)
+        lizmap.setTabOrder(self.cbToggled, self.cbSingleTile)
+        lizmap.setTabOrder(self.cbSingleTile, self.cbCached)
+        lizmap.setTabOrder(self.cbCached, self.btRefreshTree)
+        lizmap.setTabOrder(self.btRefreshTree, self.liImageFormat)
         lizmap.setTabOrder(self.liImageFormat, self.inMinScale)
         lizmap.setTabOrder(self.inMinScale, self.inMaxScale)
         lizmap.setTabOrder(self.inMaxScale, self.inZoomLevelNumber)
         lizmap.setTabOrder(self.inZoomLevelNumber, self.inMapScales)
-        lizmap.setTabOrder(self.inMapScales, self.outSyncCommand)
-        lizmap.setTabOrder(self.outSyncCommand, self.outLog)
-        lizmap.setTabOrder(self.outLog, self.textEdit)
+        lizmap.setTabOrder(self.inMapScales, self.inHost)
+        lizmap.setTabOrder(self.inHost, self.inPort)
+        lizmap.setTabOrder(self.inPort, self.inUsername)
+        lizmap.setTabOrder(self.inUsername, self.inPassword)
+        lizmap.setTabOrder(self.inPassword, self.inRemotedir)
+        lizmap.setTabOrder(self.inRemotedir, self.inLocaldir)
+        lizmap.setTabOrder(self.inLocaldir, self.outLog)
+        lizmap.setTabOrder(self.outLog, self.outSyncCommand)
+        lizmap.setTabOrder(self.outSyncCommand, self.btClearlog)
+        lizmap.setTabOrder(self.btClearlog, self.textEdit)
+        lizmap.setTabOrder(self.textEdit, self.txtAbout)
+        lizmap.setTabOrder(self.txtAbout, self.btSave)
+        lizmap.setTabOrder(self.btSave, self.btSync)
 
     def retranslateUi(self, lizmap):
         lizmap.setWindowTitle(QtGui.QApplication.translate("lizmap", "LizMap", None, QtGui.QApplication.UnicodeUTF8))
