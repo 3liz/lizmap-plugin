@@ -1,9 +1,0 @@
-* toutes les couches doivent avoir une projection spécifiée
-* un groupe Overview doit exister à la racine du projet et contenir des couches
-* paramètres du projet doivent être complets
-
-
-TODO
-http://www.qtcentre.org/archive/index.php/t-17868.html
-http://www.qtcentre.org/threads/38302-QProcess-readyRead-QTextEdit?highlight=flush
-
