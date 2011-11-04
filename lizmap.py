@@ -164,6 +164,12 @@ class lizmap:
     return None
 
 
+  def refreshLayerTree(self):
+    # Ask confirmation
+    refreshIt = QMessageBox.question(self.dlg, 'Lizmap - Refresh layer tree ?', "You can refresh the layer tree by pressing \"Yes\". \n\nBe aware that you will loose all the changes made in this Layers tab (group or layer metadata and options) since your last \"Save\". \nIf you have renamed one or more groups or layers, you will also loose the associated informations. \n\nRefresh layer tree ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    if refreshIt == QMessageBox.Yes:
+      self.populateLayerTree()
+
 
   def populateLayerTree(self):
     '''Populate the layer tree of the Layers tab from Qgis legend interface'''
@@ -577,7 +583,7 @@ class lizmap:
       
     # Check the project state (saved or not)
     if isok and p.isDirty():
-      saveIt = QMessageBox.question(self.dlg, 'Lizmap - Save current project ?', "Please save the current project before proceeding synchronisation. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+      saveIt = QMessageBox.question(self.dlg, 'Lizmap - Save current project ?', "Please save the current project before using Lizmap plugin. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
       if saveIt == QMessageBox.Yes:
         p.write()
       else:
@@ -626,7 +632,7 @@ class lizmap:
       output = proc.communicate()
       proc.wait()
       if "LFTP" not in output[0]:
-        QMessageBox.critical(self.dlg, "Lizmap Warning", ("Lftp is not installed. You won't be able to synchronize your project from the plugin. You can install lftp and reload the plugin, or use another FTP client to synchronize your local project to the server"), QMessageBox.Ok)
+        QMessageBox.critical(self.dlg, "Lizmap Warning", ("Lftp is not installed. You won't be able to synchronize your project from the plugin. You can install lftp and reload the plugin, or go on and use another FTP client to synchronize your local project to the server"), QMessageBox.Ok)
         self.dlg.ui.tabWidget.setTabEnabled(2, False)
         self.dlg.ui.btSync.setEnabled(False)
       
@@ -976,11 +982,11 @@ class lizmap:
       # clear log button clicked
       QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
       # refresh layer tree button click
-      QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.populateLayerTree )
+      QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
     
       result = self.dlg.exec_()
       # See if OK was pressed
       if result == 1: 
-        QMessageBox.warning(self.dlg, "Debug", ("Voulez allez quitter le plugin !"), QMessageBox.Ok)
+        QMessageBox.warning(self.dlg, "Debug", ("Quit !"), QMessageBox.Ok)
       
       
