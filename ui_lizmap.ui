@@ -449,7 +449,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="inPassword"/>
+       <widget class="QLineEdit" name="inPassword">
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

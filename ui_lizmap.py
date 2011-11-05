@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Sat Nov  5 18:37:06 2011
+# Created: Sat Nov  5 18:46:43 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -223,6 +223,8 @@ class Ui_lizmap(object):
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.horizontalLayout_4.addWidget(self.label_4)
         self.inPassword = QtGui.QLineEdit(self.horizontalLayoutWidget_4)
+        self.inPassword.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.inPassword.setEchoMode(QtGui.QLineEdit.Password)
         self.inPassword.setObjectName(_fromUtf8("inPassword"))
         self.horizontalLayout_4.addWidget(self.inPassword)
         self.horizontalLayoutWidget_6 = QtGui.QWidget(self.tab_ftp)
