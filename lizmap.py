@@ -102,10 +102,7 @@ class lizmap:
   def clearLog(self):
     '''Clear the content of the textarea log'''
     self.dlg.ui.outLog.clear()
-    self.dlg.ui.progressBar.setValue(0)
     self.dlg.ui.outState.setText('<font color="green"></font>')
-    self.dlg.ui.outSyncCommand.setText('')
-
 
 
 
@@ -730,9 +727,7 @@ class lizmap:
       else:
         QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
         
-      self.dlg.ui.progressBar.setValue(0)
       self.dlg.ui.outState.setText('<font color="green"></font>')
-      self.dlg.ui.outSyncCommand.setText('')
       # Go to Log tab
       self.dlg.ui.tabWidget.setCurrentIndex(3)
         
@@ -830,14 +825,30 @@ class lizmap:
       # log the errors
       self.log('All the FTP parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
     else:
-      QMessageBox.critical(self.dlg, "Error", ("Wrong FTP parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, "Error", (u"Wrong FTP parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
     
     return [self.isok, host, port, username, password, localdir, remotedir]
 
 
+  def ftpSyncStdout(self):
+    data = QString(self.proc.readAllStandardOutput())
+    output = QString.fromUtf8(data)
+    self.dlg.ui.outLog.append(output)
+
+  def ftpSyncError(self):
+    data = QString(self.proc.readAllStandardError())
+    output = QString.fromUtf8(data)
+    self.dlg.ui.outLog.append(output)
+
+  def ftpSyncFinished(self):
+      self.dlg.ui.outLog.append(u"Synchronization completed. See above for details.")
+
+
   def ftpSync(self):
     '''Synchronize data (project file, project config file and all data contained in the project file folder) from local computer to remote host.
-    Based on lftp library : only works on linux.
+    * linux : Based on lftp library which needs to be installed
+    * windows : based on winscp435, installed in the plugin directory
+    * mac : needs to be done
     '''
     # Ask for confirmation
     letsGo = QMessageBox.question(self.dlg, 'Lizmap', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -880,68 +891,27 @@ class lizmap:
     # display the stateLabel
     self.dlg.ui.outState.setText('<font color="orange">running</font>')
     # setting progressbar refreshes the plygin ui
-    self.dlg.ui.progressBar.setValue(0)  
     self.dlg.ui.outLog.append('')
     self.dlg.ui.outLog.append('=' * 20)
-    self.dlg.ui.outLog.append('FTP Synchronisation')
+    self.dlg.ui.outLog.append('<b>FTP Synchronisation</b>')
     self.dlg.ui.outLog.append('=' * 20)
-    
-    if self.isok:
-      self.dlg.ui.progressBar.setValue(33)
-      ftp = ftplib.FTP()
-      # Connection to FTP host
-      try:
-        ftp.connect(host, port)
-        ftp.login(username, password, '')
-        self.log('FTP connection OK', abort=False, textarea=self.dlg.ui.outLog)
-      except:
-        self.log('Impossible to connect to %s:' % host, abort=True, textarea=self.dlg.ui.outLog)
     
     # Process the sync with lftp
     if self.isok:
-      self.dlg.ui.progressBar.setValue(0)
       time_started = datetime.datetime.now()
       
-      # construction of lftp command line
+      # construction of ftp sync command line
       lftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir)
       lftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
-      workingDir = os.getcwd()
-      
-      # run lftp
-      proc = subprocess.Popen( lftpStr1, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-      # read output
-      i=33
-      while True:
-        # progressBar (needed to avoid the ui freezing)
-        if i == 33:
-          i=66
-        else:
-          i=33
-        self.dlg.ui.progressBar.setValue(i)
-        # output formating
-        try:
-          output = proc.stdout.readline()
-          output = output.decode('utf-8')
-          output = output.strip(' \t\n')
-          output = output.replace(u'du fichier', 'de')
-          output = output.replace(u'Â ', '')
-          self.dlg.ui.outSyncCommand.setText(output)
-          myOutput+=output + '\n'
-          # if output empty --> break the loop - opeartion complete
-          if output == "":
-            self.dlg.ui.progressBar.setValue(100)
-            myOutput+="Synchronisation completed !"
-            self.dlg.ui.outState.setText('<font color="green">completed</font>')
-            self.dlg.ui.outSyncCommand.setText("<b>Synchronisation completed !</b>")
-            break
-        except:
-          anerror = True
-
-      self.dlg.ui.outLog.append(myOutput)      
+      workingDir = os.getcwd()     
+      # run the ftp sync      
+      self.proc = QProcess()
+      QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
+      QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self.ftpSyncError)
+      QObject.connect(self.proc, SIGNAL("finished(int)"), self.ftpSyncFinished)
+      self.proc.start(lftpStr1)
+      # chmod 775 (nb: must find a way to pass the right option to lftpStr1 instead)
       proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-      ftp.quit()
-      self.dlg.ui.progressBar.setValue(0)
-      self.dlg.ui.outSyncCommand.setText('')
       
     return self.isok
   
