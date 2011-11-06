@@ -118,7 +118,7 @@ class lizmap:
     self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
     self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
 #    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
-    self.dlg.ui.inRemotedir.setText(cfg.get('Ftp', 'remotedir'))
+    self.dlg.ui.inRemotedir.setText(str(cfg.get('Ftp', 'remotedir')).decode('utf-8'))
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
 
     # Get the project config file (projectname.qgs.cfg)
@@ -622,7 +622,7 @@ class lizmap:
         isok = False
         
     # for linux users, check if lftp has been installed
-    if isok and sys.platform == 'linux2':
+    if isok and sys.platform.startswith('linux'):
       lftpCheck = u'lftp --version'
       workingDir = os.getcwd()
       proc = subprocess.Popen( lftpCheck, cwd=workingDir, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -742,7 +742,7 @@ class lizmap:
     in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
     in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
     in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
-    in_remotedir = str(self.dlg.ui.inRemotedir.text()).strip(' \t')
+    in_remotedir = str(self.dlg.ui.inRemotedir.text().toUtf8()).strip(' \t')
 
     self.dlg.ui.outLog.append('')
     self.dlg.ui.outLog.append('=' * 20)
@@ -774,7 +774,7 @@ class lizmap:
     
     # remote directory
     if len(in_remotedir) > 0:
-      remotedir = unicode(in_remotedir)
+      remotedir = in_remotedir
       if not str(remotedir).startswith('/'):
         remotedir = '/' + remotedir
       if str(remotedir).endswith('/'):
@@ -819,7 +819,7 @@ class lizmap:
       cfg.set('Ftp', 'username', username)
 #        cfg.set('Ftp', 'password', password)
       cfg.set('Ftp', 'port', port)
-      cfg.set('Ftp', 'remotedir', in_remotedir)
+      cfg.set('Ftp', 'remotedir', remotedir)
       cfg.write(open(configPath,"w"))
       cfg.read(configPath)
       # log the errors
@@ -842,6 +842,7 @@ class lizmap:
 
   def ftpSyncFinished(self):
       self.dlg.ui.outLog.append(u"Synchronization completed. See above for details.")
+      self.dlg.ui.outState.setText('<font color="green">completed</font>')
 
 
   def ftpSync(self):
@@ -874,8 +875,8 @@ class lizmap:
     self.dlg.ui.tabWidget.setCurrentIndex(3)
     
     # Check the platform
-    # FTP Sync only active for linux users.
-    if sys.platform != 'linux2':
+    # FTP Sync only active for linux and windows users.
+    if not sys.platform.startswith('linux') and sys.platform != 'win32':
       QMessageBox.warning(self.dlg, "Lizmap", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
       return False
 
@@ -900,19 +901,39 @@ class lizmap:
     if self.isok:
       time_started = datetime.datetime.now()
       
-      # construction of ftp sync command line
-      lftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir)
-      lftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir)
-      workingDir = os.getcwd()     
+      if sys.platform.startswith('linux'):
+        # construction of ftp sync command line
+        ftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir.decode('utf-8'))
+        ftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
+
+      else:
+        winscp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/lizmap/winscp435/WinSCP.com")
+        winLocaldir = localdir.replace("/", "\\")
+        winLocaldir = winLocaldir.replace("\\", "\\\\")
+        # needs to create the directory if not present
+        ftpStr0 = '%s /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "mkdir %s" "close" "exit"'  % (winscp, username, password, host, remotedir.decode('utf-8'))
+        self.log(ftpStr0, abort=False, textarea=self.dlg.ui.outLog)
+        self.proc = QProcess()
+        #QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
+        QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self.ftpSyncError)
+        QObject.connect(self.proc, SIGNAL("finished(int)"), self.ftpSyncFinished)
+        self.proc.start(ftpStr0)
+        self.proc.waitForFinished()
+        # sync command 
+        ftpStr1 = '%s /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "synchronize remote %s %s -mirror -delete" "close" "exit"' % (winscp, username, password, host, winLocaldir.decode('utf-8'), remotedir.decode('utf-8'))
+        self.log(ftpStr1, abort=False, textarea=self.dlg.ui.outLog)
+
       # run the ftp sync      
       self.proc = QProcess()
       QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
       QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self.ftpSyncError)
       QObject.connect(self.proc, SIGNAL("finished(int)"), self.ftpSyncFinished)
-      self.proc.start(lftpStr1)
-      # chmod 775 (nb: must find a way to pass the right option to lftpStr1 instead)
-      proc = subprocess.Popen( lftpStr2, cwd=workingDir, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+      self.proc.start(ftpStr1)
       
+      if sys.platform.startswith('linux'):
+        # chmod 775 (nb: must find a way to pass the right option to ftpStr1 instead)
+        proc = subprocess.Popen( ftpStr2, cwd=os.getcwd(), shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        proc.wait()
     return self.isok
   
 
@@ -929,8 +950,8 @@ class lizmap:
     if checkGlobalProjectOptions:
       self.dlg.show()
       
-      # FTP Sync only active for linux users.
-      if sys.platform != 'linux2':
+      # FTP Sync only active for linux and windows users.
+      if not sys.platform.startswith('linux') and sys.platform != 'win32' :
         self.dlg.ui.tabWidget.setTabEnabled(2, False)
         self.dlg.ui.btSync.setEnabled(False)
       
