@@ -169,7 +169,9 @@ class lizmap:
 
 
   def populateLayerTree(self):
-    '''Populate the layer tree of the Layers tab from Qgis legend interface'''
+    '''Populate the layer tree of the Layers tab from Qgis legend interface
+    Needs to be refactored.
+    '''
     myTree = self.dlg.ui.treeLayer
     myTree.clear()
     myTree.headerItem().setText(0, 'List of layers')
@@ -831,18 +833,36 @@ class lizmap:
 
 
   def ftpSyncStdout(self):
+    '''Get the ftp sync process Stdout and append it to the log textarea'''
     data = QString(self.proc.readAllStandardOutput())
     output = QString.fromUtf8(data)
     self.dlg.ui.outLog.append(output)
 
   def ftpSyncError(self):
+    '''Get the ftp sync process Error and append it to the log textarea'''
     data = QString(self.proc.readAllStandardError())
     output = QString.fromUtf8(data)
     self.dlg.ui.outLog.append(output)
 
   def ftpSyncFinished(self):
+    '''Loaded when the sync process has finished its job.'''
+    if self.proc.exitStatus() == 0:
       self.dlg.ui.outLog.append(u"Synchronization completed. See above for details.")
       self.dlg.ui.outState.setText('<font color="green">completed</font>')
+    else:
+      self.dlg.ui.outLog.append(u"Synchronization canceled. Be aware that some files have already been synchronized !")
+      self.dlg.ui.outState.setText('<font color="red">canceled</font>')
+    
+
+  def ftpSyncCancel(self):
+    '''Cancel the ftp sync process by killing it'''
+    # Ask for confirmation
+    letsGo = QMessageBox.question(self.dlg, 'Lizmap', "You are about to cancel the FTP synchronization.\n\nAre you sure you want to proceed ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    if letsGo == QMessageBox.Yes:
+      self.proc.kill()
+      return True
+    else:
+      return False
 
 
   def ftpSync(self):
@@ -916,7 +936,7 @@ class lizmap:
         self.proc = QProcess()
         #QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
         QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self.ftpSyncError)
-        QObject.connect(self.proc, SIGNAL("finished(int)"), self.ftpSyncFinished)
+        QObject.connect(self.proc, SIGNAL("finished(int, QProcess::ExitStatus)"), self.ftpSyncFinished)
         self.proc.start(ftpStr0)
         self.proc.waitForFinished()
         # sync command 
@@ -927,13 +947,14 @@ class lizmap:
       self.proc = QProcess()
       QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
       QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self.ftpSyncError)
-      QObject.connect(self.proc, SIGNAL("finished(int)"), self.ftpSyncFinished)
+      QObject.connect(self.proc, SIGNAL("finished(int, QProcess::ExitStatus)"), self.ftpSyncFinished)
       self.proc.start(ftpStr1)
       
       if sys.platform.startswith('linux'):
         # chmod 775 (nb: must find a way to pass the right option to ftpStr1 instead)
         proc = subprocess.Popen( ftpStr2, cwd=os.getcwd(), shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         proc.wait()
+           
     return self.isok
   
 
@@ -972,6 +993,8 @@ class lizmap:
       QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
       # clear log button clicked
       QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
+      # Cancel FTP Sync
+      QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
       # refresh layer tree button click
       QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
     

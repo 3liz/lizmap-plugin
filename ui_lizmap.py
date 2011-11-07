@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Sat Nov  5 18:46:43 2011
+# Created: Mon Nov  7 10:37:45 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -223,7 +223,7 @@ class Ui_lizmap(object):
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.horizontalLayout_4.addWidget(self.label_4)
         self.inPassword = QtGui.QLineEdit(self.horizontalLayoutWidget_4)
-        self.inPassword.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.inPassword.setInputMethodHints(QtCore.Qt.ImhHiddenText|QtCore.Qt.ImhNoAutoUppercase|QtCore.Qt.ImhNoPredictiveText)
         self.inPassword.setEchoMode(QtGui.QLineEdit.Password)
         self.inPassword.setObjectName(_fromUtf8("inPassword"))
         self.horizontalLayout_4.addWidget(self.inPassword)
@@ -248,7 +248,7 @@ class Ui_lizmap(object):
         self.outLog.setReadOnly(True)
         self.outLog.setObjectName(_fromUtf8("outLog"))
         self.outState = QtGui.QLabel(self.tab_main)
-        self.outState.setGeometry(QtCore.QRect(400, 353, 81, 21))
+        self.outState.setGeometry(QtCore.QRect(450, 353, 81, 21))
         font = QtGui.QFont()
         font.setPointSize(9)
         font.setWeight(75)
@@ -257,8 +257,12 @@ class Ui_lizmap(object):
         self.outState.setText(_fromUtf8(""))
         self.outState.setObjectName(_fromUtf8("outState"))
         self.btClearlog = QtGui.QPushButton(self.tab_main)
-        self.btClearlog.setGeometry(QtCore.QRect(10, 350, 379, 27))
+        self.btClearlog.setGeometry(QtCore.QRect(10, 350, 291, 27))
         self.btClearlog.setObjectName(_fromUtf8("btClearlog"))
+        self.btCancelFtpSync = QtGui.QPushButton(self.tab_main)
+        self.btCancelFtpSync.setEnabled(True)
+        self.btCancelFtpSync.setGeometry(QtCore.QRect(320, 350, 97, 27))
+        self.btCancelFtpSync.setObjectName(_fromUtf8("btCancelFtpSync"))
         self.tabWidget.addTab(self.tab_main, _fromUtf8(""))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
@@ -346,6 +350,7 @@ class Ui_lizmap(object):
         self.label_6.setText(QtGui.QApplication.translate("lizmap", "Remote Dir", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_ftp), QtGui.QApplication.translate("lizmap", "FTP options", None, QtGui.QApplication.UnicodeUTF8))
         self.btClearlog.setText(QtGui.QApplication.translate("lizmap", "Clear log", None, QtGui.QApplication.UnicodeUTF8))
+        self.btCancelFtpSync.setText(QtGui.QApplication.translate("lizmap", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("lizmap", "Log", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setHtml(QtGui.QApplication.translate("lizmap", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -491,17 +496,20 @@ class Ui_lizmap(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">***************</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Lizmap 1.0</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Publication plugin for Lizmap web application, by 3liz.com</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Publication plugin for Lizmap web application, by 3LIZ</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    begin        : 2011-11-01</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    copyright      : (C) 2011 by 3liz</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    email        : info@3liz.com</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    website    : http://3liz.com</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    website    : <a href=\"http://www.3liz.com\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.3liz.com</span></a></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Lizmap aims to help users to publish a Qgis map to the web. The Lizmap web application must be installed in the target server.</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">We like to thank the members of <a href=\"http://www.alise-geomatique.fr\"><span style=\" text-decoration: underline; color:#0000ff;\">Alisé Géomatique</span></a>, a french company, for the help the provided by reporting bugs and asking for new features during the development of Lizmap Qgis plugin and web application.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">******  <span style=\" font-weight:600;\">LICENSE</span>  *****</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Version: MPL 1.1/GPL 2.0/LGPL 2.1</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The contents of this file are subject to the Mozilla Public License Version 1.1 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The contents of this file are subject to the Mozilla Public License Version 1.1 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <a href=\"http://www.mozilla.org/MPL/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.mozilla.org/MPL/</span></a></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Software distributed under the License is distributed on an &quot;AS IS&quot; basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
