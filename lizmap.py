@@ -231,6 +231,8 @@ class lizmap:
             if jsonLayers['%s' % myId].has_key('toggled'):
               if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
                 myDic[myId]['toggled'] = True
+              else:
+                 myDic[myId]['toggled'] = False
                         
             if jsonLayers['%s' % myId].has_key('baseLayer'):
               if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
@@ -271,6 +273,8 @@ class lizmap:
             if jsonLayers['%s' % lname].has_key('toggled'):
               if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
                 myDic[myId]['toggled'] = True
+              else:
+                myDic[myId]['toggled'] = False
                 
             if jsonLayers['%s' % lname].has_key('baseLayer'):
               if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
@@ -364,6 +368,8 @@ class lizmap:
             if jsonLayers['%s' % lname].has_key('toggled'):
               if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
                 myDic[b]['toggled'] = True
+              else:
+                myDic[b]['toggled'] = False
                 
             if jsonLayers['%s' % lname].has_key('baseLayer'):
               if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
@@ -607,7 +613,7 @@ class lizmap:
         layerSource =  unicode('%s' % mc.layer( i ).source() )
         if os.path.abspath(layerSource).startswith(projectDir):
           layerSourcesOk.append(os.path.abspath(layerSource))
-        elif layerSource.startswith('dbname=') or layerSource.startswith('http'):
+        elif layerSource.startswith('dbname=') or layerSource.startswith('http') or layerSource.startswith('tiled='):
           layerSourcesOk.append(layerSource)
         else:
           layerSourcesBad.append(layerSource)
