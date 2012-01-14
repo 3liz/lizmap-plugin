@@ -154,10 +154,10 @@
     <widget class="QWidget" name="verticalLayoutWidget_2">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>531</width>
-       <height>280</height>
+       <x>10</x>
+       <y>10</y>
+       <width>551</width>
+       <height>371</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -208,19 +208,6 @@
          <size>
           <width>20</width>
           <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>60</height>
          </size>
         </property>
        </spacer>
@@ -332,6 +319,58 @@
         </item>
        </layout>
       </item>
+      <item>
+       <spacer name="verticalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_20">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Public baselayers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_21">
+        <property name="text">
+         <string>You can add baselayers from public sources.
+If so, you must add the corresponding  EPSG code in your WMS project settings</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QCheckBox" name="cbOsmMapnik">
+          <property name="text">
+           <string>OSM Mapnik (EPSG:900913)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbOsmMapquest">
+          <property name="text">
+           <string>OSM Mapquest (EPSG:900913)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </widget>
@@ -366,7 +405,7 @@
       <rect>
        <x>470</x>
        <y>10</y>
-       <width>91</width>
+       <width>97</width>
        <height>41</height>
       </rect>
      </property>
@@ -632,6 +671,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Scales&lt;/span&gt; : You can overwrite the 3 previous options (min and max scale, zoom level number) by entering a list of scales you want to display in Lizmap map. The scales must be separated by commas &amp;quot;,&amp;quot;. E.g. &amp;quot;1000000, 500000, 200000&amp;quot;.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;* &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Public baselayers&lt;/span&gt; : You can add OpenStreetMap &amp;quot;Mapnik&amp;quot; or &amp;quot;Mapquest&amp;quot; layers as baselayers for your project by checking the corresponding box. Choosing this will have the following consequences :&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; - the previous scale related options will be overwritten by the web application to fit the default scales used by OSM or Mapquest servers. Make sure the symbology chosen for you layers takes it into account.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;- the lizmap web client will ask Qgis Server to reproject all you data into Google Mercator. To allow this, you will need to add &amp;quot;EPSG:900913&amp;quot; in the &amp;quot;Coordinate System Restrictions&amp;quot; area of the &amp;quot;WMS Server&amp;quot; tab in the &amp;quot;Project Properties&amp;quot; dialog.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;FTP options&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*************&lt;/span&gt;&lt;/p&gt;
@@ -821,6 +864,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>inMaxScale</tabstop>
   <tabstop>inZoomLevelNumber</tabstop>
   <tabstop>inMapScales</tabstop>
+  <tabstop>cbOsmMapnik</tabstop>
+  <tabstop>cbOsmMapquest</tabstop>
   <tabstop>inHost</tabstop>
   <tabstop>inPort</tabstop>
   <tabstop>inUsername</tabstop>
@@ -829,10 +874,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>inLocaldir</tabstop>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
-  <tabstop>textEdit</tabstop>
-  <tabstop>txtAbout</tabstop>
+  <tabstop>btCancelFtpSync</tabstop>
   <tabstop>btSave</tabstop>
   <tabstop>btSync</tabstop>
+  <tabstop>textEdit</tabstop>
+  <tabstop>txtAbout</tabstop>
  </tabstops>
  <resources/>
  <connections/>

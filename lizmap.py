@@ -148,6 +148,12 @@ class lizmap:
       self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
     if jsonOptions.has_key('mapScales'):
       self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
+    if jsonOptions.has_key('osmMapnik'):
+      if jsonOptions['osmMapnik'].lower() in ("yes", "true", "t", "1"):
+        self.dlg.ui.cbOsmMapnik.setChecked(True);
+    if jsonOptions.has_key('osmMapquest'):
+      if jsonOptions['osmMapquest'].lower() in ("yes", "true", "t", "1"):
+        self.dlg.ui.cbOsmMapquest.setChecked(True);
         
     return True
     
@@ -542,7 +548,10 @@ class lizmap:
       in_maxScale = 10000000
     if len(in_zoomLevelNumber) == 0:
       in_zoomLevelNumber = 10
-    myJson+= ' "imageFormat" : "image/%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s]' % (in_imageFormat, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales)
+    in_osmMapnik = str(self.dlg.ui.cbOsmMapnik.isChecked())
+    in_osmMapquest = str(self.dlg.ui.cbOsmMapquest.isChecked())
+    
+    myJson+= ' "imageFormat" : "image/%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s], "osmMapnik":"%s", "osmMapquest":"%s"' % (in_imageFormat, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales, in_osmMapnik, in_osmMapquest)
 
     myJson+= '},'
     
@@ -660,6 +669,8 @@ class lizmap:
       in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
       in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
       in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
+      in_osmMapnik = self.dlg.ui.cbOsmMapnik.isChecked()
+      in_osmMapquest = self.dlg.ui.cbOsmMapquest.isChecked()
       
       isok = True
       
@@ -725,6 +736,20 @@ class lizmap:
           self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)      
         else:
           self.log('<b>** WARNING **</b> : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
+
+
+      # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
+      p = QgsProject.instance()
+      
+      # osmMapnik and osmMapquest: check that the 900913 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
+      if in_osmMapnik or in_osmMapquest:
+        good = False
+        for i in p.readListEntry('WMSCrsList','')[0]:
+          if i == 'EPSG:900913':
+            good = True
+        if not good:
+          self.log('<b>** WARNING **</b> : You have chosen one external public source in the Map tab. You must add "EPSG:900913" in the "Coordinate System Restriction" of the "WMS Server" tab in the project properties dialog !', abort=True, textarea=self.dlg.ui.outLog)
+      
         
       
       if self.isok:        
