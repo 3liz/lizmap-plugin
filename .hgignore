@@ -5,6 +5,7 @@ syntax: glob
 *.o
 *.swp
 *.pyc
+lizmap.cfg
 
 syntax: regexp
 (^|/)\.DS_Store$

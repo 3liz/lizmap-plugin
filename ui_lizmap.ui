@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>589</width>
-    <height>463</height>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -154,10 +154,10 @@
     <widget class="QWidget" name="verticalLayoutWidget_2">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>551</width>
-       <height>371</height>
+       <x>0</x>
+       <y>0</y>
+       <width>561</width>
+       <height>386</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -200,19 +200,6 @@
        </layout>
       </item>
       <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <widget class="QLabel" name="label_15">
         <property name="font">
          <font>
@@ -244,10 +231,6 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_13">
         <item>
          <widget class="QLabel" name="label_14">
           <property name="text">
@@ -265,10 +248,6 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_14">
         <item>
          <widget class="QLabel" name="label_17">
           <property name="text">
@@ -354,18 +333,101 @@ If so, you must add the corresponding  EPSG code in your WMS project settings</s
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="label_23">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;OpenStreetMap&lt;/span&gt;&lt;span style=&quot; font-weight:400;&quot;&gt; (EPSG:900913)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <widget class="QCheckBox" name="cbOsmMapnik">
           <property name="text">
-           <string>OSM Mapnik (EPSG:900913)</string>
+           <string>OSM Mapnik</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QCheckBox" name="cbOsmMapquest">
           <property name="text">
-           <string>OSM Mapquest (EPSG:900913)</string>
+           <string>OSM Mapquest</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_22">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Google&lt;/span&gt;&lt;span style=&quot; font-weight:400;&quot;&gt; (EPSG:900913)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Key</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="inGoogleKey">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbGoogleStreets">
+          <property name="text">
+           <string>Streets</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbGoogleSatellite">
+          <property name="text">
+           <string>Satellite</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbGoogleHybrid">
+          <property name="text">
+           <string>Hybrid</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbGoogleTerrain">
+          <property name="text">
+           <string>Terrain</string>
           </property>
          </widget>
         </item>
@@ -866,6 +928,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>inMapScales</tabstop>
   <tabstop>cbOsmMapnik</tabstop>
   <tabstop>cbOsmMapquest</tabstop>
+  <tabstop>inGoogleKey</tabstop>
+  <tabstop>cbGoogleStreets</tabstop>
+  <tabstop>cbGoogleSatellite</tabstop>
+  <tabstop>cbGoogleHybrid</tabstop>
+  <tabstop>cbGoogleTerrain</tabstop>
   <tabstop>inHost</tabstop>
   <tabstop>inPort</tabstop>
   <tabstop>inUsername</tabstop>
@@ -875,10 +942,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
   <tabstop>btCancelFtpSync</tabstop>
-  <tabstop>btSave</tabstop>
-  <tabstop>btSync</tabstop>
   <tabstop>textEdit</tabstop>
   <tabstop>txtAbout</tabstop>
+  <tabstop>btSave</tabstop>
+  <tabstop>btSync</tabstop>
  </tabstops>
  <resources/>
  <connections/>

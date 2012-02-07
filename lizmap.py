@@ -148,12 +148,28 @@ class lizmap:
       self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
     if jsonOptions.has_key('mapScales'):
       self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
+    # openstreetmap baselayers
     if jsonOptions.has_key('osmMapnik'):
       if jsonOptions['osmMapnik'].lower() in ("yes", "true", "t", "1"):
         self.dlg.ui.cbOsmMapnik.setChecked(True);
     if jsonOptions.has_key('osmMapquest'):
       if jsonOptions['osmMapquest'].lower() in ("yes", "true", "t", "1"):
         self.dlg.ui.cbOsmMapquest.setChecked(True);
+    # google baselayers
+    if jsonOptions.has_key('googleKey'):
+      self.dlg.ui.inGoogleKey.setText(str(jsonOptions['googleKey']))
+    if jsonOptions.has_key('googleStreets'):
+      if jsonOptions['googleStreets'].lower() in ("yes", "true", "t", "1"):
+        self.dlg.ui.cbGoogleStreets.setChecked(True);
+    if jsonOptions.has_key('googleSatellite'):
+      if jsonOptions['googleSatellite'].lower() in ("yes", "true", "t", "1"):
+        self.dlg.ui.cbGoogleSatellite.setChecked(True);
+    if jsonOptions.has_key('googleHybrid'):
+      if jsonOptions['googleHybrid'].lower() in ("yes", "true", "t", "1"):
+        self.dlg.ui.cbGoogleHybrid.setChecked(True);
+    if jsonOptions.has_key('googleTerrain'):
+      if jsonOptions['googleTerrain'].lower() in ("yes", "true", "t", "1"):
+        self.dlg.ui.cbGoogleTerrain.setChecked(True);
         
     return True
     
@@ -550,8 +566,13 @@ class lizmap:
       in_zoomLevelNumber = 10
     in_osmMapnik = str(self.dlg.ui.cbOsmMapnik.isChecked())
     in_osmMapquest = str(self.dlg.ui.cbOsmMapquest.isChecked())
+    in_googleKey = str(self.dlg.ui.inGoogleKey.text()).strip(' \t')
+    in_googleStreets = str(self.dlg.ui.cbGoogleStreets.isChecked())
+    in_googleSatellite = str(self.dlg.ui.cbGoogleSatellite.isChecked())
+    in_googleHybrid = str(self.dlg.ui.cbGoogleHybrid.isChecked())
+    in_googleTerrain = str(self.dlg.ui.cbGoogleTerrain.isChecked())
     
-    myJson+= ' "imageFormat" : "image/%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s], "osmMapnik":"%s", "osmMapquest":"%s"' % (in_imageFormat, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales, in_osmMapnik, in_osmMapquest)
+    myJson+= ' "imageFormat" : "image/%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s], "osmMapnik":"%s", "osmMapquest":"%s", "googleKey":"%s", "googleStreets":"%s", "googleSatellite":"%s", "googleHybrid":"%s", "googleTerrain":"%s"' % (in_imageFormat, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales, in_osmMapnik, in_osmMapquest, in_googleKey, in_googleStreets, in_googleSatellite, in_googleHybrid, in_googleTerrain)
 
     myJson+= '},'
     
@@ -671,6 +692,11 @@ class lizmap:
       in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
       in_osmMapnik = self.dlg.ui.cbOsmMapnik.isChecked()
       in_osmMapquest = self.dlg.ui.cbOsmMapquest.isChecked()
+      in_googleKey = str(self.dlg.ui.inGoogleKey.text()).strip(' \t')
+      in_googleStreets = self.dlg.ui.cbGoogleStreets.isChecked()
+      in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
+      in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
+      in_googleTerrain = self.dlg.ui.cbGoogleTerrain.isChecked()
       
       isok = True
       
@@ -741,8 +767,8 @@ class lizmap:
       # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
       p = QgsProject.instance()
       
-      # osmMapnik and osmMapquest: check that the 900913 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
-      if in_osmMapnik or in_osmMapquest:
+      # public baselayers: check that the 900913 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
+      if in_osmMapnik or in_osmMapquest or in_googleStreets or in_googleSatellite or in_googleHybrid or in_googleTerrain:
         good = False
         for i in p.readListEntry('WMSCrsList','')[0]:
           if i == 'EPSG:900913':
