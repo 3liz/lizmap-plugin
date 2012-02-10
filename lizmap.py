@@ -463,24 +463,34 @@ class lizmap:
     '''Refresh layer/group metadata and options on click of a layer tree item'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
-    # get information about the layer or the group
-    selectedItem = self.layerList[item.text(1)]
-    # set the title
-    self.dlg.ui.inLayerTitle.setText(selectedItem['title'])
-    # set the abstract
-    self.dlg.ui.teLayerAbstract.setText(selectedItem['abstract'])
-    # set the link
-    self.dlg.ui.inLayerLink.setText(selectedItem['link'])    
-    # set the baseLayer
-    self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
-    # set the groupAsLayer
-    self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])
-    # set the toggled
-    self.dlg.ui.cbToggled.setChecked(selectedItem['toggled'])
-    # set the singleTile
-    self.dlg.ui.cbSingleTile.setChecked(selectedItem['singleTile'])  
-    # set the cached
-    self.dlg.ui.cbCached.setChecked(selectedItem['cached'])
+    if self.layerList.has_key(item.text(1)):
+      # get information about the layer or the group
+      selectedItem = self.layerList[item.text(1)]
+      # set the title
+      self.dlg.ui.inLayerTitle.setText(selectedItem['title'])
+      # set the abstract
+      self.dlg.ui.teLayerAbstract.setText(selectedItem['abstract'])
+      # set the link
+      self.dlg.ui.inLayerLink.setText(selectedItem['link'])    
+      # set the baseLayer
+      self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
+      # set the groupAsLayer
+      self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])
+      # set the toggled
+      self.dlg.ui.cbToggled.setChecked(selectedItem['toggled'])
+      # set the singleTile
+      self.dlg.ui.cbSingleTile.setChecked(selectedItem['singleTile'])  
+      # set the cached
+      self.dlg.ui.cbCached.setChecked(selectedItem['cached'])
+    else:
+      self.dlg.ui.inLayerTitle.setText('')
+      self.dlg.ui.teLayerAbstract.setText('')
+      self.dlg.ui.inLayerLink.setText('')
+      self.dlg.ui.cbLayerIsBaseLayer.setChecked(False)
+      self.dlg.ui.cbGroupAsLayer.setChecked(False)
+      self.dlg.ui.cbToggled.setChecked(False)
+      self.dlg.ui.cbSingleTile.setChecked(False)
+      self.dlg.ui.cbCached.setChecked(False)      
       
 
   def setLayerTitle(self):
@@ -488,58 +498,66 @@ class lizmap:
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the title for the selected item
-    self.layerList[item.text(1)]['title'] = self.dlg.ui.inLayerTitle.text()
+    if item and self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['title'] = self.dlg.ui.inLayerTitle.text()
     
   def setLayerAbstract(self):
     '''Set a layer abstract when a item abstract is edited'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the abstract for the selected item
-    self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
 
   def setLayerLink(self):
     '''Set a layer link when a item link is edited'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the link for the selected item
-    self.layerList[item.text(1)]['link'] = self.dlg.ui.inLayerLink.text()
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['link'] = self.dlg.ui.inLayerLink.text()
      
   def setLayerIsBaseLayer(self):
     '''Set a layer "IsBaseLayer" property when an item "Is Base layer" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the baseLayer property for the selected item
-    self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
     
   def setGroupAsLayer(self):
     '''Set the "group as a layer" property when an item "Group As Layer" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
-    self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
-    # modify the type property for the selected item
-    if self.dlg.ui.cbGroupAsLayer.isChecked():
-      self.layerList[item.text(1)]['type'] = 'layer'
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
+      # modify the type property for the selected item
+      if self.dlg.ui.cbGroupAsLayer.isChecked():
+          self.layerList[item.text(1)]['type'] = 'layer'
       
   def setToggled(self):
     '''Set a layer or group "toggled" property when an item "toggled" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the toggled property for the selected item
-    self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
 
   def setSingleTile(self):
     '''Set a layer or group "singleTile" property when an item "singleTile" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the singleTile property for the selected item
-    self.layerList[item.text(1)]['singleTile'] = self.dlg.ui.cbSingleTile.isChecked()
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['singleTile'] = self.dlg.ui.cbSingleTile.isChecked()
 
   def setCached(self):
     '''Set a layer or group "cached" property when an item "cached" checkbox state has changed'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the cached property for the selected item
-    self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
+    if self.layerList.has_key(item.text(1)):
+      self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
 
 
 
@@ -609,8 +627,9 @@ class lizmap:
         gal = True
       if ltype == 'layer':
         layer = self.getQgisLayerById(k)
-        if layer.type() == 0:
-          geometryType = layer.geometryType()
+        if layer:
+          if layer.type() == 0:
+            geometryType = layer.geometryType()
       
       if geometryType != 4:
         myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s", "singleTile" : "%s", "cached" : "%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']), str(v['singleTile']), str(v['cached']) )
@@ -1043,6 +1062,7 @@ class lizmap:
     '''Plugin run method : launch the gui and some tests'''
     
     if self.dlg.isVisible():
+      self.writeProjectConfigFile()
       self.dlg.hide()
     
     # show the dialog only if checkGlobalProjectOptions is true
