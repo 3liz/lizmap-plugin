@@ -71,6 +71,9 @@ class lizmap:
   def __init__(self, iface):
     '''Save reference to the QGIS interface'''
     self.iface = iface
+    # create the dialog
+    self.dlg = lizmapDialog()
+    
 
   def initGui(self):
     '''Create action that will start plugin configuration'''
@@ -1038,15 +1041,12 @@ class lizmap:
 
   def run(self):
     '''Plugin run method : launch the gui and some tests'''
-
-    # create and show the dialog
-    self.dlg = lizmapDialog()
-
-    # checkings
-    checkGlobalProjectOptions = self.checkGlobalProjectOptions()
+    
+    if self.dlg.isVisible():
+      self.dlg.hide()
     
     # show the dialog only if checkGlobalProjectOptions is true
-    if checkGlobalProjectOptions:
+    if self.checkGlobalProjectOptions():
       self.dlg.show()
       
       # FTP Sync only active for linux and windows users.
