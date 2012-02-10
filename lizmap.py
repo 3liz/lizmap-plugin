@@ -234,6 +234,7 @@ class lizmap:
         # else create the item and add it to the header item
         # add the item to the dictionary
         myDic[myId] = {'id' : myId}
+        ldisplay = True
         if myId in myGroups:
           # it's a group
           lname = myId
@@ -276,6 +277,10 @@ class lizmap:
           myDic[myId]['type'] = 'layer'
           layer = self.getQgisLayerById(myId)
           lname = '%s' % layer.name()
+          if layer.type() == 0:
+            if layer.geometryType() == 4:
+              ldisplay = False
+            
           myDic[myId]['name'] = layer.name()
           if layer.hasScaleBasedVisibility():
             myDic[myId]['minScale'] = layer.minimumScale()
@@ -320,14 +325,18 @@ class lizmap:
             myDic[myId]['abstract'] = jsonLayers['%s' % myId]['abstract']
           if jsonLayers['%s' % lname].has_key('link') and jsonLayers['%s' % myId]['link'] != '':
             myDic[myId]['link'] = jsonLayers['%s' % myId]['link']
-          
-        parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
-        myTree.addTopLevelItem(parentItem)
-        myDic[myId]['item'] = parentItem
+        
+        if ldisplay:
+          parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
+          myTree.addTopLevelItem(parentItem)
+          myDic[myId]['item'] = parentItem
+        else:
+          del myDic[myId]
       
       # loop through the children and add children to the parent item
       for b in a[1]:
         myDic[b] = {'id' : b}
+        ldisplay = True
         if b in myGroups:
           # it's a group
           lname = '%s' % b
@@ -372,6 +381,9 @@ class lizmap:
           layer = self.getQgisLayerById(b)
           lname = '%s' % layer.name()
           myDic[b]['name'] = layer.name()
+          if layer.type() == 0:
+            if layer.geometryType() == 4:
+              ldisplay = False
           if layer.hasScaleBasedVisibility():
             myDic[b]['minScale'] = layer.minimumScale()
             myDic[b]['maxScale'] = layer.maximumScale()
@@ -415,15 +427,16 @@ class lizmap:
             myDic[b]['abstract'] = jsonLayers[lname]['abstract']
           if jsonLayers[lname].has_key('link') and jsonLayers[lname]['link'] != '':
             myDic[b]['link'] = jsonLayers[lname]['link']
-                    
-        childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
         
-
-        if myId == '':
-          myTree.addTopLevelItem(childItem)
+        if ldisplay:            
+          childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
+          if myId == '':
+            myTree.addTopLevelItem(childItem)
+          else:
+            parentItem.addChild(childItem)
+          myDic[b]['item'] = childItem
         else:
-          parentItem.addChild(childItem)
-        myDic[b]['item'] = childItem
+          del myDic[b]  
 
     myTree.expandAll()
     
@@ -580,8 +593,10 @@ class lizmap:
     myJson+= '"layers" : {'
     myVirg = ''
     for k,v in self.layerList.items():
+      addToCfg = True
       ltype = v['type']
       gal = v['groupAsLayer']
+      geometryType = -1
       if gal:
         ltype = 'layer'
       else:
@@ -589,9 +604,15 @@ class lizmap:
       if self.getQgisLayerById(k):
         ltype = 'layer'
         gal = True
-        
-      myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s", "singleTile" : "%s", "cached" : "%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']), str(v['singleTile']), str(v['cached']) )
-      myVirg = ','
+      if ltype == 'layer':
+        layer = self.getQgisLayerById(k)
+        if layer.type() == 0:
+          geometryType = layer.geometryType()
+      
+      if geometryType != 4:
+        myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s", "singleTile" : "%s", "cached" : "%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']), str(v['singleTile']), str(v['cached']) )
+        myVirg = ','
+      
     myJson+= '}'
     myJson+= '}'
     
