@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Tue Feb  7 11:17:22 2012
+# Created: Tue Feb 14 17:27:10 2012
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -378,7 +378,7 @@ class Ui_lizmap(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* Data (vector and raster) must be stored in the same folder of the project file, or in a subfolder</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* Project paths must be set to &quot;relative&quot; (see project properties)</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* WMS options must be set in the project properties</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* The FTP synchronisation only works on linux and windows operating systems. On Linux plateforms, the software lftp must have been installed. On Windows plaforms, WinSCP Portable is used and is already contained in Lizmap plugin directory.</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* The FTP synchronisation only works on linux and windows operating systems. On Linux plateforms, the software lftp must have been installed. On Windows plaforms, WinSCP Portable is used and is already contained in Lizmap plugin directory. On Mac plateforms, there is at the moment no sync tool. Please use a FTP client to synchronize the modified files.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; font-style:italic;\">Server side</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* QgisMapserver must be installed.</p>\n"
@@ -424,7 +424,8 @@ class Ui_lizmap(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600; font-style:italic;\">Scales</span> : You can overwrite the 3 previous options (min and max scale, zoom level number) by entering a list of scales you want to display in Lizmap map. The scales must be separated by commas &quot;,&quot;. E.g. &quot;1000000, 500000, 200000&quot;.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600; font-style:italic;\">Public baselayers</span> : You can add OpenStreetMap &quot;Mapnik&quot; or &quot;Mapquest&quot; layers as baselayers for your project by checking the corresponding box. Choosing this will have the following consequences :</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600; font-style:italic;\">Public baselayers</span> : If you have no layers well suited to play the role of base layers, you can add external baselayers. At the moment, only OpenStreetmap and Google layers are supported. Just check the corresponding boxes to add these layers. (if your choose Google Layers, you can optionnaly add your Google Key).</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This action will have the following consequences :</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> - the previous scale related options will be overwritten by the web application to fit the default scales used by OSM or Mapquest servers. Make sure the symbology chosen for you layers takes it into account.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- the lizmap web client will ask Qgis Server to reproject all you data into Google Mercator. To allow this, you will need to add &quot;EPSG:900913&quot; in the &quot;Coordinate System Restrictions&quot; area of the &quot;WMS Server&quot; tab in the &quot;Project Properties&quot; dialog.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
@@ -491,6 +492,13 @@ class Ui_lizmap(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Things to consider :</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600;\">Layers naming conventions</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">All the group and layers defined in Qgis Layer Tree must follow the following rules :</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- no accentuated characters</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- no special chars</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- no space</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">You will be able to change how the layer is nammed in Lizmap Web Application by editing the &quot;title&quot; field in the &quot;Layers&quot; tab of Lizmap plugin.</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600; font-style:italic;\">Configuration backup</span> :</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The layers, map and ftp options are saved each time &quot;Save&quot; or &quot;Save and synchronize&quot; are launched :</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
@@ -525,7 +533,7 @@ class Ui_lizmap(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">***************</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Lizmap 1.0</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Lizmap 1.1</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Publication plugin for Lizmap web application, by 3LIZ</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">    begin          : 2011-11-01</p>\n"
@@ -536,12 +544,12 @@ class Ui_lizmap(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Lizmap Qgis plugin aims to be used to configure a web application dynamically generated by Lizmap (php/html/css/js) with the help of <a href=\"www.qgis.org/wiki/QGIS_Server_Tutorial\"><span style=\" text-decoration: underline; color:#0000ff;\">Qgis Server</span></a> ( http://www.qgis.org/wiki/QGIS_Server_Tutorial ) With this plugin, you can configure one web map per Qgis project. The Lizmap web application must be installed on the server.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">We like to thank the members of <a href=\"http://www.alise-geomatique.fr\"><span style=\" text-decoration: underline; color:#0000ff;\">Alisé Géomatique</span></a> ( http://www.alise-geomatique.fr ) a french company, for the help the provided by reporting bugs and asking for new features during the development of Lizmap Qgis plugin and web application.</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">We like to thank <a href=\"http://www.alise-geomatique.fr\"><span style=\" text-decoration: underline; color:#0000ff;\">Alisé Géomatique</span></a> ( http://www.alise-geomatique.fr ) a french company, for the help the provided by reporting bugs and asking for new features during the development of Lizmap Qgis plugin and web application. They founded the developpement of adding the public baselayers support (Google or OpenStreetMap).</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">******  <span style=\" font-weight:600;\">LICENSE</span>  *****</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Version: MPL 1.1/GPL 2.0/LGPL 2.1</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Version: MPL 2.0/GPL 2.0/LGPL 2.1</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The contents of this file are subject to the Mozilla Public License Version 1.1 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <a href=\"http://www.mozilla.org/MPL/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.mozilla.org/MPL/</span></a></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The contents of this file are subject to the Mozilla Public License Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <a href=\"http://www.mozilla.org/MPL/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.mozilla.org/MPL/</span></a></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Software distributed under the License is distributed on an &quot;AS IS&quot; basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
