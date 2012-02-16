@@ -9,10 +9,10 @@ version=version 1.1
 
 ; start of optional metadata
 changelog=
-Since version 1.0
-* addition of Google and OpenStreetMap public baselayers option in the "Map" tab
-* ignore non-geometric vector layers
-* only one lizmap plugin window available at a time
+  Since version 1.0
+  * addition of Google and OpenStreetMap public baselayers option in the "Map" tab
+  * ignore non-geometric vector layers
+  * only one lizmap plugin window available at a time
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, client
