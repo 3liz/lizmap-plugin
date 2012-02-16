@@ -1,0 +1,33 @@
+; the next section is mandatory
+[general]
+name=lizmap
+qgisMinimumVersion=1.6
+description=Publication plugin for Lizmap web application, by 3liz.com
+category=Web
+version=version 1.1
+; end of mandatory metadata
+
+; start of optional metadata
+changelog=
+Since version 1.0
+* addition of Google and OpenStreetMap public baselayers option in the "Map" tab
+* ignore non-geometric vector layers
+* only one lizmap plugin window available at a time
+
+; tags are in comma separated value format, spaces are allowed
+tags=lizmap, server, web, publication, client
+
+; these metadata can be empty
+; in a future version of the web application it will
+; be probably possible to create a project on redmine
+; if they are not filled
+homepage=http://hub.qgis.org/projects/lizmapplugin
+tracker=http://hub.qgis.org/projects/lizmapplugin/issues
+repository=
+icon=icon.png
+
+; experimental flag
+experimental=True
+
+; deprecated flag (applies to the whole plugin and not only to the uploaded version)
+deprecated=False
