@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Tue Feb 14 17:27:10 2012
+# Created: Thu Feb 16 18:59:12 2012
 #      by: PyQt4 UI code generator 4.8.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,7 +20,7 @@ class Ui_lizmap(object):
         lizmap.resize(589, 461)
         lizmap.setWindowTitle(QtGui.QApplication.translate("lizmap", "LizMap", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget = QtGui.QTabWidget(lizmap)
-        self.tabWidget.setGeometry(QtCore.QRect(10, 0, 571, 421))
+        self.tabWidget.setGeometry(QtCore.QRect(10, 3, 571, 421))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -332,6 +332,44 @@ class Ui_lizmap(object):
         self.inRemotedir = QtGui.QLineEdit(self.horizontalLayoutWidget_6)
         self.inRemotedir.setObjectName(_fromUtf8("inRemotedir"))
         self.horizontalLayout_6.addWidget(self.inRemotedir)
+        self.horizontalLayoutWidget_7 = QtGui.QWidget(self.tab_ftp)
+        self.horizontalLayoutWidget_7.setGeometry(QtCore.QRect(10, 240, 551, 117))
+        self.horizontalLayoutWidget_7.setObjectName(_fromUtf8("horizontalLayoutWidget_7"))
+        self.horizontalLayout_7 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_7)
+        self.horizontalLayout_7.setMargin(0)
+        self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
+        self.verticalLayout_3 = QtGui.QVBoxLayout()
+        self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
+        self.horizontalLayout_10 = QtGui.QHBoxLayout()
+        self.horizontalLayout_10.setObjectName(_fromUtf8("horizontalLayout_10"))
+        self.lbWinscpIn = QtGui.QLabel(self.horizontalLayoutWidget_7)
+        self.lbWinscpIn.setText(QtGui.QApplication.translate("lizmap", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">WinScp full path</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; font-style:italic;\">for windows users only</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.lbWinscpIn.setObjectName(_fromUtf8("lbWinscpIn"))
+        self.horizontalLayout_10.addWidget(self.lbWinscpIn)
+        self.inWinscpPath = QtGui.QLineEdit(self.horizontalLayoutWidget_7)
+        self.inWinscpPath.setObjectName(_fromUtf8("inWinscpPath"))
+        self.horizontalLayout_10.addWidget(self.inWinscpPath)
+        self.btWinscpPath = QtGui.QPushButton(self.horizontalLayoutWidget_7)
+        self.btWinscpPath.setText(QtGui.QApplication.translate("lizmap", "...", None, QtGui.QApplication.UnicodeUTF8))
+        self.btWinscpPath.setObjectName(_fromUtf8("btWinscpPath"))
+        self.horizontalLayout_10.addWidget(self.btWinscpPath)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_10)
+        self.lbWinscpHelp = QtGui.QLabel(self.horizontalLayoutWidget_7)
+        self.lbWinscpHelp.setText(QtGui.QApplication.translate("lizmap", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">download the &quot;</span><span style=\" font-size:9pt; font-weight:600;\">Portable executables</span><span style=\" font-size:9pt;\">&quot; version from here :</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://winscp.net/eng/download.php\"><span style=\" font-size:9pt; text-decoration: underline; color:#0000ff;\">http://winscp.net/eng/download.php</span></a></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">then unzip it to some folder, and select this folder to fill the above field</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.lbWinscpHelp.setObjectName(_fromUtf8("lbWinscpHelp"))
+        self.verticalLayout_3.addWidget(self.lbWinscpHelp)
+        self.horizontalLayout_7.addLayout(self.verticalLayout_3)
         self.tabWidget.addTab(self.tab_ftp, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
@@ -378,7 +416,10 @@ class Ui_lizmap(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* Data (vector and raster) must be stored in the same folder of the project file, or in a subfolder</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* Project paths must be set to &quot;relative&quot; (see project properties)</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* WMS options must be set in the project properties</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* The FTP synchronisation only works on linux and windows operating systems. On Linux plateforms, the software lftp must have been installed. On Windows plaforms, WinSCP Portable is used and is already contained in Lizmap plugin directory. On Mac plateforms, there is at the moment no sync tool. Please use a FTP client to synchronize the modified files.</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* The FTP synchronisation only works on linux and windows operating systems. </p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- On Linux plateforms, the software lftp must have been installed. By example enter the command line : &quot;sudo aptitude install lftp&quot;</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- On Windows plaforms, WinSCP Portable is used and must be downloaded from <a href=\"http://winscp.net/eng/download.php\"><span style=\" text-decoration: underline; color:#0000ff;\">http://winscp.net/eng/download.php</span></a> . Please choose the &quot;Portable executables&quot; version, then unzip it in some folder. You will have to choose this folder in the &quot;FTP options&quot; tab</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- On Mac plateforms, there is at the moment no sync tool. Please use a FTP client to synchronize the modified files.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; font-style:italic;\">Server side</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* QgisMapserver must be installed.</p>\n"
@@ -445,6 +486,9 @@ class Ui_lizmap(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600; font-style:italic;\">remotedir</span> = Path to the directory where all your qgis project data (project file, rasters and vectors) must be sent. </p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- For Windows users, you must give a full path, for exemple : &quot;/home/username/myremotedir/&quot; (please ask the server admin for the complete path to you FTP root folder).</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">- For linux users, just use a relative path, such as &quot;/myremotedir/&quot;</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">* <span style=\" font-weight:600; font-style:italic;\">winscp full path</span> =  For Windows users only ! Path to the directory containing WinScp executables. <span style=\" font-weight:600;\">WinScp &quot;Portable version&quot;</span> must be downloaded from <a href=\"http://winscp.net/eng/download.php\"><span style=\" text-decoration: underline; color:#0000ff;\">http://winscp.net/eng/download.php</span></a> . Please download it, then unzip it in some folder. E.g. &quot;C:\\winscp\\&quot; .</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">You can use the button &quot;...&quot; to choose the directory containing &quot;WinScp.com&quot;.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Log</span></p>\n"
@@ -602,7 +646,8 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.inUsername, self.inPassword)
         lizmap.setTabOrder(self.inPassword, self.inRemotedir)
         lizmap.setTabOrder(self.inRemotedir, self.inLocaldir)
-        lizmap.setTabOrder(self.inLocaldir, self.outLog)
+        lizmap.setTabOrder(self.inLocaldir, self.btWinscpPath)
+        lizmap.setTabOrder(self.btWinscpPath, self.outLog)
         lizmap.setTabOrder(self.outLog, self.btClearlog)
         lizmap.setTabOrder(self.btClearlog, self.btCancelFtpSync)
         lizmap.setTabOrder(self.btCancelFtpSync, self.textEdit)

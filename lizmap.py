@@ -122,6 +122,7 @@ class lizmap:
     self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
 #    self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
     self.dlg.ui.inRemotedir.setText(str(cfg.get('Ftp', 'remotedir')).decode('utf-8'))
+    self.dlg.ui.inWinscpPath.setText(str(cfg.get('Ftp', 'winscppath')).decode('utf-8'))
     self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
 
     # Get the project config file (projectname.qgs.cfg)
@@ -766,7 +767,7 @@ class lizmap:
         try:
           minScale = int(in_minScale)
         except (ValueError, IndexError):
-          self.dlg.ui.inMinScale.setText(minScale)
+          self.dlg.ui.inMinScale.setText(str(minScale))
           self.log('<b>** WARNING **</b> : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
       self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
       
@@ -776,7 +777,7 @@ class lizmap:
         try:
           maxScale = int(in_maxScale)
         except (ValueError, IndexError):
-          self.dlg.ui.inMaxScale.setText(maxScale)
+          self.dlg.ui.inMaxScale.setText(str(maxScale))
           self.log('<b>** WARNING **</b> : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
       self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
       
@@ -786,7 +787,7 @@ class lizmap:
         try:
           zoomLevelNumber = int(in_zoomLevelNumber)
         except (ValueError, IndexError):
-          self.dlg.ui.inZoomLevelNumber.setText(zoomLevelNumber)
+          self.dlg.ui.inZoomLevelNumber.setText(str(zoomLevelNumber))
           self.log('<b>** WARNING **</b> : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
       self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
       
@@ -836,6 +837,16 @@ class lizmap:
     return self.isok
     
 
+
+  def chooseWinscpPath(self):
+    '''Ask the user to select a folder and write down the path to inWinscpPath field'''
+    winscpPath = QFileDialog.getExistingDirectory( None,QString("Choose the folder where WinScp portable is installed"), str(self.dlg.ui.inWinscpPath.text().toUtf8()).strip(' \t') )
+    if os.path.exists(unicode(winscpPath)):
+      self.dlg.ui.inWinscpPath.setText(unicode(winscpPath))
+      if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com')):
+        QMessageBox.critical(self.dlg, "Lizmap error", ("The file WinSCP.com has not been found in the following path: \n%s \n\n. Please give another try." % os.path.abspath('%s' % winscpPath)), QMessageBox.Ok)
+
+
   def getFtpOptions(self):
     '''Get and check FTP options defined by user. Returns FTP options'''
     # Get FTP options
@@ -845,6 +856,7 @@ class lizmap:
     in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
     in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
     in_remotedir = str(self.dlg.ui.inRemotedir.text().toUtf8()).strip(' \t')
+    in_winscpPath = str(self.dlg.ui.inWinscpPath.text().toUtf8()).strip(' \t')
 
     self.dlg.ui.outLog.append('')
     self.dlg.ui.outLog.append('=' * 20)
@@ -895,6 +907,19 @@ class lizmap:
       self.log('<b>** WARNING **</b> Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
     else:
       self.log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
+
+    # For windows users : winscp path
+    if sys.platform == 'win32':
+      winscpPath = in_winscpPath
+      #if not str(winscpPath).endswith('/'):
+      #  winscpPath = winscpPath + '/'
+      if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com') ):
+        self.log('<b>** WARNING **</b> WinScp.com has not been found in : %s' % winscpPath , abort=True, textarea=self.dlg.ui.outLog)
+        winscpPath=''
+      else:
+        self.log('winscp path = %s' % winscpPath, abort=False, textarea=self.dlg.ui.outLog)
+    else:
+      winscpPath = ''
     
     # username
     if len(in_username) > 0:
@@ -922,6 +947,7 @@ class lizmap:
 #        cfg.set('Ftp', 'password', password)
       cfg.set('Ftp', 'port', port)
       cfg.set('Ftp', 'remotedir', remotedir)
+      cfg.set('Ftp', 'winscppath', winscpPath)
       cfg.write(open(configPath,"w"))
       cfg.read(configPath)
       # log the errors
@@ -929,7 +955,7 @@ class lizmap:
     else:
       QMessageBox.critical(self.dlg, "Error", (u"Wrong FTP parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
     
-    return [self.isok, host, port, username, password, localdir, remotedir]
+    return [self.isok, host, port, username, password, localdir, remotedir, winscpPath]
 
 
   def ftpSyncStdout(self):
@@ -968,7 +994,7 @@ class lizmap:
   def ftpSync(self):
     '''Synchronize data (project file, project config file and all data contained in the project file folder) from local computer to remote host.
     * linux : Based on lftp library which needs to be installed
-    * windows : based on winscp435, installed in the plugin directory
+    * windows : based on winscp portable which needs to be manually downloaded and installed
     * mac : needs to be done
     '''
     # Ask for confirmation
@@ -1007,6 +1033,7 @@ class lizmap:
     password = getFtpOptions[4]
     localdir = getFtpOptions[5]
     remotedir = getFtpOptions[6]
+    winscpPath = getFtpOptions[7]
 
     myOutput = ''
     # display the stateLabel
@@ -1027,7 +1054,8 @@ class lizmap:
         ftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
 
       else:
-        winscp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/lizmap/winscp435/WinSCP.com")
+#        winscp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/lizmap/winscp435/WinSCP.com")
+        winscp = os.path.join(os.path.abspath('%s' % winscpPath.decode('utf-8')), 'WinSCP.com')
         winLocaldir = localdir.replace("/", "\\")
         winLocaldir = winLocaldir.replace("\\", "\\\\")
         # needs to create the directory if not present
@@ -1074,6 +1102,13 @@ class lizmap:
         self.dlg.ui.tabWidget.setTabEnabled(2, False)
         self.dlg.ui.btSync.setEnabled(False)
       
+      # Disable winscp path field for non windows users
+      if sys.platform != 'win32':
+        self.dlg.ui.inWinscpPath.setEnabled(False)
+        self.dlg.ui.btWinscpPath.setEnabled(False)
+        self.dlg.ui.lbWinscpHelp.setEnabled(False)
+        self.dlg.ui.lbWinscpIn.setEnabled(False)
+      
       # Get config file data and set the Ftp Configuration input fields
       self.getConfig()
       
@@ -1089,6 +1124,8 @@ class lizmap:
       QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
       # ftp sync button clicked
       QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
+      # winscp get path button
+      QObject.connect(self.dlg.ui.btWinscpPath, SIGNAL("clicked()"), self.chooseWinscpPath)
       # clear log button clicked
       QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
       # Cancel FTP Sync
