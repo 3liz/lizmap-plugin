@@ -74,6 +74,36 @@ class lizmap:
     # create the dialog
     self.dlg = lizmapDialog()
     
+    
+    # FTP Sync only active for linux and windows users.
+    if not sys.platform.startswith('linux') and sys.platform != 'win32' :
+      self.dlg.ui.tabWidget.setTabEnabled(2, False)
+      self.dlg.ui.btSync.setEnabled(False)
+    
+    # Disable winscp path field for non windows users
+    if sys.platform != 'win32':
+      self.dlg.ui.inWinscpPath.setEnabled(False)
+      self.dlg.ui.btWinscpPath.setEnabled(False)
+      self.dlg.ui.lbWinscpHelp.setEnabled(False)
+      self.dlg.ui.lbWinscpIn.setEnabled(False)
+    
+    # connect signals and functions
+    # save button clicked
+    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
+    # ftp sync button clicked
+    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
+    # winscp get path button
+    QObject.connect(self.dlg.ui.btWinscpPath, SIGNAL("clicked()"), self.chooseWinscpPath)
+    # clear log button clicked
+    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
+    # Cancel FTP Sync
+    QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
+    # refresh layer tree button click
+    QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
+    
+    # detect close event
+    QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
+    
 
   def initGui(self):
     '''Create action that will start plugin configuration'''
@@ -1084,30 +1114,31 @@ class lizmap:
         proc.wait()
            
     return self.isok
-  
+
+
+  def warnOnClose(self):
+    '''Method triggerd when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
+    # Ask confirmation
+    saveBeforeClose = QMessageBox.question(self.dlg, 'Lizmap - Save configuration before closing ?', "You have closed lizmap windows. Save the configuration before closing ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    if saveBeforeClose == QMessageBox.Yes:
+      self.writeProjectConfigFile()
+
+    
+  def test(self):
+    '''Debug method'''
+    self.log("test", abort=False, textarea=self.dlg.ui.outLog)
+    QMessageBox.critical(self.dlg, "Lizmap debug", (u"test"), QMessageBox.Ok)
+    
 
   def run(self):
     '''Plugin run method : launch the gui and some tests'''
     
     if self.dlg.isVisible():
-      self.writeProjectConfigFile()
-      self.dlg.hide()
+      QMessageBox.warning(self.dlg, "Lizmap", ("A Lizmap windows is already opened"), QMessageBox.Ok)
     
     # show the dialog only if checkGlobalProjectOptions is true
-    if self.checkGlobalProjectOptions():
+    if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
       self.dlg.show()
-      
-      # FTP Sync only active for linux and windows users.
-      if not sys.platform.startswith('linux') and sys.platform != 'win32' :
-        self.dlg.ui.tabWidget.setTabEnabled(2, False)
-        self.dlg.ui.btSync.setEnabled(False)
-      
-      # Disable winscp path field for non windows users
-      if sys.platform != 'win32':
-        self.dlg.ui.inWinscpPath.setEnabled(False)
-        self.dlg.ui.btWinscpPath.setEnabled(False)
-        self.dlg.ui.lbWinscpHelp.setEnabled(False)
-        self.dlg.ui.lbWinscpIn.setEnabled(False)
       
       # Get config file data and set the Ftp Configuration input fields
       self.getConfig()
@@ -1118,20 +1149,6 @@ class lizmap:
       self.populateLayerTree()
       
       self.isok = 1
-      
-      # connect signals and functions
-      # save button clicked
-      QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
-      # ftp sync button clicked
-      QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
-      # winscp get path button
-      QObject.connect(self.dlg.ui.btWinscpPath, SIGNAL("clicked()"), self.chooseWinscpPath)
-      # clear log button clicked
-      QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
-      # Cancel FTP Sync
-      QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
-      # refresh layer tree button click
-      QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
     
       result = self.dlg.exec_()
       # See if OK was pressed
