@@ -602,48 +602,60 @@ class lizmap:
     r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
     # Get the project data
     p = QgsProject.instance()
+    # options
+    liz2json = {}
+    liz2json["options"] = {}
+    liz2json["layers"] = {}
+    # projection
     # project projection
     mc = self.iface.mapCanvas()
     pSrs = mc.mapRenderer().destinationSrs()
     pAuthid = pSrs.authid()
     pProj4 = pSrs.toProj4()
+    liz2json["options"]["projection"] = {}
+    liz2json["options"]["projection"]["proj4"] = '%s' % pProj4
+    liz2json["options"]["projection"]["ref"] = '%s' % pAuthid
     # wms extent
     pWmsExtent = p.readListEntry('WMSExtent','')[0]
-    # options
-    myJson+= '"options" : {'
-    myJson+= '"projection" : {"proj4":"%s", "ref":"%s"},' % (pProj4, pAuthid)
-    if len(pWmsExtent) > 1:
-      myJson+= '"bbox":[%s,%s,%s,%s],' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3])
+    if len(pWmsExtent) > 1:    
+      bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0],pWmsExtent[1],pWmsExtent[2],pWmsExtent[3])) 
     else:
-      myJson+= '"bbox":[],'
+      bbox = []
+    liz2json["options"]["bbox"] = bbox
     
     # gui user defined options
     in_imageFormat = self.dlg.ui.liImageFormat.currentText()
+    liz2json["options"]["imageFormat"] = 'image/%s' % in_imageFormat
     in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
-    in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
-    in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
-    in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
     if len(in_minScale) == 0:
-      in_minScale = 10000
+      in_minScale = 10000    
+    liz2json["options"]["minScale"] = in_minScale
+    in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
     if len(in_maxScale) == 0:
       in_maxScale = 10000000
+    liz2json["options"]["maxScale"] = in_maxScale
+    in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
     if len(in_zoomLevelNumber) == 0:
       in_zoomLevelNumber = 10
+    liz2json["options"]["zoomLevelNumber"] = in_zoomLevelNumber
+    in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
+    liz2json["options"]["mapScales"] = eval("[%s]" % in_mapScales)
     in_osmMapnik = str(self.dlg.ui.cbOsmMapnik.isChecked())
+    liz2json["options"]["osmMapnik"] = in_osmMapnik
     in_osmMapquest = str(self.dlg.ui.cbOsmMapquest.isChecked())
+    liz2json["options"]["osmMapquest"] = in_osmMapquest
     in_googleKey = str(self.dlg.ui.inGoogleKey.text()).strip(' \t')
+    liz2json["options"]["googleKey"] = in_googleKey
     in_googleStreets = str(self.dlg.ui.cbGoogleStreets.isChecked())
+    liz2json["options"]["googleStreets"] = in_googleStreets
     in_googleSatellite = str(self.dlg.ui.cbGoogleSatellite.isChecked())
+    liz2json["options"]["googleSatellite"] = in_googleSatellite
     in_googleHybrid = str(self.dlg.ui.cbGoogleHybrid.isChecked())
+    liz2json["options"]["googleHybrid"] = in_googleHybrid
     in_googleTerrain = str(self.dlg.ui.cbGoogleTerrain.isChecked())
-    
-    myJson+= ' "imageFormat" : "image/%s", "minScale" : %s, "maxScale" : %s, "zoomLevelNumber" : %s, "mapScales" : [%s], "osmMapnik":"%s", "osmMapquest":"%s", "googleKey":"%s", "googleStreets":"%s", "googleSatellite":"%s", "googleHybrid":"%s", "googleTerrain":"%s"' % (in_imageFormat, in_minScale, in_maxScale, in_zoomLevelNumber, in_mapScales, in_osmMapnik, in_osmMapquest, in_googleKey, in_googleStreets, in_googleSatellite, in_googleHybrid, in_googleTerrain)
-
-    myJson+= '},'
-    
+    liz2json["options"]["googleTerrain"] = in_googleTerrain
+        
     # gui user defined layers options
-    myJson+= '"layers" : {'
-    myVirg = ''
     for k,v in self.layerList.items():
       addToCfg = True
       ltype = v['type']
@@ -663,18 +675,30 @@ class lizmap:
             geometryType = layer.geometryType()
       
       if geometryType != 4:
-        myJson+= '%s "%s" : {"id":"%s", "name":"%s", "type":"%s", "groupAsLayer":"%s", "title":"%s", "abstract":"%s", "link":"%s", "minScale":%d, "maxScale":%d, "toggled":"%s", "baseLayer":"%s", "singleTile" : "%s", "cached" : "%s"}' % (myVirg, unicode(v['name']), unicode(k), unicode(v['name']), ltype, v['groupAsLayer'], unicode(v['title']), unicode(v['abstract']), unicode(v['link']), v['minScale'], v['maxScale'] , str(v['toggled']), str(v['baseLayer']), str(v['singleTile']), str(v['cached']) )
-        myVirg = ','
+        layerOptions = {}
+        layerOptions["id"] = unicode(k)
+        layerOptions["name"] = unicode(v['name'])
+        layerOptions["type"] = ltype
+        layerOptions["groupAsLayer"] = v['groupAsLayer']
+        layerOptions["title"] = unicode(v['title'])
+        layerOptions["abstract"] = unicode(v['abstract'])
+        layerOptions["link"] = unicode(v['link'])
+        layerOptions["minScale"] = v['minScale']
+        layerOptions["maxScale"] = v['maxScale']
+        layerOptions["toggled"] = str(v['toggled'])
+        layerOptions["baseLayer"] = str(v['baseLayer'])
+        layerOptions["singleTile"] = str(v['singleTile'])
+        layerOptions["cached"] = str(v['cached'])
+        liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
       
-    myJson+= '}'
-    myJson+= '}'
     
+    jsonFileContent = simplejson.dumps(liz2json)
     # Write json to the cfg file
     # Get the project data
     p = QgsProject.instance()
     jsonFile = "%s.cfg" % p.fileName()
     f = open(jsonFile, 'w')
-    f.write(myJson.encode('utf-8'))
+    f.write(jsonFileContent.encode('utf-8'))
     f.close()
 
 
@@ -858,7 +882,7 @@ class lizmap:
         self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
         self.log('<b>Lizmap configuration file has been updated</b>' , abort=False, textarea=self.dlg.ui.outLog)
       else:
-        QMessageBox.critical(self.dlg, "Error", ("Wrong parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
+        QMessageBox.critical(self.dlg, "Error", ("Wrong or missing parameters : please read the log and correct the printed errors."), QMessageBox.Ok)
         
       self.dlg.ui.outState.setText('<font color="green"></font>')
       # Go to Log tab
