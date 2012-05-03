@@ -71,9 +71,32 @@ class lizmap:
   def __init__(self, iface):
     '''Save reference to the QGIS interface'''
     self.iface = iface
-    # create the dialog
-    self.dlg = lizmapDialog()
+    # Qgis version
+    try:
+      self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
+    except:
+      self.QgisVersion = unicode(QGis.qgisVersion)[ 0 ]
     
+    # initialize plugin directory
+    self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/lizmap"
+    # initialize locale
+    localePath = ""
+    locale = QSettings().value("locale/userLocale").toString()[0:2]
+     
+    if QFileInfo(self.plugin_dir).exists():
+      localePath = self.plugin_dir + "/i18n/lizmap_" + locale + ".qm"
+
+    self.translator = QTranslator()
+    if QFileInfo(localePath).exists():
+      self.translator.load(localePath)
+    else:
+      self.translator.load(self.plugin_dir + "/i18n/lizmap_en.qm")
+
+    if qVersion() > '4.3.3':
+      QCoreApplication.installTranslator(self.translator)
+        
+    # Create the dialog and keep reference
+    self.dlg = lizmapDialog()
     
     # FTP Sync only active for linux and windows users.
     if not sys.platform.startswith('linux') and sys.platform != 'win32' :
@@ -114,12 +137,12 @@ class lizmap:
 
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.action)
-    self.iface.addPluginToMenu("&lizmap", self.action)
+    self.iface.addPluginToMenu(u"&LizMap", self.action)
 
 
   def unload(self):
     '''Remove the plugin menu item and icon'''
-    self.iface.removePluginMenu("&lizmap",self.action)
+    self.iface.removePluginMenu(u"&LizMap",self.action)
     self.iface.removeToolBarIcon(self.action)
 
 
@@ -167,8 +190,8 @@ class lizmap:
         jsonOptions = sjson['options']
       except:
         isok=0
-        QMessageBox.critical(self.dlg, "Lizmap error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
-        self.log(u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
+        QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), (QApplication.translate("lizmap", "ui.msg.error.tree.read.content")), QMessageBox.Ok)
+        self.log(QApplication.translate("lizmap", "ui.msg.error.tree.read.content"), abort=True, textarea=self.dlg.ui.outLog)
     
     # Set the Map options tab fields values
     self.imageFormatDic = {'image/png' : 0, 'image/jpg' : 1}
@@ -219,7 +242,7 @@ class lizmap:
 
   def refreshLayerTree(self):
     # Ask confirmation
-    refreshIt = QMessageBox.question(self.dlg, 'Lizmap - Refresh layer tree ?', "You can refresh the layer tree by pressing \"Yes\". \n\nBe aware that you will loose all the changes made in this Layers tab (group or layer metadata and options) since your last \"Save\". \nIf you have renamed one or more groups or layers, you will also loose the associated informations. \n\nRefresh layer tree ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    refreshIt = QMessageBox.question(self.dlg, QApplication.translate("lizmap", 'ui.msg.question.refresh.title'), QApplication.translate("lizmap", "ui.msg.question.refresh.content"), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     if refreshIt == QMessageBox.Yes:
       self.populateLayerTree()
 
@@ -230,7 +253,7 @@ class lizmap:
     '''
     myTree = self.dlg.ui.treeLayer
     myTree.clear()
-    myTree.headerItem().setText(0, 'List of layers')
+    myTree.headerItem().setText(0, QApplication.translate("lizmap", QApplication.translate("lizmap", "ui.tab.layers.tree.title")))
     myDic = {}
     myGroups = self.iface.legendInterface().groups()
 
@@ -247,8 +270,8 @@ class lizmap:
         jsonLayers = sjson['layers']
       except:
         isok=0
-        QMessageBox.critical(self.dlg, "Lizmap Error", (u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab "), QMessageBox.Ok)
-        self.log(u"Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab", abort=True, textarea=self.dlg.ui.outLog)
+        QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), (u""), QMessageBox.Ok)
+        self.log( QApplication.translate("lizmap", "ui.msg.error.tree.read.content"), abort=True, textarea=self.dlg.ui.outLog)
       f.close()    
     
     # Loop through groupLayerRelationship to reconstruct the tree
@@ -711,12 +734,12 @@ class lizmap:
     # Get the project data from api
     p = QgsProject.instance()
     if not p.fileName():
-      QMessageBox.critical(self.dlg, "Lizmap Error", ("You need to open a qgis project first."), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), QApplication.translate("lizmap", "ui.msg.error.init.open.project"), QMessageBox.Ok)
       isok = False
       
     # Check the project state (saved or not)
     if isok and p.isDirty():
-      saveIt = QMessageBox.question(self.dlg, 'Lizmap - Save current project ?', "Please save the current project before using Lizmap plugin. Save the project ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+      saveIt = QMessageBox.question(self.dlg, QApplication.translate("lizmap", "ui.msg.question.save.project.title"), QApplication.translate("lizmap", "ui.msg.question.save.project.content"), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
       if saveIt == QMessageBox.Yes:
         p.write()
       else:
@@ -729,7 +752,7 @@ class lizmap:
       
     # Check relative/absolute path    
     if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
-      QMessageBox.critical(self.dlg, "Lizmap Error", ("The project layer paths must be set to relative. Please change this options in the project settings."), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative %1"), QMessageBox.Ok)
       isok = False
       
     # check active layers path layer by layer
@@ -747,14 +770,28 @@ class lizmap:
           layerSourcesBad.append(layerSource)
           isok = False
       if len(layerSourcesBad) > 0:
-        QMessageBox.critical(self.dlg, "Lizmap Error", ("The layers paths must be relative to the project file. Please copy the layers inside \n%s.\n (see the log for detailed layers)" % projectDir), QMessageBox.Ok)
-        self.log("The layers paths must be relative to the project file. Please copy the layers \n%s \ninside \n%s." % (str(layerSourcesBad), projectDir), abort=True, textarea=self.dlg.ui.outLog)
+        QMessageBox.critical(
+          self.dlg, 
+          QApplication.translate("lizmap", "ui.msg.error.title"),
+          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative")
+          .arg(projectDir), 
+          QMessageBox.Ok)
+        self.log(
+          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative")
+          .arg(str(layerSourcesBad))
+          .arg(projectDir), 
+          abort=True, 
+          textarea=self.dlg.ui.outLog)
       
     # check if a bbox has been given in the project WMS tab configuration
     if isok:
       pWmsExtent = p.readListEntry('WMSExtent','')[0]
       if len(pWmsExtent) <1 :
-        QMessageBox.critical(self.dlg, "Lizmap Error", ("The project WMS extent must be set. Please change this options in the project settings."), QMessageBox.Ok)
+        QMessageBox.critical(
+          self.dlg, 
+          QApplication.translate("lizmap", "ui.msg.error.title"), 
+          QApplication.translate("lizmap", "ui.msg.error.project.wms.extent"), 
+          QMessageBox.Ok)
         isok = False
         
     # for linux users, check if lftp has been installed
@@ -765,13 +802,15 @@ class lizmap:
       output = proc.communicate()
       proc.wait()
       if "LFTP" not in output[0]:
-        QMessageBox.critical(self.dlg, "Lizmap Warning", ("Lftp is not installed. You won't be able to synchronize your project from the plugin. You can install lftp and reload the plugin, or go on and use another FTP client to synchronize your local project to the server"), QMessageBox.Ok)
+        QMessageBox.critical(
+          self.dlg,
+          QApplication.translate("lizmap", "ui.msg.warning.title"),
+          QApplication.translate("lizmap", "ui.msg.warning.lftp.installation"),
+          QMessageBox.Ok)
         self.dlg.ui.tabWidget.setTabEnabled(2, False)
         self.dlg.ui.btSync.setEnabled(False)
       
     return isok
-
-
 
     
   def getMapOptions(self):
@@ -800,7 +839,7 @@ class lizmap:
       
       # log
       self.dlg.ui.outLog.append('=' * 20)
-      self.dlg.ui.outLog.append('<b>Map options</b>')
+      self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.map.option.title"))
       self.dlg.ui.outLog.append('=' * 20)
       
       # Checking configuration data
@@ -809,11 +848,17 @@ class lizmap:
       if in_imageFormat == 'png' or in_imageFormat == 'jpg':
         imageFormat = in_imageFormat
       else:
-        self.log('<b>** WARNING **</b> Wrong image format !', abort=True, textarea=self.dlg.ui.outLog)
+        self.log(
+          QApplication.translate("lizmap", "ui.tab.log.map.image.format.warning"),
+          abort=True, 
+          textarea=self.dlg.ui.outLog)
         
       # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
-      if len(in_mapScales) == 0 and ( len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
-        self.log('<b>** WARNING **</b> : You must give either minScale + maxScale + zoomLevelNumber OR mapScales in the "Map options" tab!', abort=True, textarea=self.dlg.ui.outLog)  
+      if len(in_mapScales) == 0 and (len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
+        self.log(
+          QApplication.translate("lizmap", "ui.tab.log.map.scale.warning"), 
+          abort=True, 
+          textarea=self.dlg.ui.outLog)  
       
       # minScale
       minScale = 1
@@ -822,7 +867,10 @@ class lizmap:
           minScale = int(in_minScale)
         except (ValueError, IndexError):
           self.dlg.ui.inMinScale.setText(str(minScale))
-          self.log('<b>** WARNING **</b> : minScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log(
+            QApplication.translate("lizmap", "ui.tab.log.map.minscale.warning"),
+            abort=True, 
+            textarea=self.dlg.ui.outLog)
       self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # maxScale
@@ -832,7 +880,10 @@ class lizmap:
           maxScale = int(in_maxScale)
         except (ValueError, IndexError):
           self.dlg.ui.inMaxScale.setText(str(maxScale))
-          self.log('<b>** WARNING **</b> : maxScale must be an integer !', abort=True, textarea=self.dlg.ui.outLog)   
+          self.log(
+            QApplication.translate("lizmap", "ui.tab.log.map.maxscale.warning"),
+            abort=True, 
+            textarea=self.dlg.ui.outLog)
       self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
       
       # zoom levels number
@@ -842,7 +893,10 @@ class lizmap:
           zoomLevelNumber = int(in_zoomLevelNumber)
         except (ValueError, IndexError):
           self.dlg.ui.inZoomLevelNumber.setText(str(zoomLevelNumber))
-          self.log('<b>** WARNING **</b> : zoomLevelNumber must be an integer !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log(
+            QApplication.translate("lizmap", "ui.tab.log.map.zoomLevelNumber.warning"),
+            abort=True, 
+            textarea=self.dlg.ui.outLog)
       self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
       
       # mapScales
@@ -859,7 +913,10 @@ class lizmap:
         if good:
           self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)      
         else:
-          self.log('<b>** WARNING **</b> : mapScales must be series of integers separated by comma !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log(
+            QApplication.translate("lizmap", "ui.tab.log.map.mapScales.warning"),
+            abort=True, 
+            textarea=self.dlg.ui.outLog)
 
 
       # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
@@ -872,17 +929,30 @@ class lizmap:
           if i == 'EPSG:900913':
             good = True
         if not good:
-          self.log('<b>** WARNING **</b> : You have chosen one external public source in the Map tab. You must add "EPSG:900913" in the "Coordinate System Restriction" of the "WMS Server" tab in the project properties dialog !', abort=True, textarea=self.dlg.ui.outLog)
+          self.log(
+            QApplication.translate("lizmap", "ui.tab.log.map.externalBaseLayers.warning"),
+            abort=True, 
+            textarea=self.dlg.ui.outLog)
       
         
       
       if self.isok:        
         # write data in the QgisWebClient json config file (to be send with the project file)
         self.writeProjectConfigFile()
-        self.log('All the parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
-        self.log('<b>Lizmap configuration file has been updated</b>' , abort=False, textarea=self.dlg.ui.outLog)
+        self.log(
+          QApplication.translate("lizmap", "ui.msg.map.parameters.ok"),
+          abort=False, 
+          textarea=self.dlg.ui.outLog)
+        self.log(
+          QApplication.translate("lizmap", "ui.msg.configuration.save.ok"),
+          abort=False, 
+          textarea=self.dlg.ui.outLog)
       else:
-        QMessageBox.critical(self.dlg, "Error", ("Wrong or missing parameters : please read the log and correct the printed errors."), QMessageBox.Ok)
+        QMessageBox.critical(
+          self.dlg,
+          QApplication.translate("lizmap", "ui.msg.error.title"),
+          QApplication.translate("lizmap", "ui.msg.map.parameters.bad"),
+          QMessageBox.Ok)
         
       self.dlg.ui.outState.setText('<font color="green"></font>')
       # Go to Log tab
@@ -898,7 +968,12 @@ class lizmap:
     if os.path.exists(unicode(winscpPath)):
       self.dlg.ui.inWinscpPath.setText(unicode(winscpPath))
       if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com')):
-        QMessageBox.critical(self.dlg, "Lizmap error", ("The file WinSCP.com has not been found in the following path: \n%s \n\n. Please give another try." % os.path.abspath('%s' % winscpPath)), QMessageBox.Ok)
+        QMessageBox.critical(
+          self.dlg,
+          QApplication.translate("lizmap", "ui.msg.error.title"),
+          QApplication.translate("lizmap", "ui.msg.error.winscp.not.found %1")
+          .arg(os.path.abspath('%s' % winscpPath)),
+          QMessageBox.Ok)
 
 
   def getFtpOptions(self):
@@ -912,19 +987,26 @@ class lizmap:
     in_remotedir = str(self.dlg.ui.inRemotedir.text().toUtf8()).strip(' \t')
     in_winscpPath = str(self.dlg.ui.inWinscpPath.text().toUtf8()).strip(' \t')
 
-    self.dlg.ui.outLog.append('')
+    self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.ftp.option.title"))
     self.dlg.ui.outLog.append('=' * 20)
-    self.dlg.ui.outLog.append('<b>FTP options</b>')
+    self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.ftp.option.title"))
     self.dlg.ui.outLog.append('=' * 20)
     
     # Check FTP options
     # host
     if len(in_host) == 0:
       host = ''
-      self.log('<b>** WARNING **</b> Missing hostname !', abort=True, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.tab.log.ftp.hostname.missing.warning"), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
     elif len(in_host) < 4:
       host=''
-      self.log('<b>** WARNING **</b>Incorrect hostname : %s !' % in_host, abort=True, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.tab.log.ftp.hostname.wrong.warning %1")
+        .arg(in_host), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
     else:
       host = unicode(in_host)
       self.log('host = %s' % host, abort=False, textarea=self.dlg.ui.outLog)
@@ -950,7 +1032,10 @@ class lizmap:
       self.log('remotedir = %s' % remotedir, abort=False, textarea=self.dlg.ui.outLog)
     else:
       remotedir=''
-      self.log('<b>** WARNING **</b> Remote directory must be set', abort=True, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.tab.log.ftp.remotedir.missing.warning"), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
     
     # local directory    
     localdir = in_localdir
@@ -958,7 +1043,11 @@ class lizmap:
       localdir = localdir + '/'
     if not os.path.isdir(localdir):
       localdir=''
-      self.log('<b>** WARNING **</b> Localdir does not exist: %s' % localdir, abort=True, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.tab.log.ftp.localdir.warning %1")
+        .arg(localdir), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
     else:
       self.log('localdir = %s' % localdir, abort=False, textarea=self.dlg.ui.outLog)
 
@@ -968,7 +1057,11 @@ class lizmap:
       #if not str(winscpPath).endswith('/'):
       #  winscpPath = winscpPath + '/'
       if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com') ):
-        self.log('<b>** WARNING **</b> WinScp.com has not been found in : %s' % winscpPath , abort=True, textarea=self.dlg.ui.outLog)
+        self.log(
+          QApplication.translate("lizmap", "ui.tab.log.ftp.winscpPath.warning %1")
+          .arg(winscpPath), 
+          abort=True,
+          textarea=self.dlg.ui.outLog)
         winscpPath=''
       else:
         self.log('winscp path = %s' % winscpPath, abort=False, textarea=self.dlg.ui.outLog)
@@ -981,7 +1074,10 @@ class lizmap:
       self.log('username = %s' % username, abort=False, textarea=self.dlg.ui.outLog)
     else:
       username=''
-      self.log('<b>** WARNING **</b> Missing username !', abort=True, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.tab.log.ftp.username.missing.warning"), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
     
     # password  
     if len(in_password) > 0:
@@ -989,7 +1085,10 @@ class lizmap:
       self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
     else:
       password=''
-      self.log('<b>** WARNING **</b> Missing password !', abort=True, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.tab.log.ftp.password.missing.warning"), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
       
     if self.isok:
       # write FTP options data in the python plugin config file
@@ -1005,9 +1104,20 @@ class lizmap:
       cfg.write(open(configPath,"w"))
       cfg.read(configPath)
       # log the errors
-      self.log('All the FTP parameters are correctly set', abort=False, textarea=self.dlg.ui.outLog)
+      self.log(
+        QApplication.translate("lizmap", "ui.msg.ftp.parameters.ok"), 
+        abort=False,
+        textarea=self.dlg.ui.outLog)
     else:
-      QMessageBox.critical(self.dlg, "Error", (u"Wrong FTP parameters : please read the log and correct the printed errors before FTP synchronization"), QMessageBox.Ok)
+      self.log(
+        QApplication.translate("lizmap", "ui.msg.ftp.parameters.bad"), 
+        abort=True,
+        textarea=self.dlg.ui.outLog)
+      QMessageBox.critical(
+        self.dlg, 
+        QApplication.translate("lizmap", "ui.msg.error.title"),
+        QApplication.translate("lizmap", "ui.msg.ftp.parameters.bad"),
+        QMessageBox.Ok)
     
     return [self.isok, host, port, username, password, localdir, remotedir, winscpPath]
 
@@ -1027,19 +1137,26 @@ class lizmap:
   def ftpSyncFinished(self):
     '''Loaded when the sync process has finished its job.'''
     if self.proc.exitStatus() == 0:
-      self.dlg.ui.outLog.append(u"Synchronization completed. See above for details.")
-      self.dlg.ui.outState.setText('<font color="green">completed</font>')
+      self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.sync.completed"))
+      self.dlg.ui.outState.setText(QApplication.translate("lizmap", "ui.tab.log.outState.completed"))
     else:
-      self.dlg.ui.outLog.append(u"Synchronization canceled. Be aware that some files have already been synchronized !")
-      self.dlg.ui.outState.setText('<font color="red">canceled</font>')
+      self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.sync.canceled"))
+      self.dlg.ui.outState.setText(QApplication.translate("lizmap", "ui.tab.log.outState.canceled"))
     
 
   def ftpSyncCancel(self):
     '''Cancel the ftp sync process by killing it'''
     # Ask for confirmation
-    letsGo = QMessageBox.question(self.dlg, 'Lizmap', "You are about to cancel the FTP synchronization.\n\nAre you sure you want to proceed ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    letsGo = QMessageBox.question(
+      self.dlg, 
+      QApplication.translate("lizmap", "ui.msg.warning.title"), 
+      QApplication.translate("lizmap", "ui.tab.log.kill.warning"), 
+      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     if letsGo == QMessageBox.Yes:
-      self.proc.kill()
+      try:
+        self.proc.kill()
+      except:
+        return False
       return True
     else:
       return False
@@ -1052,7 +1169,11 @@ class lizmap:
     * mac : needs to be done
     '''
     # Ask for confirmation
-    letsGo = QMessageBox.question(self.dlg, 'Lizmap', "You are about to send your project file and all the data contained in :\n\n%s\n\n to the server directory: \n\n%s\n\n This will remove every data in this remote directory which are not related to your current qgis project. Are you sure you want to proceed ?" % ( self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    letsGo = QMessageBox.question(
+      self.dlg, 
+      QApplication.translate("lizmap", "ui.msg.warning.title"),
+      QApplication.translate("lizmap", "ui.msg.warning.run.sync %1 %2").arg(self.dlg.ui.inLocaldir.text()).arg(self.dlg.ui.inRemotedir.text()), 
+      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     if letsGo == QMessageBox.Yes:
       isok = True
     else:
@@ -1077,7 +1198,13 @@ class lizmap:
     # Check the platform
     # FTP Sync only active for linux and windows users.
     if not sys.platform.startswith('linux') and sys.platform != 'win32':
-      QMessageBox.warning(self.dlg, "Lizmap", ('The configuration has been saved. Please synchronize your local project folder\n%s\nwith the remote FTP folder\n%s'  % (localdir, remotedir)), QMessageBox.Ok)
+      QMessageBox.warning(
+        self.dlg,
+        QApplication.translate("lizmap", "ui.msg.warning.title"),
+        QApplication.translate("lizmap", "ui.msg.configuration.saved %1 %2")
+        .arg(localdir)
+        .arg(remotedir), 
+        QMessageBox.Ok)
       return False
 
     # Get ftp user entered data from getMapOptions()
@@ -1091,11 +1218,11 @@ class lizmap:
 
     myOutput = ''
     # display the stateLabel
-    self.dlg.ui.outState.setText('<font color="orange">running</font>')
+    self.dlg.ui.outState.setText(QApplication.translate("lizmap", "ui.tab.log.outState.running"))
     # setting progressbar refreshes the plygin ui
     self.dlg.ui.outLog.append('')
     self.dlg.ui.outLog.append('=' * 20)
-    self.dlg.ui.outLog.append('<b>FTP Synchronisation</b>')
+    self.dlg.ui.outLog.appendQApplication.translate("lizmap", "ui.log.ftp.sync.title")()
     self.dlg.ui.outLog.append('=' * 20)
     
     # Process the sync with lftp
@@ -1143,9 +1270,14 @@ class lizmap:
   def warnOnClose(self):
     '''Method triggerd when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
     # Ask confirmation
-    saveBeforeClose = QMessageBox.question(self.dlg, 'Lizmap - Save configuration before closing ?', "You have closed lizmap windows. Save the configuration before closing ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-    if saveBeforeClose == QMessageBox.Yes:
-      self.writeProjectConfigFile()
+#    saveBeforeClose = QMessageBox.question(
+#      self.dlg,
+#      QApplication.translate("lizmap", "ui.msg.warning.title"),
+#      QApplication.translate("lizmap", "ui.msg.warning.close.window"),
+#      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+#    if saveBeforeClose == QMessageBox.Yes:
+#      self.writeProjectConfigFile()
+    self.writeProjectConfigFile()
 
     
   def test(self):
@@ -1158,7 +1290,11 @@ class lizmap:
     '''Plugin run method : launch the gui and some tests'''
     
     if self.dlg.isVisible():
-      QMessageBox.warning(self.dlg, "Lizmap", ("A Lizmap windows is already opened"), QMessageBox.Ok)
+      QMessageBox.warning(
+        self.dlg,
+        QApplication.translate("lizmap", "ui.msg.warning.title"),
+        QApplication.translate("lizmap", "ui.msg.warning.window.opened"),
+        QMessageBox.Ok)
     
     # show the dialog only if checkGlobalProjectOptions is true
     if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
