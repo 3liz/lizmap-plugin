@@ -9,6 +9,12 @@ version=version 1.1.1
 
 ; start of optional metadata
 changelog=
+  Version 1.2.0
+  * New : support for plugin internationalization : english and french available
+  * Modify : integrate Lizmap in the Qgis Web menu
+  * Modify : remove warning dialog when closing Lizmap window and auto-save the configuration
+  * Modify : move help and about dialogs to the plugin Menu
+  * Bug fix : when the sync button is pressed and no sync was running
   Version 1.1.1
   * bug correction : closing window and reopening it led to plugin actions launched several times (e.g. save button)
   * check if lizmap window is hidden and warn the user (which put lizmap window in the front)

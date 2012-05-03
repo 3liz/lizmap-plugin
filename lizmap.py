@@ -135,15 +135,32 @@ class lizmap:
     # connect the action to the run method
     QObject.connect(self.action, SIGNAL("triggered()"), self.run)
 
-    # Add toolbar button and menu item
-    self.iface.addToolBarIcon(self.action)
-    self.iface.addPluginToMenu(u"&LizMap", self.action)
+    # first check if Web menu availbale in this QGIS version
+    if hasattr(self.iface, "addPluginToWebMenu"):
+      #add plugin to the web plugin menu
+      self.iface.addPluginToWebMenu(u"&LizMap", self.action)
+      # and add button to the Web panel
+      self.iface.addWebToolBarIcon(self.action)
+    else:
+      #add icon to the toolbar
+      self.iface.addToolBarIcon(self.action)
+      #add plugin to the plugin menu
+      self.iface.addPluginToMenu(u"&LizMap", self.action)
 
 
   def unload(self):
     '''Remove the plugin menu item and icon'''
-    self.iface.removePluginMenu(u"&LizMap",self.action)
-    self.iface.removeToolBarIcon(self.action)
+    # first check if Web menu availbale in this QGIS version
+    if hasattr(self.iface, "addPluginToWebMenu"):
+      # new menu used, remove submenus from main Web menu
+      self.iface.removePluginWebMenu(u"&LizMap", self.action)
+      # also remove button from Web toolbar
+      self.iface.removeWebToolBarIcon(self.action)
+    else:
+      #remove plugin
+      self.iface.removePluginMenu(u"&LizMap", self.action)
+      #remove icon
+      self.iface.removeToolBarIcon(self.action)
 
 
   def log(self,msg, level=1, abort=False, textarea=False):
