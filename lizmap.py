@@ -790,13 +790,12 @@ class lizmap:
         QMessageBox.critical(
           self.dlg, 
           QApplication.translate("lizmap", "ui.msg.error.title"),
-          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative")
+          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1")
           .arg(projectDir), 
           QMessageBox.Ok)
         self.log(
-          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative")
-          .arg(str(layerSourcesBad))
-          .arg(projectDir), 
+          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1")
+          .arg(projectDir) + str(layerSourcesBad), 
           abort=True, 
           textarea=self.dlg.ui.outLog)
       
