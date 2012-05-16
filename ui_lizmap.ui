@@ -61,7 +61,7 @@
       <rect>
        <x>330</x>
        <y>10</y>
-       <width>231</width>
+       <width>246</width>
        <height>355</height>
       </rect>
      </property>
@@ -154,9 +154,9 @@
     <widget class="QWidget" name="verticalLayoutWidget_2">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>10</x>
        <y>0</y>
-       <width>561</width>
+       <width>551</width>
        <height>386</height>
       </rect>
      </property>
@@ -708,6 +708,19 @@
    </property>
    <property name="text">
     <string>ui.tab.layers.btSync.label</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btHelp">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>426</y>
+     <width>98</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ui.main.btHelp</string>
    </property>
   </widget>
  </widget>

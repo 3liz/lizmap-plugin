@@ -81,10 +81,10 @@ class lizmap:
     self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/lizmap"
     # initialize locale
     localePath = ""
-    locale = QSettings().value("locale/userLocale").toString()[0:2]
+    self.locale = QSettings().value("locale/userLocale").toString()[0:2]
      
     if QFileInfo(self.plugin_dir).exists():
-      localePath = self.plugin_dir + "/i18n/lizmap_" + locale + ".qm"
+      localePath = self.plugin_dir + "/i18n/lizmap_" + self.locale + ".qm"
 
     self.translator = QTranslator()
     if QFileInfo(localePath).exists():
@@ -123,6 +123,8 @@ class lizmap:
     QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
     # refresh layer tree button click
     QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
+    # refresh layer tree button click
+    QObject.connect(self.dlg.ui.btHelp, SIGNAL("clicked()"), self.showHelp )
     
     # detect close event
     QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
@@ -130,15 +132,32 @@ class lizmap:
 
   def initGui(self):
     '''Create action that will start plugin configuration'''
-    self.action = QAction(QIcon(":/plugins/lizmap/icon.png"), \
-      "lizmap", self.iface.mainWindow())
+    self.action = QAction(QIcon(":/plugins/lizmap/icon.png"),
+                          "lizmap", self.iface.mainWindow())
+
     # connect the action to the run method
     QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+                          
+    # Create action for help dialog
+    self.action_help = QAction(QIcon(":/plugins/lizmap/help.png"),
+                              "&Help...", self.iface.mainWindow())
+    # connect help action to help dialog
+    QObject.connect(self.action_help, SIGNAL("triggered()"), self.showHelp)
+    
+    # Create action for about dialog
+    self.action_about = QAction(QIcon(":/plugins/lizmap/help.png"),
+                              "&About...", self.iface.mainWindow())
+    # connect about action to about dialog
+    QObject.connect(self.action_about, SIGNAL("triggered()"), self.showAbout)
 
     # first check if Web menu availbale in this QGIS version
     if hasattr(self.iface, "addPluginToWebMenu"):
       #add plugin to the web plugin menu
       self.iface.addPluginToWebMenu(u"&LizMap", self.action)
+      #add plugin help to the plugin menu
+      self.iface.addPluginToWebMenu(u"&LizMap", self.action_help)
+      #add plugin about to the plugin menu
+      self.iface.addPluginToWebMenu(u"&LizMap", self.action_about)
       # and add button to the Web panel
       self.iface.addWebToolBarIcon(self.action)
     else:
@@ -146,6 +165,10 @@ class lizmap:
       self.iface.addToolBarIcon(self.action)
       #add plugin to the plugin menu
       self.iface.addPluginToMenu(u"&LizMap", self.action)
+      #add plugin help to the plugin menu
+      self.iface.addPluginToMenu(u"&LizMap", self.action_help)
+      #add plugin about to the plugin menu
+      self.iface.addPluginToMenu(u"&LizMap", self.action_about)
 
 
   def unload(self):
@@ -156,11 +179,33 @@ class lizmap:
       self.iface.removePluginWebMenu(u"&LizMap", self.action)
       # also remove button from Web toolbar
       self.iface.removeWebToolBarIcon(self.action)
+      # Remove help menu entry
+      self.iface.removePluginWebMenu(u"&LizMap", self.action_help)
+      # Remove about menu entry
+      self.iface.removePluginWebMenu(u"&LizMap", self.action_about)
     else:
       #remove plugin
       self.iface.removePluginMenu(u"&LizMap", self.action)
       #remove icon
       self.iface.removeToolBarIcon(self.action)
+      # Remove help menu entry
+      self.iface.removePluginMenu(u"&LizMap", self.action_help)
+      # Remove about menu entry
+      self.iface.removePluginMenu(u"&LizMap", self.action_about)
+      
+
+  def showHelp(self):
+    '''Opens the html help file content with default browser'''
+    localHelp = self.plugin_dir + "/help/help-%s.html" % self.locale
+    if not QFileInfo(localHelp).exists():
+      localHelp = self.plugin_dir + "/help/help-en.html"
+    QDesktopServices.openUrl( QUrl(localHelp) )
+
+  def showAbout(self):
+    '''Opens the about html content with default browser'''
+    localAbout = "http://hub.qgis.org/projects/lizmapplugin"
+    self.log(localAbout, abort=True, textarea=self.dlg.ui.outLog)
+    QDesktopServices.openUrl( QUrl(localAbout) )
 
 
   def log(self,msg, level=1, abort=False, textarea=False):
@@ -769,7 +814,7 @@ class lizmap:
       
     # Check relative/absolute path    
     if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
-      QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative %1"), QMessageBox.Ok)
+      QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative"), QMessageBox.Ok)
       isok = False
       
     # check active layers path layer by layer
@@ -1285,7 +1330,7 @@ class lizmap:
 
   def warnOnClose(self):
     '''Method triggerd when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-    # Ask confirmation
+#    # Ask confirmation
 #    saveBeforeClose = QMessageBox.question(
 #      self.dlg,
 #      QApplication.translate("lizmap", "ui.msg.warning.title"),

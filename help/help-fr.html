@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Documentation fr</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<style>
+body { font:80% Verdana,Tahoma,Arial,sans-serif; }
+h1, h2, h3, h4 {  font-family: "Trebuchet MS",Georgia,"Times New Roman",serif; }
+ul.toc { padding: 4px; margin-left: 0; }
+ul.toc li { list-style-type:none; }
+ul.toc li.heading2 { margin-left: 1em; }
+ul.toc li.heading3 { margin-left: 2em; }
+a.wiki-anchor { display: none; margin-left: 6px; text-decoration: none; }
+a.wiki-anchor:hover { color: #aaa !important; text-decoration: none; }
+h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display: inline; color: #ddd; }
+</style>
+</head>
+<body>
+<ul class="toc"><li class="heading1"><a href="#Pré-requis">Pré-requis</a></li>
+<li class="heading2"><a href="#Côté-Qgis">Côté Qgis</a></li>
+<li class="heading2"><a href="#Côté-serveur">Côté serveur</a></li>
+<li class="heading1"><a href="#Utilisation">Utilisation</a></li>
+<li class="heading2"><a href="#Onglet-Couches">Onglet Couches</a></li>
+<li class="heading2"><a href="#Onglet-Carte">Onglet Carte</a></li>
+<li class="heading2"><a href="#Onglet-FTP">Onglet FTP</a></li>
+<li class="heading2"><a href="#Log">Log</a></li>
+<li class="heading1"><a href="#Utilisation">Utilisation</a></li>
+<li class="heading1"><a href="#Précisions-sur-Lizmap">Précisions sur Lizmap</a></li>
+<li class="heading2"><a href="#Points-à-considérer-">Points à considérer :</a></li>
+<li class="heading2"><a href="#Options-du-projet">Options du projet</a></li>
+<li class="heading2"><a href="#seuils-de-visibilités-">seuils de visibilités </a></li>
+<li class="heading2"><a href="#Overview-carte-miniature">Overview : carte miniature</a></li>
+</ul>
+
+
+	<h1 id="Pré-requis">Pré-requis<a href="#Pré-requis" class="wiki-anchor">&para;</a></h1>
+
+
+	<h2 id="Côté-Qgis">Côté Qgis<a href="#Côté-Qgis" class="wiki-anchor">&para;</a></h2>
+
+
+	<ul>
+	<li>Le projet doit être sauvegardé</li>
+		<li>La projection du projet doit être configurée via les options <strong>Propriétés du projet</strong></li>
+		<li>Les projections doivent être indiquées pour chacune des couches du projet</li>
+		<li>Les données (vecteur et raster) doivent être stockées dans le même répertoire que le fichier du projet (idéalement dans un sous-dossier). Vous pouvez utiliser l'extension <strong>QConsolidate</strong> pour le faire automatiquement.</li>
+		<li>L'option <strong>Enregistrer les chemins</strong> de l'onglet <strong>Général</strong> de la fenêtre <strong>Propriétés du projet</strong> doit être <strong>relatif</strong></li>
+		<li>Les options du 4ème onglet <strong>Serveur OWS</strong> doivent être correctement configurées (les 3 blocs)</li>
+		<li>La synchronisation FTP ne fonctionne pour l'instant que sur les systèmes d'exploitation Windows et Linux. 
+
+	<ul>
+	<li>Sur les plateformes linux, le logiciel lftp doit être instalé. </li>
+		<li>Sur Windows, WinSCP portable est utilisé, et doit être téléchargé puis installé dans un répertoire de l'ordinateur. Vous pouvez récupérer le fichier sur la page suivante : <a class="external" href="http://winscp.net/eng/download.php">http://winscp.net/eng/download.php</a> . Il faut prendre le fichier "*ortable executables* (version portable), et le dézipper quelque part sur votre disque. Ensuite, vous devrez donner dans l'onglet <strong>FTP</strong> le chemin complet vers ce répertoire.</li>
+		<li>Sur plateforme Mac, vous pouvez toujours effectuer la synchronisation manuellement via un logiciel FTP classque (FireFTP et sa fonction de synchronisation fonctionnera très bien)</li>
+	</ul></li>
+	</ul>
+
+
+	<h2 id="Côté-serveur">Côté serveur<a href="#Côté-serveur" class="wiki-anchor">&para;</a></h2>
+
+
+	<ul>
+	<li><strong>Qgis Server</strong> doit être installé et fonctionnel</li>
+		<li>Un accès FTP doit être configuré avec droits en écriture sur un répertoire du serveur (nommé <strong>Répertoire distant</strong> plus loin dans cette aide)</li>
+		<li>L'application <strong>Lizmap Web Client</strong> doit être installée et correctement configurée</li>
+	</ul>
+
+
+	<h1 id="Utilisation">Utilisation<a href="#Utilisation" class="wiki-anchor">&para;</a></h1>
+
+
+	<p>Veuillez d'abord lire la description complète de chacun des onglets de l'interface. Le scénario complet d'utilisation est décrit plus loin. Décrivons d'abord chaque onglet de l'interface</p>
+
+
+	<h2 id="Onglet-Couches">Onglet Couches<a href="#Onglet-Couches" class="wiki-anchor">&para;</a></h2>
+
+
+	<p>Cet onglet montre l'arbre des groupes et des couches du projet Qgis ouvert. En sélectionnant un groupe ou une couche dans cet arbre (clic de souris), vous pouvez voir et modifier les options liées (affichées à droite de l'arbre):</p>
+
+
+	<ul>
+	<li><strong>Titre</strong> : le titre du groupe/de la couche. Vous pouvez utiliser ce champ pour renommer le groupe ou la couche. Par exemple, vous pourriez avoir une couche nommée "rivieres_principales" dans votre projet Qgis et la renommer ici en "Rivières principales". Ce titre sera affiché dans l'application web Lizmap au lieu du nom réel.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Résumé</strong> : une courte description du groupe/de la couche. Cette description sera affichées au survol du nom de la couche dans l'arbre de l'application web.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Lien</strong> : un lien html, comme par exemple "http://qgis.org". Si un lien est donné pour un groupe ou une couche, une icone (i) sera affichée à droite du groupe ou de la couche dans l'application web. En cliquant sur cette icône, une nouvelle fenêtre du navigateur sera ouverte vers le lien.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Fond de carte ?</strong>  : si cette option est cochée, le groupe/la couche apparaîtra dans la liste des couches de fond. Sinon, elle apparaîtra dans l'arbre des couches. Une seule couche de fond peut être affichée à la fois, alors que plusieurs couches de l'arbre peuvent être affichées en même temps (au dessus de la couche de fond)</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Groupe comme une couche ?</strong> : cette option est seulement utile pour les groupes. En la cochant, vous pouvez transformer un groupe Qgis (qui contient des sous-groupes et des couches) en une couche unique dans l'arbre de l'application web. Les éléments fils (groupes ou couches) de ce groupe ne seront pas visibles dans l'arbre de l'application web. La légende montrera la légende de tous les fils.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Activée ?</strong> : si cochée, le groupe ou la couche sera cochée et visible sur la carte dans l'application web. Sinon, l'utilisateur devra la cocher manuellement pour la faire apparaître.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Image non tuilée ?</strong> : si cochée, l'application web affichera une seule image pour toute la largeur de la carte visible. Sinon, Lizmap web demandera une série de tuiles pour remplir la carte. Cette option peut être cochée pour éviter les problèmes d'étiquettes tronquées ou de trames hachurées décalées.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Cache ?</strong> : si l'administrateur du serveur a configuré un système de cache, il est possible de cocher cette option pour un groupe ou une couche. ALors Lizmap web utilsera le moteur de cache au lieu de demander les cartes à Qgis Server. Le serveur de tuile doit avoir été préalablement configuré avec la même étendue (bbox) que les paramètres WMS du projet Qgis.</li>
+	</ul>
+
+
+	<h2 id="Onglet-Carte">Onglet Carte<a href="#Onglet-Carte" class="wiki-anchor">&para;</a></h2>
+
+
+	<p>Dans cet onglet, vous pouvez éditer des options de configuration basiques de la carte qui sera produite par l'application web :</p>
+
+
+	<ul>
+	<li><strong>Format d'image</strong> : choisir entre "png" et "jpg". Png est souvent le meilleur choix, car ce format respecte la transparence. Jpg crééra néanmoins souvent des images moins lourdes.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Échelle min.</strong> : L'échelle minimale de la carte. Par ex: "10000"</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Échelle max.</strong> : L'échelle maximale de la carte. Par ex: "1000000"</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Nombre d'échelles</strong> : le nombre d'échelles (niveaux de zoom) que crééra l'application Lizmap web entre l'échelle minimale et maximale. Par ex : 10</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Échelles</strong> : il est possible, à la place des 3 options précédentes, de définir via ce champ la liste des échelles qui seront rendues par Lizmap. Les échelles doivent être séparées par une virgule. Par ex: "1000000, 500000, 200000".</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Fonds externes</strong> : <br />Si aucune des couches de votre projet ne peut servir de fond de carte, vous pouvez utiliser une ou plusieurs sources de fonds externes. Pour le moment, seules les fonds OpenStreetMap et Google sont supportés (veuillez respecter les conditions d'utilisation). Pour activer une source, il suffit de cocher la case correspondante. Une clé Google peut aussi être fournie via l'interface. L'ajout de couches externes aura les conséquences suivantes :
+
+	<ul>
+	<li>les échelles configurées plus haut ne seront pas prises en compte par l'application Web, car ces sources imposent leurs propres échelles. Vérifier que votre sémiologie et vos seuils d'échelles correspondent bien à ces nouvelles échelles.</li>
+		<li>l'application Lizmap Web Client demandera à Qgis Server de reprojeter toutes vos données dans la projection du fond externe choisi, par exemple Google Mercator (EPSG: 900913). Pour que Qgis Server puisse le faire, il faut que cette projection soit présente dans la zone <strong>Restrictions du système de coordonnées</strong> de l'onglet <strong>OWS Server</strong> des propriétés du projet.</li>
+	</ul></li>
+	</ul>
+
+
+	<h2 id="Onglet-FTP">Onglet FTP<a href="#Onglet-FTP" class="wiki-anchor">&para;</a></h2>
+
+
+	<p>Dans cet onglet, vous pouvez éditer les options FTP pour définir comment et où stocker les projets et les données liées sur le serveur:</p>
+
+
+	<ul>
+	<li><strong>Hôte</strong> : l'hôte FTP, correspondant au serveur sur lequel Qgis server et Lizmap Web sont installés (adresse IP ou nom de domaine)</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Port</strong> = port FTP (21 si non donné)</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Utilisateur</strong> = utilisateur FTP</li>
+	</ul>
+
+
+	<ul>
+	<li>*Mot de passe = mot de passe FTP</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Répertoire distant</strong> = chemin du répertoire dans lequel les projets Qgis sont stockés sur le serveur
+
+	<ul>
+	<li>Pour les utilisateurs windows, il faut donner un chemin absolu, par exemple /home/utilisateur/myremotedir/ (demander à l'administrateur serveur)</li>
+		<li>Pour les utilisateurs linux, simplement donner le chemin relatif à la racine de votre répertoire FTP. Par exemple "/myremotedir/"</li>
+	</ul></li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Chemin vers WinSCP</strong> =  Pour les utilisateurs de Windows seulement ! C'est le chemin vers le répertoire ou l'exécutable WinSCP a été installé. Vous devez manuellement télécharger la dernière version nommée <strong>Portable Version</strong> à cette adresse <a class="external" href="http://winscp.net/eng/download.php">http://winscp.net/eng/download.php</a> . Ensuite, il suffit de la décompresser dans un répertoire, par exemple "C:\winscp\", et d'indiquer ce répertoire via le bouton "..."</li>
+	</ul>
+
+
+	<h2 id="Log">Log<a href="#Log" class="wiki-anchor">&para;</a></h2>
+
+
+	<p>Cet onglet montre les informations qui sont écrites lors du click sur les boutons <strong>Enregistrer</strong> ou <strong>Enregistrer et synchroniser</strong></p>
+
+
+	<ul>
+	<li>le grand champ texte montre l'ensemble des actions réalisées par le plugin :vérification des données, actions FTP lors de la synchronisation, messages d'avertissements et d'erreurs.</li>
+	</ul>
+
+
+	<ul>
+	<li>lors d'une synchronisation FTP, un message orange <strong>en cours</strong> est affiché à côté du bouton <strong>Annuler la synchro</strong></li>
+	</ul>
+
+
+	<ul>
+	<li>il est possible d'annuler une synchronisation FTP en cliquant sur le bouton <strong>Annuler la synchro</strong>. Attention, cela tue le processus en cours (lftp ou WinSCP) et peut entraîner des fichiers mal envoyés.</li>
+	</ul>
+
+
+	<ul>
+	<li>Cliquer sur le bouton <strong>Effacer le log</strong> permet d'effacer le contenu du champ texte de log.</li>
+	</ul>
+
+
+	<h1 id="Utilisation">Utilisation<a href="#Utilisation" class="wiki-anchor">&para;</a></h1>
+
+
+	<ul>
+	<li>Lire attentivement cette aide.</li>
+	</ul>
+
+
+	<ul>
+	<li>Vérifier que vous avez correctement configuré vos options du projet.</li>
+	</ul>
+
+
+	<ul>
+	<li>Configurer les options de chacun des onglets.</li>
+	</ul>
+
+
+	<ul>
+	<li>Cliquer sur le bouton <strong>Enregistrer</strong> permet de sauvegarder la configuration dans un fichier texte enregistré au même endroit que le fichier de projet Qgis. Il porte le nom du fichier de projet, avec .cfg à la fin. Vous pouvez ensuite remplacer manuellement ce fichier sur le serveur via votre client FTP. Ne pas oublier de transférer aussi les autres fichiers modifiés (le projet Qgis, les fichiers de données, etc.). Vous pouvez passer cette étape et cliquer directement sur le bouton suivant pour lancer la sauvegarde et la synchronisation FTP automatique.</li>
+	</ul>
+
+
+	<ul>
+	<li>Cliquer sur le bouton <strong>Enregistrer et synchroniser</strong> sauvegarde de même la configuration, et lance ensuite la synchronisation FTP de votre répertoire local (qui contient le fichier de projet Qgis et toutes les données) vers le répertoire distant du serveur. Cette synchronisation est faite en tâche de fond via lftp (linux) ou WinScp (Windows): 
+ * toutes les données locales qui ont été modifiées ou qui ne sont pas présentes sur le serveur seront envoyées.
+ * tous les fichiers distants qui n'existent plus en local seront supprimés sur le serveur</li>
+	</ul>
+
+
+	<p>Seuls les fichiers nouveaux ou modifiés seront envoyés pour éviter l'utilisation inutile de bande passante.</p>
+
+
+	<p><strong>ATTENTION</strong> : Toutes les données du répertoire distant du serveur non liées à votre projet seront supprimées !!<br />Il est donc fortement conseillé de ne pas mélanger sur le serveur de données non liées au projet. Créer un sous-répertoire dédié à Lizmap, initialement vide, dans votre répertoire FTP, est une bonne solution.</p>
+
+
+	<p><strong>Toujours avoir une sauvegarde de vos données locales !</strong></p>
+
+
+	<h1 id="Précisions-sur-Lizmap">Précisions sur Lizmap<a href="#Précisions-sur-Lizmap" class="wiki-anchor">&para;</a></h1>
+
+
+	<p>Le plugin Lizmap doit être utilisé seulement pour configurer une application web Lizmap. Avec ce plugin et Lizmap web, il est possible de créer autant de cartes thématiques que de projets Qgis.</p>
+
+
+	<h2 id="Points-à-considérer-">Points à considérer :<a href="#Points-à-considérer-" class="wiki-anchor">&para;</a></h2>
+
+
+	<ul>
+	<li><strong>Convention de nommage des couches et des groupes</strong><br />Tous les groupes et toutes les couches de l'arbre de gauche dans Qgis doivent suivre les règles de nommage suivantes
+
+	<ul>
+	<li>pas d'accents</li>
+		<li>pas de caractères spéciaux (comme * ou $ + - )</li>
+		<li>pas d'espace</li>
+	</ul></li>
+	</ul>
+
+
+	<p>Vous pourrez changer les noms qui apparaîtront dans l'application web en modifiant le paramètre <strong>Titre</strong> dans l'onglet <strong>Couches</strong> du plugin Lizmap</p>
+
+
+	<ul>
+	<li>récupération de la configuration :<br />Les options liées aux onglets <strong>Couches</strong>, <strong>Carte</strong> et <strong>FTP</strong> sont enregistrées à chaque fois que les boutons <strong>Enregistrer</strong> et <strong>Enregistrer et synchroniser</strong> sont utilisés.
+
+	<ul>
+	<li>les options liées aux couches et à la carte sont stockées dans un fichier de configuration au même niveau que le fichier de projet Qgis. Par exemple, un projet "monprojet.qgs" aura un fichier de configuration "monprojet.qgs.cfg". A l'ouverture d'un projet Qgis et au lancement du plugin Lizmap, ce fichier est lu et les options sont récupérées pour préconfigurer chaque onglet.</li>
+		<li>les options FTP sont stockées dans le fichier lizmap.cfg contenu dans le répertoire d'installation du plugin. Cela veut dire qu'il faut bien vérifier à chaque fois que vous changez de serveur FTP que les options données dans l'onglet <strong>FTP</strong> correspondent bien à votre projet.</li>
+	</ul></li>
+	</ul>
+
+
+	<h2 id="Options-du-projet">Options du projet<a href="#Options-du-projet" class="wiki-anchor">&para;</a></h2>
+
+
+	<p>Certaines options du projet Qgis ne sont pas affichées dans l'interface du plugin Lizmap mais sont bien utilisées par l'application web :</p>
+
+
+	<ul>
+	<li>options WMS : nom du projet et description, projections, bbox, etc/</li>
+	</ul>
+
+
+	<h2 id="seuils-de-visibilités-">seuils de visibilités <a href="#seuils-de-visibilités-" class="wiki-anchor">&para;</a></h2>
+
+
+	<ul>
+	<li>min and maxscales : une couche (ou un groupe) sera actif et visible dans l'application web Lizmap seulement si l'échelle courante correspond aux seuils de visibilité enregistrés dans la configuration de la couche dans Qgis (Propriétés de la couche)</li>
+	</ul>
+
+
+	<ul>
+	<li>un groupe avec l'option <strong>Groupe comme une couche ?</strong> cochée sera visible dès qu'un seule de ses couches filles est visible.</li>
+	</ul>
+
+
+	<h2 id="Overview-carte-miniature">Overview : carte miniature<a href="#Overview-carte-miniature" class="wiki-anchor">&para;</a></h2>
+
+
+	<p>Si il existe un groupe avec le nom exact "Overview" dans le projet Qgis (première lettre en majuscule), alors une carte miniature sera ajoutée sur l'interface de l'application web. Elle contiendra les couches filles du groupe Overview. Ces couches ne seront pas affichées dans l'arbre des couches. <br />Il faut bien vérifier qu'aucun seuil de visibilité n'a été défini pour ces couches, et adapter la sémiologie à des échelles grandes.</p>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Wed May  2 18:32:50 2012
+# Created: Wed May 16 13:40:00 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,7 +32,7 @@ class Ui_lizmap(object):
         self.treeLayer.header().setMinimumSectionSize(50)
         self.treeLayer.header().setStretchLastSection(True)
         self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(330, 10, 231, 355))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(330, 10, 246, 355))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -77,7 +77,7 @@ class Ui_lizmap(object):
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.tab_3)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(0, 0, 561, 386))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(10, 0, 551, 386))
         self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
@@ -334,6 +334,9 @@ class Ui_lizmap(object):
         self.btSync.setEnabled(True)
         self.btSync.setGeometry(QtCore.QRect(394, 426, 191, 31))
         self.btSync.setObjectName(_fromUtf8("btSync"))
+        self.btHelp = QtGui.QPushButton(lizmap)
+        self.btHelp.setGeometry(QtCore.QRect(10, 426, 98, 31))
+        self.btHelp.setObjectName(_fromUtf8("btHelp"))
 
         self.retranslateUi(lizmap)
         self.tabWidget.setCurrentIndex(0)
@@ -420,6 +423,7 @@ class Ui_lizmap(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_main), QtGui.QApplication.translate("lizmap", "ui.tab.log.label", None, QtGui.QApplication.UnicodeUTF8))
         self.btSave.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.btSave.label", None, QtGui.QApplication.UnicodeUTF8))
         self.btSync.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.btSync.label", None, QtGui.QApplication.UnicodeUTF8))
+        self.btHelp.setText(QtGui.QApplication.translate("lizmap", "ui.main.btHelp", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

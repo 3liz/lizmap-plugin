@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/plugins/lizmap" >
         <file>icon.png</file>
+        <file>help.png</file>
     </qresource>
 </RCC>
