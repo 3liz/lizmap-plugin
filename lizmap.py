@@ -303,23 +303,117 @@ class lizmap:
 
 
   def refreshLayerTree(self):
+    '''Refresh the layer tree on user demand. Uses method populateLayerTree'''
     # Ask confirmation
     refreshIt = QMessageBox.question(self.dlg, QApplication.translate("lizmap", 'ui.msg.question.refresh.title'), QApplication.translate("lizmap", "ui.msg.question.refresh.content"), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     if refreshIt == QMessageBox.Yes:
       self.populateLayerTree()
 
 
+  def setTreeItemData(self, itemType, itemKey, jsonLayers):
+    '''Define default data or data from previous configuration for one item (layer or group)
+    Used in the method populateLayerTree
+    '''
+    # type
+    self.myDic[itemKey]['type'] = itemType
+    
+    # DEFAULT VALUES
+    # generic for layers and group
+    self.myDic[itemKey]['name'] = "%s" % itemKey
+    self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
+    self.myDic[itemKey]['abstract'] = ''
+    self.myDic[itemKey]['link'] = ''
+    self.myDic[itemKey]['minScale'] = 1
+    self.myDic[itemKey]['maxScale'] = 1000000000000
+    self.myDic[itemKey]['toggled'] = True
+    self.myDic[itemKey]['baseLayer'] = False
+    self.myDic[itemKey]['groupAsLayer'] = False
+    self.myDic[itemKey]['singleTile'] = False
+    self.myDic[itemKey]['cached'] = False
+    
+    keepMetadata = False
+
+    # layer has got more precise data
+    if itemType == 'layer':
+      # layer name
+      layer = self.getQgisLayerById(itemKey)
+      lname = '%s' % layer.name()
+      self.myDic[itemKey]['name'] = layer.name()
+      # title and abstract
+      self.myDic[itemKey]['title'] = layer.name()
+      if hasattr(layer, "title"): # only from qgis>=1.8
+        if layer.title():
+          self.myDic[itemKey]['title'] = layer.title()
+          keepMetadata = True
+        if layer.abstract():
+          self.myDic[itemKey]['abstract'] = layer.abstract()
+          keepMetadata = True
+      # hide non geo layers (csv, etc.)
+      if layer.type() == 0:
+        if layer.geometryType() == 4:
+          self.ldisplay = False
+      # layer scale visibility
+      if layer.hasScaleBasedVisibility():
+        self.myDic[itemKey]['minScale'] = layer.minimumScale()
+        self.myDic[itemKey]['maxScale'] = layer.maximumScale()
+      # toggled : check if layer is toggled in qgis legend
+      self.myDic[itemKey]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+      # group as layer : always True obviously
+      self.myDic[itemKey]['groupAsLayer'] = False
+      
+    # OVERRIDE DEFAULT FROM CONFIGURATION FILE    
+    if jsonLayers.has_key('%s' % self.myDic[itemKey]['name']):
+      jsonKey = '%s' % self.myDic[itemKey]['name']
+      # toggled
+      if jsonLayers[jsonKey].has_key('toggled'):
+        if jsonLayers[jsonKey]['toggled'].lower() in ("yes", "true", "t", "1"):
+          self.myDic[itemKey]['toggled'] = True
+        else:
+          self.myDic[itemKey]['toggled'] = False
+      # baseLayer    
+      if jsonLayers[jsonKey].has_key('baseLayer'):
+        if jsonLayers[jsonKey]['baseLayer'].lower() in ("yes", "true", "t", "1"):
+          self.myDic[itemKey]['baseLayer'] = True
+      # groupAsLayer    
+      if jsonLayers[jsonKey].has_key('groupAsLayer') and itemType == 'layer':
+        if jsonLayers[jsonKey]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
+          self.myDic[itemKey]['groupAsLayer'] = True
+      # singleTile    
+      if jsonLayers[jsonKey].has_key('singleTile'):
+        if jsonLayers[jsonKey]['singleTile'].lower() in ("yes", "true", "t", "1"):
+          self.myDic[itemKey]['singleTile'] = True
+      # cached
+      if jsonLayers[jsonKey].has_key('cached'):
+        if jsonLayers[jsonKey]['cached'].lower() in ("yes", "true", "t", "1"):
+          self.myDic[itemKey]['cached'] = True
+      # title
+      if jsonLayers[jsonKey].has_key('title'):
+        if jsonLayers[jsonKey]['title'] != '' and not keepMetadata:
+          self.myDic[itemKey]['title'] = jsonLayers[jsonKey]['title']
+      # abstract
+      if jsonLayers[jsonKey].has_key('abstract'):
+        if jsonLayers[jsonKey]['abstract'] != '' and not keepMetadata:
+          self.myDic[itemKey]['abstract'] = jsonLayers[jsonKey]['abstract']
+      # link
+      if jsonLayers[jsonKey].has_key('link'):
+        if jsonLayers[jsonKey]['link'] != '':
+          self.myDic[itemKey]['link'] = jsonLayers[jsonKey]['link'] 
+          
+
+
   def populateLayerTree(self):
     '''Populate the layer tree of the Layers tab from Qgis legend interface
     Needs to be refactored.
     '''
+    
+    # initialize the tree
     myTree = self.dlg.ui.treeLayer
     myTree.clear()
     myTree.headerItem().setText(0, QApplication.translate("lizmap", QApplication.translate("lizmap", "ui.tab.layers.tree.title")))
-    myDic = {}
+    self.myDic = {}
     myGroups = self.iface.legendInterface().groups()
 
-    # Check if a *.qgs.cfg exists
+    # Check if a json configuration file exists (myproject.qgs.cfg)
     isok = 1
     p = QgsProject.instance()
     jsonFile = "%s.cfg" % p.fileName()
@@ -338,229 +432,62 @@ class lizmap:
     
     # Loop through groupLayerRelationship to reconstruct the tree
     for a in self.iface.legendInterface().groupLayerRelationship():
-      # initialize values
+      # Initialize values
       parentItem = None
       myId = a[0]
       
-      # select an existing item, select the header item or create the item
-      if myId in myDic:
-        # if the item already exists in myDic, select it
-        parentItem = myDic[myId]['item']
+      # Select an existing item, select the header item or create the item
+      if myId in self.myDic:
+        # If the item already exists in self.myDic, select it
+        parentItem = self.myDic[myId]['item']
       elif myId == '':
-        # if the id is empty string, this is a root layer, select the headerItem
+        # If the id is empty string, this is a root layer, select the headerItem
         parentItem = myTree.headerItem()
       else:
         # else create the item and add it to the header item
         # add the item to the dictionary
-        myDic[myId] = {'id' : myId}
-        ldisplay = True
+        self.myDic[myId] = {'id' : myId}
+        self.ldisplay = True
         if myId in myGroups:
-          # it's a group
-          lname = myId
-          myDic[myId]['type'] = 'group'
-          myDic[myId]['name'] = myId
-          myDic[myId]['minScale'] = 1
-          myDic[myId]['maxScale'] = 1000000000000
-#          myDic[myId]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(myId))
-          myDic[myId]['toggled'] = True # Method isGroupVisible not reliable, so set all to true
-          myDic[myId]['baseLayer'] = False
-          myDic[myId]['groupAsLayer'] = False
-          myDic[myId]['singleTile'] = False
-          myDic[myId]['cached'] = False
-          
-          # if the there are configuration for myid
-          if jsonLayers.has_key('%s' % myId):
-            if jsonLayers['%s' % myId].has_key('toggled'):
-              if jsonLayers['%s' % myId]['toggled'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['toggled'] = True
-              else:
-                 myDic[myId]['toggled'] = False
-                        
-            if jsonLayers['%s' % myId].has_key('baseLayer'):
-              if jsonLayers['%s' % myId]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['baseLayer'] = True
-              
-            if jsonLayers['%s' % myId].has_key('groupAsLayer'):
-              if jsonLayers['%s' % myId]['type'] == 'layer':
-                myDic[myId]['groupAsLayer'] = True
-
-            if jsonLayers['%s' % myId].has_key('singleTile'):
-              if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['singleTile'] = True
-
-            if jsonLayers['%s' % myId].has_key('cached'):
-              if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['cached'] = True
+          # it is a group
+          self.setTreeItemData('group', myId, jsonLayers)
         else:
-          # it's a layer
-          myDic[myId]['type'] = 'layer'
-          layer = self.getQgisLayerById(myId)
-          lname = '%s' % layer.name()
-          if layer.type() == 0:
-            if layer.geometryType() == 4:
-              ldisplay = False
-            
-          myDic[myId]['name'] = layer.name()
-          if layer.hasScaleBasedVisibility():
-            myDic[myId]['minScale'] = layer.minimumScale()
-            myDic[myId]['maxScale'] = layer.maximumScale()
-          else:
-            myDic[myId]['minScale'] = 1
-            myDic[myId]['maxScale'] = 1000000000000           
-          
-          myDic[myId]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          myDic[myId]['baseLayer'] = False
-          myDic[myId]['groupAsLayer'] = True
-          myDic[myId]['singleTile'] = False
-          myDic[myId]['cached'] = False
-          
-          # if the there are configuration for lname
-          if jsonLayers.has_key('%s' % lname):
-            if jsonLayers['%s' % lname].has_key('toggled'):
-              if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['toggled'] = True
-              else:
-                myDic[myId]['toggled'] = False
-                
-            if jsonLayers['%s' % lname].has_key('baseLayer'):
-              if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['baseLayer'] = True
-                     
-            if jsonLayers['%s' % lname].has_key('singleTile'):
-              if jsonLayers['%s' % myId]['singleTile'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['singleTile'] = True
-
-            if jsonLayers['%s' % lname].has_key('cached'):
-              if jsonLayers['%s' % myId]['cached'].lower() in ("yes", "true", "t", "1"):
-                myDic[myId]['cached'] = True
-          
-        myDic[myId]['title'] = myDic[myId]['name']
-        myDic[myId]['abstract'] = ''
-        myDic[myId]['link'] = ''
-        if(jsonLayers.has_key('%s' % lname)):
-          if jsonLayers['%s' % lname].has_key('title') and jsonLayers['%s' % myId]['title'] != '':
-            myDic[myId]['title'] = jsonLayers['%s' % myId]['title']
-          if jsonLayers['%s' % lname].has_key('abstract') and jsonLayers['%s' % myId]['abstract'] != '':
-            myDic[myId]['abstract'] = jsonLayers['%s' % myId]['abstract']
-          if jsonLayers['%s' % lname].has_key('link') and jsonLayers['%s' % myId]['link'] != '':
-            myDic[myId]['link'] = jsonLayers['%s' % myId]['link']
+          # it is a layer
+          self.setTreeItemData('layer', myId, jsonLayers)
         
-        if ldisplay:
-          parentItem = QTreeWidgetItem(['%s' % unicode(myDic[myId]['name']), '%s' % unicode(myDic[myId]['id']), '%s' % myDic[myId]['type']])
+        if self.ldisplay:
+          parentItem = QTreeWidgetItem(['%s' % unicode(self.myDic[myId]['name']), '%s' % unicode(self.myDic[myId]['id']), '%s' % self.myDic[myId]['type']])
           myTree.addTopLevelItem(parentItem)
-          myDic[myId]['item'] = parentItem
+          self.myDic[myId]['item'] = parentItem
         else:
-          del myDic[myId]
+          del self.myDic[myId]
       
       # loop through the children and add children to the parent item
       for b in a[1]:
-        myDic[b] = {'id' : b}
-        ldisplay = True
+        self.myDic[b] = {'id' : b}
+        self.ldisplay = True
         if b in myGroups:
-          # it's a group
-          lname = '%s' % b
-          myDic[b]['type'] = 'group'
-          myDic[b]['name'] = b
-          myDic[b]['minScale'] = 1
-          myDic[b]['maxScale'] = 1000000000000
-          
-#          myDic[b]['toggled'] = self.iface.legendInterface().isGroupVisible(myGroups.indexOf(b))
-          myDic[b]['toggled'] = True # Method isGroupVisible seems to be not reliable, so set all to true
-          myDic[b]['baseLayer'] = False
-          myDic[b]['groupAsLayer'] = False
-          myDic[b]['singleTile'] = False
-          myDic[b]['cached'] = False
-          
-          # if the there are configuration for b
-          if jsonLayers.has_key('%s' % b):
-            if jsonLayers['%s' % b].has_key('toggled'):
-              if jsonLayers['%s' % b]['toggled'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['toggled'] = True
-              else:
-                myDic[b]['toggled'] = False
-                
-            if jsonLayers['%s' % b].has_key('baseLayer'):
-              if jsonLayers['%s' % b]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['baseLayer'] = True
-                
-            if jsonLayers['%s' % b].has_key('groupAsLayer'):
-              if jsonLayers['%s' % b]['type'] == 'layer':
-                myDic[b]['groupAsLayer'] = True
-                
-            if jsonLayers['%s' % b].has_key('singleTile'):
-              if jsonLayers['%s' % b]['singleTile'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['singleTile'] = True
-
-            if jsonLayers['%s' % b].has_key('cached'):
-              if jsonLayers['%s' % b]['cached'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['cached'] = True
+          # it is a group
+          self.setTreeItemData('group', b, jsonLayers)
         else:
-          # it's a layer
-          myDic[b]['type'] = 'layer'
-          layer = self.getQgisLayerById(b)
-          lname = '%s' % layer.name()
-          myDic[b]['name'] = layer.name()
-          if layer.type() == 0:
-            if layer.geometryType() == 4:
-              ldisplay = False
-          if layer.hasScaleBasedVisibility():
-            myDic[b]['minScale'] = layer.minimumScale()
-            myDic[b]['maxScale'] = layer.maximumScale()
-          else:
-            myDic[b]['minScale'] = 1
-            myDic[b]['maxScale'] = 1000000000000   
-          
-          myDic[b]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-          myDic[b]['baseLayer'] = False
-          myDic[b]['groupAsLayer'] = True
-          myDic[b]['singleTile'] = False
-          myDic[b]['cached'] = False
-          
-          # if the there are configuration for lname
-          if jsonLayers.has_key('%s' % lname):
-            if jsonLayers['%s' % lname].has_key('toggled'):
-              if jsonLayers['%s' % lname]['toggled'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['toggled'] = True
-              else:
-                myDic[b]['toggled'] = False
-                
-            if jsonLayers['%s' % lname].has_key('baseLayer'):
-              if jsonLayers['%s' % lname]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['baseLayer'] = True
-                
-            if jsonLayers['%s' % lname].has_key('singleTile'):
-              if jsonLayers['%s' % lname]['singleTile'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['singleTile'] = True
-
-            if jsonLayers['%s' % lname].has_key('cached'):
-              if jsonLayers['%s' % lname]['cached'].lower() in ("yes", "true", "t", "1"):
-                myDic[b]['cached'] = True
-          
-        myDic[b]['title'] = myDic[b]['name']
-        myDic[b]['abstract'] = ''
-        myDic[b]['link'] = ''
-        if(jsonLayers.has_key('%s' % lname)):
-          if jsonLayers[lname].has_key('title') and jsonLayers[lname]['title'] != '':
-            myDic[b]['title'] = jsonLayers[lname]['title']
-          if jsonLayers[lname].has_key('abstract') and jsonLayers[lname]['abstract'] != '':
-            myDic[b]['abstract'] = jsonLayers[lname]['abstract']
-          if jsonLayers[lname].has_key('link') and jsonLayers[lname]['link'] != '':
-            myDic[b]['link'] = jsonLayers[lname]['link']
-        
-        if ldisplay:            
-          childItem = QTreeWidgetItem(['%s' % unicode(myDic[b]['name']), '%s' % unicode(myDic[b]['id']), '%s' % myDic[b]['type']])
+          # it is a layer
+          self.setTreeItemData('layer', b, jsonLayers)
+            
+        # add children item to its parent
+        if self.ldisplay:            
+          childItem = QTreeWidgetItem(['%s' % unicode(self.myDic[b]['name']), '%s' % unicode(self.myDic[b]['id']), '%s' % self.myDic[b]['type']])
           if myId == '':
             myTree.addTopLevelItem(childItem)
           else:
             parentItem.addChild(childItem)
-          myDic[b]['item'] = childItem
+          self.myDic[b]['item'] = childItem
         else:
-          del myDic[b]  
+          del self.myDic[b]  
 
     myTree.expandAll()
     
-    # Add the myDic to the global layerList dictionary
-    self.layerList = myDic
+    # Add the self.myDic to the global layerList dictionary
+    self.layerList = self.myDic
 
     # Catch user interaction on layer tree and inputs
     QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
@@ -576,7 +503,7 @@ class lizmap:
 
 
   def setItemOptions(self):
-    '''Refresh layer/group metadata and options on click of a layer tree item'''
+    '''Restore layer/group input values when selecting a layer tree item'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
     if self.layerList.has_key(item.text(1)):
@@ -616,6 +543,13 @@ class lizmap:
     # modify the title for the selected item
     if item and self.layerList.has_key(item.text(1)):
       self.layerList[item.text(1)]['title'] = self.dlg.ui.inLayerTitle.text()
+      # modify the layer.title() if possible (qgis >= 1.8)
+      if self.layerList[item.text(1)]['type'] == 'layer':
+        layer = self.getQgisLayerById(item.text(1))
+        if layer:  
+          if hasattr(layer, "title"):
+            layer.setTitle(QString(u"%s" % self.layerList[item.text(1)]['title']))
+  
     
   def setLayerAbstract(self):
     '''Set a layer abstract when a item abstract is edited'''
@@ -624,6 +558,12 @@ class lizmap:
     # modify the abstract for the selected item
     if self.layerList.has_key(item.text(1)):
       self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
+      # modify the layer.abstract() if possible (qgis >= 1.8)
+      if self.layerList[item.text(1)]['type'] == 'layer':
+        layer = self.getQgisLayerById(item.text(1))
+        if layer:
+          if hasattr(layer, "abstract"):
+            layer.setAbstract(self.layerList[item.text(1)]['abstract'])
 
   def setLayerLink(self):
     '''Set a layer link when a item link is edited'''
@@ -756,15 +696,16 @@ class lizmap:
       if ltype == 'layer':
         layer = self.getQgisLayerById(k)
         if layer:
-          if layer.type() == 0:
+          if layer.type() == 0: # if it is a vector layer
             geometryType = layer.geometryType()
       
-      if geometryType != 4:
+      # add layerOption only for geo layers
+      if geometryType != 4: 
         layerOptions = {}
         layerOptions["id"] = unicode(k)
         layerOptions["name"] = unicode(v['name'])
         layerOptions["type"] = ltype
-        layerOptions["groupAsLayer"] = v['groupAsLayer']
+        layerOptions["groupAsLayer"] = str(v['groupAsLayer'])
         layerOptions["title"] = unicode(v['title'])
         layerOptions["abstract"] = unicode(v['abstract'])
         layerOptions["link"] = unicode(v['link'])
