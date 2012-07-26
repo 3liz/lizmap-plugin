@@ -4,11 +4,15 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.2.0
+version=version 1.2.1
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 1.2.1
+  * New : Get layer title and abstract from Qgis layer properties (for qgis >= 1.8)
+  * Refactoring : method to populate the plugin layer tree
+  * Bug fix : add missing i18n *.qm translation files
   Version 1.2.0
   * New : support for plugin internationalization : english and french languages available
   * Modify : integrate Lizmap in the Qgis Web menu
