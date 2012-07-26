@@ -1224,7 +1224,7 @@ class lizmap:
     # setting progressbar refreshes the plygin ui
     self.dlg.ui.outLog.append('')
     self.dlg.ui.outLog.append('=' * 20)
-    self.dlg.ui.outLog.appendQApplication.translate("lizmap", "ui.log.ftp.sync.title")()
+    self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.log.ftp.sync.title"))
     self.dlg.ui.outLog.append('=' * 20)
     
     # Process the sync with lftp
