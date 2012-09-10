@@ -4,11 +4,13 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.2.2
+version=version 1.3.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 1.3.0
+  * New feature : Choose the image type (png, png 8bit or jpeg) for each layer and not globally anymore
   Version 1.2.2
   * Bug fix : type which prevented from synchronizing over FTP
   Version 1.2.1
