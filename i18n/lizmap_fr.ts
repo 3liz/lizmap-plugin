@@ -362,13 +362,8 @@ avec répertoire du serveur
         <translation>Carte</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="176"/>
-        <source>ui.tab.map.optimization.label</source>
-        <translation>Optimisation</translation>
-    </message>
-    <message>
         <location filename="ui_lizmap.ui" line="185"/>
-        <source>ui.tab.map.imageFormat.label</source>
+        <source>ui.tab.layers.imageFormat.label</source>
         <translation>Format d&apos;image</translation>
     </message>
     <message>

@@ -256,9 +256,6 @@ class lizmap:
         self.log(QApplication.translate("lizmap", "ui.msg.error.tree.read.content"), abort=True, textarea=self.dlg.ui.outLog)
     
     # Set the Map options tab fields values
-    self.imageFormatDic = {'image/png' : 0, 'image/jpg' : 1}
-    if jsonOptions.has_key('imageFormat'):
-      self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[jsonOptions['imageFormat']])
     if jsonOptions.has_key('minScale'):
       self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
     if jsonOptions.has_key('maxScale'):
@@ -330,6 +327,7 @@ class lizmap:
     self.myDic[itemKey]['groupAsLayer'] = False
     self.myDic[itemKey]['singleTile'] = False
     self.myDic[itemKey]['cached'] = False
+    self.myDic[itemKey]['imageFormat'] = 'image/png'
     
     keepMetadata = False
 
@@ -397,7 +395,11 @@ class lizmap:
       # link
       if jsonLayers[jsonKey].has_key('link'):
         if jsonLayers[jsonKey]['link'] != '':
-          self.myDic[itemKey]['link'] = jsonLayers[jsonKey]['link'] 
+          self.myDic[itemKey]['link'] = jsonLayers[jsonKey]['link']
+      # image format
+      if jsonLayers[jsonKey].has_key('imageFormat'):
+        if jsonLayers[jsonKey]['imageFormat'] in ("image/png", "image/png; mode=8bit", "image/jpeg"):
+          self.myDic[itemKey]['imageFormat'] = jsonLayers[jsonKey]['imageFormat']
           
 
 
@@ -499,6 +501,7 @@ class lizmap:
     QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
     QObject.connect(self.dlg.ui.cbSingleTile, SIGNAL("stateChanged(int)"), self.setSingleTile)
     QObject.connect(self.dlg.ui.cbCached, SIGNAL("stateChanged(int)"), self.setCached)
+    QObject.connect(self.dlg.ui.liImageFormat, SIGNAL("currentIndexChanged(int)"), self.setImageFormat)
     
 
 
@@ -525,6 +528,9 @@ class lizmap:
       self.dlg.ui.cbSingleTile.setChecked(selectedItem['singleTile'])  
       # set the cached
       self.dlg.ui.cbCached.setChecked(selectedItem['cached'])
+      # set the image format
+      self.imageFormatDic = {'image/png': 0, 'image/png; mode=8bit': 1, 'image/jpeg': 2}
+      self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[selectedItem['imageFormat']])
     else:
       self.dlg.ui.inLayerTitle.setText('')
       self.dlg.ui.teLayerAbstract.setText('')
@@ -533,7 +539,8 @@ class lizmap:
       self.dlg.ui.cbGroupAsLayer.setChecked(False)
       self.dlg.ui.cbToggled.setChecked(False)
       self.dlg.ui.cbSingleTile.setChecked(False)
-      self.dlg.ui.cbCached.setChecked(False)      
+      self.dlg.ui.cbCached.setChecked(False)
+      self.dlg.ui.liImageFormat.setCurrentIndex(1)
       
 
   def setLayerTitle(self):
@@ -615,6 +622,15 @@ class lizmap:
     if self.layerList.has_key(item.text(1)):
       self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
 
+  def setImageFormat(self):
+    '''Set a layer or group "imageFormat" property when an item "imageFormat" combobox index has changed'''
+    # get the selected item
+    item = self.dlg.ui.treeLayer.currentItem()
+    # modify the imageFormat property for the selected item
+    if self.layerList.has_key(item.text(1)):
+      self.imageFormatList = ['image/png', 'image/png; mode=8bit', 'image/jpeg']
+      self.layerList[item.text(1)]['imageFormat'] = self.imageFormatList[self.dlg.ui.liImageFormat.currentIndex()]
+
 
 
   def writeProjectConfigFile(self):
@@ -649,8 +665,6 @@ class lizmap:
     liz2json["options"]["bbox"] = bbox
     
     # gui user defined options
-    in_imageFormat = self.dlg.ui.liImageFormat.currentText()
-    liz2json["options"]["imageFormat"] = 'image/%s' % in_imageFormat
     in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
     if len(in_minScale) == 0:
       in_minScale = 10000    
@@ -715,6 +729,7 @@ class lizmap:
         layerOptions["baseLayer"] = str(v['baseLayer'])
         layerOptions["singleTile"] = str(v['singleTile'])
         layerOptions["cached"] = str(v['cached'])
+        layerOptions["imageFormat"] = str(v['imageFormat'])
         liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
       
     
@@ -824,7 +839,6 @@ class lizmap:
     if isok:
       # Get configuration from input fields
       # Map
-      in_imageFormat = str(self.dlg.ui.liImageFormat.currentText()).strip(' \t')
       in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
       in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
       in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
@@ -845,16 +859,7 @@ class lizmap:
       self.dlg.ui.outLog.append('=' * 20)
       
       # Checking configuration data
-      # Map config
-      # image format
-      if in_imageFormat == 'png' or in_imageFormat == 'jpg':
-        imageFormat = in_imageFormat
-      else:
-        self.log(
-          QApplication.translate("lizmap", "ui.tab.log.map.image.format.warning"),
-          abort=True, 
-          textarea=self.dlg.ui.outLog)
-        
+      # Map config        
       # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
       if len(in_mapScales) == 0 and (len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
         self.log(

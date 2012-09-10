@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>589</width>
+    <width>595</width>
     <height>461</height>
    </rect>
   </property>
@@ -34,7 +34,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>311</width>
+       <width>291</width>
        <height>341</height>
       </rect>
      </property>
@@ -59,10 +59,10 @@
     <widget class="QWidget" name="verticalLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>10</y>
-       <width>246</width>
-       <height>355</height>
+       <x>310</x>
+       <y>5</y>
+       <width>251</width>
+       <height>381</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -131,13 +131,43 @@
         </property>
        </widget>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>ui.tab.layers.imageFormat.label</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="liImageFormat">
+          <item>
+           <property name="text">
+            <string>png</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>png; mode=8bit</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>jpeg</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
     <widget class="QPushButton" name="btRefreshTree">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>353</y>
+       <x>189</x>
+       <y>355</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -164,44 +194,6 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
-      <item>
-       <widget class="QLabel" name="label_16">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>ui.tab.map.optimization.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>ui.tab.map.imageFormat.label</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="liImageFormat">
-          <item>
-           <property name="text">
-            <string>png</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>jpg</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item>
        <widget class="QLabel" name="label_15">
         <property name="font">
@@ -300,19 +292,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <widget class="QLabel" name="label_20">
@@ -735,8 +714,8 @@
   <tabstop>cbToggled</tabstop>
   <tabstop>cbSingleTile</tabstop>
   <tabstop>cbCached</tabstop>
-  <tabstop>btRefreshTree</tabstop>
   <tabstop>liImageFormat</tabstop>
+  <tabstop>btRefreshTree</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inZoomLevelNumber</tabstop>
@@ -758,6 +737,10 @@
   <tabstop>btCancelFtpSync</tabstop>
   <tabstop>btSave</tabstop>
   <tabstop>btSync</tabstop>
+  <tabstop>btHelp</tabstop>
+  <tabstop>inPassword</tabstop>
+  <tabstop>inPort</tabstop>
+  <tabstop>inWinscpPath</tabstop>
  </tabstops>
  <resources/>
  <connections/>

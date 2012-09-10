@@ -363,13 +363,8 @@ with the remote FTP folder
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="176"/>
-        <source>ui.tab.map.optimization.label</source>
-        <translation>Optimization</translation>
-    </message>
-    <message>
         <location filename="ui_lizmap.ui" line="185"/>
-        <source>ui.tab.map.imageFormat.label</source>
+        <source>ui.tab.layers.imageFormat.label</source>
         <translation>Image format</translation>
     </message>
     <message>
