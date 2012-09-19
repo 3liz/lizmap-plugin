@@ -797,6 +797,9 @@ class lizmap:
           textarea=self.dlg.ui.outLog)
         
       # check if a title has been given in the project OWS tab configuration
+      # first set the WMSServiceCapabilities to true
+      p.writeEntry('WMSServiceCapabilities', "/", "True")
+      p.write()
       if str(p.readEntry('WMSServiceTitle','')[0]).strip(' \t') == u'':
         errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.title")+'\n'
         isok = False
