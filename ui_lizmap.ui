@@ -6,702 +6,596 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>595</width>
-    <height>461</height>
+    <width>687</width>
+    <height>512</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>LizMap</string>
   </property>
-  <widget class="QTabWidget" name="tabWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>3</y>
-     <width>571</width>
-     <height>421</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>ui.tab.layers.label</string>
-    </attribute>
-    <widget class="QTreeWidget" name="treeLayer">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>291</width>
-       <height>341</height>
-      </rect>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="3">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>3</number>
      </property>
-     <property name="columnCount">
-      <number>1</number>
-     </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>50</number>
-     </attribute>
-     <attribute name="headerMinimumSectionSize">
-      <number>50</number>
-     </attribute>
-     <attribute name="headerStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string notr="true">Name</string>
-      </property>
-     </column>
-    </widget>
-    <widget class="QWidget" name="verticalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>310</x>
-       <y>5</y>
-       <width>251</width>
-       <height>381</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>ui.tab.layers.layer.title</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inLayerTitle"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>ui.tab.layers.layer.abstract</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTextEdit" name="teLayerAbstract"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>ui.tab.layers.layer.link</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inLayerLink"/>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbLayerIsBaseLayer">
-        <property name="text">
-         <string>ui.tab.layers.layer.baselayer</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbGroupAsLayer">
-        <property name="text">
-         <string>ui.tab.layers.layer.groupAsLayer</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbToggled">
-        <property name="text">
-         <string>ui.tab.layers.layer.toggled</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbSingleTile">
-        <property name="text">
-         <string>ui.tab.layers.layer.singletile</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbCached">
-        <property name="text">
-         <string>ui.tab.layers.layer.cached</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QLabel" name="label_9">
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>ui.tab.layers.label</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QTreeWidget" name="treeLayer">
+         <property name="columnCount">
+          <number>1</number>
+         </property>
+         <attribute name="headerDefaultSectionSize">
+          <number>50</number>
+         </attribute>
+         <attribute name="headerMinimumSectionSize">
+          <number>50</number>
+         </attribute>
+         <attribute name="headerStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
           <property name="text">
-           <string>ui.tab.layers.imageFormat.label</string>
+           <string notr="true">Name</string>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="liImageFormat">
-          <item>
+         </column>
+        </widget>
+       </item>
+       <item row="0" column="1" rowspan="2">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>png</string>
+            <string>ui.tab.layers.layer.title</string>
            </property>
-          </item>
-          <item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inLayerTitle"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>png; mode=8bit</string>
+            <string>ui.tab.layers.layer.abstract</string>
            </property>
-          </item>
-          <item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="teLayerAbstract"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10">
            <property name="text">
-            <string>jpeg</string>
+            <string>ui.tab.layers.layer.link</string>
            </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inLayerLink"/>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbLayerIsBaseLayer">
+           <property name="text">
+            <string>ui.tab.layers.layer.baselayer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbGroupAsLayer">
+           <property name="text">
+            <string>ui.tab.layers.layer.groupAsLayer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbToggled">
+           <property name="text">
+            <string>ui.tab.layers.layer.toggled</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbSingleTile">
+           <property name="text">
+            <string>ui.tab.layers.layer.singletile</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbCached">
+           <property name="text">
+            <string>ui.tab.layers.layer.cached</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>ui.tab.layers.imageFormat.label</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="liImageFormat">
+             <item>
+              <property name="text">
+               <string>png</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>png; mode=8bit</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>jpeg</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btRefreshTree">
+         <property name="text">
+          <string>ui.tab.layers.btRefreshTree.label</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>ui.tab.map.label</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>ui.tab.map.scales.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>ui.tab.map.minScale.label</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="inMinScale">
+             <property name="inputMethodHints">
+              <set>Qt::ImhDigitsOnly</set>
+             </property>
+             <property name="maxLength">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>ui.tab.map.maxScale.label</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="inMaxScale">
+             <property name="inputMethodHints">
+              <set>Qt::ImhDigitsOnly</set>
+             </property>
+             <property name="maxLength">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>ui.tab.map.zoomLevelNumber.label</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="inZoomLevelNumber">
+             <property name="inputMethodHints">
+              <set>Qt::ImhDigitsOnly</set>
+             </property>
+             <property name="maxLength">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_18">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>ui.tab.map.or.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
+           <item>
+            <widget class="QLabel" name="label_19">
+             <property name="text">
+              <string>ui.tab.map.mapScales.label</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="inMapScales">
+             <property name="inputMethodHints">
+              <set>Qt::ImhDigitsOnly</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_20">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>ui.tab.map.public.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_21">
+           <property name="text">
+            <string>ui.tab.map.public.help</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_23">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>ui.tab.map.openstreetmap.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QCheckBox" name="cbOsmMapnik">
+             <property name="text">
+              <string>OSM Mapnik</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbOsmMapquest">
+             <property name="text">
+              <string>OSM Mapquest</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_22">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>ui.tab.map.google.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="sizeConstraint">
+            <enum>QLayout::SetDefaultConstraint</enum>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Key</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="inGoogleKey">
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbGoogleStreets">
+             <property name="text">
+              <string>Streets</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbGoogleSatellite">
+             <property name="text">
+              <string>Satellite</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbGoogleHybrid">
+             <property name="text">
+              <string>Hybrid</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbGoogleTerrain">
+             <property name="text">
+              <string>Terrain</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_ftp">
+      <attribute name="title">
+       <string>ui.tab.ftp.label</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>ui.tab.ftp.host.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inHost"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>ui.tab.ftp.port.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inPort"/>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>ui.tab.ftp.username.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inUsername"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>ui.tab.ftp.password.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inPassword">
+           <property name="inputMethodHints">
+            <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText</set>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>ui.tab.ftp.remotedir.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inRemotedir"/>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>ui.tab.ftp.localdir.label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inLocaldir">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="lbWinscpIn">
+               <property name="text">
+                <string>ui.tab.ftp.winscp.label</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="inWinscpPath"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btWinscpPath">
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="lbWinscpHelp">
+             <property name="text">
+              <string>ui.tab.ftp.winscp.help.label</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_main">
+      <attribute name="title">
+       <string>ui.tab.log.label</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0" colspan="3">
+        <widget class="QTextEdit" name="outLog">
+         <property name="lineWrapMode">
+          <enum>QTextEdit::NoWrap</enum>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" rowspan="2">
+        <widget class="QPushButton" name="btClearlog">
+         <property name="text">
+          <string>ui.tab.log.btClearLog.label</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" rowspan="2" colspan="2">
+        <widget class="QPushButton" name="btCancelFtpSync">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>ui.tab.log.btCancelSync.label</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="outState">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
-    <widget class="QPushButton" name="btRefreshTree">
-     <property name="geometry">
-      <rect>
-       <x>189</x>
-       <y>355</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="btHelp">
      <property name="text">
-      <string>ui.tab.layers.btRefreshTree.label</string>
+      <string>ui.main.btHelp</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_3">
-    <attribute name="title">
-     <string>ui.tab.map.label</string>
-    </attribute>
-    <widget class="QWidget" name="verticalLayoutWidget_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>551</width>
-       <height>386</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_15">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>ui.tab.map.scales.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_12">
-        <item>
-         <widget class="QLabel" name="label_13">
-          <property name="text">
-           <string>ui.tab.map.minScale.label</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="inMinScale">
-          <property name="inputMethodHints">
-           <set>Qt::ImhDigitsOnly</set>
-          </property>
-          <property name="maxLength">
-           <number>10</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_14">
-          <property name="text">
-           <string>ui.tab.map.maxScale.label</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="inMaxScale">
-          <property name="inputMethodHints">
-           <set>Qt::ImhDigitsOnly</set>
-          </property>
-          <property name="maxLength">
-           <number>10</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_17">
-          <property name="text">
-           <string>ui.tab.map.zoomLevelNumber.label</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="inZoomLevelNumber">
-          <property name="inputMethodHints">
-           <set>Qt::ImhDigitsOnly</set>
-          </property>
-          <property name="maxLength">
-           <number>2</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_18">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>ui.tab.map.or.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_15">
-        <item>
-         <widget class="QLabel" name="label_19">
-          <property name="text">
-           <string>ui.tab.map.mapScales.label</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="inMapScales">
-          <property name="inputMethodHints">
-           <set>Qt::ImhDigitsOnly</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_20">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>ui.tab.map.public.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_21">
-        <property name="text">
-         <string>ui.tab.map.public.help</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_23">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>ui.tab.map.openstreetmap.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <widget class="QCheckBox" name="cbOsmMapnik">
-          <property name="text">
-           <string>OSM Mapnik</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbOsmMapquest">
-          <property name="text">
-           <string>OSM Mapquest</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_22">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>ui.tab.map.google.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_13">
-        <property name="spacing">
-         <number>5</number>
-        </property>
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_11">
-          <property name="text">
-           <string>Key</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="inGoogleKey">
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbGoogleStreets">
-          <property name="text">
-           <string>Streets</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbGoogleSatellite">
-          <property name="text">
-           <string>Satellite</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbGoogleHybrid">
-          <property name="text">
-           <string>Hybrid</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbGoogleTerrain">
-          <property name="text">
-           <string>Terrain</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_ftp">
-    <attribute name="title">
-     <string>ui.tab.ftp.label</string>
-    </attribute>
-    <widget class="QWidget" name="horizontalLayoutWidget_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>551</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>ui.tab.ftp.username.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inUsername"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>ui.tab.ftp.password.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inPassword">
-        <property name="inputMethodHints">
-         <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText</set>
-        </property>
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>551</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>ui.tab.ftp.host.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inHost"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>ui.tab.ftp.port.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inPort"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_5">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>551</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>ui.tab.ftp.localdir.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inLocaldir">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>551</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
-      <item>
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>ui.tab.ftp.remotedir.label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="inRemotedir"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_7">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>240</y>
-       <width>551</width>
-       <height>117</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_7">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
-          <item>
-           <widget class="QLabel" name="lbWinscpIn">
-            <property name="text">
-             <string>ui.tab.ftp.winscp.label</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="inWinscpPath"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btWinscpPath">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="lbWinscpHelp">
-          <property name="text">
-           <string>ui.tab.ftp.winscp.help.label</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_main">
-    <attribute name="title">
-     <string>ui.tab.log.label</string>
-    </attribute>
-    <widget class="QTextEdit" name="outLog">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>551</width>
-       <height>331</height>
-      </rect>
-     </property>
-     <property name="lineWrapMode">
-      <enum>QTextEdit::NoWrap</enum>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="outState">
-     <property name="geometry">
-      <rect>
-       <x>450</x>
-       <y>353</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="btSave">
      <property name="text">
-      <string/>
+      <string>ui.tab.layers.btSave.label</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btClearlog">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>350</y>
-       <width>291</width>
-       <height>27</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ui.tab.log.btClearLog.label</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btCancelFtpSync">
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="btSync">
      <property name="enabled">
       <bool>true</bool>
      </property>
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>350</y>
-       <width>241</width>
-       <height>27</height>
-      </rect>
-     </property>
      <property name="text">
-      <string>ui.tab.log.btCancelSync.label</string>
+      <string>ui.tab.layers.btSync.label</string>
      </property>
     </widget>
-   </widget>
-  </widget>
-  <widget class="QPushButton" name="btSave">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>426</y>
-     <width>191</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>ui.tab.layers.btSave.label</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btSync">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>394</x>
-     <y>426</y>
-     <width>191</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>ui.tab.layers.btSync.label</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btHelp">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>426</y>
-     <width>98</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>ui.main.btHelp</string>
-   </property>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
