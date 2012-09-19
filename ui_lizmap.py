@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Wed Sep 19 10:03:32 2012
+# Created: Wed Sep 19 11:50:04 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_lizmap(object):
     def setupUi(self, lizmap):
         lizmap.setObjectName(_fromUtf8("lizmap"))
-        lizmap.resize(687, 512)
+        lizmap.resize(830, 512)
         self.gridLayout = QtGui.QGridLayout(lizmap)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.tabWidget = QtGui.QTabWidget(lizmap)
@@ -320,7 +320,7 @@ class Ui_lizmap(object):
         self.gridLayout.addWidget(self.btSync, 1, 2, 1, 1)
 
         self.retranslateUi(lizmap)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(lizmap)
         lizmap.setTabOrder(self.tabWidget, self.treeLayer)
         lizmap.setTabOrder(self.treeLayer, self.inLayerTitle)

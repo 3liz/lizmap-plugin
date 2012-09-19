@@ -749,10 +749,11 @@ class lizmap:
     ''' Checks that the needed options are correctly set : relative path, project saved, etc.'''
     
     isok = True;
+    errorMessage = ''
     # Get the project data from api
     p = QgsProject.instance()
     if not p.fileName():
-      QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), QApplication.translate("lizmap", "ui.msg.error.init.open.project"), QMessageBox.Ok)
+      errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.init.open.project")+'\n'
       isok = False
       
     # Check the project state (saved or not)
@@ -768,13 +769,13 @@ class lizmap:
       projectDir, projectName = os.path.split(os.path.abspath('%s' % p.fileName()))
       self.dlg.ui.inLocaldir.setText(projectDir)
       
-    # Check relative/absolute path    
-    if isok and p.readEntry('Paths', 'Absolute')[0] == 'true':
-      QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative"), QMessageBox.Ok)
-      isok = False
-      
-    # check active layers path layer by layer
     if isok:
+      # Check relative/absolute path    
+      if p.readEntry('Paths', 'Absolute')[0] == 'true':
+        errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative")+'\n'
+        isok = False
+        
+      # check active layers path layer by layer
       layerSourcesOk = []
       layerSourcesBad = []
       mc = self.iface.mapCanvas()
@@ -788,28 +789,31 @@ class lizmap:
           layerSourcesBad.append(layerSource)
           isok = False
       if len(layerSourcesBad) > 0:
-        QMessageBox.critical(
-          self.dlg, 
-          QApplication.translate("lizmap", "ui.msg.error.title"),
-          QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1")
-          .arg(projectDir), 
-          QMessageBox.Ok)
+        errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1").arg(projectDir)+'\n'
         self.log(
           QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1")
           .arg(projectDir) + str(layerSourcesBad), 
           abort=True, 
           textarea=self.dlg.ui.outLog)
-      
-    # check if a bbox has been given in the project WMS tab configuration
-    if isok:
+        
+      # check if a title has been given in the project OWS tab configuration
+      if str(p.readEntry('WMSServiceTitle','')[0]).strip(' \t') == u'':
+        errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.title")+'\n'
+        isok = False
+          
+
+      # check if a bbox has been given in the project OWS tab configuration
       pWmsExtent = p.readListEntry('WMSExtent','')[0]
       if len(pWmsExtent) <1 :
-        QMessageBox.critical(
-          self.dlg, 
-          QApplication.translate("lizmap", "ui.msg.error.title"), 
-          QApplication.translate("lizmap", "ui.msg.error.project.wms.extent"), 
-          QMessageBox.Ok)
+        errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.extent")+'\n'
         isok = False
+        
+    if not isok:
+      QMessageBox.critical(
+        self.dlg, 
+        QApplication.translate("lizmap", "ui.msg.error.title"), 
+        errorMessage, 
+        QMessageBox.Ok)            
         
     # for linux users, check if lftp has been installed
     if isok and sys.platform.startswith('linux'):
