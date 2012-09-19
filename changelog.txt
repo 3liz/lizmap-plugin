@@ -1,0 +1,27 @@
+CHANGELOG
+  Version 1.4.0
+  * New : check that the project title is correctly defined in the project properties dialog, tab OWS
+  * Improvement : Interface - automatic widgets resizing thanks to Salvatore Larosa @lrssvt
+  Version 1.3.0
+  * New feature : Choose the image type (png, png 8bit or jpeg) for each layer and not globally anymore
+  Version 1.2.2
+  * Bug fix : type which prevented from synchronizing over FTP
+  Version 1.2.1
+  * New : Get layer title and abstract from Qgis layer properties (for qgis >= 1.8)
+  * Refactoring : method to populate the plugin layer tree
+  * Bug fix : add missing i18n *.qm translation files
+  Version 1.2.0
+  * New : support for plugin internationalization : english and french languages available
+  * Modify : integrate Lizmap in the Qgis Web menu
+  * Modify : remove warning dialog when closing Lizmap window and auto-save the configuration
+  * Modify : move help and about dialogs to the plugin Menu
+  * Bug fix : error when the sync button is pressed and no sync was running
+  Version 1.1.1
+  * bug correction : closing window and reopening it led to plugin actions launched several times (e.g. save button)
+  * check if lizmap window is hidden and warn the user (which put lizmap window in the front)
+  * add a question to save lizmap configuration when closing the window
+  * clean the json export of lizmap project configuration (e.g. escaping double quotes) : use of simplejson.dumps() method
+  Version 1.1
+  * addition of Google and OpenStreetMap public baselayers option in the "Map" tab
+  * ignore non-geometric vector layers
+  * only one lizmap plugin window available at a time
