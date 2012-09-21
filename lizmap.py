@@ -108,28 +108,23 @@ class lizmap:
       self.dlg.ui.inWinscpPath.setEnabled(False)
       self.dlg.ui.btWinscpPath.setEnabled(False)
       self.dlg.ui.lbWinscpHelp.setEnabled(False)
-      self.dlg.ui.lbWinscpIn.setEnabled(False)
+      self.dlg.ui.lbWinscpIn.setEnabled(False)   
+      
+    # Disable checkboxes on the layer tab
+    self.enableCheckBox(False)
     
-    # connect signals and functions
-    # save button clicked
-    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
-    # ftp sync button clicked
-    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
-    # winscp get path button
-    QObject.connect(self.dlg.ui.btWinscpPath, SIGNAL("clicked()"), self.chooseWinscpPath)
-    # clear log button clicked
-    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
-    # Cancel FTP Sync
-    QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
-    # refresh layer tree button click
-    QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
-    # refresh layer tree button click
-    QObject.connect(self.dlg.ui.btHelp, SIGNAL("clicked()"), self.showHelp )
+    # Catch user interaction on layer tree and inputs
+    QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
+    QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
+    QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
+    QObject.connect(self.dlg.ui.inLayerLink, SIGNAL("editingFinished()"), self.setLayerLink)
+    QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
+    QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
+    QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
+    QObject.connect(self.dlg.ui.cbSingleTile, SIGNAL("stateChanged(int)"), self.setSingleTile)
+    QObject.connect(self.dlg.ui.cbCached, SIGNAL("stateChanged(int)"), self.setCached)
+    QObject.connect(self.dlg.ui.liImageFormat, SIGNAL("currentIndexChanged(int)"), self.setImageFormat)
     
-    # detect close event
-    QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
-    
-
   def initGui(self):
     '''Create action that will start plugin configuration'''
     self.action = QAction(QIcon(":/plugins/lizmap/icon.png"),
@@ -148,8 +143,28 @@ class lizmap:
     self.action_about = QAction(QIcon(":/plugins/lizmap/help.png"),
                               "&About...", self.iface.mainWindow())
     # connect about action to about dialog
-    QObject.connect(self.action_about, SIGNAL("triggered()"), self.showAbout)
-
+    QObject.connect(self.action_about, SIGNAL("triggered()"), self.showAbout)    
+    
+    # connect signals and functions
+    # save button clicked
+    QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
+    # ftp sync button clicked
+    QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
+    # winscp get path button
+    QObject.connect(self.dlg.ui.btWinscpPath, SIGNAL("clicked()"), self.chooseWinscpPath)
+    # clear log button clicked
+    QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
+    # Cancel FTP Sync
+    QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
+    # refresh layer tree button click
+    QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
+    # refresh layer tree button click
+    QObject.connect(self.dlg.ui.btHelp, SIGNAL("clicked()"), self.showHelp )
+    # detect close event
+    QObject.connect(self.dlg.ui.buttonClose, SIGNAL("rejected()"), self.warnOnClose )
+    QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
+    
+    
     # first check if Web menu availbale in this QGIS version
     if hasattr(self.iface, "addPluginToWebMenu"):
       #add plugin to the web plugin menu
@@ -222,7 +237,17 @@ class lizmap:
     self.dlg.ui.outLog.clear()
     self.dlg.ui.outState.setText('<font color="green"></font>')
 
-
+  def enableCheckBox(self, value):
+    self.dlg.ui.inLayerTitle.setEnabled(value)
+    self.dlg.ui.teLayerAbstract.setEnabled(value)
+    self.dlg.ui.inLayerLink.setEnabled(value)
+    self.dlg.ui.cbLayerIsBaseLayer.setEnabled(value)
+    self.dlg.ui.cbGroupAsLayer.setEnabled(value)
+    self.dlg.ui.cbToggled.setEnabled(value)
+    self.dlg.ui.cbSingleTile.setEnabled(value)
+    self.dlg.ui.cbCached.setEnabled(value)
+    self.dlg.ui.liImageFormat.setEnabled(value)
+    self.dlg.ui.label_9.setEnabled(value)
 
   def getConfig(self):
     ''' Get the saved configuration from lizmap.cfg file and from the projet.qgs.cfg config file. Populate the gui fields accordingly'''
@@ -302,10 +327,13 @@ class lizmap:
   def refreshLayerTree(self):
     '''Refresh the layer tree on user demand. Uses method populateLayerTree'''
     # Ask confirmation
-    refreshIt = QMessageBox.question(self.dlg, QApplication.translate("lizmap", 'ui.msg.question.refresh.title'), QApplication.translate("lizmap", "ui.msg.question.refresh.content"), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    refreshIt = QMessageBox.question(self.dlg, QApplication.translate(
+                                    "lizmap", 'ui.msg.question.refresh.title'), 
+                                     QApplication.translate(
+                                    "lizmap", "ui.msg.question.refresh.content"), 
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
     if refreshIt == QMessageBox.Yes:
-      self.populateLayerTree()
-
+      self.populateLayerTree() 
 
   def setTreeItemData(self, itemType, itemKey, jsonLayers):
     '''Define default data or data from previous configuration for one item (layer or group)
@@ -401,8 +429,6 @@ class lizmap:
         if jsonLayers[jsonKey]['imageFormat'] in ("image/png", "image/png; mode=8bit", "image/jpeg"):
           self.myDic[itemKey]['imageFormat'] = jsonLayers[jsonKey]['imageFormat']
           
-
-
   def populateLayerTree(self):
     '''Populate the layer tree of the Layers tab from Qgis legend interface
     Needs to be refactored.
@@ -491,24 +517,16 @@ class lizmap:
     # Add the self.myDic to the global layerList dictionary
     self.layerList = self.myDic
 
-    # Catch user interaction on layer tree and inputs
-    QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
-    QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
-    QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
-    QObject.connect(self.dlg.ui.inLayerLink, SIGNAL("editingFinished()"), self.setLayerLink)
-    QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
-    QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
-    QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
-    QObject.connect(self.dlg.ui.cbSingleTile, SIGNAL("stateChanged(int)"), self.setSingleTile)
-    QObject.connect(self.dlg.ui.cbCached, SIGNAL("stateChanged(int)"), self.setCached)
-    QObject.connect(self.dlg.ui.liImageFormat, SIGNAL("currentIndexChanged(int)"), self.setImageFormat)
-    
-
+    self.enableCheckBox(False)
 
   def setItemOptions(self):
     '''Restore layer/group input values when selecting a layer tree item'''
     # get the selected item
     item = self.dlg.ui.treeLayer.currentItem()
+    if item:
+        self.enableCheckBox(True)
+    else:
+        self.enableCheckBox(False)
     if self.layerList.has_key(item.text(1)):
       # get information about the layer or the group
       selectedItem = self.layerList[item.text(1)]
@@ -541,7 +559,6 @@ class lizmap:
       self.dlg.ui.cbSingleTile.setChecked(False)
       self.dlg.ui.cbCached.setChecked(False)
       self.dlg.ui.liImageFormat.setCurrentIndex(1)
-      
 
   def setLayerTitle(self):
     '''Set a layer title when a item title is edited'''
@@ -586,8 +603,8 @@ class lizmap:
     item = self.dlg.ui.treeLayer.currentItem()
     # modify the baseLayer property for the selected item
     if self.layerList.has_key(item.text(1)):
-      self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
-    
+      self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()     
+        
   def setGroupAsLayer(self):
     '''Set the "group as a layer" property when an item "Group As Layer" checkbox state has changed'''
     # get the selected item
@@ -596,8 +613,12 @@ class lizmap:
       self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
       # modify the type property for the selected item
       if self.dlg.ui.cbGroupAsLayer.isChecked():
-          self.layerList[item.text(1)]['type'] = 'layer'
-      
+        self.layerList[item.text(1)]['type'] = 'layer'
+    else:
+      QMessageBox.information(self.dlg, QString() ,QApplication.translate(
+                              "lizmap", 'ui.msg.information.select.item'))
+      self.dlg.ui.cbGroupAsLayer.setChecked(False)
+        
   def setToggled(self):
     '''Set a layer or group "toggled" property when an item "toggled" checkbox state has changed'''
     # get the selected item
@@ -605,7 +626,7 @@ class lizmap:
     # modify the toggled property for the selected item
     if self.layerList.has_key(item.text(1)):
       self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
-
+        
   def setSingleTile(self):
     '''Set a layer or group "singleTile" property when an item "singleTile" checkbox state has changed'''
     # get the selected item
@@ -630,8 +651,6 @@ class lizmap:
     if self.layerList.has_key(item.text(1)):
       self.imageFormatList = ['image/png', 'image/png; mode=8bit', 'image/jpeg']
       self.layerList[item.text(1)]['imageFormat'] = self.imageFormatList[self.dlg.ui.liImageFormat.currentIndex()]
-
-
 
   def writeProjectConfigFile(self):
     '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
@@ -1282,8 +1301,8 @@ class lizmap:
 
 
   def warnOnClose(self):
-    '''Method triggerd when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-#    # Ask confirmation
+    '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
+    # Ask confirmation
 #    saveBeforeClose = QMessageBox.question(
 #      self.dlg,
 #      QApplication.translate("lizmap", "ui.msg.warning.title"),
