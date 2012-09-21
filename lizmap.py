@@ -280,10 +280,11 @@ class lizmap:
                 jsonOptions = sjson['options']
             except:
                 isok=0
-                QMessageBox.critical(self.dlg,
-                                    QApplication.translate("lizmap", "ui.msg.error.title"),
-                                    QApplication.translate("lizmap", "ui.msg.error.tree.read.content")),
-                                    QMessageBox.Ok)
+                QMessageBox.critical(
+                    self.dlg,
+                    QApplication.translate("lizmap", "ui.msg.error.title"),
+                    QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
+                    QMessageBox.Ok)
                 self.log(
                     QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
                     abort=True,
