@@ -833,7 +833,7 @@ class lizmap:
             # first set the WMSServiceCapabilities to true
             p.writeEntry('WMSServiceCapabilities', "/", "True")
             p.write()
-            if str(p.readEntry('WMSServiceTitle','')[0]).strip(' \t') == u'':
+            if QString.fromUtf8(p.readEntry('WMSServiceTitle','')[0]) == u'':
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.title")+'\n'
                 isok = False
 
