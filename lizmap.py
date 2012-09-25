@@ -393,7 +393,7 @@ class lizmap:
                 self.myDic[itemKey]['maxScale'] = layer.maximumScale()
             # toggled : check if layer is toggled in qgis legend
             self.myDic[itemKey]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
-            # group as layer : always True obviously
+            # group as layer : always False obviously because it is already a layer
             self.myDic[itemKey]['groupAsLayer'] = False
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
@@ -409,8 +409,8 @@ class lizmap:
             if jsonLayers[jsonKey].has_key('baseLayer'):
                 if jsonLayers[jsonKey]['baseLayer'].lower() in ("yes", "true", "t", "1"):
                     self.myDic[itemKey]['baseLayer'] = True
-            # groupAsLayer
-            if jsonLayers[jsonKey].has_key('groupAsLayer') and itemType == 'layer':
+            # groupAsLayer : check only for groups
+            if jsonLayers[jsonKey].has_key('groupAsLayer') and itemType != 'layer':
                 if jsonLayers[jsonKey]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
                     self.myDic[itemKey]['groupAsLayer'] = True
             # singleTile
