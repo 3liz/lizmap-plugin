@@ -1,4 +1,7 @@
 CHANGELOG
+  Version 1.5.0
+  * New : translation into Italian, thanks to Salvatore Larosa (@lrssvt)
+  * Debug : Groups as layer was not remembered since v1.4.0
   Version 1.4.0
   * New : check that the project title is correctly defined in the project properties dialog, tab OWS
   * Improvement : Interface - automatic widgets resizing thanks to Salvatore Larosa @lrssvt
