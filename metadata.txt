@@ -4,7 +4,7 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.6.0
+version=version 1.6.1
 ; end of mandatory metadata
 
 ; start of optional metadata
