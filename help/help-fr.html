@@ -94,7 +94,7 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 
 
 	<ul>
-	<li><strong>Fond de carte ?</strong>  : si cette option est cochée, le groupe/la couche apparaîtra dans la liste des couches de fond. Sinon, elle apparaîtra dans l'arbre des couches. Une seule couche de fond peut être affichée à la fois, alors que plusieurs couches de l'arbre peuvent être affichées en même temps (au dessus de la couche de fond)</li>
+	<li><strong>Activée ?</strong> : si cochée, le groupe ou la couche sera cochée et visible sur la carte dans l'application web. Sinon, l'utilisateur devra la cocher manuellement pour la faire apparaître.</li>
 	</ul>
 
 
@@ -104,7 +104,7 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 
 
 	<ul>
-	<li><strong>Activée ?</strong> : si cochée, le groupe ou la couche sera cochée et visible sur la carte dans l'application web. Sinon, l'utilisateur devra la cocher manuellement pour la faire apparaître.</li>
+	<li><strong>Fond de carte ?</strong>  : si cette option est cochée, le groupe/la couche apparaîtra dans la liste des couches de fond. Sinon, elle apparaîtra dans l'arbre des couches. Une seule couche de fond peut être affichée à la fois, alors que plusieurs couches de l'arbre peuvent être affichées en même temps (au dessus de la couche de fond)</li>
 	</ul>
 
 
@@ -114,7 +114,22 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 
 
 	<ul>
-	<li><strong>Cache ?</strong> : si l'administrateur du serveur a configuré un système de cache, il est possible de cocher cette option pour un groupe ou une couche. ALors Lizmap web utilsera le moteur de cache au lieu de demander les cartes à Qgis Server. Le serveur de tuile doit avoir été préalablement configuré avec la même étendue (bbox) que les paramètres WMS du projet Qgis.</li>
+	<li><strong>Format d'image</strong> : choisir entre <strong>png</strong>, <strong>png; mode=8bit</strong> et <strong>jpeg</strong>. <strong>Png</strong> est souvent le meilleur choix, car ce format respecte la transparence. <strong>Png 8bit</strong> produit des images moins lourdes (donc plus rapides à télécharger), mais gère une palette limitée de couleur et ne gère pas la transparence. <strong>jpeg</strong> créée des images légères mais avec une dégradation visible, notamment sur les étiquettes. A vous d'utiliser le meilleur format pour chaque couche.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Cache ?</strong> : Vous pouvez activer avec cette option le cache pour un groupe ou une couche. Il suffit de cocher une option dans le plugin pour chaque couche pour laquelle on souhaite mettre les données en cache. L'application Lizmap Web Client se charge de stocker automatiquement le cache pour cette couche (ou ce groupe) lorsqu'un utilisateur navigue dans la carte. Si un autre utilisateur retourne sur la même carte, les images déjà en cache seront affichées automatiquement, sans requête à QGIS Server. Cette option permet d'augmenter sensiblement les performances de Lizmap Web Client pour les couches lourdes à rendre.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Expiration (s)</strong>  vous pouvez définir un temps d'expiration en seconde pour les images du cache. Les images du cache plus vieilles que cette durée seront automatiquement supprimées et remplacées par des images récentes (nouvelle requête à QGIS Server) . Si vous mettez 0, le cache n'expirera jamais, c'est-à-dire que les images du cache seront conservées. Cela peut-être utile pour des données statiques, comme par exemple des fonds IGN ou des photos aériennes.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Metatile</strong> On peut définir pour chaque couche avec le cache activé, si on souhaite paramétrer le metatile. Le principe est de demander au serveur QGIS Server une image plus grande et de la redécouper ensuite. Cela permet d'éviter les problèmes d'étiquettes tronquées ou de hachures brisées aux limites de tuiles. On peut par exemple définir "5,5", ce qui demandera au serveur cartographique une image 5 fois plus grande avant de la redécouper. Attention à ne pas mettre de valeurs trop grandes, car le fait de demander des images plus grandes alourdit la requête pour QGIS Server au moment de la génération initiale du cache. Une fois les tuiles mises en cache par contre, les performances seront aussi élevées que sans cette option activée.</li>
 	</ul>
 
 
@@ -122,11 +137,6 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 
 
 	<p>Dans cet onglet, vous pouvez éditer des options de configuration basiques de la carte qui sera produite par l'application web :</p>
-
-
-	<ul>
-	<li><strong>Format d'image</strong> : choisir entre "png" et "jpg". Png est souvent le meilleur choix, car ce format respecte la transparence. Jpg crééra néanmoins souvent des images moins lourdes.</li>
-	</ul>
 
 
 	<ul>
@@ -278,14 +288,14 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 	<li><strong>Convention de nommage des couches et des groupes</strong><br />Tous les groupes et toutes les couches de l'arbre de gauche dans Qgis doivent suivre les règles de nommage suivantes
 
 	<ul>
-	<li>pas d'accents</li>
-		<li>pas de caractères spéciaux (comme * ou $ + - )</li>
-		<li>pas d'espace</li>
+	<li><strong>pas d'accents</strong></li>
+		<li><strong>pas de caractères spéciaux</strong> (comme * ou $ + - )</li>
+		<li><strong>pas d'espace</strong></li>
 	</ul></li>
 	</ul>
 
 
-	<p>Vous pourrez changer les noms qui apparaîtront dans l'application web en modifiant le paramètre <strong>Titre</strong> dans l'onglet <strong>Couches</strong> du plugin Lizmap</p>
+	<p>Vous pourrez <strong>changer les noms qui apparaîtront dans l'application web</strong> en modifiant le paramètre <strong>Titre</strong> dans l'onglet <strong>Couches</strong> du plugin Lizmap</p>
 
 
 	<ul>
