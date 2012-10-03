@@ -1,4 +1,6 @@
 CHANGELOG
+  Version 1.6.1
+  * Bug fix : correctlu use layer.setAbstract instead of setTitle to set back the abstract
   Version 1.6.0
   * New : addition of more cache parameters : cache expiration and metatile
   * Enhancement : Heavy refactoring of the code ("data driven") to easy addition of new layers properties.

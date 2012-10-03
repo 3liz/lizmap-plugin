@@ -9,9 +9,8 @@ version=version 1.6.0
 
 ; start of optional metadata
 changelog=
-  Version 1.6.0
-  * New : addition of more cache parameters : cache expiration and metatile
-  * Enhancement : Heavy refactoring of the code ("data driven") to easy addition of new layers properties.
+  Version 1.6.1
+  * Bug fix : correctlu use layer.setAbstract instead of setTitle to set back the abstract
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, client, html, 3liz, ftp
