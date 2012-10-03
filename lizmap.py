@@ -611,7 +611,10 @@ class lizmap:
                 layer = self.getQgisLayerById(item.text(1))
                 if layer:
                     if hasattr(layer, key):
-                        layer.setTitle(QString(u"%s" % self.layerList[item.text(1)][key]))
+                        if key == 'title':
+                            layer.setTitle(QString(u"%s" % self.layerList[item.text(1)][key]))
+                        if key == 'abstract':
+                            layer.setAbstract(QString(u"%s" % self.layerList[item.text(1)][key]))
 
 
 
