@@ -110,20 +110,57 @@ class lizmap:
             self.dlg.ui.lbWinscpHelp.setEnabled(False)
             self.dlg.ui.lbWinscpIn.setEnabled(False)
 
+        # List of ui widget for data driven actions and checking
+        self.layerOptionsList = {
+            'title': {'widget': self.dlg.ui.inLayerTitle, 'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True},
+            'abstract': {'widget': self.dlg.ui.teLayerAbstract, 'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True},
+            'link': {'widget': self.dlg.ui.inLayerLink, 'wType': 'text', 'type': 'string', 'default': ''},
+            'minScale': {'widget': None, 'wType': 'text', 'type': 'integer', 'default': 1},
+            'maxScale': {'widget': None, 'wType': 'text', 'type': 'integer', 'default': 1000000000000},
+            'toggled': {'widget': self.dlg.ui.cbToggled, 'wType': 'checkbox', 'type': 'boolean', 'default': True},
+            'groupAsLayer': {'widget': self.dlg.ui.cbGroupAsLayer, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'baseLayer': {'widget': self.dlg.ui.cbLayerIsBaseLayer, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'singleTile': {'widget': self.dlg.ui.cbSingleTile, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'imageFormat': {'widget': self.dlg.ui.liImageFormat, 'wType': 'list', 'type': 'string', 'default': 'image/png', 'list':["image/png", "image/png; mode=8bit", "image/jpeg"]},
+            'cached': {'widget': self.dlg.ui.cbCached, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'cacheExpiration': {'widget': self.dlg.ui.inCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 0},
+            'metatileSize': {'widget': self.dlg.ui.inMetatileSize, 'wType': 'text', 'type': 'string', 'default': ''}
+        }
+
         # Disable checkboxes on the layer tab
         self.enableCheckBox(False)
 
         # Catch user interaction on layer tree and inputs
         QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
-        QObject.connect(self.dlg.ui.inLayerTitle, SIGNAL("editingFinished()"), self.setLayerTitle)
-        QObject.connect(self.dlg.ui.teLayerAbstract, SIGNAL("textChanged()"), self.setLayerAbstract)
-        QObject.connect(self.dlg.ui.inLayerLink, SIGNAL("editingFinished()"), self.setLayerLink)
-        QObject.connect(self.dlg.ui.cbLayerIsBaseLayer, SIGNAL("stateChanged(int)"), self.setLayerIsBaseLayer)
-        QObject.connect(self.dlg.ui.cbGroupAsLayer, SIGNAL("stateChanged(int)"), self.setGroupAsLayer)
-        QObject.connect(self.dlg.ui.cbToggled, SIGNAL("stateChanged(int)"), self.setToggled)
-        QObject.connect(self.dlg.ui.cbSingleTile, SIGNAL("stateChanged(int)"), self.setSingleTile)
-        QObject.connect(self.dlg.ui.cbCached, SIGNAL("stateChanged(int)"), self.setCached)
-        QObject.connect(self.dlg.ui.liImageFormat, SIGNAL("currentIndexChanged(int)"), self.setImageFormat)
+
+        # Connect entry list changeboxes
+        # signalMapper to connect several signals to one slot
+        self.signalMapper = QSignalMapper()
+        QObject.connect(self.signalMapper, SIGNAL("mapped(QString)"), self.setLayerProperty)
+        for key, item in self.layerOptionsList.items():
+            if item['widget']:
+                self.signalMapper.setMapping(item['widget'], key)
+                if item['wType'] in ('text', 'spinbox'):
+                    QObject.connect(
+                        item['widget'],
+                        SIGNAL("editingFinished()"),
+                        self.signalMapper, SLOT("map()"))
+                elif item['wType'] == 'textarea':
+                    QObject.connect(
+                        item['widget'],
+                        SIGNAL("textChanged()"),
+                        self.signalMapper, SLOT("map()"))
+                elif item['wType'] == 'checkbox':
+                    QObject.connect(
+                        item['widget'],
+                        SIGNAL("stateChanged(int)"),
+                        self.signalMapper, SLOT("map()"))
+                elif item['wType'] == 'list':
+                    QObject.connect(
+                        item['widget'],
+                        SIGNAL("currentIndexChanged(int)"),
+                        self.signalMapper, SLOT("map()"))
+
 
     def initGui(self):
         '''Create action that will start plugin configuration'''
@@ -157,7 +194,7 @@ class lizmap:
         # Cancel FTP Sync
         QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
         # refresh layer tree button click
-        QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
+#        QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
         # refresh layer tree button click
         QObject.connect(self.dlg.ui.btHelp, SIGNAL("clicked()"), self.showHelp )
         # detect close event
@@ -239,16 +276,9 @@ class lizmap:
 
     def enableCheckBox(self, value):
         '''Enable/Disable checkboxes and fields of the Layer tab'''
-        self.dlg.ui.inLayerTitle.setEnabled(value)
-        self.dlg.ui.teLayerAbstract.setEnabled(value)
-        self.dlg.ui.inLayerLink.setEnabled(value)
-        self.dlg.ui.cbLayerIsBaseLayer.setEnabled(value)
-        self.dlg.ui.cbGroupAsLayer.setEnabled(value)
-        self.dlg.ui.cbToggled.setEnabled(value)
-        self.dlg.ui.cbSingleTile.setEnabled(value)
-        self.dlg.ui.cbCached.setEnabled(value)
-        self.dlg.ui.liImageFormat.setEnabled(value)
-        self.dlg.ui.label_9.setEnabled(value)
+        for key,item in self.layerOptionsList.items():
+            if item['widget']:
+                item['widget'].setEnabled(value)
 
     def getConfig(self):
         ''' Get the saved configuration from lizmap.cfg file
@@ -301,25 +331,25 @@ class lizmap:
             self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
         # openstreetmap baselayers
         if jsonOptions.has_key('osmMapnik'):
-            if jsonOptions['osmMapnik'].lower() in ("yes", "true", "t", "1"):
+            if jsonOptions['osmMapnik'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbOsmMapnik.setChecked(True);
         if jsonOptions.has_key('osmMapquest'):
-            if jsonOptions['osmMapquest'].lower() in ("yes", "true", "t", "1"):
+            if jsonOptions['osmMapquest'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbOsmMapquest.setChecked(True);
         # google baselayers
         if jsonOptions.has_key('googleKey'):
             self.dlg.ui.inGoogleKey.setText(str(jsonOptions['googleKey']))
         if jsonOptions.has_key('googleStreets'):
-            if jsonOptions['googleStreets'].lower() in ("yes", "true", "t", "1"):
+            if jsonOptions['googleStreets'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbGoogleStreets.setChecked(True);
         if jsonOptions.has_key('googleSatellite'):
-            if jsonOptions['googleSatellite'].lower() in ("yes", "true", "t", "1"):
+            if jsonOptions['googleSatellite'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbGoogleSatellite.setChecked(True);
         if jsonOptions.has_key('googleHybrid'):
-            if jsonOptions['googleHybrid'].lower() in ("yes", "true", "t", "1"):
+            if jsonOptions['googleHybrid'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbGoogleHybrid.setChecked(True);
         if jsonOptions.has_key('googleTerrain'):
-            if jsonOptions['googleTerrain'].lower() in ("yes", "true", "t", "1"):
+            if jsonOptions['googleTerrain'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbGoogleTerrain.setChecked(True);
 
         return True
@@ -337,10 +367,12 @@ class lizmap:
     def refreshLayerTree(self):
         '''Refresh the layer tree on user demand. Uses method populateLayerTree'''
         # Ask confirmation
-        refreshIt = QMessageBox.question(self.dlg,
-                                        QApplication.translate("lizmap", 'ui.msg.question.refresh.title'),
-                                        QApplication.translate("lizmap", "ui.msg.question.refresh.content"),
-                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        refreshIt = QMessageBox.question(
+            self.dlg,
+            QApplication.translate("lizmap", 'ui.msg.question.refresh.title'),
+            QApplication.translate("lizmap", "ui.msg.question.refresh.content"),
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+        )
         if refreshIt == QMessageBox.Yes:
             self.populateLayerTree()
 
@@ -348,27 +380,17 @@ class lizmap:
         '''Define default data or data from previous configuration for one item (layer or group)
         Used in the method populateLayerTree
         '''
-        # type
+        # Type : group or layer
         self.myDic[itemKey]['type'] = itemType
 
-        # DEFAULT VALUES
-        # generic for layers and group
+        # DEFAULT VALUES : generic default values for layers and group
         self.myDic[itemKey]['name'] = "%s" % itemKey
+        for key, item in self.layerOptionsList.items():
+            self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
-        self.myDic[itemKey]['abstract'] = ''
-        self.myDic[itemKey]['link'] = ''
-        self.myDic[itemKey]['minScale'] = 1
-        self.myDic[itemKey]['maxScale'] = 1000000000000
-        self.myDic[itemKey]['toggled'] = True
-        self.myDic[itemKey]['baseLayer'] = False
-        self.myDic[itemKey]['groupAsLayer'] = False
-        self.myDic[itemKey]['singleTile'] = False
-        self.myDic[itemKey]['cached'] = False
-        self.myDic[itemKey]['imageFormat'] = 'image/png'
 
+        # DEFAULT VALUES : layers have got more precise data
         keepMetadata = False
-
-        # layer has got more precise data
         if itemType == 'layer':
             # layer name
             layer = self.getQgisLayerById(itemKey)
@@ -399,44 +421,32 @@ class lizmap:
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
         if jsonLayers.has_key('%s' % self.myDic[itemKey]['name']):
             jsonKey = '%s' % self.myDic[itemKey]['name']
-            # toggled
-            if jsonLayers[jsonKey].has_key('toggled'):
-                if jsonLayers[jsonKey]['toggled'].lower() in ("yes", "true", "t", "1"):
-                    self.myDic[itemKey]['toggled'] = True
-                else:
-                    self.myDic[itemKey]['toggled'] = False
-            # baseLayer
-            if jsonLayers[jsonKey].has_key('baseLayer'):
-                if jsonLayers[jsonKey]['baseLayer'].lower() in ("yes", "true", "t", "1"):
-                    self.myDic[itemKey]['baseLayer'] = True
-            # groupAsLayer : check only for groups
-            if jsonLayers[jsonKey].has_key('groupAsLayer') and itemType != 'layer':
-                if jsonLayers[jsonKey]['groupAsLayer'].lower() in ("yes", "true", "t", "1"):
-                    self.myDic[itemKey]['groupAsLayer'] = True
-            # singleTile
-            if jsonLayers[jsonKey].has_key('singleTile'):
-                if jsonLayers[jsonKey]['singleTile'].lower() in ("yes", "true", "t", "1"):
-                    self.myDic[itemKey]['singleTile'] = True
-            # cached
-            if jsonLayers[jsonKey].has_key('cached'):
-                if jsonLayers[jsonKey]['cached'].lower() in ("yes", "true", "t", "1"):
-                    self.myDic[itemKey]['cached'] = True
-            # title
-            if jsonLayers[jsonKey].has_key('title'):
-                if jsonLayers[jsonKey]['title'] != '' and not keepMetadata:
-                    self.myDic[itemKey]['title'] = jsonLayers[jsonKey]['title']
-            # abstract
-            if jsonLayers[jsonKey].has_key('abstract'):
-                if jsonLayers[jsonKey]['abstract'] != '' and not keepMetadata:
-                    self.myDic[itemKey]['abstract'] = jsonLayers[jsonKey]['abstract']
-            # link
-            if jsonLayers[jsonKey].has_key('link'):
-                if jsonLayers[jsonKey]['link'] != '':
-                    self.myDic[itemKey]['link'] = jsonLayers[jsonKey]['link']
-            # image format
-            if jsonLayers[jsonKey].has_key('imageFormat'):
-                if jsonLayers[jsonKey]['imageFormat'] in ("image/png", "image/png; mode=8bit", "image/jpeg"):
-                    self.myDic[itemKey]['imageFormat'] = jsonLayers[jsonKey]['imageFormat']
+            # loop through layer options to override
+            for key, item in self.layerOptionsList.items():
+                # override only for ui widgets
+                if item['widget']:
+                    if jsonLayers[jsonKey].has_key(key):
+                        # checkboxes
+                        if item['wType'] == 'checkbox':
+                            if jsonLayers[jsonKey][key].lower() in ('yes', 'true', 't', '1'):
+                                self.myDic[itemKey][key] = True
+                        # spin box
+                        elif item['wType'] == 'spinbox':
+                            if jsonLayers[jsonKey][key] != '':
+                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                        # text inputs
+                        elif item['wType'] in ('text', 'textarea'):
+                            if jsonLayers[jsonKey][key] != '':
+                                if item.has_key('isMetadata'): # title and abstract
+                                    if not keepMetadata:
+                                        self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                                else:
+                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                        # lists
+                        elif item['wType'] == 'list':
+                            if jsonLayers[jsonKey][key] in item['list']:
+                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+
 
     def populateLayerTree(self):
         '''Populate the layer tree of the Layers tab from Qgis legend interface
@@ -536,134 +546,74 @@ class lizmap:
         # get the selected item
         item = self.dlg.ui.treeLayer.currentItem()
         if item:
-                self.enableCheckBox(True)
+            self.enableCheckBox(True)
         else:
-                self.enableCheckBox(False)
+            self.enableCheckBox(False)
+
         if self.layerList.has_key(item.text(1)):
-            # get information about the layer or the group
+            # get information about the layer or the group from the layerList dictionary
             selectedItem = self.layerList[item.text(1)]
-            # set the title
-            self.dlg.ui.inLayerTitle.setText(selectedItem['title'])
-            # set the abstract
-            self.dlg.ui.teLayerAbstract.setText(selectedItem['abstract'])
-            # set the link
-            self.dlg.ui.inLayerLink.setText(selectedItem['link'])
-            # set the baseLayer
-            self.dlg.ui.cbLayerIsBaseLayer.setChecked(selectedItem['baseLayer'])
-            # set the groupAsLayer
-            self.dlg.ui.cbGroupAsLayer.setChecked(selectedItem['groupAsLayer'])
-            # set the toggled
-            self.dlg.ui.cbToggled.setChecked(selectedItem['toggled'])
-            # set the singleTile
-            self.dlg.ui.cbSingleTile.setChecked(selectedItem['singleTile'])
-            # set the cached
-            self.dlg.ui.cbCached.setChecked(selectedItem['cached'])
-            # set the image format
-            self.imageFormatDic = {'image/png': 0, 'image/png; mode=8bit': 1, 'image/jpeg': 2}
-            self.dlg.ui.liImageFormat.setCurrentIndex(self.imageFormatDic[selectedItem['imageFormat']])
+            # set options
+            for key,val in self.layerOptionsList.items():
+                if val['widget']:
+                    if val['wType'] in ('text', 'textarea'):
+                        val['widget'].setText(selectedItem[key])
+                    elif val['wType'] == 'spinbox':
+                        val['widget'].setValue(int(selectedItem[key]))
+                    elif val['wType'] == 'checkbox':
+                        val['widget'].setChecked(selectedItem[key])
+                    elif val['wType'] == 'list':
+                        listDic = {val['list'][i]:i for i in range(0, len(val['list']))}
+                        val['widget'].setCurrentIndex(listDic[selectedItem[key]])
         else:
-            self.dlg.ui.inLayerTitle.setText('')
-            self.dlg.ui.teLayerAbstract.setText('')
-            self.dlg.ui.inLayerLink.setText('')
-            self.dlg.ui.cbLayerIsBaseLayer.setChecked(False)
-            self.dlg.ui.cbGroupAsLayer.setChecked(False)
-            self.dlg.ui.cbToggled.setChecked(False)
-            self.dlg.ui.cbSingleTile.setChecked(False)
-            self.dlg.ui.cbCached.setChecked(False)
-            self.dlg.ui.liImageFormat.setCurrentIndex(1)
+            # set default values for this layer/group
+            for key,val in self.layerOptionsList.items():
+                if val['widget']:
+                    if val['wType'] in ('text', 'textarea'):
+                        val['widget'].setText(val['default'])
+                    elif val['wType'] == 'spinbox':
+                        val['widget'].setValue(val['default'])
+                    elif val['wType'] == 'checkbox':
+                        val['widget'].setChecked(val['default'])
+                    elif val['wType'] == 'list':
+                        listDic = {val['list'][i]:i for i in range(0, len(val['list']))}
+                        val['widget'].setCurrentIndex(listDic[val['default']])
 
-    def setLayerTitle(self):
-        '''Set a layer title when a item title is edited'''
+
+    def setLayerProperty(self, key):
+        '''Set a layer property when the corresponding ui widget has sent changed signal'''
+        key = str(key)
         # get the selected item
         item = self.dlg.ui.treeLayer.currentItem()
-        # modify the title for the selected item
+        # get the definition for this property
+        layerOption = self.layerOptionsList[key]
+        # modify the property for the selected item
         if item and self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['title'] = self.dlg.ui.inLayerTitle.text()
-            # modify the layer.title() if possible (qgis >= 1.8)
+            if layerOption['wType'] == 'text':
+                self.layerList[item.text(1)][key] = layerOption['widget'].text()
+                self.setLayerMeta(item, key)
+            elif layerOption['wType'] == 'textarea':
+                self.layerList[item.text(1)][key] = layerOption['widget'].toPlainText()
+                self.setLayerMeta(item, key)
+            elif layerOption['wType'] == 'spinbox':
+                self.layerList[item.text(1)][key] = layerOption['widget'].value()
+            elif layerOption['wType'] == 'checkbox':
+                self.layerList[item.text(1)][key] = layerOption['widget'].isChecked()
+            elif layerOption['wType'] == 'list':
+                self.layerList[item.text(1)][key] = layerOption['list'][layerOption['widget'].currentIndex()]
+
+    def setLayerMeta(self, item, key):
+        '''Set a the title/abstract Qgis metadata when corresponding item is changed
+        Used in setLayerProperty'''
+        if self.layerOptionsList[key].has_key('isMetadata'):
+            # modify the layer.title|abstract() if possible (qgis >= 1.8)
             if self.layerList[item.text(1)]['type'] == 'layer':
                 layer = self.getQgisLayerById(item.text(1))
                 if layer:
-                    if hasattr(layer, "title"):
-                        layer.setTitle(QString(u"%s" % self.layerList[item.text(1)]['title']))
+                    if hasattr(layer, key):
+                        layer.setTitle(QString(u"%s" % self.layerList[item.text(1)][key]))
 
 
-    def setLayerAbstract(self):
-        '''Set a layer abstract when a item abstract is edited'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the abstract for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['abstract'] = self.dlg.ui.teLayerAbstract.toPlainText()
-            # modify the layer.abstract() if possible (qgis >= 1.8)
-            if self.layerList[item.text(1)]['type'] == 'layer':
-                layer = self.getQgisLayerById(item.text(1))
-                if layer:
-                    if hasattr(layer, "abstract"):
-                        layer.setAbstract(self.layerList[item.text(1)]['abstract'])
-
-    def setLayerLink(self):
-        '''Set a layer link when a item link is edited'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the link for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['link'] = self.dlg.ui.inLayerLink.text()
-
-    def setLayerIsBaseLayer(self):
-        '''Set a layer "IsBaseLayer" property when an item "Is Base layer" checkbox state has changed'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the baseLayer property for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['baseLayer'] = self.dlg.ui.cbLayerIsBaseLayer.isChecked()
-
-    def setGroupAsLayer(self):
-        '''Set the "group as a layer" property when an item "Group As Layer" checkbox state has changed'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['groupAsLayer'] = self.dlg.ui.cbGroupAsLayer.isChecked()
-            # modify the type property for the selected item
-            if self.dlg.ui.cbGroupAsLayer.isChecked():
-                self.layerList[item.text(1)]['type'] = 'layer'
-        else:
-            QMessageBox.information(self.dlg,
-                QString() ,
-                QApplication.translate("lizmap", 'ui.msg.information.select.item'))
-            self.dlg.ui.cbGroupAsLayer.setChecked(False)
-
-    def setToggled(self):
-        '''Set a layer or group "toggled" property when an item "toggled" checkbox state has changed'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the toggled property for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['toggled'] = self.dlg.ui.cbToggled.isChecked()
-
-    def setSingleTile(self):
-        '''Set a layer or group "singleTile" property when an item "singleTile" checkbox state has changed'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the singleTile property for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['singleTile'] = self.dlg.ui.cbSingleTile.isChecked()
-
-    def setCached(self):
-        '''Set a layer or group "cached" property when an item "cached" checkbox state has changed'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the cached property for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.layerList[item.text(1)]['cached'] = self.dlg.ui.cbCached.isChecked()
-
-    def setImageFormat(self):
-        '''Set a layer or group "imageFormat" property when an item "imageFormat" combobox index has changed'''
-        # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
-        # modify the imageFormat property for the selected item
-        if self.layerList.has_key(item.text(1)):
-            self.imageFormatList = ['image/png', 'image/png; mode=8bit', 'image/jpeg']
-            self.layerList[item.text(1)]['imageFormat'] = self.imageFormatList[self.dlg.ui.liImageFormat.currentIndex()]
 
     def writeProjectConfigFile(self):
         '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
@@ -745,29 +695,40 @@ class lizmap:
                     if layer.type() == 0: # if it is a vector layer
                         geometryType = layer.geometryType()
 
-
             # add layerOption only for geo layers
             if geometryType != 4:
                 layerOptions = {}
                 layerOptions["id"] = unicode(k)
                 layerOptions["name"] = unicode(v['name'])
                 layerOptions["type"] = ltype
-                layerOptions["groupAsLayer"] = str(v['groupAsLayer'])
-                layerOptions["title"] = unicode(v['title'])
-                layerOptions["abstract"] = unicode(v['abstract'])
-                layerOptions["link"] = unicode(v['link'])
-                layerOptions["minScale"] = v['minScale']
-                layerOptions["maxScale"] = v['maxScale']
-                layerOptions["toggled"] = str(v['toggled'])
-                layerOptions["baseLayer"] = str(v['baseLayer'])
-                layerOptions["singleTile"] = str(v['singleTile'])
-                layerOptions["cached"] = str(v['cached'])
-                layerOptions["imageFormat"] = str(v['imageFormat'])
+                # Loop through the layer options and set properties from the dictionary
+                for key, val in self.layerOptionsList.items():
+                    propVal = v[key]
+                    if val['type'] == 'string':
+                        if val['wType'] in ('text', 'textarea'):
+                            propVal = unicode(propVal)
+                        else:
+                            propVal = str(propVal)
+                    elif val['type'] == 'integer':
+                        propVal = int(propVal)
+                    elif val['type'] == 'boolean':
+                        propVal = str(propVal)
+                    layerOptions[key] = propVal
+
+                # Cache Metatile: unset metatileSize if empty
+                # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
+                import re
+                p = re.compile('ab*')
+                if not re.match('\d,\d', layerOptions['metatileSize']):
+                    del layerOptions['metatileSize']
+                # unset cacheExpiration if False
+                if layerOptions['cached'].lower() == 'false':
+                    del layerOptions['cacheExpiration']
+
                 liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
 
-
-        jsonFileContent = simplejson.dumps(liz2json)
         # Write json to the cfg file
+        jsonFileContent = simplejson.dumps(liz2json)
         # Get the project data
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
@@ -1144,7 +1105,7 @@ class lizmap:
             cfg.read(configPath)
             cfg.set('Ftp', 'host', host)
             cfg.set('Ftp', 'username', username)
-#                cfg.set('Ftp', 'password', password)
+#            cfg.set('Ftp', 'password', password)
             cfg.set('Ftp', 'port', port)
             cfg.set('Ftp', 'remotedir', remotedir)
             cfg.set('Ftp', 'winscppath', winscpPath)
@@ -1361,5 +1322,3 @@ class lizmap:
             # See if OK was pressed
             if result == 1:
                 QMessageBox.warning(self.dlg, "Debug", ("Quit !"), QMessageBox.Ok)
-
-
