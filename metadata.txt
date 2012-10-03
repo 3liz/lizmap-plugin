@@ -4,17 +4,17 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.5.0
+version=version 1.6.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.5.0
-  * New : translation into Italian, thanks to Salvatore Larosa (@lrssvt)
-  * Debug : Groups as layer was not remembered since v1.4.0
+  Version 1.6.0
+  * New : addition of more cache parameters : cache expiration and metatile
+  * Enhancement : Heavy refactoring of the code ("data driven") to easy addition of new layers properties.
 
 ; tags are in comma separated value format, spaces are allowed
-tags=lizmap, server, web, publication, client, html, 3liz
+tags=lizmap, server, web, publication, client, html, 3liz, ftp
 
 ; these metadata can be empty
 ; in a future version of the web application it will

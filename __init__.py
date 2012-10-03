@@ -42,28 +42,28 @@
  the provisions above, a recipient may use your version of this file under
  the terms of any one of the MPL, the GPL or the LGPL.
 
- ***** END LICENSE BLOCK ***** 
- ***************************************************************************/ 
+ ***** END LICENSE BLOCK *****
+ ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
 def name():
     return "lizmap"
-    
+
 def description():
     return "Publication plugin for Lizmap web application, by 3liz.com"
-    
+
 def version():
-    return "Version 1.5.0"
-    
+    return "Version 1.6.0"
+
 def icon():
     return "icon.png"
-    
+
 def qgisMinimumVersion():
     return "1.6"
 
 def category():
   return "Web"
-    
+
 def classFactory(iface):
     # load lizmap class from file lizmap
     from lizmap import lizmap
