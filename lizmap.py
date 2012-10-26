@@ -804,9 +804,13 @@ class lizmap:
 
             # check if a bbox has been given in the project OWS tab configuration
             pWmsExtent = p.readListEntry('WMSExtent','')[0]
-            if len(pWmsExtent) <1 :
+            if len(pWmsExtent) < 1 :
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.extent")+'\n'
                 isok = False
+            else:
+                if not pWmsExtent[0] or not pWmsExtent[1] or not pWmsExtent[2] or not pWmsExtent[3]:
+                    errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.extent")+'\n'
+                    isok = False
 
         if not isok:
             QMessageBox.critical(
