@@ -1255,7 +1255,7 @@ class lizmap:
                 winLocaldir = localdir.replace("/", "\\")
                 winLocaldir = winLocaldir.replace("\\", "\\\\")
                 # needs to create the directory if not present
-                ftpStr0 = '%s /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "mkdir %s" "close" "exit"'    % (winscp, username, password, host, remotedir.decode('utf-8'))
+                ftpStr0 = '"%s" /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "mkdir %s" "close" "exit"'    % (winscp, username, password, host, remotedir.decode('utf-8'))
                 self.log(ftpStr0, abort=False, textarea=self.dlg.ui.outLog)
                 self.proc = QProcess()
                 #QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
@@ -1264,7 +1264,7 @@ class lizmap:
                 self.proc.start(ftpStr0)
                 self.proc.waitForFinished()
                 # sync command
-                ftpStr1 = '%s /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "synchronize remote %s %s -mirror -delete" "close" "exit"' % (winscp, username, password, host, winLocaldir.decode('utf-8'), remotedir.decode('utf-8'))
+                ftpStr1 = '"%s" /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "synchronize remote %s %s -mirror -delete" "close" "exit"' % (winscp, username, password, host, winLocaldir.decode('utf-8'), remotedir.decode('utf-8'))
                 self.log(ftpStr1, abort=False, textarea=self.dlg.ui.outLog)
 
             # run the ftp sync
