@@ -118,6 +118,8 @@ class lizmap:
             'minScale': {'widget': None, 'wType': 'text', 'type': 'integer', 'default': 1},
             'maxScale': {'widget': None, 'wType': 'text', 'type': 'integer', 'default': 1000000000000},
             'toggled': {'widget': self.dlg.ui.cbToggled, 'wType': 'checkbox', 'type': 'boolean', 'default': True},
+            'popup': {'widget': self.dlg.ui.cbPopup, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'popupTemplate': {'widget': None, 'wType': 'text', 'type': 'string', 'default': ''},
             'groupAsLayer': {'widget': self.dlg.ui.cbGroupAsLayer, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
             'baseLayer': {'widget': self.dlg.ui.cbLayerIsBaseLayer, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
             'singleTile': {'widget': self.dlg.ui.cbSingleTile, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
@@ -182,7 +184,7 @@ class lizmap:
         # connect about action to about dialog
         QObject.connect(self.action_about, SIGNAL("triggered()"), self.showAbout)
 
-        # connect signals and functions
+        # connect Lizmap signals and functions
         # save button clicked
         QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
         # ftp sync button clicked
@@ -197,6 +199,8 @@ class lizmap:
 #        QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
         # refresh layer tree button click
         QObject.connect(self.dlg.ui.btHelp, SIGNAL("clicked()"), self.showHelp )
+        # configure popup button
+        QObject.connect(self.dlg.ui.btConfigurePopup, SIGNAL("clicked()"), self.configurePopup )
         # detect close event
         QObject.connect(self.dlg.ui.buttonClose, SIGNAL("rejected()"), self.warnOnClose )
         QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
@@ -279,6 +283,7 @@ class lizmap:
         for key,item in self.layerOptionsList.items():
             if item['widget']:
                 item['widget'].setEnabled(value)
+        self.dlg.ui.btConfigurePopup.setEnabled(value)
 
     def getConfig(self):
         ''' Get the saved configuration from lizmap.cfg file
@@ -446,6 +451,10 @@ class lizmap:
                         elif item['wType'] == 'list':
                             if jsonLayers[jsonKey][key] in item['list']:
                                 self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                # popupContent
+                if key == 'popupTemplate':
+                    if jsonLayers[jsonKey].has_key(key):
+                        self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
 
 
     def populateLayerTree(self):
@@ -553,6 +562,7 @@ class lizmap:
         if self.layerList.has_key(item.text(1)):
             # get information about the layer or the group from the layerList dictionary
             selectedItem = self.layerList[item.text(1)]
+
             # set options
             for key,val in self.layerOptionsList.items():
                 if val['widget']:
@@ -565,6 +575,12 @@ class lizmap:
                     elif val['wType'] == 'list':
                         listDic = {val['list'][i]:i for i in range(0, len(val['list']))}
                         val['widget'].setCurrentIndex(listDic[selectedItem[key]])
+            # deactivate popup configuration for groups
+            isLayer = selectedItem['type'] == 'layer'
+            self.dlg.ui.btConfigurePopup.setEnabled(isLayer)
+            self.dlg.ui.cbPopup.setEnabled(isLayer)
+            if not isLayer:
+                self.dlg.ui.cbPopup.setChecked(False)
         else:
             # set default values for this layer/group
             for key,val in self.layerOptionsList.items():
@@ -583,7 +599,7 @@ class lizmap:
     def setLayerProperty(self, key):
         '''Set a layer property when the corresponding ui widget has sent changed signal'''
         key = str(key)
-        # get the selected item
+        # get the selected item in the layer tree
         item = self.dlg.ui.treeLayer.currentItem()
         # get the definition for this property
         layerOption = self.layerOptionsList[key]
@@ -615,6 +631,70 @@ class lizmap:
                             layer.setTitle(QString(u"%s" % self.layerList[item.text(1)][key]))
                         if key == 'abstract':
                             layer.setAbstract(QString(u"%s" % self.layerList[item.text(1)][key]))
+
+
+    def configurePopup(self):
+        '''Open the dialog with a text field to store the popup template for one layer/group'''
+        # get the selected item in the layer tree
+        item = self.dlg.ui.treeLayer.currentItem()
+        if item and self.layerList.has_key(item.text(1)):
+            # do nothing if no popup configured for this layer/group
+            if self.layerList[item.text(1)]['popup'] == 'False':
+                return False
+
+            # Import the code for the dialog
+            from lizmappopupdialog import lizmapPopupDialog
+            self.lizmapPopupDialog = lizmapPopupDialog()
+
+            # Connect popup dialog signals and slots
+            # When the plain text template is modified
+            QObject.connect(self.lizmapPopupDialog.ui.txtPopup,
+                SIGNAL("textChanged()"), self.updatePopupHtml )
+            # When the ui is closed with the x
+            QObject.connect(self.lizmapPopupDialog,
+                SIGNAL("rejected()"), self.popupNotConfigured )
+            # When the ui is closed with the OK button
+            QObject.connect(self.lizmapPopupDialog.ui.bbConfigurePopup,
+                SIGNAL("accepted()"), self.popupConfigured )
+            # When the ui is closed with the CANCEL button
+            QObject.connect(self.lizmapPopupDialog.ui.bbConfigurePopup,
+                SIGNAL("rejected()"), self.popupNotConfigured )
+
+            # Set the content of the QTextEdit if needed
+            if self.layerList[item.text(1)].has_key('popupTemplate'):
+                self.layerList[item.text(1)]['popup'] = True
+                self.lizmapPopupDialog.ui.txtPopup.setPlainText(self.layerList[item.text(1)]['popupTemplate'])
+                self.lizmapPopupDialog.ui.htmlPopup.setHtml(self.layerList[item.text(1)]['popupTemplate'])
+
+            # Show the popup configuration window
+            self.lizmapPopupDialog.show()
+
+    def updatePopupHtml(self):
+        '''Update the html preview of the popup dialog from the plain text template text'''
+        # Get the content
+        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.toPlainText())
+
+        # Update html preview
+        self.lizmapPopupDialog.ui.htmlPopup.setHtml(popupContent)
+
+    def popupConfigured(self):
+        '''Save the content of the popup template'''
+        # Get the content before closing the dialog
+        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.toPlainText())
+
+        # Close the popup dialog
+        self.lizmapPopupDialog.close()
+
+        # Get the selected item in the layer tree
+        item = self.dlg.ui.treeLayer.currentItem()
+        if item and self.layerList.has_key(item.text(1)):
+            # Write the content into the global object
+            self.layerList[item.text(1)]['popupTemplate'] = popupContent
+
+
+    def popupNotConfigured(self):
+        '''Popup configuration dialog has been close with cancel or x : do nothing'''
+        self.lizmapPopupDialog.close()
 
 
 
@@ -704,6 +784,7 @@ class lizmap:
                 layerOptions["id"] = unicode(k)
                 layerOptions["name"] = unicode(v['name'])
                 layerOptions["type"] = ltype
+
                 # Loop through the layer options and set properties from the dictionary
                 for key, val in self.layerOptionsList.items():
                     propVal = v[key]
@@ -727,11 +808,19 @@ class lizmap:
                 # unset cacheExpiration if False
                 if layerOptions['cached'].lower() == 'false':
                     del layerOptions['cacheExpiration']
+                # unset popupTemplate if popup False
+                if layerOptions['popup'].lower() == 'false':
+                    del layerOptions['popupTemplate']
 
                 liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
 
         # Write json to the cfg file
-        jsonFileContent = simplejson.dumps(liz2json)
+        jsonFileContent = simplejson.dumps(
+            liz2json,
+            sort_keys=True,
+            indent=4
+        )
+
         # Get the project data
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()

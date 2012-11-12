@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>830</width>
-    <height>596</height>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="teLayerAbstract"/>
+          <widget class="QTextEdit" name="teLayerAbstract">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_10">
@@ -79,6 +86,37 @@
             <string>ui.tab.layers.layer.toggled</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QCheckBox" name="cbPopup">
+             <property name="text">
+              <string>ui.tab.layers.layer.popup</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btConfigurePopup">
+             <property name="text">
+              <string>ui.tab.layers.popup.configure</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
          <item>
           <widget class="QCheckBox" name="cbGroupAsLayer">
@@ -678,6 +716,8 @@
   <tabstop>teLayerAbstract</tabstop>
   <tabstop>inLayerLink</tabstop>
   <tabstop>cbToggled</tabstop>
+  <tabstop>cbPopup</tabstop>
+  <tabstop>btConfigurePopup</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
   <tabstop>cbLayerIsBaseLayer</tabstop>
   <tabstop>cbSingleTile</tabstop>

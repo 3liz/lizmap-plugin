@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Wed Oct  3 11:34:23 2012
+# Created: Mon Nov  5 14:42:19 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_lizmap(object):
     def setupUi(self, lizmap):
         lizmap.setObjectName(_fromUtf8("lizmap"))
-        lizmap.resize(830, 596)
+        lizmap.resize(830, 604)
         self.gridLayout = QtGui.QGridLayout(lizmap)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.buttonClose = QtGui.QDialogButtonBox(lizmap)
@@ -46,6 +46,11 @@ class Ui_lizmap(object):
         self.label_8.setObjectName(_fromUtf8("label_8"))
         self.verticalLayout.addWidget(self.label_8)
         self.teLayerAbstract = QtGui.QTextEdit(self.tab_2)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.teLayerAbstract.sizePolicy().hasHeightForWidth())
+        self.teLayerAbstract.setSizePolicy(sizePolicy)
         self.teLayerAbstract.setObjectName(_fromUtf8("teLayerAbstract"))
         self.verticalLayout.addWidget(self.teLayerAbstract)
         self.label_10 = QtGui.QLabel(self.tab_2)
@@ -57,6 +62,17 @@ class Ui_lizmap(object):
         self.cbToggled = QtGui.QCheckBox(self.tab_2)
         self.cbToggled.setObjectName(_fromUtf8("cbToggled"))
         self.verticalLayout.addWidget(self.cbToggled)
+        self.horizontalLayout_7 = QtGui.QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
+        self.cbPopup = QtGui.QCheckBox(self.tab_2)
+        self.cbPopup.setObjectName(_fromUtf8("cbPopup"))
+        self.horizontalLayout_7.addWidget(self.cbPopup)
+        self.btConfigurePopup = QtGui.QPushButton(self.tab_2)
+        self.btConfigurePopup.setObjectName(_fromUtf8("btConfigurePopup"))
+        self.horizontalLayout_7.addWidget(self.btConfigurePopup)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
         self.cbGroupAsLayer = QtGui.QCheckBox(self.tab_2)
         self.cbGroupAsLayer.setObjectName(_fromUtf8("cbGroupAsLayer"))
         self.verticalLayout.addWidget(self.cbGroupAsLayer)
@@ -304,10 +320,10 @@ class Ui_lizmap(object):
         self.horizontalLayout_6.addWidget(self.inRemotedir)
         self.gridLayout_8.addLayout(self.horizontalLayout_6, 0, 0, 1, 1)
         self.gridLayout_10.addLayout(self.gridLayout_8, 2, 0, 1, 1)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_10.addItem(spacerItem, 1, 0, 1, 1)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_10.addItem(spacerItem1, 3, 0, 1, 1)
+        self.gridLayout_10.addItem(spacerItem1, 1, 0, 1, 1)
+        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_10.addItem(spacerItem2, 3, 0, 1, 1)
         self.tabWidget.addTab(self.tab_ftp, _fromUtf8(""))
         self.tab_main = QtGui.QWidget()
         self.tab_main.setObjectName(_fromUtf8("tab_main"))
@@ -339,8 +355,8 @@ class Ui_lizmap(object):
         self.btSave = QtGui.QPushButton(lizmap)
         self.btSave.setObjectName(_fromUtf8("btSave"))
         self.gridLayout.addWidget(self.btSave, 1, 6, 1, 1)
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem2, 1, 5, 1, 1)
+        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem3, 1, 5, 1, 1)
         self.btHelp = QtGui.QPushButton(lizmap)
         self.btHelp.setObjectName(_fromUtf8("btHelp"))
         self.gridLayout.addWidget(self.btHelp, 1, 3, 1, 1)
@@ -354,7 +370,9 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.inLayerTitle, self.teLayerAbstract)
         lizmap.setTabOrder(self.teLayerAbstract, self.inLayerLink)
         lizmap.setTabOrder(self.inLayerLink, self.cbToggled)
-        lizmap.setTabOrder(self.cbToggled, self.cbGroupAsLayer)
+        lizmap.setTabOrder(self.cbToggled, self.cbPopup)
+        lizmap.setTabOrder(self.cbPopup, self.btConfigurePopup)
+        lizmap.setTabOrder(self.btConfigurePopup, self.cbGroupAsLayer)
         lizmap.setTabOrder(self.cbGroupAsLayer, self.cbLayerIsBaseLayer)
         lizmap.setTabOrder(self.cbLayerIsBaseLayer, self.cbSingleTile)
         lizmap.setTabOrder(self.cbSingleTile, self.liImageFormat)
@@ -395,6 +413,8 @@ class Ui_lizmap(object):
         self.label_8.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.abstract", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.link", None, QtGui.QApplication.UnicodeUTF8))
         self.cbToggled.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.toggled", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbPopup.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.popup", None, QtGui.QApplication.UnicodeUTF8))
+        self.btConfigurePopup.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.popup.configure", None, QtGui.QApplication.UnicodeUTF8))
         self.cbGroupAsLayer.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.groupAsLayer", None, QtGui.QApplication.UnicodeUTF8))
         self.cbLayerIsBaseLayer.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.baselayer", None, QtGui.QApplication.UnicodeUTF8))
         self.cbSingleTile.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.singletile", None, QtGui.QApplication.UnicodeUTF8))
