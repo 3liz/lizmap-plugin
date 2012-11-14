@@ -53,7 +53,7 @@ def description():
     return "Publication plugin for Lizmap web application, by 3liz.com"
 
 def version():
-    return "Version 1.6.1"
+    return "Version 1.7.0"
 
 def icon():
     return "icon.png"
@@ -62,7 +62,13 @@ def qgisMinimumVersion():
     return "1.6"
 
 def category():
-  return "Web"
+    return "Web"
+
+def author():
+    return "3liz"
+
+def email():
+    return "mdouchin@3liz.com"
 
 def classFactory(iface):
     # load lizmap class from file lizmap

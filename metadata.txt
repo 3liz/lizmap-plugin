@@ -4,16 +4,19 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.6.1
+version=version 1.7.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.6.1
-  * Bug fix : correctlu use layer.setAbstract instead of setTitle to set back the abstract
+  Version 1.7.0
+  * New feature: Popup - add a checkbox to enable/disable popup for each layer + add a configuration window for popup templates
+  * Bug fix:  Project properties - checks the BBOX is really set in the OWS tab.
+  * Bug fix: FTP windows sync - protect the winscp path with double quote when running the sync
+
 
 ; tags are in comma separated value format, spaces are allowed
-tags=lizmap, server, web, publication, client, html, 3liz, ftp
+tags=lizmap, server, web, publication, 3liz, ftp, webmapping
 
 ; these metadata can be empty
 ; in a future version of the web application it will
@@ -29,3 +32,6 @@ experimental=False
 
 ; deprecated flag (applies to the whole plugin and not only to the uploaded version)
 deprecated=False
+
+author=3liz
+email=mdouchin@3liz.com
