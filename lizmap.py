@@ -578,9 +578,9 @@ class lizmap:
             # deactivate popup configuration for groups
             isLayer = selectedItem['type'] == 'layer'
             self.dlg.ui.btConfigurePopup.setEnabled(isLayer)
-            self.dlg.ui.cbPopup.setEnabled(isLayer)
-            if not isLayer:
-                self.dlg.ui.cbPopup.setChecked(False)
+#            self.dlg.ui.cbPopup.setEnabled(isLayer)
+#            if not isLayer:
+#                self.dlg.ui.cbPopup.setChecked(False)
         else:
             # set default values for this layer/group
             for key,val in self.layerOptionsList.items():
