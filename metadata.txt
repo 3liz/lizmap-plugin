@@ -10,7 +10,8 @@ version=version 1.7.0
 ; start of optional metadata
 changelog=
   Version 1.7.0
-  * New feature: Popup - add a checkbox to enable/disable popup for each layer + add a configuration window for popup templates
+  * New feature: Popup - add a checkbox to enable/disable popup for each layer
+  * New feature: Ability to write templates for popup
   * Bug fix:  Project properties - checks the BBOX is really set in the OWS tab.
   * Bug fix: FTP windows sync - protect the winscp path with double quote when running the sync
 
