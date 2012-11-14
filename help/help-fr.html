@@ -99,6 +99,29 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 
 
 	<ul>
+	<li><strong>Popup</strong> : si cette case est cochée, alors Lizmap Web Client ouvrira une popup avec les informations du ou des objets sélectionnés lorsque l'utilisateur clique sur la carte.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Configurer</strong> la popup : Ce bouton placé à côté de l'option précédente ouvre une nouvelle fenêtre qui permet d'écrire un <strong>modèle d'affichage pour la popup</strong>. On peut y écrire du texte simple ou bien au format HTML.
+
+	<ul>
+	<li>Par exemple, si vous voulez afficher la valeur de la colonne <strong>ma_col</strong> de votre couche spatiale, vous pouvez insérer la variable <strong>{$ma_col}</strong> dans le template, et Lizmap Web Client remplacera automatiquement cette variable par le contenu de la colonne.</li>
+		<li>Vous pouvez aussi utiliser des colonnes dont les valeurs sont des <strong>chemins relatifs vers des fichiers du dossier media</strong>. Ce dossier doit être créé au même niveau que le fichier de projet QGIS, et le contenu est libre. Vous pouvez par exemple créer des sous-dossiers par couche ou organiser les fichiers par type. Par exemple <strong>media/ma_couche/mon_objet_1.jpg</strong> . Si le chemin pointe vers une <strong>image</strong>, l'image sera affichée dans la popup. Si le chemin pointe vers <strong>un fichier texte ou un fichier HTML</strong>, le contenu du fichier sera affiché dans la popup. Pour les <strong>autres types de fichiers</strong>, la popup affichera un lien vers le document, que les utilisateurs pourront télécharger.</li>
+		<li>Vous pouvez très bien cocher sur la case <strong>popup</strong> sans configurer de modèle d'affichage. Alors Lizmap Web Client utilisera le <strong>modèle par défaut</strong>, soit un tableau avec les noms des colonnes et les valeurs correspondantes.</li>
+		<li><strong>Exemple de modèle d'affichage</strong> pour la popup d'une couche représentant des rivières :<br /><pre>
+&lt;p style="background-color:grey;"&gt;
+  &lt;b&gt;Code de la rivière&lt;/b&gt; : {$id}&lt;br/&gt;
+  &lt;b&gt;Nom&lt;/b&gt; : {$river_name}&lt;br/&gt;
+  &lt;b&gt;Description&lt;/b&gt; : {$river_abstract}&lt;br/&gt;
+&lt;/p&gt;
+</pre></li>
+	</ul></li>
+	</ul>
+
+
+	<ul>
 	<li><strong>Groupe comme une couche ?</strong> : cette option est seulement utile pour les groupes. En la cochant, vous pouvez transformer un groupe Qgis (qui contient des sous-groupes et des couches) en une couche unique dans l'arbre de l'application web. Les éléments fils (groupes ou couches) de ce groupe ne seront pas visibles dans l'arbre de l'application web. La légende montrera la légende de tous les fils.</li>
 	</ul>
 

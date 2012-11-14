@@ -98,7 +98,30 @@ h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display
 
 
 	<ul>
-	<li><strong>Group as layer</strong> : This checkbox is only usefull for groups. By checking it, you can transform a qgis group (with child groups and/or layers) into a single layer in Lizmap web application. The children won't appear in Lizmap layer lists. The legend for this group will display every child legend.</li>
+	<li><strong>Popup</strong> : If checked, a popup will be shown by Lizmap Web Client when clicking on the map for the selected feature of this layer.</li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Configure</strong> popup : <br />This button, right next to the <strong>Popup</strong> checkbox opens a new small windows where you can write down a template for the layer pop-up. You can write plain text or HTML code. 
+
+	<ul>
+	<li>If you want for example to display the value of the column <strong>my_col</strong> of your layer, you can insert the string <strong>{$my_col}</strong> wherever in the template, which will be replaced by Lizmap Web Client with the corresponding column value. </li>
+		<li>In your column values for a layer, you can also use <strong>relative path to some files stored in a folder media</strong> (which must be created in the same folder as the QGIS project), for example <strong>media/mylayer/myfeature1.jpg</strong>. If the file is an image, the popup will display the corresponding image. If the file is a text file or a HTML file, the popup will display its content. If it is another file type (pdf, doc, etc.), the popup will display a link to the file.</li>
+		<li>If you do not configure any popup template but checked the <strong>Popup</strong> checkbox, the default template will be used. The feature data will be presented in a table with key/value pairs inside the popup.</li>
+		<li><strong>Example</strong> of a configured <strong>popup template</strong> :<br /><pre>
+&lt;p style="background-color:grey;"&gt;
+  &lt;b&gt;River id&lt;/b&gt; : {$id}&lt;br/&gt;
+  &lt;b&gt;Name&lt;/b&gt; : {$river_name}&lt;br/&gt;
+  &lt;b&gt;Description&lt;/b&gt; : {$river_abstract}&lt;br/&gt;
+&lt;/p&gt;
+</pre></li>
+	</ul></li>
+	</ul>
+
+
+	<ul>
+	<li><strong>Group as layer</strong> : This checkbox is only useful for groups. By checking it, you can transform a qgis group (with child groups and/or layers) into a single layer in Lizmap web application. The children won't appear in Lizmap layer lists. The legend for this group will display every child legend.</li>
 	</ul>
 
 
