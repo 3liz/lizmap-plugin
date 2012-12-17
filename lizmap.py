@@ -109,6 +109,10 @@ class lizmap:
             self.dlg.ui.btWinscpPath.setEnabled(False)
             self.dlg.ui.lbWinscpHelp.setEnabled(False)
             self.dlg.ui.lbWinscpIn.setEnabled(False)
+            self.dlg.ui.inWinscpSession.setEnabled(False)
+            self.dlg.ui.lbWinscpSession.setEnabled(False)
+            self.dlg.ui.inWinscpCriteria.setEnabled(False)
+            self.dlg.ui.lbWinscpCriteria.setEnabled(False)
 
         # List of ui widget for data driven actions and checking
         self.layerOptionsList = {
@@ -302,6 +306,8 @@ class lizmap:
         self.dlg.ui.inRemotedir.setText(str(cfg.get('Ftp', 'remotedir')).decode('utf-8'))
         self.dlg.ui.inWinscpPath.setText(str(cfg.get('Ftp', 'winscppath')).decode('utf-8'))
         self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
+        self.dlg.ui.inWinscpSession.setText(cfg.get('Ftp', 'winscpSession'))
+        self.dlg.ui.inWinscpCriteria.setText(cfg.get('Ftp', 'winscpCriteria'))
 
         # Get the project config file (projectname.qgs.cfg)
         p = QgsProject.instance()
@@ -901,7 +907,7 @@ class lizmap:
                     errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.extent")+'\n'
                     isok = False
 
-        if not isok:
+        if not isok and errorMessage:
             QMessageBox.critical(
                 self.dlg,
                 QApplication.translate("lizmap", "ui.msg.error.title"),
@@ -1090,6 +1096,8 @@ class lizmap:
         in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
         in_remotedir = str(self.dlg.ui.inRemotedir.text().toUtf8()).strip(' \t')
         in_winscpPath = str(self.dlg.ui.inWinscpPath.text().toUtf8()).strip(' \t')
+        in_winscpSession = str(self.dlg.ui.inWinscpSession.text().toUtf8()).strip(' \t')
+        in_winscpCriteria = str(self.dlg.ui.inWinscpCriteria.text().toUtf8()).strip(' \t')
 
         self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.ftp.option.title"))
         self.dlg.ui.outLog.append('=' * 20)
@@ -1169,8 +1177,16 @@ class lizmap:
                 winscpPath=''
             else:
                 self.log('winscp path = %s' % winscpPath, abort=False, textarea=self.dlg.ui.outLog)
+                
+            winscpSession = in_winscpSession
+            winscpCriteria = in_winscpCriteria
+            if not winscpCriteria in ('time', 'size'):
+                winscpCriteria = 'time'
+            
         else:
             winscpPath = ''
+            winscpSession = ''
+            winscpCriteria = ''
 
         # username
         if len(in_username) > 0:
@@ -1184,7 +1200,7 @@ class lizmap:
                 textarea=self.dlg.ui.outLog)
 
         # password
-        if len(in_password) > 0:
+        if len(in_password) > 0 and not in_winscpSession:
             password = unicode(in_password)
             self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
         else:
@@ -1205,6 +1221,8 @@ class lizmap:
             cfg.set('Ftp', 'port', port)
             cfg.set('Ftp', 'remotedir', remotedir)
             cfg.set('Ftp', 'winscppath', winscpPath)
+            cfg.set('Ftp', 'winscpSession', winscpSession)
+            cfg.set('Ftp', 'winscpCriteria', winscpCriteria)
             cfg.write(open(configPath,"w"))
             cfg.read(configPath)
             # log the errors
@@ -1223,7 +1241,7 @@ class lizmap:
                 QApplication.translate("lizmap", "ui.msg.ftp.parameters.bad"),
                 QMessageBox.Ok)
 
-        return [self.isok, host, port, username, password, localdir, remotedir, winscpPath]
+        return [self.isok, host, port, username, password, localdir, remotedir, winscpPath, winscpSession, winscpCriteria]
 
 
     def ftpSyncStdout(self):
@@ -1319,6 +1337,8 @@ class lizmap:
         localdir = getFtpOptions[5]
         remotedir = getFtpOptions[6]
         winscpPath = getFtpOptions[7]
+        winscpSession = getFtpOptions[8]
+        winscpCriteria = getFtpOptions[9]
 
         myOutput = ''
         # display the stateLabel
@@ -1335,8 +1355,8 @@ class lizmap:
 
             if sys.platform.startswith('linux'):
                 # construction of ftp sync command line
-                ftpStr1 = u'lftp ftp://%s:%s@%s -e "mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir.decode('utf-8'))
-                ftpStr2 = u'lftp ftp://%s:%s@%s -e "chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
+                ftpStr1 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir.decode('utf-8'))
+                ftpStr2 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
 
             else:
 #                winscp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/lizmap/winscp435/WinSCP.com")
@@ -1344,7 +1364,10 @@ class lizmap:
                 winLocaldir = localdir.replace("/", "\\")
                 winLocaldir = winLocaldir.replace("\\", "\\\\")
                 # needs to create the directory if not present
-                ftpStr0 = '"%s" /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "mkdir %s" "close" "exit"'    % (winscp, username, password, host, remotedir.decode('utf-8'))
+                if not winscpSession:
+                    ftpStr0 = '"%s" /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "mkdir %s" "close" "exit"'    % (winscp, username, password, host, remotedir.decode('utf-8'))
+                else:
+                    ftpStr0 = '"%s" /console /command "option batch off" "option confirm off" "open "%s" "option transfer binary" "mkdir %s" "close" "exit"'    % (winscp, winscpSession, remotedir.decode('utf-8'))
                 self.log(ftpStr0, abort=False, textarea=self.dlg.ui.outLog)
                 self.proc = QProcess()
                 #QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self.ftpSyncStdout)
@@ -1353,7 +1376,10 @@ class lizmap:
                 self.proc.start(ftpStr0)
                 self.proc.waitForFinished()
                 # sync command
-                ftpStr1 = '"%s" /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "synchronize remote %s %s -mirror -delete" "close" "exit"' % (winscp, username, password, host, winLocaldir.decode('utf-8'), remotedir.decode('utf-8'))
+                if not winscpSession:
+                    ftpStr1 = '"%s" /console /command "option batch off" "option confirm off" "open %s:%s@%s" "option transfer binary" "synchronize remote %s %s -mirror -delete -criteria=%s" "close" "exit"' % (winscp, username, password, host, winLocaldir.decode('utf-8'), remotedir.decode('utf-8'), winscpCriteria)
+                else:
+                    ftpStr1 = '"%s" /console /command "option batch off" "option confirm off" "open "%s"" "option transfer binary" "synchronize remote %s %s -mirror -delete -criteria=%s" "close" "exit"' % (winscp, winscpSession, winLocaldir.decode('utf-8'), remotedir.decode('utf-8'), winscpCriteria)
                 self.log(ftpStr1, abort=False, textarea=self.dlg.ui.outLog)
 
             # run the ftp sync

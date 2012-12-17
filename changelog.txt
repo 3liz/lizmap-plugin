@@ -1,5 +1,10 @@
 CHANGELOG
 
+  Version 1.7.1
+  * Improvement: Allow the user to choose a WinSCP pre-saved session. Can be used to deal with TLS connections.
+  * Improvement: Allow the user to choose the winSCP mirror criteria : between 'size' and 'time' 
+  * Improvement: LFTP (linux only) automatically accepts SSL certificate
+  
   Version 1.7.0
   * New feature: Popup - add a checkbox to enable/disable popup for each layer
   * New feature: Ability to write templates for popup
