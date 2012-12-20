@@ -809,6 +809,7 @@ class lizmap:
                 # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
                 import re
                 p = re.compile('ab*')
+                # unset metatileSize
                 if not re.match('\d,\d', layerOptions['metatileSize']):
                     del layerOptions['metatileSize']
                 # unset cacheExpiration if False
@@ -1200,15 +1201,16 @@ class lizmap:
                 textarea=self.dlg.ui.outLog)
 
         # password
-        if len(in_password) > 0 and not in_winscpSession:
+        if len(in_password) > 0:
             password = unicode(in_password)
             self.log('password ok', abort=False, textarea=self.dlg.ui.outLog)
         else:
             password=''
-            self.log(
-                QApplication.translate("lizmap", "ui.tab.log.ftp.password.missing.warning"),
-                abort=True,
-                textarea=self.dlg.ui.outLog)
+            if not in_winscpSession:
+                self.log(
+                    QApplication.translate("lizmap", "ui.tab.log.ftp.password.missing.warning"),
+                    abort=True,
+                    textarea=self.dlg.ui.outLog)
 
         if self.isok:
             # write FTP options data in the python plugin config file
@@ -1356,6 +1358,7 @@ class lizmap:
             if sys.platform.startswith('linux'):
                 # construction of ftp sync command line
                 ftpStr1 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir.decode('utf-8'))
+                self.log(ftpStr1, abort=False, textarea=self.dlg.ui.outLog)
                 ftpStr2 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
 
             else:

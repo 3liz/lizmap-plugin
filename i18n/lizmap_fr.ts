@@ -54,17 +54,17 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="488"/>
+        <location filename="lizmap.py" line="492"/>
         <source>ui.msg.error.tree.read.content</source>
-        <translation>Erreurs rencontrées lors de la lecture de la configuration précédente. Vous devez reconfigurer complètement les options des couches.</translation>
+        <translation>Erreurs rencontrées lors de la lecture de la configuration précédente. Vous devez reconfigurer complètement les options des couches</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="377"/>
+        <location filename="lizmap.py" line="381"/>
         <source>ui.msg.question.refresh.title</source>
         <translation>Lizmap - Raffraîchir l&apos;arbre ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="377"/>
+        <location filename="lizmap.py" line="381"/>
         <source>ui.msg.question.refresh.content</source>
         <translation>Vous pouvez raffraîchir l&apos;arbre des couches suite en cliquant sur Oui
 Vous perdrez alors toutes les modifications réalisées depuis le dernier enregistrement.
@@ -73,105 +73,105 @@ Si vous avez renommé une couche ou un groupe, vous devrez aussi reconfigurer ce
 Raffraîchir l&apos;arbre des couches ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="470"/>
+        <location filename="lizmap.py" line="474"/>
         <source>ui.tab.layers.tree.title</source>
         <translation>Liste des couches</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="844"/>
+        <location filename="lizmap.py" line="849"/>
         <source>ui.msg.error.init.open.project</source>
         <translation>Vous devez d&apos;abord ouvrir un projet Qgis avant de lancer LizMap</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="849"/>
+        <location filename="lizmap.py" line="854"/>
         <source>ui.msg.question.save.project.title</source>
         <translation>Lizmap - Sauvegarder le projet Qgis ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="849"/>
+        <location filename="lizmap.py" line="854"/>
         <source>ui.msg.question.save.project.content</source>
         <translation>Veuillez sauvegarder le projet Qgis avant d&apos;utiliser LizMap?
 Sauvegarder le projet ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="863"/>
+        <location filename="lizmap.py" line="868"/>
         <source>ui.msg.error.project.option.path.relative</source>
         <translation>Les chemins des fichiers doivent être configurés en &quot;relatif&quot; dans les options du projet QGIS.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="881"/>
+        <location filename="lizmap.py" line="886"/>
         <source>ui.msg.error.project.layers.path.relative %1</source>
         <translation>Les fichiers des couches doivent être situés dans le répertoire du projet ou dans un des sous-répertoires. Veuillez copier les couches dans
 %1
 (voir le log pour le détail des couches à déplacer)</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="903"/>
+        <location filename="lizmap.py" line="908"/>
         <source>ui.msg.error.project.wms.extent</source>
         <translation>L&apos;option &quot;Emprise annoncée&quot; doit être configurée dans l&apos;onglet &quot;OWS Server&quot; des propriétés du projet Qgis.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1419"/>
+        <location filename="lizmap.py" line="1426"/>
         <source>ui.msg.warning.title</source>
         <translation>Lizmap - Attention</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="921"/>
+        <location filename="lizmap.py" line="926"/>
         <source>ui.msg.warning.lftp.installation</source>
         <translation>Lftp n&apos;est pas installé sur votre système. Vous ne serez pas en mesure d&apos;utiliser la synchronisation automatique de votre projet vers le serveur. Vous pouvez installer Lftp et relancer le plugin (ou Qgis), ou bien utiliser une autre méthode de synchronisation entre votre répertoire local et le serveur.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="957"/>
+        <location filename="lizmap.py" line="962"/>
         <source>ui.tab.log.map.option.title</source>
         <translation>&lt;b&gt;Carte - options&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="964"/>
+        <location filename="lizmap.py" line="969"/>
         <source>ui.tab.log.map.scale.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; : Vous devez renseigner soit une échelle min., max et un nombre de niveaux de zoom, soit le champ &quot;Échelles&quot; !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="976"/>
+        <location filename="lizmap.py" line="981"/>
         <source>ui.tab.log.map.minscale.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; : l&apos;échelle min. doit être un entier !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="989"/>
+        <location filename="lizmap.py" line="994"/>
         <source>ui.tab.log.map.maxscale.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; : l&apos;échelle max. doit être un entier !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1002"/>
+        <location filename="lizmap.py" line="1007"/>
         <source>ui.tab.log.map.zoomLevelNumber.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; : le nombre de niveaux de zoom doit être un entier !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1022"/>
+        <location filename="lizmap.py" line="1027"/>
         <source>ui.tab.log.map.mapScales.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; : le champ Échelles doit être une suite d&apos;échelles entières séparées par une virgule !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1038"/>
+        <location filename="lizmap.py" line="1043"/>
         <source>ui.tab.log.map.externalBaseLayers.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; : Vous avez choisi d&apos;utiliser un fond de carte externe. Vous devez ajouter la projection &quot;EPSG:900913&quot; dans la zone &quot;Restrictions du système de coordonnées&quot; de l&apos;onglet &quot;OWS Server&quot; des propriétés du projet !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1048"/>
+        <location filename="lizmap.py" line="1053"/>
         <source>ui.msg.map.parameters.ok</source>
         <translation>Tous les paramètres de l&apos;onglet Carte sont corrects</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1052"/>
+        <location filename="lizmap.py" line="1057"/>
         <source>ui.msg.configuration.save.ok</source>
         <translation>&lt;b&gt;Le fichier de configuration de LizMap a bien été enregistré&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1057"/>
+        <location filename="lizmap.py" line="1062"/>
         <source>ui.msg.map.parameters.bad</source>
         <translation>Des paramètres sont manquants ou erronés dans l&apos;onglet Carte. Veuillez lire le log et corriger ces erreurs avant de relancer l&apos;action.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1077"/>
+        <location filename="lizmap.py" line="1082"/>
         <source>ui.msg.error.winscp.not.found %1</source>
         <translation>Le fichier exécutable WinSCP.com n&apos;a pas été trouvé dans le répertoire suivant:
 %1
@@ -179,84 +179,84 @@ Sauvegarder le projet ?</translation>
 Veuillez modifier le répertoire et réessayer.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1100"/>
+        <location filename="lizmap.py" line="1105"/>
         <source>ui.tab.log.ftp.option.title</source>
         <translation>&lt;b&gt;FTP&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1107"/>
+        <location filename="lizmap.py" line="1112"/>
         <source>ui.tab.log.ftp.hostname.missing.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; Hôte manquant !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1113"/>
+        <location filename="lizmap.py" line="1118"/>
         <source>ui.tab.log.ftp.hostname.wrong.warning %1</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; Hôte incorrect : %1 !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1143"/>
+        <location filename="lizmap.py" line="1148"/>
         <source>ui.tab.log.ftp.remotedir.missing.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; Répertoire distant vide !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1154"/>
+        <location filename="lizmap.py" line="1159"/>
         <source>ui.tab.log.ftp.localdir.warning %1</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt;Le répertoire local n&apos;existe pas : %1 !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1168"/>
+        <location filename="lizmap.py" line="1173"/>
         <source>ui.tab.log.ftp.winscpPath.warning %1</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; WinScp.com n&apos;a pas été trouvé dans le répertoire : %1 !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1193"/>
+        <location filename="lizmap.py" line="1198"/>
         <source>ui.tab.log.ftp.username.missing.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; Utilisateur manquant !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1204"/>
+        <location filename="lizmap.py" line="1210"/>
         <source>ui.tab.log.ftp.password.missing.warning</source>
         <translation>&lt;b&gt;** ATTENTION **&lt;/b&gt; Mot de passe manquant !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1225"/>
+        <location filename="lizmap.py" line="1231"/>
         <source>ui.msg.ftp.parameters.ok</source>
         <translation>Paramètres FTP OK</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1234"/>
+        <location filename="lizmap.py" line="1240"/>
         <source>ui.msg.ftp.parameters.bad</source>
         <translation>Mauvais paramètres FTP : veuillez lire le log et corriger les erreurs indiquées, puis relancer la synchronisation</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1258"/>
+        <location filename="lizmap.py" line="1264"/>
         <source>ui.tab.log.sync.completed</source>
         <translation>Synchronisation terminée. Voir le log ci-dessus pour les détails.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1259"/>
+        <location filename="lizmap.py" line="1265"/>
         <source>ui.tab.log.outState.completed</source>
         <translation>&lt;font color=&quot;green&quot;&gt;complétée&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1261"/>
+        <location filename="lizmap.py" line="1267"/>
         <source>ui.tab.log.sync.canceled</source>
         <translation>Synchronisation annulée. Attention, certains fichiers auront déjà été synchronisés, et d&apos;autres pas. Voir le log pour plus de détails.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1262"/>
+        <location filename="lizmap.py" line="1268"/>
         <source>ui.tab.log.outState.canceled</source>
         <translation>&lt;font color=&quot;red&quot;&gt;annulée&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1268"/>
+        <location filename="lizmap.py" line="1274"/>
         <source>ui.tab.log.kill.warning</source>
         <translation>Vous êtes sur le point d&apos;annuler la synchronisation.
 
 Êtes-vous sûr de vouloir annuler ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1290"/>
+        <location filename="lizmap.py" line="1296"/>
         <source>ui.msg.warning.run.sync %1 %2</source>
         <translation>Vous êtes sur le point d&apos;envoyer vos fichiers de données et votre projet Qgis contenus dans le répertoire :
 %1
@@ -268,7 +268,7 @@ Cela supprimera toutes les données du serveur qui ne sont pas présentes dans l
 Êtes-vous sûr de vouloir continuer ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1319"/>
+        <location filename="lizmap.py" line="1325"/>
         <source>ui.msg.configuration.saved %1 %2</source>
         <translation>La configuration de LizMap a été enregistrée pour le projet courant. Veuillez synchroniser votre répertoire local
 %1
@@ -277,17 +277,17 @@ avec répertoire du serveur
 %2</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1341"/>
+        <location filename="lizmap.py" line="1347"/>
         <source>ui.tab.log.outState.running</source>
         <translation>&lt;font color=&quot;orange&quot;&gt;en cours&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1345"/>
+        <location filename="lizmap.py" line="1351"/>
         <source>ui.log.ftp.sync.title</source>
         <translation>&lt;b&gt;FTP - Synchronisation&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1419"/>
+        <location filename="lizmap.py" line="1426"/>
         <source>ui.msg.warning.window.opened</source>
         <translation>Une fenêtre LizMap est déjà ouverte</translation>
     </message>
@@ -452,7 +452,7 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation>Annuler la syncro</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1234"/>
+        <location filename="lizmap.py" line="1240"/>
         <source>ui.msg.error.title</source>
         <translation>Lizmap - Erreur</translation>
     </message>
@@ -492,7 +492,7 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation>jpeg</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="892"/>
+        <location filename="lizmap.py" line="897"/>
         <source>ui.msg.error.project.wms.title</source>
         <translation>Le titre du projet doit être défini dans l&apos;onglet &quot;Serveur OWS&quot; des propriétés du projet Qgis.</translation>
     </message>
