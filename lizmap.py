@@ -872,14 +872,16 @@ class lizmap:
             layerSourcesOk = []
             layerSourcesBad = []
             mc = self.iface.mapCanvas()
+            layerPathError = ''
             for i in range(mc.layerCount()):
-                layerSource =    unicode('%s' % mc.layer( i ).source() )
-                if os.path.abspath(layerSource).startswith(projectDir):
+                layerSource =    unicode('%s' % mc.layer( i ).source() )               
+                if not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('../../') and not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('..\\..\\'):
                     layerSourcesOk.append(os.path.abspath(layerSource))
                 elif layerSource.startswith('dbname=') or layerSource.startswith('http') or layerSource.startswith('tiled='):
                     layerSourcesOk.append(layerSource)
                 else:
                     layerSourcesBad.append(layerSource)
+                    layerPathError+='--> %s \n' % os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir))
                     isok = False
             if len(layerSourcesBad) > 0:
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1").arg(projectDir)+'\n'
@@ -888,6 +890,7 @@ class lizmap:
                     .arg(projectDir) + str(layerSourcesBad),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
+                errorMessage+= layerPathError
 
             # check if a title has been given in the project OWS tab configuration
             # first set the WMSServiceCapabilities to true
