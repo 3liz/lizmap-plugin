@@ -441,6 +441,8 @@ class lizmap:
                         if item['wType'] == 'checkbox':
                             if jsonLayers[jsonKey][key].lower() in ('yes', 'true', 't', '1'):
                                 self.myDic[itemKey][key] = True
+                            else:
+                                self.myDic[itemKey][key] = False
                         # spin box
                         elif item['wType'] == 'spinbox':
                             if jsonLayers[jsonKey][key] != '':
