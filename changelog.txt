@@ -1,5 +1,9 @@
 CHANGELOG
-
+  Version 1.7.2
+  * Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder. Can be used to have a Data folder at the same level of the repositories.
+  * Bug Fix: Fix the toggled option for layers wich was always on
+  * Bug Fix: Winscp - a password can be empty if the winScp session field is filled.
+  
   Version 1.7.1
   * Improvement: Allow the user to choose a WinSCP pre-saved session. Can be used to deal with TLS connections.
   * Improvement: Allow the user to choose the winSCP mirror criteria : between 'size' and 'time' 

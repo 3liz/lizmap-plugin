@@ -4,15 +4,15 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.7.1
+version=version 1.7.2
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.7.1
-  * Improvement: Allow the user to choose a WinSCP pre-saved session. Can be used to deal with TLS connections.
-  * Improvement: Allow the user to choose the winSCP mirror criteria : between 'size' and 'time' 
-  * Improvement: LFTP (linux only) automatically accepts SSL certificate
+  Version 1.7.2
+  * Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder. Can be used to have a Data folder at the same level of the repositories.
+  * Bug Fix: Fix the toggled option for layers wich was always on
+  * Bug Fix: Winscp - a password can be empty if the winScp session field is filled.
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping
