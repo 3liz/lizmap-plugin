@@ -351,6 +351,15 @@ class lizmap:
                     textarea=self.dlg.ui.outLog)
 
         # Set the layers tab global options
+        # set to false all the checkbox first
+        self.dlg.ui.cbRootGroupsAsBlock.setChecked(False);
+        self.dlg.ui.cbOsmMapnik.setChecked(False);
+        self.dlg.ui.cbOsmMapquest.setChecked(False);
+        self.dlg.ui.cbGoogleStreets.setChecked(False);
+        self.dlg.ui.cbGoogleSatellite.setChecked(False);
+        self.dlg.ui.cbGoogleHybrid.setChecked(False);
+        self.dlg.ui.cbGoogleTerrain.setChecked(False);
+        
         if jsonOptions.has_key('rootGroupsAsBlock'):
             if jsonOptions['rootGroupsAsBlock'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbRootGroupsAsBlock.setChecked(True);
