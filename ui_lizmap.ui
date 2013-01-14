@@ -234,6 +234,13 @@
          </column>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="cbRootGroupsAsBlock">
+         <property name="text">
+          <string>ui.tab.layers.rootGroupsAsBlock</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_3">
@@ -481,6 +488,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QLabel" name="label_27">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>ui.tab.tools.locateByLayer.label</string>
          </property>

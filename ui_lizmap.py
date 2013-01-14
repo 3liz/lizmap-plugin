@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Mon Jan 14 14:20:57 2013
+# Created: Mon Jan 14 14:57:19 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -125,6 +125,9 @@ class Ui_lizmap(object):
         self.treeLayer.header().setMinimumSectionSize(50)
         self.treeLayer.header().setStretchLastSection(True)
         self.gridLayout_2.addWidget(self.treeLayer, 0, 0, 2, 1)
+        self.cbRootGroupsAsBlock = QtGui.QCheckBox(self.tab_2)
+        self.cbRootGroupsAsBlock.setObjectName(_fromUtf8("cbRootGroupsAsBlock"))
+        self.gridLayout_2.addWidget(self.cbRootGroupsAsBlock, 2, 0, 1, 1)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
@@ -249,6 +252,10 @@ class Ui_lizmap(object):
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.tab)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.label_27 = QtGui.QLabel(self.tab)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_27.setFont(font)
         self.label_27.setObjectName(_fromUtf8("label_27"))
         self.verticalLayout_3.addWidget(self.label_27)
         self.label_28 = QtGui.QLabel(self.tab)
@@ -507,6 +514,7 @@ class Ui_lizmap(object):
         self.label_12.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.cacheExpiration", None, QtGui.QApplication.UnicodeUTF8))
         self.label_16.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.layer.metatileSize", None, QtGui.QApplication.UnicodeUTF8))
         self.inMetatileSize.setInputMask(QtGui.QApplication.translate("lizmap", "0,0;_", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbRootGroupsAsBlock.setText(QtGui.QApplication.translate("lizmap", "ui.tab.layers.rootGroupsAsBlock", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("lizmap", "ui.tab.layers.label", None, QtGui.QApplication.UnicodeUTF8))
         self.label_15.setText(QtGui.QApplication.translate("lizmap", "ui.tab.map.scales.label", None, QtGui.QApplication.UnicodeUTF8))
         self.label_13.setText(QtGui.QApplication.translate("lizmap", "ui.tab.map.minScale.label", None, QtGui.QApplication.UnicodeUTF8))

@@ -350,6 +350,10 @@ class lizmap:
                     abort=True,
                     textarea=self.dlg.ui.outLog)
 
+        # Set the layers tab global options
+        if jsonOptions.has_key('rootGroupsAsBlock'):
+            if jsonOptions['rootGroupsAsBlock'].lower() in ('yes', 'true', 't', '1'):
+                self.dlg.ui.cbRootGroupsAsBlock.setChecked(True);
         # Set the Map options tab fields values
         if jsonOptions.has_key('minScale'):
             self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
@@ -907,6 +911,8 @@ class lizmap:
         liz2json["options"]["bbox"] = bbox
 
         # gui user defined options
+        in_rootGroupsAsBlock = str(self.dlg.ui.cbRootGroupsAsBlock.isChecked())
+        liz2json["options"]["rootGroupsAsBlock"] = in_rootGroupsAsBlock
         in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
         if len(in_minScale) == 0:
             in_minScale = 10000
@@ -948,10 +954,10 @@ class lizmap:
                 # check that the layer is checked in the WFS capabilities
                 layerId = str(lblTableWidget.item(row, 3).text())
                 if layerId in wfsLayersList:
-                    layerName = str(lblTableWidget.item(row, 0).text())
-                    fieldName = str(lblTableWidget.item(row, 1).text())
+                    layerName = str(lblTableWidget.item(row, 0).text().toUtf8())
+                    fieldName = str(lblTableWidget.item(row, 1).text().toUtf8())
                     displayGeom = str(lblTableWidget.item(row, 2).text())
-                    layerId = str(lblTableWidget.item(row, 3).text())   
+                    layerId = str(lblTableWidget.item(row, 3).text().toUtf8())
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
@@ -1138,6 +1144,7 @@ class lizmap:
         if isok:
             # Get configuration from input fields
             # Map
+            in_rootGroupsAsBlock = self.dlg.ui.cbRootGroupsAsBlock.isChecked()
             in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
             in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
             in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
@@ -1531,7 +1538,8 @@ class lizmap:
 
         # Go to Log tab
         self.dlg.ui.tabWidget.setCurrentIndex(4)
-        sleep(1)
+        time.sleep(1)
+        self.dlg.ui.tabWidget.setCurrentIndex(4)
 
         # Check the platform
         # FTP Sync only active for linux and windows users.
