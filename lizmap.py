@@ -208,6 +208,21 @@ class lizmap:
         # detect close event
         QObject.connect(self.dlg.ui.buttonClose, SIGNAL("rejected()"), self.warnOnClose )
         QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
+        # detect layer locate list has changed to refresh layer field list
+        QObject.connect(
+            self.dlg.ui.liLocateByLayerLayers,
+            SIGNAL("currentIndexChanged(QString)"),
+            self.updateLocateFieldListFromLayer)
+        # add a layer to the locateByLayerList
+        QObject.connect(
+            self.dlg.ui.btLocateByLayerAdd, 
+            SIGNAL("clicked()"), 
+            self.addLayerToLocateByLayer )
+        # remove a layer to the locateByLayerList
+        QObject.connect(
+            self.dlg.ui.btLocateByLayerDel, 
+            SIGNAL("clicked()"), 
+            self.removeLayerFromLocateByLayer)
 
 
         # first check if Web menu availbale in this QGIS version
@@ -313,12 +328,16 @@ class lizmap:
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
         jsonOptions = {}
+        jsonLocateByLayer = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             json = f.read()
             try:
                 sjson = simplejson.loads(json)
                 jsonOptions = sjson['options']
+                if sjson.has_key('locateByLayer'):
+                    jsonLocateByLayer = sjson['locateByLayer']
+                
             except:
                 isok=0
                 QMessageBox.critical(
@@ -362,6 +381,39 @@ class lizmap:
         if jsonOptions.has_key('googleTerrain'):
             if jsonOptions['googleTerrain'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbGoogleTerrain.setChecked(True);
+                
+        # Fill the locateByLayer table widget
+        # empty previous content
+        lblTableWidget = self.dlg.ui.twLocateByLayerList
+        for row in range(lblTableWidget.rowCount()):
+            lblTableWidget.removeRow(row)
+        lblTableWidget.setRowCount(0)
+        # fill from the json if exists
+        if jsonLocateByLayer:
+            # load content from json file
+            for k,v in jsonLocateByLayer.items():
+                twRowCount = lblTableWidget.rowCount()
+                # add a new line
+                lblTableWidget.setRowCount(twRowCount + 1)
+                lblTableWidget.setColumnCount(4)                
+                # layer name
+                newItem = QTableWidgetItem(k)
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 0, newItem)
+                # layer field
+                newItem = QTableWidgetItem(v['fieldName'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 1, newItem)
+                # displayGeom
+                newItem = QTableWidgetItem(v['displayGeom'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 2, newItem)
+                # layer id
+                newItem = QTableWidgetItem(v['layerId'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 3, newItem)
+        lblTableWidget.setColumnHidden(3, True)
+        
 
         return True
 
@@ -373,7 +425,124 @@ class lizmap:
             if myId == layer.id():
                 return layer
         return None
+        
+    def getQgisLayerByNameFromCombobox(self, layerComboBox):
+        '''Get a layer by its name'''
+        returnLayer = None
+        uniqueId = layerComboBox.itemData(layerComboBox.currentIndex()).toString()
+        try:
+            myInstance = QgsMapLayerRegistry.instance()
+            layer = myInstance.mapLayer(uniqueId)
+            if layer:
+                if layer.isValid():
+                    returnLayer = layer
+        except:
+            returnLayer = None
+        return returnLayer        
 
+
+    def populateLayerCombobox(self, ltype, combobox):
+        '''
+            Get the list of layers and add them to a combo box
+            ltype can be : all, vector, raster
+        '''
+        # empty combobox
+        combobox.clear()
+        # get canvas
+        canvas = self.iface.mapCanvas()
+        # loop though the layers
+        for i in range( canvas.layerCount() ):
+            layer = canvas.layer( i )
+            # vector
+            if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
+                combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
+            # raster
+            if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
+                combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
+                
+                
+    def updateLocateFieldListFromLayer(self):
+        '''
+            Fill the combobox with the list of fields 
+            for the layer chosen with the liLayerLocateLayer combobox
+        '''
+        # get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLocateByLayerLayers)
+
+        # remove previous items
+        self.dlg.ui.liLocateByLayerFields.clear()
+
+        if layer:
+            if layer.type() == QgsMapLayer.VectorLayer:
+                # populate the columns combo box
+                provider = layer.dataProvider()
+                fields = provider.fields()
+                for k,v in fields.items():
+                    self.dlg.ui.liLocateByLayerFields.addItem ( unicode(v.name()), QVariant(k))
+        else:
+            return None        
+
+
+    def addLayerToLocateByLayer(self):
+        '''Add a layer in the list of layers 
+        for which to have the "locate by layer" tool'''
+        
+        # Get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLocateByLayerLayers)
+        
+        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        p = QgsProject.instance()
+        wfsLayersList = p.readListEntry('WFSLayers','')[0]
+        hasWfsOption = False
+        for l in wfsLayersList:
+            if layer.id() == l:
+                hasWfsOption = True
+        if not hasWfsOption:
+            QMessageBox.critical(
+                self.dlg, 
+                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"), 
+                QMessageBox.Ok)
+            return False
+          
+        
+        
+        layerName = QString(layer.name())
+        layerId = QString(layer.id())
+        fieldCombobox = self.dlg.ui.liLocateByLayerFields
+        fieldName = QString(fieldCombobox.currentText())
+        displayGeom = str(self.dlg.ui.cbLocateByLayerDisplayGeom.isChecked())
+        lblTableWidget = self.dlg.ui.twLocateByLayerList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount < 3:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(4)
+                       
+            # add layer name to the line
+            newItem = QTableWidgetItem(layerName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, newItem)
+            # add field name to the line
+            newItem = QTableWidgetItem(fieldName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add displayGeom option to the line
+            newItem = QTableWidgetItem(displayGeom)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
+            # add layer id to the line
+            newItem = QTableWidgetItem(layerId)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
+        lblTableWidget.setColumnHidden(3, True)
+         
+
+    def removeLayerFromLocateByLayer(self):
+        '''Remove a layer from the list of layers 
+        for which to have the "locate by layer" tool'''
+        lblTableWidget = self.dlg.ui.twLocateByLayerList
+        lblTableWidget.removeRow(lblTableWidget.currentRow())
 
     def refreshLayerTree(self):
         '''Refresh the layer tree on user demand. Uses method populateLayerTree'''
@@ -766,6 +935,27 @@ class lizmap:
         liz2json["options"]["googleHybrid"] = in_googleHybrid
         in_googleTerrain = str(self.dlg.ui.cbGoogleTerrain.isChecked())
         liz2json["options"]["googleTerrain"] = in_googleTerrain
+        
+        # list of layers for which to have the tool "locate by layer"
+        lblTableWidget = self.dlg.ui.twLocateByLayerList
+        twRowCount = lblTableWidget.rowCount()
+        p = QgsProject.instance()
+        wfsLayersList = p.readListEntry('WFSLayers','')[0]
+        
+        if twRowCount > 0:
+            liz2json["locateByLayer"] = {}    
+            for row in range(twRowCount):                   
+                # check that the layer is checked in the WFS capabilities
+                layerId = str(lblTableWidget.item(row, 3).text())
+                if layerId in wfsLayersList:
+                    layerName = str(lblTableWidget.item(row, 0).text())
+                    fieldName = str(lblTableWidget.item(row, 1).text())
+                    displayGeom = str(lblTableWidget.item(row, 2).text())
+                    layerId = str(lblTableWidget.item(row, 3).text())   
+                    liz2json["locateByLayer"][layerName] = {}
+                    liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
+                    liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
+                    liz2json["locateByLayer"][layerName]["layerId"] = layerId
 
         # gui user defined layers options
         for k,v in self.layerList.items():
@@ -1049,7 +1239,25 @@ class lizmap:
                         QApplication.translate("lizmap", "ui.tab.log.map.externalBaseLayers.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
+                        
+                
 
+            # list of layers for which to have the tool "locate by layer" set
+            lblTableWidget = self.dlg.ui.twLocateByLayerList
+            twRowCount = lblTableWidget.rowCount()
+            wfsLayersList = p.readListEntry('WFSLayers','')[0]
+            if twRowCount > 0:
+                good = True
+                for row in range(twRowCount):                   
+                    # check that the layer is checked in the WFS capabilities
+                    layerId = str(lblTableWidget.item(row, 3).text())
+                    if layerId not in wfsLayersList:
+                        good = False
+                if not good:
+                    self.log(
+                        QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
+                        abort=True,
+                        textarea=self.dlg.ui.outLog)
 
 
             if self.isok:
@@ -1072,7 +1280,7 @@ class lizmap:
 
             self.dlg.ui.outState.setText('<font color="green"></font>')
             # Go to Log tab
-            self.dlg.ui.tabWidget.setCurrentIndex(3)
+            self.dlg.ui.tabWidget.setCurrentIndex(4)
 
         return self.isok
 
@@ -1322,7 +1530,8 @@ class lizmap:
             return False
 
         # Go to Log tab
-        self.dlg.ui.tabWidget.setCurrentIndex(3)
+        self.dlg.ui.tabWidget.setCurrentIndex(4)
+        sleep(1)
 
         # Check the platform
         # FTP Sync only active for linux and windows users.
@@ -1445,6 +1654,9 @@ class lizmap:
 
             # Fill the layer tree
             self.populateLayerTree()
+            
+            # Fill the layer list for locate layer item
+            self.populateLayerCombobox('vector', self.dlg.ui.liLocateByLayerLayers)
 
             self.isok = 1
 
