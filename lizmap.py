@@ -132,6 +132,13 @@ class lizmap:
             'cacheExpiration': {'widget': self.dlg.ui.inCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 0},
             'metatileSize': {'widget': self.dlg.ui.inMetatileSize, 'wType': 'text', 'type': 'string', 'default': ''}
         }
+        
+        # dictionnay for finding the annotation layers geometryType and the corresponding combobox
+        self.annotationLayerConnection = {
+            'point' : self.dlg.ui.liAnnotationPointLayer,
+            'line' : self.dlg.ui.liAnnotationLineLayer,
+            'polygon' : self.dlg.ui.liAnnotationPolygonLayer
+        }
 
         # Disable checkboxes on the layer tab
         self.enableCheckBox(False)
@@ -329,6 +336,7 @@ class lizmap:
         jsonFile = "%s.cfg" % p.fileName()
         jsonOptions = {}
         jsonLocateByLayer = {}
+        jsonAnnotationLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             json = f.read()
@@ -337,7 +345,8 @@ class lizmap:
                 jsonOptions = sjson['options']
                 if sjson.has_key('locateByLayer'):
                     jsonLocateByLayer = sjson['locateByLayer']
-                
+                if sjson.has_key('annotationLayers'):
+                    jsonAnnotationLayers = sjson['annotationLayers']
             except:
                 isok=0
                 QMessageBox.critical(
@@ -427,6 +436,18 @@ class lizmap:
                 lblTableWidget.setItem(twRowCount, 3, newItem)
         lblTableWidget.setColumnHidden(3, True)
         
+        # Annotation layer tool
+        self.dlg.ui.cbAnnotationLayerIsActive.setChecked(False);
+        if jsonAnnotationLayers:
+            # Set the combo boxes with the corresponding layer(s)
+            for k,v in jsonAnnotationLayers.items():
+                combo = self.annotationLayerConnection[v['geometryType']]
+                index = combo.findData(QString(v['layerId']))
+                if index != -1:
+                    combo.setCurrentIndex(index)
+                    # check the checkbox
+                    self.dlg.ui.cbAnnotationLayerIsActive.setChecked(True);                
+            
 
         return True
 
@@ -454,13 +475,17 @@ class lizmap:
         return returnLayer        
 
 
-    def populateLayerCombobox(self, ltype, combobox):
+    def populateLayerCombobox(self, combobox, ltype='all', storageType='all', gtype='all'):
         '''
             Get the list of layers and add them to a combo box
             ltype can be : all, vector, raster
+            storageType can be : all, ESRI Shapefile, SQLite database with SpatiaLite extension
+            gtype can be : all, QGis.Point, QGis.Line, QGis.Polygon
         '''
         # empty combobox
         combobox.clear()
+        # add empty item
+        combobox.addItem ( '---',QVariant(-1))
         # get canvas
         canvas = self.iface.mapCanvas()
         # loop though the layers
@@ -468,7 +493,9 @@ class lizmap:
             layer = canvas.layer( i )
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
-                combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
+                if storageType == 'all' or storageType == layer.storageType():
+                    if gtype == 'all' or gtype == layer.geometryType():
+                        combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
             # raster
             if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
                 combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
@@ -502,6 +529,8 @@ class lizmap:
         
         # Get the layer selected in the combo box
         layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLocateByLayerLayers)
+        if not layer:
+            return False
         
         # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
         p = QgsProject.instance()
@@ -955,8 +984,7 @@ class lizmap:
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         p = QgsProject.instance()
-        wfsLayersList = p.readListEntry('WFSLayers','')[0]
-        
+        wfsLayersList = p.readListEntry('WFSLayers','')[0]        
         if twRowCount > 0:
             liz2json["locateByLayer"] = {}    
             for row in range(twRowCount):                   
@@ -971,6 +999,21 @@ class lizmap:
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId
+                    
+        # layer(s) for the annotation tool
+        if self.dlg.ui.cbAnnotationLayerIsActive.isChecked():
+            liz2json["annotationLayers"] = {}    
+            for k,v in self.annotationLayerConnection.items():
+                layer = self.getQgisLayerByNameFromCombobox(v)
+                if layer:
+                    layerName = str(v.currentText())
+                    layerId = str(layer.id())
+                    liz2json["annotationLayers"][layerName] = {}
+                    liz2json["annotationLayers"][layerName]["geometryType"] = k
+                    liz2json["annotationLayers"][layerName]["layerId"] = layerId
+            if not liz2json["annotationLayers"]:
+                del liz2json['annotationLayers']
+                self.dlg.ui.cbAnnotationLayerIsActive.setChecked(False)
 
         # gui user defined layers options
         for k,v in self.layerList.items():
@@ -1274,7 +1317,7 @@ class lizmap:
                         QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
-
+                        
 
             if self.isok:
                 # write data in the QgisWebClient json config file (to be send with the project file)
@@ -1633,14 +1676,7 @@ class lizmap:
 
     def warnOnClose(self):
         '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-        # Ask confirmation
-#        saveBeforeClose = QMessageBox.question(
-#            self.dlg,
-#            QApplication.translate("lizmap", "ui.msg.warning.title"),
-#            QApplication.translate("lizmap", "ui.msg.warning.close.window"),
-#            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-#        if saveBeforeClose == QMessageBox.Yes:
-#            self.writeProjectConfigFile()
+
         self.writeProjectConfigFile()
 
 
@@ -1663,6 +1699,14 @@ class lizmap:
         # show the dialog only if checkGlobalProjectOptions is true
         if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
             self.dlg.show()
+            
+            # Fill the layer list for the locate by layer tool
+            self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
+            
+            # Fill the layers lists for the annotation tool
+            self.populateLayerCombobox(self.dlg.ui.liAnnotationPointLayer, 'vector', 'SQLite database with SpatiaLite extension', QGis.Point)
+            self.populateLayerCombobox(self.dlg.ui.liAnnotationLineLayer, 'vector', 'SQLite database with SpatiaLite extension', QGis.Line)
+            self.populateLayerCombobox(self.dlg.ui.liAnnotationPolygonLayer, 'vector', 'SQLite database with SpatiaLite extension', QGis.Polygon)
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
@@ -1671,9 +1715,6 @@ class lizmap:
 
             # Fill the layer tree
             self.populateLayerTree()
-            
-            # Fill the layer list for locate layer item
-            self.populateLayerCombobox('vector', self.dlg.ui.liLocateByLayerLayers)
 
             self.isok = 1
 
