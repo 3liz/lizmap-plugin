@@ -491,14 +491,15 @@ class lizmap:
         # loop though the layers
         for i in range( canvas.layerCount() ):
             layer = canvas.layer( i )
+            layerId = layer.id()
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
                 if storageType == 'all' or storageType == layer.storageType():
                     if gtype == 'all' or gtype == layer.geometryType():
-                        combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
+                        combobox.addItem ( layer.name(),QVariant(layerId))
             # raster
             if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
-                combobox.addItem ( layer.name(),QVariant(layer.getLayerID()))
+                combobox.addItem ( layer.name(),QVariant(layerId))
                 
                 
     def updateLocateFieldListFromLayer(self):
@@ -511,16 +512,25 @@ class lizmap:
 
         # remove previous items
         self.dlg.ui.liLocateByLayerFields.clear()
-
+        # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                # populate the columns combo box
                 provider = layer.dataProvider()
                 fields = provider.fields()
-                for k,v in fields.items():
-                    self.dlg.ui.liLocateByLayerFields.addItem ( unicode(v.name()), QVariant(k))
+                if hasattr(fields, "items"):
+                    for idx, field in fields.items():
+                        self.dlg.ui.liLocateByLayerFields.addItem(
+                            unicode(field.name()),
+                            QVariant(idx)
+                        )
+                else: # QGIS new vector api for 2.0
+                    for field in fields:
+                        self.dlg.ui.liLocateByLayerFields.addItem(
+                            unicode(field.name()),
+                            QVariant(unicode(field.name()))
+                        )           
         else:
-            return None        
+            return None
 
 
     def addLayerToLocateByLayer(self):
@@ -934,9 +944,9 @@ class lizmap:
         # projection
         # project projection
         mc = self.iface.mapCanvas()
-        pSrs = mc.mapRenderer().destinationSrs()
-        pAuthid = pSrs.authid()
-        pProj4 = pSrs.toProj4()
+        pCrs = mc.mapRenderer().destinationCrs()
+        pAuthid = pCrs.authid()
+        pProj4 = pCrs.toProj4()
         liz2json["options"]["projection"] = {}
         liz2json["options"]["projection"]["proj4"] = '%s' % pProj4
         liz2json["options"]["projection"]["ref"] = '%s' % pAuthid
