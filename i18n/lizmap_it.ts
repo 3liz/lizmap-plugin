@@ -61,7 +61,7 @@
     <message>
         <location filename="lizmap.py" line="699"/>
         <source>ui.msg.error.tree.read.content</source>
-        <translation>Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab</translation>
+        <translation>Durante la lettura dell&apos;ultimo stato dell&apos;elenco dei layers si sono riscontrati degli errori. É necessario riconfigurare le opzioni nella schesa elenco dei layers</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="586"/>
@@ -101,7 +101,7 @@ Salvare il progetto?</translation>
     <message>
         <location filename="lizmap.py" line="1112"/>
         <source>ui.msg.error.project.option.path.relative</source>
-        <translation>The project layer paths must be set to relative. Please change this options in the project settings.</translation>
+        <translation>I percorsi dei layer nel progetto devo essere relativi. Modifica questa opzione nelle proprietà del progetto.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1132"/>
@@ -258,38 +258,38 @@ Sei sicuro di voler procedere ?</translation>
     <message>
         <location filename="lizmap.py" line="1562"/>
         <source>ui.msg.warning.run.sync %1 %2</source>
-        <translation>You are about to send your project file and all the data contained in:
+        <translation>Stai per inviare il tuo progetto e tutti i dati contenuti in :
 %1
 
-to the server directory:
+sul server nella cartella:
 %2
 
-This will remove every data in this remote directory which are not related to your current qgis project.
-Are you sure you want to proceed ?</translation>
+Questa operazione rimuoverà tutti i dati, nella cartella remota, non correlati con l&apos;attuale progetto QGIS.
+Sei sicuro di voler procedere con l&apos;operazione ?</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1593"/>
         <source>ui.msg.configuration.saved %1 %2</source>
-        <translation>The configuration has been saved for the current Qgis project. Please synchronize your local project folder
-%1
+        <translation>La configurazione è stata salvata per il progetto QGIS attuale. É possibile adesso sincronizzare il progetto nella cartella locale:
+%:1
 
-with the remote FTP folder
+con la cartella remota FTP:
 %2</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1615"/>
         <source>ui.tab.log.outState.running</source>
-        <translation>&lt;font color=&quot;orange&quot;&gt;running&lt;/font&gt;</translation>
+        <translation>&lt;font color=&quot;orange&quot;&gt;esecuzione&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1619"/>
         <source>ui.log.ftp.sync.title</source>
-        <translation>&lt;b&gt;FTP Synchronisation&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Sincronizzazione FTP&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1687"/>
         <source>ui.msg.warning.window.opened</source>
-        <translation>A Lizmap windows is already opened</translation>
+        <translation>LizMap è già aperto.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="41"/>
@@ -314,22 +314,22 @@ with the remote FTP folder
     <message>
         <location filename="ui_lizmap.ui" line="131"/>
         <source>ui.tab.layers.layer.baselayer</source>
-        <translation>Base layer ?</translation>
+        <translation>Layer di base ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="124"/>
         <source>ui.tab.layers.layer.groupAsLayer</source>
-        <translation>Group as layer ?</translation>
+        <translation>Ragruppa come un unico layer ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="86"/>
         <source>ui.tab.layers.layer.toggled</source>
-        <translation>Toggled ?</translation>
+        <translation>Attivato ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="138"/>
         <source>ui.tab.layers.layer.singletile</source>
-        <translation>Single Tile ?</translation>
+        <translation>Singola Tile ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="175"/>
@@ -493,7 +493,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="lizmap.py" line="1144"/>
         <source>ui.msg.error.project.wms.title</source>
-        <translation>The project WMS title must be set in the OWS tab of the project settings dialog.</translation>
+        <translation>Il titolo del progetto WMS deve essere inpostato nella scheda Server OWS che s trova nella finestra delle proprietà del progetto QGIS.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="184"/>
@@ -518,12 +518,12 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="95"/>
         <source>ui.tab.layers.layer.popup</source>
-        <translation>Activate popup</translation>
+        <translation>Attiva popup</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="759"/>
         <source>ui.tab.ftp.winscp.session</source>
-        <translation>Session WinSCP</translation>
+        <translation>Sessione WinSCP</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="784"/>
@@ -548,17 +548,17 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="486"/>
         <source>ui.tab.tools.label</source>
-        <translation>Tools</translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="498"/>
         <source>ui.tab.tools.locateByLayer.label</source>
-        <translation>Locate by Layer</translation>
+        <translation>Localizza da Layer</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="505"/>
         <source>ui.tab.tools.locateByLayer.description</source>
-        <translation>You can add up to 3 layers as a source of the locating tool</translation>
+        <translation>È possibile aggiungere fino a 3 layers come fonte dello strumento di localizzazione</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="513"/>
@@ -568,32 +568,32 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="518"/>
         <source>twLocateByLayer.col.field</source>
-        <translation>Field</translation>
+        <translation>Campo</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="523"/>
         <source>twLocateByLayer.col.displayGeom</source>
-        <translation>Display the geometry</translation>
+        <translation>Visualizza la geometria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="544"/>
         <source>ui.tab.tools.locateByLayer.cbDisplayGeom</source>
-        <translation>Display the geometry</translation>
+        <translation>Visualizza la geometria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="551"/>
         <source>ui.tab.tools.btLocateByLayerAdd</source>
-        <translation>Add layer</translation>
+        <translation>Aggiungi layer</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="558"/>
         <source>ui.tab.tools.btLocateByLayerDel</source>
-        <translation>Remove layer</translation>
+        <translation>Rimuovi layer</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1310"/>
         <source>ui.msg.warning.locateByLayer.notInWfs</source>
-        <translation>The layers you have chosen for the tool &quot;Locate by layer&quot; must be checked in the &quot;WFS Capabilities&quot; option of the OWS tab in the &quot;Project Properties&quot; dialog</translation>
+        <translation>I layers che hai scelto per lo strumento &quot;Localizza da layer&quot; devono essere spuntati nell&apos;opzione &quot;WFS Capabilities&quot; nella scheda Server OWS delle proprietà del progetto QGIS</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="240"/>
@@ -623,17 +623,17 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="626"/>
         <source>annotationPointLayer</source>
-        <translation>Point</translation>
+        <translation>Punto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="636"/>
         <source>annotationLineLayer</source>
-        <translation>Line</translation>
+        <translation>Linea</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="646"/>
         <source>annotationPolygonLayer</source>
-        <translation>Polygon</translation>
+        <translation>Poligono</translation>
     </message>
 </context>
 <context>
@@ -641,17 +641,17 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap_popup.ui" line="17"/>
         <source>Lizmap - Popup</source>
-        <translation>Lizmap - Configure layer popup</translation>
+        <translation>Lizmap - Configura finestra di popup</translation>
     </message>
     <message>
         <location filename="ui_lizmap_popup.ui" line="23"/>
         <source>ui.popup.source.label</source>
-        <translation>Template for the popup</translation>
+        <translation>Template per la finestra di popup (sorgente HTML)</translation>
     </message>
     <message>
         <location filename="ui_lizmap_popup.ui" line="33"/>
         <source>ui.popup.html.label</source>
-        <translation>Preview</translation>
+        <translation>Anteprima</translation>
     </message>
 </context>
 </TS>
