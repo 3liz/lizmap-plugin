@@ -1,0 +1,10 @@
+*.orig
+*.rej
+*~
+*.o
+*.swp
+*.pyc
+*.DS_Store
+
+lizmap.cfg
+
