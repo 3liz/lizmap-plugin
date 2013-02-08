@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="it" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="it">
 <context>
     <name>lizmap</name>
     <message>
@@ -642,12 +643,12 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="118"/>
         <source>ui.groupBox.settingLayer</source>
-        <translation>Selected item settings</translation>
+        <translation>Impostazioni del layer selzionato</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="306"/>
         <source>map.visibletools.label</source>
-        <translation>Map tools</translation>
+        <translation>Strumenti Mappa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="314"/>
@@ -657,12 +658,12 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="321"/>
         <source>map.tool.geolocation</source>
-        <translation>Automatic geolocation</translation>
+        <translation>Geolocalizzazione automatica</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="328"/>
         <source>map.tool.address.search</source>
-        <translation>Address search</translation>
+        <translation>Ricerca indirizzo</translation>
     </message>
 </context>
 <context>

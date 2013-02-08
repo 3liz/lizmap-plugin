@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Fri Feb  8 14:21:18 2013
+# Created: Fri Feb  8 15:18:04 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -228,6 +228,8 @@ class Ui_lizmap(object):
         self.label_21.setObjectName(_fromUtf8("label_21"))
         self.gridLayout_13.addWidget(self.label_21, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.groupBox_7, 4, 0, 1, 1)
+        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem2, 1, 0, 1, 1)
         self.groupBox_6 = QtGui.QGroupBox(self.tab_3)
         self.groupBox_6.setStyleSheet(_fromUtf8(""))
         self.groupBox_6.setObjectName(_fromUtf8("groupBox_6"))
@@ -278,12 +280,8 @@ class Ui_lizmap(object):
         self.horizontalLayout_12.addWidget(self.inZoomLevelNumber)
         self.gridLayout_3.addLayout(self.horizontalLayout_12, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.groupBox_6, 2, 0, 1, 1)
-        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem2, 5, 0, 1, 1)
         spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem3, 1, 0, 1, 1)
-        spacerItem4 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem4, 3, 0, 1, 1)
+        self.gridLayout_14.addItem(spacerItem3, 3, 0, 1, 1)
         self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
@@ -329,11 +327,10 @@ class Ui_lizmap(object):
         self.horizontalLayout_16.addWidget(self.btLocateByLayerDel)
         self.gridLayout_4.addLayout(self.horizontalLayout_16, 2, 0, 1, 1)
         self.gridLayout_6.addWidget(self.groupBox, 0, 0, 1, 1)
-        spacerItem5 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_6.addItem(spacerItem5, 1, 0, 1, 1)
+        spacerItem4 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_6.addItem(spacerItem4, 1, 0, 1, 1)
         self.groupBox_2 = QtGui.QGroupBox(self.tab)
-        self.groupBox_2.setStyleSheet(_fromUtf8("QGroupBox{\"font-weight: bold;\" QString(\"background-color: rgba(155,155,155,20%);border: 1px solid #c0c0c0; border-radius: 5px; margin-top: 2.5ex;\")}\n"
-"\n"
+        self.groupBox_2.setStyleSheet(_fromUtf8("\n"
 ""))
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.gridLayout_20 = QtGui.QGridLayout(self.groupBox_2)
@@ -357,8 +354,8 @@ class Ui_lizmap(object):
         self.liAnnotationPointLayer.setSizePolicy(sizePolicy)
         self.liAnnotationPointLayer.setObjectName(_fromUtf8("liAnnotationPointLayer"))
         self.horizontalLayout_3.addWidget(self.liAnnotationPointLayer)
-        spacerItem6 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem6)
+        spacerItem5 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem5)
         self.label_32 = QtGui.QLabel(self.groupBox_2)
         self.label_32.setObjectName(_fromUtf8("label_32"))
         self.horizontalLayout_3.addWidget(self.label_32)
@@ -370,8 +367,8 @@ class Ui_lizmap(object):
         self.liAnnotationLineLayer.setSizePolicy(sizePolicy)
         self.liAnnotationLineLayer.setObjectName(_fromUtf8("liAnnotationLineLayer"))
         self.horizontalLayout_3.addWidget(self.liAnnotationLineLayer)
-        spacerItem7 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem7)
+        spacerItem6 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem6)
         self.label_33 = QtGui.QLabel(self.groupBox_2)
         self.label_33.setObjectName(_fromUtf8("label_33"))
         self.horizontalLayout_3.addWidget(self.label_33)
@@ -447,8 +444,8 @@ class Ui_lizmap(object):
         self.gridLayout_8.addWidget(self.inPassword, 1, 1, 1, 1)
         self.gridLayout_21.addLayout(self.gridLayout_8, 1, 0, 1, 1)
         self.gridLayout_18.addWidget(self.groupBox_3, 0, 0, 1, 1)
-        spacerItem8 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_18.addItem(spacerItem8, 1, 0, 1, 1)
+        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_18.addItem(spacerItem7, 1, 0, 1, 1)
         self.groupBox_4 = QtGui.QGroupBox(self.tab_ftp)
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
         self.gridLayout_17 = QtGui.QGridLayout(self.groupBox_4)
@@ -480,8 +477,8 @@ class Ui_lizmap(object):
         self.gridLayout_12.addWidget(self.inLocaldir, 1, 1, 1, 1)
         self.gridLayout_17.addLayout(self.gridLayout_12, 0, 0, 1, 1)
         self.gridLayout_18.addWidget(self.groupBox_4, 2, 0, 1, 1)
-        spacerItem9 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_18.addItem(spacerItem9, 3, 0, 1, 1)
+        spacerItem8 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_18.addItem(spacerItem8, 3, 0, 1, 1)
         self.groupBox_5 = QtGui.QGroupBox(self.tab_ftp)
         self.groupBox_5.setObjectName(_fromUtf8("groupBox_5"))
         self.gridLayout_19 = QtGui.QGridLayout(self.groupBox_5)
@@ -567,7 +564,7 @@ class Ui_lizmap(object):
         self.gridLayout_9.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.retranslateUi(lizmap)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QObject.connect(self.buttonClose, QtCore.SIGNAL(_fromUtf8("clicked(QAbstractButton*)")), lizmap.close)
         QtCore.QMetaObject.connectSlotsByName(lizmap)
         lizmap.setTabOrder(self.tabWidget, self.treeLayer)
