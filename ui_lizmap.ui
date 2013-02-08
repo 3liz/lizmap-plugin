@@ -65,7 +65,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -455,6 +455,19 @@
          </layout>
         </widget>
        </item>
+       <item row="1" column="0">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_6">
          <property name="styleSheet">
@@ -552,32 +565,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="5" column="0">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item row="3" column="0">
         <spacer name="verticalSpacer_6">
@@ -689,8 +676,7 @@
        <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="styleSheet">
-          <string notr="true">QGroupBox{&quot;font-weight: bold;&quot; QString(&quot;background-color: rgba(155,155,155,20%);border: 1px solid #c0c0c0; border-radius: 5px; margin-top: 2.5ex;&quot;)}
-
+          <string notr="true">
 </string>
          </property>
          <property name="title">
