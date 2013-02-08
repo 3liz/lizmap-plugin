@@ -67,6 +67,16 @@ import simplejson
 import subprocess
 
 class lizmap:
+    STYLESHHET = "QGroupBox::title {background-color: transparent; \
+                                    subcontrol-origin: margin; \
+                                    margin-left: 6px; \
+                                    subcontrol-position: top left; \
+                                    } \
+                  QGroupBox {background-color: rgba(225, 225,\
+                            225, 90%); border:1px solid #c0c0c0;  \
+                            border-radius: 5px; \
+                            font-weight: bold; \
+                            margin-top: 2.5ex; }"
 
     def __init__(self, iface):
         '''Save reference to the QGIS interface'''
@@ -102,6 +112,17 @@ class lizmap:
         if not sys.platform.startswith('linux') and sys.platform != 'win32' :
             self.dlg.ui.tabWidget.setTabEnabled(2, False)
             self.dlg.ui.btSync.setEnabled(False)
+            
+        # Set stylesheet for QGroupBox
+        self.dlg.ui.groupBox.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_2.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_3.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_4.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_5.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_6.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_7.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_8.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_9.setStyleSheet(self.STYLESHHET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':

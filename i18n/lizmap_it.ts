@@ -528,7 +528,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="784"/>
         <source>ui.tab.ftp.title.directory</source>
-        <translation>Cartelli</translation>
+        <translation>Cartelle</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="804"/>
