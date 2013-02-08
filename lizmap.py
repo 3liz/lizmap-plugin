@@ -123,6 +123,7 @@ class lizmap:
         self.dlg.ui.groupBox_7.setStyleSheet(self.STYLESHHET)
         self.dlg.ui.groupBox_8.setStyleSheet(self.STYLESHHET)
         self.dlg.ui.groupBox_9.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox_10.setStyleSheet(self.STYLESHHET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -389,6 +390,11 @@ class lizmap:
         self.dlg.ui.cbGoogleSatellite.setChecked(False);
         self.dlg.ui.cbGoogleHybrid.setChecked(False);
         self.dlg.ui.cbGoogleTerrain.setChecked(False);
+        self.dlg.ui.cbActivateZoomHistory.setChecked(False);
+        self.dlg.ui.cbActivateGeolocation.setChecked(False);
+        self.dlg.ui.cbActivateAddressSearch.setChecked(False);
+        
+        
         
         if jsonOptions.has_key('rootGroupsAsBlock'):
             if jsonOptions['rootGroupsAsBlock'].lower() in ('yes', 'true', 't', '1'):
@@ -424,6 +430,16 @@ class lizmap:
         if jsonOptions.has_key('googleTerrain'):
             if jsonOptions['googleTerrain'].lower() in ('yes', 'true', 't', '1'):
                 self.dlg.ui.cbGoogleTerrain.setChecked(True);
+
+        if jsonOptions.has_key('activateZoomHistory'):
+            if jsonOptions['activateZoomHistory'].lower() in ('yes', 'true', 't', '1'):
+                self.dlg.ui.cbActivateZoomHistory.setChecked(True);
+        if jsonOptions.has_key('activateGeolocation'):
+            if jsonOptions['activateGeolocation'].lower() in ('yes', 'true', 't', '1'):
+                self.dlg.ui.cbActivateGeolocation.setChecked(True);
+        if jsonOptions.has_key('activateAddressSearch'):
+            if jsonOptions['activateAddressSearch'].lower() in ('yes', 'true', 't', '1'):
+                self.dlg.ui.cbActivateAddressSearch.setChecked(True);      
                 
         # Fill the locateByLayer table widget
         # empty previous content
@@ -715,7 +731,7 @@ class lizmap:
         # initialize the tree
         myTree = self.dlg.ui.treeLayer
         myTree.clear()
-        myTree.headerItem().setText(0, QApplication.translate("lizmap", QApplication.translate("lizmap", "ui.tab.layers.tree.title")))
+        myTree.headerItem().setText(0, QApplication.translate("lizmap", QApplication.translate("lizmap", "layers.tree.title")))
         self.myDic = {}
         myGroups = self.iface.legendInterface().groups()
 
@@ -1011,6 +1027,15 @@ class lizmap:
         in_googleTerrain = str(self.dlg.ui.cbGoogleTerrain.isChecked())
         liz2json["options"]["googleTerrain"] = in_googleTerrain
         
+        # map tools activated
+        in_activateZoomHistory = str(self.dlg.ui.cbActivateZoomHistory.isChecked())
+        liz2json["options"]["activateZoomHistory"] = in_activateZoomHistory
+        in_activateGeolocation = str(self.dlg.ui.cbActivateGeolocation.isChecked())
+        liz2json["options"]["activateGeolocation"] = in_activateGeolocation
+        in_activateAddressSearch = str(self.dlg.ui.cbActivateAddressSearch.isChecked())
+        liz2json["options"]["activateAddressSearch"] = in_activateAddressSearch
+        
+        
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
@@ -1239,12 +1264,15 @@ class lizmap:
             in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
             in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
             in_googleTerrain = self.dlg.ui.cbGoogleTerrain.isChecked()
+            in_activateZoomHistory = self.dlg.ui.cbActivateZoomHistory.isChecked()
+            in_activateGeolocation = self.dlg.ui.cbActivateGeolocation.isChecked()
+            in_activateAddressSearch = self.dlg.ui.cbActivateAddressSearch.isChecked()
 
             isok = True
 
             # log
             self.dlg.ui.outLog.append('=' * 20)
-            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.map.option.title"))
+            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.map.option.title"))
             self.dlg.ui.outLog.append('=' * 20)
 
             # Checking configuration data
@@ -1252,7 +1280,7 @@ class lizmap:
             # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
             if len(in_mapScales) == 0 and (len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
                 self.log(
-                    QApplication.translate("lizmap", "ui.tab.log.map.scale.warning"),
+                    QApplication.translate("lizmap", "log.map.scale.warning"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
 
@@ -1264,7 +1292,7 @@ class lizmap:
                 except (ValueError, IndexError):
                     self.dlg.ui.inMinScale.setText(str(minScale))
                     self.log(
-                        QApplication.translate("lizmap", "ui.tab.log.map.minscale.warning"),
+                        QApplication.translate("lizmap", "log.map.minscale.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
             self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
@@ -1277,7 +1305,7 @@ class lizmap:
                 except (ValueError, IndexError):
                     self.dlg.ui.inMaxScale.setText(str(maxScale))
                     self.log(
-                        QApplication.translate("lizmap", "ui.tab.log.map.maxscale.warning"),
+                        QApplication.translate("lizmap", "log.map.maxscale.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
             self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
@@ -1290,7 +1318,7 @@ class lizmap:
                 except (ValueError, IndexError):
                     self.dlg.ui.inZoomLevelNumber.setText(str(zoomLevelNumber))
                     self.log(
-                        QApplication.translate("lizmap", "ui.tab.log.map.zoomLevelNumber.warning"),
+                        QApplication.translate("lizmap", "log.map.zoomLevelNumber.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
             self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
@@ -1310,7 +1338,7 @@ class lizmap:
                     self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)
                 else:
                     self.log(
-                        QApplication.translate("lizmap", "ui.tab.log.map.mapScales.warning"),
+                        QApplication.translate("lizmap", "log.map.mapScales.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
 
@@ -1326,7 +1354,7 @@ class lizmap:
                         good = True
                 if not good:
                     self.log(
-                        QApplication.translate("lizmap", "ui.tab.log.map.externalBaseLayers.warning"),
+                        QApplication.translate("lizmap", "log.map.externalBaseLayers.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
                         
@@ -1403,9 +1431,9 @@ class lizmap:
         in_winscpSession = str(self.dlg.ui.inWinscpSession.text().toUtf8()).strip(' \t')
         in_winscpCriteria = str(self.dlg.ui.inWinscpCriteria.text().toUtf8()).strip(' \t')
 
-        self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.ftp.option.title"))
+        self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.ftp.option.title"))
         self.dlg.ui.outLog.append('=' * 20)
-        self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.ftp.option.title"))
+        self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.ftp.option.title"))
         self.dlg.ui.outLog.append('=' * 20)
 
         # Check FTP options
@@ -1413,13 +1441,13 @@ class lizmap:
         if len(in_host) == 0:
             host = ''
             self.log(
-                QApplication.translate("lizmap", "ui.tab.log.ftp.hostname.missing.warning"),
+                QApplication.translate("lizmap", "log.ftp.hostname.missing.warning"),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
         elif len(in_host) < 4:
             host=''
             self.log(
-                QApplication.translate("lizmap", "ui.tab.log.ftp.hostname.wrong.warning %1")
+                QApplication.translate("lizmap", "log.ftp.hostname.wrong.warning %1")
                 .arg(in_host),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
@@ -1449,7 +1477,7 @@ class lizmap:
         else:
             remotedir=''
             self.log(
-                QApplication.translate("lizmap", "ui.tab.log.ftp.remotedir.missing.warning"),
+                QApplication.translate("lizmap", "log.ftp.remotedir.missing.warning"),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
 
@@ -1460,7 +1488,7 @@ class lizmap:
         if not os.path.isdir(localdir):
             localdir=''
             self.log(
-                QApplication.translate("lizmap", "ui.tab.log.ftp.localdir.warning %1")
+                QApplication.translate("lizmap", "log.ftp.localdir.warning %1")
                 .arg(localdir),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
@@ -1474,7 +1502,7 @@ class lizmap:
             #    winscpPath = winscpPath + '/'
             if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com') ):
                 self.log(
-                    QApplication.translate("lizmap", "ui.tab.log.ftp.winscpPath.warning %1")
+                    QApplication.translate("lizmap", "log.ftp.winscpPath.warning %1")
                     .arg(winscpPath),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
@@ -1499,7 +1527,7 @@ class lizmap:
         else:
             username=''
             self.log(
-                QApplication.translate("lizmap", "ui.tab.log.ftp.username.missing.warning"),
+                QApplication.translate("lizmap", "log.ftp.username.missing.warning"),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
 
@@ -1511,7 +1539,7 @@ class lizmap:
             password=''
             if not in_winscpSession:
                 self.log(
-                    QApplication.translate("lizmap", "ui.tab.log.ftp.password.missing.warning"),
+                    QApplication.translate("lizmap", "log.ftp.password.missing.warning"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
 
@@ -1564,11 +1592,11 @@ class lizmap:
     def ftpSyncFinished(self):
         '''Loaded when the sync process has finished its job.'''
         if self.proc.exitStatus() == 0:
-            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.sync.completed"))
-            self.dlg.ui.outState.setText(QApplication.translate("lizmap", "ui.tab.log.outState.completed"))
+            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.sync.completed"))
+            self.dlg.ui.outState.setText(QApplication.translate("lizmap", "log.outState.completed"))
         else:
-            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "ui.tab.log.sync.canceled"))
-            self.dlg.ui.outState.setText(QApplication.translate("lizmap", "ui.tab.log.outState.canceled"))
+            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.sync.canceled"))
+            self.dlg.ui.outState.setText(QApplication.translate("lizmap", "log.outState.canceled"))
 
 
     def ftpSyncCancel(self):
@@ -1577,7 +1605,7 @@ class lizmap:
         letsGo = QMessageBox.question(
             self.dlg,
             QApplication.translate("lizmap", "ui.msg.warning.title"),
-            QApplication.translate("lizmap", "ui.tab.log.kill.warning"),
+            QApplication.translate("lizmap", "log.kill.warning"),
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if letsGo == QMessageBox.Yes:
             try:
@@ -1649,7 +1677,7 @@ class lizmap:
 
         myOutput = ''
         # display the stateLabel
-        self.dlg.ui.outState.setText(QApplication.translate("lizmap", "ui.tab.log.outState.running"))
+        self.dlg.ui.outState.setText(QApplication.translate("lizmap", "log.outState.running"))
         # setting progressbar refreshes the plygin ui
         self.dlg.ui.outLog.append('')
         self.dlg.ui.outLog.append('=' * 20)
