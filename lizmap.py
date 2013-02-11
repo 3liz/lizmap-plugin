@@ -167,7 +167,11 @@ class lizmap:
 
         # Catch user interaction on layer tree and inputs
         QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
-
+        
+        # Catch user interaction on Map Scales radio button
+        QObject.connect(self.dlg.ui.radioMinMaxScales, SIGNAL("clicked()"), self.enableMinMaxScales)
+        QObject.connect(self.dlg.ui.radioMapScales, SIGNAL("clicked()"), self.enableMapScales)
+        
         # Connect entry list changeboxes
         # signalMapper to connect several signals to one slot
         self.signalMapper = QSignalMapper()
@@ -332,6 +336,20 @@ class lizmap:
             if item['widget']:
                 item['widget'].setEnabled(value)
         self.dlg.ui.btConfigurePopup.setEnabled(value)
+        
+    def enableMinMaxScales(self):
+        ''' Enable Min Max Scales settings'''
+        self.dlg.ui.inMinScale.setEnabled(True)
+        self.dlg.ui.inMaxScale.setEnabled(True)
+        self.dlg.ui.inZoomLevelNumber.setEnabled(True)
+        self.dlg.ui.inMapScales.setEnabled(False)
+        
+    def enableMapScales(self):
+        ''' Enable Map Scales settings'''
+        self.dlg.ui.inMapScales.setEnabled(True)
+        self.dlg.ui.inMinScale.setEnabled(False)
+        self.dlg.ui.inMaxScale.setEnabled(False)
+        self.dlg.ui.inZoomLevelNumber.setEnabled(False)
 
     def getConfig(self):
         ''' Get the saved configuration from lizmap.cfg file
@@ -401,12 +419,16 @@ class lizmap:
                 self.dlg.ui.cbRootGroupsAsBlock.setChecked(True);
         # Set the Map options tab fields values
         if jsonOptions.has_key('minScale'):
+            self.dlg.ui.radioMinMaxScales.setChecked(True)
+            self.enableMinMaxScales()
             self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
         if jsonOptions.has_key('maxScale'):
             self.dlg.ui.inMaxScale.setText(str(jsonOptions['maxScale']))
         if jsonOptions.has_key('zoomLevelNumber'):
             self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
         if jsonOptions.has_key('mapScales'):
+            self.dlg.ui.radioMapScales.setChecked(True)
+            self.enableMapScales()
             self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
         # openstreetmap baselayers
         if jsonOptions.has_key('osmMapnik'):
@@ -911,6 +933,9 @@ class lizmap:
             # Import the code for the dialog
             from lizmappopupdialog import lizmapPopupDialog
             self.lizmapPopupDialog = lizmapPopupDialog()
+            
+            self.lizmapPopupDialog.ui.groupBox.setStyleSheet(self.STYLESHHET)
+            self.lizmapPopupDialog.ui.groupBox_2.setStyleSheet(self.STYLESHHET)
 
             # Connect popup dialog signals and slots
             # When the plain text template is modified
@@ -998,20 +1023,22 @@ class lizmap:
         # gui user defined options
         in_rootGroupsAsBlock = str(self.dlg.ui.cbRootGroupsAsBlock.isChecked())
         liz2json["options"]["rootGroupsAsBlock"] = in_rootGroupsAsBlock
-        in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
-        if len(in_minScale) == 0:
-            in_minScale = 10000
-        liz2json["options"]["minScale"] = in_minScale
-        in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
-        if len(in_maxScale) == 0:
-            in_maxScale = 10000000
-        liz2json["options"]["maxScale"] = in_maxScale
-        in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
-        if len(in_zoomLevelNumber) == 0:
-            in_zoomLevelNumber = 10
-        liz2json["options"]["zoomLevelNumber"] = in_zoomLevelNumber
-        in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
-        liz2json["options"]["mapScales"] = eval("[%s]" % in_mapScales)
+        if self.dlg.ui.radioMinMaxScales.isChecked():
+            in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
+            if len(in_minScale) == 0:
+                in_minScale = 10000
+            liz2json["options"]["minScale"] = in_minScale
+            in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
+            if len(in_maxScale) == 0:
+                in_maxScale = 10000000
+            liz2json["options"]["maxScale"] = in_maxScale
+            in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
+            if len(in_zoomLevelNumber) == 0:
+                in_zoomLevelNumber = 10
+            liz2json["options"]["zoomLevelNumber"] = in_zoomLevelNumber
+        if self.dlg.ui.radioMapScales.isChecked():
+            in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
+            liz2json["options"]["mapScales"] = eval("[%s]" % in_mapScales)
         in_osmMapnik = str(self.dlg.ui.cbOsmMapnik.isChecked())
         liz2json["options"]["osmMapnik"] = in_osmMapnik
         in_osmMapquest = str(self.dlg.ui.cbOsmMapquest.isChecked())
@@ -1278,63 +1305,61 @@ class lizmap:
             # Checking configuration data
             # Map config
             # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
-            if len(in_mapScales) == 0 and (len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0):
+            if len(in_mapScales) == 0 and (len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0) \
+                and self.dlg.ui.radioMinMaxScales.isChecked():
                 self.log(
                     QApplication.translate("lizmap", "log.map.scale.warning"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
-
-            # minScale
-            minScale = 1
-            if len(in_minScale) > 0:
-                try:
-                    minScale = int(in_minScale)
-                except (ValueError, IndexError):
-                    self.dlg.ui.inMinScale.setText(str(minScale))
-                    self.log(
-                        QApplication.translate("lizmap", "log.map.minscale.warning"),
-                        abort=True,
-                        textarea=self.dlg.ui.outLog)
-            self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
-
-            # maxScale
-            maxScale = 1000000
-            if len(in_maxScale) > 0:
-                try:
-                    maxScale = int(in_maxScale)
-                except (ValueError, IndexError):
-                    self.dlg.ui.inMaxScale.setText(str(maxScale))
-                    self.log(
-                        QApplication.translate("lizmap", "log.map.maxscale.warning"),
-                        abort=True,
-                        textarea=self.dlg.ui.outLog)
-            self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
-
-            # zoom levels number
-            zoomLevelNumber = 10
-            if len(in_zoomLevelNumber) > 0:
-                try:
-                    zoomLevelNumber = int(in_zoomLevelNumber)
-                except (ValueError, IndexError):
-                    self.dlg.ui.inZoomLevelNumber.setText(str(zoomLevelNumber))
-                    self.log(
-                        QApplication.translate("lizmap", "log.map.zoomLevelNumber.warning"),
-                        abort=True,
-                        textarea=self.dlg.ui.outLog)
-            self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
-
-            # mapScales
-            if len(in_mapScales) > 0:
-                good = 1
+            if self.dlg.ui.radioMinMaxScales.isChecked():
+                # minScale
+                if len(in_minScale) > 0:
+                    try:
+                        minScale = int(in_minScale)
+                    except (ValueError, IndexError):
+                        self.dlg.ui.inMinScale.setText(str(minScale))
+                        self.log(
+                            QApplication.translate("lizmap", "log.map.minscale.warning"),
+                            abort=True,
+                            textarea=self.dlg.ui.outLog)
+                    self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
+                
+                # maxScale
+                if len(in_maxScale) > 0:
+                    try:
+                        maxScale = int(in_maxScale)
+                    except (ValueError, IndexError):
+                        self.dlg.ui.inMaxScale.setText(str(maxScale))
+                        self.log(
+                            QApplication.translate("lizmap", "log.map.maxscale.warning"),
+                            abort=True,
+                            textarea=self.dlg.ui.outLog)
+                    self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
+    
+                # zoom levels number
+                if len(in_zoomLevelNumber) > 0:
+                    try:
+                        zoomLevelNumber = int(in_zoomLevelNumber)
+                    except (ValueError, IndexError):
+                        self.dlg.ui.inZoomLevelNumber.setText(str(zoomLevelNumber))
+                        self.log(
+                            QApplication.translate("lizmap", "log.map.zoomLevelNumber.warning"),
+                            abort=True,
+                            textarea=self.dlg.ui.outLog)
+                    self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
+            
+            if self.dlg.ui.radioMapScales.isChecked():
+                # mapScales
+                good = True
                 sp = in_mapScales.split(',')
                 # check that every mapScales item is an integer
                 for p in sp:
                     try:
                         test = int(p.strip(' \t'))
                     except (ValueError, IndexError):
-                        good = 0
+                        good = False
 
-                if good:
+                if good and len(in_mapScales) > 0:
                     self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)
                 else:
                     self.log(
