@@ -16,32 +16,39 @@
   <property name="windowTitle">
    <string>Lizmap - Popup</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>ui.popup.source.label</string>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>ui.popup.source.label</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="txtPopup"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>ui.popup.html.label</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="htmlPopup">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item>
-    <widget class="QTextEdit" name="txtPopup"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>ui.popup.html.label</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTextEdit" name="htmlPopup">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="bbConfigurePopup">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
