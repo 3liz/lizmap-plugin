@@ -1,5 +1,5 @@
-Lizmap 1.7.2
-============
+[![logo](icon.png "3Liz")][3liz]Lizmap 1.7.2
+====================================
 
 Publication plugin for Lizmap web application, by 3LIZ.
 
@@ -51,3 +51,4 @@ We like to thank [Alisé Géomatique] a french company, for the help the provide
 
   [QGIS Server Tutorial]: http://www.qgis.org/wiki/QGIS_Server_Tutorial
   [Alisé Géomatique]:http://www.alise-geomatique.fr
+  [3liz]:http://www.3liz.com
