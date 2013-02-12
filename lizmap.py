@@ -67,16 +67,24 @@ import simplejson
 import subprocess
 
 class lizmap:
-    STYLESHHET = "QGroupBox::title {background-color: transparent; \
+    if sys.platform.startswith('win'):
+        style = ['0', '0', '0', '5%']
+        margin = '4.0'
+    else:
+        style = ['225', '225', '225', '90%']
+        margin = '2.5'
+    STYLESHEET = "QGroupBox::title {background-color: transparent; \
                                     subcontrol-origin: margin; \
                                     margin-left: 6px; \
                                     subcontrol-position: top left; \
-                                    } \
-                  QGroupBox {background-color: rgba(225, 225,\
-                            225, 90%); border:1px solid #c0c0c0;  \
-                            border-radius: 5px; \
-                            font-weight: bold; \
-                            margin-top: 2.5ex; }"
+                                    }"
+    STYLESHEET += "QGroupBox {background-color: rgba(%s, %s, %s, %s" % tuple(style)
+    STYLESHEET += ");"
+    STYLESHEET += "border:1px solid rgba(0,0,0,20%);  \
+                   border-radius: 5px; \
+                   font-weight: bold;"
+    STYLESHEET += "margin-top: %s" % margin
+    STYLESHEET += "ex; }"
 
     def __init__(self, iface):
         '''Save reference to the QGIS interface'''
@@ -114,16 +122,16 @@ class lizmap:
             self.dlg.ui.btSync.setEnabled(False)
             
         # Set stylesheet for QGroupBox
-        self.dlg.ui.groupBox.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_2.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_3.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_4.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_5.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_6.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_7.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_8.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_9.setStyleSheet(self.STYLESHHET)
-        self.dlg.ui.groupBox_10.setStyleSheet(self.STYLESHHET)
+        self.dlg.ui.groupBox.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_2.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_3.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_4.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_5.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_6.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_7.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_8.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_9.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.groupBox_10.setStyleSheet(self.STYLESHEET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -934,8 +942,8 @@ class lizmap:
             from lizmappopupdialog import lizmapPopupDialog
             self.lizmapPopupDialog = lizmapPopupDialog()
             
-            self.lizmapPopupDialog.ui.groupBox.setStyleSheet(self.STYLESHHET)
-            self.lizmapPopupDialog.ui.groupBox_2.setStyleSheet(self.STYLESHHET)
+            self.lizmapPopupDialog.ui.groupBox.setStyleSheet(self.STYLESHEET)
+            self.lizmapPopupDialog.ui.groupBox_2.setStyleSheet(self.STYLESHEET)
 
             # Connect popup dialog signals and slots
             # When the plain text template is modified
