@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Mon Feb 11 10:08:11 2013
+# Created: Tue Feb 12 22:33:27 2013
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,6 +51,7 @@ class Ui_lizmap(object):
         self.gridLayout_15 = QtGui.QGridLayout(self.groupBox_8)
         self.gridLayout_15.setObjectName(_fromUtf8("gridLayout_15"))
         self.treeLayer = QtGui.QTreeWidget(self.groupBox_8)
+        self.treeLayer.setAlternatingRowColors(True)
         self.treeLayer.setColumnCount(1)
         self.treeLayer.setObjectName(_fromUtf8("treeLayer"))
         self.treeLayer.headerItem().setText(0, _fromUtf8("Name"))
