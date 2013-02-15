@@ -83,6 +83,9 @@
          <layout class="QGridLayout" name="gridLayout_15">
           <item row="0" column="0">
            <widget class="QTreeWidget" name="treeLayer">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
             <property name="columnCount">
              <number>1</number>
             </property>
