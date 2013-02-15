@@ -1,5 +1,5 @@
 [![logo](icon.png "3Liz")][3liz]Lizmap 1.7.2
-====================================
+============================================
 
 Publication plugin for Lizmap web application, by 3LIZ.
 
@@ -25,8 +25,10 @@ Salvatore Larosa <lrssvtml@gmail.com>
 Installation
 --------------
 
-1. Clone the repo
-2. `cp lizmap ~/.qgis/python/plugins`
+1. Clone the repo: `git clone git@github.com:3liz/lizmap-plugin.git`
+2. `cp lizmap-plugin ~/.qgis/python/plugins`
+3. `cd ~/.qgis/python/plugins ~/.qgis/python/plugins`
+4. `mv lizmap-plugin lizmap`
 
 or from QGIS
 
