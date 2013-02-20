@@ -1214,16 +1214,21 @@ class lizmap:
             layerSourcesBad = []
             mc = self.iface.mapCanvas()
             layerPathError = ''
+            
             for i in range(mc.layerCount()):
-                layerSource =    unicode('%s' % mc.layer( i ).source() )               
-                if not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('../../') and not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('..\\..\\'):
-                    layerSourcesOk.append(os.path.abspath(layerSource))
-                elif layerSource.startswith('dbname=') or layerSource.startswith('http') or layerSource.startswith('tiled='):
-                    layerSourcesOk.append(layerSource)
-                else:
-                    layerSourcesBad.append(layerSource)
-                    layerPathError+='--> %s \n' % os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir))
-                    isok = False
+                layerSource =    unicode('%s' % mc.layer( i ).source() )  
+                layerProviderKey = mc.layer( i ).providerType()
+                # Only for layers stored in disk
+                if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr', 'spatialite'):
+                
+                    if not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('../../') and not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('..\\..\\'):
+                        layerSourcesOk.append(os.path.abspath(layerSource))
+                    else:
+                        layerSourcesBad.append(layerSource)
+                        layerPathError+='--> %s \n' % os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir))
+                        isok = False
+                    
+                    
             if len(layerSourcesBad) > 0:
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1").arg(projectDir)+'\n'
                 self.log(
