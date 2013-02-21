@@ -419,6 +419,8 @@ class lizmap:
         self.dlg.ui.cbActivateZoomHistory.setChecked(False);
         self.dlg.ui.cbActivateGeolocation.setChecked(False);
         self.dlg.ui.cbActivateAddressSearch.setChecked(False);
+        self.dlg.ui.cbActivateMeasure.setChecked(False);
+        self.dlg.ui.cbActivatePermalink.setChecked(False);
         
         
         
@@ -469,7 +471,13 @@ class lizmap:
                 self.dlg.ui.cbActivateGeolocation.setChecked(True);
         if jsonOptions.has_key('activateAddressSearch'):
             if jsonOptions['activateAddressSearch'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbActivateAddressSearch.setChecked(True);      
+                self.dlg.ui.cbActivateAddressSearch.setChecked(True);
+        if jsonOptions.has_key('activateMeasure'):
+            if jsonOptions['activateMeasure'].lower() in ('yes', 'true', 't', '1'):
+                self.dlg.ui.cbActivateMeasure.setChecked(True);  
+        if jsonOptions.has_key('activatePermalink'):
+            if jsonOptions['activatePermalink'].lower() in ('yes', 'true', 't', '1'):
+                self.dlg.ui.cbActivatePermalink.setChecked(True);   
                 
         # Fill the locateByLayer table widget
         # empty previous content
@@ -1070,6 +1078,10 @@ class lizmap:
         liz2json["options"]["activateGeolocation"] = in_activateGeolocation
         in_activateAddressSearch = str(self.dlg.ui.cbActivateAddressSearch.isChecked())
         liz2json["options"]["activateAddressSearch"] = in_activateAddressSearch
+        in_activateMeasure = str(self.dlg.ui.cbActivateMeasure.isChecked())
+        liz2json["options"]["activateMeasure"] = in_activateMeasure
+        in_activatePermalink = str(self.dlg.ui.cbActivatePermalink.isChecked())
+        liz2json["options"]["activatePermalink"] = in_activatePermalink
         
         
         # list of layers for which to have the tool "locate by layer"
@@ -1310,6 +1322,8 @@ class lizmap:
             in_activateZoomHistory = self.dlg.ui.cbActivateZoomHistory.isChecked()
             in_activateGeolocation = self.dlg.ui.cbActivateGeolocation.isChecked()
             in_activateAddressSearch = self.dlg.ui.cbActivateAddressSearch.isChecked()
+            in_activateMeasure = self.dlg.ui.cbActivateMeasure.isChecked()
+            in_activatePermalink = self.dlg.ui.cbActivatePermalink.isChecked()
 
             isok = True
 

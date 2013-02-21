@@ -303,41 +303,20 @@
        <string>map.label</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_14">
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_10">
-         <property name="title">
-          <string>map.visibletools.label</string>
+       <item row="5" column="0">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QCheckBox" name="cbActivateZoomHistory">
-              <property name="text">
-               <string>map.tool.zoom.history</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="cbActivateGeolocation">
-              <property name="text">
-               <string>map.tool.geolocation</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="cbActivateAddressSearch">
-              <property name="text">
-               <string>map.tool.address.search</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
-       <item row="4" column="0">
+       <item row="8" column="0">
         <widget class="QGroupBox" name="groupBox_7">
          <property name="title">
           <string>map.public.label</string>
@@ -480,20 +459,7 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="0">
+       <item row="6" column="0">
         <widget class="QGroupBox" name="groupBox_6">
          <property name="styleSheet">
           <string notr="true"/>
@@ -602,7 +568,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="7" column="0">
         <spacer name="verticalSpacer_6">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -614,6 +580,80 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="groupBox_10">
+         <property name="title">
+          <string>map.visibletools.label</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>coming soon...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QCheckBox" name="cbActivateZoomHistory">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.zoom.history</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cbActivateGeolocation">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.geolocation</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cbActivateAddressSearch">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.address.search</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QCheckBox" name="cbActivateMeasure">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.measure</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cbActivatePermalink">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.permalink</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
