@@ -542,11 +542,12 @@ class lizmap:
         return returnLayer        
 
 
-    def populateLayerCombobox(self, combobox, ltype='all', storageType='all', gtype='all'):
+    def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=['all'], gtype='all'):
         '''
             Get the list of layers and add them to a combo box
             ltype can be : all, vector, raster
-            storageType can be : all, ESRI Shapefile, SQLite database with SpatiaLite extension
+            providerTypeList is a list and can be : ['all'] or a list of provider keys
+            as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
             gtype can be : all, QGis.Point, QGis.Line, QGis.Polygon
         '''
         # empty combobox
@@ -561,7 +562,7 @@ class lizmap:
             layerId = layer.id()
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
-                if storageType == 'all' or storageType == layer.storageType():
+                if 'all' in providerTypeList or layer.providerType() in providerTypeList:
                     if gtype == 'all' or gtype == layer.geometryType():
                         combobox.addItem ( layer.name(),QVariant(layerId))
             # raster
@@ -1223,7 +1224,6 @@ class lizmap:
                     relativePath = os.path.normpath(
                         os.path.relpath(os.path.abspath(layerSource), projectDir)
                     )
-                    self.log(relativePath, abort=False, textarea=self.dlg.ui.outLog)
                     if not relativePath.startswith('../../') and not relativePath.startswith('..\\..\\'):
                         layerSourcesOk.append(os.path.abspath(layerSource))
                     else:
@@ -1804,9 +1804,9 @@ class lizmap:
             self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
             
             # Fill the layers lists for the annotation tool
-            self.populateLayerCombobox(self.dlg.ui.liAnnotationPointLayer, 'vector', 'SQLite database with SpatiaLite extension', QGis.Point)
-            self.populateLayerCombobox(self.dlg.ui.liAnnotationLineLayer, 'vector', 'SQLite database with SpatiaLite extension', QGis.Line)
-            self.populateLayerCombobox(self.dlg.ui.liAnnotationPolygonLayer, 'vector', 'SQLite database with SpatiaLite extension', QGis.Polygon)
+            self.populateLayerCombobox(self.dlg.ui.liAnnotationPointLayer, 'vector', ['spatialite', 'postgres'], QGis.Point)
+            self.populateLayerCombobox(self.dlg.ui.liAnnotationLineLayer, 'vector', ['spatialite', 'postgres'], QGis.Line)
+            self.populateLayerCombobox(self.dlg.ui.liAnnotationPolygonLayer, 'vector', ['spatialite', 'postgres'], QGis.Polygon)
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
