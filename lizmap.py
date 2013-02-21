@@ -1731,8 +1731,8 @@ class lizmap:
 
             if sys.platform.startswith('linux'):
                 # construction of ftp sync command line
-                ftpStr1 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; mirror --verbose -e -R %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir.decode('utf-8'))
-                self.log(ftpStr1, abort=False, textarea=self.dlg.ui.outLog)
+                ftpStr1 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; mirror --verbose -e -R --use-cache %s %s ; quit"' % (username, password, host, localdir.decode('utf-8'), remotedir.decode('utf-8'))
+#                self.log(ftpStr1, abort=False, textarea=self.dlg.ui.outLog)
                 ftpStr2 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
 
             else:
