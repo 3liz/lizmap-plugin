@@ -1219,13 +1219,16 @@ class lizmap:
                 layerSource =    unicode('%s' % mc.layer( i ).source() )  
                 layerProviderKey = mc.layer( i ).providerType()
                 # Only for layers stored in disk
-                if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr', 'spatialite'):
-                
-                    if not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('../../') and not os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir)).startswith('..\\..\\'):
+                if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr'):
+                    relativePath = os.path.normpath(
+                        os.path.relpath(os.path.abspath(layerSource), projectDir)
+                    )
+                    self.log(relativePath, abort=False, textarea=self.dlg.ui.outLog)
+                    if not relativePath.startswith('../../') and not relativePath.startswith('..\\..\\'):
                         layerSourcesOk.append(os.path.abspath(layerSource))
                     else:
                         layerSourcesBad.append(layerSource)
-                        layerPathError+='--> %s \n' % os.path.normpath(os.path.relpath(os.path.abspath(layerSource), projectDir))
+                        layerPathError+='--> %s \n' % relativePath
                         isok = False
                     
                     
