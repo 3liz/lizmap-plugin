@@ -1040,22 +1040,22 @@ class lizmap:
         # gui user defined options
         in_rootGroupsAsBlock = str(self.dlg.ui.cbRootGroupsAsBlock.isChecked())
         liz2json["options"]["rootGroupsAsBlock"] = in_rootGroupsAsBlock
-        if self.dlg.ui.radioMinMaxScales.isChecked():
-            in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
-            if len(in_minScale) == 0:
-                in_minScale = 10000
-            liz2json["options"]["minScale"] = in_minScale
-            in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
-            if len(in_maxScale) == 0:
-                in_maxScale = 10000000
-            liz2json["options"]["maxScale"] = in_maxScale
-            in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
-            if len(in_zoomLevelNumber) == 0:
-                in_zoomLevelNumber = 10
-            liz2json["options"]["zoomLevelNumber"] = in_zoomLevelNumber
-        if self.dlg.ui.radioMapScales.isChecked():
-            in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
-            liz2json["options"]["mapScales"] = eval("[%s]" % in_mapScales)
+#        if self.dlg.ui.radioMinMaxScales.isChecked():
+        in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
+        if len(in_minScale) == 0:
+            in_minScale = 1
+        liz2json["options"]["minScale"] = in_minScale
+        in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
+        if len(in_maxScale) == 0:
+            in_maxScale = 100000000000
+        liz2json["options"]["maxScale"] = in_maxScale
+        in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
+        if len(in_zoomLevelNumber) == 0:
+            in_zoomLevelNumber = 10
+        liz2json["options"]["zoomLevelNumber"] = in_zoomLevelNumber
+#        if self.dlg.ui.radioMapScales.isChecked():
+        in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
+        liz2json["options"]["mapScales"] = eval("[%s]" % in_mapScales)
         in_osmMapnik = str(self.dlg.ui.cbOsmMapnik.isChecked())
         liz2json["options"]["osmMapnik"] = in_osmMapnik
         in_osmMapquest = str(self.dlg.ui.cbOsmMapquest.isChecked())
