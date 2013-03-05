@@ -145,6 +145,29 @@ class lizmap:
             self.dlg.ui.lbWinscpCriteria.setEnabled(False)
 
         # List of ui widget for data driven actions and checking
+        
+        self.globalOptions = {
+            'mapScales': {'widget': self.dlg.ui.inMapScales, 'wType': 'text', 'type': 'intlist', 'default': [500000, 250000, 100000, 25000]},
+            'minScale': {'widget': self.dlg.ui.inMinScale, 'wType': 'text', 'type': 'integer', 'default': 1},
+            'maxScale': {'widget': self.dlg.ui.inMaxScale, 'wType': 'text', 'type': 'integer', 'default': 1000000000},
+        
+            'googleKey': {'widget': self.dlg.ui.inGoogleKey, 'wType': 'text', 'type': 'string', 'default': ''},
+            'googleHybrid' : {'widget': self.dlg.ui.cbGoogleHybrid, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'googleSatellite' : {'widget': self.dlg.ui.cbGoogleSatellite, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'googleTerrain' : {'widget': self.dlg.ui.cbGoogleTerrain, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'googleStreets' : {'widget': self.dlg.ui.cbGoogleStreets, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'osmMapnik' : {'widget': self.dlg.ui.cbOsmMapnik, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'osmMapquest' : {'widget': self.dlg.ui.cbOsmMapquest, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            
+            'rootGroupsAsBlock' : {'widget': self.dlg.ui.cbRootGroupsAsBlock, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            
+            'print' : {'widget': self.dlg.ui.cbActivatePrint, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'measure' : {'widget': self.dlg.ui.cbActivateMeasure, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'externalSearch' : {'widget': self.dlg.ui.liExternalSearch, 'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim']},
+            'zoomHistory' : {'widget': self.dlg.ui.cbActivateZoomHistory, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'geolocation' : {'widget': self.dlg.ui.cbActivateGeolocation, 'wType': 'checkbox', 'type': 'boolean', 'default': False}
+        }
+        
         self.layerOptionsList = {
             'title': {'widget': self.dlg.ui.inLayerTitle, 'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True},
             'abstract': {'widget': self.dlg.ui.teLayerAbstract, 'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True},
@@ -176,9 +199,8 @@ class lizmap:
         # Catch user interaction on layer tree and inputs
         QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
         
-        # Catch user interaction on Map Scales radio button
-        QObject.connect(self.dlg.ui.radioMinMaxScales, SIGNAL("clicked()"), self.enableMinMaxScales)
-        QObject.connect(self.dlg.ui.radioMapScales, SIGNAL("clicked()"), self.enableMapScales)
+        # Catch user interaction on Map Scales input
+        QObject.connect(self.dlg.ui.inMapScales, SIGNAL("editingFinished()"), self.getMinMaxScales)
         
         # Connect entry list changeboxes
         # signalMapper to connect several signals to one slot
@@ -345,19 +367,30 @@ class lizmap:
                 item['widget'].setEnabled(value)
         self.dlg.ui.btConfigurePopup.setEnabled(value)
         
-    def enableMinMaxScales(self):
-        ''' Enable Min Max Scales settings'''
-        self.dlg.ui.inMinScale.setEnabled(True)
-        self.dlg.ui.inMaxScale.setEnabled(True)
-        self.dlg.ui.inZoomLevelNumber.setEnabled(True)
-        self.dlg.ui.inMapScales.setEnabled(False)
+    def getMinMaxScales(self):
+        ''' Get Min Max Scales from scales input field'''
+        minScale = 1
+        maxScale = 1000000000
+        inMapScales = str(self.dlg.ui.inMapScales.text())
+        mapScales = [int(a.strip(' \t') ) for a in inMapScales.split(',') if str(a.strip(' \t')).isdigit()]
+        mapScales.sort()
+        if len(mapScales) < 2:
+            myReturn = False
+            QMessageBox.critical(
+                self.dlg,
+                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "log.map.mapScales.warning"),
+                QMessageBox.Ok)
+        else:
+            minScale = min(mapScales)
+            maxScale = max(mapScales)
+            myReturn = True
+        self.dlg.ui.inMinScale.setText(str(minScale))
+        self.dlg.ui.inMaxScale.setText(str(maxScale))
+        self.dlg.ui.inMapScales.setText(', '.join(map(str, mapScales)))
         
-    def enableMapScales(self):
-        ''' Enable Map Scales settings'''
-        self.dlg.ui.inMapScales.setEnabled(True)
-        self.dlg.ui.inMinScale.setEnabled(False)
-        self.dlg.ui.inMaxScale.setEnabled(False)
-        self.dlg.ui.inZoomLevelNumber.setEnabled(False)
+        return myReturn
+
 
     def getConfig(self):
         ''' Get the saved configuration from lizmap.cfg file
@@ -407,77 +440,38 @@ class lizmap:
                     abort=True,
                     textarea=self.dlg.ui.outLog)
 
-        # Set the layers tab global options
-        # set to false all the checkbox first
-        self.dlg.ui.cbRootGroupsAsBlock.setChecked(False);
-        self.dlg.ui.cbOsmMapnik.setChecked(False);
-        self.dlg.ui.cbOsmMapquest.setChecked(False);
-        self.dlg.ui.cbGoogleStreets.setChecked(False);
-        self.dlg.ui.cbGoogleSatellite.setChecked(False);
-        self.dlg.ui.cbGoogleHybrid.setChecked(False);
-        self.dlg.ui.cbGoogleTerrain.setChecked(False);
-        self.dlg.ui.cbActivateZoomHistory.setChecked(False);
-        self.dlg.ui.cbActivateGeolocation.setChecked(False);
-        self.dlg.ui.cbActivateAddressSearch.setChecked(False);
-        self.dlg.ui.cbActivateMeasure.setChecked(False);
-        self.dlg.ui.cbActivatePermalink.setChecked(False);
         
-        
-        
-        if jsonOptions.has_key('rootGroupsAsBlock'):
-            if jsonOptions['rootGroupsAsBlock'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbRootGroupsAsBlock.setChecked(True);
-        # Set the Map options tab fields values
-        if jsonOptions.has_key('minScale'):
-            self.dlg.ui.radioMinMaxScales.setChecked(True)
-            self.enableMinMaxScales()
-            self.dlg.ui.inMinScale.setText(str(jsonOptions['minScale']))
-        if jsonOptions.has_key('maxScale'):
-            self.dlg.ui.inMaxScale.setText(str(jsonOptions['maxScale']))
-        if jsonOptions.has_key('zoomLevelNumber'):
-            self.dlg.ui.inZoomLevelNumber.setText(str(jsonOptions['zoomLevelNumber']))
-        if jsonOptions.has_key('mapScales'):
-            self.dlg.ui.radioMapScales.setChecked(True)
-            self.enableMapScales()
-            self.dlg.ui.inMapScales.setText(", ".join(map(str, jsonOptions['mapScales'])))
-        # openstreetmap baselayers
-        if jsonOptions.has_key('osmMapnik'):
-            if jsonOptions['osmMapnik'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbOsmMapnik.setChecked(True);
-        if jsonOptions.has_key('osmMapquest'):
-            if jsonOptions['osmMapquest'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbOsmMapquest.setChecked(True);
-        # google baselayers
-        if jsonOptions.has_key('googleKey'):
-            self.dlg.ui.inGoogleKey.setText(str(jsonOptions['googleKey']))
-        if jsonOptions.has_key('googleStreets'):
-            if jsonOptions['googleStreets'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbGoogleStreets.setChecked(True);
-        if jsonOptions.has_key('googleSatellite'):
-            if jsonOptions['googleSatellite'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbGoogleSatellite.setChecked(True);
-        if jsonOptions.has_key('googleHybrid'):
-            if jsonOptions['googleHybrid'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbGoogleHybrid.setChecked(True);
-        if jsonOptions.has_key('googleTerrain'):
-            if jsonOptions['googleTerrain'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbGoogleTerrain.setChecked(True);
+        # Set the map tools options
+        for key, item in self.globalOptions.items():
+            if item['widget']:
+                if item['wType'] == 'checkbox':
+                    item['widget'].setChecked(item['default'])
+                    if jsonOptions.has_key(key):
+                        if jsonOptions[key].lower() in ('yes', 'true', 't', '1'):
+                            item['widget'].setChecked(True)
 
-        if jsonOptions.has_key('activateZoomHistory'):
-            if jsonOptions['activateZoomHistory'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbActivateZoomHistory.setChecked(True);
-        if jsonOptions.has_key('activateGeolocation'):
-            if jsonOptions['activateGeolocation'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbActivateGeolocation.setChecked(True);
-        if jsonOptions.has_key('activateAddressSearch'):
-            if jsonOptions['activateAddressSearch'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbActivateAddressSearch.setChecked(True);
-        if jsonOptions.has_key('activateMeasure'):
-            if jsonOptions['activateMeasure'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbActivateMeasure.setChecked(True);  
-        if jsonOptions.has_key('activatePermalink'):
-            if jsonOptions['activatePermalink'].lower() in ('yes', 'true', 't', '1'):
-                self.dlg.ui.cbActivatePermalink.setChecked(True);   
+                if item['wType'] in ('text', 'textarea'):
+                    if isinstance(item['default'], (list, tuple)):
+                        item['widget'].setText(", ".join(map(str, item['default'])))
+                    else:
+                        item['widget'].setText(str(item['default']))
+                    if jsonOptions.has_key(key):
+                        if isinstance(jsonOptions[key], (list, tuple)):
+                            item['widget'].setText(", ".join(map(str, jsonOptions[key])))
+                        else:
+                            item['widget'].setText(str(jsonOptions[key]))
+                            
+                    
+                if item['wType'] == 'spinbox':
+                    item['widget'].setValue(int(item['default']))
+                    if jsonOptions.has_key(key):
+                        item['widget'].setValue(int(jsonOptions[key]))
+                    
+                if item['wType'] == 'list':
+                    listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
+                    item['widget'].setCurrentIndex(listDic[item['default']])
+                    if jsonOptions.has_key(key):
+                        item['widget'].setCurrentIndex(listDic[jsonOptions[key]])           
                 
         # Fill the locateByLayer table widget
         # empty previous content
@@ -1038,52 +1032,55 @@ class lizmap:
         liz2json["options"]["bbox"] = bbox
 
         # gui user defined options
-        in_rootGroupsAsBlock = str(self.dlg.ui.cbRootGroupsAsBlock.isChecked())
-        liz2json["options"]["rootGroupsAsBlock"] = in_rootGroupsAsBlock
-#        if self.dlg.ui.radioMinMaxScales.isChecked():
-        in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
-        if len(in_minScale) == 0:
-            in_minScale = 1
-        liz2json["options"]["minScale"] = in_minScale
-        in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
-        if len(in_maxScale) == 0:
-            in_maxScale = 100000000000
-        liz2json["options"]["maxScale"] = in_maxScale
-        in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
-        if len(in_zoomLevelNumber) == 0:
-            in_zoomLevelNumber = 10
-        liz2json["options"]["zoomLevelNumber"] = in_zoomLevelNumber
-#        if self.dlg.ui.radioMapScales.isChecked():
-        in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
-        liz2json["options"]["mapScales"] = eval("[%s]" % in_mapScales)
-        in_osmMapnik = str(self.dlg.ui.cbOsmMapnik.isChecked())
-        liz2json["options"]["osmMapnik"] = in_osmMapnik
-        in_osmMapquest = str(self.dlg.ui.cbOsmMapquest.isChecked())
-        liz2json["options"]["osmMapquest"] = in_osmMapquest
-        in_googleKey = str(self.dlg.ui.inGoogleKey.text()).strip(' \t')
-        liz2json["options"]["googleKey"] = in_googleKey
-        in_googleStreets = str(self.dlg.ui.cbGoogleStreets.isChecked())
-        liz2json["options"]["googleStreets"] = in_googleStreets
-        in_googleSatellite = str(self.dlg.ui.cbGoogleSatellite.isChecked())
-        liz2json["options"]["googleSatellite"] = in_googleSatellite
-        in_googleHybrid = str(self.dlg.ui.cbGoogleHybrid.isChecked())
-        liz2json["options"]["googleHybrid"] = in_googleHybrid
-        in_googleTerrain = str(self.dlg.ui.cbGoogleTerrain.isChecked())
-        liz2json["options"]["googleTerrain"] = in_googleTerrain
-        
-        # map tools activated
-        in_activateZoomHistory = str(self.dlg.ui.cbActivateZoomHistory.isChecked())
-        liz2json["options"]["activateZoomHistory"] = in_activateZoomHistory
-        in_activateGeolocation = str(self.dlg.ui.cbActivateGeolocation.isChecked())
-        liz2json["options"]["activateGeolocation"] = in_activateGeolocation
-        in_activateAddressSearch = str(self.dlg.ui.cbActivateAddressSearch.isChecked())
-        liz2json["options"]["activateAddressSearch"] = in_activateAddressSearch
-        in_activateMeasure = str(self.dlg.ui.cbActivateMeasure.isChecked())
-        liz2json["options"]["activateMeasure"] = in_activateMeasure
-        in_activatePermalink = str(self.dlg.ui.cbActivatePermalink.isChecked())
-        liz2json["options"]["activatePermalink"] = in_activatePermalink
-        
-        
+        for key, item in self.globalOptions.items():
+            if item['widget']:
+                inputValue = None
+                
+                # Get field value depending on widget type
+                if item['wType'] == 'text':
+                    inputValue = str(item['widget'].text()).strip(' \t')
+
+                if item['wType'] == 'textarea':
+                    inputValue = str(item['widget'].toPlainText()).strip(' \t')
+                    
+                if item['wType'] == 'spinbox':
+                    inputValue = item['widget'].value()
+                
+                if item['wType'] == 'checkbox':
+                    inputValue = str(item['widget'].isChecked())
+                    
+                if item['wType'] == 'list':
+                    listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
+                    inputValue = item['list'][item['widget'].currentIndex()]
+                
+                # Cast value depending of data type
+                if item['type'] == 'string':
+                    if item['wType'] in ('text', 'textarea'):
+                        inputValue = unicode(inputValue)
+                    else:
+                        inputValue = str(inputValue)
+                elif item['type'] in ('intlist', 'list'):
+                    if item['type'] == 'intlist':
+                        inputValue = [int(a) for a in inputValue.split(', ') if a.isdigit()]
+                    else:
+                        inputValue = [a for a in inputValue.split(', ')]
+                    inputValue.sort()
+                elif item['type'] == 'integer':
+                    try:
+                        inputValue = int(inputValue)
+                    except:
+                        inputValue = int(item['default'])
+                elif item['type'] == 'boolean':
+                    inputValue = str(inputValue)
+                               
+                # Add value to the option
+                if (inputValue and inputValue != "False"):
+                    liz2json["options"][key] = inputValue
+                else:
+                    if item.has_key('alwaysExport'):
+                        liz2json["options"][key] = item['default']
+                
+       
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
@@ -1306,25 +1303,15 @@ class lizmap:
 
         if isok:
             # Get configuration from input fields
-            # Map
-            in_rootGroupsAsBlock = self.dlg.ui.cbRootGroupsAsBlock.isChecked()
-            in_minScale = str(self.dlg.ui.inMinScale.text()).strip(' \t')
-            in_maxScale = str(self.dlg.ui.inMaxScale.text()).strip(' \t')
-            in_zoomLevelNumber = str(self.dlg.ui.inZoomLevelNumber.text()).strip(' \t')
-            in_mapScales = str(self.dlg.ui.inMapScales.text()).strip(' \t')
+            
+            # Need to get theses values to check for Pseudo Mercator projection            
             in_osmMapnik = self.dlg.ui.cbOsmMapnik.isChecked()
             in_osmMapquest = self.dlg.ui.cbOsmMapquest.isChecked()
-            in_googleKey = str(self.dlg.ui.inGoogleKey.text()).strip(' \t')
             in_googleStreets = self.dlg.ui.cbGoogleStreets.isChecked()
             in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
             in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
             in_googleTerrain = self.dlg.ui.cbGoogleTerrain.isChecked()
-            in_activateZoomHistory = self.dlg.ui.cbActivateZoomHistory.isChecked()
-            in_activateGeolocation = self.dlg.ui.cbActivateGeolocation.isChecked()
-            in_activateAddressSearch = self.dlg.ui.cbActivateAddressSearch.isChecked()
-            in_activateMeasure = self.dlg.ui.cbActivateMeasure.isChecked()
-            in_activatePermalink = self.dlg.ui.cbActivatePermalink.isChecked()
-
+            
             isok = True
 
             # log
@@ -1333,71 +1320,6 @@ class lizmap:
             self.dlg.ui.outLog.append('=' * 20)
 
             # Checking configuration data
-            # Map config
-            # check that the triolet minScale, maxScale, zoomLevelNumber OR mapScales is et
-            if len(in_mapScales) == 0 and (len(in_minScale) == 0 or len(in_maxScale) == 0 or len(in_zoomLevelNumber) == 0) \
-                and self.dlg.ui.radioMinMaxScales.isChecked():
-                self.log(
-                    QApplication.translate("lizmap", "log.map.scale.warning"),
-                    abort=True,
-                    textarea=self.dlg.ui.outLog)
-            if self.dlg.ui.radioMinMaxScales.isChecked():
-                # minScale
-                if len(in_minScale) > 0:
-                    try:
-                        minScale = int(in_minScale)
-                    except (ValueError, IndexError):
-                        self.dlg.ui.inMinScale.setText(str(minScale))
-                        self.log(
-                            QApplication.translate("lizmap", "log.map.minscale.warning"),
-                            abort=True,
-                            textarea=self.dlg.ui.outLog)
-                    self.log('minScale = %d' % minScale, abort=False, textarea=self.dlg.ui.outLog)
-                
-                # maxScale
-                if len(in_maxScale) > 0:
-                    try:
-                        maxScale = int(in_maxScale)
-                    except (ValueError, IndexError):
-                        self.dlg.ui.inMaxScale.setText(str(maxScale))
-                        self.log(
-                            QApplication.translate("lizmap", "log.map.maxscale.warning"),
-                            abort=True,
-                            textarea=self.dlg.ui.outLog)
-                    self.log('maxScale = %d' % maxScale, abort=False, textarea=self.dlg.ui.outLog)
-    
-                # zoom levels number
-                if len(in_zoomLevelNumber) > 0:
-                    try:
-                        zoomLevelNumber = int(in_zoomLevelNumber)
-                    except (ValueError, IndexError):
-                        self.dlg.ui.inZoomLevelNumber.setText(str(zoomLevelNumber))
-                        self.log(
-                            QApplication.translate("lizmap", "log.map.zoomLevelNumber.warning"),
-                            abort=True,
-                            textarea=self.dlg.ui.outLog)
-                    self.log('zoomLevelNumber = %d' % zoomLevelNumber, abort=False, textarea=self.dlg.ui.outLog)
-            
-            if self.dlg.ui.radioMapScales.isChecked():
-                # mapScales
-                good = True
-                sp = in_mapScales.split(',')
-                # check that every mapScales item is an integer
-                for p in sp:
-                    try:
-                        test = int(p.strip(' \t'))
-                    except (ValueError, IndexError):
-                        good = False
-
-                if good and len(in_mapScales) > 0:
-                    self.log('mapScales = %s' % in_mapScales, abort=False, textarea=self.dlg.ui.outLog)
-                else:
-                    self.log(
-                        QApplication.translate("lizmap", "log.map.mapScales.warning"),
-                        abort=True,
-                        textarea=self.dlg.ui.outLog)
-
-
             # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
             p = QgsProject.instance()
 
@@ -1454,6 +1376,10 @@ class lizmap:
             self.dlg.ui.outState.setText('<font color="green"></font>')
             # Go to Log tab
             self.dlg.ui.tabWidget.setCurrentIndex(4)
+            
+            # Get and check map scales
+            if self.isok:
+                self.getMinMaxScales()
 
         return self.isok
 

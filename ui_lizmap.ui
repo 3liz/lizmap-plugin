@@ -468,15 +468,8 @@
           <string>map.scales.label</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="2" column="0">
+          <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QRadioButton" name="radioMapScales">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
             <item>
              <widget class="QLabel" name="label_15">
               <property name="text">
@@ -493,20 +486,13 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
+          <item row="2" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QRadioButton" name="radioMinMaxScales">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="checked">
+             <widget class="QLabel" name="label_13">
+              <property name="enabled">
                <bool>false</bool>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_13">
               <property name="text">
                <string>map.minScale.label</string>
               </property>
@@ -514,6 +500,9 @@
             </item>
             <item>
              <widget class="QLineEdit" name="inMinScale">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="inputMethodHints">
                <set>Qt::ImhDigitsOnly</set>
               </property>
@@ -524,6 +513,9 @@
             </item>
             <item>
              <widget class="QLabel" name="label_14">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>map.maxScale.label</string>
               </property>
@@ -531,6 +523,9 @@
             </item>
             <item>
              <widget class="QLineEdit" name="inMaxScale">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="inputMethodHints">
                <set>Qt::ImhDigitsOnly</set>
               </property>
@@ -540,28 +535,24 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_17">
-              <property name="text">
-               <string>map.zoomLevelNumber.label</string>
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="inZoomLevelNumber">
-              <property name="inputMethodHints">
-               <set>Qt::ImhDigitsOnly</set>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
               </property>
-              <property name="maxLength">
-               <number>2</number>
-              </property>
-             </widget>
+             </spacer>
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
-           <widget class="Line" name="line">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>map.scales.help</string>
             </property>
            </widget>
           </item>
@@ -588,18 +579,31 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLabel" name="label_18">
-            <property name="text">
-             <string>coming soon...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QCheckBox" name="cbActivatePrint">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.print</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cbActivateMeasure">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>map.tool.measure</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QCheckBox" name="cbActivateZoomHistory">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string>map.tool.zoom.history</string>
@@ -609,20 +613,10 @@
             <item>
              <widget class="QCheckBox" name="cbActivateGeolocation">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string>map.tool.geolocation</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="cbActivateAddressSearch">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>map.tool.address.search</string>
               </property>
              </widget>
             </item>
@@ -631,24 +625,38 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_14">
             <item>
-             <widget class="QCheckBox" name="cbActivateMeasure">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
+             <widget class="QLabel" name="label_19">
               <property name="text">
-               <string>map.tool.measure</string>
+               <string>map.tool.externalSearch.label</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="cbActivatePermalink">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>map.tool.permalink</string>
-              </property>
+             <widget class="QComboBox" name="liExternalSearch">
+              <item>
+               <property name="text">
+                <string/>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>nominatim</string>
+               </property>
+              </item>
              </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -1190,7 +1198,6 @@
   <tabstop>inMetatileSize</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
-  <tabstop>inZoomLevelNumber</tabstop>
   <tabstop>inMapScales</tabstop>
   <tabstop>cbOsmMapquest</tabstop>
   <tabstop>inGoogleKey</tabstop>
