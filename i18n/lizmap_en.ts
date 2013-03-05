@@ -139,7 +139,7 @@ or in one folder above or aside.
     <message>
         <location filename="lizmap.py" line="1330"/>
         <source>log.map.externalBaseLayers.warning</source>
-        <translation>&lt;b&gt;** WARNING **&lt;/b&gt; : You have chosen one external public source in the Map tab. You must add &quot;EPSG:900913&quot; in the &quot;Coordinate System Restriction&quot; of the &quot;WMS Server&quot; tab in the project properties dialog !</translation>
+        <translation>&lt;b&gt;** WARNING **&lt;/b&gt; : You have chosen one external public source in the Map tab. You must add &quot;EPSG:3857&quot; in the &quot;Coordinate System Restriction&quot; of the &quot;WMS Server&quot; tab in the project properties dialog !</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1358"/>

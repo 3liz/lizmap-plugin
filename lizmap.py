@@ -1323,11 +1323,11 @@ class lizmap:
             # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
             p = QgsProject.instance()
 
-            # public baselayers: check that the 900913 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
+            # public baselayers: check that the 3857 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
             if in_osmMapnik or in_osmMapquest or in_googleStreets or in_googleSatellite or in_googleHybrid or in_googleTerrain:
                 good = False
                 for i in p.readListEntry('WMSCrsList','')[0]:
-                    if i == 'EPSG:900913':
+                    if i == 'EPSG:3857':
                         good = True
                 if not good:
                     self.log(

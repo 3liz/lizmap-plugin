@@ -138,7 +138,7 @@ Salvare il progetto?</translation>
     <message>
         <location filename="lizmap.py" line="1330"/>
         <source>log.map.externalBaseLayers.warning</source>
-        <translation>&lt;b&gt;** ATTENZIONE **&lt;/b&gt; : Hai scelto un layer di base pubblico nella finestra Mappa. É necessario aggiungere &quot;EPSG:900913&quot; come sistema di riferimento del server WMS nelle proprietà del progetto !</translation>
+        <translation>&lt;b&gt;** ATTENZIONE **&lt;/b&gt; : Hai scelto un layer di base pubblico nella finestra Mappa. É necessario aggiungere &quot;EPSG:3857&quot; come sistema di riferimento del server WMS nelle proprietà del progetto !</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1358"/>
