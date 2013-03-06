@@ -183,7 +183,8 @@ class lizmap:
             'imageFormat': {'widget': self.dlg.ui.liImageFormat, 'wType': 'list', 'type': 'string', 'default': 'image/png', 'list':["image/png", "image/png; mode=8bit", "image/jpeg"]},
             'cached': {'widget': self.dlg.ui.cbCached, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
             'cacheExpiration': {'widget': self.dlg.ui.inCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 0},
-            'metatileSize': {'widget': self.dlg.ui.inMetatileSize, 'wType': 'text', 'type': 'string', 'default': ''}
+            'metatileSize': {'widget': self.dlg.ui.inMetatileSize, 'wType': 'text', 'type': 'string', 'default': ''},
+            'clientCacheExpiration': {'widget': self.dlg.ui.inClientCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 300}
         }
         
         # dictionnay for finding the annotation layers geometryType and the corresponding combobox
@@ -1169,6 +1170,9 @@ class lizmap:
                 # unset popupTemplate if popup False
                 if layerOptions['popup'].lower() == 'false':
                     del layerOptions['popupTemplate']
+                # unset clientCacheExpiration if needed
+                if layerOptions['clientCacheExpiration'] <= 0:
+                    del layerOptions['clientCacheExpiration']
 
                 liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
 

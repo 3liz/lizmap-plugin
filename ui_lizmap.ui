@@ -289,7 +289,42 @@
              </layout>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <item>
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>layers.layer.clientCacheExpiration</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="inClientCacheExpiration">
+                <property name="maximum">
+                 <number>2592000</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_20">
+                <property name="text">
+                 <string>seconds</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
