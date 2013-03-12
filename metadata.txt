@@ -4,15 +4,19 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.7.2
+version=version 1.8.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.7.2
-  * Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder. Can be used to have a Data folder at the same level of the repositories.
-  * Bug Fix: Fix the toggled option for layers wich was always on
-  * Bug Fix: Winscp - a password can be empty if the winScp session field is filled.
+  Version 1.8.0
+  * New tools : annotations, locate by layer, simple print, address search, zoom history, measure, etc.
+  * New layer option - Configure Client browser Cache expiration
+  * Redesign the UI with group boxes (thanks to Salvatore Larrosa)
+  * Bug fix - fix global options with checkboxes which were reused for next opened QGIS project
+  * New Vector api merge - adapt Lizmap code
+  * Change the way relative path are tracked
+  * Change needed projection 4 external layers: 900913(deprecated)->3857
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping
@@ -23,7 +27,7 @@ tags=lizmap, server, web, publication, 3liz, ftp, webmapping
 ; if they are not filled
 homepage=http://hub.qgis.org/projects/lizmapplugin
 tracker=http://hub.qgis.org/projects/lizmapplugin/issues
-repository=https://bitbucket.org/mdouchin/lizmapplugin
+repository=https://github.com/3liz/lizmap-plugin
 icon=icon.png
 
 ; experimental flag

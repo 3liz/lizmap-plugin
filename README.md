@@ -1,4 +1,4 @@
-[![logo](icon.png "3Liz")][3liz]Lizmap 1.7.2
+[![logo](icon.png "3Liz")][3liz]Lizmap 1.8.0
 ============================================
 
 Publication plugin for Lizmap web application, by 3LIZ.
@@ -36,6 +36,11 @@ or from QGIS
 2. Select LizMap plugin
 3. Install/Upgrade plugin
 
+Documentation
+--------------
+
+http://docs.3liz.com/
+
 License
 -------
 Version: MPL 2.0/GPL 2.0/LGPL 2.1
@@ -46,11 +51,6 @@ Alternatively, the contents of this file may be used under the terms of either o
 
 Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.
 
-Acknowledgments
----------------
-
-We like to thank [Alisé Géomatique] a french company, for the help the provided by reporting bugs and asking for new features during the development of Lizmap Qgis plugin and web application. They founded the developpement of adding the public baselayers support (Google or OpenStreetMap).
 
   [QGIS Server Tutorial]: http://www.qgis.org/wiki/QGIS_Server_Tutorial
-  [Alisé Géomatique]:http://www.alise-geomatique.fr
   [3liz]:http://www.3liz.com
