@@ -7,6 +7,7 @@ CHANGELOG
   * New Vector api merge - adapt Lizmap code
   * Change the way relative path are tracked
   * Change needed projection 4 external layers: 900913(deprecated)->3857
+  * Bug fix : error handling when using lizmap on windows with multiple drives
   
   Version 1.7.2
   * Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder. Can be used to have a Data folder at the same level of the repositories.

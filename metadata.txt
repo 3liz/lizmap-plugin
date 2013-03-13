@@ -17,6 +17,7 @@ changelog=
   * New Vector api merge - adapt Lizmap code
   * Change the way relative path are tracked
   * Change needed projection 4 external layers: 900913(deprecated)->3857
+  * Bug fix : error handling when using lizmap on windows with multiple drives
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping
