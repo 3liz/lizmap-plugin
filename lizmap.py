@@ -1234,15 +1234,22 @@ class lizmap:
                 layerProviderKey = mc.layer( i ).providerType()
                 # Only for layers stored in disk
                 if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr'):
-                    relativePath = os.path.normpath(
-                        os.path.relpath(os.path.abspath(layerSource), projectDir)
-                    )
-                    if not relativePath.startswith('../../') and not relativePath.startswith('..\\..\\'):
-                        layerSourcesOk.append(os.path.abspath(layerSource))
-                    else:
-                        layerSourcesBad.append(layerSource)
-                        layerPathError+='--> %s \n' % relativePath
+                    try:
+                        relativePath = os.path.normpath(
+                            os.path.relpath(os.path.abspath(layerSource), projectDir)
+                        )
+                        if not relativePath.startswith('../../') and not relativePath.startswith('..\\..\\'):
+                            layerSourcesOk.append(os.path.abspath(layerSource))
+                        else:
+                            layerSourcesBad.append(layerSource)
+                            layerPathError+='--> %s \n' % relativePath
+                            isok = False                        
+                    except:
                         isok = False
+                        layerSourcesBad.append(layerSource)
+                        layerPathError+='--> %s \n' % mc.layer( i ).name()                        
+
+
                     
                     
             if len(layerSourcesBad) > 0:
