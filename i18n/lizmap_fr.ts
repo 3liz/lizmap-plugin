@@ -345,7 +345,7 @@ avec répertoire du serveur
     <message>
         <location filename="ui_lizmap.ui" line="511"/>
         <source>map.mapScales.label</source>
-        <translation>Échelles (ex:100000,20000)</translation>
+        <translation>Échelles</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="357"/>
@@ -655,7 +655,9 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
     <message>
         <location filename="ui_lizmap.ui" line="590"/>
         <source>map.scales.help</source>
-        <translation>Écrire une liste d&apos;entiers séparés par une virgule. Il faut au moins écrire les 2 valeurs d&apos;échelle minimale et maximale. Ex: 1000, 250000</translation>
+        <translation>Écrire une liste d&apos;entiers séparés par une virgule. 
+Il faut au moins écrire les 2 valeurs d&apos;échelle minimale et maximale. 
+Ex: 1000, 250000</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="296"/>

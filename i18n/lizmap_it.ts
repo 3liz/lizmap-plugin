@@ -344,7 +344,7 @@ con la cartella remota FTP:
     <message>
         <location filename="ui_lizmap.ui" line="511"/>
         <source>map.mapScales.label</source>
-        <translation>Scala (esempio:100000,20000)</translation>
+        <translation>Scala</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="357"/>
@@ -653,7 +653,9 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="590"/>
         <source>map.scales.help</source>
-        <translation>Write down integer scales separated by coma. You must at least enter 2 min and max values. Ex: 1000, 250000</translation>
+        <translation>Write down integer scales separated by coma.
+You must at least enter 2 min and max values.
+Ex: 1000, 250000</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="296"/>
