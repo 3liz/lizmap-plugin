@@ -133,7 +133,7 @@ Salvare il progetto?</translation>
     <message>
         <location filename="lizmap.py" line="380"/>
         <source>log.map.mapScales.warning</source>
-        <translation>Map scales: Write down integer scales separated by coma. You must at least enter 2 min and max values.</translation>
+        <translation>Scale per la mappa: Inserisci un valore intero per la scala, è possibile inserire più valori separati dalla virgola. É necessario inserire almeno due valori di scala (minimo e massimo).</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1334"/>
@@ -269,7 +269,7 @@ con la cartella remota FTP:
     <message>
         <location filename="lizmap.py" line="1734"/>
         <source>ui.msg.warning.window.opened</source>
-        <translation>LizMap è già aperto.</translation>
+        <translation>LizMap è già avviato.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="75"/>
@@ -478,7 +478,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="182"/>
         <source>layers.popup.configure</source>
-        <translation>Configure</translation>
+        <translation>Configura</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="285"/>
@@ -568,7 +568,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="111"/>
         <source>layers.rootGroupsAsBlock</source>
-        <translation>Set the root groups as legend blocks</translation>
+        <translation>Transforma i gruppi di layers come un unico blocco in legenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="743"/>
@@ -578,17 +578,17 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="801"/>
         <source>tools.annotationLayer.label</source>
-        <translation>Annotation layer</translation>
+        <translation>Strumento Annotazione</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="807"/>
         <source>tools.annotationLayer.description</source>
-        <translation>You can choose one spatialite layer among your project and let the web users add features in it.</translation>
+        <translation>É possibile scegliere un layer SpatiLite o PostGIS dal tuo progetto e permettere all&apos;utente di inserire nuove geometrie dal Web.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="814"/>
         <source>tools.annotationLayer.cbAnnotationLayerIsActive</source>
-        <translation>activate the annotation layer</translation>
+        <translation>Attiva lo strumento annotazione</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="823"/>
@@ -608,7 +608,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="81"/>
         <source>ui.groupBox.treeLayers</source>
-        <translation>Elenco dei layer</translation>
+        <translation>Layers di progetto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="121"/>
@@ -623,7 +623,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="644"/>
         <source>map.tool.zoom.history</source>
-        <translation>Zoom history</translation>
+        <translation>Cronologia Zoom </translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="654"/>
@@ -633,17 +633,17 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="624"/>
         <source>map.tool.print</source>
-        <translation>Simple print</translation>
+        <translation>Strumento Stampa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="634"/>
         <source>map.tool.measure</source>
-        <translation>Measure tools</translation>
+        <translation>Strumento Misura</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="665"/>
         <source>map.tool.externalSearch.label</source>
-        <translation>Address search</translation>
+        <translation>Ricerca Indirizzo</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="678"/>
@@ -653,9 +653,9 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="ui_lizmap.ui" line="590"/>
         <source>map.scales.help</source>
-        <translation>Write down integer scales separated by coma.
-You must at least enter 2 min and max values.
-Ex: 1000, 250000</translation>
+        <translation>Inserire i valori per la scala separati dalla virgola.
+É necessario inserire almeno due valori di scala (minimo e massimo)
+Es: 1000, 250000</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="296"/>
@@ -665,7 +665,7 @@ Ex: 1000, 250000</translation>
     <message>
         <location filename="ui_lizmap.ui" line="310"/>
         <source>seconds</source>
-        <translation>seconds</translation>
+        <translation>secondi</translation>
     </message>
 </context>
 <context>
