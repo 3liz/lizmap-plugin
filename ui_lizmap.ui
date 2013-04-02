@@ -23,13 +23,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="btSave">
-       <property name="text">
-        <string>layers.btSave.label</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="3">
       <widget class="QDialogButtonBox" name="buttonClose">
        <property name="standardButtons">
@@ -59,6 +52,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="btSave">
+       <property name="text">
+        <string>layers.btSave.label</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -97,7 +97,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_23">
            <item row="0" column="0">
-            <widget class="QGroupBox" name="groupBox_9">
+            <widget class="QGroupBox" name="gb_layerSettings">
              <property name="title">
               <string>ui.groupBox.settingLayer</string>
              </property>
@@ -317,7 +317,7 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_8">
+        <widget class="QGroupBox" name="gb_tree">
          <property name="title">
           <string>ui.groupBox.treeLayers</string>
          </property>
@@ -379,7 +379,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QGroupBox" name="groupBox_10">
+            <widget class="QGroupBox" name="gb_visibleTools">
              <property name="title">
               <string>map.visibletools.label</string>
              </property>
@@ -496,7 +496,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_6">
+            <widget class="QGroupBox" name="gb_Scales">
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -622,7 +622,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_7">
+            <widget class="QGroupBox" name="gb_externalLayers">
              <property name="title">
               <string>map.public.label</string>
              </property>
@@ -785,13 +785,13 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>871</width>
-            <height>480</height>
+            <width>1031</width>
+            <height>464</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QGroupBox" name="groupBox">
+            <widget class="QGroupBox" name="gb_locateByLayer">
              <property name="title">
               <string>tools.locateByLayer.label</string>
              </property>
@@ -899,6 +899,162 @@
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="gb_editionLayers">
+             <property name="title">
+              <string>tools.edition.label</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_24">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>tools.edition.description</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QTableWidget" name="twEditionLayerList">
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>twEdition.col.layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twEdition.col.add</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twEdition.col.modAttribute</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twEdition.col.modGeom</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twEdition.col.delete</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twEdition.col.id</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_8">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <item>
+                   <widget class="QComboBox" name="liEditionLayer">
+                    <property name="minimumSize">
+                     <size>
+                      <width>78</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbEditionLayerCreate">
+                    <property name="text">
+                     <string>tools.editionLayer.cbCreate</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbEditionLayerModifyAttribute">
+                    <property name="text">
+                     <string>tools.editionLayer.cbModAtt</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbEditionLayerModifyGeometry">
+                    <property name="text">
+                     <string>tools.editionLayer.cbModGeom</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbEditionLayerDeleteFeature">
+                    <property name="text">
+                     <string>tools.editionLayer.cbDel</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_16">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_14">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_17">
+                  <item>
+                   <widget class="QPushButton" name="btEditionLayerAdd">
+                    <property name="text">
+                     <string>tools.btEditionLayerAdd</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btEditionLayerDel">
+                    <property name="text">
+                     <string>tools.btEditionDel</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_15">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer_3">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -911,119 +1067,11 @@
              </property>
             </spacer>
            </item>
-           <item>
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="title">
-              <string>tools.annotationLayer.label</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_20">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>tools.annotationLayer.description</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="cbAnnotationLayerIsActive">
-                <property name="text">
-                 <string>tools.annotationLayer.cbAnnotationLayerIsActive</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="label_31">
-                  <property name="text">
-                   <string>annotationPointLayer</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="liAnnotationPointLayer">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_32">
-                  <property name="text">
-                   <string>annotationLineLayer</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="liAnnotationLineLayer">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_4">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_33">
-                  <property name="text">
-                   <string>annotationPolygonLayer</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="liAnnotationPolygonLayer">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
           </layout>
-          <zorder>groupBox_2</zorder>
-          <zorder>groupBox</zorder>
-          <zorder>groupBox</zorder>
-          <zorder>groupBox_2</zorder>
+          <zorder>gb_locateByLayer</zorder>
+          <zorder>gb_locateByLayer</zorder>
           <zorder>verticalSpacer_3</zorder>
+          <zorder>gb_editionLayers</zorder>
          </widget>
         </widget>
        </item>
@@ -1050,7 +1098,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <widget class="QGroupBox" name="groupBox_3">
+            <widget class="QGroupBox" name="gb_ftpParams">
              <property name="title">
               <string>ftp.title.parameters</string>
              </property>
@@ -1154,7 +1202,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_4">
+            <widget class="QGroupBox" name="gb_ftpDir">
              <property name="title">
               <string>ftp.title.directory</string>
              </property>
@@ -1217,7 +1265,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_5">
+            <widget class="QGroupBox" name="gb_winscp">
              <property name="title">
               <string>ftp.title.winscp</string>
              </property>

@@ -122,16 +122,16 @@ class lizmap:
             self.dlg.ui.btSync.setEnabled(False)
             
         # Set stylesheet for QGroupBox
-        self.dlg.ui.groupBox.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_2.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_3.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_4.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_5.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_6.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_7.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_8.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_9.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.groupBox_10.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_tree.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_layerSettings.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_visibleTools.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_Scales.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_externalLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_editionLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_ftpParams.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_ftpDir.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_winscp.setStyleSheet(self.STYLESHEET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -187,13 +187,15 @@ class lizmap:
             'clientCacheExpiration': {'widget': self.dlg.ui.inClientCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 300}
         }
         
-        # dictionnay for finding the annotation layers geometryType and the corresponding combobox
-        self.annotationLayerConnection = {
-            'point' : self.dlg.ui.liAnnotationPointLayer,
-            'line' : self.dlg.ui.liAnnotationLineLayer,
-            'polygon' : self.dlg.ui.liAnnotationPolygonLayer
+        # map qgis geometry type
+        self.mapQgisGeometryType = {
+            0 : 'point',
+            1 : 'line',
+            2 : 'polygon',
+            3 : 'unknown',
+            4 : 'none'
         }
-
+        
         # Disable checkboxes on the layer tab
         self.enableCheckBox(False)
 
@@ -272,6 +274,8 @@ class lizmap:
         # detect close event
         QObject.connect(self.dlg.ui.buttonClose, SIGNAL("rejected()"), self.warnOnClose )
         QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
+        
+        # Locate by layers
         # detect layer locate list has changed to refresh layer field list
         QObject.connect(
             self.dlg.ui.liLocateByLayerLayers,
@@ -282,11 +286,23 @@ class lizmap:
             self.dlg.ui.btLocateByLayerAdd, 
             SIGNAL("clicked()"), 
             self.addLayerToLocateByLayer )
-        # remove a layer to the locateByLayerList
+        # remove a layer from the locateByLayerList
         QObject.connect(
             self.dlg.ui.btLocateByLayerDel, 
             SIGNAL("clicked()"), 
             self.removeLayerFromLocateByLayer)
+            
+        # Edition layers
+        # add a layer to the editionLayerList
+        QObject.connect(
+            self.dlg.ui.btEditionLayerAdd, 
+            SIGNAL("clicked()"), 
+            self.addLayerToEditionLayer )
+        # remove a layer from the editionLayerList
+        QObject.connect(
+            self.dlg.ui.btEditionLayerDel, 
+            SIGNAL("clicked()"), 
+            self.removeLayerFromEditionLayer)            
 
 
         # first check if Web menu availbale in this QGIS version
@@ -418,7 +434,7 @@ class lizmap:
         jsonFile = "%s.cfg" % p.fileName()
         jsonOptions = {}
         jsonLocateByLayer = {}
-        jsonAnnotationLayers = {}
+        jsonEditionLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             json = f.read()
@@ -427,8 +443,8 @@ class lizmap:
                 jsonOptions = sjson['options']
                 if sjson.has_key('locateByLayer'):
                     jsonLocateByLayer = sjson['locateByLayer']
-                if sjson.has_key('annotationLayers'):
-                    jsonAnnotationLayers = sjson['annotationLayers']
+                if sjson.has_key('editionLayers'):
+                    jsonEditionLayers = sjson['editionLayers']
             except:
                 isok=0
                 QMessageBox.critical(
@@ -506,18 +522,45 @@ class lizmap:
                 lblTableWidget.setItem(twRowCount, 3, newItem)
         lblTableWidget.setColumnHidden(3, True)
         
-        # Annotation layer tool
-        self.dlg.ui.cbAnnotationLayerIsActive.setChecked(False);
-        if jsonAnnotationLayers:
-            # Set the combo boxes with the corresponding layer(s)
-            for k,v in jsonAnnotationLayers.items():
-                combo = self.annotationLayerConnection[v['geometryType']]
-                index = combo.findData(QString(v['layerId']))
-                if index != -1:
-                    combo.setCurrentIndex(index)
-                    # check the checkbox
-                    self.dlg.ui.cbAnnotationLayerIsActive.setChecked(True);                
-            
+        # Edition layers tool
+        # empty previous content
+        lblTableWidget_2 = self.dlg.ui.twEditionLayerList
+        for row in range(lblTableWidget_2.rowCount()):
+            lblTableWidget_2.removeRow(row)
+        lblTableWidget_2.setRowCount(0)
+        # fill from the json if exists
+        if jsonEditionLayers:
+            # load content from json file
+            for k,v in jsonEditionLayers.items():
+                twRowCount = lblTableWidget_2.rowCount()
+                # add a new line
+                lblTableWidget_2.setRowCount(twRowCount + 1)
+                lblTableWidget_2.setColumnCount(6)         
+                # layer name
+                newItem = QTableWidgetItem(k)
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget_2.setItem(twRowCount, 0, newItem)
+                # create
+                newItem = QTableWidgetItem(v['capabilities']['createFeature'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget_2.setItem(twRowCount, 1, newItem)
+                # modify attributes
+                newItem = QTableWidgetItem(v['capabilities']['modifyAttribute'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget_2.setItem(twRowCount, 2, newItem)                
+                # modify geometry
+                newItem = QTableWidgetItem(v['capabilities']['modifyGeometry'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget_2.setItem(twRowCount, 3, newItem)
+                # delete
+                newItem = QTableWidgetItem(v['capabilities']['deleteFeature'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget_2.setItem(twRowCount, 4, newItem)
+                # layer id
+                newItem = QTableWidgetItem(v['layerId'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget_2.setItem(twRowCount, 5, newItem)
+        lblTableWidget_2.setColumnHidden(5, True)
 
         return True
 
@@ -545,13 +588,12 @@ class lizmap:
         return returnLayer        
 
 
-    def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=['all'], gtype='all'):
+    def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=['all']):
         '''
             Get the list of layers and add them to a combo box
-            ltype can be : all, vector, raster
-            providerTypeList is a list and can be : ['all'] or a list of provider keys
+            * ltype can be : all, vector, raster
+            * providerTypeList is a list and can be : ['all'] or a list of provider keys
             as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
-            gtype can be : all, QGis.Point, QGis.Line, QGis.Polygon
         '''
         # empty combobox
         combobox.clear()
@@ -566,8 +608,7 @@ class lizmap:
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
                 if 'all' in providerTypeList or layer.providerType() in providerTypeList:
-                    if gtype == 'all' or gtype == layer.geometryType():
-                        combobox.addItem ( layer.name(),QVariant(layerId))
+                    combobox.addItem ( layer.name(), QVariant(layerId))
             # raster
             if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
                 combobox.addItem ( layer.name(),QVariant(layerId))
@@ -628,8 +669,7 @@ class lizmap:
                 QMessageBox.Ok)
             return False
           
-        
-        
+        # Retrieve layer information
         layerName = QString(layer.name())
         layerId = QString(layer.id())
         fieldCombobox = self.dlg.ui.liLocateByLayerFields
@@ -666,6 +706,81 @@ class lizmap:
         for which to have the "locate by layer" tool'''
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         lblTableWidget.removeRow(lblTableWidget.currentRow())
+
+
+
+    def addLayerToEditionLayer(self):
+        '''Add a layer in the list of edition layers'''
+        
+        # Get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liEditionLayer)
+        if not layer:
+            return False
+        
+        # Retrieve layer information        
+        layerName = QString(layer.name())
+        layerId = QString(layer.id())
+        createFeature = str(self.dlg.ui.cbEditionLayerCreate.isChecked())
+        modifyAttribute = str(self.dlg.ui.cbEditionLayerModifyAttribute.isChecked())
+        modifyGeometry = str(self.dlg.ui.cbEditionLayerModifyGeometry.isChecked())
+        deleteFeature = str(self.dlg.ui.cbEditionLayerDeleteFeature.isChecked())
+        lblTableWidget = self.dlg.ui.twEditionLayerList
+        
+        # check at least one checkbox is active
+        if not self.dlg.ui.cbEditionLayerCreate.isChecked() \
+        and not self.dlg.ui.cbEditionLayerModifyAttribute.isChecked() \
+        and not self.dlg.ui.cbEditionLayerModifyGeometry.isChecked() \
+        and not self.dlg.ui.cbEditionLayerDeleteFeature.isChecked():
+            return False
+           
+        # count table widget lines
+        twRowCount = lblTableWidget.rowCount()
+        
+        # check if layer already added
+        if twRowCount > 0:
+            for row in range(twRowCount):
+                itemLayerId = str(lblTableWidget.item(row, 5).text().toUtf8())
+                if layerId == itemLayerId:
+                    return False    
+        
+        # Add layer
+        if twRowCount < 5:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(6)
+                       
+            # add layer name to the line
+            newItem = QTableWidgetItem(layerName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, newItem)
+            # create feature
+            newItem = QTableWidgetItem(createFeature)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, newItem)
+            # modify attributes
+            newItem = QTableWidgetItem(modifyAttribute)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
+            # modify geometry
+            newItem = QTableWidgetItem(modifyGeometry)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
+            # delete feature
+            newItem = QTableWidgetItem(deleteFeature)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
+            # add layer id to the line
+            newItem = QTableWidgetItem(layerId)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
+        lblTableWidget.setColumnHidden(5, True)
+         
+
+    def removeLayerFromEditionLayer(self):
+        '''Remove a layer from the list of edition layers '''
+        lblTableWidget = self.dlg.ui.twEditionLayerList
+        lblTableWidget.removeRow(lblTableWidget.currentRow())
+
 
     def refreshLayerTree(self):
         '''Refresh the layer tree on user demand. Uses method populateLayerTree'''
@@ -1102,20 +1217,30 @@ class lizmap:
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId
                     
-        # layer(s) for the annotation tool
-        if self.dlg.ui.cbAnnotationLayerIsActive.isChecked():
-            liz2json["annotationLayers"] = {}    
-            for k,v in self.annotationLayerConnection.items():
-                layer = self.getQgisLayerByNameFromCombobox(v)
-                if layer:
-                    layerName = str(v.currentText())
-                    layerId = str(layer.id())
-                    liz2json["annotationLayers"][layerName] = {}
-                    liz2json["annotationLayers"][layerName]["geometryType"] = k
-                    liz2json["annotationLayers"][layerName]["layerId"] = layerId
-            if not liz2json["annotationLayers"]:
-                del liz2json['annotationLayers']
-                self.dlg.ui.cbAnnotationLayerIsActive.setChecked(False)
+        # layer(s) for the edition tool
+        lblTableWidget = self.dlg.ui.twEditionLayerList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount > 0:
+            liz2json["editionLayers"] = {}
+            for row in range(twRowCount):                   
+                # check that the layer is checked in the WFS capabilities
+                layerName = str(lblTableWidget.item(row, 0).text().toUtf8())
+                createFeature = str(lblTableWidget.item(row, 1).text())
+                modifyAttribute = str(lblTableWidget.item(row, 2).text())
+                modifyGeometry = str(lblTableWidget.item(row, 3).text())
+                deleteFeature = str(lblTableWidget.item(row, 4).text())
+                layerId = str(lblTableWidget.item(row, 5).text().toUtf8())
+                layer = self.getQgisLayerById(layerId)
+                geometryType = self.mapQgisGeometryType[layer.geometryType()]
+                liz2json["editionLayers"][layerName] = {}
+                liz2json["editionLayers"][layerName]["layerId"] = layerId
+                liz2json["editionLayers"][layerName]["geometryType"] = geometryType
+                liz2json["editionLayers"][layerName]["capabilities"] = {}
+                liz2json["editionLayers"][layerName]["capabilities"]["createFeature"] = createFeature
+                liz2json["editionLayers"][layerName]["capabilities"]["modifyAttribute"] = modifyAttribute
+                liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
+                liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
+                
 
         # gui user defined layers options
         for k,v in self.layerList.items():
@@ -1386,7 +1511,7 @@ class lizmap:
 
             self.dlg.ui.outState.setText('<font color="green"></font>')
             # Go to Log tab
-            self.dlg.ui.tabWidget.setCurrentIndex(4)
+            self.dlg.ui.tabWidget.setCurrentIndex(5)
             
             # Get and check map scales
             if self.isok:
@@ -1640,9 +1765,9 @@ class lizmap:
             return False
 
         # Go to Log tab
-        self.dlg.ui.tabWidget.setCurrentIndex(4)
+        self.dlg.ui.tabWidget.setCurrentIndex(5)
         time.sleep(1)
-        self.dlg.ui.tabWidget.setCurrentIndex(4)
+        self.dlg.ui.tabWidget.setCurrentIndex(5)
 
         # Check the platform
         # FTP Sync only active for linux and windows users.
@@ -1754,10 +1879,8 @@ class lizmap:
             # Fill the layer list for the locate by layer tool
             self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
             
-            # Fill the layers lists for the annotation tool
-            self.populateLayerCombobox(self.dlg.ui.liAnnotationPointLayer, 'vector', ['spatialite', 'postgres'], QGis.Point)
-            self.populateLayerCombobox(self.dlg.ui.liAnnotationLineLayer, 'vector', ['spatialite', 'postgres'], QGis.Line)
-            self.populateLayerCombobox(self.dlg.ui.liAnnotationPolygonLayer, 'vector', ['spatialite', 'postgres'], QGis.Polygon)
+            # Fill the layers lists for the edition tool
+            self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
