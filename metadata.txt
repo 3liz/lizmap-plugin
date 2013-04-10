@@ -4,20 +4,15 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.8.0
+version=version 1.9.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.8.0
-  * New tools : annotations, locate by layer, simple print, address search, zoom history, measure, etc.
-  * New layer option - Configure Client browser Cache expiration
-  * Redesign the UI with group boxes (thanks to Salvatore Larrosa)
-  * Bug fix - fix global options with checkboxes which were reused for next opened QGIS project
-  * New Vector api merge - adapt Lizmap code
-  * Change the way relative path are tracked
-  * Change needed projection 4 external layers: 900913(deprecated)->3857
-  * Bug fix : error handling when using lizmap on windows with multiple drives
+  Version 1.9.0
+  * New feature : edition tool which replaces the annotation tool.
+  * Update translations
+  * Design: add scroll areas to allow users to resize the dialog for small screens
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping
@@ -27,7 +22,7 @@ tags=lizmap, server, web, publication, 3liz, ftp, webmapping
 ; be probably possible to create a project on redmine
 ; if they are not filled
 homepage=http://hub.qgis.org/projects/lizmapplugin
-tracker=http://hub.qgis.org/projects/lizmapplugin/issues
+tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
 icon=icon.png
 

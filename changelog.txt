@@ -1,4 +1,9 @@
 CHANGELOG
+  Version 1.9.0
+  * New feature : edition tool which replaces the annotation tool.
+  * Update translations
+  * Design: add scroll areas to allow users to resize the dialog for small screens
+  
   Version 1.8.0
   * New tools : annotations, locate by layer, simple print, address search, zoom history, measure, etc.
   * New layer option - Configure Client browser Cache expiration
