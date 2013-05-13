@@ -109,7 +109,7 @@ ou dans un répertoire au-dessus ou à côté.
     <message>
         <location filename="lizmap.py" line="1313"/>
         <source>ui.msg.error.project.wms.extent</source>
-        <translation>L&apos;option &quot;Emprise annoncée&quot; doit être configurée dans l&apos;onglet &quot;OWS Server&quot; des propriétés du projet Qgis.</translation>
+        <translation>L&apos;option &quot;Emprise annoncée&quot; doit être configurée dans l&apos;onglet &quot;Serveur OWS&quot; des propriétés du projet Qgis.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1777"/>
@@ -465,7 +465,7 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
     <message>
         <location filename="lizmap.py" line="1302"/>
         <source>ui.msg.error.project.wms.title</source>
-        <translation>Le titre du projet doit être défini dans l&apos;onglet &quot;Serveur OWS&quot; des propriétés du projet Qgis.</translation>
+        <translation>Le titre du projet doit être défini dans l&apos;onglet &quot;Serveur OWS&quot; de la fenêtre des propriétés du projet Qgis.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="245"/>

@@ -114,7 +114,7 @@ or in one folder above or aside.
     <message>
         <location filename="lizmap.py" line="1313"/>
         <source>ui.msg.error.project.wms.extent</source>
-        <translation>The project WMS extent must be set. Please change this options in the project settings.</translation>
+        <translation>The project WMS extent must be set. Please change this options in the project settings dialog.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1777"/>

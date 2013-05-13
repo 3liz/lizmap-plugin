@@ -113,7 +113,7 @@ Salvare il progetto?</translation>
     <message>
         <location filename="lizmap.py" line="1313"/>
         <source>ui.msg.error.project.wms.extent</source>
-        <translation>Nel progetto deve essre impostata l&apos;estensione del WMS. Imposta questa opzione nelle proprietà del progetto.</translation>
+        <translation>Nel progetto deve essere impostata l&apos;estensione del WMS. Imposta questa opzione nelle proprietà del progetto.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1777"/>
@@ -463,7 +463,7 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
     <message>
         <location filename="lizmap.py" line="1302"/>
         <source>ui.msg.error.project.wms.title</source>
-        <translation>Il titolo del progetto WMS deve essere inpostato nella scheda Server OWS che s trova nella finestra delle proprietà del progetto QGIS.</translation>
+        <translation>Il titolo del progetto WMS deve essere impostato nella scheda Server OWS che strova nella finestra delle proprietà del progetto QGIS.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="245"/>
