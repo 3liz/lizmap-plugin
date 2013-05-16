@@ -147,44 +147,143 @@ class lizmap:
         # List of ui widget for data driven actions and checking
         
         self.globalOptions = {
-            'mapScales': {'widget': self.dlg.ui.inMapScales, 'wType': 'text', 'type': 'intlist', 'default': [500000, 250000, 100000, 25000]},
-            'minScale': {'widget': self.dlg.ui.inMinScale, 'wType': 'text', 'type': 'integer', 'default': 1},
-            'maxScale': {'widget': self.dlg.ui.inMaxScale, 'wType': 'text', 'type': 'integer', 'default': 1000000000},
+            'mapScales': {
+                'widget': self.dlg.ui.inMapScales, 
+                'wType': 'text', 'type': 'intlist', 'default': [500000, 250000, 100000, 25000]
+            },
+            'minScale': {
+                'widget': self.dlg.ui.inMinScale, 
+                'wType': 'text', 'type': 'integer', 'default': 1
+            },
+            'maxScale': {
+                'widget': self.dlg.ui.inMaxScale, 
+                'wType': 'text', 'type': 'integer', 'default': 1000000000
+            },
         
-            'googleKey': {'widget': self.dlg.ui.inGoogleKey, 'wType': 'text', 'type': 'string', 'default': ''},
-            'googleHybrid' : {'widget': self.dlg.ui.cbGoogleHybrid, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'googleSatellite' : {'widget': self.dlg.ui.cbGoogleSatellite, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'googleTerrain' : {'widget': self.dlg.ui.cbGoogleTerrain, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'googleStreets' : {'widget': self.dlg.ui.cbGoogleStreets, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'osmMapnik' : {'widget': self.dlg.ui.cbOsmMapnik, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'osmMapquest' : {'widget': self.dlg.ui.cbOsmMapquest, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'googleKey': {
+                'widget': self.dlg.ui.inGoogleKey, 
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'googleHybrid' : {
+                'widget': self.dlg.ui.cbGoogleHybrid, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleSatellite' : {
+                'widget': self.dlg.ui.cbGoogleSatellite, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleTerrain' : {
+                'widget': self.dlg.ui.cbGoogleTerrain, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleStreets' : {
+                'widget': self.dlg.ui.cbGoogleStreets, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'osmMapnik' : {
+                'widget': self.dlg.ui.cbOsmMapnik, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'osmMapquest' : {
+                'widget': self.dlg.ui.cbOsmMapquest, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
             
-            'rootGroupsAsBlock' : {'widget': self.dlg.ui.cbRootGroupsAsBlock, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
+            'rootGroupsAsBlock' : {
+                'widget': self.dlg.ui.cbRootGroupsAsBlock, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
             
-            'print' : {'widget': self.dlg.ui.cbActivatePrint, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'measure' : {'widget': self.dlg.ui.cbActivateMeasure, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'externalSearch' : {'widget': self.dlg.ui.liExternalSearch, 'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim']},
-            'zoomHistory' : {'widget': self.dlg.ui.cbActivateZoomHistory, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'geolocation' : {'widget': self.dlg.ui.cbActivateGeolocation, 'wType': 'checkbox', 'type': 'boolean', 'default': False}
+            'print' : {
+                'widget': self.dlg.ui.cbActivatePrint, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'measure' : {
+                'widget': self.dlg.ui.cbActivateMeasure, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'externalSearch' : {
+                'widget': self.dlg.ui.liExternalSearch, 
+                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim']
+            },
+            'zoomHistory' : {
+                'widget': self.dlg.ui.cbActivateZoomHistory, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'geolocation' : {
+                'widget': self.dlg.ui.cbActivateGeolocation, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            }
         }
         
         self.layerOptionsList = {
-            'title': {'widget': self.dlg.ui.inLayerTitle, 'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True},
-            'abstract': {'widget': self.dlg.ui.teLayerAbstract, 'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True},
-            'link': {'widget': self.dlg.ui.inLayerLink, 'wType': 'text', 'type': 'string', 'default': ''},
-            'minScale': {'widget': None, 'wType': 'text', 'type': 'integer', 'default': 1},
-            'maxScale': {'widget': None, 'wType': 'text', 'type': 'integer', 'default': 1000000000000},
-            'toggled': {'widget': self.dlg.ui.cbToggled, 'wType': 'checkbox', 'type': 'boolean', 'default': True},
-            'popup': {'widget': self.dlg.ui.cbPopup, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'popupTemplate': {'widget': None, 'wType': 'text', 'type': 'string', 'default': ''},
-            'groupAsLayer': {'widget': self.dlg.ui.cbGroupAsLayer, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'baseLayer': {'widget': self.dlg.ui.cbLayerIsBaseLayer, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'singleTile': {'widget': self.dlg.ui.cbSingleTile, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'imageFormat': {'widget': self.dlg.ui.liImageFormat, 'wType': 'list', 'type': 'string', 'default': 'image/png', 'list':["image/png", "image/png; mode=8bit", "image/jpeg"]},
-            'cached': {'widget': self.dlg.ui.cbCached, 'wType': 'checkbox', 'type': 'boolean', 'default': False},
-            'cacheExpiration': {'widget': self.dlg.ui.inCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 0},
-            'metatileSize': {'widget': self.dlg.ui.inMetatileSize, 'wType': 'text', 'type': 'string', 'default': ''},
-            'clientCacheExpiration': {'widget': self.dlg.ui.inClientCacheExpiration, 'wType': 'spinbox', 'type': 'integer', 'default': 300}
+            'title': {
+                'widget': self.dlg.ui.inLayerTitle, 
+                'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
+            },
+            'abstract': {
+                'widget': self.dlg.ui.teLayerAbstract, 
+                'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True
+            },
+            'link': {
+                'widget': self.dlg.ui.inLayerLink, 
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'minScale': {
+                'widget': None, 
+                'wType': 'text', 'type': 'integer', 'default': 1
+            },
+            'maxScale': {
+                'widget': None, 
+                'wType': 'text', 'type': 'integer', 'default': 1000000000000
+            },
+            'toggled': {
+                'widget': self.dlg.ui.cbToggled, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'popup': {
+                'widget': self.dlg.ui.cbPopup, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'popupTemplate': {
+                'widget': None, 
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'groupAsLayer': {
+                'widget': self.dlg.ui.cbGroupAsLayer, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'baseLayer': {
+                'widget': self.dlg.ui.cbLayerIsBaseLayer, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'singleTile': {
+                'widget': self.dlg.ui.cbSingleTile, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False, 
+                'exclude': {'widget': self.dlg.ui.cbCached, 'key': 'cached'}
+            },
+            'imageFormat': {
+                'widget': self.dlg.ui.liImageFormat, 
+                'wType': 'list', 'type': 'string', 'default': 'image/png', 
+                'list':["image/png", "image/png; mode=8bit", "image/jpeg"]
+            },
+            'cached': {
+                'widget': self.dlg.ui.cbCached, 
+                'wType': 'checkbox', 'type': 'boolean', 'default': False, 
+                'exclude': {'widget': self.dlg.ui.cbSingleTile, 'key': 'singleTile'}
+            },
+            'cacheExpiration': {
+                'widget': self.dlg.ui.inCacheExpiration, 
+                'wType': 'spinbox', 'type': 'integer', 'default': 0
+            },
+            'metatileSize': {
+                'widget': self.dlg.ui.inMetatileSize, 
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'clientCacheExpiration': {
+                'widget': self.dlg.ui.inClientCacheExpiration, 
+                'wType': 'spinbox', 'type': 'integer', 'default': 300
+            }
         }
         
         # map qgis geometry type
@@ -1012,7 +1111,10 @@ class lizmap:
 
 
     def setLayerProperty(self, key):
-        '''Set a layer property when the corresponding ui widget has sent changed signal'''
+        '''
+            Set a layer property in global self.layerList 
+            when the corresponding ui widget has sent changed signal
+        '''
         key = str(key)
         # get the selected item in the layer tree
         item = self.dlg.ui.treeLayer.currentItem()
@@ -1032,6 +1134,17 @@ class lizmap:
                 self.layerList[item.text(1)][key] = layerOption['widget'].isChecked()
             elif layerOption['wType'] == 'list':
                 self.layerList[item.text(1)][key] = layerOption['list'][layerOption['widget'].currentIndex()]
+            
+            # Deactivate the "exclude" widget if necessary
+            if (layerOption.has_key('exclude')
+                and layerOption['wType'] == 'checkbox'
+                and layerOption['widget'].isChecked()
+                and layerOption['exclude']['widget'].isChecked()
+            ):
+                layerOption['exclude']['widget'].setChecked(False)
+                self.layerList[item.text(1)][layerOption['exclude']['key']] = False
+                
+                
 
     def setLayerMeta(self, item, key):
         '''Set a the title/abstract Qgis metadata when corresponding item is changed
