@@ -213,6 +213,10 @@ class lizmap:
             'geolocation' : {
                 'widget': self.dlg.ui.cbActivateGeolocation, 
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'remoteDir': {
+                'widget': self.dlg.ui.inRemotedir, 
+                'wType': 'text', 'type': 'string', 'default': ''
             }
         }
         
@@ -522,7 +526,6 @@ class lizmap:
         self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
         self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
 #        self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
-        self.dlg.ui.inRemotedir.setText(str(cfg.get('Ftp', 'remotedir')).decode('utf-8'))
         self.dlg.ui.inWinscpPath.setText(str(cfg.get('Ftp', 'winscppath')).decode('utf-8'))
         self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
         self.dlg.ui.inWinscpSession.setText(cfg.get('Ftp', 'winscpSession'))
@@ -557,7 +560,7 @@ class lizmap:
                     textarea=self.dlg.ui.outLog)
 
         
-        # Set the map tools options
+        # Set the global options (map, tools, FTP remote dir, etc.)
         for key, item in self.globalOptions.items():
             if item['widget']:
                 if item['wType'] == 'checkbox':
@@ -1782,7 +1785,6 @@ class lizmap:
             cfg.set('Ftp', 'username', username)
 #            cfg.set('Ftp', 'password', password)
             cfg.set('Ftp', 'port', port)
-            cfg.set('Ftp', 'remotedir', remotedir)
             cfg.set('Ftp', 'winscppath', winscpPath)
             cfg.set('Ftp', 'winscpSession', winscpSession)
             cfg.set('Ftp', 'winscpCriteria', winscpCriteria)
