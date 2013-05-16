@@ -118,7 +118,7 @@ class lizmap:
 
         # FTP Sync only active for linux and windows users.
         if not sys.platform.startswith('linux') and sys.platform != 'win32' :
-            self.dlg.ui.tabWidget.setTabEnabled(2, False)
+            self.dlg.ui.tabWidget.setTabEnabled(3, False)
             self.dlg.ui.btSync.setEnabled(False)
             
         # Set stylesheet for QGroupBox
@@ -1425,7 +1425,7 @@ class lizmap:
                     QApplication.translate("lizmap", "ui.msg.warning.title"),
                     QApplication.translate("lizmap", "ui.msg.warning.lftp.installation"),
                     QMessageBox.Ok)
-                self.dlg.ui.tabWidget.setTabEnabled(2, False)
+                self.dlg.ui.tabWidget.setTabEnabled(3, False)
                 self.dlg.ui.btSync.setEnabled(False)
 
         return isok
