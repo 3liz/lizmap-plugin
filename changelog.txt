@@ -1,4 +1,10 @@
 CHANGELOG
+  Version 1.9.1
+  * Save the FTP remote dir per each QGIS project, not globally
+  * Force toggle between Single Tile and Server cache
+  * Debug inactive dialog tab when no FTP sync possibility: deactivate FTP, not Tools
+  * Italian translation update
+  
   Version 1.9.0
   * New feature : edition tool which replaces the annotation tool.
   * Update translations

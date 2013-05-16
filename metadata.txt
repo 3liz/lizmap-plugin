@@ -4,15 +4,16 @@ name=lizmap
 qgisMinimumVersion=1.6
 description=Publication plugin for Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.0
+version=version 1.9.1
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.0
-  * New feature : edition tool which replaces the annotation tool.
-  * Update translations
-  * Design: add scroll areas to allow users to resize the dialog for small screens
+  Version 1.9.1
+  * Save the FTP remote dir per each QGIS project, not globally
+  * Force toggle between Single Tile and Server cache
+  * Debug inactive dialog tab when no FTP sync possibility: deactivate FTP, not Tools
+  * Italian translation update
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping
