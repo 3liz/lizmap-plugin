@@ -99,7 +99,7 @@ class lizmap:
         self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/lizmap"
         # initialize locale
         localePath = ""
-        self.locale = QSettings().value("locale/userLocale").toString()[0:2]
+        self.locale = QSettings().value("locale/userLocale")[0:2]
 
         if QFileInfo(self.plugin_dir).exists():
             localePath = self.plugin_dir + "/i18n/lizmap_" + self.locale + ".qm"
@@ -303,38 +303,25 @@ class lizmap:
         self.enableCheckBox(False)
 
         # Catch user interaction on layer tree and inputs
-        QObject.connect(self.dlg.ui.treeLayer, SIGNAL("itemSelectionChanged()"), self.setItemOptions)
-        
+        self.dlg.ui.treeLayer.itemSelectionChanged.connect(self.setItemOptions)
+
         # Catch user interaction on Map Scales input
-        QObject.connect(self.dlg.ui.inMapScales, SIGNAL("editingFinished()"), self.getMinMaxScales)
+        self.dlg.ui.inMapScales.editingFinished.connect(self.getMinMaxScales)
         
-        # Connect entry list changeboxes
-        # signalMapper to connect several signals to one slot
-        self.signalMapper = QSignalMapper()
-        QObject.connect(self.signalMapper, SIGNAL("mapped(QString)"), self.setLayerProperty)
+        # Connect widget signals to setLayerProperty method depending on widget type
+        from functools import partial
         for key, item in self.layerOptionsList.items():
             if item['widget']:
-                self.signalMapper.setMapping(item['widget'], key)
+                control = item['widget']
+                slot = partial(self.setLayerProperty, key)
                 if item['wType'] in ('text', 'spinbox'):
-                    QObject.connect(
-                        item['widget'],
-                        SIGNAL("editingFinished()"),
-                        self.signalMapper, SLOT("map()"))
+                    control.editingFinished.connect(slot)
                 elif item['wType'] == 'textarea':
-                    QObject.connect(
-                        item['widget'],
-                        SIGNAL("textChanged()"),
-                        self.signalMapper, SLOT("map()"))
+                    control.textChanged.connect(slot)
                 elif item['wType'] == 'checkbox':
-                    QObject.connect(
-                        item['widget'],
-                        SIGNAL("stateChanged(int)"),
-                        self.signalMapper, SLOT("map()"))
+                    control.stateChanged.connect(slot)
                 elif item['wType'] == 'list':
-                    QObject.connect(
-                        item['widget'],
-                        SIGNAL("currentIndexChanged(int)"),
-                        self.signalMapper, SLOT("map()"))
+                    control.currentIndexChanged.connect(slot)
 
 
     def initGui(self):
@@ -343,69 +330,56 @@ class lizmap:
                                     "lizmap", self.iface.mainWindow())
 
         # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        self.action.triggered.connect(self.run)
 
         # Create action for help dialog
         self.action_help = QAction(QIcon(":/plugins/lizmap/help.png"),
                                     "&Help...", self.iface.mainWindow())
         # connect help action to help dialog
-        QObject.connect(self.action_help, SIGNAL("triggered()"), self.showHelp)
+        self.action_help.triggered.connect(self.showHelp)
 
         # Create action for about dialog
         self.action_about = QAction(QIcon(":/plugins/lizmap/help.png"),
                                     "&About...", self.iface.mainWindow())
         # connect about action to about dialog
-        QObject.connect(self.action_about, SIGNAL("triggered()"), self.showAbout)
+        self.action_about.triggered.connect(self.showAbout)
 
         # connect Lizmap signals and functions
         # save button clicked
-        QObject.connect(self.dlg.ui.btSave, SIGNAL("clicked()"), self.getMapOptions)
+        self.dlg.ui.btSave.clicked.connect(self.getMapOptions)
         # ftp sync button clicked
-        QObject.connect(self.dlg.ui.btSync, SIGNAL("clicked()"), self.ftpSync)
+        self.dlg.ui.btSync.clicked.connect(self.ftpSync)
         # winscp get path button
-        QObject.connect(self.dlg.ui.btWinscpPath, SIGNAL("clicked()"), self.chooseWinscpPath)
+        self.dlg.ui.btWinscpPath.clicked.connect(self.chooseWinscpPath)
         # clear log button clicked
-        QObject.connect(self.dlg.ui.btClearlog, SIGNAL("clicked()"), self.clearLog)
+        self.dlg.ui.btClearlog.clicked.connect(self.clearLog)
         # Cancel FTP Sync
-        QObject.connect(self.dlg.ui.btCancelFtpSync, SIGNAL("clicked()"), self.ftpSyncCancel)
+        self.dlg.ui.btCancelFtpSync.clicked.connect(self.ftpSyncCancel)
         # refresh layer tree button click
 #        QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
         # refresh layer tree button click
-        QObject.connect(self.dlg.ui.btHelp, SIGNAL("clicked()"), self.showHelp )
+        self.dlg.ui.btHelp.clicked.connect(self.showHelp)
         # configure popup button
-        QObject.connect(self.dlg.ui.btConfigurePopup, SIGNAL("clicked()"), self.configurePopup )
+        self.dlg.ui.btConfigurePopup.clicked.connect(self.configurePopup)
         # detect close event
-        QObject.connect(self.dlg.ui.buttonClose, SIGNAL("rejected()"), self.warnOnClose )
-        QObject.connect(self.dlg, SIGNAL("rejected()"), self.warnOnClose )
+        self.dlg.ui.buttonClose.rejected.connect(self.warnOnClose)
+        self.dlg.rejected.connect(self.warnOnClose)
+        
+        
         
         # Locate by layers
         # detect layer locate list has changed to refresh layer field list
-        QObject.connect(
-            self.dlg.ui.liLocateByLayerLayers,
-            SIGNAL("currentIndexChanged(QString)"),
-            self.updateLocateFieldListFromLayer)
+        self.dlg.ui.liLocateByLayerLayers.currentIndexChanged[str].connect(self.updateLocateFieldListFromLayer)
         # add a layer to the locateByLayerList
-        QObject.connect(
-            self.dlg.ui.btLocateByLayerAdd, 
-            SIGNAL("clicked()"), 
-            self.addLayerToLocateByLayer )
+        self.dlg.ui.btLocateByLayerAdd.clicked.connect(self.addLayerToLocateByLayer)
         # remove a layer from the locateByLayerList
-        QObject.connect(
-            self.dlg.ui.btLocateByLayerDel, 
-            SIGNAL("clicked()"), 
-            self.removeLayerFromLocateByLayer)
-            
+        self.dlg.ui.btLocateByLayerDel.clicked.connect(self.removeLayerFromLocateByLayer)
+        
         # Edition layers
         # add a layer to the editionLayerList
-        QObject.connect(
-            self.dlg.ui.btEditionLayerAdd, 
-            SIGNAL("clicked()"), 
-            self.addLayerToEditionLayer )
+        self.dlg.ui.btEditionLayerAdd.clicked.connect(self.addLayerToEditionLayer)
         # remove a layer from the editionLayerList
-        QObject.connect(
-            self.dlg.ui.btEditionLayerDel, 
-            SIGNAL("clicked()"), 
-            self.removeLayerFromEditionLayer)            
+        self.dlg.ui.btEditionLayerDel.clicked.connect(self.removeLayerFromEditionLayer)
 
 
         # first check if Web menu availbale in this QGIS version
@@ -454,10 +428,11 @@ class lizmap:
 
     def showHelp(self):
         '''Opens the html help file content with default browser'''
-        localHelp = self.plugin_dir + "/help/help-%s.html" % self.locale
-        if not QFileInfo(localHelp).exists():
-            localHelp = self.plugin_dir + "/help/help-en.html"
-        QDesktopServices.openUrl( QUrl(localHelp) )
+        if self.locale in ('fr'):
+            localHelpUrl = "http://docs.3liz.com/%s/" % self.locale
+        else:
+            localHelpUrl = 'http://translate.google.fr/translate?sl=fr&tl=%s&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com' % self.locale
+        QDesktopServices.openUrl( QUrl(localHelpUrl) )
 
     def showAbout(self):
         '''Opens the about html content with default browser'''
@@ -519,17 +494,27 @@ class lizmap:
 
         # Get the global config file
         cfg = ConfigParser.ConfigParser()
-        configPath = os.path.expanduser("~/.qgis/python/plugins/lizmap/lizmap.cfg")
-        cfg.read(configPath)
-
-        # Set the FTP tab fields values
-        self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
-        self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
-#        self.dlg.ui.inPassword.setText(cfg.get('Ftp', 'password'))
-        self.dlg.ui.inWinscpPath.setText(str(cfg.get('Ftp', 'winscppath')).decode('utf-8'))
-        self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
-        self.dlg.ui.inWinscpSession.setText(cfg.get('Ftp', 'winscpSession'))
-        self.dlg.ui.inWinscpCriteria.setText(cfg.get('Ftp', 'winscpCriteria'))
+        configPath = os.path.join( self.plugin_dir, "lizmap.cfg")
+        if os.path.exists(configPath):
+            cfg.read(configPath)
+            # Set the FTP tab fields values
+            self.dlg.ui.inHost.setText(cfg.get('Ftp', 'host'))
+            self.dlg.ui.inUsername.setText(cfg.get('Ftp', 'username'))
+            self.dlg.ui.inWinscpPath.setText(str(cfg.get('Ftp', 'winscppath')).decode('utf-8'))
+            self.dlg.ui.inPort.setText(cfg.get('Ftp', 'port'))
+            self.dlg.ui.inWinscpSession.setText(cfg.get('Ftp', 'winscpSession'))
+            self.dlg.ui.inWinscpCriteria.setText(cfg.get('Ftp', 'winscpCriteria'))
+        else:
+            configPath = os.path.join( self.plugin_dir, "lizmap.cfg")
+            cfg.add_section('Ftp')
+            cfg.set('Ftp', 'host', '')
+            cfg.set('Ftp', 'username', '')
+            cfg.set('Ftp', 'port', '')
+            cfg.set('Ftp', 'winscppath', '')
+            cfg.set('Ftp', 'winscpSession', '')
+            cfg.set('Ftp', 'winscpCriteria', 'time')
+            cfg.write(open(configPath,"w"))
+            cfg.read(configPath)
 
         # Get the project config file (projectname.qgs.cfg)
         p = QgsProject.instance()
@@ -678,7 +663,7 @@ class lizmap:
     def getQgisLayerByNameFromCombobox(self, layerComboBox):
         '''Get a layer by its name'''
         returnLayer = None
-        uniqueId = layerComboBox.itemData(layerComboBox.currentIndex()).toString()
+        uniqueId = unicode(layerComboBox.itemData(layerComboBox.currentIndex()))
         try:
             myInstance = QgsMapLayerRegistry.instance()
             layer = myInstance.mapLayer(uniqueId)
@@ -700,7 +685,7 @@ class lizmap:
         # empty combobox
         combobox.clear()
         # add empty item
-        combobox.addItem ( '---',QVariant(-1))
+        combobox.addItem ( '---', -1)
         # get canvas
         canvas = self.iface.mapCanvas()
         # loop though the layers
@@ -710,10 +695,10 @@ class lizmap:
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
                 if 'all' in providerTypeList or layer.providerType() in providerTypeList:
-                    combobox.addItem ( layer.name(), QVariant(layerId))
+                    combobox.addItem ( layer.name(), unicode(layerId))
             # raster
             if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
-                combobox.addItem ( layer.name(),QVariant(layerId))
+                combobox.addItem ( layer.name(),unicode(layerId))
                 
                 
     def updateLocateFieldListFromLayer(self):
@@ -735,13 +720,13 @@ class lizmap:
                     for idx, field in fields.items():
                         self.dlg.ui.liLocateByLayerFields.addItem(
                             unicode(field.name()),
-                            QVariant(idx)
+                            idx
                         )
                 else: # QGIS new vector api for 2.0
                     for field in fields:
                         self.dlg.ui.liLocateByLayerFields.addItem(
                             unicode(field.name()),
-                            QVariant(unicode(field.name()))
+                            unicode(field.name())
                         )           
         else:
             return None
@@ -772,10 +757,10 @@ class lizmap:
             return False
           
         # Retrieve layer information
-        layerName = QString(layer.name())
-        layerId = QString(layer.id())
+        layerName = layer.name()
+        layerId = layer.id()
         fieldCombobox = self.dlg.ui.liLocateByLayerFields
-        fieldName = QString(fieldCombobox.currentText())
+        fieldName = fieldCombobox.currentText()
         displayGeom = str(self.dlg.ui.cbLocateByLayerDisplayGeom.isChecked())
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
@@ -820,8 +805,8 @@ class lizmap:
             return False
         
         # Retrieve layer information        
-        layerName = QString(layer.name())
-        layerId = QString(layer.id())
+        layerName = layer.name()
+        layerId = layer.id()
         createFeature = str(self.dlg.ui.cbEditionLayerCreate.isChecked())
         modifyAttribute = str(self.dlg.ui.cbEditionLayerModifyAttribute.isChecked())
         modifyGeometry = str(self.dlg.ui.cbEditionLayerModifyGeometry.isChecked())
@@ -841,7 +826,7 @@ class lizmap:
         # check if layer already added
         if twRowCount > 0:
             for row in range(twRowCount):
-                itemLayerId = str(lblTableWidget.item(row, 5).text().toUtf8())
+                itemLayerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 if layerId == itemLayerId:
                     return False    
         
@@ -1006,7 +991,7 @@ class lizmap:
                     textarea=self.dlg.ui.outLog)
             f.close()
 
-        # Loop through groupLayerRelationship to reconstruct the tree
+#        # Loop through groupLayerRelationship to reconstruct the tree
         for a in self.iface.legendInterface().groupLayerRelationship():
             # Initialize values
             parentItem = None
@@ -1113,7 +1098,7 @@ class lizmap:
                         val['widget'].setCurrentIndex(listDic[val['default']])
 
 
-    def setLayerProperty(self, key):
+    def setLayerProperty(self, key, *args):    
         '''
             Set a layer property in global self.layerList 
             when the corresponding ui widget has sent changed signal
@@ -1159,9 +1144,9 @@ class lizmap:
                 if layer:
                     if hasattr(layer, key):
                         if key == 'title':
-                            layer.setTitle(QString(u"%s" % self.layerList[item.text(1)][key]))
+                            layer.setTitle(u"%s" % self.layerList[item.text(1)][key])
                         if key == 'abstract':
-                            layer.setAbstract(QString(u"%s" % self.layerList[item.text(1)][key]))
+                            layer.setAbstract(u"%s" % self.layerList[item.text(1)][key])
 
 
     def configurePopup(self):
@@ -1182,17 +1167,13 @@ class lizmap:
 
             # Connect popup dialog signals and slots
             # When the plain text template is modified
-            QObject.connect(self.lizmapPopupDialog.ui.txtPopup,
-                SIGNAL("textChanged()"), self.updatePopupHtml )
+            self.lizmapPopupDialog.ui.txtPopup.textChanged.connect(self.updatePopupHtml)
             # When the ui is closed with the x
-            QObject.connect(self.lizmapPopupDialog,
-                SIGNAL("rejected()"), self.popupNotConfigured )
+            self.lizmapPopupDialog.rejected.connect(self.popupNotConfigured)
             # When the ui is closed with the OK button
-            QObject.connect(self.lizmapPopupDialog.ui.bbConfigurePopup,
-                SIGNAL("accepted()"), self.popupConfigured )
+            self.lizmapPopupDialog.ui.bbConfigurePopup.accepted.connect(self.popupConfigured)
             # When the ui is closed with the CANCEL button
-            QObject.connect(self.lizmapPopupDialog.ui.bbConfigurePopup,
-                SIGNAL("rejected()"), self.popupNotConfigured )
+            self.lizmapPopupDialog.ui.bbConfigurePopup.rejected.connect(self.popupNotConfigured)
 
             # Set the content of the QTextEdit if needed
             if self.layerList[item.text(1)].has_key('popupTemplate'):
@@ -1324,10 +1305,10 @@ class lizmap:
                 # check that the layer is checked in the WFS capabilities
                 layerId = str(lblTableWidget.item(row, 3).text())
                 if layerId in wfsLayersList:
-                    layerName = str(lblTableWidget.item(row, 0).text().toUtf8())
-                    fieldName = str(lblTableWidget.item(row, 1).text().toUtf8())
+                    layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                    fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                     displayGeom = str(lblTableWidget.item(row, 2).text())
-                    layerId = str(lblTableWidget.item(row, 3).text().toUtf8())
+                    layerId = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
@@ -1340,12 +1321,12 @@ class lizmap:
             liz2json["editionLayers"] = {}
             for row in range(twRowCount):                   
                 # check that the layer is checked in the WFS capabilities
-                layerName = str(lblTableWidget.item(row, 0).text().toUtf8())
+                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                 createFeature = str(lblTableWidget.item(row, 1).text())
                 modifyAttribute = str(lblTableWidget.item(row, 2).text())
                 modifyGeometry = str(lblTableWidget.item(row, 3).text())
                 deleteFeature = str(lblTableWidget.item(row, 4).text())
-                layerId = str(lblTableWidget.item(row, 5).text().toUtf8())
+                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 layer = self.getQgisLayerById(layerId)
                 geometryType = self.mapQgisGeometryType[layer.geometryType()]
                 liz2json["editionLayers"][layerName] = {}
@@ -1506,7 +1487,7 @@ class lizmap:
             # first set the WMSServiceCapabilities to true
             p.writeEntry('WMSServiceCapabilities', "/", "True")
             p.write()
-            if QString.fromUtf8(p.readEntry('WMSServiceTitle','')[0]) == u'':
+            if p.readEntry('WMSServiceTitle','')[0] == u'':
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.title")+'\n'
                 isok = False
 
@@ -1536,11 +1517,10 @@ class lizmap:
             output = proc.communicate()
             proc.wait()
             if "LFTP" not in output[0]:
-                QMessageBox.critical(
-                    self.dlg,
-                    QApplication.translate("lizmap", "ui.msg.warning.title"),
+                self.log(
                     QApplication.translate("lizmap", "ui.msg.warning.lftp.installation"),
-                    QMessageBox.Ok)
+                    abort=False,
+                    textarea=self.dlg.ui.outLog)
                 self.dlg.ui.tabWidget.setTabEnabled(3, False)
                 self.dlg.ui.btSync.setEnabled(False)
 
@@ -1627,7 +1607,7 @@ class lizmap:
 
             self.dlg.ui.outState.setText('<font color="green"></font>')
             # Go to Log tab
-            self.dlg.ui.tabWidget.setCurrentIndex(5)
+            self.dlg.ui.tabWidget.setCurrentIndex(4)
             
             # Get and check map scales
             if self.isok:
@@ -1639,7 +1619,7 @@ class lizmap:
 
     def chooseWinscpPath(self):
         '''Ask the user to select a folder and write down the path to inWinscpPath field'''
-        winscpPath = QFileDialog.getExistingDirectory( None,QString("Choose the folder where WinScp portable is installed"), str(self.dlg.ui.inWinscpPath.text().toUtf8()).strip(' \t') )
+        winscpPath = QFileDialog.getExistingDirectory( None,"Choose the folder where WinScp portable is installed", str(self.dlg.ui.inWinscpPath.text().encode('utf-8')).strip(' \t') )
         if os.path.exists(unicode(winscpPath)):
             self.dlg.ui.inWinscpPath.setText(unicode(winscpPath))
             if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com')):
@@ -1658,11 +1638,11 @@ class lizmap:
         in_password = str(self.dlg.ui.inPassword.text()).strip(' \t')
         in_host = str(self.dlg.ui.inHost.text()).strip(' \t')
         in_port = str(self.dlg.ui.inPort.text()).strip(' \t')
-        in_localdir = str(self.dlg.ui.inLocaldir.text().toUtf8()).strip(' \t')
-        in_remotedir = str(self.dlg.ui.inRemotedir.text().toUtf8()).strip(' \t')
-        in_winscpPath = str(self.dlg.ui.inWinscpPath.text().toUtf8()).strip(' \t')
-        in_winscpSession = str(self.dlg.ui.inWinscpSession.text().toUtf8()).strip(' \t')
-        in_winscpCriteria = str(self.dlg.ui.inWinscpCriteria.text().toUtf8()).strip(' \t')
+        in_localdir = str(self.dlg.ui.inLocaldir.text().encode('utf-8')).strip(' \t')
+        in_remotedir = str(self.dlg.ui.inRemotedir.text().encode('utf-8')).strip(' \t')
+        in_winscpPath = str(self.dlg.ui.inWinscpPath.text().encode('utf-8')).strip(' \t')
+        in_winscpSession = str(self.dlg.ui.inWinscpSession.text().encode('utf-8')).strip(' \t')
+        in_winscpCriteria = str(self.dlg.ui.inWinscpCriteria.text().encode('utf-8')).strip(' \t')
 
         self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.ftp.option.title"))
         self.dlg.ui.outLog.append('=' * 20)
@@ -1779,11 +1759,10 @@ class lizmap:
         if self.isok:
             # write FTP options data in the python plugin config file
             cfg = ConfigParser.ConfigParser()
-            configPath = os.path.expanduser("~/.qgis/python/plugins/lizmap/lizmap.cfg")
+            configPath = os.path.join( self.plugin_dir, "lizmap.cfg")
             cfg.read(configPath)
             cfg.set('Ftp', 'host', host)
             cfg.set('Ftp', 'username', username)
-#            cfg.set('Ftp', 'password', password)
             cfg.set('Ftp', 'port', port)
             cfg.set('Ftp', 'winscppath', winscpPath)
             cfg.set('Ftp', 'winscpSession', winscpSession)
@@ -1811,14 +1790,14 @@ class lizmap:
 
     def ftpSyncStdout(self):
         '''Get the ftp sync process Stdout and append it to the log textarea'''
-        data = QString(self.proc.readAllStandardOutput())
-        output = QString.fromUtf8(data)
+        data = self.proc.readAllStandardOutput()
+        output = data.decode('utf-8')
         self.dlg.ui.outLog.append(output)
 
     def ftpSyncError(self):
         '''Get the ftp sync process Error and append it to the log textarea'''
-        data = QString(self.proc.readAllStandardError())
-        output = QString.fromUtf8(data)
+        data = self.proc.readAllStandardError()
+        output = data.decode('utf-8')
         self.dlg.ui.outLog.append(output)
 
     def ftpSyncFinished(self):
@@ -1880,9 +1859,9 @@ class lizmap:
             return False
 
         # Go to Log tab
-        self.dlg.ui.tabWidget.setCurrentIndex(5)
+        self.dlg.ui.tabWidget.setCurrentIndex(4)
         time.sleep(1)
-        self.dlg.ui.tabWidget.setCurrentIndex(5)
+        self.dlg.ui.tabWidget.setCurrentIndex(4)
 
         # Check the platform
         # FTP Sync only active for linux and windows users.
@@ -1927,7 +1906,6 @@ class lizmap:
                 ftpStr2 = u'lftp ftp://%s:%s@%s -e "set ssl:verify-certificate no; chmod 775 -R %s ; quit"' % (username, password, host, remotedir.decode('utf-8'))
 
             else:
-#                winscp = '"%s"' % os.path.expanduser("~/.qgis/python/plugins/lizmap/winscp435/WinSCP.com")
                 winscp = os.path.join(os.path.abspath('%s' % winscpPath.decode('utf-8')), 'WinSCP.com')
                 winLocaldir = localdir.replace("/", "\\")
                 winLocaldir = winLocaldir.replace("\\", "\\\\")

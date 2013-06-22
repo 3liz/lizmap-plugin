@@ -1,4 +1,9 @@
 CHANGELOG
+  Version 1.9.2
+  * Complete migration to QGIS 2.0. The plugin is not compatible with QGIS version < 2.0 anymore
+  * Remove message box for Linux users when lftp not installed
+  * Help button and menu item now lead to an external web help page
+  
   Version 1.9.1
   * Save the FTP remote dir per each QGIS project, not globally
   * Force toggle between Single Tile and Server cache

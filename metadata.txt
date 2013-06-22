@@ -1,19 +1,18 @@
 ; the next section is mandatory
 [general]
 name=lizmap
-qgisMinimumVersion=1.6
-description=Publication plugin for Lizmap Web Client, by 3liz.com
+qgisMinimumVersion=2.0
+description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.1
+version=version 1.9.2
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.1
-  * Save the FTP remote dir per each QGIS project, not globally
-  * Force toggle between Single Tile and Server cache
-  * Debug inactive dialog tab when no FTP sync possibility: deactivate FTP, not Tools
-  * Italian translation update
+  Version 1.9.2
+  * Complete migration to QGIS 2.0. The plugin is not compatible with QGIS version < 2.0 anymore
+  * Remove message box for Linux users when lftp not installed
+  * Help button and menu item now lead to an external web help page
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping

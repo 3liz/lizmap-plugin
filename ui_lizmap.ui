@@ -76,32 +76,26 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_16">
        <item row="0" column="1">
-        <widget class="QScrollArea" name="scrollArea">
-         <property name="maximumSize">
-          <size>
-           <width>10000000</width>
-           <height>16777215</height>
-          </size>
+        <widget class="QGroupBox" name="gb_layerSettings">
+         <property name="title">
+          <string>ui.groupBox.settingLayer</string>
          </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>581</width>
-            <height>549</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_23">
-           <item row="0" column="0">
-            <widget class="QGroupBox" name="gb_layerSettings">
-             <property name="title">
-              <string>ui.groupBox.settingLayer</string>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QScrollArea" name="scrollArea">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>391</width>
+               <height>505</height>
+              </rect>
              </property>
-             <layout class="QGridLayout" name="gridLayout_2">
+             <layout class="QGridLayout" name="gridLayout_20">
               <item row="0" column="0">
                <layout class="QVBoxLayout" name="verticalLayout">
                 <item>
@@ -311,9 +305,9 @@
               </item>
              </layout>
             </widget>
-           </item>
-          </layout>
-         </widget>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="0" column="0">
@@ -373,8 +367,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>871</width>
-            <height>480</height>
+            <width>596</width>
+            <height>442</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -785,8 +779,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1031</width>
-            <height>464</height>
+            <width>870</width>
+            <height>446</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1069,7 +1063,6 @@
            </item>
           </layout>
           <zorder>gb_locateByLayer</zorder>
-          <zorder>gb_locateByLayer</zorder>
           <zorder>verticalSpacer_3</zorder>
           <zorder>gb_editionLayers</zorder>
          </widget>
@@ -1092,8 +1085,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>871</width>
-            <height>480</height>
+            <width>244</width>
+            <height>413</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
