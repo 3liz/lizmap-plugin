@@ -1475,10 +1475,10 @@ class lizmap:
                     
                     
             if len(layerSourcesBad) > 0:
-                errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1").arg(projectDir)+'\n'
+                errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative {}").format(projectDir)+'\n'
                 self.log(
-                    QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative %1")
-                    .arg(projectDir) + str(layerSourcesBad),
+                    QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative {}")
+                    .format(projectDir) + str(layerSourcesBad),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
                 errorMessage+= layerPathError
@@ -1626,8 +1626,8 @@ class lizmap:
                 QMessageBox.critical(
                     self.dlg,
                     QApplication.translate("lizmap", "ui.msg.error.title"),
-                    QApplication.translate("lizmap", "ui.msg.error.winscp.not.found %1")
-                    .arg(os.path.abspath('%s' % winscpPath)),
+                    QApplication.translate("lizmap", "ui.msg.error.winscp.not.found {}")
+                    .format(os.path.abspath('%s' % winscpPath)),
                     QMessageBox.Ok)
 
 
@@ -1660,8 +1660,8 @@ class lizmap:
         elif len(in_host) < 4:
             host=''
             self.log(
-                QApplication.translate("lizmap", "log.ftp.hostname.wrong.warning %1")
-                .arg(in_host),
+                QApplication.translate("lizmap", "log.ftp.hostname.wrong.warning {}")
+                .format(in_host),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
         else:
@@ -1715,8 +1715,8 @@ class lizmap:
             #    winscpPath = winscpPath + '/'
             if not os.path.exists(os.path.join(os.path.abspath('%s' % winscpPath), 'WinSCP.com') ):
                 self.log(
-                    QApplication.translate("lizmap", "log.ftp.winscpPath.warning %1")
-                    .arg(winscpPath),
+                    QApplication.translate("lizmap", "log.ftp.winscpPath.warning {}")
+                    .format(winscpPath),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
                 winscpPath=''
@@ -1838,7 +1838,7 @@ class lizmap:
         letsGo = QMessageBox.question(
             self.dlg,
             QApplication.translate("lizmap", "ui.msg.warning.title"),
-            QApplication.translate("lizmap", "ui.msg.warning.run.sync %1 %2").arg(self.dlg.ui.inLocaldir.text()).arg(self.dlg.ui.inRemotedir.text()),
+            QApplication.translate("lizmap", "ui.msg.warning.run.sync {} {}").format(self.dlg.ui.inLocaldir.text(), self.dlg.ui.inRemotedir.text()),
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if letsGo == QMessageBox.Yes:
             isok = True
@@ -1869,9 +1869,8 @@ class lizmap:
             QMessageBox.warning(
                 self.dlg,
                 QApplication.translate("lizmap", "ui.msg.warning.title"),
-                QApplication.translate("lizmap", "ui.msg.configuration.saved %1 %2")
-                .arg(localdir)
-                .arg(remotedir),
+                QApplication.translate("lizmap", "ui.msg.configuration.saved {} {}")
+                .format(localdir, remotedir),
                 QMessageBox.Ok)
             return False
 

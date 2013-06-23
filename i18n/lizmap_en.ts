@@ -9,42 +9,42 @@
         <translation>LizMap</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="216"/>
+        <location filename="ui_lizmap.ui" line="210"/>
         <source>png</source>
         <translation>png</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="650"/>
+        <location filename="ui_lizmap.ui" line="644"/>
         <source>OSM Mapnik</source>
         <translation>OSM Mapnik</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="657"/>
+        <location filename="ui_lizmap.ui" line="651"/>
         <source>OSM Mapquest</source>
         <translation>OSM Mapquest</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="702"/>
+        <location filename="ui_lizmap.ui" line="696"/>
         <source>Key</source>
         <translation>Key</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="719"/>
+        <location filename="ui_lizmap.ui" line="713"/>
         <source>Streets</source>
         <translation>Streets</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="726"/>
+        <location filename="ui_lizmap.ui" line="720"/>
         <source>Satellite</source>
         <translation>Satellite</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="733"/>
+        <location filename="ui_lizmap.ui" line="727"/>
         <source>Hybrid</source>
         <translation>Hybrid</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="740"/>
+        <location filename="ui_lizmap.ui" line="734"/>
         <source>Terrain</source>
         <translation>Terrain</translation>
     </message>
@@ -54,22 +54,22 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1596"/>
+        <location filename="lizmap.py" line="1782"/>
         <source>ui.msg.error.title</source>
         <translation>Lizmap Error</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="811"/>
+        <location filename="lizmap.py" line="988"/>
         <source>ui.msg.error.tree.read.content</source>
         <translation>Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="698"/>
+        <location filename="lizmap.py" line="875"/>
         <source>ui.msg.question.refresh.title</source>
         <translation>Lizmap - Refresh layer tree ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="698"/>
+        <location filename="lizmap.py" line="875"/>
         <source>ui.msg.question.refresh.content</source>
         <translation>You can refresh the layer tree by pressing &quot;Yes&quot;.
 Be aware that you will loose all the changes made in this Layers tab (group or layer metadata and options) since your last &quot;Save&quot;.
@@ -78,197 +78,150 @@ If you have renamed one or more groups or layers, you will also loose the associ
 Refresh layer tree ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="793"/>
+        <location filename="lizmap.py" line="970"/>
         <source>layers.tree.title</source>
         <translation>List of layers</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1237"/>
+        <location filename="lizmap.py" line="1426"/>
         <source>ui.msg.error.init.open.project</source>
         <translation>You need to open a qgis project before using LizMap</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1242"/>
+        <location filename="lizmap.py" line="1431"/>
         <source>ui.msg.question.save.project.title</source>
         <translation>Lizmap - Save current project ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1242"/>
+        <location filename="lizmap.py" line="1431"/>
         <source>ui.msg.question.save.project.content</source>
         <translation>Please save the current project before using Lizmap plugin.
 Save the project ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1256"/>
+        <location filename="lizmap.py" line="1445"/>
         <source>ui.msg.error.project.option.path.relative</source>
         <translation>The project layer paths must be set to relative. Please change this options in the project settings.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1290"/>
-        <source>ui.msg.error.project.layers.path.relative %1</source>
-        <translation>The layers paths must be relative to the project file. Please copy the layers inside
-%1
-or in one folder above or aside.
-</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="1313"/>
+        <location filename="lizmap.py" line="1502"/>
         <source>ui.msg.error.project.wms.extent</source>
         <translation>The project WMS extent must be set. Please change this options in the project settings dialog.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1777"/>
+        <location filename="lizmap.py" line="1961"/>
         <source>ui.msg.warning.title</source>
         <translation>Lizmap - Warning</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1331"/>
+        <location filename="lizmap.py" line="1520"/>
         <source>ui.msg.warning.lftp.installation</source>
         <translation>Lftp is not installed. You won&apos;t be able to synchronize your project from the plugin. You can install lftp and reload the plugin, or go on and use another FTP client to synchronize your local project to the server</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1363"/>
+        <location filename="lizmap.py" line="1551"/>
         <source>log.map.option.title</source>
         <translation>&lt;b&gt;Map options&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="378"/>
+        <location filename="lizmap.py" line="474"/>
         <source>log.map.mapScales.warning</source>
         <translation>Map scales: Write down integer scales separated by coma. You must at least enter 2 min and max values.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1377"/>
+        <location filename="lizmap.py" line="1565"/>
         <source>log.map.externalBaseLayers.warning</source>
         <translation>&lt;b&gt;** WARNING **&lt;/b&gt; : You have chosen one external public source in the Map tab. You must add &quot;EPSG:3857&quot; in the &quot;Coordinate System Restriction&quot; of the &quot;WMS Server&quot; tab in the project properties dialog !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1405"/>
+        <location filename="lizmap.py" line="1593"/>
         <source>ui.msg.map.parameters.ok</source>
         <translation>All the map parameters are correctly set</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1409"/>
+        <location filename="lizmap.py" line="1597"/>
         <source>ui.msg.configuration.save.ok</source>
         <translation>&lt;b&gt;Lizmap configuration file has been updated&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1438"/>
-        <source>ui.msg.error.winscp.not.found %1</source>
-        <translation>The file WinSCP.com has not been found in the following path:
-%1
-
-Please modifiy the path and try again.</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="1461"/>
+        <location filename="lizmap.py" line="1649"/>
         <source>log.ftp.option.title</source>
         <translation>&lt;b&gt;FTP options&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1468"/>
+        <location filename="lizmap.py" line="1656"/>
         <source>log.ftp.hostname.missing.warning</source>
         <translation>&lt;b&gt;** WARNING **&lt;/b&gt; Missing hostname !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1474"/>
-        <source>log.ftp.hostname.wrong.warning %1</source>
-        <translation>&lt;b&gt;** WARNING **&lt;/b&gt;Incorrect hostname : %1 !</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="1504"/>
+        <location filename="lizmap.py" line="1692"/>
         <source>log.ftp.remotedir.missing.warning</source>
         <translation>&lt;b&gt;** WARNING **&lt;/b&gt; Remote directory must be set</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1515"/>
+        <location filename="lizmap.py" line="1703"/>
         <source>log.ftp.localdir.warning %1</source>
         <translation>&lt;b&gt;** WARNING **&lt;/b&gt; Localdir does not exist: %1</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1529"/>
-        <source>log.ftp.winscpPath.warning %1</source>
-        <translation>&lt;b&gt;** WARNING **&lt;/b&gt; WinScp.com has not been found in : %1</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="1554"/>
+        <location filename="lizmap.py" line="1742"/>
         <source>log.ftp.username.missing.warning</source>
         <translation>&lt;b&gt;** WARNING **&lt;/b&gt; Missing username !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1566"/>
+        <location filename="lizmap.py" line="1754"/>
         <source>log.ftp.password.missing.warning</source>
         <translation>&lt;b&gt;** WARNING **&lt;/b&gt; Missing password !</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1587"/>
+        <location filename="lizmap.py" line="1773"/>
         <source>ui.msg.ftp.parameters.ok</source>
         <translation>FTP parameters OK</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1596"/>
+        <location filename="lizmap.py" line="1782"/>
         <source>ui.msg.ftp.parameters.bad</source>
         <translation>Wrong FTP parameters : please read the log and correct the printed errors before FTP synchronization</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1620"/>
+        <location filename="lizmap.py" line="1806"/>
         <source>log.sync.completed</source>
         <translation>Synchronization completed. See above for details.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1621"/>
+        <location filename="lizmap.py" line="1807"/>
         <source>log.outState.completed</source>
         <translation>&lt;font color=&quot;green&quot;&gt;completed&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1623"/>
+        <location filename="lizmap.py" line="1809"/>
         <source>log.sync.canceled</source>
         <translation>Synchronization canceled. Be aware that some files have already been synchronized ! See the log for details.</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1624"/>
+        <location filename="lizmap.py" line="1810"/>
         <source>log.outState.canceled</source>
         <translation>&lt;font color=&quot;red&quot;&gt;canceled&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1630"/>
+        <location filename="lizmap.py" line="1816"/>
         <source>log.kill.warning</source>
         <translation>You are about to cancel the FTP synchronization.
 
 Are you sure you want to proceed ?</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1652"/>
-        <source>ui.msg.warning.run.sync %1 %2</source>
-        <translation>You are about to send your project file and all the data contained in:
-%1
-
-to the server directory:
-%2
-
-This will remove every data in this remote directory which are not related to your current qgis project.
-Are you sure you want to proceed ?</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="1683"/>
-        <source>ui.msg.configuration.saved %1 %2</source>
-        <translation>The configuration has been saved for the current Qgis project. Please synchronize your local project folder
-%1
-
-with the remote FTP folder
-%2</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="1705"/>
+        <location filename="lizmap.py" line="1890"/>
         <source>log.outState.running</source>
         <translation>&lt;font color=&quot;orange&quot;&gt;running&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1709"/>
+        <location filename="lizmap.py" line="1894"/>
         <source>ui.log.ftp.sync.title</source>
         <translation>&lt;b&gt;FTP Synchronisation&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1777"/>
+        <location filename="lizmap.py" line="1961"/>
         <source>ui.msg.warning.window.opened</source>
         <translation>A Lizmap windows is already opened</translation>
     </message>
@@ -278,82 +231,82 @@ with the remote FTP folder
         <translation>Layers</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="110"/>
+        <location filename="ui_lizmap.ui" line="104"/>
         <source>layers.layer.title</source>
         <translation>Title</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="120"/>
+        <location filename="ui_lizmap.ui" line="114"/>
         <source>layers.layer.abstract</source>
         <translation>Abstract</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="137"/>
+        <location filename="ui_lizmap.ui" line="131"/>
         <source>layers.layer.link</source>
         <translation>Link</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="192"/>
+        <location filename="ui_lizmap.ui" line="186"/>
         <source>layers.layer.baselayer</source>
         <translation>Base layer ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="185"/>
+        <location filename="ui_lizmap.ui" line="179"/>
         <source>layers.layer.groupAsLayer</source>
         <translation>Group as layer ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="147"/>
+        <location filename="ui_lizmap.ui" line="141"/>
         <source>layers.layer.toggled</source>
         <translation>Toggled ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="199"/>
+        <location filename="ui_lizmap.ui" line="193"/>
         <source>layers.layer.singletile</source>
         <translation>Single Tile ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="236"/>
+        <location filename="ui_lizmap.ui" line="230"/>
         <source>layers.layer.cached</source>
         <translation>Server cache ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="363"/>
+        <location filename="ui_lizmap.ui" line="357"/>
         <source>map.label</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="208"/>
+        <location filename="ui_lizmap.ui" line="202"/>
         <source>layers.imageFormat.label</source>
         <translation>Image format</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="504"/>
+        <location filename="ui_lizmap.ui" line="498"/>
         <source>map.scales.label</source>
         <translation>Scales</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="546"/>
+        <location filename="ui_lizmap.ui" line="540"/>
         <source>map.minScale.label</source>
         <translation>Min Scale</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="569"/>
+        <location filename="ui_lizmap.ui" line="563"/>
         <source>map.maxScale.label</source>
         <translation>Max Scale</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="512"/>
+        <location filename="ui_lizmap.ui" line="506"/>
         <source>map.mapScales.label</source>
         <translation>Scales</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="627"/>
+        <location filename="ui_lizmap.ui" line="621"/>
         <source>map.public.label</source>
         <translation>Public baselayers</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="633"/>
+        <location filename="ui_lizmap.ui" line="627"/>
         <source>map.public.help</source>
         <translation>You can add baselayers from public sources.
 If so, you must add the corresponding  EPSG code in your WMS project settings</translation>
@@ -422,17 +375,17 @@ then unzip it to some folder, and select this folder to fill the field above</tr
         <translation>Cancel sync</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1414"/>
+        <location filename="lizmap.py" line="1602"/>
         <source>ui.msg.map.parameters.bad</source>
         <translation>Wrong or missing map parameters : please read the log and correct the printed errors.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="642"/>
+        <location filename="ui_lizmap.ui" line="636"/>
         <source>map.openstreetmap.label</source>
         <translation>OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="682"/>
+        <location filename="ui_lizmap.ui" line="676"/>
         <source>map.google.label</source>
         <translation>Google</translation>
     </message>
@@ -452,42 +405,42 @@ then unzip it to some folder, and select this folder to fill the field above</tr
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="221"/>
+        <location filename="ui_lizmap.ui" line="215"/>
         <source>png; mode=8bit</source>
         <translation>png; mode=8bit</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="226"/>
+        <location filename="ui_lizmap.ui" line="220"/>
         <source>jpeg</source>
         <translation>jpeg</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1302"/>
+        <location filename="lizmap.py" line="1491"/>
         <source>ui.msg.error.project.wms.title</source>
         <translation>The project WMS title must be set in the OWS tab of the project settings dialog.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="245"/>
+        <location filename="ui_lizmap.ui" line="239"/>
         <source>layers.layer.cacheExpiration</source>
         <translation>Expiration (seconds)</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="259"/>
+        <location filename="ui_lizmap.ui" line="253"/>
         <source>layers.layer.metatileSize</source>
         <translation>Metatile</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="163"/>
+        <location filename="ui_lizmap.ui" line="157"/>
         <source>layers.popup.configure</source>
         <translation>Configure</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="266"/>
+        <location filename="ui_lizmap.ui" line="260"/>
         <source>0,0;_</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="156"/>
+        <location filename="ui_lizmap.ui" line="150"/>
         <source>layers.layer.popup</source>
         <translation>Activate popup</translation>
     </message>
@@ -517,196 +470,242 @@ then unzip it to some folder, and select this folder to fill the field above</tr
         <translation>Mirror criteria: time or size</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="775"/>
+        <location filename="ui_lizmap.ui" line="769"/>
         <source>tools.label</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="796"/>
+        <location filename="ui_lizmap.ui" line="790"/>
         <source>tools.locateByLayer.label</source>
         <translation>Locate by Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="802"/>
+        <location filename="ui_lizmap.ui" line="796"/>
         <source>tools.locateByLayer.description</source>
         <translation>You can add up to 3 layers as a source of the locating tool</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="813"/>
+        <location filename="ui_lizmap.ui" line="807"/>
         <source>twLocateByLayer.col.layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="818"/>
+        <location filename="ui_lizmap.ui" line="812"/>
         <source>twLocateByLayer.col.field</source>
         <translation>Field</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="823"/>
+        <location filename="ui_lizmap.ui" line="817"/>
         <source>twLocateByLayer.col.displayGeom</source>
         <translation>Display the geometry</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="846"/>
+        <location filename="ui_lizmap.ui" line="840"/>
         <source>tools.locateByLayer.cbDisplayGeom</source>
         <translation>Display the geometry</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="870"/>
+        <location filename="ui_lizmap.ui" line="864"/>
         <source>tools.btLocateByLayerAdd</source>
         <translation>Add layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="877"/>
+        <location filename="ui_lizmap.ui" line="871"/>
         <source>tools.btLocateByLayerDel</source>
         <translation>Remove layer</translation>
     </message>
     <message>
-        <location filename="lizmap.py" line="1396"/>
+        <location filename="lizmap.py" line="1584"/>
         <source>ui.msg.warning.locateByLayer.notInWfs</source>
         <translation>The layers you have chosen for the tool &quot;Locate by layer&quot; must be checked in the &quot;WFS Capabilities&quot; option of the OWS tab in the &quot;Project Properties&quot; dialog</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="352"/>
+        <location filename="ui_lizmap.ui" line="346"/>
         <source>layers.rootGroupsAsBlock</source>
         <translation>Set the root groups as legend blocks</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="828"/>
+        <location filename="ui_lizmap.ui" line="822"/>
         <source>twLocateByLayer.col.id</source>
         <translation>Layer id</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="322"/>
+        <location filename="ui_lizmap.ui" line="316"/>
         <source>ui.groupBox.treeLayers</source>
         <translation>Project layers</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="102"/>
+        <location filename="ui_lizmap.ui" line="81"/>
         <source>ui.groupBox.settingLayer</source>
         <translation>Selected item settings</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="384"/>
+        <location filename="ui_lizmap.ui" line="378"/>
         <source>map.visibletools.label</source>
         <translation>Map tools</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="415"/>
+        <location filename="ui_lizmap.ui" line="409"/>
         <source>map.tool.zoom.history</source>
         <translation>Zoom history</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="425"/>
+        <location filename="ui_lizmap.ui" line="419"/>
         <source>map.tool.geolocation</source>
         <translation>Automatic geolocation</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="395"/>
+        <location filename="ui_lizmap.ui" line="389"/>
         <source>map.tool.print</source>
         <translation>Simple print</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="405"/>
+        <location filename="ui_lizmap.ui" line="399"/>
         <source>map.tool.measure</source>
         <translation>Measure tools</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="449"/>
+        <location filename="ui_lizmap.ui" line="443"/>
         <source>map.tool.externalSearch.label</source>
         <translation>Address search</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="462"/>
+        <location filename="ui_lizmap.ui" line="456"/>
         <source>nominatim</source>
         <translation>Nominatim</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="604"/>
+        <location filename="ui_lizmap.ui" line="598"/>
         <source>map.scales.help</source>
         <translation>Write down integer scales separated by coma.
 You must at least enter 2 min and max values.
 Ex: 1000, 250000</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="277"/>
+        <location filename="ui_lizmap.ui" line="271"/>
         <source>layers.layer.clientCacheExpiration</source>
         <translation>Browser client cache ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="291"/>
+        <location filename="ui_lizmap.ui" line="285"/>
         <source>seconds</source>
         <translation>seconds</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="904"/>
+        <location filename="ui_lizmap.ui" line="898"/>
         <source>tools.edition.label</source>
         <translation>Layer edition</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="910"/>
+        <location filename="ui_lizmap.ui" line="904"/>
         <source>tools.edition.description</source>
         <translation>You can add up to 5 layers in the list and choose edition capabilities for each one.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="921"/>
+        <location filename="ui_lizmap.ui" line="915"/>
         <source>twEdition.col.layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="926"/>
+        <location filename="ui_lizmap.ui" line="920"/>
         <source>twEdition.col.add</source>
         <translation>Create</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="931"/>
+        <location filename="ui_lizmap.ui" line="925"/>
         <source>twEdition.col.modAttribute</source>
         <translation>Modify attributes</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="936"/>
+        <location filename="ui_lizmap.ui" line="930"/>
         <source>twEdition.col.modGeom</source>
         <translation>Modify geometry</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="941"/>
+        <location filename="ui_lizmap.ui" line="935"/>
         <source>twEdition.col.delete</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="946"/>
+        <location filename="ui_lizmap.ui" line="940"/>
         <source>twEdition.col.id</source>
         <translation>Layer id</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="961"/>
+        <location filename="ui_lizmap.ui" line="962"/>
         <source>tools.editionLayer.cbCreate</source>
         <translation>Create</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="968"/>
+        <location filename="ui_lizmap.ui" line="969"/>
         <source>tools.editionLayer.cbModAtt</source>
         <translation>Modify attributes</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="975"/>
+        <location filename="ui_lizmap.ui" line="976"/>
         <source>tools.editionLayer.cbModGeom</source>
         <translation>Modify geometry</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="982"/>
+        <location filename="ui_lizmap.ui" line="983"/>
         <source>tools.editionLayer.cbDel</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1019"/>
+        <location filename="ui_lizmap.ui" line="1020"/>
         <source>tools.btEditionLayerAdd</source>
         <translation>Add layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1026"/>
+        <location filename="ui_lizmap.ui" line="1027"/>
         <source>tools.btEditionDel</source>
         <translation>Remove layer</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="1479"/>
+        <source>ui.msg.error.project.layers.path.relative {}</source>
+        <translation>The layers paths must be relative to the project file. Please copy the layers inside
+{}
+or in one folder above or aside</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="1626"/>
+        <source>ui.msg.error.winscp.not.found {}</source>
+        <translation>The file WinSCP.com has not been found in the following path:
+{}
+
+Please modifiy the path and try again.</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="1662"/>
+        <source>log.ftp.hostname.wrong.warning {}</source>
+        <translation>&lt;b&gt;** WARNING **&lt;/b&gt;Incorrect hostname : {} !</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="1717"/>
+        <source>log.ftp.winscpPath.warning {}</source>
+        <translation>&lt;b&gt;** WARNING **&lt;/b&gt; WinScp.com has not been found in : {}</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="1838"/>
+        <source>ui.msg.warning.run.sync {} {}</source>
+        <translation>You are about to send your project file and all the data contained in:
+{}
+
+to the server directory:
+{}
+
+This will remove every data in this remote directory which are not related to your current qgis project.
+Are you sure you want to proceed ?</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="1869"/>
+        <source>ui.msg.configuration.saved {} {}</source>
+        <translation>The configuration has been saved for the current Qgis project. Please synchronize your local project folder
+{}
+
+with the remote FTP folder
+{}</translation>
     </message>
 </context>
 <context>
