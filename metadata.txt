@@ -4,15 +4,13 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.2
+version=version 1.9.3
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.2
-  * Complete migration to QGIS 2.0. The plugin is not compatible with QGIS version < 2.0 anymore
-  * Remove message box for Linux users when lftp not installed
-  * Help button and menu item now lead to an external web help page
+  Version 1.9.3
+  * Minor fixes after new SIP api migration
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping

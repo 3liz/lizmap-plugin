@@ -1,4 +1,7 @@
 CHANGELOG
+  Version 1.9.3
+  * Minor fixes after new SIP api migration
+  
   Version 1.9.2
   * Complete migration to QGIS 2.0. The plugin is not compatible with QGIS version < 2.0 anymore
   * Remove message box for Linux users when lftp not installed
