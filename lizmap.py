@@ -62,7 +62,7 @@ import ConfigParser
 # date and time
 import time, datetime
 # json handling
-import simplejson
+import json
 # supprocess module, to load external command line tools
 import subprocess
 
@@ -524,9 +524,9 @@ class lizmap:
         jsonEditionLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
-            json = f.read()
+            jsonFileReader = f.read()
             try:
-                sjson = simplejson.loads(json)
+                sjson = json.loads(jsonFileReader)
                 jsonOptions = sjson['options']
                 if sjson.has_key('locateByLayer'):
                     jsonLocateByLayer = sjson['locateByLayer']
@@ -978,9 +978,9 @@ class lizmap:
         jsonLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
-            json = f.read()
+            jsonFileReader = f.read()
             try:
-                sjson = simplejson.loads(json)
+                sjson = json.loads(jsonFileReader)
                 jsonLayers = sjson['layers']
             except:
                 isok=0
@@ -1393,13 +1393,13 @@ class lizmap:
                 if layerOptions['popup'].lower() == 'false':
                     del layerOptions['popupTemplate']
                 # unset clientCacheExpiration if needed
-                if layerOptions['clientCacheExpiration'] <= 0:
+                if layerOptions['clientCacheExpiration'] < 0:
                     del layerOptions['clientCacheExpiration']
 
                 liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
 
         # Write json to the cfg file
-        jsonFileContent = simplejson.dumps(
+        jsonFileContent = json.dumps(
             liz2json,
             sort_keys=True,
             indent=4
