@@ -49,7 +49,7 @@
         <translation>Rilievo</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1294"/>
+        <location filename="ui_lizmap.ui" line="1388"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -312,65 +312,65 @@ Sei sicuro di voler procedere ?</translation>
 Se aggiungi una sorgente pubblica, devi aggiungere il corrispondente codice EPSG al WMS nelle proprietà del progetto.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1075"/>
+        <location filename="ui_lizmap.ui" line="1169"/>
         <source>ftp.label</source>
         <translation>FTP</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1142"/>
+        <location filename="ui_lizmap.ui" line="1236"/>
         <source>ftp.username.label</source>
         <translation>Username</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1159"/>
+        <location filename="ui_lizmap.ui" line="1253"/>
         <source>ftp.password.label</source>
         <translation>Password</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1104"/>
+        <location filename="ui_lizmap.ui" line="1198"/>
         <source>ftp.host.label</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1121"/>
+        <location filename="ui_lizmap.ui" line="1215"/>
         <source>ftp.port.label</source>
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1225"/>
+        <location filename="ui_lizmap.ui" line="1319"/>
         <source>ftp.localdir.label</source>
         <translation>Cartella locale</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1208"/>
+        <location filename="ui_lizmap.ui" line="1302"/>
         <source>ftp.remotedir.label</source>
         <translation>Cartella remota</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1271"/>
+        <location filename="ui_lizmap.ui" line="1365"/>
         <source>ftp.winscp.label</source>
         <translation>Percorso completo per WinSCP
 (solo per utenti windows)</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1303"/>
+        <location filename="ui_lizmap.ui" line="1397"/>
         <source>ftp.winscp.help.label</source>
         <translation>Scaricare l&apos;eseguibile portabile da qui:
 http://winscp.net/eng/download.php
 poi decomprimere il file zip in qualche cartella e selezionare il percorso alla cartella per poi inserirlo nel campo sopra.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1356"/>
+        <location filename="ui_lizmap.ui" line="1450"/>
         <source>log.label</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1372"/>
+        <location filename="ui_lizmap.ui" line="1466"/>
         <source>log.btClearLog.label</source>
         <translation>Cancella log</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1382"/>
+        <location filename="ui_lizmap.ui" line="1476"/>
         <source>log.btCancelSync.label</source>
         <translation>Cancella sincronizzazione</translation>
     </message>
@@ -445,27 +445,27 @@ poi decomprimere il file zip in qualche cartella e selezionare il percorso alla 
         <translation>Attiva popup</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1312"/>
+        <location filename="ui_lizmap.ui" line="1406"/>
         <source>ftp.winscp.session</source>
         <translation>Sessione WinSCP</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1200"/>
+        <location filename="ui_lizmap.ui" line="1294"/>
         <source>ftp.title.directory</source>
         <translation>Cartelle</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1096"/>
+        <location filename="ui_lizmap.ui" line="1190"/>
         <source>ftp.title.parameters</source>
         <translation>Parametri di connessione</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1263"/>
+        <location filename="ui_lizmap.ui" line="1357"/>
         <source>ftp.title.winscp</source>
         <translation>WinSCP</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1329"/>
+        <location filename="ui_lizmap.ui" line="1423"/>
         <source>ftp.winscp.criteria</source>
         <translation>Mirror criteria: time or size</translation>
     </message>
@@ -705,6 +705,41 @@ Sei sicuro di voler procedere con l&apos;operazione ?</translation>
 
 con la cartella remota FTP:
 {}</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1067"/>
+        <source>tools.loginFilteredLayers.label</source>
+        <translation>Filter layer by user</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1073"/>
+        <source>tools.loginFilteredLayers.description</source>
+        <translation>Authenticated user will only see the data where the chosen attribute matches his lizmap user group</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1081"/>
+        <source>twLogin.col.layer</source>
+        <translation>Layer</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1086"/>
+        <source>twLogin.col.field</source>
+        <translation>Campo</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1091"/>
+        <source>twLogin.col.id</source>
+        <translation>Id</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1126"/>
+        <source>tools.btLoginFilteredLayerAdd</source>
+        <translation>Aggiungi layer</translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="1133"/>
+        <source>tools.btLoginFilteredLayerDel</source>
+        <translation>Rimuovi layer</translation>
     </message>
 </context>
 <context>

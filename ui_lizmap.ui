@@ -91,8 +91,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>391</width>
-               <height>505</height>
+               <width>566</width>
+               <height>513</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -367,8 +367,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>596</width>
-            <height>442</height>
+            <width>871</width>
+            <height>480</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -779,8 +779,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>870</width>
-            <height>446</height>
+            <width>1031</width>
+            <height>663</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1061,10 +1061,104 @@
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QGroupBox" name="gb_loginFilteredLayers">
+             <property name="title">
+              <string>tools.loginFilteredLayers.label</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item>
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>tools.loginFilteredLayers.description</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="twLoginFilteredLayersList">
+                <column>
+                 <property name="text">
+                  <string>twLogin.col.layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twLogin.col.field</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twLogin.col.id</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_12">
+                  <item>
+                   <widget class="QComboBox" name="liLoginFilteredLayerLayers"/>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="liLoginFilteredLayerFields"/>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <item>
+                   <widget class="QPushButton" name="btLoginFilteredLayerAdd">
+                    <property name="text">
+                     <string>tools.btLoginFilteredLayerAdd</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btLoginFilteredLayerDel">
+                    <property name="text">
+                     <string>tools.btLoginFilteredLayerDel</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
           <zorder>gb_locateByLayer</zorder>
           <zorder>verticalSpacer_3</zorder>
           <zorder>gb_editionLayers</zorder>
+          <zorder>gb_loginFilteredLayers</zorder>
          </widget>
         </widget>
        </item>
@@ -1085,8 +1179,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>244</width>
-            <height>413</height>
+            <width>871</width>
+            <height>480</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">

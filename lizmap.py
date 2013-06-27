@@ -129,6 +129,7 @@ class lizmap:
         self.dlg.ui.gb_externalLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_editionLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_loginFilteredLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_ftpParams.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_ftpDir.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_winscp.setStyleSheet(self.STYLESHEET)
@@ -381,6 +382,13 @@ class lizmap:
         # remove a layer from the editionLayerList
         self.dlg.ui.btEditionLayerDel.clicked.connect(self.removeLayerFromEditionLayer)
 
+        # Login filtered layers
+        # detect layer locate list has changed to refresh layer field list
+        self.dlg.ui.liLoginFilteredLayerLayers.currentIndexChanged[str].connect(self.updateLoginFilteredFieldListFromLayer)
+        # add a layer to the list
+        self.dlg.ui.btLoginFilteredLayerAdd.clicked.connect(self.addLayerToLoginFilteredLayer)
+        # remove a layer from the list
+        self.dlg.ui.btLoginFilteredLayerDel.clicked.connect(self.removeLayerFromLoginFilteredLayer)
 
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
@@ -522,6 +530,7 @@ class lizmap:
         jsonOptions = {}
         jsonLocateByLayer = {}
         jsonEditionLayers = {}
+        jsonLoginFilteredLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
@@ -532,6 +541,8 @@ class lizmap:
                     jsonLocateByLayer = sjson['locateByLayer']
                 if sjson.has_key('editionLayers'):
                     jsonEditionLayers = sjson['editionLayers']
+                if sjson.has_key('loginFilteredLayers'):
+                    jsonLoginFilteredLayers = sjson['loginFilteredLayers']
             except:
                 isok=0
                 QMessageBox.critical(
@@ -649,6 +660,34 @@ class lizmap:
                 lblTableWidget_2.setItem(twRowCount, 5, newItem)
         lblTableWidget_2.setColumnHidden(5, True)
 
+        # Fill the loginFilteredLayers table widget
+        # empty previous content
+        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
+        for row in range(lblTableWidget.rowCount()):
+            lblTableWidget.removeRow(row)
+        lblTableWidget.setRowCount(0)
+        # fill from the json if exists
+        if jsonLoginFilteredLayers:
+            # load content from json file
+            for k,v in jsonLoginFilteredLayers.items():
+                twRowCount = lblTableWidget.rowCount()
+                # add a new line
+                lblTableWidget.setRowCount(twRowCount + 1)
+                lblTableWidget.setColumnCount(3)
+                # layer name
+                newItem = QTableWidgetItem(k)
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 0, newItem)
+                # layer field
+                newItem = QTableWidgetItem(v['fieldName'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 1, newItem)
+                # layer id
+                newItem = QTableWidgetItem(v['layerId'])
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, 2, newItem)
+        lblTableWidget.setColumnHidden(2, True)
+
         return True
 
 
@@ -716,18 +755,34 @@ class lizmap:
             if layer.type() == QgsMapLayer.VectorLayer:
                 provider = layer.dataProvider()
                 fields = provider.fields()
-                if hasattr(fields, "items"):
-                    for idx, field in fields.items():
-                        self.dlg.ui.liLocateByLayerFields.addItem(
-                            unicode(field.name()),
-                            idx
-                        )
-                else: # QGIS new vector api for 2.0
-                    for field in fields:
-                        self.dlg.ui.liLocateByLayerFields.addItem(
-                            unicode(field.name()),
-                            unicode(field.name())
-                        )           
+                for field in fields:
+                    self.dlg.ui.liLocateByLayerFields.addItem(
+                        unicode(field.name()),
+                        unicode(field.name())
+                    )           
+        else:
+            return None
+
+    def updateLoginFilteredFieldListFromLayer(self):
+        '''
+            Fill the combobox with the list of fields 
+            for the layer chosen with the liLayerLocateLayer combobox
+        '''
+        # get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLoginFilteredLayerLayers)
+
+        # remove previous items
+        self.dlg.ui.liLoginFilteredLayerFields.clear()
+        # populate the columns combo box
+        if layer:
+            if layer.type() == QgsMapLayer.VectorLayer:
+                provider = layer.dataProvider()
+                fields = provider.fields()
+                for field in fields:
+                    self.dlg.ui.liLoginFilteredLayerFields.addItem(
+                        unicode(field.name()),
+                        unicode(field.name())
+                    )           
         else:
             return None
 
@@ -866,6 +921,49 @@ class lizmap:
     def removeLayerFromEditionLayer(self):
         '''Remove a layer from the list of edition layers '''
         lblTableWidget = self.dlg.ui.twEditionLayerList
+        lblTableWidget.removeRow(lblTableWidget.currentRow())
+
+
+    def addLayerToLoginFilteredLayer(self):
+        '''Add a layer in the list of layers 
+        for which to have the "login filtered layer" tool'''
+        
+        # Get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLoginFilteredLayerLayers)
+        if not layer:
+            return False
+          
+        # Retrieve layer information
+        layerName = layer.name()
+        layerId = layer.id()
+        fieldCombobox = self.dlg.ui.liLoginFilteredLayerFields
+        fieldName = fieldCombobox.currentText()
+        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount < 3:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(3)
+                       
+            # add layer name to the line
+            newItem = QTableWidgetItem(layerName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, newItem)
+            # add field name to the line
+            newItem = QTableWidgetItem(fieldName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add layer id to the line
+            newItem = QTableWidgetItem(layerId)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
+        lblTableWidget.setColumnHidden(2, True)
+         
+
+    def removeLayerFromLoginFilteredLayer(self):
+        '''Remove a layer from the list of layers 
+        for which to have the "login filtered layer" tool'''
+        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
         lblTableWidget.removeRow(lblTableWidget.currentRow())
 
 
@@ -1338,6 +1436,20 @@ class lizmap:
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
                 liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
                 
+
+        # list of layers for which to have the tool "login filtered layer"
+        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
+        twRowCount = lblTableWidget.rowCount()     
+        if twRowCount > 0:
+            liz2json["loginFilteredLayers"] = {}    
+            for row in range(twRowCount):                   
+                # check that the layer is checked in the WFS capabilities
+                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                liz2json["loginFilteredLayers"][layerName] = {}
+                liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = fieldName
+                liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
 
         # gui user defined layers options
         for k,v in self.layerList.items():
@@ -1970,9 +2082,10 @@ class lizmap:
             
             # Fill the layer list for the locate by layer tool
             self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
-            
             # Fill the layers lists for the edition tool
             self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
+            # Fill the layer list for the login filtered layers tool
+            self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')            
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
