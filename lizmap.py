@@ -679,7 +679,7 @@ class lizmap:
                 newItem.setFlags(Qt.ItemIsEnabled)
                 lblTableWidget.setItem(twRowCount, 0, newItem)
                 # layer field
-                newItem = QTableWidgetItem(v['fieldName'])
+                newItem = QTableWidgetItem(v['filterAttribute'])
                 newItem.setFlags(Qt.ItemIsEnabled)
                 lblTableWidget.setItem(twRowCount, 1, newItem)
                 # layer id
@@ -937,7 +937,7 @@ class lizmap:
         layerName = layer.name()
         layerId = layer.id()
         fieldCombobox = self.dlg.ui.liLoginFilteredLayerFields
-        fieldName = fieldCombobox.currentText()
+        filterAttribute = fieldCombobox.currentText()
         lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 3:
@@ -950,7 +950,7 @@ class lizmap:
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 0, newItem)
             # add field name to the line
-            newItem = QTableWidgetItem(fieldName)
+            newItem = QTableWidgetItem(filterAttribute)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 1, newItem)
             # add layer id to the line
@@ -1445,10 +1445,10 @@ class lizmap:
             for row in range(twRowCount):                   
                 # check that the layer is checked in the WFS capabilities
                 layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                filterAttribute = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                 layerId = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                 liz2json["loginFilteredLayers"][layerName] = {}
-                liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = fieldName
+                liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
                 liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
 
         # gui user defined layers options
