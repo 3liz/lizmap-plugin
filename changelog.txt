@@ -1,4 +1,7 @@
 CHANGELOG
+  Version 1.9.4.1
+  * Debug filterByLogin configuration reading
+
   Version 1.9.4
   * Remove python module simplejson dependancy (replaced by module json)
   * New tool : filter layer data based on authenticated user
