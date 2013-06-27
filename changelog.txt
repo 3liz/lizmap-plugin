@@ -1,4 +1,8 @@
 CHANGELOG
+  Version 1.9.4
+  * Remove python module simplejson dependancy (replaced by module json)
+  * New tool : filter layer data based on authenticated user
+
   Version 1.9.3
   * Minor fixes after new SIP api migration
   

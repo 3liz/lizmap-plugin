@@ -4,13 +4,14 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.3
+version=version 1.9.4
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.3
-  * Minor fixes after new SIP api migration
+  Version 1.9.4
+  * Remove python module simplejson dependancy (replaced by module json)
+  * New tool : filter layer data based on authenticated user
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, 3liz, ftp, webmapping
