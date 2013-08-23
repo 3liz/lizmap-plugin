@@ -126,6 +126,7 @@ class lizmap:
         self.dlg.ui.gb_layerSettings.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_visibleTools.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_Scales.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_extent.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_externalLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_editionLayers.setStyleSheet(self.STYLESHEET)
@@ -160,7 +161,10 @@ class lizmap:
                 'widget': self.dlg.ui.inMaxScale, 
                 'wType': 'text', 'type': 'integer', 'default': 1000000000
             },
-        
+            'initialExtent': {
+                'widget': self.dlg.ui.inInitialExtent, 
+                'wType': 'text', 'type': 'floatlist', 'default': []
+            },    
             'googleKey': {
                 'widget': self.dlg.ui.inGoogleKey, 
                 'wType': 'text', 'type': 'string', 'default': ''
@@ -365,7 +369,9 @@ class lizmap:
         # detect close event
         self.dlg.ui.buttonClose.rejected.connect(self.warnOnClose)
         self.dlg.rejected.connect(self.warnOnClose)
-        
+        # initial extent
+        self.dlg.ui.btSetExtentFromProject.clicked.connect(self.setInitialExtentFromProject)
+        self.dlg.ui.btSetExtentFromCanvas.clicked.connect(self.setInitialExtentFromCanvas)
         
         
         # Locate by layers
@@ -738,7 +744,43 @@ class lizmap:
             # raster
             if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
                 combobox.addItem ( layer.name(),unicode(layerId))
-                
+
+
+    def setInitialExtentFromProject(self):
+        '''
+        Get the project WMS advertised extent
+        and set the initial xmin, ymin, xmax, ymax
+        in the map options tab
+        '''
+        # Get project instance
+        p = QgsProject.instance()
+        
+        # Get WMS extent
+        pWmsExtent = p.readListEntry('WMSExtent','')[0]
+        if len(pWmsExtent) > 1:
+            initialExtent = '%s, %s, %s, %s' % (
+                pWmsExtent[0],
+                pWmsExtent[1],
+                pWmsExtent[2],
+                pWmsExtent[3]
+            )
+            self.dlg.ui.inInitialExtent.setText(initialExtent)
+
+    def setInitialExtentFromCanvas(self):
+        '''
+        Get the map canvas extent
+        and set the initial xmin, ymin, xmax, ymax
+        in the map options tab
+        '''
+        # Get map canvas extent
+        mcExtent = self.iface.mapCanvas().extent() 
+        initialExtent = '%s, %s, %s, %s' % (
+            mcExtent.xMinimum(),
+            mcExtent.yMinimum(),
+            mcExtent.xMaximum(),
+            mcExtent.yMaximum()
+        )
+        self.dlg.ui.inInitialExtent.setText(initialExtent)
                 
     def updateLocateFieldListFromLayer(self):
         '''
@@ -1341,6 +1383,10 @@ class lizmap:
         else:
             bbox = []
         liz2json["options"]["bbox"] = bbox
+        
+        # set initialExtent values if not defined
+        if not self.dlg.ui.inInitialExtent.text():
+            self.setInitialExtentFromProject()
 
         # gui user defined options
         for key, item in self.globalOptions.items():
@@ -1370,17 +1416,21 @@ class lizmap:
                         inputValue = unicode(inputValue)
                     else:
                         inputValue = str(inputValue)
-                elif item['type'] in ('intlist', 'list'):
-                    if item['type'] == 'intlist':
+
+                elif item['type'] in ('intlist', 'floatlist', 'list'):
+                    if item['type'] in 'intlist':
                         inputValue = [int(a) for a in inputValue.split(', ') if a.isdigit()]
+                    elif item['type'] == 'floatlist':
+                        inputValue = [float(a) for a in inputValue.split(', ')]
                     else:
                         inputValue = [a for a in inputValue.split(', ')]
-                    inputValue.sort()
+
                 elif item['type'] == 'integer':
                     try:
                         inputValue = int(inputValue)
                     except:
                         inputValue = int(item['default'])
+
                 elif item['type'] == 'boolean':
                     inputValue = str(inputValue)
                                
@@ -2085,7 +2135,7 @@ class lizmap:
             # Fill the layers lists for the edition tool
             self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool
-            self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')            
+            self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')           
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
