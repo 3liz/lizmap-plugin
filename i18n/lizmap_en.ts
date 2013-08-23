@@ -61,7 +61,7 @@
     <message>
         <location filename="lizmap.py" line="988"/>
         <source>ui.msg.error.tree.read.content</source>
-        <translation>Errors encoutered while reading the last layer tree state. Please re-configure completely the options in the Layers tab</translation>
+        <translation>Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="875"/>
@@ -72,8 +72,8 @@
         <location filename="lizmap.py" line="875"/>
         <source>ui.msg.question.refresh.content</source>
         <translation>You can refresh the layer tree by pressing &quot;Yes&quot;.
-Be aware that you will loose all the changes made in this Layers tab (group or layer metadata and options) since your last &quot;Save&quot;.
-If you have renamed one or more groups or layers, you will also loose the associated informations.
+Be aware that you will lose all the changes made in this Layers tab (group or layer metadata and options) since your last &quot;Save&quot;.
+If you have renamed one or more groups or layers, you will also lose the associated information.
 
 Refresh layer tree ?</translation>
     </message>
@@ -95,7 +95,7 @@ Refresh layer tree ?</translation>
     <message>
         <location filename="lizmap.py" line="1431"/>
         <source>ui.msg.question.save.project.content</source>
-        <translation>Please save the current project before using Lizmap plugin.
+        <translation>Please save the current project before using the Lizmap plugin.
 Save the project ?</translation>
     </message>
     <message>
@@ -106,7 +106,7 @@ Save the project ?</translation>
     <message>
         <location filename="lizmap.py" line="1502"/>
         <source>ui.msg.error.project.wms.extent</source>
-        <translation>The project WMS extent must be set. Please change this options in the project settings dialog.</translation>
+        <translation>The project WMS extent must be set. Please change this option in the project settings dialog.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1961"/>
@@ -126,7 +126,7 @@ Save the project ?</translation>
     <message>
         <location filename="lizmap.py" line="474"/>
         <source>log.map.mapScales.warning</source>
-        <translation>Map scales: Write down integer scales separated by coma. You must at least enter 2 min and max values.</translation>
+        <translation>Map scales: Write down integer scales separated by comma. You must enter at least 2 min and max values.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1565"/>
@@ -223,7 +223,7 @@ Are you sure you want to proceed ?</translation>
     <message>
         <location filename="lizmap.py" line="1961"/>
         <source>ui.msg.warning.window.opened</source>
-        <translation>A Lizmap windows is already opened</translation>
+        <translation>A Lizmap window is already opened</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="75"/>
@@ -578,7 +578,7 @@ then unzip it to some folder, and select this folder to fill the field above</tr
         <location filename="ui_lizmap.ui" line="598"/>
         <source>map.scales.help</source>
         <translation>Write down integer scales separated by coma.
-You must at least enter 2 min and max values.
+You must enter at least 2 min and max values.
 Ex: 1000, 250000</translation>
     </message>
     <message>
@@ -594,12 +594,12 @@ Ex: 1000, 250000</translation>
     <message>
         <location filename="ui_lizmap.ui" line="898"/>
         <source>tools.edition.label</source>
-        <translation>Layer edition</translation>
+        <translation>Layer editing</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="904"/>
         <source>tools.edition.description</source>
-        <translation>You can add up to 5 layers in the list and choose edition capabilities for each one.</translation>
+        <translation>You can add up to 5 layers in the list and choose editing capabilities for each one.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="915"/>
@@ -674,7 +674,7 @@ or in one folder above or aside</translation>
         <translation>The file WinSCP.com has not been found in the following path:
 {}
 
-Please modifiy the path and try again.</translation>
+Please modify the path and try again.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1662"/>
