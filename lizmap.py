@@ -1814,7 +1814,7 @@ class lizmap:
             localdir=''
             self.log(
                 QApplication.translate("lizmap", "log.ftp.localdir.warning %1")
-                .arg(localdir),
+                .format(localdir),
                 abort=True,
                 textarea=self.dlg.ui.outLog)
         else:
@@ -1903,13 +1903,13 @@ class lizmap:
     def ftpSyncStdout(self):
         '''Get the ftp sync process Stdout and append it to the log textarea'''
         data = self.proc.readAllStandardOutput()
-        output = data.decode('utf-8')
+        output = str(data).decode('utf-8')
         self.dlg.ui.outLog.append(output)
 
     def ftpSyncError(self):
         '''Get the ftp sync process Error and append it to the log textarea'''
         data = self.proc.readAllStandardError()
-        output = data.decode('utf-8')
+        output = str(data).decode('utf-8')
         self.dlg.ui.outLog.append(output)
 
     def ftpSyncFinished(self):
