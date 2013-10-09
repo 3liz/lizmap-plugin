@@ -120,7 +120,7 @@ class lizmap:
         if not sys.platform.startswith('linux') and sys.platform != 'win32' :
             self.dlg.ui.tabWidget.setTabEnabled(3, False)
             self.dlg.ui.btSync.setEnabled(False)
-            
+
         # Set stylesheet for QGroupBox
         self.dlg.ui.gb_tree.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_layerSettings.setStyleSheet(self.STYLESHEET)
@@ -147,154 +147,154 @@ class lizmap:
             self.dlg.ui.lbWinscpCriteria.setEnabled(False)
 
         # List of ui widget for data driven actions and checking
-        
+
         self.globalOptions = {
             'mapScales': {
-                'widget': self.dlg.ui.inMapScales, 
+                'widget': self.dlg.ui.inMapScales,
                 'wType': 'text', 'type': 'intlist', 'default': [500000, 250000, 100000, 25000]
             },
             'minScale': {
-                'widget': self.dlg.ui.inMinScale, 
+                'widget': self.dlg.ui.inMinScale,
                 'wType': 'text', 'type': 'integer', 'default': 1
             },
             'maxScale': {
-                'widget': self.dlg.ui.inMaxScale, 
+                'widget': self.dlg.ui.inMaxScale,
                 'wType': 'text', 'type': 'integer', 'default': 1000000000
             },
             'initialExtent': {
-                'widget': self.dlg.ui.inInitialExtent, 
+                'widget': self.dlg.ui.inInitialExtent,
                 'wType': 'text', 'type': 'floatlist', 'default': []
-            },    
+            },
             'googleKey': {
-                'widget': self.dlg.ui.inGoogleKey, 
+                'widget': self.dlg.ui.inGoogleKey,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'googleHybrid' : {
-                'widget': self.dlg.ui.cbGoogleHybrid, 
+                'widget': self.dlg.ui.cbGoogleHybrid,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'googleSatellite' : {
-                'widget': self.dlg.ui.cbGoogleSatellite, 
+                'widget': self.dlg.ui.cbGoogleSatellite,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'googleTerrain' : {
-                'widget': self.dlg.ui.cbGoogleTerrain, 
+                'widget': self.dlg.ui.cbGoogleTerrain,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'googleStreets' : {
-                'widget': self.dlg.ui.cbGoogleStreets, 
+                'widget': self.dlg.ui.cbGoogleStreets,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'osmMapnik' : {
-                'widget': self.dlg.ui.cbOsmMapnik, 
+                'widget': self.dlg.ui.cbOsmMapnik,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'osmMapquest' : {
-                'widget': self.dlg.ui.cbOsmMapquest, 
+                'widget': self.dlg.ui.cbOsmMapquest,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
-            
+
             'rootGroupsAsBlock' : {
-                'widget': self.dlg.ui.cbRootGroupsAsBlock, 
+                'widget': self.dlg.ui.cbRootGroupsAsBlock,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
-            
+
             'print' : {
-                'widget': self.dlg.ui.cbActivatePrint, 
+                'widget': self.dlg.ui.cbActivatePrint,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'measure' : {
-                'widget': self.dlg.ui.cbActivateMeasure, 
+                'widget': self.dlg.ui.cbActivateMeasure,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'externalSearch' : {
-                'widget': self.dlg.ui.liExternalSearch, 
+                'widget': self.dlg.ui.liExternalSearch,
                 'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim']
             },
             'zoomHistory' : {
-                'widget': self.dlg.ui.cbActivateZoomHistory, 
+                'widget': self.dlg.ui.cbActivateZoomHistory,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'geolocation' : {
-                'widget': self.dlg.ui.cbActivateGeolocation, 
+                'widget': self.dlg.ui.cbActivateGeolocation,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'remoteDir': {
-                'widget': self.dlg.ui.inRemotedir, 
+                'widget': self.dlg.ui.inRemotedir,
                 'wType': 'text', 'type': 'string', 'default': ''
             }
         }
-        
+
         self.layerOptionsList = {
             'title': {
-                'widget': self.dlg.ui.inLayerTitle, 
+                'widget': self.dlg.ui.inLayerTitle,
                 'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
             },
             'abstract': {
-                'widget': self.dlg.ui.teLayerAbstract, 
+                'widget': self.dlg.ui.teLayerAbstract,
                 'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True
             },
             'link': {
-                'widget': self.dlg.ui.inLayerLink, 
+                'widget': self.dlg.ui.inLayerLink,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'minScale': {
-                'widget': None, 
+                'widget': None,
                 'wType': 'text', 'type': 'integer', 'default': 1
             },
             'maxScale': {
-                'widget': None, 
+                'widget': None,
                 'wType': 'text', 'type': 'integer', 'default': 1000000000000
             },
             'toggled': {
-                'widget': self.dlg.ui.cbToggled, 
+                'widget': self.dlg.ui.cbToggled,
                 'wType': 'checkbox', 'type': 'boolean', 'default': True
             },
             'popup': {
-                'widget': self.dlg.ui.cbPopup, 
+                'widget': self.dlg.ui.cbPopup,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'popupTemplate': {
-                'widget': None, 
+                'widget': None,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'groupAsLayer': {
-                'widget': self.dlg.ui.cbGroupAsLayer, 
+                'widget': self.dlg.ui.cbGroupAsLayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'baseLayer': {
-                'widget': self.dlg.ui.cbLayerIsBaseLayer, 
+                'widget': self.dlg.ui.cbLayerIsBaseLayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'singleTile': {
-                'widget': self.dlg.ui.cbSingleTile, 
-                'wType': 'checkbox', 'type': 'boolean', 'default': False, 
+                'widget': self.dlg.ui.cbSingleTile,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False,
                 'exclude': {'widget': self.dlg.ui.cbCached, 'key': 'cached'}
             },
             'imageFormat': {
-                'widget': self.dlg.ui.liImageFormat, 
-                'wType': 'list', 'type': 'string', 'default': 'image/png', 
+                'widget': self.dlg.ui.liImageFormat,
+                'wType': 'list', 'type': 'string', 'default': 'image/png',
                 'list':["image/png", "image/png; mode=8bit", "image/jpeg"]
             },
             'cached': {
-                'widget': self.dlg.ui.cbCached, 
-                'wType': 'checkbox', 'type': 'boolean', 'default': False, 
+                'widget': self.dlg.ui.cbCached,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False,
                 'exclude': {'widget': self.dlg.ui.cbSingleTile, 'key': 'singleTile'}
             },
             'cacheExpiration': {
-                'widget': self.dlg.ui.inCacheExpiration, 
+                'widget': self.dlg.ui.inCacheExpiration,
                 'wType': 'spinbox', 'type': 'integer', 'default': 0
             },
             'metatileSize': {
-                'widget': self.dlg.ui.inMetatileSize, 
+                'widget': self.dlg.ui.inMetatileSize,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'clientCacheExpiration': {
-                'widget': self.dlg.ui.inClientCacheExpiration, 
+                'widget': self.dlg.ui.inClientCacheExpiration,
                 'wType': 'spinbox', 'type': 'integer', 'default': 300
             }
         }
-        
+
         # map qgis geometry type
         self.mapQgisGeometryType = {
             0 : 'point',
@@ -303,7 +303,7 @@ class lizmap:
             3 : 'unknown',
             4 : 'none'
         }
-        
+
         # Disable checkboxes on the layer tab
         self.enableCheckBox(False)
 
@@ -312,7 +312,7 @@ class lizmap:
 
         # Catch user interaction on Map Scales input
         self.dlg.ui.inMapScales.editingFinished.connect(self.getMinMaxScales)
-        
+
         # Connect widget signals to setLayerProperty method depending on widget type
         from functools import partial
         for key, item in self.layerOptionsList.items():
@@ -372,8 +372,8 @@ class lizmap:
         # initial extent
         self.dlg.ui.btSetExtentFromProject.clicked.connect(self.setInitialExtentFromProject)
         self.dlg.ui.btSetExtentFromCanvas.clicked.connect(self.setInitialExtentFromCanvas)
-        
-        
+
+
         # Locate by layers
         # detect layer locate list has changed to refresh layer field list
         self.dlg.ui.liLocateByLayerLayers.currentIndexChanged[str].connect(self.updateLocateFieldListFromLayer)
@@ -381,7 +381,7 @@ class lizmap:
         self.dlg.ui.btLocateByLayerAdd.clicked.connect(self.addLayerToLocateByLayer)
         # remove a layer from the locateByLayerList
         self.dlg.ui.btLocateByLayerDel.clicked.connect(self.removeLayerFromLocateByLayer)
-        
+
         # Edition layers
         # add a layer to the editionLayerList
         self.dlg.ui.btEditionLayerAdd.clicked.connect(self.addLayerToEditionLayer)
@@ -475,7 +475,7 @@ class lizmap:
             if item['widget']:
                 item['widget'].setEnabled(value)
         self.dlg.ui.btConfigurePopup.setEnabled(value)
-        
+
     def getMinMaxScales(self):
         ''' Get Min Max Scales from scales input field'''
         minScale = 1
@@ -497,7 +497,7 @@ class lizmap:
         self.dlg.ui.inMinScale.setText(str(minScale))
         self.dlg.ui.inMaxScale.setText(str(maxScale))
         self.dlg.ui.inMapScales.setText(', '.join(map(str, mapScales)))
-        
+
         return myReturn
 
 
@@ -561,7 +561,7 @@ class lizmap:
                     abort=True,
                     textarea=self.dlg.ui.outLog)
 
-        
+
         # Set the global options (map, tools, FTP remote dir, etc.)
         for key, item in self.globalOptions.items():
             if item['widget']:
@@ -581,19 +581,19 @@ class lizmap:
                             item['widget'].setText(", ".join(map(str, jsonOptions[key])))
                         else:
                             item['widget'].setText(str(jsonOptions[key]))
-                            
-                    
+
+
                 if item['wType'] == 'spinbox':
                     item['widget'].setValue(int(item['default']))
                     if jsonOptions.has_key(key):
                         item['widget'].setValue(int(jsonOptions[key]))
-                    
+
                 if item['wType'] == 'list':
                     listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
                     item['widget'].setCurrentIndex(listDic[item['default']])
                     if jsonOptions.has_key(key):
-                        item['widget'].setCurrentIndex(listDic[jsonOptions[key]])           
-                
+                        item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
+
         # Fill the locateByLayer table widget
         # empty previous content
         lblTableWidget = self.dlg.ui.twLocateByLayerList
@@ -601,31 +601,36 @@ class lizmap:
             lblTableWidget.removeRow(row)
         lblTableWidget.setRowCount(0)
         # fill from the json if exists
+        colCount = 5
         if jsonLocateByLayer:
             # load content from json file
             for k,v in jsonLocateByLayer.items():
                 twRowCount = lblTableWidget.rowCount()
                 # add a new line
                 lblTableWidget.setRowCount(twRowCount + 1)
-                lblTableWidget.setColumnCount(4)                
+                lblTableWidget.setColumnCount(colCount)
                 # layer name
                 newItem = QTableWidgetItem(k)
                 newItem.setFlags(Qt.ItemIsEnabled)
                 lblTableWidget.setItem(twRowCount, 0, newItem)
-                # layer field
-                newItem = QTableWidgetItem(v['fieldName'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 1, newItem)
-                # displayGeom
-                newItem = QTableWidgetItem(v['displayGeom'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 2, newItem)
+                # other information
+                i=1
+                for key in ['fieldName', 'filterFieldName', 'displayGeom']:
+                    if v.has_key(key):
+                        value = v[key]
+                    else:
+                        value = ''
+                    newItem = QTableWidgetItem(value)
+                    newItem.setFlags(Qt.ItemIsEnabled)
+                    lblTableWidget.setItem(twRowCount, i, newItem)
+                    i+=1
+
                 # layer id
                 newItem = QTableWidgetItem(v['layerId'])
                 newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 3, newItem)
-        lblTableWidget.setColumnHidden(3, True)
-        
+                lblTableWidget.setItem(twRowCount, 4, newItem)
+        lblTableWidget.setColumnHidden(colCount - 1, True)
+
         # Edition layers tool
         # empty previous content
         lblTableWidget_2 = self.dlg.ui.twEditionLayerList
@@ -639,7 +644,7 @@ class lizmap:
                 twRowCount = lblTableWidget_2.rowCount()
                 # add a new line
                 lblTableWidget_2.setRowCount(twRowCount + 1)
-                lblTableWidget_2.setColumnCount(6)         
+                lblTableWidget_2.setColumnCount(6)
                 # layer name
                 newItem = QTableWidgetItem(k)
                 newItem.setFlags(Qt.ItemIsEnabled)
@@ -651,7 +656,7 @@ class lizmap:
                 # modify attributes
                 newItem = QTableWidgetItem(v['capabilities']['modifyAttribute'])
                 newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 2, newItem)                
+                lblTableWidget_2.setItem(twRowCount, 2, newItem)
                 # modify geometry
                 newItem = QTableWidgetItem(v['capabilities']['modifyGeometry'])
                 newItem.setFlags(Qt.ItemIsEnabled)
@@ -704,7 +709,7 @@ class lizmap:
             if myId == layer.id():
                 return layer
         return None
-        
+
     def getQgisLayerByNameFromCombobox(self, layerComboBox):
         '''Get a layer by its name'''
         returnLayer = None
@@ -717,7 +722,7 @@ class lizmap:
                     returnLayer = layer
         except:
             returnLayer = None
-        return returnLayer        
+        return returnLayer
 
 
     def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=['all']):
@@ -731,11 +736,9 @@ class lizmap:
         combobox.clear()
         # add empty item
         combobox.addItem ( '---', -1)
-        # get canvas
-        canvas = self.iface.mapCanvas()
         # loop though the layers
-        for i in range( canvas.layerCount() ):
-            layer = canvas.layer( i )
+        layers = self.iface.legendInterface().layers()
+        for layer in layers:
             layerId = layer.id()
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
@@ -754,7 +757,7 @@ class lizmap:
         '''
         # Get project instance
         p = QgsProject.instance()
-        
+
         # Get WMS extent
         pWmsExtent = p.readListEntry('WMSExtent','')[0]
         if len(pWmsExtent) > 1:
@@ -773,7 +776,7 @@ class lizmap:
         in the map options tab
         '''
         # Get map canvas extent
-        mcExtent = self.iface.mapCanvas().extent() 
+        mcExtent = self.iface.mapCanvas().extent()
         initialExtent = '%s, %s, %s, %s' % (
             mcExtent.xMinimum(),
             mcExtent.yMinimum(),
@@ -781,10 +784,10 @@ class lizmap:
             mcExtent.yMaximum()
         )
         self.dlg.ui.inInitialExtent.setText(initialExtent)
-                
+
     def updateLocateFieldListFromLayer(self):
         '''
-            Fill the combobox with the list of fields 
+            Fill the combobox with the list of fields
             for the layer chosen with the liLayerLocateLayer combobox
         '''
         # get the layer selected in the combo box
@@ -792,22 +795,31 @@ class lizmap:
 
         # remove previous items
         self.dlg.ui.liLocateByLayerFields.clear()
-        # populate the columns combo box
+        # populate the fields combo boxes
+        cbs = [
+            [False, self.dlg.ui.liLocateByLayerFields],
+            [True, self.dlg.ui.liLocateByLayerFilterFields]
+        ]
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 provider = layer.dataProvider()
                 fields = provider.fields()
-                for field in fields:
-                    self.dlg.ui.liLocateByLayerFields.addItem(
-                        unicode(field.name()),
-                        unicode(field.name())
-                    )           
+                for cb in cbs:
+                    # Add empty item if allowed
+                    if cb[0]:
+                        cb[1].addItem(u'--', u'')
+                    # Add fields to the combo
+                    for field in fields:
+                        cb[1].addItem(
+                            unicode(field.name()),
+                            unicode(field.name())
+                        )
         else:
             return None
 
     def updateLoginFilteredFieldListFromLayer(self):
         '''
-            Fill the combobox with the list of fields 
+            Fill the combobox with the list of fields
             for the layer chosen with the liLayerLocateLayer combobox
         '''
         # get the layer selected in the combo box
@@ -824,20 +836,20 @@ class lizmap:
                     self.dlg.ui.liLoginFilteredLayerFields.addItem(
                         unicode(field.name()),
                         unicode(field.name())
-                    )           
+                    )
         else:
             return None
 
 
     def addLayerToLocateByLayer(self):
-        '''Add a layer in the list of layers 
+        '''Add a layer in the list of layers
         for which to have the "locate by layer" tool'''
-        
+
         # Get the layer selected in the combo box
         layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLocateByLayerLayers)
         if not layer:
             return False
-        
+
         # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
         p = QgsProject.instance()
         wfsLayersList = p.readListEntry('WFSLayers','')[0]
@@ -847,25 +859,27 @@ class lizmap:
                 hasWfsOption = True
         if not hasWfsOption:
             QMessageBox.critical(
-                self.dlg, 
+                self.dlg,
                 QApplication.translate("lizmap", "ui.msg.error.title"),
-                QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"), 
+                QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
-          
+
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
         fieldCombobox = self.dlg.ui.liLocateByLayerFields
+        filterFieldCombobox = self.dlg.ui.liLocateByLayerFilterFields
         fieldName = fieldCombobox.currentText()
+        filterFieldName = filterFieldCombobox.currentText()
         displayGeom = str(self.dlg.ui.cbLocateByLayerDisplayGeom.isChecked())
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 3:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(4)
-                       
+            lblTableWidget.setColumnCount(5)
+
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -874,19 +888,23 @@ class lizmap:
             newItem = QTableWidgetItem(fieldName)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add filter field name to the line
+            newItem = QTableWidgetItem(filterFieldName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
             # add displayGeom option to the line
             newItem = QTableWidgetItem(displayGeom)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
-        lblTableWidget.setColumnHidden(3, True)
-         
+            lblTableWidget.setItem(twRowCount, 4, newItem)
+        lblTableWidget.setColumnHidden(4, True)
+
 
     def removeLayerFromLocateByLayer(self):
-        '''Remove a layer from the list of layers 
+        '''Remove a layer from the list of layers
         for which to have the "locate by layer" tool'''
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         lblTableWidget.removeRow(lblTableWidget.currentRow())
@@ -895,13 +913,13 @@ class lizmap:
 
     def addLayerToEditionLayer(self):
         '''Add a layer in the list of edition layers'''
-        
+
         # Get the layer selected in the combo box
         layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liEditionLayer)
         if not layer:
             return False
-        
-        # Retrieve layer information        
+
+        # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
         createFeature = str(self.dlg.ui.cbEditionLayerCreate.isChecked())
@@ -909,30 +927,30 @@ class lizmap:
         modifyGeometry = str(self.dlg.ui.cbEditionLayerModifyGeometry.isChecked())
         deleteFeature = str(self.dlg.ui.cbEditionLayerDeleteFeature.isChecked())
         lblTableWidget = self.dlg.ui.twEditionLayerList
-        
+
         # check at least one checkbox is active
         if not self.dlg.ui.cbEditionLayerCreate.isChecked() \
         and not self.dlg.ui.cbEditionLayerModifyAttribute.isChecked() \
         and not self.dlg.ui.cbEditionLayerModifyGeometry.isChecked() \
         and not self.dlg.ui.cbEditionLayerDeleteFeature.isChecked():
             return False
-           
+
         # count table widget lines
         twRowCount = lblTableWidget.rowCount()
-        
+
         # check if layer already added
         if twRowCount > 0:
             for row in range(twRowCount):
                 itemLayerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 if layerId == itemLayerId:
-                    return False    
-        
+                    return False
+
         # Add layer
         if twRowCount < 5:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(6)
-                       
+
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -958,7 +976,7 @@ class lizmap:
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 5, newItem)
         lblTableWidget.setColumnHidden(5, True)
-         
+
 
     def removeLayerFromEditionLayer(self):
         '''Remove a layer from the list of edition layers '''
@@ -967,14 +985,14 @@ class lizmap:
 
 
     def addLayerToLoginFilteredLayer(self):
-        '''Add a layer in the list of layers 
+        '''Add a layer in the list of layers
         for which to have the "login filtered layer" tool'''
-        
+
         # Get the layer selected in the combo box
         layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLoginFilteredLayerLayers)
         if not layer:
             return False
-          
+
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
@@ -986,7 +1004,7 @@ class lizmap:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(3)
-                       
+
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -1000,10 +1018,10 @@ class lizmap:
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 2, newItem)
         lblTableWidget.setColumnHidden(2, True)
-         
+
 
     def removeLayerFromLoginFilteredLayer(self):
-        '''Remove a layer from the list of layers 
+        '''Remove a layer from the list of layers
         for which to have the "login filtered layer" tool'''
         lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
         lblTableWidget.removeRow(lblTableWidget.currentRow())
@@ -1238,9 +1256,9 @@ class lizmap:
                         val['widget'].setCurrentIndex(listDic[val['default']])
 
 
-    def setLayerProperty(self, key, *args):    
+    def setLayerProperty(self, key, *args):
         '''
-            Set a layer property in global self.layerList 
+            Set a layer property in global self.layerList
             when the corresponding ui widget has sent changed signal
         '''
         key = str(key)
@@ -1262,7 +1280,7 @@ class lizmap:
                 self.layerList[item.text(1)][key] = layerOption['widget'].isChecked()
             elif layerOption['wType'] == 'list':
                 self.layerList[item.text(1)][key] = layerOption['list'][layerOption['widget'].currentIndex()]
-            
+
             # Deactivate the "exclude" widget if necessary
             if (layerOption.has_key('exclude')
                 and layerOption['wType'] == 'checkbox'
@@ -1271,8 +1289,8 @@ class lizmap:
             ):
                 layerOption['exclude']['widget'].setChecked(False)
                 self.layerList[item.text(1)][layerOption['exclude']['key']] = False
-                
-                
+
+
 
     def setLayerMeta(self, item, key):
         '''Set a the title/abstract Qgis metadata when corresponding item is changed
@@ -1301,7 +1319,7 @@ class lizmap:
             # Import the code for the dialog
             from lizmappopupdialog import lizmapPopupDialog
             self.lizmapPopupDialog = lizmapPopupDialog()
-            
+
             self.lizmapPopupDialog.ui.groupBox.setStyleSheet(self.STYLESHEET)
             self.lizmapPopupDialog.ui.groupBox_2.setStyleSheet(self.STYLESHEET)
 
@@ -1383,7 +1401,7 @@ class lizmap:
         else:
             bbox = []
         liz2json["options"]["bbox"] = bbox
-        
+
         # set initialExtent values if not defined
         if not self.dlg.ui.inInitialExtent.text():
             self.setInitialExtentFromProject()
@@ -1392,24 +1410,24 @@ class lizmap:
         for key, item in self.globalOptions.items():
             if item['widget']:
                 inputValue = None
-                
+
                 # Get field value depending on widget type
                 if item['wType'] == 'text':
                     inputValue = str(item['widget'].text()).strip(' \t')
 
                 if item['wType'] == 'textarea':
                     inputValue = str(item['widget'].toPlainText()).strip(' \t')
-                    
+
                 if item['wType'] == 'spinbox':
                     inputValue = item['widget'].value()
-                
+
                 if item['wType'] == 'checkbox':
                     inputValue = str(item['widget'].isChecked())
-                    
+
                 if item['wType'] == 'list':
                     listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
                     inputValue = item['list'][item['widget'].currentIndex()]
-                
+
                 # Cast value depending of data type
                 if item['type'] == 'string':
                     if item['wType'] in ('text', 'textarea'):
@@ -1433,41 +1451,44 @@ class lizmap:
 
                 elif item['type'] == 'boolean':
                     inputValue = str(inputValue)
-                               
+
                 # Add value to the option
                 if (inputValue and inputValue != "False"):
                     liz2json["options"][key] = inputValue
                 else:
                     if item.has_key('alwaysExport'):
                         liz2json["options"][key] = item['default']
-                
-       
+
+
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         p = QgsProject.instance()
-        wfsLayersList = p.readListEntry('WFSLayers','')[0]        
+        wfsLayersList = p.readListEntry('WFSLayers','')[0]
         if twRowCount > 0:
-            liz2json["locateByLayer"] = {}    
-            for row in range(twRowCount):                   
+            liz2json["locateByLayer"] = {}
+            for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerId = str(lblTableWidget.item(row, 3).text())
+                layerId = str(lblTableWidget.item(row, 4).text())
                 if layerId in wfsLayersList:
                     layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                     fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                    displayGeom = str(lblTableWidget.item(row, 2).text())
-                    layerId = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                    filterFieldName = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                    displayGeom = str(lblTableWidget.item(row, 3).text())
+                    layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
+                    if filterFieldName:
+                        liz2json["locateByLayer"][layerName]["filterFieldName"] = filterFieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId
-                    
+
         # layer(s) for the edition tool
         lblTableWidget = self.dlg.ui.twEditionLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["editionLayers"] = {}
-            for row in range(twRowCount):                   
+            for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                 createFeature = str(lblTableWidget.item(row, 1).text())
@@ -1485,14 +1506,14 @@ class lizmap:
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyAttribute"] = modifyAttribute
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
                 liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
-                
+
 
         # list of layers for which to have the tool "login filtered layer"
         lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
-        twRowCount = lblTableWidget.rowCount()     
+        twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["loginFilteredLayers"] = {}    
-            for row in range(twRowCount):                   
+            liz2json["loginFilteredLayers"] = {}
+            for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                 filterAttribute = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
@@ -1612,9 +1633,9 @@ class lizmap:
             layerSourcesBad = []
             mc = self.iface.mapCanvas()
             layerPathError = ''
-            
+
             for i in range(mc.layerCount()):
-                layerSource =    unicode('%s' % mc.layer( i ).source() )  
+                layerSource =    unicode('%s' % mc.layer( i ).source() )
                 layerProviderKey = mc.layer( i ).providerType()
                 # Only for layers stored in disk
                 if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr'):
@@ -1627,15 +1648,15 @@ class lizmap:
                         else:
                             layerSourcesBad.append(layerSource)
                             layerPathError+='--> %s \n' % relativePath
-                            isok = False                        
+                            isok = False
                     except:
                         isok = False
                         layerSourcesBad.append(layerSource)
-                        layerPathError+='--> %s \n' % mc.layer( i ).name()                        
+                        layerPathError+='--> %s \n' % mc.layer( i ).name()
 
 
-                    
-                    
+
+
             if len(layerSourcesBad) > 0:
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative {}").format(projectDir)+'\n'
                 self.log(
@@ -1697,15 +1718,15 @@ class lizmap:
 
         if isok:
             # Get configuration from input fields
-            
-            # Need to get theses values to check for Pseudo Mercator projection            
+
+            # Need to get theses values to check for Pseudo Mercator projection
             in_osmMapnik = self.dlg.ui.cbOsmMapnik.isChecked()
             in_osmMapquest = self.dlg.ui.cbOsmMapquest.isChecked()
             in_googleStreets = self.dlg.ui.cbGoogleStreets.isChecked()
             in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
             in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
             in_googleTerrain = self.dlg.ui.cbGoogleTerrain.isChecked()
-            
+
             isok = True
 
             # log
@@ -1728,8 +1749,8 @@ class lizmap:
                         QApplication.translate("lizmap", "log.map.externalBaseLayers.warning"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
-                        
-                
+
+
 
             # list of layers for which to have the tool "locate by layer" set
             lblTableWidget = self.dlg.ui.twLocateByLayerList
@@ -1737,9 +1758,9 @@ class lizmap:
             wfsLayersList = p.readListEntry('WFSLayers','')[0]
             if twRowCount > 0:
                 good = True
-                for row in range(twRowCount):                   
+                for row in range(twRowCount):
                     # check that the layer is checked in the WFS capabilities
-                    layerId = str(lblTableWidget.item(row, 3).text())
+                    layerId = str(lblTableWidget.item(row, 4).text())
                     if layerId not in wfsLayersList:
                         good = False
                 if not good:
@@ -1747,7 +1768,7 @@ class lizmap:
                         QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
-                        
+
 
             if self.isok:
                 # write data in the QgisWebClient json config file (to be send with the project file)
@@ -1770,7 +1791,7 @@ class lizmap:
             self.dlg.ui.outState.setText('<font color="green"></font>')
             # Go to Log tab
             self.dlg.ui.tabWidget.setCurrentIndex(4)
-            
+
             # Get and check map scales
             if self.isok:
                 self.getMinMaxScales()
@@ -1884,12 +1905,12 @@ class lizmap:
                 winscpPath=''
             else:
                 self.log('winscp path = %s' % winscpPath, abort=False, textarea=self.dlg.ui.outLog)
-                
+
             winscpSession = in_winscpSession
             winscpCriteria = in_winscpCriteria
             if not winscpCriteria in ('time', 'size'):
                 winscpCriteria = 'time'
-            
+
         else:
             winscpPath = ''
             winscpSession = ''
@@ -2129,13 +2150,13 @@ class lizmap:
         # show the dialog only if checkGlobalProjectOptions is true
         if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
             self.dlg.show()
-            
+
             # Fill the layer list for the locate by layer tool
             self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
             # Fill the layers lists for the edition tool
             self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool
-            self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')           
+            self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
