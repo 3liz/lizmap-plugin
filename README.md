@@ -1,4 +1,4 @@
-[![logo](icon.png "3Liz")][3liz]Lizmap 1.9.4.1
+[![logo](icon.png "3Liz")][3liz]Lizmap 1.9.5
 ==============================================
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
@@ -22,6 +22,7 @@ Contributors
 --------------
 Salvatore Larosa <lrssvtml@gmail.com>
 Paolo Cavallini
+https://github.com/ewsterrenburg
 
 Installation
 --------------
@@ -40,7 +41,8 @@ or from QGIS
 Documentation
 --------------
 
-http://docs.3liz.com/
+[French doc]: http://docs.3liz.com/
+[English doc translated via Google Translate]: http://translate.google.fr/translate?sl=fr&tl=en&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http%3A%2F%2Fdocs.3liz.Com
 
 License
 -------

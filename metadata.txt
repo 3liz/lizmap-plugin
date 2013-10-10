@@ -4,16 +4,19 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.4.1
+version=version 1.9.5
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.4.1
-  * Debug filterByLogin configuration reading
+  Version 1.9.5
+  * Locate by layer - add optionnal group field to create parent category filter
+  * New option : set the initial map extent at map loading
+  * Debug: remove old sip api translation methods
+  * Translation : corrections for english translation (by @ewsterrenburg )
 
 ; tags are in comma separated value format, spaces are allowed
-tags=lizmap, server, web, publication, 3liz, ftp, webmapping
+tags=lizmap, server, web, publication, 3liz, ftp, webmapping, WMS
 
 ; these metadata can be empty
 ; in a future version of the web application it will
