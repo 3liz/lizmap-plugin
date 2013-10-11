@@ -4,11 +4,14 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.5
+version=version 1.9.5.1
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 1.9.5.1
+  * Locate by layer - debug : Do not save filterFieldName if not set ( "--" )
+
   Version 1.9.5
   * Locate by layer - add optionnal group field to create parent category filter
   * New option : set the initial map extent at map loading

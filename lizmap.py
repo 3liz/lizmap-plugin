@@ -1478,7 +1478,7 @@ class lizmap:
                     layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
-                    if filterFieldName:
+                    if filterFieldName and filterFieldName != '--':
                         liz2json["locateByLayer"][layerName]["filterFieldName"] = filterFieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId

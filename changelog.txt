@@ -1,4 +1,7 @@
 CHANGELOG
+  Version 1.9.5.1
+  * Locate by layer - debug : Do not save filterFieldName if not set ( "--" )
+
   Version 1.9.5
   * Locate by layer - add optionnal group field to create parent category filter
   * New option : set the initial map extent at map loading
