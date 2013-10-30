@@ -118,7 +118,7 @@ class lizmap:
 
         # FTP Sync only active for linux and windows users.
         if not sys.platform.startswith('linux') and sys.platform != 'win32' :
-            self.dlg.ui.tabWidget.setTabEnabled(3, False)
+            self.dlg.ui.tabWidget.setTabEnabled(4, False)
             self.dlg.ui.btSync.setEnabled(False)
 
         # Set stylesheet for QGroupBox
@@ -191,6 +191,34 @@ class lizmap:
             },
             'osmMapquest' : {
                 'widget': self.dlg.ui.cbOsmMapquest,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingKey': {
+                'widget': self.dlg.ui.inBingKey,
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'bingStreets' : {
+                'widget': self.dlg.ui.cbBingStreets,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingSatellite' : {
+                'widget': self.dlg.ui.cbBingSatellite,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingHybrid' : {
+                'widget': self.dlg.ui.cbBingHybrid,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignKey': {
+                'widget': self.dlg.ui.inIgnKey,
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'ignStreets' : {
+                'widget': self.dlg.ui.cbIgnStreets,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignSatellite' : {
+                'widget': self.dlg.ui.cbIgnSatellite,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
 
@@ -1704,7 +1732,7 @@ class lizmap:
                     QApplication.translate("lizmap", "ui.msg.warning.lftp.installation"),
                     abort=False,
                     textarea=self.dlg.ui.outLog)
-                self.dlg.ui.tabWidget.setTabEnabled(3, False)
+                self.dlg.ui.tabWidget.setTabEnabled(4, False)
                 self.dlg.ui.btSync.setEnabled(False)
 
         return isok
@@ -1726,6 +1754,11 @@ class lizmap:
             in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
             in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
             in_googleTerrain = self.dlg.ui.cbGoogleTerrain.isChecked()
+            in_bingStreets = self.dlg.ui.cbBingStreets.isChecked()
+            in_bingSatellite = self.dlg.ui.cbBingSatellite.isChecked()
+            in_bingHybrid = self.dlg.ui.cbBingHybrid.isChecked()
+            in_ignStreets = self.dlg.ui.cbIgnStreets.isChecked()
+            in_ignSatellite = self.dlg.ui.cbIgnSatellite.isChecked()
 
             isok = True
 
@@ -1739,7 +1772,10 @@ class lizmap:
             p = QgsProject.instance()
 
             # public baselayers: check that the 3857 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
-            if in_osmMapnik or in_osmMapquest or in_googleStreets or in_googleSatellite or in_googleHybrid or in_googleTerrain:
+            if in_osmMapnik or in_osmMapquest or in_googleStreets \
+            or in_googleSatellite or in_googleHybrid or in_googleTerrain \
+            or in_bingSatellite or in_bingStreets or in_bingHybrid \
+            or in_ignSatellite or in_ignStreets:
                 good = False
                 for i in p.readListEntry('WMSCrsList','')[0]:
                     if i == 'EPSG:3857':
@@ -1790,7 +1826,7 @@ class lizmap:
 
             self.dlg.ui.outState.setText('<font color="green"></font>')
             # Go to Log tab
-            self.dlg.ui.tabWidget.setCurrentIndex(4)
+            self.dlg.ui.tabWidget.setCurrentIndex(5)
 
             # Get and check map scales
             if self.isok:
@@ -2042,9 +2078,9 @@ class lizmap:
             return False
 
         # Go to Log tab
-        self.dlg.ui.tabWidget.setCurrentIndex(4)
+        self.dlg.ui.tabWidget.setCurrentIndex(5)
         time.sleep(1)
-        self.dlg.ui.tabWidget.setCurrentIndex(4)
+        self.dlg.ui.tabWidget.setCurrentIndex(5)
 
         # Check the platform
         # FTP Sync only active for linux and windows users.

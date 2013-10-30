@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>819</width>
-    <height>600</height>
+    <width>806</width>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,8 +91,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>526</width>
-               <height>516</height>
+               <width>535</width>
+               <height>513</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -367,8 +367,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>761</width>
-            <height>581</height>
+            <width>777</width>
+            <height>461</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -681,147 +681,366 @@
             </widget>
            </item>
            <item>
+            <spacer name="verticalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>baselayer.label</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <item>
+        <widget class="QScrollArea" name="scrollArea_5">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_5">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>764</width>
+            <height>457</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
             <widget class="QGroupBox" name="gb_externalLayers">
              <property name="title">
               <string>map.public.label</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_22">
-              <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_6">
+              <item>
                <widget class="QLabel" name="label_21">
                 <property name="text">
                  <string>map.public.help</string>
                 </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <layout class="QVBoxLayout" name="verticalLayout_6">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
                 <item>
-                 <widget class="QGroupBox" name="groupBox_11">
-                  <property name="title">
-                   <string>map.openstreetmap.label</string>
+                 <widget class="QLabel" name="label_32">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_10">
-                   <item row="0" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <item>
-                      <widget class="QCheckBox" name="cbOsmMapnik">
-                       <property name="text">
-                        <string>OSM Mapnik</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="cbOsmMapquest">
-                       <property name="text">
-                        <string>OSM Mapquest</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_5">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
+                  <property name="text">
+                   <string>map.osm.label</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QGroupBox" name="groupBox_12">
-                  <property name="title">
+                 <widget class="QCheckBox" name="cbOsmMapnik">
+                  <property name="text">
+                   <string>OSM Mapnik</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbOsmMapquest">
+                  <property name="text">
+                   <string>OSM Mapquest</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbOsmCyclemap">
+                  <property name="text">
+                   <string>OSM CycleMap</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_21">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_33">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
                    <string>map.google.label</string>
                   </property>
-                  <layout class="QGridLayout" name="gridLayout_13">
-                   <item row="0" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <property name="spacing">
-                      <number>5</number>
-                     </property>
-                     <property name="sizeConstraint">
-                      <enum>QLayout::SetDefaultConstraint</enum>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_11">
-                       <property name="text">
-                        <string>Key</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="inGoogleKey">
-                       <property name="maximumSize">
-                        <size>
-                         <width>100</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="cbGoogleStreets">
-                       <property name="text">
-                        <string>Streets</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="cbGoogleSatellite">
-                       <property name="text">
-                        <string>Satellite</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="cbGoogleHybrid">
-                       <property name="text">
-                        <string>Hybrid</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="cbGoogleTerrain">
-                       <property name="text">
-                        <string>Terrain</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_6">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbGoogleStreets">
+                  <property name="text">
+                   <string>Streets</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbGoogleSatellite">
+                  <property name="text">
+                   <string>Satellite</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbGoogleHybrid">
+                  <property name="text">
+                   <string>Hybrid</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbGoogleTerrain">
+                  <property name="text">
+                   <string>Terrain</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_18">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_31">
+                  <property name="text">
+                   <string>Key</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="inGoogleKey">
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_18">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_34">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>map.bing.label</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbBingStreets">
+                  <property name="text">
+                   <string>Streets</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbBingSatellite">
+                  <property name="text">
+                   <string>Satellite</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbBingHybrid">
+                  <property name="text">
+                   <string>Hybrid</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_20">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_30">
+                  <property name="text">
+                   <string>Key</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="inBingKey">
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_13">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_35">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>map.ign.label</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbIgnStreets">
+                  <property name="text">
+                   <string>Scans</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbIgnSatellite">
+                  <property name="text">
+                   <string>Orthophoto</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_19">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_11">
+                  <property name="text">
+                   <string>Key</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="inIgnKey">
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                  </widget>
                 </item>
                </layout>
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -1646,12 +1865,6 @@
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inMapScales</tabstop>
-  <tabstop>cbOsmMapquest</tabstop>
-  <tabstop>inGoogleKey</tabstop>
-  <tabstop>cbGoogleStreets</tabstop>
-  <tabstop>cbGoogleSatellite</tabstop>
-  <tabstop>cbGoogleHybrid</tabstop>
-  <tabstop>cbGoogleTerrain</tabstop>
   <tabstop>inHost</tabstop>
   <tabstop>inPort</tabstop>
   <tabstop>inUsername</tabstop>
