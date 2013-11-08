@@ -221,6 +221,10 @@ class lizmap:
                 'widget': self.dlg.ui.cbIgnSatellite,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'ignTerrain' : {
+                'widget': self.dlg.ui.cbIgnTerrain,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
 
             'rootGroupsAsBlock' : {
                 'widget': self.dlg.ui.cbRootGroupsAsBlock,
@@ -770,6 +774,8 @@ class lizmap:
             layerId = layer.id()
             # vector
             if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
+                if not hasattr(layer, 'providerType'):
+                    continue
                 if 'all' in providerTypeList or layer.providerType() in providerTypeList:
                     combobox.addItem ( layer.name(), unicode(layerId))
             # raster
@@ -1759,6 +1765,7 @@ class lizmap:
             in_bingHybrid = self.dlg.ui.cbBingHybrid.isChecked()
             in_ignStreets = self.dlg.ui.cbIgnStreets.isChecked()
             in_ignSatellite = self.dlg.ui.cbIgnSatellite.isChecked()
+            in_ignTerrain = self.dlg.ui.cbIgnTerrain.isChecked()
 
             isok = True
 
@@ -1775,7 +1782,7 @@ class lizmap:
             if in_osmMapnik or in_osmMapquest or in_googleStreets \
             or in_googleSatellite or in_googleHybrid or in_googleTerrain \
             or in_bingSatellite or in_bingStreets or in_bingHybrid \
-            or in_ignSatellite or in_ignStreets:
+            or in_ignSatellite or in_ignStreets or in_ignTerrain:
                 good = False
                 for i in p.readListEntry('WMSCrsList','')[0]:
                     if i == 'EPSG:3857':

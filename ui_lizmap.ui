@@ -367,8 +367,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>777</width>
-            <height>461</height>
+            <width>764</width>
+            <height>457</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -983,7 +983,7 @@
                 <item>
                  <widget class="QCheckBox" name="cbIgnStreets">
                   <property name="text">
-                   <string>Scans</string>
+                   <string>Plan</string>
                   </property>
                  </widget>
                 </item>
@@ -991,6 +991,13 @@
                  <widget class="QCheckBox" name="cbIgnSatellite">
                   <property name="text">
                    <string>Orthophoto</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbIgnTerrain">
+                  <property name="text">
+                   <string>Scans</string>
                   </property>
                  </widget>
                 </item>
@@ -1528,8 +1535,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>777</width>
-            <height>461</height>
+            <width>764</width>
+            <height>457</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
