@@ -627,111 +627,70 @@ class lizmap:
                         item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
 
         # Fill the locateByLayer table widget
-        # empty previous content
-        lblTableWidget = self.dlg.ui.twLocateByLayerList
-        for row in range(lblTableWidget.rowCount()):
-            lblTableWidget.removeRow(row)
-        lblTableWidget.setRowCount(0)
-        # fill from the json if exists
-        colCount = 5
         if jsonLocateByLayer:
+            self.loadConfigIntoTableWidget(
+                self.dlg.ui.twLocateByLayerList,
+                ['fieldName', 'filterFieldName', 'displayGeom', 'layerId'],
+                jsonLocateByLayer
+            )
+
+        # Fill the Edition layers tool
+        if jsonEditionLayers:
+            for k,v in jsonEditionLayers.items():
+                if v.has_key('capabilities'):
+                    for x,y in v['capabilities'].items():
+                        jsonEditionLayers[k][x] = y
+            self.loadConfigIntoTableWidget(
+                self.dlg.ui.twEditionLayerList,
+                ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId'],
+                jsonEditionLayers
+            )
+
+        # Fill the loginFilteredLayers table widget
+        if jsonLoginFilteredLayers:
+            self.loadConfigIntoTableWidget(
+                self.dlg.ui.twLoginFilteredLayersList,
+                ['filterAttribute', 'layerId'],
+                jsonLoginFilteredLayers
+            )
+
+        return True
+
+
+    def loadConfigIntoTableWidget(self, widget, attributes, json):
+        '''
+        Load the data taken from lizmap config file
+        and fill the table widget
+        '''
+        # empty previous content
+        for row in range(widget.rowCount()):
+            widget.removeRow(row)
+        widget.setRowCount(0)
+        # fill from the json if exists
+        colCount = len(attributes) + 1 # +1 for layer name
+        if json:
             # load content from json file
-            for k,v in jsonLocateByLayer.items():
-                twRowCount = lblTableWidget.rowCount()
+            for k,v in json.items():
+                twRowCount = widget.rowCount()
                 # add a new line
-                lblTableWidget.setRowCount(twRowCount + 1)
-                lblTableWidget.setColumnCount(colCount)
+                widget.setRowCount(twRowCount + 1)
+                widget.setColumnCount(colCount)
                 # layer name
                 newItem = QTableWidgetItem(k)
                 newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 0, newItem)
+                widget.setItem(twRowCount, 0, newItem)
                 # other information
                 i=1
-                for key in ['fieldName', 'filterFieldName', 'displayGeom']:
+                for key in attributes:
                     if v.has_key(key):
                         value = v[key]
                     else:
                         value = ''
                     newItem = QTableWidgetItem(value)
                     newItem.setFlags(Qt.ItemIsEnabled)
-                    lblTableWidget.setItem(twRowCount, i, newItem)
+                    widget.setItem(twRowCount, i, newItem)
                     i+=1
-
-                # layer id
-                newItem = QTableWidgetItem(v['layerId'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 4, newItem)
-        lblTableWidget.setColumnHidden(colCount - 1, True)
-
-        # Edition layers tool
-        # empty previous content
-        lblTableWidget_2 = self.dlg.ui.twEditionLayerList
-        for row in range(lblTableWidget_2.rowCount()):
-            lblTableWidget_2.removeRow(row)
-        lblTableWidget_2.setRowCount(0)
-        # fill from the json if exists
-        if jsonEditionLayers:
-            # load content from json file
-            for k,v in jsonEditionLayers.items():
-                twRowCount = lblTableWidget_2.rowCount()
-                # add a new line
-                lblTableWidget_2.setRowCount(twRowCount + 1)
-                lblTableWidget_2.setColumnCount(6)
-                # layer name
-                newItem = QTableWidgetItem(k)
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 0, newItem)
-                # create
-                newItem = QTableWidgetItem(v['capabilities']['createFeature'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 1, newItem)
-                # modify attributes
-                newItem = QTableWidgetItem(v['capabilities']['modifyAttribute'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 2, newItem)
-                # modify geometry
-                newItem = QTableWidgetItem(v['capabilities']['modifyGeometry'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 3, newItem)
-                # delete
-                newItem = QTableWidgetItem(v['capabilities']['deleteFeature'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 4, newItem)
-                # layer id
-                newItem = QTableWidgetItem(v['layerId'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget_2.setItem(twRowCount, 5, newItem)
-        lblTableWidget_2.setColumnHidden(5, True)
-
-        # Fill the loginFilteredLayers table widget
-        # empty previous content
-        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
-        for row in range(lblTableWidget.rowCount()):
-            lblTableWidget.removeRow(row)
-        lblTableWidget.setRowCount(0)
-        # fill from the json if exists
-        if jsonLoginFilteredLayers:
-            # load content from json file
-            for k,v in jsonLoginFilteredLayers.items():
-                twRowCount = lblTableWidget.rowCount()
-                # add a new line
-                lblTableWidget.setRowCount(twRowCount + 1)
-                lblTableWidget.setColumnCount(3)
-                # layer name
-                newItem = QTableWidgetItem(k)
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 0, newItem)
-                # layer field
-                newItem = QTableWidgetItem(v['filterAttribute'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 1, newItem)
-                # layer id
-                newItem = QTableWidgetItem(v['layerId'])
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, 2, newItem)
-        lblTableWidget.setColumnHidden(2, True)
-
-        return True
+        widget.setColumnHidden(colCount - 1, True)
 
 
 
