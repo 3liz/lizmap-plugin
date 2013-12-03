@@ -49,6 +49,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from qgis.gui import QgsMessageBar
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
@@ -134,6 +135,7 @@ class lizmap:
         self.dlg.ui.gb_ftpParams.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_ftpDir.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_winscp.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -428,6 +430,12 @@ class lizmap:
         # remove a layer from the list
         self.dlg.ui.btLoginFilteredLayerDel.clicked.connect(self.removeLayerFromLoginFilteredLayer)
 
+        # Lizmap external layers as baselayers
+        # add a layer to the lizmap external baselayers
+        self.dlg.ui.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
+        # remove a layer from the editionLayerList
+        self.dlg.ui.btLizmapBaselayerDel.clicked.connect(self.removeLayerFromLizmapBaselayers)
+
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
             #add plugin to the web plugin menu
@@ -569,6 +577,7 @@ class lizmap:
         jsonLocateByLayer = {}
         jsonEditionLayers = {}
         jsonLoginFilteredLayers = {}
+        jsonLizmapExternalBaselayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
@@ -581,6 +590,8 @@ class lizmap:
                     jsonEditionLayers = sjson['editionLayers']
                 if sjson.has_key('loginFilteredLayers'):
                     jsonLoginFilteredLayers = sjson['loginFilteredLayers']
+                if sjson.has_key('lizmapExternalBaselayers'):
+                    jsonLizmapExternalBaselayers = sjson['lizmapExternalBaselayers']
             except:
                 isok=0
                 QMessageBox.critical(
@@ -632,6 +643,7 @@ class lizmap:
                 self.dlg.ui.twLocateByLayerList,
                 ['fieldName', 'filterFieldName', 'displayGeom', 'layerId'],
                 jsonLocateByLayer
+
             )
 
         # Fill the Edition layers tool
@@ -654,10 +666,20 @@ class lizmap:
                 jsonLoginFilteredLayers
             )
 
+        # Fill the lizmapExternalBaselayers table widget
+        if jsonLizmapExternalBaselayers:
+            self.loadConfigIntoTableWidget(
+                self.dlg.ui.twLizmapBaselayers,
+                ['repository', 'project', 'layerName', 'layerTitle'],
+                jsonLizmapExternalBaselayers,
+                False,
+                False
+            )
+
         return True
 
 
-    def loadConfigIntoTableWidget(self, widget, attributes, json):
+    def loadConfigIntoTableWidget(self, widget, attributes, json, hideLastCol=True, hasLayerName=True):
         '''
         Load the data taken from lizmap config file
         and fill the table widget
@@ -667,7 +689,10 @@ class lizmap:
             widget.removeRow(row)
         widget.setRowCount(0)
         # fill from the json if exists
-        colCount = len(attributes) + 1 # +1 for layer name
+        colCount = len(attributes)
+        # +1 for layer name
+        if hasLayerName:
+            colCount+=1
         if json:
             # load content from json file
             for k,v in json.items():
@@ -675,12 +700,14 @@ class lizmap:
                 # add a new line
                 widget.setRowCount(twRowCount + 1)
                 widget.setColumnCount(colCount)
-                # layer name
-                newItem = QTableWidgetItem(k)
-                newItem.setFlags(Qt.ItemIsEnabled)
-                widget.setItem(twRowCount, 0, newItem)
+                i=0
+                if hasLayerName:
+                    # layer name
+                    newItem = QTableWidgetItem(k)
+                    newItem.setFlags(Qt.ItemIsEnabled)
+                    widget.setItem(twRowCount, 0, newItem)
+                    i+=1
                 # other information
-                i=1
                 for key in attributes:
                     if v.has_key(key):
                         value = v[key]
@@ -690,7 +717,9 @@ class lizmap:
                     newItem.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(twRowCount, i, newItem)
                     i+=1
-        widget.setColumnHidden(colCount - 1, True)
+        if hideLastCol:
+            widget.setColumnHidden(colCount - 1, True)
+
 
 
 
@@ -1017,6 +1046,59 @@ class lizmap:
         '''Remove a layer from the list of layers
         for which to have the "login filtered layer" tool'''
         lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
+        lblTableWidget.removeRow(lblTableWidget.currentRow())
+
+
+    def addLayerToLizmapBaselayers(self):
+        '''
+        Add a layer in the list of
+        Lizmap external baselayers
+
+        '''
+
+        # Retrieve user options
+        layerRepository = str(self.dlg.ui.inLizmapBaselayerRepository.text().encode('utf-8')).strip(' \t')
+        layerProject = str(self.dlg.ui.inLizmapBaselayerProject.text().encode('utf-8')).strip(' \t')
+        layerName = str(self.dlg.ui.inLizmapBaselayerLayer.text().encode('utf-8')).strip(' \t')
+        layerTitle = str(self.dlg.ui.inLizmapBaselayerTitle.text().encode('utf-8')).strip(' \t')
+        content = [layerRepository, layerProject, layerName, layerTitle]
+        # Check that every option is set
+        for val in content:
+            if not val:
+                #~ self.iface.messageBar().pushMessage(
+                    #~ QApplication.translate("lizmap", "ui.msg.error.title"),
+                    #~ QApplication.translate("lizmap", "ui.msg.baselayers.lack.input"),
+                    #~ QgsMessageBar.WARNING,
+                    #~ 2
+                #~ )
+                QMessageBox.critical(
+                    self.dlg,
+                    QApplication.translate("lizmap", "ui.msg.error.title"),
+                    QApplication.translate("lizmap", "ui.msg.baselayers.lack.input"),
+                    QMessageBox.Ok
+                )
+                return False
+
+        lblTableWidget = self.dlg.ui.twLizmapBaselayers
+
+        twRowCount = lblTableWidget.rowCount()
+        colCount = 4
+        if twRowCount < 5:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(colCount)
+            # Add content the the widget line
+            i=0
+            for val in content:
+                newItem = QTableWidgetItem(val)
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, i, newItem)
+                i+=1
+
+
+    def removeLayerFromLizmapBaselayers(self):
+        '''Remove a layer from the list of Lizmap external baselayers'''
+        lblTableWidget = self.dlg.ui.twLizmapBaselayers
         lblTableWidget.removeRow(lblTableWidget.currentRow())
 
 
@@ -1514,6 +1596,25 @@ class lizmap:
                 liz2json["loginFilteredLayers"][layerName] = {}
                 liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
                 liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
+
+
+        # list of Lizmap external baselayers
+        eblTableWidget = self.dlg.ui.twLizmapBaselayers
+        twRowCount = eblTableWidget.rowCount()
+        if twRowCount > 0:
+            liz2json["lizmapExternalBaselayers"] = {}
+            for row in range(twRowCount):
+                # check that the layer is checked in the WFS capabilities
+                lRepository = str(eblTableWidget.item(row, 0).text().encode('utf-8'))
+                lProject = str(eblTableWidget.item(row, 1).text().encode('utf-8'))
+                lName = str(eblTableWidget.item(row, 2).text().encode('utf-8'))
+                lTitle = str(eblTableWidget.item(row, 3).text().encode('utf-8'))
+                liz2json["lizmapExternalBaselayers"][lName] = {}
+                liz2json["lizmapExternalBaselayers"][lName]["repository"] = lRepository
+                liz2json["lizmapExternalBaselayers"][lName]["project"] = lProject
+                liz2json["lizmapExternalBaselayers"][lName]["layerName"] = lName
+                liz2json["lizmapExternalBaselayers"][lName]["layerTitle"] = lTitle
+
 
         # gui user defined layers options
         for k,v in self.layerList.items():

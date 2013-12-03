@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>806</width>
-    <height>596</height>
+    <width>689</width>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -367,8 +367,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>764</width>
-            <height>457</height>
+            <width>705</width>
+            <height>472</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -713,9 +713,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>764</width>
-            <height>457</height>
+            <y>-176</y>
+            <width>731</width>
+            <height>648</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1037,6 +1037,158 @@
             </widget>
            </item>
            <item>
+            <spacer name="verticalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="gb_lizmapExternalBaselayers">
+             <property name="title">
+              <string>baselayers.external.lizmap.label</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <widget class="QLabel" name="label_40">
+                <property name="text">
+                 <string>baselayers.external.lizmap.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="twLizmapBaselayers">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>750</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <attribute name="horizontalHeaderCascadingSectionResizes">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="horizontalHeaderMinimumSectionSize">
+                 <number>50</number>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>false</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>twLizmapBaselayers.col.repository</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twLizmapBaselayers.col.project</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twLizmapBaselayers.col.layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>twLizmapBaselayers.col.title</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_10">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_37">
+                  <property name="text">
+                   <string>baselayers.lizmap.repository</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_36">
+                  <property name="text">
+                   <string>baselayers.lizmap.project</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLineEdit" name="inLizmapBaselayerLayer"/>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="label_39">
+                  <property name="text">
+                   <string>baselayers.lizmap.title</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_38">
+                  <property name="text">
+                   <string>baselayers.lizmap.layer</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="inLizmapBaselayerProject"/>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QLineEdit" name="inLizmapBaselayerTitle"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLineEdit" name="inLizmapBaselayerRepository"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_22">
+                <item>
+                 <widget class="QPushButton" name="btLizmapBaselayerAdd">
+                  <property name="text">
+                   <string>tw.btLayerAdd</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btLizmapBaselayerDel">
+                  <property name="text">
+                   <string>tw.btLayerDel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer_6">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1071,7 +1223,7 @@
             <x>0</x>
             <y>0</y>
             <width>1031</width>
-            <height>688</height>
+            <height>1162</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1085,6 +1237,9 @@
                <widget class="QLabel" name="label_28">
                 <property name="text">
                  <string>tools.locateByLayer.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1161,14 +1316,14 @@
                   <item>
                    <widget class="QPushButton" name="btLocateByLayerAdd">
                     <property name="text">
-                     <string>tools.btLocateByLayerAdd</string>
+                     <string>tw.btLayerAdd</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btLocateByLayerDel">
                     <property name="text">
-                     <string>tools.btLocateByLayerDel</string>
+                     <string>tw.btLayerDel</string>
                     </property>
                    </widget>
                   </item>
@@ -1243,6 +1398,19 @@
             </widget>
            </item>
            <item>
+            <spacer name="verticalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <widget class="QGroupBox" name="gb_editionLayers">
              <property name="title">
               <string>tools.edition.label</string>
@@ -1252,6 +1420,9 @@
                <widget class="QLabel" name="label_29">
                 <property name="text">
                  <string>tools.edition.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1373,14 +1544,14 @@
                   <item>
                    <widget class="QPushButton" name="btEditionLayerAdd">
                     <property name="text">
-                     <string>tools.btEditionLayerAdd</string>
+                     <string>tw.btLayerAdd</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btEditionLayerDel">
                     <property name="text">
-                     <string>tools.btEditionDel</string>
+                     <string>tw.btLayerDel</string>
                     </property>
                    </widget>
                   </item>
@@ -1427,6 +1598,9 @@
                <widget class="QLabel" name="label_22">
                 <property name="text">
                  <string>tools.loginFilteredLayers.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1479,14 +1653,14 @@
                   <item>
                    <widget class="QPushButton" name="btLoginFilteredLayerAdd">
                     <property name="text">
-                     <string>tools.btLoginFilteredLayerAdd</string>
+                     <string>tw.btLayerAdd</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btLoginFilteredLayerDel">
                     <property name="text">
-                     <string>tools.btLoginFilteredLayerDel</string>
+                     <string>tw.btLayerDel</string>
                     </property>
                    </widget>
                   </item>
@@ -1510,11 +1684,26 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <spacer name="verticalSpacer_10">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
           <zorder>gb_locateByLayer</zorder>
           <zorder>verticalSpacer_3</zorder>
           <zorder>gb_editionLayers</zorder>
           <zorder>gb_loginFilteredLayers</zorder>
+          <zorder>verticalSpacer_9</zorder>
+          <zorder>verticalSpacer_10</zorder>
          </widget>
         </widget>
        </item>
@@ -1535,8 +1724,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>764</width>
-            <height>457</height>
+            <width>647</width>
+            <height>488</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1795,6 +1984,19 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <spacer name="verticalSpacer_11">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1888,6 +2090,65 @@
   <tabstop>btSync</tabstop>
   <tabstop>btCancelFtpSync</tabstop>
   <tabstop>btSave</tabstop>
+  <tabstop>btHelp</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>inClientCacheExpiration</tabstop>
+  <tabstop>cbRootGroupsAsBlock</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>cbActivatePrint</tabstop>
+  <tabstop>cbActivateMeasure</tabstop>
+  <tabstop>cbActivateZoomHistory</tabstop>
+  <tabstop>cbActivateGeolocation</tabstop>
+  <tabstop>liExternalSearch</tabstop>
+  <tabstop>inInitialExtent</tabstop>
+  <tabstop>btSetExtentFromProject</tabstop>
+  <tabstop>btSetExtentFromCanvas</tabstop>
+  <tabstop>scrollArea_5</tabstop>
+  <tabstop>cbOsmMapnik</tabstop>
+  <tabstop>cbOsmMapquest</tabstop>
+  <tabstop>cbOsmCyclemap</tabstop>
+  <tabstop>cbGoogleStreets</tabstop>
+  <tabstop>cbGoogleSatellite</tabstop>
+  <tabstop>cbGoogleHybrid</tabstop>
+  <tabstop>cbGoogleTerrain</tabstop>
+  <tabstop>inGoogleKey</tabstop>
+  <tabstop>cbBingStreets</tabstop>
+  <tabstop>cbBingSatellite</tabstop>
+  <tabstop>cbBingHybrid</tabstop>
+  <tabstop>inBingKey</tabstop>
+  <tabstop>cbIgnStreets</tabstop>
+  <tabstop>cbIgnSatellite</tabstop>
+  <tabstop>cbIgnTerrain</tabstop>
+  <tabstop>inIgnKey</tabstop>
+  <tabstop>twLizmapBaselayers</tabstop>
+  <tabstop>inLizmapBaselayerRepository</tabstop>
+  <tabstop>inLizmapBaselayerProject</tabstop>
+  <tabstop>inLizmapBaselayerLayer</tabstop>
+  <tabstop>inLizmapBaselayerTitle</tabstop>
+  <tabstop>btLizmapBaselayerAdd</tabstop>
+  <tabstop>btLizmapBaselayerDel</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>liLocateByLayerFields</tabstop>
+  <tabstop>liLocateByLayerLayers</tabstop>
+  <tabstop>cbLocateByLayerDisplayGeom</tabstop>
+  <tabstop>liLocateByLayerFilterFields</tabstop>
+  <tabstop>btLocateByLayerAdd</tabstop>
+  <tabstop>btLocateByLayerDel</tabstop>
+  <tabstop>twLocateByLayerList</tabstop>
+  <tabstop>twEditionLayerList</tabstop>
+  <tabstop>liEditionLayer</tabstop>
+  <tabstop>cbEditionLayerCreate</tabstop>
+  <tabstop>cbEditionLayerModifyAttribute</tabstop>
+  <tabstop>cbEditionLayerModifyGeometry</tabstop>
+  <tabstop>cbEditionLayerDeleteFeature</tabstop>
+  <tabstop>btEditionLayerAdd</tabstop>
+  <tabstop>btEditionLayerDel</tabstop>
+  <tabstop>twLoginFilteredLayersList</tabstop>
+  <tabstop>liLoginFilteredLayerLayers</tabstop>
+  <tabstop>liLoginFilteredLayerFields</tabstop>
+  <tabstop>btLoginFilteredLayerAdd</tabstop>
+  <tabstop>btLoginFilteredLayerDel</tabstop>
+  <tabstop>scrollArea_4</tabstop>
  </tabstops>
  <resources/>
  <connections>
