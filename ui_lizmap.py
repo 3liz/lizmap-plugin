@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Tue Dec  3 16:49:19 2013
+# Created: Wed Dec  4 12:02:01 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 535, 513))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 526, 516))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -195,6 +195,14 @@ class Ui_lizmap(object):
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
+        self.gb_generalOptions = QtGui.QGroupBox(self.scrollAreaWidgetContents_2)
+        self.gb_generalOptions.setObjectName(_fromUtf8("gb_generalOptions"))
+        self.verticalLayout_15 = QtGui.QVBoxLayout(self.gb_generalOptions)
+        self.verticalLayout_15.setObjectName(_fromUtf8("verticalLayout_15"))
+        self.cbHideProject = QtGui.QCheckBox(self.gb_generalOptions)
+        self.cbHideProject.setObjectName(_fromUtf8("cbHideProject"))
+        self.verticalLayout_15.addWidget(self.cbHideProject)
+        self.verticalLayout_3.addWidget(self.gb_generalOptions)
         self.gb_visibleTools = QtGui.QGroupBox(self.scrollAreaWidgetContents_2)
         self.gb_visibleTools.setObjectName(_fromUtf8("gb_visibleTools"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.gb_visibleTools)
@@ -327,7 +335,7 @@ class Ui_lizmap(object):
         self.scrollArea_5.setWidgetResizable(True)
         self.scrollArea_5.setObjectName(_fromUtf8("scrollArea_5"))
         self.scrollAreaWidgetContents_5 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, -176, 731, 648))
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 731, 648))
         self.scrollAreaWidgetContents_5.setObjectName(_fromUtf8("scrollAreaWidgetContents_5"))
         self.verticalLayout_13 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
@@ -1058,6 +1066,8 @@ class Ui_lizmap(object):
         self.gb_tree.setTitle(_translate("lizmap", "ui.groupBox.treeLayers", None))
         self.cbRootGroupsAsBlock.setText(_translate("lizmap", "layers.rootGroupsAsBlock", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("lizmap", "layers.label", None))
+        self.gb_generalOptions.setTitle(_translate("lizmap", "map.general.options", None))
+        self.cbHideProject.setText(_translate("lizmap", "map.hide.project", None))
         self.gb_visibleTools.setTitle(_translate("lizmap", "map.visibletools.label", None))
         self.cbActivatePrint.setText(_translate("lizmap", "map.tool.print", None))
         self.cbActivateMeasure.setText(_translate("lizmap", "map.tool.measure", None))

@@ -91,8 +91,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>535</width>
-               <height>513</height>
+               <width>526</width>
+               <height>516</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -372,6 +372,22 @@
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QGroupBox" name="gb_generalOptions">
+             <property name="title">
+              <string>map.general.options</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_15">
+              <item>
+               <widget class="QCheckBox" name="cbHideProject">
+                <property name="text">
+                 <string>map.hide.project</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item>
             <widget class="QGroupBox" name="gb_visibleTools">
              <property name="title">
@@ -713,7 +729,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-176</y>
+            <y>0</y>
             <width>731</width>
             <height>648</height>
            </rect>

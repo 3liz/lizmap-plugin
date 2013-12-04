@@ -136,6 +136,7 @@ class lizmap:
         self.dlg.ui.gb_ftpDir.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_winscp.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_generalOptions.setStyleSheet(self.STYLESHEET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -256,6 +257,10 @@ class lizmap:
             'remoteDir': {
                 'widget': self.dlg.ui.inRemotedir,
                 'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'hideProject': {
+                'widget': self.dlg.ui.cbHideProject,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
             }
         }
 
