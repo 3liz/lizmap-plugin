@@ -638,13 +638,12 @@ class lizmap:
                         item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
 
         # Fill the locateByLayer table widget
-        if jsonLocateByLayer:
-            self.loadConfigIntoTableWidget(
-                self.dlg.ui.twLocateByLayerList,
-                ['fieldName', 'filterFieldName', 'displayGeom', 'layerId'],
-                jsonLocateByLayer
+        self.loadConfigIntoTableWidget(
+            self.dlg.ui.twLocateByLayerList,
+            ['fieldName', 'filterFieldName', 'displayGeom', 'layerId'],
+            jsonLocateByLayer
 
-            )
+        )
 
         # Fill the Edition layers tool
         if jsonEditionLayers:
@@ -652,29 +651,27 @@ class lizmap:
                 if v.has_key('capabilities'):
                     for x,y in v['capabilities'].items():
                         jsonEditionLayers[k][x] = y
-            self.loadConfigIntoTableWidget(
-                self.dlg.ui.twEditionLayerList,
-                ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId'],
-                jsonEditionLayers
-            )
+        self.loadConfigIntoTableWidget(
+            self.dlg.ui.twEditionLayerList,
+            ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId'],
+            jsonEditionLayers
+        )
 
         # Fill the loginFilteredLayers table widget
-        if jsonLoginFilteredLayers:
-            self.loadConfigIntoTableWidget(
-                self.dlg.ui.twLoginFilteredLayersList,
-                ['filterAttribute', 'layerId'],
-                jsonLoginFilteredLayers
-            )
+        self.loadConfigIntoTableWidget(
+            self.dlg.ui.twLoginFilteredLayersList,
+            ['filterAttribute', 'layerId'],
+            jsonLoginFilteredLayers
+        )
 
         # Fill the lizmapExternalBaselayers table widget
-        if jsonLizmapExternalBaselayers:
-            self.loadConfigIntoTableWidget(
-                self.dlg.ui.twLizmapBaselayers,
-                ['repository', 'project', 'layerName', 'layerTitle'],
-                jsonLizmapExternalBaselayers,
-                False,
-                False
-            )
+        self.loadConfigIntoTableWidget(
+            self.dlg.ui.twLizmapBaselayers,
+            ['repository', 'project', 'layerName', 'layerTitle'],
+            jsonLizmapExternalBaselayers,
+            False,
+            False
+        )
 
         return True
 
