@@ -137,6 +137,7 @@ class lizmap:
         self.dlg.ui.gb_winscp.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_generalOptions.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_timemanager.setStyleSheet(self.STYLESHEET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -261,6 +262,19 @@ class lizmap:
             'hideProject': {
                 'widget': self.dlg.ui.cbHideProject,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'tmTimeFrameSize': {
+                'widget': self.dlg.ui.inTimeFrameSize,
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'tmTimeFrameType' : {
+                'widget': self.dlg.ui.liTimeFrameType,
+                'wType': 'list', 'type': 'string', 'default': 'seconds',
+                'list':['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
+            },
+            'tmAnimationFrameLength': {
+                'widget': self.dlg.ui.inAnimationFrameLength,
+                'wType': 'spinbox', 'type': 'integer', 'default': 1000
             }
         }
 
@@ -441,6 +455,14 @@ class lizmap:
         # remove a layer from the editionLayerList
         self.dlg.ui.btLizmapBaselayerDel.clicked.connect(self.removeLayerFromLizmapBaselayers)
 
+        # Timemanager layers
+        # add a layer to the lizmap timemanager layers
+        self.dlg.ui.btTimemanagerLayerAdd.clicked.connect(self.addLayerToTimemanager)
+        # remove a layer from the timemanager layers
+        self.dlg.ui.btTimemanagerLayerDel.clicked.connect(self.removeLayerFromTimemanager)
+        # detect layer list has changed to refresh start attribute field list
+        self.dlg.ui.liTimemanagerLayers.currentIndexChanged[str].connect(self.updateTimemanagerFieldListFromLayer)
+
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
             #add plugin to the web plugin menu
@@ -583,6 +605,7 @@ class lizmap:
         jsonEditionLayers = {}
         jsonLoginFilteredLayers = {}
         jsonLizmapExternalBaselayers = {}
+        jsonTimemanagerLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
@@ -597,6 +620,8 @@ class lizmap:
                     jsonLoginFilteredLayers = sjson['loginFilteredLayers']
                 if sjson.has_key('lizmapExternalBaselayers'):
                     jsonLizmapExternalBaselayers = sjson['lizmapExternalBaselayers']
+                if sjson.has_key('timemanagerLayers'):
+                    jsonTimemanagerLayers = sjson['timemanagerLayers']
             except:
                 isok=0
                 QMessageBox.critical(
@@ -676,6 +701,12 @@ class lizmap:
             jsonLizmapExternalBaselayers,
             False,
             False
+        )
+        # Fill the timemanager table widget
+        self.loadConfigIntoTableWidget(
+            self.dlg.ui.twTimemanager,
+            ['startAttribute', 'label', 'group', 'groupTitle', 'layerId'],
+            jsonTimemanagerLayers
         )
 
         return True
@@ -864,6 +895,41 @@ class lizmap:
         else:
             return None
 
+
+    def updateTimemanagerFieldListFromLayer(self):
+        '''
+            Fill the combobox with the list of fields
+            for the layer chosen with the timemanager combobox
+            !!! NEEDS REFACTORING !!!
+        '''
+        # get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liTimemanagerLayers)
+
+        # populate the fields combo boxes
+        cbs = [
+            [False, self.dlg.ui.liTimemanagerStartAttribute],
+            [True, self.dlg.ui.liTimemanagerLabelAttribute]
+        ]
+        # remove previous items
+        for cb in cbs:
+            cb[1].clear()
+
+        if layer:
+            if layer.type() == QgsMapLayer.VectorLayer:
+                provider = layer.dataProvider()
+                fields = provider.fields()
+                for cb in cbs:
+                    # Add empty item if allowed
+                    if cb[0]:
+                        cb[1].addItem(u'--', u'')
+                    # Add fields to the combo
+                    for field in fields:
+                        cb[1].addItem(
+                            unicode(field.name()),
+                            unicode(field.name())
+                        )
+        else:
+            return None
 
     def addLayerToLocateByLayer(self):
         '''Add a layer in the list of layers
@@ -1067,12 +1133,6 @@ class lizmap:
         # Check that every option is set
         for val in content:
             if not val:
-                #~ self.iface.messageBar().pushMessage(
-                    #~ QApplication.translate("lizmap", "ui.msg.error.title"),
-                    #~ QApplication.translate("lizmap", "ui.msg.baselayers.lack.input"),
-                    #~ QgsMessageBar.WARNING,
-                    #~ 2
-                #~ )
                 QMessageBox.critical(
                     self.dlg,
                     QApplication.translate("lizmap", "ui.msg.error.title"),
@@ -1101,6 +1161,52 @@ class lizmap:
     def removeLayerFromLizmapBaselayers(self):
         '''Remove a layer from the list of Lizmap external baselayers'''
         lblTableWidget = self.dlg.ui.twLizmapBaselayers
+        lblTableWidget.removeRow(lblTableWidget.currentRow())
+
+
+    def addLayerToTimemanager(self):
+        '''
+        Add a layer in the list of
+        Timemanager layer
+        '''
+
+        # Get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liTimemanagerLayers)
+        if not layer:
+            return False
+
+        # Retrieve layer information
+        layerName = layer.name()
+        layerId = layer.id()
+        startAttribute = self.dlg.ui.liTimemanagerStartAttribute.currentText()
+        labelAttribute = self.dlg.ui.liTimemanagerLabelAttribute.currentText()
+        group = str(self.dlg.ui.inTimemanagerGroup.text().encode('utf-8')).strip(' \t')
+        groupTitle = str(self.dlg.ui.inTimemanagerGroupTitle.text().encode('utf-8')).strip(' \t')
+
+        content = [layerName, startAttribute, labelAttribute, group, groupTitle, layerId]
+
+        lblTableWidget = self.dlg.ui.twTimemanager
+        twRowCount = lblTableWidget.rowCount()
+        colCount = len(content)
+
+        if twRowCount < 10:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(colCount)
+
+            i=0
+            for val in content:
+                newItem = QTableWidgetItem(val)
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, i, newItem)
+                i+=1
+        lblTableWidget.setColumnHidden(colCount - 1, True)
+
+
+
+    def removeLayerFromTimemanager(self):
+        '''Remove a layer from the timemanager layers'''
+        lblTableWidget = self.dlg.ui.twTimemanager
         lblTableWidget.removeRow(lblTableWidget.currentRow())
 
 
@@ -1616,6 +1722,27 @@ class lizmap:
                 liz2json["lizmapExternalBaselayers"][lName]["project"] = lProject
                 liz2json["lizmapExternalBaselayers"][lName]["layerName"] = lName
                 liz2json["lizmapExternalBaselayers"][lName]["layerTitle"] = lTitle
+
+        # list of timemanager layers
+        lblTableWidget = self.dlg.ui.twTimemanager
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount > 0:
+            liz2json["timemanagerLayers"] = {}
+            for row in range(twRowCount):
+                # check that the layer is checked in the WFS capabilities
+                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                startAttribute = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                labelAttribute = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                tmGroup = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                tmGroupTitle = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                liz2json["timemanagerLayers"][layerName] = {}
+                liz2json["timemanagerLayers"][layerName]["startAttribute"] = startAttribute
+                if labelAttribute and labelAttribute != '--':
+                    liz2json["timemanagerLayers"][layerName]["label"] = labelAttribute
+                liz2json["timemanagerLayers"][layerName]["group"] = tmGroup
+                liz2json["timemanagerLayers"][layerName]["groupTitle"] = tmGroupTitle
+                liz2json["timemanagerLayers"][layerName]["layerId"] = layerId
 
 
         # gui user defined layers options
@@ -2262,6 +2389,8 @@ class lizmap:
             self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool
             self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')
+            # Fill the layer list for the login filtered layers tool
+            self.populateLayerCombobox(self.dlg.ui.liTimemanagerLayers, 'vector')
 
             # Get config file data and set the Ftp Configuration input fields
             self.getConfig()
@@ -2277,3 +2406,11 @@ class lizmap:
             # See if OK was pressed
             if result == 1:
                 QMessageBox.warning(self.dlg, "Debug", ("Quit !"), QMessageBox.Ok)
+
+
+                #~ self.iface.messageBar().pushMessage(
+                    #~ QApplication.translate("lizmap", "ui.msg.error.title"),
+                    #~ QApplication.translate("lizmap", "ui.msg.baselayers.lack.input"),
+                    #~ QgsMessageBar.WARNING,
+                    #~ 2
+                #~ )

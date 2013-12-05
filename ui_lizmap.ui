@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>689</width>
-    <height>627</height>
+    <width>704</width>
+    <height>605</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -368,7 +368,7 @@
             <x>0</x>
             <y>0</y>
             <width>705</width>
-            <height>472</height>
+            <height>453</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1237,9 +1237,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-984</y>
             <width>1031</width>
-            <height>1162</height>
+            <height>1434</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1414,19 +1414,6 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
             <widget class="QGroupBox" name="gb_editionLayers">
              <property name="title">
               <string>tools.edition.label</string>
@@ -1592,19 +1579,6 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
             <widget class="QGroupBox" name="gb_loginFilteredLayers">
              <property name="title">
               <string>tools.loginFilteredLayers.label</string>
@@ -1701,25 +1675,226 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer_10">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+            <widget class="QGroupBox" name="gb_timemanager">
+             <property name="title">
+              <string>tools.timemanager.label</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
+             <layout class="QVBoxLayout" name="verticalLayout_16">
+              <item>
+               <widget class="QLabel" name="label_41">
+                <property name="text">
+                 <string>tools.timemanager.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_13">
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_43">
+                  <property name="text">
+                   <string>tools.tm.timeFrameType</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_42">
+                  <property name="text">
+                   <string>tools.tm.timeFrameSize</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QSpinBox" name="inTimeFrameSize">
+                  <property name="maximum">
+                   <number>10000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_44">
+                  <property name="text">
+                   <string>tools.tm.animationFrameLength</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QSpinBox" name="inAnimationFrameLength">
+                  <property name="maximum">
+                   <number>10000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="liTimeFrameType">
+                  <item>
+                   <property name="text">
+                    <string>seconds</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>minutes</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>hours</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>days</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>weeks</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>months</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>years</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="twTimemanager">
+                <column>
+                 <property name="text">
+                  <string>tools.tm.layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>tools.tm.startAttribute</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>tools.tm.labelAttribute</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>tools.tm.group</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>tools.tm.groupTitle</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>tools.tm.layerId</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_22">
+                <item row="1" column="2">
+                 <widget class="QComboBox" name="liTimemanagerStartAttribute"/>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="liTimemanagerLayers"/>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_45">
+                  <property name="text">
+                   <string>tools.tm.layer</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QLineEdit" name="inTimemanagerGroup"/>
+                </item>
+                <item row="1" column="5">
+                 <widget class="QLineEdit" name="inTimemanagerGroupTitle"/>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_46">
+                  <property name="text">
+                   <string>tools.tm.startAttribute</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="5">
+                 <widget class="QLabel" name="label_48">
+                  <property name="text">
+                   <string>tools.tm.groupTitle</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4">
+                 <widget class="QLabel" name="label_47">
+                  <property name="text">
+                   <string>tools.tm.group</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="label_49">
+                  <property name="text">
+                   <string>tools.tm.labelAttribute</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QComboBox" name="liTimemanagerLabelAttribute"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_17">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_24">
+                  <item>
+                   <widget class="QPushButton" name="btTimemanagerLayerAdd">
+                    <property name="text">
+                     <string>tw.btLayerAdd</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btTimemanagerLayerDel">
+                    <property name="text">
+                     <string>tw.btLayerDel</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_21">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
-          <zorder>gb_locateByLayer</zorder>
-          <zorder>verticalSpacer_3</zorder>
-          <zorder>gb_editionLayers</zorder>
-          <zorder>gb_loginFilteredLayers</zorder>
-          <zorder>verticalSpacer_9</zorder>
-          <zorder>verticalSpacer_10</zorder>
          </widget>
         </widget>
        </item>
@@ -1740,8 +1915,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>647</width>
-            <height>488</height>
+            <width>662</width>
+            <height>466</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2165,6 +2340,18 @@
   <tabstop>btLoginFilteredLayerAdd</tabstop>
   <tabstop>btLoginFilteredLayerDel</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>cbHideProject</tabstop>
+  <tabstop>twTimemanager</tabstop>
+  <tabstop>inTimeFrameSize</tabstop>
+  <tabstop>liTimeFrameType</tabstop>
+  <tabstop>inAnimationFrameLength</tabstop>
+  <tabstop>liTimemanagerLayers</tabstop>
+  <tabstop>liTimemanagerStartAttribute</tabstop>
+  <tabstop>liTimemanagerLabelAttribute</tabstop>
+  <tabstop>inTimemanagerGroup</tabstop>
+  <tabstop>inTimemanagerGroupTitle</tabstop>
+  <tabstop>btTimemanagerLayerAdd</tabstop>
+  <tabstop>btTimemanagerLayerDel</tabstop>
  </tabstops>
  <resources/>
  <connections>
