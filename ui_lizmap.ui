@@ -91,8 +91,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>526</width>
-               <height>516</height>
+               <width>535</width>
+               <height>513</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -729,7 +729,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-198</y>
             <width>731</width>
             <height>648</height>
            </rect>
@@ -1143,7 +1143,14 @@
                  </widget>
                 </item>
                 <item row="1" column="2">
-                 <widget class="QLineEdit" name="inLizmapBaselayerLayer"/>
+                 <widget class="QLineEdit" name="inLizmapBaselayerLayer">
+                  <property name="maximumSize">
+                   <size>
+                    <width>130</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                 <item row="0" column="3">
                  <widget class="QLabel" name="label_39">
@@ -1160,13 +1167,34 @@
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QLineEdit" name="inLizmapBaselayerProject"/>
+                 <widget class="QLineEdit" name="inLizmapBaselayerProject">
+                  <property name="maximumSize">
+                   <size>
+                    <width>130</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="3">
-                 <widget class="QLineEdit" name="inLizmapBaselayerTitle"/>
+                 <widget class="QLineEdit" name="inLizmapBaselayerTitle">
+                  <property name="maximumSize">
+                   <size>
+                    <width>130</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QLineEdit" name="inLizmapBaselayerRepository"/>
+                 <widget class="QLineEdit" name="inLizmapBaselayerRepository">
+                  <property name="maximumSize">
+                   <size>
+                    <width>130</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1237,7 +1265,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-984</y>
+            <y>0</y>
             <width>1031</width>
             <height>1434</height>
            </rect>
@@ -1915,8 +1943,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>662</width>
-            <height>466</height>
+            <width>361</width>
+            <height>435</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">

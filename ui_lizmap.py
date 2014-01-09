@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Thu Dec  5 17:24:15 2013
+# Created: Thu Jan  9 13:39:25 2014
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 526, 516))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 535, 513))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -335,7 +335,7 @@ class Ui_lizmap(object):
         self.scrollArea_5.setWidgetResizable(True)
         self.scrollArea_5.setObjectName(_fromUtf8("scrollArea_5"))
         self.scrollAreaWidgetContents_5 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 731, 648))
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, -198, 731, 648))
         self.scrollAreaWidgetContents_5.setObjectName(_fromUtf8("scrollAreaWidgetContents_5"))
         self.verticalLayout_13 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
@@ -506,6 +506,7 @@ class Ui_lizmap(object):
         self.label_36.setObjectName(_fromUtf8("label_36"))
         self.gridLayout_10.addWidget(self.label_36, 0, 1, 1, 1)
         self.inLizmapBaselayerLayer = QtGui.QLineEdit(self.gb_lizmapExternalBaselayers)
+        self.inLizmapBaselayerLayer.setMaximumSize(QtCore.QSize(130, 16777215))
         self.inLizmapBaselayerLayer.setObjectName(_fromUtf8("inLizmapBaselayerLayer"))
         self.gridLayout_10.addWidget(self.inLizmapBaselayerLayer, 1, 2, 1, 1)
         self.label_39 = QtGui.QLabel(self.gb_lizmapExternalBaselayers)
@@ -515,12 +516,15 @@ class Ui_lizmap(object):
         self.label_38.setObjectName(_fromUtf8("label_38"))
         self.gridLayout_10.addWidget(self.label_38, 0, 2, 1, 1)
         self.inLizmapBaselayerProject = QtGui.QLineEdit(self.gb_lizmapExternalBaselayers)
+        self.inLizmapBaselayerProject.setMaximumSize(QtCore.QSize(130, 16777215))
         self.inLizmapBaselayerProject.setObjectName(_fromUtf8("inLizmapBaselayerProject"))
         self.gridLayout_10.addWidget(self.inLizmapBaselayerProject, 1, 1, 1, 1)
         self.inLizmapBaselayerTitle = QtGui.QLineEdit(self.gb_lizmapExternalBaselayers)
+        self.inLizmapBaselayerTitle.setMaximumSize(QtCore.QSize(130, 16777215))
         self.inLizmapBaselayerTitle.setObjectName(_fromUtf8("inLizmapBaselayerTitle"))
         self.gridLayout_10.addWidget(self.inLizmapBaselayerTitle, 1, 3, 1, 1)
         self.inLizmapBaselayerRepository = QtGui.QLineEdit(self.gb_lizmapExternalBaselayers)
+        self.inLizmapBaselayerRepository.setMaximumSize(QtCore.QSize(130, 16777215))
         self.inLizmapBaselayerRepository.setObjectName(_fromUtf8("inLizmapBaselayerRepository"))
         self.gridLayout_10.addWidget(self.inLizmapBaselayerRepository, 1, 0, 1, 1)
         self.verticalLayout_14.addLayout(self.gridLayout_10)
@@ -549,7 +553,7 @@ class Ui_lizmap(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents_3 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, -984, 1031, 1434))
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 1031, 1434))
         self.scrollAreaWidgetContents_3.setObjectName(_fromUtf8("scrollAreaWidgetContents_3"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
@@ -854,7 +858,7 @@ class Ui_lizmap(object):
         self.scrollArea_4.setWidgetResizable(True)
         self.scrollArea_4.setObjectName(_fromUtf8("scrollArea_4"))
         self.scrollAreaWidgetContents_4 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 662, 466))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 361, 435))
         self.scrollAreaWidgetContents_4.setObjectName(_fromUtf8("scrollAreaWidgetContents_4"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
