@@ -1,4 +1,11 @@
 CHANGELOG
+  Version 1.9.6
+  * Tools - Add "time manager" optionnal tool to animate vector layers based on date/time attribute
+  * Map - add option to hide the project in LizmapWebClient
+  * Baselayers - option to add external Lizmap project layers as baselayers
+  * Table widgets - refactor code to retrieve options from json config
+  * Baselayers - Add OpenCycleMap, IGN (plan, aerial, scans), Bing Maps
+
   Version 1.9.5.1
   * Locate by layer - debug : Do not save filterFieldName if not set ( "--" )
 
