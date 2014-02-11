@@ -1040,7 +1040,7 @@ class lizmap:
                     return False
 
         # Add layer
-        if twRowCount < 5:
+        if twRowCount < 10:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(6)
