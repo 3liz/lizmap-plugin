@@ -311,6 +311,10 @@ class lizmap:
                 'widget': None,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
+            'noLegendImage': {
+                'widget': self.dlg.ui.cbNoLegendImage,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
             'groupAsLayer': {
                 'widget': self.dlg.ui.cbGroupAsLayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False

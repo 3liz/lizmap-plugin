@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Thu Jan  9 13:39:25 2014
+# Created: Tue Feb 11 17:42:44 2014
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 535, 513))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -99, 535, 541))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -106,6 +106,9 @@ class Ui_lizmap(object):
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout_7)
+        self.cbNoLegendImage = QtGui.QCheckBox(self.scrollAreaWidgetContents)
+        self.cbNoLegendImage.setObjectName(_fromUtf8("cbNoLegendImage"))
+        self.verticalLayout.addWidget(self.cbNoLegendImage)
         self.cbGroupAsLayer = QtGui.QCheckBox(self.scrollAreaWidgetContents)
         self.cbGroupAsLayer.setObjectName(_fromUtf8("cbGroupAsLayer"))
         self.verticalLayout.addWidget(self.cbGroupAsLayer)
@@ -335,7 +338,7 @@ class Ui_lizmap(object):
         self.scrollArea_5.setWidgetResizable(True)
         self.scrollArea_5.setObjectName(_fromUtf8("scrollArea_5"))
         self.scrollAreaWidgetContents_5 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, -198, 731, 648))
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 731, 648))
         self.scrollAreaWidgetContents_5.setObjectName(_fromUtf8("scrollAreaWidgetContents_5"))
         self.verticalLayout_13 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
@@ -1053,7 +1056,8 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.inLayerLink, self.cbToggled)
         lizmap.setTabOrder(self.cbToggled, self.cbPopup)
         lizmap.setTabOrder(self.cbPopup, self.btConfigurePopup)
-        lizmap.setTabOrder(self.btConfigurePopup, self.cbGroupAsLayer)
+        lizmap.setTabOrder(self.btConfigurePopup, self.cbNoLegendImage)
+        lizmap.setTabOrder(self.cbNoLegendImage, self.cbGroupAsLayer)
         lizmap.setTabOrder(self.cbGroupAsLayer, self.cbLayerIsBaseLayer)
         lizmap.setTabOrder(self.cbLayerIsBaseLayer, self.cbSingleTile)
         lizmap.setTabOrder(self.cbSingleTile, self.liImageFormat)
@@ -1163,6 +1167,7 @@ class Ui_lizmap(object):
         self.cbToggled.setText(_translate("lizmap", "layers.layer.toggled", None))
         self.cbPopup.setText(_translate("lizmap", "layers.layer.popup", None))
         self.btConfigurePopup.setText(_translate("lizmap", "layers.popup.configure", None))
+        self.cbNoLegendImage.setText(_translate("lizmap", "layers.layer.noLegendImage", None))
         self.cbGroupAsLayer.setText(_translate("lizmap", "layers.layer.groupAsLayer", None))
         self.cbLayerIsBaseLayer.setText(_translate("lizmap", "layers.layer.baselayer", None))
         self.cbSingleTile.setText(_translate("lizmap", "layers.layer.singletile", None))

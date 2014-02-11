@@ -90,9 +90,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-99</y>
                <width>535</width>
-               <height>513</height>
+               <height>541</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -172,6 +172,13 @@
                    </spacer>
                   </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbNoLegendImage">
+                  <property name="text">
+                   <string>layers.layer.noLegendImage</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbGroupAsLayer">
@@ -729,7 +736,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-198</y>
+            <y>0</y>
             <width>731</width>
             <height>648</height>
            </rect>
@@ -2283,6 +2290,7 @@
   <tabstop>cbToggled</tabstop>
   <tabstop>cbPopup</tabstop>
   <tabstop>btConfigurePopup</tabstop>
+  <tabstop>cbNoLegendImage</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
   <tabstop>cbLayerIsBaseLayer</tabstop>
   <tabstop>cbSingleTile</tabstop>
