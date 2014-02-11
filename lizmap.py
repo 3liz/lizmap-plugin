@@ -1807,7 +1807,7 @@ class lizmap:
         # Write json to the cfg file
         jsonFileContent = json.dumps(
             liz2json,
-            sort_keys=True,
+            sort_keys=False,
             indent=4
         )
 
