@@ -1859,6 +1859,8 @@ class lizmap:
 
             for i in range(mc.layerCount()):
                 layerSource =    unicode('%s' % mc.layer( i ).source() )
+                if not hasattr(mc.layer( i ), 'providerType'):
+                    continue
                 layerProviderKey = mc.layer( i ).providerType()
                 # Only for layers stored in disk
                 if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr'):
