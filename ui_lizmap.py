@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Tue Feb 11 17:42:44 2014
+# Created: Tue Feb 11 18:24:29 2014
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -99, 535, 541))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -158, 526, 572))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -164,6 +164,9 @@ class Ui_lizmap(object):
         spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_15.addItem(spacerItem2)
         self.verticalLayout.addLayout(self.horizontalLayout_15)
+        self.cbExternalWms = QtGui.QCheckBox(self.scrollAreaWidgetContents)
+        self.cbExternalWms.setObjectName(_fromUtf8("cbExternalWms"))
+        self.verticalLayout.addWidget(self.cbExternalWms)
         self.gridLayout_20.addLayout(self.verticalLayout, 0, 0, 1, 1)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout_2.addWidget(self.scrollArea, 0, 0, 1, 1)
@@ -861,7 +864,7 @@ class Ui_lizmap(object):
         self.scrollArea_4.setWidgetResizable(True)
         self.scrollArea_4.setObjectName(_fromUtf8("scrollArea_4"))
         self.scrollAreaWidgetContents_4 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 361, 435))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 662, 466))
         self.scrollAreaWidgetContents_4.setObjectName(_fromUtf8("scrollAreaWidgetContents_4"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
@@ -1086,7 +1089,8 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.btSave, self.btHelp)
         lizmap.setTabOrder(self.btHelp, self.scrollArea)
         lizmap.setTabOrder(self.scrollArea, self.inClientCacheExpiration)
-        lizmap.setTabOrder(self.inClientCacheExpiration, self.cbRootGroupsAsBlock)
+        lizmap.setTabOrder(self.inClientCacheExpiration, self.cbExternalWms)
+        lizmap.setTabOrder(self.cbExternalWms, self.cbRootGroupsAsBlock)
         lizmap.setTabOrder(self.cbRootGroupsAsBlock, self.scrollArea_2)
         lizmap.setTabOrder(self.scrollArea_2, self.cbActivatePrint)
         lizmap.setTabOrder(self.cbActivatePrint, self.cbActivateMeasure)
@@ -1181,6 +1185,7 @@ class Ui_lizmap(object):
         self.inMetatileSize.setInputMask(_translate("lizmap", "0,0;_", None))
         self.label_18.setText(_translate("lizmap", "layers.layer.clientCacheExpiration", None))
         self.label_20.setText(_translate("lizmap", "seconds", None))
+        self.cbExternalWms.setText(_translate("lizmap", "layers.layer.externalWms", None))
         self.gb_tree.setTitle(_translate("lizmap", "ui.groupBox.treeLayers", None))
         self.cbRootGroupsAsBlock.setText(_translate("lizmap", "layers.rootGroupsAsBlock", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("lizmap", "layers.label", None))

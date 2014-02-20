@@ -90,9 +90,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-99</y>
-               <width>535</width>
-               <height>541</height>
+               <y>-158</y>
+               <width>526</width>
+               <height>572</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -307,6 +307,13 @@
                    </spacer>
                   </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbExternalWms">
+                  <property name="text">
+                   <string>layers.layer.externalWms</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1950,8 +1957,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>361</width>
-            <height>435</height>
+            <width>662</width>
+            <height>466</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2320,6 +2327,7 @@
   <tabstop>btHelp</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
+  <tabstop>cbExternalWms</tabstop>
   <tabstop>cbRootGroupsAsBlock</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>cbActivatePrint</tabstop>

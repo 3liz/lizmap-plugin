@@ -349,6 +349,10 @@ class lizmap:
             'clientCacheExpiration': {
                 'widget': self.dlg.ui.inClientCacheExpiration,
                 'wType': 'spinbox', 'type': 'integer', 'default': 300
+            },
+            'externalWms': {
+                'widget': self.dlg.ui.cbExternalWms,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
             }
         }
 
@@ -1233,6 +1237,8 @@ class lizmap:
         # Type : group or layer
         self.myDic[itemKey]['type'] = itemType
 
+        p = QgsProject.instance()
+
         # DEFAULT VALUES : generic default values for layers and group
         self.myDic[itemKey]['name'] = "%s" % itemKey
         for key, item in self.layerOptionsList.items():
@@ -1242,6 +1248,7 @@ class lizmap:
         # DEFAULT VALUES : layers have got more precise data
         keepMetadata = False
         if itemType == 'layer':
+
             # layer name
             layer = self.getQgisLayerById(itemKey)
             lname = '%s' % layer.name()
@@ -1336,7 +1343,7 @@ class lizmap:
                     textarea=self.dlg.ui.outLog)
             f.close()
 
-#        # Loop through groupLayerRelationship to reconstruct the tree
+        # Loop through groupLayerRelationship to reconstruct the tree
         for a in self.iface.legendInterface().groupLayerRelationship():
             # Initialize values
             parentItem = None
@@ -1425,6 +1432,7 @@ class lizmap:
             # deactivate popup configuration for groups
             isLayer = selectedItem['type'] == 'layer'
             self.dlg.ui.btConfigurePopup.setEnabled(isLayer)
+
 #            self.dlg.ui.cbPopup.setEnabled(isLayer)
 #            if not isLayer:
 #                self.dlg.ui.cbPopup.setChecked(False)
@@ -1802,10 +1810,14 @@ class lizmap:
                 # unset popupTemplate if popup False
                 if layerOptions['popup'].lower() == 'false':
                     del layerOptions['popupTemplate']
-                # unset clientCacheExpiration if needed
+                # unset clientCacheExpiration if not needed
                 if layerOptions['clientCacheExpiration'] < 0:
                     del layerOptions['clientCacheExpiration']
+                # unset externalWms if popup False
+                if layerOptions.has_key('externalWms') and layerOptions['externalWms'].lower() == 'false':
+                    del layerOptions['externalWms']
 
+                # Add layer options to the json object
                 liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
 
         # Write json to the cfg file
