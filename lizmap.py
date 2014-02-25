@@ -62,6 +62,10 @@ import ftplib
 import ConfigParser
 # date and time
 import time, datetime
+# regex
+import re
+# url decoding
+import urllib
 # json handling
 import json
 # supprocess module, to load external command line tools
@@ -355,7 +359,7 @@ class lizmap:
                 'widget': self.dlg.ui.inClientCacheExpiration,
                 'wType': 'spinbox', 'type': 'integer', 'default': 300
             },
-            'externalWms': {
+            'externalWmsToggle': {
                 'widget': self.dlg.ui.cbExternalWms,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
@@ -1786,6 +1790,7 @@ class lizmap:
             ltype = v['type']
             gal = v['groupAsLayer']
             geometryType = -1
+            layer = False
             if gal:
                 ltype = 'layer'
             else:
@@ -1837,12 +1842,23 @@ class lizmap:
                 if layerOptions['clientCacheExpiration'] < 0:
                     del layerOptions['clientCacheExpiration']
                 # unset externalWms if False
-                if layerOptions['externalWms'].lower() == 'false':
-                    del layerOptions['externalWms']
+                if layerOptions['externalWmsToggle'].lower() == 'false':
+                    del layerOptions['externalWmsToggle']
                 # unset source project and repository if needed
                 if not layerOptions['sourceRepository'] or not layerOptions['sourceProject']:
                     del layerOptions['sourceRepository']
                     del layerOptions['sourceProject']
+
+                # Add external WMS options if needed
+                if layer and hasattr(layer, 'providerType') \
+                and layerOptions.has_key('externalWmsToggle') \
+                and layerOptions['externalWmsToggle'].lower() == 'true':
+                    layerProviderKey = layer.providerType()
+                    # Only for layers stored in disk
+                    if layerProviderKey in ('wms'):
+                        wmsParams = self.getLayerWmsParameters(layer)
+                        if wmsParams:
+                            layerOptions['externalAccess'] = wmsParams
 
 
                 # Add layer options to the json object
@@ -1863,6 +1879,22 @@ class lizmap:
         f.close()
 
 
+    def getLayerWmsParameters(self, layer):
+        '''
+        Get WMS parameters for a raster WMS layers
+        '''
+        uri = layer.dataProvider().dataSourceUri()
+        # avoid WMTS layers (not supported yet in Lizmap Web Client)
+        if 'wmts' in uri or 'WMTS' in uri:
+            return None
+
+        # Split WMS parameters
+        wmsParams = dict([ [b for b in a.split('=') ] for a in uri.split('&')])
+
+        # urldecode WMS url
+        wmsParams['url'] = urllib.unquote(wmsParams['url']).decode('utf8').replace('&&', '&').replace('==','=')
+
+        return wmsParams
 
 
     def checkGlobalProjectOptions(self):
