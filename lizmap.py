@@ -254,7 +254,7 @@ class lizmap:
             },
             'externalSearch' : {
                 'widget': self.dlg.ui.liExternalSearch,
-                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim']
+                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ign']
             },
             'zoomHistory' : {
                 'widget': self.dlg.ui.cbActivateZoomHistory,

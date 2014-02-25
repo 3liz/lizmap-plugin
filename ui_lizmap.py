@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Thu Feb 20 16:20:49 2014
+# Created: Tue Feb 25 18:24:58 2014
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(-151, -190, 535, 604))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 535, 604))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -260,6 +260,8 @@ class Ui_lizmap(object):
         self.liExternalSearch.setObjectName(_fromUtf8("liExternalSearch"))
         self.liExternalSearch.addItem(_fromUtf8(""))
         self.liExternalSearch.setItemText(0, _fromUtf8(""))
+        self.liExternalSearch.addItem(_fromUtf8(""))
+        self.liExternalSearch.addItem(_fromUtf8(""))
         self.liExternalSearch.addItem(_fromUtf8(""))
         self.horizontalLayout_14.addWidget(self.liExternalSearch)
         spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -881,7 +883,7 @@ class Ui_lizmap(object):
         self.scrollArea_4.setWidgetResizable(True)
         self.scrollArea_4.setObjectName(_fromUtf8("scrollArea_4"))
         self.scrollAreaWidgetContents_4 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 662, 466))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 361, 435))
         self.scrollAreaWidgetContents_4.setObjectName(_fromUtf8("scrollAreaWidgetContents_4"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
@@ -1219,6 +1221,8 @@ class Ui_lizmap(object):
         self.cbActivateGeolocation.setText(_translate("lizmap", "map.tool.geolocation", None))
         self.label_19.setText(_translate("lizmap", "map.tool.externalSearch.label", None))
         self.liExternalSearch.setItemText(1, _translate("lizmap", "nominatim", None))
+        self.liExternalSearch.setItemText(2, _translate("lizmap", "google", None))
+        self.liExternalSearch.setItemText(3, _translate("lizmap", "ign", None))
         self.gb_Scales.setTitle(_translate("lizmap", "map.scales.label", None))
         self.label_13.setText(_translate("lizmap", "map.minScale.label", None))
         self.label_14.setText(_translate("lizmap", "map.maxScale.label", None))

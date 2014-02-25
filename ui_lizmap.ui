@@ -89,8 +89,8 @@
             <widget class="QWidget" name="scrollAreaWidgetContents">
              <property name="geometry">
               <rect>
-               <x>-151</x>
-               <y>-190</y>
+               <x>0</x>
+               <y>0</y>
                <width>535</width>
                <height>604</height>
               </rect>
@@ -516,6 +516,16 @@
                   <item>
                    <property name="text">
                     <string>nominatim</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>google</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>ign</string>
                    </property>
                   </item>
                  </widget>
