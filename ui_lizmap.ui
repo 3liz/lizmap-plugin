@@ -89,10 +89,10 @@
             <widget class="QWidget" name="scrollAreaWidgetContents">
              <property name="geometry">
               <rect>
-               <x>0</x>
-               <y>-158</y>
-               <width>526</width>
-               <height>572</height>
+               <x>-151</x>
+               <y>-190</y>
+               <width>535</width>
+               <height>604</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -314,6 +314,38 @@
                    <string>layers.layer.externalWms</string>
                   </property>
                  </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_23">
+                  <item>
+                   <widget class="QLabel" name="label_51">
+                    <property name="text">
+                     <string>layer.embeddedRep</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="inSourceRepository">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_50">
+                    <property name="text">
+                     <string>layer.embeddedProject</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="inSourceProject">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -2328,6 +2360,8 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
+  <tabstop>inSourceRepository</tabstop>
+  <tabstop>inSourceProject</tabstop>
   <tabstop>cbRootGroupsAsBlock</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>cbActivatePrint</tabstop>

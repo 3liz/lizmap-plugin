@@ -66,6 +66,11 @@ import time, datetime
 import json
 # supprocess module, to load external command line tools
 import subprocess
+# element tree to get some project properties not exposed to python api
+try:
+    from xml.etree import ElementTree as ET # Python >= 2.5
+except ImportError:
+    import elementtree.ElementTree as ET # module Python originel
 
 class lizmap:
     if sys.platform.startswith('win'):
@@ -353,6 +358,14 @@ class lizmap:
             'externalWms': {
                 'widget': self.dlg.ui.cbExternalWms,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'sourceRepository': {
+                'widget': self.dlg.ui.inSourceRepository,
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'sourceProject': {
+                'widget': self.dlg.ui.inSourceProject,
+                'wType': 'text', 'type': 'string', 'default': ''
             }
         }
 
@@ -547,7 +560,7 @@ class lizmap:
     def enableCheckBox(self, value):
         '''Enable/Disable checkboxes and fields of the Layer tab'''
         for key,item in self.layerOptionsList.items():
-            if item['widget']:
+            if item['widget'] and key not in ('sourceProject'):
                 item['widget'].setEnabled(value)
         self.dlg.ui.btConfigurePopup.setEnabled(value)
 
@@ -1237,13 +1250,20 @@ class lizmap:
         # Type : group or layer
         self.myDic[itemKey]['type'] = itemType
 
-        p = QgsProject.instance()
-
         # DEFAULT VALUES : generic default values for layers and group
         self.myDic[itemKey]['name'] = "%s" % itemKey
         for key, item in self.layerOptionsList.items():
             self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
+
+        p = QgsProject.instance()
+        embeddedGroups = self.getProjectEmbeddedGroup()
+        if itemType == 'group':
+            # embedded group ?
+            if embeddedGroups and embeddedGroups.has_key(itemKey):
+                pName = embeddedGroups[itemKey]['project']
+                pName = os.path.splitext(os.path.basename(pName))[0]
+                self.myDic[itemKey]['sourceProject'] = pName
 
         # DEFAULT VALUES : layers have got more precise data
         keepMetadata = False
@@ -1274,6 +1294,11 @@ class lizmap:
             self.myDic[itemKey]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
             # group as layer : always False obviously because it is already a layer
             self.myDic[itemKey]['groupAsLayer'] = False
+            # embedded layer ?
+            fromProject = p.layerIsEmbedded(itemKey)
+            if os.path.exists(fromProject):
+                pName = os.path.splitext(os.path.basename(fromProject))[0]
+                self.myDic[itemKey]['sourceProject'] = pName
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
         if jsonLayers.has_key('%s' % self.myDic[itemKey]['name']):
@@ -1413,9 +1438,10 @@ class lizmap:
         else:
             self.enableCheckBox(False)
 
-        if self.layerList.has_key(item.text(1)):
+        iKey = item.text(1)
+        if self.layerList.has_key(iKey):
             # get information about the layer or the group from the layerList dictionary
-            selectedItem = self.layerList[item.text(1)]
+            selectedItem = self.layerList[iKey]
 
             # set options
             for key,val in self.layerOptionsList.items():
@@ -1433,9 +1459,6 @@ class lizmap:
             isLayer = selectedItem['type'] == 'layer'
             self.dlg.ui.btConfigurePopup.setEnabled(isLayer)
 
-#            self.dlg.ui.cbPopup.setEnabled(isLayer)
-#            if not isLayer:
-#                self.dlg.ui.cbPopup.setChecked(False)
         else:
             # set default values for this layer/group
             for key,val in self.layerOptionsList.items():
@@ -1813,9 +1836,14 @@ class lizmap:
                 # unset clientCacheExpiration if not needed
                 if layerOptions['clientCacheExpiration'] < 0:
                     del layerOptions['clientCacheExpiration']
-                # unset externalWms if popup False
-                if layerOptions.has_key('externalWms') and layerOptions['externalWms'].lower() == 'false':
+                # unset externalWms if False
+                if layerOptions['externalWms'].lower() == 'false':
                     del layerOptions['externalWms']
+                # unset source project and repository if needed
+                if not layerOptions['sourceRepository'] or not layerOptions['sourceProject']:
+                    del layerOptions['sourceRepository']
+                    del layerOptions['sourceProject']
+
 
                 # Add layer options to the json object
                 liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
@@ -2048,6 +2076,22 @@ class lizmap:
 
         return self.isok
 
+
+    def getProjectEmbeddedGroup(self):
+        '''
+        Return a dictionary containing
+        properties of each embedded group
+        '''
+        p = QgsProject.instance()
+        if not p.fileName():
+            return None
+
+        projectPath = os.path.abspath('%s' % p.fileName())
+        with open(projectPath, 'r') as f:
+            arbre = ET.parse(f)
+            lg = list(arbre.iter('legendgroup'))
+            lge = dict([(a.attrib['name'],a.attrib) for a in lg if a.attrib.has_key('embedded')])
+            return lge
 
 
     def chooseWinscpPath(self):
