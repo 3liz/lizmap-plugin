@@ -1910,11 +1910,7 @@ class lizmap:
 
         # Check the project state (saved or not)
         if isok and p.isDirty():
-            saveIt = QMessageBox.question(self.dlg, QApplication.translate("lizmap", "ui.msg.question.save.project.title"), QApplication.translate("lizmap", "ui.msg.question.save.project.content"), QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if saveIt == QMessageBox.Yes:
-                p.write()
-            else:
-                isok = False
+            p.write()
 
         if isok:
             # Get the project folder
@@ -1970,21 +1966,30 @@ class lizmap:
             # check if a title has been given in the project OWS tab configuration
             # first set the WMSServiceCapabilities to true
             p.writeEntry('WMSServiceCapabilities', "/", "True")
-            p.write()
             if p.readEntry('WMSServiceTitle','')[0] == u'':
-                errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.title")+'\n'
-                isok = False
+                p.writeEntry('WMSServiceTitle', '', u'My QGIS project title')
 
 
             # check if a bbox has been given in the project OWS tab configuration
-            pWmsExtent = p.readListEntry('WMSExtent','')[0]
+            pWmsExtentLe = p.readListEntry('WMSExtent','')
+            pWmsExtent = pWmsExtentLe[0]
+            fullExtent = self.iface.mapCanvas().extent()
             if len(pWmsExtent) < 1 :
-                errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.extent")+'\n'
-                isok = False
+                pWmsExtent.append(u'%s' % fullExtent.xMinimum())
+                pWmsExtent.append(u'%s' % fullExtent.yMinimum())
+                pWmsExtent.append(u'%s' % fullExtent.xMaximum())
+                pWmsExtent.append(u'%s' % fullExtent.yMaximum())
+                p.writeEntry('WMSExtent', '', pWmsExtent)
             else:
                 if not pWmsExtent[0] or not pWmsExtent[1] or not pWmsExtent[2] or not pWmsExtent[3]:
-                    errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.wms.extent")+'\n'
-                    isok = False
+                    pWmsExtent[0] = u'%s' % fullExtent.xMinimum()
+                    pWmsExtent[1] = u'%s' % fullExtent.yMinimum()
+                    pWmsExtent[2] = u'%s' % fullExtent.xMaximum()
+                    pWmsExtent[3] = u'%s' % fullExtent.yMaximum()
+                    p.writeEntry('WMSExtent', '', pWmsExtent)
+
+            # Save project
+            p.write()
 
         if not isok and errorMessage:
             QMessageBox.critical(
@@ -2050,15 +2055,16 @@ class lizmap:
             or in_googleSatellite or in_googleHybrid or in_googleTerrain \
             or in_bingSatellite or in_bingStreets or in_bingHybrid \
             or in_ignSatellite or in_ignStreets or in_ignTerrain:
-                good = False
-                for i in p.readListEntry('WMSCrsList','')[0]:
+                crsList = p.readListEntry('WMSCrsList','')
+                pmFound = False
+                for i in crsList[0]:
                     if i == 'EPSG:3857':
-                        good = True
-                if not good:
-                    self.log(
-                        QApplication.translate("lizmap", "log.map.externalBaseLayers.warning"),
-                        abort=True,
-                        textarea=self.dlg.ui.outLog)
+                        pmFound = True
+                if not pmFound:
+                    crsList[0].append('EPSG:3857')
+                    p.writeEntry('WMSCrsList', '', crsList[0])
+                    p.write()
+
 
 
 
