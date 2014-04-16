@@ -164,7 +164,7 @@ class lizmap:
         self.globalOptions = {
             'mapScales': {
                 'widget': self.dlg.ui.inMapScales,
-                'wType': 'text', 'type': 'intlist', 'default': [500000, 250000, 100000, 25000]
+                'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
             },
             'minScale': {
                 'widget': self.dlg.ui.inMinScale,
