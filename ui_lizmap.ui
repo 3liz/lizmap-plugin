@@ -787,7 +787,7 @@
             <x>0</x>
             <y>0</y>
             <width>731</width>
-            <height>648</height>
+            <height>676</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1106,6 +1106,13 @@
                </layout>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbAddEmptyBaselayer">
+             <property name="text">
+              <string>baselayer.add.empty</string>
+             </property>
             </widget>
            </item>
            <item>
@@ -2399,6 +2406,7 @@
   <tabstop>cbIgnSatellite</tabstop>
   <tabstop>cbIgnTerrain</tabstop>
   <tabstop>inIgnKey</tabstop>
+  <tabstop>cbAddEmptyBaselayer</tabstop>
   <tabstop>twLizmapBaselayers</tabstop>
   <tabstop>inLizmapBaselayerRepository</tabstop>
   <tabstop>inLizmapBaselayerProject</tabstop>

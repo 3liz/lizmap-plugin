@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Tue Feb 25 18:24:58 2014
-#      by: PyQt4 UI code generator 4.10
+# Created: Wed Apr 16 17:37:32 2014
+#      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -360,7 +360,7 @@ class Ui_lizmap(object):
         self.scrollArea_5.setWidgetResizable(True)
         self.scrollArea_5.setObjectName(_fromUtf8("scrollArea_5"))
         self.scrollAreaWidgetContents_5 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 731, 648))
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 731, 676))
         self.scrollAreaWidgetContents_5.setObjectName(_fromUtf8("scrollAreaWidgetContents_5"))
         self.verticalLayout_13 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
@@ -490,6 +490,9 @@ class Ui_lizmap(object):
         self.horizontalLayout_13.addWidget(self.inIgnKey)
         self.verticalLayout_6.addLayout(self.horizontalLayout_13)
         self.verticalLayout_13.addWidget(self.gb_externalLayers)
+        self.cbAddEmptyBaselayer = QtGui.QCheckBox(self.scrollAreaWidgetContents_5)
+        self.cbAddEmptyBaselayer.setObjectName(_fromUtf8("cbAddEmptyBaselayer"))
+        self.verticalLayout_13.addWidget(self.cbAddEmptyBaselayer)
         spacerItem15 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_13.addItem(spacerItem15)
         self.gb_lizmapExternalBaselayers = QtGui.QGroupBox(self.scrollAreaWidgetContents_5)
@@ -883,7 +886,7 @@ class Ui_lizmap(object):
         self.scrollArea_4.setWidgetResizable(True)
         self.scrollArea_4.setObjectName(_fromUtf8("scrollArea_4"))
         self.scrollAreaWidgetContents_4 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 361, 435))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 662, 466))
         self.scrollAreaWidgetContents_4.setObjectName(_fromUtf8("scrollAreaWidgetContents_4"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
@@ -1138,7 +1141,8 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.cbIgnStreets, self.cbIgnSatellite)
         lizmap.setTabOrder(self.cbIgnSatellite, self.cbIgnTerrain)
         lizmap.setTabOrder(self.cbIgnTerrain, self.inIgnKey)
-        lizmap.setTabOrder(self.inIgnKey, self.twLizmapBaselayers)
+        lizmap.setTabOrder(self.inIgnKey, self.cbAddEmptyBaselayer)
+        lizmap.setTabOrder(self.cbAddEmptyBaselayer, self.twLizmapBaselayers)
         lizmap.setTabOrder(self.twLizmapBaselayers, self.inLizmapBaselayerRepository)
         lizmap.setTabOrder(self.inLizmapBaselayerRepository, self.inLizmapBaselayerProject)
         lizmap.setTabOrder(self.inLizmapBaselayerProject, self.inLizmapBaselayerLayer)
@@ -1256,6 +1260,7 @@ class Ui_lizmap(object):
         self.cbIgnSatellite.setText(_translate("lizmap", "Orthophoto", None))
         self.cbIgnTerrain.setText(_translate("lizmap", "Scans", None))
         self.label_11.setText(_translate("lizmap", "Key", None))
+        self.cbAddEmptyBaselayer.setText(_translate("lizmap", "baselayer.add.empty", None))
         self.gb_lizmapExternalBaselayers.setTitle(_translate("lizmap", "baselayers.external.lizmap.label", None))
         self.label_40.setText(_translate("lizmap", "baselayers.external.lizmap.description", None))
         item = self.twLizmapBaselayers.horizontalHeaderItem(0)

@@ -284,6 +284,10 @@ class lizmap:
             'tmAnimationFrameLength': {
                 'widget': self.dlg.ui.inAnimationFrameLength,
                 'wType': 'spinbox', 'type': 'integer', 'default': 1000
+            },
+            'emptyBaselayer': {
+                'widget': self.dlg.ui.cbAddEmptyBaselayer,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
             }
         }
 
