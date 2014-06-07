@@ -90,7 +90,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-190</y>
                <width>535</width>
                <height>604</height>
               </rect>
@@ -215,6 +215,11 @@
                     <item>
                      <property name="text">
                       <string>png</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>png; mode=16bit</string>
                      </property>
                     </item>
                     <item>
@@ -785,8 +790,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>731</width>
+            <y>-226</y>
+            <width>949</width>
             <height>676</height>
            </rect>
           </property>
@@ -1187,6 +1192,11 @@
                   <string>twLizmapBaselayers.col.title</string>
                  </property>
                 </column>
+                <column>
+                 <property name="text">
+                  <string>twLizmapBaselayers.col.imageFormat</string>
+                 </property>
+                </column>
                </widget>
               </item>
               <item>
@@ -1254,6 +1264,23 @@
                   <property name="maximumSize">
                    <size>
                     <width>130</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4">
+                 <widget class="QLabel" name="label_52">
+                  <property name="text">
+                   <string>baselayers.lizmap.imageFormat</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QLineEdit" name="inLizmapBaselayerImageFormat">
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
                     <height>16777215</height>
                    </size>
                   </property>
@@ -2412,6 +2439,7 @@
   <tabstop>inLizmapBaselayerProject</tabstop>
   <tabstop>inLizmapBaselayerLayer</tabstop>
   <tabstop>inLizmapBaselayerTitle</tabstop>
+  <tabstop>inLizmapBaselayerImageFormat</tabstop>
   <tabstop>btLizmapBaselayerAdd</tabstop>
   <tabstop>btLizmapBaselayerDel</tabstop>
   <tabstop>scrollArea_3</tabstop>

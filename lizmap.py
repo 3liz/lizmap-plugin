@@ -344,7 +344,7 @@ class lizmap:
             'imageFormat': {
                 'widget': self.dlg.ui.liImageFormat,
                 'wType': 'list', 'type': 'string', 'default': 'image/png',
-                'list':["image/png", "image/png; mode=8bit", "image/jpeg"]
+                'list':["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
             },
             'cached': {
                 'widget': self.dlg.ui.cbCached,
@@ -726,7 +726,7 @@ class lizmap:
         # Fill the lizmapExternalBaselayers table widget
         self.loadConfigIntoTableWidget(
             self.dlg.ui.twLizmapBaselayers,
-            ['repository', 'project', 'layerName', 'layerTitle'],
+            ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat'],
             jsonLizmapExternalBaselayers,
             False,
             False
@@ -1158,7 +1158,8 @@ class lizmap:
         layerProject = str(self.dlg.ui.inLizmapBaselayerProject.text().encode('utf-8')).strip(' \t')
         layerName = str(self.dlg.ui.inLizmapBaselayerLayer.text().encode('utf-8')).strip(' \t')
         layerTitle = str(self.dlg.ui.inLizmapBaselayerTitle.text().encode('utf-8')).strip(' \t')
-        content = [layerRepository, layerProject, layerName, layerTitle]
+        layerImageFormat = str(self.dlg.ui.inLizmapBaselayerImageFormat.text().encode('utf-8')).strip(' \t')
+        content = [layerRepository, layerProject, layerName, layerTitle, layerImageFormat]
         # Check that every option is set
         for val in content:
             if not val:
@@ -1173,8 +1174,8 @@ class lizmap:
         lblTableWidget = self.dlg.ui.twLizmapBaselayers
 
         twRowCount = lblTableWidget.rowCount()
-        colCount = 4
-        if twRowCount < 5:
+        colCount = 5
+        if twRowCount < 6:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(colCount)
@@ -1760,11 +1761,15 @@ class lizmap:
                 lProject = str(eblTableWidget.item(row, 1).text().encode('utf-8'))
                 lName = str(eblTableWidget.item(row, 2).text().encode('utf-8'))
                 lTitle = str(eblTableWidget.item(row, 3).text().encode('utf-8'))
+                lImageFormat = str(eblTableWidget.item(row, 4).text().encode('utf-8'))
+                if lImageFormat not in ('png', 'png; mode=16bit', 'png; mode=8bit', 'jpg', 'jpeg'):
+                    lImageFormat = 'png'
                 liz2json["lizmapExternalBaselayers"][lName] = {}
                 liz2json["lizmapExternalBaselayers"][lName]["repository"] = lRepository
                 liz2json["lizmapExternalBaselayers"][lName]["project"] = lProject
                 liz2json["lizmapExternalBaselayers"][lName]["layerName"] = lName
                 liz2json["lizmapExternalBaselayers"][lName]["layerTitle"] = lTitle
+                liz2json["lizmapExternalBaselayers"][lName]["layerImageFormat"] = lImageFormat
 
         # list of timemanager layers
         lblTableWidget = self.dlg.ui.twTimemanager
