@@ -206,6 +206,10 @@ class lizmap:
                 'widget': self.dlg.ui.cbOsmMapquest,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'osmCyclemap' : {
+                'widget': self.dlg.ui.cbOsmCyclemap,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
             'bingKey': {
                 'widget': self.dlg.ui.inBingKey,
                 'wType': 'text', 'type': 'string', 'default': ''
@@ -2037,6 +2041,7 @@ class lizmap:
             # Need to get theses values to check for Pseudo Mercator projection
             in_osmMapnik = self.dlg.ui.cbOsmMapnik.isChecked()
             in_osmMapquest = self.dlg.ui.cbOsmMapquest.isChecked()
+            in_osmCyclemap = self.dlg.ui.cbOsmCyclemap.isChecked()
             in_googleStreets = self.dlg.ui.cbGoogleStreets.isChecked()
             in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
             in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
@@ -2060,7 +2065,7 @@ class lizmap:
             p = QgsProject.instance()
 
             # public baselayers: check that the 3857 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
-            if in_osmMapnik or in_osmMapquest or in_googleStreets \
+            if in_osmMapnik or in_osmMapquest or in_osmCyclemap or in_googleStreets \
             or in_googleSatellite or in_googleHybrid or in_googleTerrain \
             or in_bingSatellite or in_bingStreets or in_bingHybrid \
             or in_ignSatellite or in_ignStreets or in_ignTerrain:
