@@ -340,6 +340,10 @@ class lizmap:
                 'widget': self.dlg.ui.cbLayerIsBaseLayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'displayInLegend': {
+                'widget': self.dlg.ui.cbDisplayInLegend,
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
             'singleTile': {
                 'widget': self.dlg.ui.cbSingleTile,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False,

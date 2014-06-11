@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Sat Jun  7 14:31:48 2014
+# Created: Wed Jun 11 13:49:21 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -190, 535, 604))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -190, 535, 632))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -115,6 +115,10 @@ class Ui_lizmap(object):
         self.cbLayerIsBaseLayer = QtGui.QCheckBox(self.scrollAreaWidgetContents)
         self.cbLayerIsBaseLayer.setObjectName(_fromUtf8("cbLayerIsBaseLayer"))
         self.verticalLayout.addWidget(self.cbLayerIsBaseLayer)
+        self.cbDisplayInLegend = QtGui.QCheckBox(self.scrollAreaWidgetContents)
+        self.cbDisplayInLegend.setChecked(True)
+        self.cbDisplayInLegend.setObjectName(_fromUtf8("cbDisplayInLegend"))
+        self.verticalLayout.addWidget(self.cbDisplayInLegend)
         self.cbSingleTile = QtGui.QCheckBox(self.scrollAreaWidgetContents)
         self.cbSingleTile.setObjectName(_fromUtf8("cbSingleTile"))
         self.verticalLayout.addWidget(self.cbSingleTile)
@@ -361,7 +365,7 @@ class Ui_lizmap(object):
         self.scrollArea_5.setWidgetResizable(True)
         self.scrollArea_5.setObjectName(_fromUtf8("scrollArea_5"))
         self.scrollAreaWidgetContents_5 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, -226, 949, 676))
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 949, 676))
         self.scrollAreaWidgetContents_5.setObjectName(_fromUtf8("scrollAreaWidgetContents_5"))
         self.verticalLayout_13 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
@@ -1094,12 +1098,15 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.btConfigurePopup, self.cbNoLegendImage)
         lizmap.setTabOrder(self.cbNoLegendImage, self.cbGroupAsLayer)
         lizmap.setTabOrder(self.cbGroupAsLayer, self.cbLayerIsBaseLayer)
-        lizmap.setTabOrder(self.cbLayerIsBaseLayer, self.cbSingleTile)
+        lizmap.setTabOrder(self.cbLayerIsBaseLayer, self.cbDisplayInLegend)
+        lizmap.setTabOrder(self.cbDisplayInLegend, self.cbSingleTile)
         lizmap.setTabOrder(self.cbSingleTile, self.liImageFormat)
         lizmap.setTabOrder(self.liImageFormat, self.cbCached)
         lizmap.setTabOrder(self.cbCached, self.inCacheExpiration)
         lizmap.setTabOrder(self.inCacheExpiration, self.inMetatileSize)
-        lizmap.setTabOrder(self.inMetatileSize, self.inMinScale)
+        lizmap.setTabOrder(self.inMetatileSize, self.inClientCacheExpiration)
+        lizmap.setTabOrder(self.inClientCacheExpiration, self.cbExternalWms)
+        lizmap.setTabOrder(self.cbExternalWms, self.inMinScale)
         lizmap.setTabOrder(self.inMinScale, self.inMaxScale)
         lizmap.setTabOrder(self.inMaxScale, self.inMapScales)
         lizmap.setTabOrder(self.inMapScales, self.inHost)
@@ -1120,9 +1127,7 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.btCancelFtpSync, self.btSave)
         lizmap.setTabOrder(self.btSave, self.btHelp)
         lizmap.setTabOrder(self.btHelp, self.scrollArea)
-        lizmap.setTabOrder(self.scrollArea, self.inClientCacheExpiration)
-        lizmap.setTabOrder(self.inClientCacheExpiration, self.cbExternalWms)
-        lizmap.setTabOrder(self.cbExternalWms, self.inSourceRepository)
+        lizmap.setTabOrder(self.scrollArea, self.inSourceRepository)
         lizmap.setTabOrder(self.inSourceRepository, self.inSourceProject)
         lizmap.setTabOrder(self.inSourceProject, self.cbRootGroupsAsBlock)
         lizmap.setTabOrder(self.cbRootGroupsAsBlock, self.scrollArea_2)
@@ -1210,6 +1215,7 @@ class Ui_lizmap(object):
         self.cbNoLegendImage.setText(_translate("lizmap", "layers.layer.noLegendImage", None))
         self.cbGroupAsLayer.setText(_translate("lizmap", "layers.layer.groupAsLayer", None))
         self.cbLayerIsBaseLayer.setText(_translate("lizmap", "layers.layer.baselayer", None))
+        self.cbDisplayInLegend.setText(_translate("lizmap", "layers.layer.displayInLegend", None))
         self.cbSingleTile.setText(_translate("lizmap", "layers.layer.singletile", None))
         self.label_9.setText(_translate("lizmap", "layers.imageFormat.label", None))
         self.liImageFormat.setItemText(0, _translate("lizmap", "png", None))

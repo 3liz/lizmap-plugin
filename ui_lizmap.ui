@@ -92,7 +92,7 @@
                <x>0</x>
                <y>-190</y>
                <width>535</width>
-               <height>604</height>
+               <height>632</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -191,6 +191,16 @@
                  <widget class="QCheckBox" name="cbLayerIsBaseLayer">
                   <property name="text">
                    <string>layers.layer.baselayer</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbDisplayInLegend">
+                  <property name="text">
+                   <string>layers.layer.displayInLegend</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -790,7 +800,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-226</y>
+            <y>0</y>
             <width>949</width>
             <height>676</height>
            </rect>
@@ -2376,11 +2386,14 @@
   <tabstop>cbNoLegendImage</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
   <tabstop>cbLayerIsBaseLayer</tabstop>
+  <tabstop>cbDisplayInLegend</tabstop>
   <tabstop>cbSingleTile</tabstop>
   <tabstop>liImageFormat</tabstop>
   <tabstop>cbCached</tabstop>
   <tabstop>inCacheExpiration</tabstop>
   <tabstop>inMetatileSize</tabstop>
+  <tabstop>inClientCacheExpiration</tabstop>
+  <tabstop>cbExternalWms</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inMapScales</tabstop>
@@ -2402,8 +2415,6 @@
   <tabstop>btSave</tabstop>
   <tabstop>btHelp</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>inClientCacheExpiration</tabstop>
-  <tabstop>cbExternalWms</tabstop>
   <tabstop>inSourceRepository</tabstop>
   <tabstop>inSourceProject</tabstop>
   <tabstop>cbRootGroupsAsBlock</tabstop>
