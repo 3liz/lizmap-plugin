@@ -558,7 +558,6 @@ class lizmap:
         self.log(localAbout, abort=True, textarea=self.dlg.ui.outLog)
         QDesktopServices.openUrl( QUrl(localAbout) )
 
-
     def log(self,msg, level=1, abort=False, textarea=False):
         '''Log the actions and errors and optionnaly print them in given textarea'''
         if abort:
@@ -567,6 +566,18 @@ class lizmap:
             textarea.append(msg)
         if abort:
             self.isok = 0
+
+    def logSpentTime(self, msg):
+        '''
+        Log spent time
+        '''
+        now = time.clock()
+        t = now - self.clock
+        self.clock = now
+        timeString = "%d:%02d:%02d.%03d" % \
+            reduce(lambda ll,b : divmod(ll[0],b) + ll[1:],
+                [(t*1000,),1000,60,60])
+        self.log( '%s - %s' % (timeString, msg), False, textarea=self.dlg.ui.outLog)
 
     def clearLog(self):
         '''Clear the content of the textarea log'''
@@ -1274,7 +1285,7 @@ class lizmap:
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
 
         p = QgsProject.instance()
-        embeddedGroups = self.getProjectEmbeddedGroup()
+        embeddedGroups = self.embeddedGroups
         if itemType == 'group':
             # embedded group ?
             if embeddedGroups and embeddedGroups.has_key(itemKey):
@@ -1316,6 +1327,7 @@ class lizmap:
             if os.path.exists(fromProject):
                 pName = os.path.splitext(os.path.basename(fromProject))[0]
                 self.myDic[itemKey]['sourceProject'] = pName
+
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
         if jsonLayers.has_key('%s' % self.myDic[itemKey]['name']):
@@ -1411,6 +1423,7 @@ class lizmap:
                     self.setTreeItemData('layer', myId, jsonLayers)
 
                 if self.ldisplay:
+
                     parentItem = QTreeWidgetItem(['%s' % unicode(self.myDic[myId]['name']), '%s' % unicode(self.myDic[myId]['id']), '%s' % self.myDic[myId]['type']])
                     myTree.addTopLevelItem(parentItem)
                     self.myDic[myId]['item'] = parentItem
@@ -1438,7 +1451,6 @@ class lizmap:
                     self.myDic[b]['item'] = childItem
                 else:
                     del self.myDic[b]
-
         myTree.expandAll()
 
         # Add the self.myDic to the global layerList dictionary
@@ -1968,9 +1980,6 @@ class lizmap:
                         layerSourcesBad.append(layerSource)
                         layerPathError+='--> %s \n' % mc.layer( i ).name()
 
-
-
-
             if len(layerSourcesBad) > 0:
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative {}").format(projectDir)+'\n'
                 self.log(
@@ -1982,7 +1991,8 @@ class lizmap:
 
             # check if a title has been given in the project OWS tab configuration
             # first set the WMSServiceCapabilities to true
-            p.writeEntry('WMSServiceCapabilities', "/", "True")
+            if not p.readEntry('WMSServiceCapabilities', "/")[1]:
+                p.writeEntry('WMSServiceCapabilities', "/", "True")
             if p.readEntry('WMSServiceTitle','')[0] == u'':
                 p.writeEntry('WMSServiceTitle', '', u'My QGIS project title')
 
@@ -2005,7 +2015,8 @@ class lizmap:
                     pWmsExtent[3] = u'%s' % fullExtent.yMaximum()
                     p.writeEntry('WMSExtent', '', pWmsExtent)
 
-            # Save project
+        # Save project
+        if p.isDirty():
             p.write()
 
         if not isok and errorMessage:
@@ -2489,6 +2500,7 @@ class lizmap:
 
     def run(self):
         '''Plugin run method : launch the gui and some tests'''
+        self.clock = time.clock()
 
         if self.dlg.isVisible():
             QMessageBox.warning(
@@ -2514,6 +2526,9 @@ class lizmap:
             self.getConfig()
 
             self.layerList = {}
+
+            # Get embedded groups
+            self.embeddedGroups = self.getProjectEmbeddedGroup()
 
             # Fill the layer tree
             self.populateLayerTree()
