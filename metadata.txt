@@ -4,25 +4,16 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.7
+version=version 1.9.8
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.7
-  * Baselayers - option to add an empty baselayer with project background color - #25
-  * Change default scales list in Map tab (add 10k and 50k)
-  * Automatic configuration for some Project parameters : title, advertised extent, EPSG:3857 if needed
-  * Italian translation - Build qm file
-  * IT translation
-  * Adress Search - Add Google and IGN (france) API
-  * Option to get tiles directly from WMS server for external WMS layers
-  * Manage embedded groups and layers - allow to configure lizmap repository
-  * Layers - add option to call directly external WMS layers
-  * Edition - allow to have 10 editable layers (instead of 5)
-  * Option to hide legend image for a layer
-  * Configuration file - do not order alphabetically to keep layers order
-  * Avoid error when layer has no provider type (e.g. OpenLayers plugin)
+  Version 1.9.8
+  * Speed up lizmap start (was bad since embedded layers feature)
+  * New feature - hide layer in Legend but displayed in map
+  * External baselayer - Add Osm Cyclemap
+  * Lizmap external baselayers - add image format option
 
 
 

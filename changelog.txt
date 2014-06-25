@@ -1,4 +1,11 @@
 CHANGELOG
+
+  Version 1.9.8
+  * Speed up lizmap start (was bad since embedded layers feature)
+  * New feature - hide layer in Legend but displayed in map
+  * External baselayer - Add Osm Cyclemap
+  * Lizmap external baselayers - add image format option
+
   Version 1.9.7
   * Baselayers - option to add an empty baselayer with project background color - #25
   * Change default scales list in Map tab (add 10k and 50k)
