@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>781</width>
-    <height>594</height>
+    <width>791</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,6 +75,46 @@
        <string>layers.label</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_16">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="gb_tree">
+         <property name="title">
+          <string>ui.groupBox.treeLayers</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_15">
+          <item row="0" column="0">
+           <widget class="QTreeWidget" name="treeLayer">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="columnCount">
+             <number>1</number>
+            </property>
+            <attribute name="headerDefaultSectionSize">
+             <number>50</number>
+            </attribute>
+            <attribute name="headerMinimumSectionSize">
+             <number>50</number>
+            </attribute>
+            <attribute name="headerStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string notr="true">Name</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="cbRootGroupsAsBlock">
+            <property name="text">
+             <string>layers.rootGroupsAsBlock</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="0" column="1">
         <widget class="QGroupBox" name="gb_layerSettings">
          <property name="title">
@@ -90,14 +130,27 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-367</y>
                <width>535</width>
-               <height>632</height>
+               <height>862</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
               <item row="0" column="0">
                <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="QLabel" name="label_58">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>layers.layer.subgroup.metadata</string>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_7">
                   <property name="text">
@@ -134,6 +187,19 @@
                 </item>
                 <item>
                  <widget class="QLineEdit" name="inLayerLink"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_57">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>layers.layer.subgroup.options</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbToggled">
@@ -244,7 +310,33 @@
                     </item>
                    </widget>
                   </item>
+                  <item>
+                   <spacer name="horizontalSpacer_25">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_54">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>layers.layer.subgroup.cache</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbCached">
@@ -259,6 +351,9 @@
                    <widget class="QLabel" name="label_12">
                     <property name="text">
                      <string>layers.layer.cacheExpiration</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -292,6 +387,9 @@
                     <property name="text">
                      <string>layers.layer.clientCacheExpiration</string>
                     </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -324,9 +422,15 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="cbExternalWms">
+                 <widget class="QLabel" name="label_55">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
                   <property name="text">
-                   <string>layers.layer.externalWms</string>
+                   <string>layers.layer.subgroup.embedded</string>
                   </property>
                  </widget>
                 </item>
@@ -336,6 +440,9 @@
                    <widget class="QLabel" name="label_51">
                     <property name="text">
                      <string>layer.embeddedRep</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -351,6 +458,9 @@
                     <property name="text">
                      <string>layer.embeddedProject</string>
                     </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -360,52 +470,72 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <spacer name="horizontalSpacer_26">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_56">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>layers.layer.subgroup.wms</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_25">
+                  <item>
+                   <widget class="QCheckBox" name="cbExternalWms">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_59">
+                    <property name="text">
+                     <string>layers.layer.externalWms</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_27">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                  </layout>
                 </item>
                </layout>
               </item>
              </layout>
             </widget>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="gb_tree">
-         <property name="title">
-          <string>ui.groupBox.treeLayers</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_15">
-          <item row="0" column="0">
-           <widget class="QTreeWidget" name="treeLayer">
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="columnCount">
-             <number>1</number>
-            </property>
-            <attribute name="headerDefaultSectionSize">
-             <number>50</number>
-            </attribute>
-            <attribute name="headerMinimumSectionSize">
-             <number>50</number>
-            </attribute>
-            <attribute name="headerStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string notr="true">Name</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="cbRootGroupsAsBlock">
-            <property name="text">
-             <string>layers.rootGroupsAsBlock</string>
-            </property>
            </widget>
           </item>
          </layout>
@@ -428,8 +558,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>739</width>
-            <height>455</height>
+            <width>749</width>
+            <height>547</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2211,8 +2341,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>739</width>
-            <height>455</height>
+            <width>749</width>
+            <height>547</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2561,7 +2691,6 @@
   <tabstop>inCacheExpiration</tabstop>
   <tabstop>inMetatileSize</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
-  <tabstop>cbExternalWms</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inMapScales</tabstop>
