@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>704</width>
-    <height>605</height>
+    <width>781</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -90,7 +90,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-190</y>
+               <y>0</y>
                <width>535</width>
                <height>632</height>
               </rect>
@@ -428,8 +428,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>705</width>
-            <height>453</height>
+            <width>739</width>
+            <height>455</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -800,9 +800,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>949</width>
-            <height>676</height>
+            <y>-8</y>
+            <width>955</width>
+            <height>679</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1173,6 +1173,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
                 <attribute name="horizontalHeaderCascadingSectionResizes">
                  <bool>false</bool>
                 </attribute>
@@ -1207,10 +1210,28 @@
                   <string>twLizmapBaselayers.col.imageFormat</string>
                  </property>
                 </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
+                 </property>
+                </column>
                </widget>
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout_10">
+                <item row="0" column="5">
+                 <spacer name="horizontalSpacer_24">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_37">
                   <property name="text">
@@ -1365,7 +1386,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-506</y>
             <width>1031</width>
             <height>1434</height>
            </rect>
@@ -1425,6 +1446,9 @@
                       <property name="text">
                        <string>tools.locate.layer.label</string>
                       </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                     <item row="0" column="1">
@@ -1432,12 +1456,34 @@
                       <property name="text">
                        <string>tools.locate.field.label</string>
                       </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                     <item row="0" column="2">
                      <widget class="QLabel" name="label_27">
                       <property name="text">
                        <string>tools.locate.filterField.label</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="4">
+                     <widget class="QSpinBox" name="inLocateByLayerMinLength">
+                      <property name="toolTip">
+                       <string>tools.locate.minLength.tooltip</string>
+                      </property>
+                      <property name="statusTip">
+                       <string/>
+                      </property>
+                      <property name="whatsThis">
+                       <string/>
+                      </property>
+                      <property name="maximum">
+                       <number>5</number>
                       </property>
                      </widget>
                     </item>
@@ -1450,6 +1496,29 @@
                        </size>
                       </property>
                      </widget>
+                    </item>
+                    <item row="0" column="4">
+                     <widget class="QLabel" name="label_53">
+                      <property name="text">
+                       <string>tools.locate.minLength.label</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="5">
+                     <spacer name="horizontalSpacer_13">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -1502,6 +1571,9 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
                 <attribute name="horizontalHeaderCascadingSectionResizes">
                  <bool>false</bool>
                 </attribute>
@@ -1533,7 +1605,17 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>tools.locate.minLength.label</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>twLocateByLayer.col.id</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
                  </property>
                 </column>
                </widget>
@@ -1564,6 +1646,9 @@
                   <width>750</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
                 </property>
                 <attribute name="horizontalHeaderStretchLastSection">
                  <bool>false</bool>
@@ -1596,6 +1681,11 @@
                 <column>
                  <property name="text">
                   <string>twEdition.col.id</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
                  </property>
                 </column>
                </widget>
@@ -1724,6 +1814,15 @@
               </item>
               <item>
                <widget class="QTableWidget" name="twLoginFilteredLayersList">
+                <property name="maximumSize">
+                 <size>
+                  <width>750</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
                 <column>
                  <property name="text">
                   <string>twLogin.col.layer</string>
@@ -1737,6 +1836,11 @@
                 <column>
                  <property name="text">
                   <string>twLogin.col.id</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
                  </property>
                 </column>
                </widget>
@@ -1825,12 +1929,18 @@
                   <property name="text">
                    <string>tools.tm.timeFrameType</string>
                   </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_42">
                   <property name="text">
                    <string>tools.tm.timeFrameSize</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1845,6 +1955,9 @@
                  <widget class="QLabel" name="label_44">
                   <property name="text">
                    <string>tools.tm.animationFrameLength</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1894,10 +2007,32 @@
                   </item>
                  </widget>
                 </item>
+                <item row="1" column="3">
+                 <spacer name="horizontalSpacer_23">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                </layout>
               </item>
               <item>
                <widget class="QTableWidget" name="twTimemanager">
+                <property name="maximumSize">
+                 <size>
+                  <width>750</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
                 <column>
                  <property name="text">
                   <string>tools.tm.layer</string>
@@ -1928,6 +2063,11 @@
                   <string>tools.tm.layerId</string>
                  </property>
                 </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
+                 </property>
+                </column>
                </widget>
               </item>
               <item>
@@ -1943,6 +2083,9 @@
                   <property name="text">
                    <string>tools.tm.layer</string>
                   </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="1" column="4">
@@ -1956,12 +2099,18 @@
                   <property name="text">
                    <string>tools.tm.startAttribute</string>
                   </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="5">
                  <widget class="QLabel" name="label_48">
                   <property name="text">
                    <string>tools.tm.groupTitle</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1970,6 +2119,9 @@
                   <property name="text">
                    <string>tools.tm.group</string>
                   </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="3">
@@ -1977,10 +2129,26 @@
                   <property name="text">
                    <string>tools.tm.labelAttribute</string>
                   </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="1" column="3">
                  <widget class="QComboBox" name="liTimemanagerLabelAttribute"/>
+                </item>
+                <item row="1" column="6">
+                 <spacer name="horizontalSpacer_22">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </item>
@@ -2043,8 +2211,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>662</width>
-            <height>466</height>
+            <width>739</width>
+            <height>455</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2456,8 +2624,9 @@
   <tabstop>scrollArea_3</tabstop>
   <tabstop>liLocateByLayerFields</tabstop>
   <tabstop>liLocateByLayerLayers</tabstop>
-  <tabstop>cbLocateByLayerDisplayGeom</tabstop>
   <tabstop>liLocateByLayerFilterFields</tabstop>
+  <tabstop>cbLocateByLayerDisplayGeom</tabstop>
+  <tabstop>inLocateByLayerMinLength</tabstop>
   <tabstop>btLocateByLayerAdd</tabstop>
   <tabstop>btLocateByLayerDel</tabstop>
   <tabstop>twLocateByLayerList</tabstop>

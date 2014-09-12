@@ -718,7 +718,7 @@ class lizmap:
         # Fill the locateByLayer table widget
         self.loadConfigIntoTableWidget(
             self.dlg.ui.twLocateByLayerList,
-            ['fieldName', 'filterFieldName', 'displayGeom', 'layerId'],
+            ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'layerId', 'order'],
             jsonLocateByLayer
 
         )
@@ -731,21 +731,21 @@ class lizmap:
                         jsonEditionLayers[k][x] = y
         self.loadConfigIntoTableWidget(
             self.dlg.ui.twEditionLayerList,
-            ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId'],
+            ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId', 'order'],
             jsonEditionLayers
         )
 
         # Fill the loginFilteredLayers table widget
         self.loadConfigIntoTableWidget(
             self.dlg.ui.twLoginFilteredLayersList,
-            ['filterAttribute', 'layerId'],
+            ['filterAttribute', 'layerId', 'order'],
             jsonLoginFilteredLayers
         )
 
         # Fill the lizmapExternalBaselayers table widget
         self.loadConfigIntoTableWidget(
             self.dlg.ui.twLizmapBaselayers,
-            ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat'],
+            ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
             jsonLizmapExternalBaselayers,
             False,
             False
@@ -753,7 +753,7 @@ class lizmap:
         # Fill the timemanager table widget
         self.loadConfigIntoTableWidget(
             self.dlg.ui.twTimemanager,
-            ['startAttribute', 'label', 'group', 'groupTitle', 'layerId'],
+            ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
             jsonTimemanagerLayers
         )
 
@@ -774,9 +774,16 @@ class lizmap:
         # +1 for layer name
         if hasLayerName:
             colCount+=1
+
         if json:
+            # reorder data if needed
+            if json.items()[0][1].has_key('order'):
+                data = [(k, json[k]) for k in  sorted(json, key=lambda key: json[key]['order']) ]
+            else:
+                data = json.items()
+
             # load content from json file
-            for k,v in json.items():
+            for k,v in data:
                 twRowCount = widget.rowCount()
                 # add a new line
                 widget.setRowCount(twRowCount + 1)
@@ -794,12 +801,17 @@ class lizmap:
                         value = v[key]
                     else:
                         value = ''
-                    newItem = QTableWidgetItem(value)
+                    newItem = QTableWidgetItem(str(value))
                     newItem.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(twRowCount, i, newItem)
                     i+=1
+
+        # hide las columns
+        # order
+        widget.setColumnHidden(colCount - 1, True)
+        # layer_id
         if hideLastCol:
-            widget.setColumnHidden(colCount - 1, True)
+            widget.setColumnHidden(colCount - 2, True)
 
 
 
@@ -1011,12 +1023,14 @@ class lizmap:
         fieldName = fieldCombobox.currentText()
         filterFieldName = filterFieldCombobox.currentText()
         displayGeom = str(self.dlg.ui.cbLocateByLayerDisplayGeom.isChecked())
+        minLength = self.dlg.ui.inLocateByLayerMinLength.value()
+
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 3:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(5)
+            lblTableWidget.setColumnCount(7)
 
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
@@ -1034,11 +1048,21 @@ class lizmap:
             newItem = QTableWidgetItem(displayGeom)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 3, newItem)
+            # add minLength to the line
+            newItem = QTableWidgetItem(str(minLength))
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
-        lblTableWidget.setColumnHidden(4, True)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
+            # add order
+            newItem = QTableWidgetItem(lblTableWidget.rowCount())
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
+
+        lblTableWidget.setColumnHidden(5, True)
+        lblTableWidget.setColumnHidden(6, True)
 
 
     def removeLayerFromLocateByLayer(self):
@@ -1087,7 +1111,7 @@ class lizmap:
         if twRowCount < 10:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(6)
+            lblTableWidget.setColumnCount(7)
 
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
@@ -1113,6 +1137,12 @@ class lizmap:
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 5, newItem)
+            # add order
+            newItem = QTableWidgetItem(lblTableWidget.rowCount())
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
+
+        lblTableWidget.setColumnHidden(6, True)
         lblTableWidget.setColumnHidden(5, True)
 
 
@@ -1141,7 +1171,7 @@ class lizmap:
         if twRowCount < 3:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(3)
+            lblTableWidget.setColumnCount(4)
 
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
@@ -1155,7 +1185,13 @@ class lizmap:
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 2, newItem)
+            # add order
+            newItem = QTableWidgetItem(lblTableWidget.rowCount())
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
+
         lblTableWidget.setColumnHidden(2, True)
+        lblTableWidget.setColumnHidden(3, True)
 
 
     def removeLayerFromLoginFilteredLayer(self):
@@ -1191,9 +1227,9 @@ class lizmap:
                 return False
 
         lblTableWidget = self.dlg.ui.twLizmapBaselayers
-
         twRowCount = lblTableWidget.rowCount()
-        colCount = 5
+        content.append(twRowCount) # store order
+        colCount = len(content)
         if twRowCount < 6:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
@@ -1236,6 +1272,7 @@ class lizmap:
 
         lblTableWidget = self.dlg.ui.twTimemanager
         twRowCount = lblTableWidget.rowCount()
+        content.append(twRowCount) # store order
         colCount = len(content)
 
         if twRowCount < 10:
@@ -1250,6 +1287,7 @@ class lizmap:
                 lblTableWidget.setItem(twRowCount, i, newItem)
                 i+=1
         lblTableWidget.setColumnHidden(colCount - 1, True)
+        lblTableWidget.setColumnHidden(colCount - 2, True)
 
 
 
@@ -1716,19 +1754,22 @@ class lizmap:
             liz2json["locateByLayer"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerId = str(lblTableWidget.item(row, 4).text())
+                layerId = str(lblTableWidget.item(row, 5).text())
                 if layerId in wfsLayersList:
                     layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                     fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                     filterFieldName = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                     displayGeom = str(lblTableWidget.item(row, 3).text())
-                    layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
+                    minLength = str(lblTableWidget.item(row, 4).text())
+                    layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     if filterFieldName and filterFieldName != '--':
                         liz2json["locateByLayer"][layerName]["filterFieldName"] = filterFieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
+                    liz2json["locateByLayer"][layerName]["minLength"] = minLength and int(minLength) or 0
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId
+                    liz2json["locateByLayer"][layerName]["order"] = row
 
         # layer(s) for the edition tool
         lblTableWidget = self.dlg.ui.twEditionLayerList
@@ -1753,6 +1794,7 @@ class lizmap:
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyAttribute"] = modifyAttribute
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
                 liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
+                liz2json["editionLayers"][layerName]["order"] = row
 
 
         # list of layers for which to have the tool "login filtered layer"
@@ -1768,6 +1810,7 @@ class lizmap:
                 liz2json["loginFilteredLayers"][layerName] = {}
                 liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
                 liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
+                liz2json["loginFilteredLayers"][layerName]["order"] = row
 
 
         # list of Lizmap external baselayers
@@ -1790,6 +1833,7 @@ class lizmap:
                 liz2json["lizmapExternalBaselayers"][lName]["layerName"] = lName
                 liz2json["lizmapExternalBaselayers"][lName]["layerTitle"] = lTitle
                 liz2json["lizmapExternalBaselayers"][lName]["layerImageFormat"] = lImageFormat
+                liz2json["lizmapExternalBaselayers"][lName]["order"] = row
 
         # list of timemanager layers
         lblTableWidget = self.dlg.ui.twTimemanager
@@ -1811,6 +1855,7 @@ class lizmap:
                 liz2json["timemanagerLayers"][layerName]["group"] = tmGroup
                 liz2json["timemanagerLayers"][layerName]["groupTitle"] = tmGroupTitle
                 liz2json["timemanagerLayers"][layerName]["layerId"] = layerId
+                liz2json["timemanagerLayers"][layerName]["order"] = row
 
 
         # gui user defined layers options
@@ -2105,7 +2150,7 @@ class lizmap:
                 good = True
                 for row in range(twRowCount):
                     # check that the layer is checked in the WFS capabilities
-                    layerId = str(lblTableWidget.item(row, 4).text())
+                    layerId = str(lblTableWidget.item(row, 5).text())
                     if layerId not in wfsLayersList:
                         good = False
                 if not good:
