@@ -2016,7 +2016,7 @@ class lizmap:
         if isok:
             # Check if Qgis/capitaliseLayerName is set
             s = QSettings()
-            if s.value('Qgis/capitaliseLayerName', type=bool):
+            if s.value('Qgis/capitaliseLayerName') and s.value('Qgis/capitaliseLayerName', type=bool):
                 errorMessage+= '* ' + QApplication.translate("lizmap", "ui.msg.error.project.option.capitalizeLayerName")+'\n'
                 isok = False
 
