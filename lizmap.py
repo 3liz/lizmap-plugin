@@ -418,6 +418,40 @@ class lizmap:
                 elif item['wType'] == 'list':
                     control.currentIndexChanged.connect(slot)
 
+        # tables of layers
+        self.layersTable =  {
+            'locateByLayer': {
+                'tableWidget': self.dlg.ui.twLocateByLayerList,
+                'removeButton' : self.dlg.ui.btLocateByLayerDel,
+                'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'layerId', 'order'],
+                'jsonConfig' : {}
+            },
+            'editionLayers': {
+                'tableWidget': self.dlg.ui.twEditionLayerList,
+                'removeButton' : self.dlg.ui.btEditionLayerDel,
+                'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId', 'order'],
+                'jsonConfig' : {}
+            },
+            'loginFilteredLayers': {
+                'tableWidget': self.dlg.ui.twLoginFilteredLayersList,
+                'removeButton' : self.dlg.ui.btLoginFilteredLayerDel,
+                'cols': ['filterAttribute', 'layerId', 'order'],
+                'jsonConfig' : {}
+            },
+            'lizmapExternalBaselayers': {
+                'tableWidget': self.dlg.ui.twLizmapBaselayers,
+                'removeButton' : self.dlg.ui.btLizmapBaselayerDel,
+                'cols': ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
+                'jsonConfig' : {}
+            },
+            'timemanagerLayers': {
+                'tableWidget': self.dlg.ui.twTimemanager,
+                'removeButton' : self.dlg.ui.btTimemanagerLayerDel,
+                'cols': ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
+                'jsonConfig' : {}
+            }
+        }
+
 
     def initGui(self):
         '''Create action that will start plugin configuration'''
@@ -463,40 +497,43 @@ class lizmap:
         self.dlg.ui.btSetExtentFromProject.clicked.connect(self.setInitialExtentFromProject)
         self.dlg.ui.btSetExtentFromCanvas.clicked.connect(self.setInitialExtentFromCanvas)
 
+        # Handle tables (locate by layer, edition layers, etc.)
+        #########
+
+        # Manage "delete line" button
+        from functools import partial
+        for key, item in self.layersTable.items():
+            control = item['removeButton']
+            slot = partial( self.removeSelectedLayerFromTable, key )
+            control.clicked.connect( slot )
+
+        # Delete layers from table when deleted from registry
+        lr = QgsMapLayerRegistry.instance()
+        lr.layersRemoved.connect( self.removeLayerFromTableByLayerIds )
 
         # Locate by layers
         # detect layer locate list has changed to refresh layer field list
         self.dlg.ui.liLocateByLayerLayers.currentIndexChanged[str].connect(self.updateLocateFieldListFromLayer)
         # add a layer to the locateByLayerList
         self.dlg.ui.btLocateByLayerAdd.clicked.connect(self.addLayerToLocateByLayer)
-        # remove a layer from the locateByLayerList
-        self.dlg.ui.btLocateByLayerDel.clicked.connect(self.removeLayerFromLocateByLayer)
 
         # Edition layers
         # add a layer to the editionLayerList
         self.dlg.ui.btEditionLayerAdd.clicked.connect(self.addLayerToEditionLayer)
-        # remove a layer from the editionLayerList
-        self.dlg.ui.btEditionLayerDel.clicked.connect(self.removeLayerFromEditionLayer)
 
         # Login filtered layers
         # detect layer locate list has changed to refresh layer field list
         self.dlg.ui.liLoginFilteredLayerLayers.currentIndexChanged[str].connect(self.updateLoginFilteredFieldListFromLayer)
         # add a layer to the list
         self.dlg.ui.btLoginFilteredLayerAdd.clicked.connect(self.addLayerToLoginFilteredLayer)
-        # remove a layer from the list
-        self.dlg.ui.btLoginFilteredLayerDel.clicked.connect(self.removeLayerFromLoginFilteredLayer)
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
         self.dlg.ui.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
-        # remove a layer from the editionLayerList
-        self.dlg.ui.btLizmapBaselayerDel.clicked.connect(self.removeLayerFromLizmapBaselayers)
 
         # Timemanager layers
         # add a layer to the lizmap timemanager layers
         self.dlg.ui.btTimemanagerLayerAdd.clicked.connect(self.addLayerToTimemanager)
-        # remove a layer from the timemanager layers
-        self.dlg.ui.btTimemanagerLayerDel.clicked.connect(self.removeLayerFromTimemanager)
         # detect layer list has changed to refresh start attribute field list
         self.dlg.ui.liTimemanagerLayers.currentIndexChanged[str].connect(self.updateTimemanagerFieldListFromLayer)
 
@@ -559,7 +596,7 @@ class lizmap:
         QDesktopServices.openUrl( QUrl(localAbout) )
 
     def log(self,msg, level=1, abort=False, textarea=False):
-        '''Log the actions and errors and optionnaly print them in given textarea'''
+        '''Log the actions and errors and optionnaly show them in given textarea'''
         if abort:
             sys.stdout = sys.stderr
         if textarea:
@@ -649,27 +686,15 @@ class lizmap:
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
         jsonOptions = {}
-        jsonLocateByLayer = {}
-        jsonEditionLayers = {}
-        jsonLoginFilteredLayers = {}
-        jsonLizmapExternalBaselayers = {}
-        jsonTimemanagerLayers = {}
         if os.path.exists(unicode(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
             try:
                 sjson = json.loads(jsonFileReader)
                 jsonOptions = sjson['options']
-                if sjson.has_key('locateByLayer'):
-                    jsonLocateByLayer = sjson['locateByLayer']
-                if sjson.has_key('editionLayers'):
-                    jsonEditionLayers = sjson['editionLayers']
-                if sjson.has_key('loginFilteredLayers'):
-                    jsonLoginFilteredLayers = sjson['loginFilteredLayers']
-                if sjson.has_key('lizmapExternalBaselayers'):
-                    jsonLizmapExternalBaselayers = sjson['lizmapExternalBaselayers']
-                if sjson.has_key('timemanagerLayers'):
-                    jsonTimemanagerLayers = sjson['timemanagerLayers']
+                for key in self.layersTable.keys():
+                    if sjson.has_key(key):
+                        self.layersTable[key]['jsonConfig'] = sjson[key]
             except:
                 isok=0
                 QMessageBox.critical(
@@ -681,6 +706,8 @@ class lizmap:
                     QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
+            finally:
+                f.close()
 
 
         # Set the global options (map, tools, FTP remote dir, etc.)
@@ -715,64 +742,45 @@ class lizmap:
                     if jsonOptions.has_key(key):
                         item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
 
-        # Fill the locateByLayer table widget
-        self.loadConfigIntoTableWidget(
-            self.dlg.ui.twLocateByLayerList,
-            ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'layerId', 'order'],
-            jsonLocateByLayer
-
-        )
-
-        # Fill the Edition layers tool
-        if jsonEditionLayers:
-            for k,v in jsonEditionLayers.items():
-                if v.has_key('capabilities'):
-                    for x,y in v['capabilities'].items():
-                        jsonEditionLayers[k][x] = y
-        self.loadConfigIntoTableWidget(
-            self.dlg.ui.twEditionLayerList,
-            ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId', 'order'],
-            jsonEditionLayers
-        )
-
-        # Fill the loginFilteredLayers table widget
-        self.loadConfigIntoTableWidget(
-            self.dlg.ui.twLoginFilteredLayersList,
-            ['filterAttribute', 'layerId', 'order'],
-            jsonLoginFilteredLayers
-        )
-
-        # Fill the lizmapExternalBaselayers table widget
-        self.loadConfigIntoTableWidget(
-            self.dlg.ui.twLizmapBaselayers,
-            ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
-            jsonLizmapExternalBaselayers,
-            False,
-            False
-        )
-        # Fill the timemanager table widget
-        self.loadConfigIntoTableWidget(
-            self.dlg.ui.twTimemanager,
-            ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
-            jsonTimemanagerLayers
-        )
+        # Fill the table widgets
+        for key, item in self.layersTable.items():
+            self.loadConfigIntoTableWidget(key)
 
         return True
 
 
-    def loadConfigIntoTableWidget(self, widget, attributes, json, hideLastCol=True, hasLayerName=True):
+    def loadConfigIntoTableWidget(self, key):
         '''
         Load the data taken from lizmap config file
         and fill the table widget
         '''
+        # Get parameters for the widget
+        lt = self.layersTable[key]
+        widget = lt['tableWidget']
+        attributes = lt['cols']
+        json = lt['jsonConfig']
+
+        # Get index of layerId column
+        storeLayerId =  'layerId' in lt['cols']
+
+        # For edition layers, fill capabilities
+        # Fill editionlayers capabilities
+        if key == 'editionLayers' and json:
+            for k,v in json.items():
+                if v.has_key('capabilities'):
+                    for x,y in v['capabilities'].items():
+                        json[k][x] = y
+
         # empty previous content
         for row in range(widget.rowCount()):
             widget.removeRow(row)
         widget.setRowCount(0)
+
         # fill from the json if exists
         colCount = len(attributes)
-        # +1 for layer name
-        if hasLayerName:
+
+        # +1 for layer name column (1st column)
+        if storeLayerId:
             colCount+=1
 
         if json:
@@ -783,14 +791,24 @@ class lizmap:
                 data = json.items()
 
             # load content from json file
+            lr = QgsMapLayerRegistry.instance()
+            projectLayersIds = lr.mapLayers().keys()
             for k,v in data:
+                # check if the layer still exists in the QGIS project
+                if 'layerId' in v.keys():
+                    if v['layerId'] not in projectLayersIds:
+                        continue
                 twRowCount = widget.rowCount()
                 # add a new line
                 widget.setRowCount(twRowCount + 1)
                 widget.setColumnCount(colCount)
                 i=0
-                if hasLayerName:
-                    # layer name
+                if storeLayerId:
+                    # add layer name column - get name from layer if possible (if user has renamed the layer)
+                    if 'layerId' in v.keys():
+                        layer = lr.mapLayer(v['layerId'])
+                        if layer:
+                            k = layer.name()
                     newItem = QTableWidgetItem(k)
                     newItem.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(twRowCount, 0, newItem)
@@ -807,10 +825,10 @@ class lizmap:
                     i+=1
 
         # hide las columns
-        # order
+        # order (always at the end)
         widget.setColumnHidden(colCount - 1, True)
-        # layer_id
-        if hideLastCol:
+        # hide layer_id column (if present, always
+        if storeLayerId:
             widget.setColumnHidden(colCount - 2, True)
 
 
@@ -991,6 +1009,43 @@ class lizmap:
         else:
             return None
 
+
+
+
+    def removeSelectedLayerFromTable(self, key):
+        '''
+        Remove a layer from the list of layers
+        for which to have the "locate by layer" tool
+        '''
+        tw = self.layersTable[key]['tableWidget']
+        tw.removeRow( tw.currentRow() )
+
+    def removeLayerFromTableByLayerIds(self, layerIds):
+        '''
+        Remove layers from tables when deleted from layer registry
+        '''
+        for key, item in self.layersTable.items():
+            tw = self.layersTable[key]['tableWidget']
+
+            # Count lines
+            twRowCount = tw.rowCount()
+            if not twRowCount:
+                continue
+
+            # Get index of layerId column
+            if 'layerId' not in self.layersTable[key]['cols']:
+                continue
+            idx = self.layersTable[key]['cols'].index('layerId') + 1
+
+            # Remove layer if layerId match
+            for row in range(twRowCount):
+                if tw.item(row, idx):
+                    itemLayerId = str(tw.item(row, idx).text().encode('utf-8'))
+                    if itemLayerId in layerIds:
+                        tw.removeRow( row )
+
+
+
     def addLayerToLocateByLayer(self):
         '''Add a layer in the list of layers
         for which to have the "locate by layer" tool'''
@@ -1063,14 +1118,6 @@ class lizmap:
 
         lblTableWidget.setColumnHidden(5, True)
         lblTableWidget.setColumnHidden(6, True)
-
-
-    def removeLayerFromLocateByLayer(self):
-        '''Remove a layer from the list of layers
-        for which to have the "locate by layer" tool'''
-        lblTableWidget = self.dlg.ui.twLocateByLayerList
-        lblTableWidget.removeRow(lblTableWidget.currentRow())
-
 
 
     def addLayerToEditionLayer(self):
@@ -1146,12 +1193,6 @@ class lizmap:
         lblTableWidget.setColumnHidden(5, True)
 
 
-    def removeLayerFromEditionLayer(self):
-        '''Remove a layer from the list of edition layers '''
-        lblTableWidget = self.dlg.ui.twEditionLayerList
-        lblTableWidget.removeRow(lblTableWidget.currentRow())
-
-
     def addLayerToLoginFilteredLayer(self):
         '''Add a layer in the list of layers
         for which to have the "login filtered layer" tool'''
@@ -1192,13 +1233,6 @@ class lizmap:
 
         lblTableWidget.setColumnHidden(2, True)
         lblTableWidget.setColumnHidden(3, True)
-
-
-    def removeLayerFromLoginFilteredLayer(self):
-        '''Remove a layer from the list of layers
-        for which to have the "login filtered layer" tool'''
-        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
-        lblTableWidget.removeRow(lblTableWidget.currentRow())
 
 
     def addLayerToLizmapBaselayers(self):
@@ -1243,12 +1277,6 @@ class lizmap:
                 i+=1
 
 
-    def removeLayerFromLizmapBaselayers(self):
-        '''Remove a layer from the list of Lizmap external baselayers'''
-        lblTableWidget = self.dlg.ui.twLizmapBaselayers
-        lblTableWidget.removeRow(lblTableWidget.currentRow())
-
-
     def addLayerToTimemanager(self):
         '''
         Add a layer in the list of
@@ -1288,13 +1316,6 @@ class lizmap:
                 i+=1
         lblTableWidget.setColumnHidden(colCount - 1, True)
         lblTableWidget.setColumnHidden(colCount - 2, True)
-
-
-
-    def removeLayerFromTimemanager(self):
-        '''Remove a layer from the timemanager layers'''
-        lblTableWidget = self.dlg.ui.twTimemanager
-        lblTableWidget.removeRow(lblTableWidget.currentRow())
 
 
     def refreshLayerTree(self):
@@ -1433,7 +1454,8 @@ class lizmap:
                     QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
-            f.close()
+            finally:
+                f.close()
 
         # Loop through groupLayerRelationship to reconstruct the tree
         for a in self.iface.legendInterface().groupLayerRelationship():
