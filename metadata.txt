@@ -4,17 +4,16 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.8
+version=version 1.9.9
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.8
-  * Speed up lizmap start (was bad since embedded layers feature)
-  * New feature - hide layer in Legend but displayed in map
-  * External baselayer - Add Osm Cyclemap
-  * Lizmap external baselayers - add image format option
-
+  Version 1.9.9
+  * [BUGFIX] #22 Ask the user to deactivate Layer name capitalization in QGIS option
+  * Improve management of layers option tables such as "Locate by Layers" (remove layers from table if not in the project anymore or if removed during work session, rename layer in the table when renamed from the project)
+  * Minor GUI modifications in the Layers tab to improve readibility
+  * Add minLength option for Locate by layer
 
 
 ; tags are in comma separated value format, spaces are allowed
