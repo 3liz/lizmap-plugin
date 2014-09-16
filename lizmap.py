@@ -2014,6 +2014,13 @@ class lizmap:
             self.dlg.ui.inLocaldir.setText(projectDir)
 
         if isok:
+            # Check if Qgis/capitaliseLayerName is set
+            s = QSettings()
+            if s.value('Qgis/capitaliseLayerName', type=bool):
+                errorMessage+= '* ' + QApplication.translate("lizmap", "ui.msg.error.project.option.capitalizeLayerName")+'\n'
+                isok = False
+
+        if isok:
             # Check relative/absolute path
             if p.readEntry('Paths', 'Absolute')[0] == 'true':
                 errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative")+'\n'
