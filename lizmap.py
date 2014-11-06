@@ -1432,7 +1432,7 @@ class lizmap:
         # initialize the tree
         myTree = self.dlg.ui.treeLayer
         myTree.clear()
-        myTree.headerItem().setText(0, QApplication.translate("lizmap", QApplication.translate("lizmap", "layers.tree.title")))
+        myTree.headerItem().setText(0, QApplication.translate( "lizmap", "layers.tree.title" ) )
         self.myDic = {}
         myGroups = self.iface.legendInterface().groups()
 
