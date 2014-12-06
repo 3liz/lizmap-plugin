@@ -147,6 +147,7 @@ class lizmap:
         self.dlg.ui.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_generalOptions.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_timemanager.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_interface.setStyleSheet(self.STYLESHEET)
 
         # Disable winscp path field for non windows users
         if sys.platform != 'win32':
@@ -271,6 +272,26 @@ class lizmap:
             },
             'geolocation' : {
                 'widget': self.dlg.ui.cbActivateGeolocation,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideHeader' : {
+                'widget': self.dlg.ui.cbHideHeader,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideMenu' : {
+                'widget': self.dlg.ui.cbHideMenu,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideLegend' : {
+                'widget': self.dlg.ui.cbHideLegend,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideOverview' : {
+                'widget': self.dlg.ui.cbHideOverview,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideNavbar' : {
+                'widget': self.dlg.ui.cbHideNavbar,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'remoteDir': {

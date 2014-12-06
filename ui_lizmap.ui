@@ -564,9 +564,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>749</width>
-            <height>547</height>
+            <y>-82</y>
+            <width>733</width>
+            <height>629</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -916,6 +916,50 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="gb_interface">
+             <property name="title">
+              <string>map.interface.label</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_18">
+              <item>
+               <widget class="QCheckBox" name="cbHideHeader">
+                <property name="text">
+                 <string>map.interface.hide.header</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbHideMenu">
+                <property name="text">
+                 <string>map.interface.hide.menu</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbHideLegend">
+                <property name="text">
+                 <string>map.interface.hide.legend</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbHideOverview">
+                <property name="text">
+                 <string>map.interface.hide.overview.scale</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbHideNavbar">
+                <property name="text">
+                 <string>map.interface.hide.navbar</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1523,7 +1567,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-524</y>
+            <y>0</y>
             <width>1031</width>
             <height>1434</height>
            </rect>
@@ -2698,6 +2742,8 @@
   <tabstop>inCacheExpiration</tabstop>
   <tabstop>inMetatileSize</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
+  <tabstop>cbExternalWms</tabstop>
+  <tabstop>cbHideGroupCheckbox</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inMapScales</tabstop>
@@ -2731,6 +2777,11 @@
   <tabstop>inInitialExtent</tabstop>
   <tabstop>btSetExtentFromProject</tabstop>
   <tabstop>btSetExtentFromCanvas</tabstop>
+  <tabstop>cbHideHeader</tabstop>
+  <tabstop>cbHideMenu</tabstop>
+  <tabstop>cbHideLegend</tabstop>
+  <tabstop>cbHideOverview</tabstop>
+  <tabstop>cbHideNavbar</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>cbOsmMapnik</tabstop>
   <tabstop>cbOsmMapquest</tabstop>
