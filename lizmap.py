@@ -243,6 +243,11 @@ class lizmap:
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
 
+            'hideGroupCheckbox' : {
+                'widget': self.dlg.ui.cbHideGroupCheckbox,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+
             'rootGroupsAsBlock' : {
                 'widget': self.dlg.ui.cbRootGroupsAsBlock,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
