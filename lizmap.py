@@ -139,6 +139,7 @@ class lizmap:
         self.dlg.ui.gb_extent.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_externalLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_attributeLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_editionLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_loginFilteredLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_ftpParams.setStyleSheet(self.STYLESHEET)
@@ -452,6 +453,12 @@ class lizmap:
                 'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
+            'attributeLayers': {
+                'tableWidget': self.dlg.ui.twAttributeLayerList,
+                'removeButton' : self.dlg.ui.btAttributeLayerDel,
+                'cols': ['layerId', 'order'],
+                'jsonConfig' : {}
+            },
             'editionLayers': {
                 'tableWidget': self.dlg.ui.twEditionLayerList,
                 'removeButton' : self.dlg.ui.btEditionLayerDel,
@@ -542,6 +549,12 @@ class lizmap:
         self.dlg.ui.liLocateByLayerLayers.currentIndexChanged[str].connect(self.updateLocateFieldListFromLayer)
         # add a layer to the locateByLayerList
         self.dlg.ui.btLocateByLayerAdd.clicked.connect(self.addLayerToLocateByLayer)
+
+
+        # Attribute layers
+        # add a layer to the list of attribute layers
+        self.dlg.ui.btAttributeLayerAdd.clicked.connect(self.addLayerToAttributeLayer)
+
 
         # Edition layers
         # add a layer to the editionLayerList
@@ -1144,6 +1157,57 @@ class lizmap:
 
         lblTableWidget.setColumnHidden(5, True)
         lblTableWidget.setColumnHidden(6, True)
+
+
+    def addLayerToAttributeLayer(self):
+        '''Add a layer in the list of layers
+        for which Lizmap will display attribute tables'''
+
+        # Get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liAttributeLayer)
+        if not layer:
+            return False
+
+        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        p = QgsProject.instance()
+        wfsLayersList = p.readListEntry('WFSLayers','')[0]
+        hasWfsOption = False
+        for l in wfsLayersList:
+            if layer.id() == l:
+                hasWfsOption = True
+        if not hasWfsOption:
+            QMessageBox.critical(
+                self.dlg,
+                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
+                QMessageBox.Ok)
+            return False
+
+        # Retrieve layer information
+        layerName = layer.name()
+        layerId = layer.id()
+        print layerId
+        lblTableWidget = self.dlg.ui.twAttributeLayerList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount < 5:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(3)
+            # add layer name to the line
+            newItem = QTableWidgetItem(layerName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, newItem)
+            # add layer id to the line
+            newItem = QTableWidgetItem(layerId)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add order
+            newItem = QTableWidgetItem(lblTableWidget.rowCount())
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
+
+        lblTableWidget.setColumnHidden(1, True)
+        lblTableWidget.setColumnHidden(2, True)
 
 
     def addLayerToEditionLayer(self):
@@ -1818,6 +1882,19 @@ class lizmap:
                     liz2json["locateByLayer"][layerName]["minLength"] = minLength and int(minLength) or 0
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId
                     liz2json["locateByLayer"][layerName]["order"] = row
+
+        # list of layers to display attribute table
+        lblTableWidget = self.dlg.ui.twAttributeLayerList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount > 0:
+            liz2json["attributeLayers"] = {}
+            for row in range(twRowCount):
+                # check that the layer is checked in the WFS capabilities
+                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                liz2json["attributeLayers"][layerName] = {}
+                liz2json["attributeLayers"][layerName]["layerId"] = layerId
+                liz2json["attributeLayers"][layerName]["order"] = row
 
         # layer(s) for the edition tool
         lblTableWidget = self.dlg.ui.twEditionLayerList
@@ -2615,6 +2692,8 @@ class lizmap:
 
             # Fill the layer list for the locate by layer tool
             self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
+            # Fill the layer list for the attribute layer tool
+            self.populateLayerCombobox(self.dlg.ui.liAttributeLayer, 'vector')
             # Fill the layers lists for the edition tool
             self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool

@@ -564,7 +564,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-82</y>
+            <y>0</y>
             <width>733</width>
             <height>629</height>
            </rect>
@@ -1567,9 +1567,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-920</y>
             <width>1031</width>
-            <height>1434</height>
+            <height>1761</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1800,6 +1800,95 @@
                  </property>
                 </column>
                </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="gb_attributeLayers">
+             <property name="title">
+              <string>tools.attribute.label</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_19">
+              <item>
+               <widget class="QLabel" name="label_60">
+                <property name="text">
+                 <string>tools.attribute.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="twAttributeLayerList">
+                <column>
+                 <property name="text">
+                  <string>layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>attribute.col.id</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_27">
+                <item>
+                 <widget class="QComboBox" name="liAttributeLayer"/>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_29">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_26">
+                <item>
+                 <widget class="QPushButton" name="btAttributeLayerAdd">
+                  <property name="text">
+                   <string>tw.btLayerAdd</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btAttributeLayerDel">
+                  <property name="text">
+                   <string>tw.btLayerDel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_28">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
