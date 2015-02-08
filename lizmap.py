@@ -468,7 +468,7 @@ class lizmap:
             'loginFilteredLayers': {
                 'tableWidget': self.dlg.ui.twLoginFilteredLayersList,
                 'removeButton' : self.dlg.ui.btLoginFilteredLayerDel,
-                'cols': ['filterAttribute', 'layerId', 'order'],
+                'cols': ['filterAttribute', 'filterPrivate', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'lizmapExternalBaselayers': {
@@ -1297,32 +1297,37 @@ class lizmap:
         layerId = layer.id()
         fieldCombobox = self.dlg.ui.liLoginFilteredLayerFields
         filterAttribute = fieldCombobox.currentText()
+        filterPrivate = str(self.dlg.ui.cbLoginFilteredLayerPrivate.isChecked())
         lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 3:
+        if twRowCount < 6:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(4)
+            lblTableWidget.setColumnCount(5)
 
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 0, newItem)
-            # add field name to the line
+            # add filter attribute to the line
             newItem = QTableWidgetItem(filterAttribute)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add filterPrivate
+            newItem = QTableWidgetItem(filterPrivate)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
 
-        lblTableWidget.setColumnHidden(2, True)
         lblTableWidget.setColumnHidden(3, True)
+        lblTableWidget.setColumnHidden(4, True)
 
 
     def addLayerToLizmapBaselayers(self):
@@ -1931,9 +1936,11 @@ class lizmap:
                 # check that the layer is checked in the WFS capabilities
                 layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                 filterAttribute = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                filterPrivate = str(lblTableWidget.item(row, 2).text())
+                layerId = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
                 liz2json["loginFilteredLayers"][layerName] = {}
                 liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
+                liz2json["loginFilteredLayers"][layerName]["filterPrivate"] = filterPrivate
                 liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
                 liz2json["loginFilteredLayers"][layerName]["order"] = row
 

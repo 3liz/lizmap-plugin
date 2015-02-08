@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Sat Feb  7 12:13:38 2015
+# Created: Sun Feb  8 14:34:40 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -676,7 +676,7 @@ class Ui_lizmap(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents_3 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, -920, 1031, 1761))
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, -896, 1031, 1761))
         self.scrollAreaWidgetContents_3.setObjectName(_fromUtf8("scrollAreaWidgetContents_3"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
@@ -896,7 +896,7 @@ class Ui_lizmap(object):
         self.twLoginFilteredLayersList.setMaximumSize(QtCore.QSize(750, 16777215))
         self.twLoginFilteredLayersList.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.twLoginFilteredLayersList.setObjectName(_fromUtf8("twLoginFilteredLayersList"))
-        self.twLoginFilteredLayersList.setColumnCount(4)
+        self.twLoginFilteredLayersList.setColumnCount(5)
         self.twLoginFilteredLayersList.setRowCount(0)
         item = QtGui.QTableWidgetItem()
         self.twLoginFilteredLayersList.setHorizontalHeaderItem(0, item)
@@ -906,6 +906,8 @@ class Ui_lizmap(object):
         self.twLoginFilteredLayersList.setHorizontalHeaderItem(2, item)
         item = QtGui.QTableWidgetItem()
         self.twLoginFilteredLayersList.setHorizontalHeaderItem(3, item)
+        item = QtGui.QTableWidgetItem()
+        self.twLoginFilteredLayersList.setHorizontalHeaderItem(4, item)
         self.verticalLayout_9.addWidget(self.twLoginFilteredLayersList)
         self.verticalLayout_10 = QtGui.QVBoxLayout()
         self.verticalLayout_10.setObjectName(_fromUtf8("verticalLayout_10"))
@@ -917,6 +919,9 @@ class Ui_lizmap(object):
         self.liLoginFilteredLayerFields = QtGui.QComboBox(self.gb_loginFilteredLayers)
         self.liLoginFilteredLayerFields.setObjectName(_fromUtf8("liLoginFilteredLayerFields"))
         self.horizontalLayout_12.addWidget(self.liLoginFilteredLayerFields)
+        self.cbLoginFilteredLayerPrivate = QtGui.QCheckBox(self.gb_loginFilteredLayers)
+        self.cbLoginFilteredLayerPrivate.setObjectName(_fromUtf8("cbLoginFilteredLayerPrivate"))
+        self.horizontalLayout_12.addWidget(self.cbLoginFilteredLayerPrivate)
         spacerItem29 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem29)
         self.verticalLayout_10.addLayout(self.horizontalLayout_12)
@@ -1354,7 +1359,8 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.btEditionLayerDel, self.twLoginFilteredLayersList)
         lizmap.setTabOrder(self.twLoginFilteredLayersList, self.liLoginFilteredLayerLayers)
         lizmap.setTabOrder(self.liLoginFilteredLayerLayers, self.liLoginFilteredLayerFields)
-        lizmap.setTabOrder(self.liLoginFilteredLayerFields, self.btLoginFilteredLayerAdd)
+        lizmap.setTabOrder(self.liLoginFilteredLayerFields, self.cbLoginFilteredLayerPrivate)
+        lizmap.setTabOrder(self.cbLoginFilteredLayerPrivate, self.btLoginFilteredLayerAdd)
         lizmap.setTabOrder(self.btLoginFilteredLayerAdd, self.btLoginFilteredLayerDel)
         lizmap.setTabOrder(self.btLoginFilteredLayerDel, self.scrollArea_4)
         lizmap.setTabOrder(self.scrollArea_4, self.cbHideProject)
@@ -1369,6 +1375,10 @@ class Ui_lizmap(object):
         lizmap.setTabOrder(self.inTimemanagerGroup, self.inTimemanagerGroupTitle)
         lizmap.setTabOrder(self.inTimemanagerGroupTitle, self.btTimemanagerLayerAdd)
         lizmap.setTabOrder(self.btTimemanagerLayerAdd, self.btTimemanagerLayerDel)
+        lizmap.setTabOrder(self.btTimemanagerLayerDel, self.twAttributeLayerList)
+        lizmap.setTabOrder(self.twAttributeLayerList, self.liAttributeLayer)
+        lizmap.setTabOrder(self.liAttributeLayer, self.btAttributeLayerAdd)
+        lizmap.setTabOrder(self.btAttributeLayerAdd, self.btAttributeLayerDel)
 
     def retranslateUi(self, lizmap):
         lizmap.setWindowTitle(_translate("lizmap", "LizMap", None))
@@ -1546,9 +1556,12 @@ class Ui_lizmap(object):
         item = self.twLoginFilteredLayersList.horizontalHeaderItem(1)
         item.setText(_translate("lizmap", "twLogin.col.field", None))
         item = self.twLoginFilteredLayersList.horizontalHeaderItem(2)
-        item.setText(_translate("lizmap", "twLogin.col.id", None))
+        item.setText(_translate("lizmap", "twLogin.col.private", None))
         item = self.twLoginFilteredLayersList.horizontalHeaderItem(3)
+        item.setText(_translate("lizmap", "twLogin.col.id", None))
+        item = self.twLoginFilteredLayersList.horizontalHeaderItem(4)
         item.setText(_translate("lizmap", "order", None))
+        self.cbLoginFilteredLayerPrivate.setText(_translate("lizmap", "tool.loginFilteredLayer.cbPrivate", None))
         self.btLoginFilteredLayerAdd.setText(_translate("lizmap", "tw.btLayerAdd", None))
         self.btLoginFilteredLayerDel.setText(_translate("lizmap", "tw.btLayerDel", None))
         self.gb_timemanager.setTitle(_translate("lizmap", "tools.timemanager.label", None))

@@ -1567,7 +1567,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-920</y>
+            <y>-896</y>
             <width>1031</width>
             <height>1761</height>
            </rect>
@@ -2105,6 +2105,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>twLogin.col.private</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>twLogin.col.id</string>
                  </property>
                 </column>
@@ -2124,6 +2129,13 @@
                   </item>
                   <item>
                    <widget class="QComboBox" name="liLoginFilteredLayerFields"/>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbLoginFilteredLayerPrivate">
+                    <property name="text">
+                     <string>tool.loginFilteredLayer.cbPrivate</string>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_4">
@@ -2917,6 +2929,7 @@
   <tabstop>twLoginFilteredLayersList</tabstop>
   <tabstop>liLoginFilteredLayerLayers</tabstop>
   <tabstop>liLoginFilteredLayerFields</tabstop>
+  <tabstop>cbLoginFilteredLayerPrivate</tabstop>
   <tabstop>btLoginFilteredLayerAdd</tabstop>
   <tabstop>btLoginFilteredLayerDel</tabstop>
   <tabstop>scrollArea_4</tabstop>
@@ -2932,6 +2945,10 @@
   <tabstop>inTimemanagerGroupTitle</tabstop>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
+  <tabstop>twAttributeLayerList</tabstop>
+  <tabstop>liAttributeLayer</tabstop>
+  <tabstop>btAttributeLayerAdd</tabstop>
+  <tabstop>btAttributeLayerDel</tabstop>
  </tabstops>
  <resources/>
  <connections>
