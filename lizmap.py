@@ -99,6 +99,7 @@ class lizmap:
     def __init__(self, iface):
         '''Save reference to the QGIS interface'''
         self.iface = iface
+
         # Qgis version
         try:
             self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
@@ -162,7 +163,6 @@ class lizmap:
             self.dlg.ui.lbWinscpCriteria.setEnabled(False)
 
         # List of ui widget for data driven actions and checking
-
         self.globalOptions = {
             'mapScales': {
                 'widget': self.dlg.ui.inMapScales,
@@ -507,25 +507,39 @@ class lizmap:
         self.action_about.triggered.connect(self.showAbout)
 
         # connect Lizmap signals and functions
+
         # save button clicked
         self.dlg.ui.btSave.clicked.connect(self.getMapOptions)
+
         # ftp sync button clicked
         self.dlg.ui.btSync.clicked.connect(self.ftpSync)
+
         # winscp get path button
         self.dlg.ui.btWinscpPath.clicked.connect(self.chooseWinscpPath)
+
         # clear log button clicked
         self.dlg.ui.btClearlog.clicked.connect(self.clearLog)
+
         # Cancel FTP Sync
         self.dlg.ui.btCancelFtpSync.clicked.connect(self.ftpSyncCancel)
+
         # refresh layer tree button click
 #        QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
+
         # refresh layer tree button click
         self.dlg.ui.btHelp.clicked.connect(self.showHelp)
+
         # configure popup button
         self.dlg.ui.btConfigurePopup.clicked.connect(self.configurePopup)
+
         # detect close event
         self.dlg.ui.buttonClose.rejected.connect(self.warnOnClose)
         self.dlg.rejected.connect(self.warnOnClose)
+
+        # detect project closed
+        self.iface.projectRead.connect(self.onProjectRead)
+        self.iface.newProjectCreated.connect(self.onNewProjectCreated)
+
         # initial extent
         self.dlg.ui.btSetExtentFromProject.clicked.connect(self.setInitialExtentFromProject)
         self.dlg.ui.btSetExtentFromCanvas.clicked.connect(self.setInitialExtentFromCanvas)
@@ -734,6 +748,8 @@ class lizmap:
                 for key in self.layersTable.keys():
                     if sjson.has_key(key):
                         self.layersTable[key]['jsonConfig'] = sjson[key]
+                    else:
+                        self.layersTable[key]['jsonConfig'] = {}
             except:
                 isok=0
                 QMessageBox.critical(
@@ -1775,7 +1791,6 @@ class lizmap:
 
     def writeProjectConfigFile(self):
         '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
-        myJson = '{'
 
         # get information from Qgis api
         r = QgsMapRenderer()
@@ -2215,6 +2230,7 @@ class lizmap:
             lftpCheck = u'lftp --version'
             workingDir = os.getcwd()
             proc = subprocess.Popen( lftpCheck, cwd=workingDir, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            proc = subprocess.Popen( lftpCheck, cwd=workingDir, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             output = proc.communicate()
             proc.wait()
             if "LFTP" not in output[0]:
@@ -2300,7 +2316,7 @@ class lizmap:
 
 
             if self.isok:
-                # write data in the QgisWebClient json config file (to be send with the project file)
+                # write data in the lizmap json config file
                 self.writeProjectConfigFile()
                 self.log(
                     QApplication.translate("lizmap", "ui.msg.map.parameters.ok"),
@@ -2672,14 +2688,35 @@ class lizmap:
 
     def warnOnClose(self):
         '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-
-        self.writeProjectConfigFile()
+        print "close"
+        #~ self.writeProjectConfigFile()
 
 
     def test(self):
         '''Debug method'''
         self.log("test", abort=False, textarea=self.dlg.ui.outLog)
         QMessageBox.critical(self.dlg, "Lizmap debug", (u"test"), QMessageBox.Ok)
+
+
+    def reinitDefaultProperties(self):
+        for key in self.layersTable.keys():
+            self.layersTable[key]['jsonConfig'] = {}
+
+
+    def onProjectRead(self):
+        '''
+        Close Lizmap plugin when project is opened
+        '''
+        self.reinitDefaultProperties()
+        self.dlg.close()
+
+    def onNewProjectCreated(self):
+        '''
+        When the user opens a new project
+        '''
+        self.reinitDefaultProperties()
+        self.dlg.close()
+
 
 
     def run(self):
@@ -2726,10 +2763,3 @@ class lizmap:
             if result == 1:
                 QMessageBox.warning(self.dlg, "Debug", ("Quit !"), QMessageBox.Ok)
 
-
-                #~ self.iface.messageBar().pushMessage(
-                    #~ QApplication.translate("lizmap", "ui.msg.error.title"),
-                    #~ QApplication.translate("lizmap", "ui.msg.baselayers.lack.input"),
-                    #~ QgsMessageBar.WARNING,
-                    #~ 2
-                #~ )
