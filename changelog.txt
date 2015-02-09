@@ -1,5 +1,13 @@
 CHANGELOG
 
+  Version 1.9.10
+  * Close Lizmap plugin when a new project is loaded - fixes #35
+  * Feature - add option to filter layers and data by authenticated user login (and not only by group as previously)
+  * Feature - New tool to display attribute tables for vector layers
+  * Map - add options to hide some interface items - funded by CIRAD - Environnements et Sociétés
+  * Layers - Option to hide groups checkboxes in legend - funded by CIRAD - Environnements et Sociétés
+  * Translation - Add Greek language file thanks to Arnaud Deleurme
+
   Version 1.9.9
   * [BUGFIX] #22 Ask the user to deactivate Layer name capitalization in QGIS option
   * Improve management of layers option tables such as "Locate by Layers" (remove layers from table if not in the project anymore or if removed during work session, rename layer in the table when renamed from the project)

@@ -4,16 +4,19 @@ name=lizmap
 qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 category=Web
-version=version 1.9.9
+version=version 1.9.10
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 1.9.9
-  * [BUGFIX] #22 Ask the user to deactivate Layer name capitalization in QGIS option
-  * Improve management of layers option tables such as "Locate by Layers" (remove layers from table if not in the project anymore or if removed during work session, rename layer in the table when renamed from the project)
-  * Minor GUI modifications in the Layers tab to improve readibility
-  * Add minLength option for Locate by layer
+  Version 1.9.10
+  * Close Lizmap plugin when a new project is loaded - fixes #35
+  * Feature - add option to filter layers and data by authenticated user login
+  * Feature - New tool to display attribute tables for vector layers
+  * Map - add options to hide some interface items - funded by CIRAD - Environnements et Sociétés
+  * Layers - Option to hide groups checkboxes in legend - funded by CIRAD - Environnements et Sociétés
+  * Translation - Add Greek language file thanks to @Sigromantic
+
 
 
 ; tags are in comma separated value format, spaces are allowed
@@ -23,7 +26,7 @@ tags=lizmap, server, web, publication, ftp, webmapping, WMS
 ; in a future version of the web application it will
 ; be probably possible to create a project on redmine
 ; if they are not filled
-homepage=http://hub.qgis.org/projects/lizmapplugin
+homepage=https://github.com/3liz/lizmap-plugin
 tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
 icon=icon.png
