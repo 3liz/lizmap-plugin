@@ -456,7 +456,7 @@ class lizmap:
             'attributeLayers': {
                 'tableWidget': self.dlg.ui.twAttributeLayerList,
                 'removeButton' : self.dlg.ui.btAttributeLayerDel,
-                'cols': ['layerId', 'order'],
+                'cols': ['primaryKey', 'pivot', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'editionLayers': {
@@ -566,6 +566,8 @@ class lizmap:
 
 
         # Attribute layers
+        # detect layer locate list has changed to refresh layer field list
+        self.dlg.ui.liAttributeLayer.currentIndexChanged[str].connect(self.updateAttributeFieldListFromLayer)
         # add a layer to the list of attribute layers
         self.dlg.ui.btAttributeLayerAdd.clicked.connect(self.addLayerToAttributeLayer)
 
@@ -973,6 +975,30 @@ class lizmap:
         )
         self.dlg.ui.inInitialExtent.setText(initialExtent)
 
+
+    def updateAttributeFieldListFromLayer(self):
+        '''
+            Fill the combobox with the list of fields
+            for the layer chosen with the atribute layers combobox
+        '''
+        # get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liAttributeLayer)
+
+        # remove previous items
+        self.dlg.ui.liAttributeLayerFields.clear()
+        # populate the columns combo box
+        if layer:
+            if layer.type() == QgsMapLayer.VectorLayer:
+                provider = layer.dataProvider()
+                fields = provider.fields()
+                for field in fields:
+                    self.dlg.ui.liAttributeLayerFields.addItem(
+                        unicode(field.name()),
+                        unicode(field.name())
+                    )
+        else:
+            return None
+
     def updateLocateFieldListFromLayer(self):
         '''
             Fill the combobox with the list of fields
@@ -1202,28 +1228,39 @@ class lizmap:
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        print layerId
+        fieldCombobox = self.dlg.ui.liAttributeLayerFields
+        primaryKey = fieldCombobox.currentText()
+        pivot = str(self.dlg.ui.cbAttributeLayerIsPivot.isChecked())
+        #~ print layerId
         lblTableWidget = self.dlg.ui.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 5:
+        if twRowCount < 10:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(3)
+            lblTableWidget.setColumnCount(4)
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 0, newItem)
+            # add primary key attribute to the line
+            newItem = QTableWidgetItem(primaryKey)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add "pivot"
+            newItem = QTableWidgetItem(pivot)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, newItem)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
 
-        lblTableWidget.setColumnHidden(1, True)
-        lblTableWidget.setColumnHidden(2, True)
+        lblTableWidget.setColumnHidden(3, True)
+        lblTableWidget.setColumnHidden(4, True)
 
 
     def addLayerToEditionLayer(self):
@@ -1481,9 +1518,9 @@ class lizmap:
                     self.myDic[itemKey]['abstract'] = layer.abstract()
                     keepMetadata = True
             # hide non geo layers (csv, etc.)
-            if layer.type() == 0:
-                if layer.geometryType() == 4:
-                    self.ldisplay = False
+            #if layer.type() == 0:
+            #    if layer.geometryType() == 4:
+            #        self.ldisplay = False
             # layer scale visibility
             if layer.hasScaleBasedVisibility():
                 self.myDic[itemKey]['minScale'] = layer.minimumScale()
@@ -1911,8 +1948,12 @@ class lizmap:
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                primaryKey = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                pivot = str(lblTableWidget.item(row, 2).text())
+                layerId = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
                 liz2json["attributeLayers"][layerName] = {}
+                liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
+                liz2json["attributeLayers"][layerName]["pivot"] = pivot
                 liz2json["attributeLayers"][layerName]["layerId"] = layerId
                 liz2json["attributeLayers"][layerName]["order"] = row
 

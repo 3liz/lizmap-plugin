@@ -1567,7 +1567,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-896</y>
+            <y>0</y>
             <width>1031</width>
             <height>1761</height>
            </rect>
@@ -1829,6 +1829,16 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>primary_key</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>pivot</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>attribute.col.id</string>
                  </property>
                 </column>
@@ -1843,6 +1853,16 @@
                <layout class="QHBoxLayout" name="horizontalLayout_27">
                 <item>
                  <widget class="QComboBox" name="liAttributeLayer"/>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="liAttributeLayerFields"/>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbAttributeLayerIsPivot">
+                  <property name="text">
+                   <string>tools.attributeLayer.cbIsPivot</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <spacer name="horizontalSpacer_29">
@@ -2918,6 +2938,12 @@
   <tabstop>btLocateByLayerAdd</tabstop>
   <tabstop>btLocateByLayerDel</tabstop>
   <tabstop>twLocateByLayerList</tabstop>
+  <tabstop>twAttributeLayerList</tabstop>
+  <tabstop>liAttributeLayer</tabstop>
+  <tabstop>btAttributeLayerAdd</tabstop>
+  <tabstop>btAttributeLayerDel</tabstop>
+  <tabstop>liAttributeLayerFields</tabstop>
+  <tabstop>cbAttributeLayerIsPivot</tabstop>
   <tabstop>twEditionLayerList</tabstop>
   <tabstop>liEditionLayer</tabstop>
   <tabstop>cbEditionLayerCreate</tabstop>
@@ -2945,10 +2971,6 @@
   <tabstop>inTimemanagerGroupTitle</tabstop>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
-  <tabstop>twAttributeLayerList</tabstop>
-  <tabstop>liAttributeLayer</tabstop>
-  <tabstop>btAttributeLayerAdd</tabstop>
-  <tabstop>btAttributeLayerDel</tabstop>
  </tabstops>
  <resources/>
  <connections>
