@@ -1517,10 +1517,12 @@ class lizmap:
                 if layer.abstract():
                     self.myDic[itemKey]['abstract'] = layer.abstract()
                     keepMetadata = True
+
             # hide non geo layers (csv, etc.)
             #if layer.type() == 0:
             #    if layer.geometryType() == 4:
             #        self.ldisplay = False
+
             # layer scale visibility
             if layer.hasScaleBasedVisibility():
                 self.myDic[itemKey]['minScale'] = layer.minimumScale()
@@ -2066,65 +2068,67 @@ class lizmap:
                     if layer.type() == 0: # if it is a vector layer
                         geometryType = layer.geometryType()
 
-            # add layerOption only for geo layers
-            if geometryType != 4:
-                layerOptions = {}
-                layerOptions["id"] = unicode(k)
-                layerOptions["name"] = unicode(v['name'])
-                layerOptions["type"] = ltype
+            #~ # add layerOption only for geo layers
+            #~ if geometryType != 4:
+            layerOptions = {}
+            layerOptions["id"] = unicode(k)
+            layerOptions["name"] = unicode(v['name'])
+            layerOptions["type"] = ltype
+            if geometryType != -1:
+                layerOptions["geometryType"] = self.mapQgisGeometryType[layer.geometryType()]
 
-                # Loop through the layer options and set properties from the dictionary
-                for key, val in self.layerOptionsList.items():
-                    propVal = v[key]
-                    if val['type'] == 'string':
-                        if val['wType'] in ('text', 'textarea'):
-                            propVal = unicode(propVal)
-                        else:
-                            propVal = str(propVal)
-                    elif val['type'] == 'integer':
-                        propVal = int(propVal)
-                    elif val['type'] == 'boolean':
+            # Loop through the layer options and set properties from the dictionary
+            for key, val in self.layerOptionsList.items():
+                propVal = v[key]
+                if val['type'] == 'string':
+                    if val['wType'] in ('text', 'textarea'):
+                        propVal = unicode(propVal)
+                    else:
                         propVal = str(propVal)
-                    layerOptions[key] = propVal
+                elif val['type'] == 'integer':
+                    propVal = int(propVal)
+                elif val['type'] == 'boolean':
+                    propVal = str(propVal)
+                layerOptions[key] = propVal
 
-                # Cache Metatile: unset metatileSize if empty
-                # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
-                import re
-                p = re.compile('ab*')
-                # unset metatileSize
-                if not re.match('\d,\d', layerOptions['metatileSize']):
-                    del layerOptions['metatileSize']
-                # unset cacheExpiration if False
-                if layerOptions['cached'].lower() == 'false':
-                    del layerOptions['cacheExpiration']
-                # unset popupTemplate if popup False
-                if layerOptions['popup'].lower() == 'false':
-                    del layerOptions['popupTemplate']
-                # unset clientCacheExpiration if not needed
-                if layerOptions['clientCacheExpiration'] < 0:
-                    del layerOptions['clientCacheExpiration']
-                # unset externalWms if False
-                if layerOptions['externalWmsToggle'].lower() == 'false':
-                    del layerOptions['externalWmsToggle']
-                # unset source project and repository if needed
-                if not layerOptions['sourceRepository'] or not layerOptions['sourceProject']:
-                    del layerOptions['sourceRepository']
-                    del layerOptions['sourceProject']
+            # Cache Metatile: unset metatileSize if empty
+            # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
+            import re
+            p = re.compile('ab*')
+            # unset metatileSize
+            if not re.match('\d,\d', layerOptions['metatileSize']):
+                del layerOptions['metatileSize']
+            # unset cacheExpiration if False
+            if layerOptions['cached'].lower() == 'false':
+                del layerOptions['cacheExpiration']
+            # unset popupTemplate if popup False
+            if layerOptions['popup'].lower() == 'false':
+                del layerOptions['popupTemplate']
+            # unset clientCacheExpiration if not needed
+            if layerOptions['clientCacheExpiration'] < 0:
+                del layerOptions['clientCacheExpiration']
+            # unset externalWms if False
+            if layerOptions['externalWmsToggle'].lower() == 'false':
+                del layerOptions['externalWmsToggle']
+            # unset source project and repository if needed
+            if not layerOptions['sourceRepository'] or not layerOptions['sourceProject']:
+                del layerOptions['sourceRepository']
+                del layerOptions['sourceProject']
 
-                # Add external WMS options if needed
-                if layer and hasattr(layer, 'providerType') \
-                and layerOptions.has_key('externalWmsToggle') \
-                and layerOptions['externalWmsToggle'].lower() == 'true':
-                    layerProviderKey = layer.providerType()
-                    # Only for layers stored in disk
-                    if layerProviderKey in ('wms'):
-                        wmsParams = self.getLayerWmsParameters(layer)
-                        if wmsParams:
-                            layerOptions['externalAccess'] = wmsParams
+            # Add external WMS options if needed
+            if layer and hasattr(layer, 'providerType') \
+            and layerOptions.has_key('externalWmsToggle') \
+            and layerOptions['externalWmsToggle'].lower() == 'true':
+                layerProviderKey = layer.providerType()
+                # Only for layers stored in disk
+                if layerProviderKey in ('wms'):
+                    wmsParams = self.getLayerWmsParameters(layer)
+                    if wmsParams:
+                        layerOptions['externalAccess'] = wmsParams
 
 
-                # Add layer options to the json object
-                liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
+            # Add layer options to the json object
+            liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
 
         # Write json to the cfg file
         jsonFileContent = json.dumps(
