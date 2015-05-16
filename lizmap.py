@@ -456,7 +456,7 @@ class lizmap:
             'attributeLayers': {
                 'tableWidget': self.dlg.ui.twAttributeLayerList,
                 'removeButton' : self.dlg.ui.btAttributeLayerDel,
-                'cols': ['primaryKey', 'pivot', 'layerId', 'order'],
+                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'editionLayers': {
@@ -1163,7 +1163,7 @@ class lizmap:
 
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 3:
+        if twRowCount < 5:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(7)
@@ -1230,14 +1230,15 @@ class lizmap:
         layerId = layer.id()
         fieldCombobox = self.dlg.ui.liAttributeLayerFields
         primaryKey = fieldCombobox.currentText()
+        hiddenFields = str(self.dlg.ui.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
         pivot = str(self.dlg.ui.cbAttributeLayerIsPivot.isChecked())
         #~ print layerId
         lblTableWidget = self.dlg.ui.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 10:
+        if twRowCount < 15:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(4)
+            lblTableWidget.setColumnCount(5)
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -1246,21 +1247,25 @@ class lizmap:
             newItem = QTableWidgetItem(primaryKey)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add "hiddenFields"
+            newItem = QTableWidgetItem(hiddenFields)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
             # add "pivot"
             newItem = QTableWidgetItem(pivot)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
 
-        lblTableWidget.setColumnHidden(3, True)
         lblTableWidget.setColumnHidden(4, True)
+        lblTableWidget.setColumnHidden(5, True)
 
 
     def addLayerToEditionLayer(self):
@@ -1951,10 +1956,12 @@ class lizmap:
                 # check that the layer is checked in the WFS capabilities
                 layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                 primaryKey = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                pivot = str(lblTableWidget.item(row, 2).text())
-                layerId = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                hiddenFields = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                pivot = str(lblTableWidget.item(row, 3).text())
+                layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
                 liz2json["attributeLayers"][layerName] = {}
                 liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
+                liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
                 liz2json["attributeLayers"][layerName]["pivot"] = pivot
                 liz2json["attributeLayers"][layerName]["layerId"] = layerId
                 liz2json["attributeLayers"][layerName]["order"] = row
