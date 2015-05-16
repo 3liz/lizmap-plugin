@@ -2081,8 +2081,22 @@ class lizmap:
             layerOptions["id"] = unicode(k)
             layerOptions["name"] = unicode(v['name'])
             layerOptions["type"] = ltype
+
+            # geometry type
             if geometryType != -1:
                 layerOptions["geometryType"] = self.mapQgisGeometryType[layer.geometryType()]
+
+            # extent
+            if layer:
+                lExtent = layer.extent()
+                layerOptions["extent"] = eval(
+                    '[%s, %s, %s, %s]' % (
+                        lExtent.xMinimum(),
+                        lExtent.yMinimum(),
+                        lExtent.xMaximum(),
+                        lExtent.yMaximum()
+                    )
+                )
 
             # Loop through the layer options and set properties from the dictionary
             for key, val in self.layerOptionsList.items():
