@@ -2098,6 +2098,14 @@ class lizmap:
                     )
                 )
 
+            # styles
+            if layer and hasattr(layer, 'styleManager'):
+                lsm = layer.styleManager()
+                ls  = lsm.styles()
+                if len( ls ) > 1:
+                    layerOptions['styles'] = ls
+
+
             # Loop through the layer options and set properties from the dictionary
             for key, val in self.layerOptionsList.items():
                 propVal = v[key]
