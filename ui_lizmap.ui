@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>791</width>
-    <height>686</height>
+    <width>1071</width>
+    <height>844</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -137,8 +137,8 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
-               <width>535</width>
+               <y>-193</y>
+               <width>594</width>
                <height>862</height>
               </rect>
              </property>
@@ -281,6 +281,9 @@
                  <widget class="QCheckBox" name="cbSingleTile">
                   <property name="text">
                    <string>layers.layer.singletile</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -565,8 +568,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>733</width>
-            <height>629</height>
+            <width>1029</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -982,8 +985,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>955</width>
-            <height>679</height>
+            <width>1029</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1567,7 +1570,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-290</y>
+            <y>-85</y>
             <width>1031</width>
             <height>1786</height>
            </rect>
@@ -1844,6 +1847,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>hideAsChild</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>attribute.col.id</string>
                  </property>
                 </column>
@@ -1892,13 +1900,27 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="3">
+                  <item row="1" column="4">
                    <widget class="QLineEdit" name="inAttributeLayerHiddenFields"/>
                   </item>
-                  <item row="0" column="3">
+                  <item row="0" column="4">
                    <widget class="QLabel" name="label_64">
                     <property name="text">
                      <string>hiddenFields</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
+                    <property name="text">
+                     <string>tools.attributeLayer.cbHideAsChild</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QLabel" name="label_65">
+                    <property name="text">
+                     <string>hideAsChild</string>
                     </property>
                    </widget>
                   </item>
@@ -2553,8 +2575,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>749</width>
-            <height>547</height>
+            <width>1029</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2982,6 +3004,7 @@
   <tabstop>liAttributeLayer</tabstop>
   <tabstop>liAttributeLayerFields</tabstop>
   <tabstop>cbAttributeLayerIsPivot</tabstop>
+  <tabstop>cbAttributeLayerHideAsChild</tabstop>
   <tabstop>inAttributeLayerHiddenFields</tabstop>
   <tabstop>btAttributeLayerAdd</tabstop>
   <tabstop>btAttributeLayerDel</tabstop>

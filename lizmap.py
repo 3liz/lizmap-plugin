@@ -456,7 +456,7 @@ class lizmap:
             'attributeLayers': {
                 'tableWidget': self.dlg.ui.twAttributeLayerList,
                 'removeButton' : self.dlg.ui.btAttributeLayerDel,
-                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'layerId', 'order'],
+                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'editionLayers': {
@@ -1232,13 +1232,14 @@ class lizmap:
         primaryKey = fieldCombobox.currentText()
         hiddenFields = str(self.dlg.ui.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
         pivot = str(self.dlg.ui.cbAttributeLayerIsPivot.isChecked())
+        hideAsChild= str(self.dlg.ui.cbAttributeLayerHideAsChild.isChecked())
         #~ print layerId
         lblTableWidget = self.dlg.ui.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 15:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(5)
+            lblTableWidget.setColumnCount(6)
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -1255,17 +1256,21 @@ class lizmap:
             newItem = QTableWidgetItem(pivot)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 3, newItem)
+            # add "hideAsChild"
+            newItem = QTableWidgetItem(hideAsChild)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
 
-        lblTableWidget.setColumnHidden(4, True)
         lblTableWidget.setColumnHidden(5, True)
+        lblTableWidget.setColumnHidden(6, True)
 
 
     def addLayerToEditionLayer(self):
@@ -1958,11 +1963,13 @@ class lizmap:
                 primaryKey = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                 hiddenFields = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                 pivot = str(lblTableWidget.item(row, 3).text())
-                layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
+                hideAsChild = str(lblTableWidget.item(row, 4).text())
+                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 liz2json["attributeLayers"][layerName] = {}
                 liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
                 liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
                 liz2json["attributeLayers"][layerName]["pivot"] = pivot
+                liz2json["attributeLayers"][layerName]["hideAsChild"] = hideAsChild
                 liz2json["attributeLayers"][layerName]["layerId"] = layerId
                 liz2json["attributeLayers"][layerName]["order"] = row
 
@@ -2097,6 +2104,7 @@ class lizmap:
                         lExtent.yMaximum()
                     )
                 )
+                layerOptions['crs'] = layer.crs().authid()
 
             # styles
             if layer and hasattr(layer, 'styleManager'):
