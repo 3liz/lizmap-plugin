@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap.ui'
 #
-# Created: Thu Jun 11 18:11:17 2015
+# Created: Fri Jun 12 17:41:31 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -83,7 +83,7 @@ class Ui_lizmap(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -193, 594, 862))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 594, 862))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_20 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
@@ -154,7 +154,7 @@ class Ui_lizmap(object):
         self.cbDisplayInLegend.setObjectName(_fromUtf8("cbDisplayInLegend"))
         self.verticalLayout.addWidget(self.cbDisplayInLegend)
         self.cbSingleTile = QtGui.QCheckBox(self.scrollAreaWidgetContents)
-        self.cbSingleTile.setChecked(False)
+        self.cbSingleTile.setChecked(True)
         self.cbSingleTile.setObjectName(_fromUtf8("cbSingleTile"))
         self.verticalLayout.addWidget(self.cbSingleTile)
         self.horizontalLayout_8 = QtGui.QHBoxLayout()
@@ -276,7 +276,7 @@ class Ui_lizmap(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName(_fromUtf8("scrollArea_2"))
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 1029, 705))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 705, 629))
         self.scrollAreaWidgetContents_2.setObjectName(_fromUtf8("scrollAreaWidgetContents_2"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
@@ -442,7 +442,7 @@ class Ui_lizmap(object):
         self.scrollArea_5.setWidgetResizable(True)
         self.scrollArea_5.setObjectName(_fromUtf8("scrollArea_5"))
         self.scrollAreaWidgetContents_5 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 1029, 705))
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 955, 679))
         self.scrollAreaWidgetContents_5.setObjectName(_fromUtf8("scrollAreaWidgetContents_5"))
         self.verticalLayout_13 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
@@ -677,7 +677,7 @@ class Ui_lizmap(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName(_fromUtf8("scrollArea_3"))
         self.scrollAreaWidgetContents_3 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, -85, 1031, 1786))
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 1031, 1786))
         self.scrollAreaWidgetContents_3.setObjectName(_fromUtf8("scrollAreaWidgetContents_3"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
@@ -1107,7 +1107,7 @@ class Ui_lizmap(object):
         self.scrollArea_4.setWidgetResizable(True)
         self.scrollArea_4.setObjectName(_fromUtf8("scrollArea_4"))
         self.scrollAreaWidgetContents_4 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 1029, 705))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 361, 435))
         self.scrollAreaWidgetContents_4.setObjectName(_fromUtf8("scrollAreaWidgetContents_4"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))

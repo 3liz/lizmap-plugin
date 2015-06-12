@@ -137,7 +137,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-193</y>
+               <y>0</y>
                <width>594</width>
                <height>862</height>
               </rect>
@@ -283,7 +283,7 @@
                    <string>layers.layer.singletile</string>
                   </property>
                   <property name="checked">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -568,8 +568,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1029</width>
-            <height>705</height>
+            <width>705</width>
+            <height>629</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -985,8 +985,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1029</width>
-            <height>705</height>
+            <width>955</width>
+            <height>679</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1570,7 +1570,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-85</y>
+            <y>0</y>
             <width>1031</width>
             <height>1786</height>
            </rect>
@@ -2575,8 +2575,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1029</width>
-            <height>705</height>
+            <width>361</width>
+            <height>435</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">

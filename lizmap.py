@@ -373,7 +373,7 @@ class lizmap:
             },
             'singleTile': {
                 'widget': self.dlg.ui.cbSingleTile,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False,
+                'wType': 'checkbox', 'type': 'boolean', 'default': True,
                 'exclude': {'widget': self.dlg.ui.cbCached, 'key': 'cached'}
             },
             'imageFormat': {
