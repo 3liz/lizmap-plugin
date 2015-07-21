@@ -450,7 +450,7 @@ class lizmap:
             'locateByLayer': {
                 'tableWidget': self.dlg.ui.twLocateByLayerList,
                 'removeButton' : self.dlg.ui.btLocateByLayerDel,
-                'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'layerId', 'order'],
+                'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'filterOnLocate', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'attributeLayers': {
@@ -1160,13 +1160,14 @@ class lizmap:
         filterFieldName = filterFieldCombobox.currentText()
         displayGeom = str(self.dlg.ui.cbLocateByLayerDisplayGeom.isChecked())
         minLength = self.dlg.ui.inLocateByLayerMinLength.value()
+        filterOnLocate = str(self.dlg.ui.cbFilterOnLocate.isChecked())
 
         lblTableWidget = self.dlg.ui.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 5:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(7)
+            lblTableWidget.setColumnCount(8)
 
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
@@ -1188,17 +1189,21 @@ class lizmap:
             newItem = QTableWidgetItem(str(minLength))
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 4, newItem)
+            # add filterOnLocate to the line
+            newItem = QTableWidgetItem(filterOnLocate)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
+            lblTableWidget.setItem(twRowCount, 7, newItem)
 
-        lblTableWidget.setColumnHidden(5, True)
         lblTableWidget.setColumnHidden(6, True)
+        lblTableWidget.setColumnHidden(7, True)
 
 
     def addLayerToAttributeLayer(self):
@@ -1935,20 +1940,22 @@ class lizmap:
             liz2json["locateByLayer"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerId = str(lblTableWidget.item(row, 5).text())
+                layerId = str(lblTableWidget.item(row, 6).text())
                 if layerId in wfsLayersList:
                     layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
                     fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                     filterFieldName = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                     displayGeom = str(lblTableWidget.item(row, 3).text())
                     minLength = str(lblTableWidget.item(row, 4).text())
-                    layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                    filterOnLocate = str(lblTableWidget.item(row, 5).text())
+                    layerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     if filterFieldName and filterFieldName != '--':
                         liz2json["locateByLayer"][layerName]["filterFieldName"] = filterFieldName
                     liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
                     liz2json["locateByLayer"][layerName]["minLength"] = minLength and int(minLength) or 0
+                    liz2json["locateByLayer"][layerName]["filterOnLocate"] = filterOnLocate
                     liz2json["locateByLayer"][layerName]["layerId"] = layerId
                     liz2json["locateByLayer"][layerName]["order"] = row
 
@@ -2387,7 +2394,7 @@ class lizmap:
                 good = True
                 for row in range(twRowCount):
                     # check that the layer is checked in the WFS capabilities
-                    layerId = str(lblTableWidget.item(row, 5).text())
+                    layerId = str(lblTableWidget.item(row, 6).text())
                     if layerId not in wfsLayersList:
                         good = False
                 if not good:

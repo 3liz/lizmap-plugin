@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1071</width>
+    <width>1125</width>
     <height>844</height>
    </rect>
   </property>
@@ -568,8 +568,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>705</width>
-            <height>629</height>
+            <width>1083</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -985,8 +985,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>955</width>
-            <height>679</height>
+            <width>1083</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1570,8 +1570,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>1031</width>
+            <y>-8</y>
+            <width>1154</width>
             <height>1786</height>
            </rect>
           </property>
@@ -1598,6 +1598,16 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_23">
+                    <item row="0" column="2">
+                     <widget class="QLabel" name="label_27">
+                      <property name="text">
+                       <string>tools.locate.filterField.label</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="1" column="1">
                      <widget class="QComboBox" name="liLocateByLayerFields">
                       <property name="maximumSize">
@@ -1645,16 +1655,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="2">
-                     <widget class="QLabel" name="label_27">
-                      <property name="text">
-                       <string>tools.locate.filterField.label</string>
-                      </property>
-                      <property name="wordWrap">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="1" column="4">
                      <widget class="QSpinBox" name="inLocateByLayerMinLength">
                       <property name="toolTip">
@@ -1691,18 +1691,22 @@
                       </property>
                      </widget>
                     </item>
+                    <item row="0" column="5">
+                     <widget class="QLabel" name="label_66">
+                      <property name="text">
+                       <string>filterOnLocate</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="1" column="5">
-                     <spacer name="horizontalSpacer_13">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                     <widget class="QCheckBox" name="cbFilterOnLocate">
+                      <property name="toolTip">
+                       <string>filterOnLocateTooltip</string>
                       </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
+                      <property name="text">
+                       <string>filterOnLocate</string>
                       </property>
-                     </spacer>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -2575,8 +2579,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>361</width>
-            <height>435</height>
+            <width>1083</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2997,6 +3001,7 @@
   <tabstop>liLocateByLayerFilterFields</tabstop>
   <tabstop>cbLocateByLayerDisplayGeom</tabstop>
   <tabstop>inLocateByLayerMinLength</tabstop>
+  <tabstop>cbFilterOnLocate</tabstop>
   <tabstop>btLocateByLayerAdd</tabstop>
   <tabstop>btLocateByLayerDel</tabstop>
   <tabstop>twLocateByLayerList</tabstop>
