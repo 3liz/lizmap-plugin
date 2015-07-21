@@ -1570,7 +1570,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-8</y>
+            <y>-1097</y>
             <width>1154</width>
             <height>1786</height>
            </rect>
@@ -1759,6 +1759,12 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
                 </property>
@@ -1798,6 +1804,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>filterOnLocate</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>twLocateByLayer.col.id</string>
                  </property>
                 </column>
@@ -1829,6 +1840,15 @@
               </item>
               <item>
                <widget class="QTableWidget" name="twAttributeLayerList">
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
                 <column>
                  <property name="text">
                   <string>layer</string>
@@ -2003,6 +2023,12 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
                 </property>
@@ -2175,6 +2201,12 @@
                   <width>750</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
                 </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
@@ -2398,6 +2430,12 @@
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
                 </property>
@@ -2579,8 +2617,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1083</width>
-            <height>705</height>
+            <width>361</width>
+            <height>435</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
