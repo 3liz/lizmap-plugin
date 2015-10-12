@@ -456,7 +456,7 @@ class lizmap:
             'attributeLayers': {
                 'tableWidget': self.dlg.ui.twAttributeLayerList,
                 'removeButton' : self.dlg.ui.btAttributeLayerDel,
-                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'layerId', 'order'],
+                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'tooltip', 'tooltipFields', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'editionLayers': {
@@ -1238,13 +1238,15 @@ class lizmap:
         hiddenFields = str(self.dlg.ui.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
         pivot = str(self.dlg.ui.cbAttributeLayerIsPivot.isChecked())
         hideAsChild= str(self.dlg.ui.cbAttributeLayerHideAsChild.isChecked())
+        tooltip = str(self.dlg.ui.cbAttributeLayerTooltip.isChecked())
+        tooltipFields = str(self.dlg.ui.inAttributeLayerTooltipFields.text().encode('utf-8')).strip(' \t')
         #~ print layerId
         lblTableWidget = self.dlg.ui.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 15:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(6)
+            lblTableWidget.setColumnCount(8)
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -1265,17 +1267,25 @@ class lizmap:
             newItem = QTableWidgetItem(hideAsChild)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 4, newItem)
+            # add "tooltip"
+            newItem = QTableWidgetItem(tooltip)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
+            # add "tooltipFields"
+            newItem = QTableWidgetItem(tooltipFields)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            lblTableWidget.setItem(twRowCount, 7, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
+            lblTableWidget.setItem(twRowCount, 8, newItem)
 
-        lblTableWidget.setColumnHidden(5, True)
-        lblTableWidget.setColumnHidden(6, True)
+        lblTableWidget.setColumnHidden(7, True)
+        lblTableWidget.setColumnHidden(8, True)
 
 
     def addLayerToEditionLayer(self):
@@ -1971,12 +1981,16 @@ class lizmap:
                 hiddenFields = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                 pivot = str(lblTableWidget.item(row, 3).text())
                 hideAsChild = str(lblTableWidget.item(row, 4).text())
-                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                tooltip = str(lblTableWidget.item(row, 5).text())
+                tooltipFields = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
                 liz2json["attributeLayers"][layerName] = {}
                 liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
                 liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
                 liz2json["attributeLayers"][layerName]["pivot"] = pivot
                 liz2json["attributeLayers"][layerName]["hideAsChild"] = hideAsChild
+                liz2json["attributeLayers"][layerName]["tooltip"] = tooltip
+                liz2json["attributeLayers"][layerName]["tooltipFields"] = tooltipFields
                 liz2json["attributeLayers"][layerName]["layerId"] = layerId
                 liz2json["attributeLayers"][layerName]["order"] = row
 

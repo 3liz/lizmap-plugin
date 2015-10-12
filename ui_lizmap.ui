@@ -1570,9 +1570,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-1097</y>
+            <y>-204</y>
             <width>1154</width>
-            <height>1786</height>
+            <height>1842</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1876,6 +1876,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>tooltipFields</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>attribute.col.id</string>
                  </property>
                 </column>
@@ -1894,6 +1899,13 @@
                    <widget class="QCheckBox" name="cbAttributeLayerIsPivot">
                     <property name="text">
                      <string>tools.attributeLayer.cbIsPivot</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_64">
+                    <property name="text">
+                     <string>hiddenFields</string>
                     </property>
                    </widget>
                   </item>
@@ -1924,16 +1936,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="4">
-                   <widget class="QLineEdit" name="inAttributeLayerHiddenFields"/>
-                  </item>
-                  <item row="0" column="4">
-                   <widget class="QLabel" name="label_64">
-                    <property name="text">
-                     <string>hiddenFields</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="3">
                    <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
                     <property name="text">
@@ -1947,6 +1949,33 @@
                      <string>hideAsChild</string>
                     </property>
                    </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLineEdit" name="inAttributeLayerHiddenFields"/>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="label_68">
+                    <property name="text">
+                     <string>tooltip</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QCheckBox" name="cbAttributeLayerTooltip">
+                    <property name="text">
+                     <string>tools.attributeLayer.tooltip</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QLabel" name="label_67">
+                    <property name="text">
+                     <string>tooltipFields</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QLineEdit" name="inAttributeLayerTooltipFields"/>
                   </item>
                  </layout>
                 </item>
@@ -2617,8 +2646,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>361</width>
-            <height>435</height>
+            <width>1083</width>
+            <height>705</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -3049,6 +3078,8 @@
   <tabstop>cbAttributeLayerIsPivot</tabstop>
   <tabstop>cbAttributeLayerHideAsChild</tabstop>
   <tabstop>inAttributeLayerHiddenFields</tabstop>
+  <tabstop>inAttributeLayerTooltipFields</tabstop>
+  <tabstop>cbAttributeLayerTooltip</tabstop>
   <tabstop>btAttributeLayerAdd</tabstop>
   <tabstop>btAttributeLayerDel</tabstop>
   <tabstop>twEditionLayerList</tabstop>
