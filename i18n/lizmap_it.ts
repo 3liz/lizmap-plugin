@@ -49,7 +49,7 @@
         <translation>Rilievo</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2855"/>
+        <location filename="ui_lizmap.ui" line="2841"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -311,65 +311,65 @@ Sei sicuro di voler procedere?</translation>
         <translation>Puoi aggiungere un Layer di base da una sorgente pubblica. Se aggiungi una sorgente pubblica, devi aggiungere il codice EPSG 3857 (Pseudo Mercator) al WMS nelle proprietà del progetto.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2636"/>
+        <location filename="ui_lizmap.ui" line="2622"/>
         <source>ftp.label</source>
         <translation>FTP</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2703"/>
+        <location filename="ui_lizmap.ui" line="2689"/>
         <source>ftp.username.label</source>
         <translation>Utente</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2720"/>
+        <location filename="ui_lizmap.ui" line="2706"/>
         <source>ftp.password.label</source>
         <translation>Password</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2665"/>
+        <location filename="ui_lizmap.ui" line="2651"/>
         <source>ftp.host.label</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2682"/>
+        <location filename="ui_lizmap.ui" line="2668"/>
         <source>ftp.port.label</source>
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2786"/>
+        <location filename="ui_lizmap.ui" line="2772"/>
         <source>ftp.localdir.label</source>
         <translation>Cartella locale</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2769"/>
+        <location filename="ui_lizmap.ui" line="2755"/>
         <source>ftp.remotedir.label</source>
         <translation>Cartella remota</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2832"/>
+        <location filename="ui_lizmap.ui" line="2818"/>
         <source>ftp.winscp.label</source>
         <translation>Percorso completo per WinSCP
 (solo per utenti windows)</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2864"/>
+        <location filename="ui_lizmap.ui" line="2850"/>
         <source>ftp.winscp.help.label</source>
         <translation>Scaricare l&apos;eseguibile portabile da qui:
 http://winscp.net/eng/download.php
 poi decomprimere il file zip in una cartella e selezionare il percorso alla cartella per poi inserirlo nel campo sopra.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2930"/>
+        <location filename="ui_lizmap.ui" line="2916"/>
         <source>log.label</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2946"/>
+        <location filename="ui_lizmap.ui" line="2932"/>
         <source>log.btClearLog.label</source>
         <translation>Cancella log</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2956"/>
+        <location filename="ui_lizmap.ui" line="2942"/>
         <source>log.btCancelSync.label</source>
         <translation>Cancella sincronizzazione</translation>
     </message>
@@ -444,27 +444,27 @@ poi decomprimere il file zip in una cartella e selezionare il percorso alla cart
         <translation>Attiva popup</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2873"/>
+        <location filename="ui_lizmap.ui" line="2859"/>
         <source>ftp.winscp.session</source>
         <translation>Sessione WinSCP</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2761"/>
+        <location filename="ui_lizmap.ui" line="2747"/>
         <source>ftp.title.directory</source>
         <translation>Cartelle</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2657"/>
+        <location filename="ui_lizmap.ui" line="2643"/>
         <source>ftp.title.parameters</source>
         <translation>Parametri di connessione</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2824"/>
+        <location filename="ui_lizmap.ui" line="2810"/>
         <source>ftp.title.winscp</source>
         <translation>WinSCP</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2890"/>
+        <location filename="ui_lizmap.ui" line="2876"/>
         <source>ftp.winscp.criteria</source>
         <translation>Criteri del mirror: tempo o dimensioni</translation>
     </message>
@@ -586,67 +586,67 @@ Es: 1000, 250000</translation>
         <translation>Cache lato client, nel navigatore?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2404"/>
+        <location filename="ui_lizmap.ui" line="2390"/>
         <source>seconds</source>
         <translation>secondi</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2034"/>
+        <location filename="ui_lizmap.ui" line="2020"/>
         <source>tools.edition.label</source>
         <translation>Modifica layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2040"/>
+        <location filename="ui_lizmap.ui" line="2026"/>
         <source>tools.edition.description</source>
         <translation>Puoi aggiungere fino a 5 layers nella lista e scegliere le possibilità di modifica per ciascuno.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2069"/>
+        <location filename="ui_lizmap.ui" line="2055"/>
         <source>twEdition.col.layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2074"/>
+        <location filename="ui_lizmap.ui" line="2060"/>
         <source>twEdition.col.add</source>
         <translation>Crea</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2079"/>
+        <location filename="ui_lizmap.ui" line="2065"/>
         <source>twEdition.col.modAttribute</source>
         <translation>Modifica  attributi</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2084"/>
+        <location filename="ui_lizmap.ui" line="2070"/>
         <source>twEdition.col.modGeom</source>
         <translation>Modifica geometria</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2089"/>
+        <location filename="ui_lizmap.ui" line="2075"/>
         <source>twEdition.col.delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2094"/>
+        <location filename="ui_lizmap.ui" line="2080"/>
         <source>twEdition.col.id</source>
         <translation>Layer id</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2121"/>
+        <location filename="ui_lizmap.ui" line="2107"/>
         <source>tools.editionLayer.cbCreate</source>
         <translation>Crea</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2128"/>
+        <location filename="ui_lizmap.ui" line="2114"/>
         <source>tools.editionLayer.cbModAtt</source>
         <translation>Modifica attributi</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2135"/>
+        <location filename="ui_lizmap.ui" line="2121"/>
         <source>tools.editionLayer.cbModGeom</source>
         <translation>Modifica geometria</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2142"/>
+        <location filename="ui_lizmap.ui" line="2128"/>
         <source>tools.editionLayer.cbDel</source>
         <translation>Elimina</translation>
     </message>
@@ -706,27 +706,27 @@ con la cartella remota FTP:
 {}</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2213"/>
+        <location filename="ui_lizmap.ui" line="2199"/>
         <source>tools.loginFilteredLayers.label</source>
         <translation>Filtra layer per utente</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2219"/>
+        <location filename="ui_lizmap.ui" line="2205"/>
         <source>tools.loginFilteredLayers.description</source>
         <translation type="unfinished">L&apos;utente autenticato vedrà solo i dati il cui attributo scelto corrisponde al suo gruppo utente lizmap, o al suo login si &quot;Filter by user&quot; is checked.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2245"/>
+        <location filename="ui_lizmap.ui" line="2231"/>
         <source>twLogin.col.layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2250"/>
+        <location filename="ui_lizmap.ui" line="2236"/>
         <source>twLogin.col.field</source>
         <translation>Campo</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2260"/>
+        <location filename="ui_lizmap.ui" line="2246"/>
         <source>twLogin.col.id</source>
         <translation>Id</translation>
     </message>
@@ -872,12 +872,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
         <translation type="unfinished">QGIS layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2597"/>
+        <location filename="ui_lizmap.ui" line="2583"/>
         <source>tw.btLayerAdd</source>
         <translation>Aggiungi layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2604"/>
+        <location filename="ui_lizmap.ui" line="2590"/>
         <source>tw.btLayerDel</source>
         <translation>Rimuovi layer</translation>
     </message>
@@ -902,87 +902,87 @@ This is different to the map maximum extent (defined in QGIS project properties,
         <translation type="unfinished">Hide project in Lizmap Web Client</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2341"/>
+        <location filename="ui_lizmap.ui" line="2327"/>
         <source>tools.timemanager.label</source>
         <translation type="unfinished">Time Manager</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2347"/>
+        <location filename="ui_lizmap.ui" line="2333"/>
         <source>tools.timemanager.description</source>
         <translation type="unfinished">Add layers here to let the user play an animation based on an date or date/time attribute value. Similar to QGIS Timemanager plugin, but web based</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2359"/>
+        <location filename="ui_lizmap.ui" line="2345"/>
         <source>tools.tm.timeFrameType</source>
         <translation type="unfinished">Frame type</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2369"/>
+        <location filename="ui_lizmap.ui" line="2355"/>
         <source>tools.tm.timeFrameSize</source>
         <translation type="unfinished">Time frame size</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2386"/>
+        <location filename="ui_lizmap.ui" line="2372"/>
         <source>tools.tm.animationFrameLength</source>
         <translation type="unfinished">Animation frame length (milliseconds)</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2409"/>
+        <location filename="ui_lizmap.ui" line="2395"/>
         <source>minutes</source>
         <translation>minuti</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2414"/>
+        <location filename="ui_lizmap.ui" line="2400"/>
         <source>hours</source>
         <translation>ore</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2419"/>
+        <location filename="ui_lizmap.ui" line="2405"/>
         <source>days</source>
         <translation>giorni</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2424"/>
+        <location filename="ui_lizmap.ui" line="2410"/>
         <source>weeks</source>
         <translation>settimane</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2429"/>
+        <location filename="ui_lizmap.ui" line="2415"/>
         <source>months</source>
         <translation>mesi</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2434"/>
+        <location filename="ui_lizmap.ui" line="2420"/>
         <source>years</source>
         <translation>anni</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2519"/>
+        <location filename="ui_lizmap.ui" line="2505"/>
         <source>tools.tm.layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2535"/>
+        <location filename="ui_lizmap.ui" line="2521"/>
         <source>tools.tm.startAttribute</source>
         <translation type="unfinished">Start attribute</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2555"/>
+        <location filename="ui_lizmap.ui" line="2541"/>
         <source>tools.tm.group</source>
         <translation type="unfinished">Group id (optional)</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2545"/>
+        <location filename="ui_lizmap.ui" line="2531"/>
         <source>tools.tm.groupTitle</source>
         <translation type="unfinished">Group title (optional)</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2498"/>
+        <location filename="ui_lizmap.ui" line="2484"/>
         <source>tools.tm.layerId</source>
         <translation>Layer id</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2565"/>
+        <location filename="ui_lizmap.ui" line="2551"/>
         <source>tools.tm.labelAttribute</source>
         <translation type="unfinished">Hover label</translation>
     </message>
@@ -1052,7 +1052,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
         <translation type="unfinished">If you set a value above 0, autocompletion will be used after this amount of characters while the user types. The classical combobox will be replaced by a editable text input</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2503"/>
+        <location filename="ui_lizmap.ui" line="2489"/>
         <source>order</source>
         <translation>order</translation>
     </message>
@@ -1137,17 +1137,17 @@ This is different to the map maximum extent (defined in QGIS project properties,
         <translation>attribute layer id</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1915"/>
+        <location filename="ui_lizmap.ui" line="1922"/>
         <source>layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2255"/>
+        <location filename="ui_lizmap.ui" line="2241"/>
         <source>twLogin.col.private</source>
         <translation type="unfinished">Filter by user</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="2283"/>
+        <location filename="ui_lizmap.ui" line="2269"/>
         <source>tool.loginFilteredLayer.cbPrivate</source>
         <translation type="unfinished">Filter by user</translation>
     </message>
@@ -1162,27 +1162,27 @@ This is different to the map maximum extent (defined in QGIS project properties,
         <translation type="unfinished">Pivot table</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1901"/>
+        <location filename="ui_lizmap.ui" line="1949"/>
         <source>tools.attributeLayer.cbIsPivot</source>
         <translation type="unfinished">Pivot table ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1908"/>
+        <location filename="ui_lizmap.ui" line="1942"/>
         <source>hiddenFields</source>
         <translation type="unfinished">Fields to hide</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1922"/>
         <source>is_pivot</source>
-        <translation type="unfinished">Pivot table ?</translation>
+        <translation type="obsolete">Pivot table ?</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1949"/>
+        <location filename="ui_lizmap.ui" line="1874"/>
         <source>hideAsChild</source>
         <translation type="unfinished">Hide in children</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1942"/>
+        <location filename="ui_lizmap.ui" line="1915"/>
         <source>tools.attributeLayer.cbHideAsChild</source>
         <translation type="unfinished">Hide in child subpanels</translation>
     </message>
@@ -1199,17 +1199,17 @@ zooming on a feature with the locate tool will trigger the filter of the layer f
 Only the selected feature will be visible on the map.</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1973"/>
+        <location filename="ui_lizmap.ui" line="1908"/>
         <source>tooltipFields</source>
         <translation type="unfinished">Tooltip fields</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1959"/>
+        <location filename="ui_lizmap.ui" line="1962"/>
         <source>tooltip</source>
-        <translation type="unfinished">Tooltip ?</translation>
+        <translation type="unfinished">Tooltip</translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="1966"/>
+        <location filename="ui_lizmap.ui" line="1901"/>
         <source>tools.attributeLayer.tooltip</source>
         <translation type="unfinished">Tooltip</translation>
     </message>

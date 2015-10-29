@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1125</width>
-    <height>844</height>
+    <width>1101</width>
+    <height>921</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -568,8 +568,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1083</width>
-            <height>705</height>
+            <width>1059</width>
+            <height>782</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -985,8 +985,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1083</width>
-            <height>705</height>
+            <width>1059</width>
+            <height>782</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1570,9 +1570,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-204</y>
+            <y>-261</y>
             <width>1154</width>
-            <height>1842</height>
+            <height>1870</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1876,6 +1876,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>tooltip</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>tooltipFields</string>
                  </property>
                 </column>
@@ -1895,31 +1900,10 @@
                <layout class="QHBoxLayout" name="horizontalLayout_27">
                 <item>
                  <layout class="QGridLayout" name="gridLayout_25">
-                  <item row="1" column="2">
-                   <widget class="QCheckBox" name="cbAttributeLayerIsPivot">
-                    <property name="text">
-                     <string>tools.attributeLayer.cbIsPivot</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_64">
-                    <property name="text">
-                     <string>hiddenFields</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_61">
                     <property name="text">
                      <string>layer</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label_63">
-                    <property name="text">
-                     <string>is_pivot</string>
                     </property>
                    </widget>
                   </item>
@@ -1936,46 +1920,53 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="3">
-                   <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="label_64">
                     <property name="text">
-                     <string>tools.attributeLayer.cbHideAsChild</string>
+                     <string>hiddenFields</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="3">
-                   <widget class="QLabel" name="label_65">
+                  <item row="6" column="0">
+                   <widget class="QCheckBox" name="cbAttributeLayerIsPivot">
                     <property name="text">
-                     <string>hideAsChild</string>
+                     <string>tools.attributeLayer.cbIsPivot</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
+                  <item row="1" column="2">
                    <widget class="QLineEdit" name="inAttributeLayerHiddenFields"/>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QLabel" name="label_68">
-                    <property name="text">
-                     <string>tooltip</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
+                  <item row="8" column="0">
                    <widget class="QCheckBox" name="cbAttributeLayerTooltip">
                     <property name="text">
                      <string>tools.attributeLayer.tooltip</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
+                  <item row="8" column="1">
+                   <widget class="QLineEdit" name="inAttributeLayerTooltipFields"/>
+                  </item>
+                  <item row="7" column="1">
                    <widget class="QLabel" name="label_67">
                     <property name="text">
                      <string>tooltipFields</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="2">
-                   <widget class="QLineEdit" name="inAttributeLayerTooltipFields"/>
+                  <item row="6" column="1">
+                   <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
+                    <property name="text">
+                     <string>tools.attributeLayer.cbHideAsChild</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="label_68">
+                    <property name="text">
+                     <string>tooltip</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
@@ -2646,8 +2637,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1083</width>
-            <height>705</height>
+            <width>1059</width>
+            <height>782</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -3075,11 +3066,6 @@
   <tabstop>twAttributeLayerList</tabstop>
   <tabstop>liAttributeLayer</tabstop>
   <tabstop>liAttributeLayerFields</tabstop>
-  <tabstop>cbAttributeLayerIsPivot</tabstop>
-  <tabstop>cbAttributeLayerHideAsChild</tabstop>
-  <tabstop>inAttributeLayerHiddenFields</tabstop>
-  <tabstop>inAttributeLayerTooltipFields</tabstop>
-  <tabstop>cbAttributeLayerTooltip</tabstop>
   <tabstop>btAttributeLayerAdd</tabstop>
   <tabstop>btAttributeLayerDel</tabstop>
   <tabstop>twEditionLayerList</tabstop>
