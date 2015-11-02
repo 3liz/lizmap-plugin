@@ -26,18 +26,20 @@ https://github.com/ewsterrenburg
 Arnaud Deleurme
 
 Installation
---------------
+-----------
+
+from github repository:
 
 1. Clone the repo: `git clone git@github.com:3liz/lizmap-plugin.git`
-2. `cp lizmap-plugin ~/.qgis/python/plugins`
-3. `cd ~/.qgis/python/plugins ~/.qgis/python/plugins`
+2. `cp lizmap-plugin ~/.qgis2/python/plugins`
+3. `cd ~/.qgis2/python/plugins`
 4. `mv lizmap-plugin lizmap`
 
-or from QGIS
+or from QGIS application:
 
-1. Plugins menu -> Fetch Python Plugins
-2. Select LizMap plugin
-3. Install/Upgrade plugin
+1. Plugins menu -> Manage and Install Plugins...
+2. Select LizMap plugin from Not installed list
+3. Install plugin
 
 Documentation
 --------------
