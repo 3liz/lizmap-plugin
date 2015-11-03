@@ -1759,7 +1759,7 @@ class lizmap:
             # Set the content of the QTextEdit if needed
             if self.layerList[item.text(1)].has_key('popupTemplate'):
                 self.layerList[item.text(1)]['popup'] = True
-                self.lizmapPopupDialog.ui.txtPopup.setPlainText(self.layerList[item.text(1)]['popupTemplate'])
+                self.lizmapPopupDialog.ui.txtPopup.setText(self.layerList[item.text(1)]['popupTemplate'])
                 self.lizmapPopupDialog.ui.htmlPopup.setHtml(self.layerList[item.text(1)]['popupTemplate'])
 
             # Show the popup configuration window
@@ -1768,7 +1768,7 @@ class lizmap:
     def updatePopupHtml(self):
         '''Update the html preview of the popup dialog from the plain text template text'''
         # Get the content
-        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.toPlainText())
+        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.text())
 
         # Update html preview
         self.lizmapPopupDialog.ui.htmlPopup.setHtml(popupContent)
@@ -1776,7 +1776,7 @@ class lizmap:
     def popupConfigured(self):
         '''Save the content of the popup template'''
         # Get the content before closing the dialog
-        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.toPlainText())
+        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.text())
 
         # Close the popup dialog
         self.lizmapPopupDialog.close()

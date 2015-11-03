@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap_popup.ui'
 #
-# Created: Mon Feb 11 10:08:12 2013
+# Created: Mon Nov  2 20:59:49 2015
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,8 +18,9 @@ class Ui_lizmap_popup(object):
     def setupUi(self, lizmap_popup):
         lizmap_popup.setObjectName(_fromUtf8("lizmap_popup"))
         lizmap_popup.setWindowModality(QtCore.Qt.WindowModal)
-        lizmap_popup.resize(448, 391)
+        lizmap_popup.resize(743, 489)
         self.gridLayout_3 = QtGui.QGridLayout(lizmap_popup)
+        self.gridLayout_3.setMargin(6)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.splitter = QtGui.QSplitter(lizmap_popup)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
@@ -27,13 +28,15 @@ class Ui_lizmap_popup(object):
         self.groupBox = QtGui.QGroupBox(self.splitter)
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
+        self.gridLayout_2.setMargin(0)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
-        self.txtPopup = QtGui.QTextEdit(self.groupBox)
+        self.txtPopup = QgsCodeEditorHTML(self.groupBox)
         self.txtPopup.setObjectName(_fromUtf8("txtPopup"))
         self.gridLayout_2.addWidget(self.txtPopup, 0, 0, 1, 1)
         self.groupBox_2 = QtGui.QGroupBox(self.splitter)
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.gridLayout = QtGui.QGridLayout(self.groupBox_2)
+        self.gridLayout.setMargin(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.htmlPopup = QtGui.QTextEdit(self.groupBox_2)
         self.htmlPopup.setEnabled(False)
@@ -56,3 +59,4 @@ class Ui_lizmap_popup(object):
         self.groupBox.setTitle(QtGui.QApplication.translate("lizmap_popup", "ui.popup.source.label", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("lizmap_popup", "ui.popup.html.label", None, QtGui.QApplication.UnicodeUTF8))
 
+from qgis.gui import QgsCodeEditorHTML
