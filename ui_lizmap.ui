@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1101</width>
+    <width>1220</width>
     <height>921</height>
    </rect>
   </property>
@@ -558,8 +558,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1059</width>
-            <height>782</height>
+            <width>705</width>
+            <height>629</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -975,8 +975,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1059</width>
-            <height>782</height>
+            <width>955</width>
+            <height>679</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1560,9 +1560,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-261</y>
-            <width>1154</width>
-            <height>1870</height>
+            <y>0</y>
+            <width>1162</width>
+            <height>2167</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1866,16 +1866,6 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>tooltip</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>tooltipFields</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
                   <string>attribute.col.id</string>
                  </property>
                 </column>
@@ -1899,9 +1889,6 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QComboBox" name="liAttributeLayerFields"/>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QComboBox" name="liAttributeLayer"/>
                   </item>
                   <item row="0" column="1">
                    <widget class="QLabel" name="label_62">
@@ -1927,23 +1914,6 @@
                   <item row="1" column="2">
                    <widget class="QLineEdit" name="inAttributeLayerHiddenFields"/>
                   </item>
-                  <item row="8" column="0">
-                   <widget class="QCheckBox" name="cbAttributeLayerTooltip">
-                    <property name="text">
-                     <string>tools.attributeLayer.tooltip</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="1">
-                   <widget class="QLineEdit" name="inAttributeLayerTooltipFields"/>
-                  </item>
-                  <item row="7" column="1">
-                   <widget class="QLabel" name="label_67">
-                    <property name="text">
-                     <string>tooltipFields</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="6" column="1">
                    <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
                     <property name="text">
@@ -1951,12 +1921,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="0">
-                   <widget class="QLabel" name="label_68">
-                    <property name="text">
-                     <string>tooltip</string>
-                    </property>
-                   </widget>
+                  <item row="1" column="0">
+                   <widget class="QComboBox" name="liAttributeLayer"/>
                   </item>
                  </layout>
                 </item>
@@ -1993,6 +1959,151 @@
                 </item>
                 <item>
                  <spacer name="horizontalSpacer_28">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="gb_tooltipLayers">
+             <property name="title">
+              <string>tools.tooltip.label</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_20">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>tools.tooltip.description</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="twTooltipLayerList">
+                <column>
+                 <property name="text">
+                  <string>layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>fields</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>displayGeom</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>colorGeom</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>layerId</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>order</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="gridLayout_7">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>layer</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>fields</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="inTooltipLayerFields"/>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>color</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QComboBox" name="liTooltipLayer"/>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>displayGeom</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4">
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QCheckBox" name="cbTooltipLayerDisplayGeom">
+                  <property name="text">
+                   <string>displayGeom</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QLineEdit" name="inTooltipLayerColorGeom"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="btTooltipLayerAdd">
+                  <property name="text">
+                   <string>tw.btLayerAdd</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btTooltipLayerDel">
+                  <property name="text">
+                   <string>tw.btLayerDel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_14">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -2126,19 +2237,6 @@
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_16">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_14">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -2627,8 +2725,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1059</width>
-            <height>782</height>
+            <width>121</width>
+            <height>115</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">

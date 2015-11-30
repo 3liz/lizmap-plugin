@@ -134,6 +134,7 @@ class lizmap:
         self.dlg.ui.gb_externalLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_attributeLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_tooltipLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_editionLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_loginFilteredLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
@@ -431,7 +432,13 @@ class lizmap:
             'attributeLayers': {
                 'tableWidget': self.dlg.ui.twAttributeLayerList,
                 'removeButton' : self.dlg.ui.btAttributeLayerDel,
-                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'tooltip', 'tooltipFields', 'layerId', 'order'],
+                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'layerId', 'order'],
+                'jsonConfig' : {}
+            },
+            'tooltipLayers': {
+                'tableWidget': self.dlg.ui.twTooltipLayerList,
+                'removeButton' : self.dlg.ui.btTooltipLayerDel,
+                'cols': ['fields', 'displayGeom', 'colorGeom', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'editionLayers': {
@@ -537,6 +544,9 @@ class lizmap:
         # add a layer to the list of attribute layers
         self.dlg.ui.btAttributeLayerAdd.clicked.connect(self.addLayerToAttributeLayer)
 
+        # Tooltip layers
+        # add a layer to the tooltipLayerList
+        self.dlg.ui.btTooltipLayerAdd.clicked.connect(self.addLayerToTooltipLayer)
 
         # Edition layers
         # add a layer to the editionLayerList
@@ -738,7 +748,8 @@ class lizmap:
                     listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
                     item['widget'].setCurrentIndex(listDic[item['default']])
                     if jsonOptions.has_key(key):
-                        item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
+                        if listDic.has_key(jsonOptions[key]):
+                            item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
 
         # Fill the table widgets
         for key, item in self.layersTable.items():
@@ -1088,7 +1099,7 @@ class lizmap:
             QMessageBox.critical(
                 self.dlg,
                 QApplication.translate("lizmap", "ui.msg.error.title"),
-                QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
+                QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
 
@@ -1167,7 +1178,7 @@ class lizmap:
             QMessageBox.critical(
                 self.dlg,
                 QApplication.translate("lizmap", "ui.msg.error.title"),
-                QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
+                QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
 
@@ -1179,15 +1190,13 @@ class lizmap:
         hiddenFields = str(self.dlg.ui.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
         pivot = str(self.dlg.ui.cbAttributeLayerIsPivot.isChecked())
         hideAsChild= str(self.dlg.ui.cbAttributeLayerHideAsChild.isChecked())
-        tooltip = str(self.dlg.ui.cbAttributeLayerTooltip.isChecked())
-        tooltipFields = str(self.dlg.ui.inAttributeLayerTooltipFields.text().encode('utf-8')).strip(' \t')
-        #~ print layerId
+
         lblTableWidget = self.dlg.ui.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 15:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(8)
+            lblTableWidget.setColumnCount(7)
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
             newItem.setFlags(Qt.ItemIsEnabled)
@@ -1208,25 +1217,83 @@ class lizmap:
             newItem = QTableWidgetItem(hideAsChild)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 4, newItem)
-            # add "tooltip"
-            newItem = QTableWidgetItem(tooltip)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
-            # add "tooltipFields"
-            newItem = QTableWidgetItem(tooltipFields)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 7, newItem)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 8, newItem)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
 
-        lblTableWidget.setColumnHidden(7, True)
-        lblTableWidget.setColumnHidden(8, True)
+        lblTableWidget.setColumnHidden(5, True)
+        lblTableWidget.setColumnHidden(6, True)
+
+
+    def addLayerToTooltipLayer(self):
+        '''Add a layer in the list of layers
+        for which Lizmap will propose a tooltip'''
+
+        # Get the layer selected in the combo box
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liTooltipLayer)
+        if not layer:
+            return False
+
+        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        p = QgsProject.instance()
+        wfsLayersList = p.readListEntry('WFSLayers','')[0]
+        hasWfsOption = False
+        for l in wfsLayersList:
+            if layer.id() == l:
+                hasWfsOption = True
+        if not hasWfsOption:
+            QMessageBox.critical(
+                self.dlg,
+                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
+                QMessageBox.Ok)
+            return False
+
+        # Retrieve layer information
+        layerName = layer.name()
+        layerId = layer.id()
+        fields = str(self.dlg.ui.inTooltipLayerFields.text().encode('utf-8')).strip(' \t')
+        displayGeom = str(self.dlg.ui.cbTooltipLayerDisplayGeom.isChecked())
+        colorGeom = str(self.dlg.ui.inTooltipLayerColorGeom.text().encode('utf-8')).strip(' \t')
+
+        lblTableWidget = self.dlg.ui.twTooltipLayerList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount < 5:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(6)
+            # add layer name to the line
+            newItem = QTableWidgetItem(layerName)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, newItem)
+            # add "fields"
+            newItem = QTableWidgetItem(fields)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, newItem)
+            # add "displayGeom"
+            newItem = QTableWidgetItem(displayGeom)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, newItem)
+            # add "colorGeom"
+            newItem = QTableWidgetItem(colorGeom)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, newItem)
+            # add layer id to the line
+            newItem = QTableWidgetItem(layerId)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, newItem)
+            # add order
+            newItem = QTableWidgetItem(lblTableWidget.rowCount())
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
+
+        lblTableWidget.setColumnHidden(4, True)
+        lblTableWidget.setColumnHidden(5, True)
 
 
     def addLayerToEditionLayer(self):
@@ -1922,18 +1989,33 @@ class lizmap:
                 hiddenFields = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                 pivot = str(lblTableWidget.item(row, 3).text())
                 hideAsChild = str(lblTableWidget.item(row, 4).text())
-                tooltip = str(lblTableWidget.item(row, 5).text())
-                tooltipFields = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 liz2json["attributeLayers"][layerName] = {}
                 liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
                 liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
                 liz2json["attributeLayers"][layerName]["pivot"] = pivot
                 liz2json["attributeLayers"][layerName]["hideAsChild"] = hideAsChild
-                liz2json["attributeLayers"][layerName]["tooltip"] = tooltip
-                liz2json["attributeLayers"][layerName]["tooltipFields"] = tooltipFields
                 liz2json["attributeLayers"][layerName]["layerId"] = layerId
                 liz2json["attributeLayers"][layerName]["order"] = row
+
+
+        # list of layers to display tooltip
+        lblTableWidget = self.dlg.ui.twTooltipLayerList
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount > 0:
+            liz2json["tooltipLayers"] = {}
+            for row in range(twRowCount):
+                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                fields = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                displayGeom = str(lblTableWidget.item(row, 2).text())
+                colorGeom = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
+                liz2json["tooltipLayers"][layerName] = {}
+                liz2json["tooltipLayers"][layerName]["fields"] = fields
+                liz2json["tooltipLayers"][layerName]["displayGeom"] = displayGeom
+                liz2json["tooltipLayers"][layerName]["colorGeom"] = colorGeom
+                liz2json["tooltipLayers"][layerName]["layerId"] = layerId
+                liz2json["tooltipLayers"][layerName]["order"] = row
 
         # layer(s) for the edition tool
         lblTableWidget = self.dlg.ui.twEditionLayerList
@@ -2337,7 +2419,7 @@ class lizmap:
                         good = False
                 if not good:
                     self.log(
-                        QApplication.translate("lizmap", "ui.msg.warning.locateByLayer.notInWfs"),
+                        QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                         abort=True,
                         textarea=self.dlg.ui.outLog)
 
@@ -2440,6 +2522,8 @@ class lizmap:
             self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
             # Fill the layer list for the attribute layer tool
             self.populateLayerCombobox(self.dlg.ui.liAttributeLayer, 'vector')
+            # Fill the layer list for the tooltip layer tool
+            self.populateLayerCombobox(self.dlg.ui.liTooltipLayer, 'vector')
             # Fill the layers lists for the edition tool
             self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool
