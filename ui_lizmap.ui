@@ -16,32 +16,23 @@
   <layout class="QGridLayout" name="gridLayout_9">
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QPushButton" name="btHelp">
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_63">
+       <property name="font">
+        <font>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color:rgb(170, 255, 255);</string>
+       </property>
        <property name="text">
-        <string>ui.main.btHelp</string>
+        <string>Options in blue background are only usable with Lizmap Web Client 3</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QDialogButtonBox" name="buttonClose">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item row="0" column="3">
       <widget class="QPushButton" name="btSave">
@@ -558,8 +549,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>705</width>
-            <height>629</height>
+            <width>1178</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -976,7 +967,7 @@
             <x>0</x>
             <y>0</y>
             <width>1178</width>
-            <height>782</height>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1264,6 +1255,9 @@
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbIgnCadastral">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>Cadastre</string>
                   </property>
@@ -1567,8 +1561,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>1154</width>
+            <y>-379</y>
+            <width>1162</width>
             <height>2167</height>
            </rect>
           </property>
@@ -1699,6 +1693,9 @@
                      <widget class="QCheckBox" name="cbFilterOnLocate">
                       <property name="toolTip">
                        <string>filterOnLocateTooltip</string>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color:rgb(170, 255, 255);</string>
                       </property>
                       <property name="text">
                        <string>filterOnLocate</string>
@@ -1895,7 +1892,11 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="liAttributeLayerFields"/>
+                   <widget class="QComboBox" name="liAttributeLayerFields">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="0" column="1">
                    <widget class="QLabel" name="label_62">
@@ -1913,16 +1914,26 @@
                   </item>
                   <item row="6" column="0">
                    <widget class="QCheckBox" name="cbAttributeLayerIsPivot">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
                     <property name="text">
                      <string>tools.attributeLayer.cbIsPivot</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QLineEdit" name="inAttributeLayerHiddenFields"/>
+                   <widget class="QLineEdit" name="inAttributeLayerHiddenFields">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="6" column="1">
                    <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
                     <property name="text">
                      <string>tools.attributeLayer.cbHideAsChild</string>
                     </property>
@@ -1990,6 +2001,9 @@
              <layout class="QVBoxLayout" name="verticalLayout_20">
               <item>
                <widget class="QLabel" name="label_2">
+                <property name="styleSheet">
+                 <string notr="true">background-color:rgb(170, 255, 255);</string>
+                </property>
                 <property name="text">
                  <string>tools.tooltip.description</string>
                 </property>
@@ -2036,6 +2050,9 @@
                <layout class="QGridLayout" name="gridLayout_7">
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_3">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>layer</string>
                   </property>
@@ -2043,26 +2060,43 @@
                 </item>
                 <item row="0" column="1">
                  <widget class="QLabel" name="label_4">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>fields</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QLineEdit" name="inTooltipLayerFields"/>
+                 <widget class="QLineEdit" name="inTooltipLayerFields">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
                 </item>
                 <item row="0" column="3">
                  <widget class="QLabel" name="label_6">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>color</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QComboBox" name="liTooltipLayer"/>
+                 <widget class="QComboBox" name="liTooltipLayer">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
                 </item>
                 <item row="0" column="2">
                  <widget class="QLabel" name="label_5">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>displayGeom</string>
                   </property>
@@ -2083,13 +2117,20 @@
                 </item>
                 <item row="1" column="2">
                  <widget class="QCheckBox" name="cbTooltipLayerDisplayGeom">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
                   <property name="text">
                    <string>displayGeom</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="3">
-                 <widget class="QLineEdit" name="inTooltipLayerColorGeom"/>
+                 <widget class="QLineEdit" name="inTooltipLayerColorGeom">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -2732,8 +2773,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>121</width>
-            <height>115</height>
+            <width>1178</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2795,16 +2836,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="4">
-        <widget class="QPushButton" name="btCancelFtpSync">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>log.btCancelSync.label</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="3">
         <widget class="QLabel" name="outState">
          <property name="font">
@@ -2822,6 +2853,24 @@
       </layout>
      </widget>
     </widget>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_28">
+     <item>
+      <widget class="QPushButton" name="btHelp">
+       <property name="text">
+        <string>ui.main.btHelp</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonClose">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -2851,9 +2900,6 @@
   <tabstop>inMapScales</tabstop>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
-  <tabstop>buttonClose</tabstop>
-  <tabstop>btCancelFtpSync</tabstop>
-  <tabstop>btHelp</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>inSourceRepository</tabstop>
   <tabstop>inSourceProject</tabstop>
