@@ -224,6 +224,10 @@ class lizmap:
                 'widget': self.dlg.ui.cbIgnTerrain,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'ignCadastral' : {
+                'widget': self.dlg.ui.cbIgnCadastral,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
 
             'hideGroupCheckbox' : {
                 'widget': self.dlg.ui.cbHideGroupCheckbox,
@@ -2376,6 +2380,7 @@ class lizmap:
             in_ignStreets = self.dlg.ui.cbIgnStreets.isChecked()
             in_ignSatellite = self.dlg.ui.cbIgnSatellite.isChecked()
             in_ignTerrain = self.dlg.ui.cbIgnTerrain.isChecked()
+            in_ignCadastral = self.dlg.ui.cbIgnCadastral.isChecked()
 
             isok = True
 
@@ -2392,7 +2397,7 @@ class lizmap:
             if in_osmMapnik or in_osmMapquest or in_osmCyclemap or in_googleStreets \
             or in_googleSatellite or in_googleHybrid or in_googleTerrain \
             or in_bingSatellite or in_bingStreets or in_bingHybrid \
-            or in_ignSatellite or in_ignStreets or in_ignTerrain:
+            or in_ignSatellite or in_ignStreets or in_ignTerrain or in_ignCadastral:
                 crsList = p.readListEntry('WMSCrsList','')
                 pmFound = False
                 for i in crsList[0]:

@@ -975,8 +975,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>955</width>
-            <height>679</height>
+            <width>1178</width>
+            <height>782</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1259,6 +1259,13 @@
                  <widget class="QCheckBox" name="cbIgnTerrain">
                   <property name="text">
                    <string>Scans</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="cbIgnCadastral">
+                  <property name="text">
+                   <string>Cadastre</string>
                   </property>
                  </widget>
                 </item>
@@ -1561,7 +1568,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1162</width>
+            <width>1154</width>
             <height>2167</height>
            </rect>
           </property>
