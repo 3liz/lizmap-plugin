@@ -946,7 +946,7 @@ class lizmap:
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 provider = layer.dataProvider()
-                fields = provider.fields()
+                fields = layer.pendingFields()
                 for field in fields:
                     self.dlg.ui.liAttributeLayerFields.addItem(
                         unicode(field.name()),
@@ -972,9 +972,8 @@ class lizmap:
         ]
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                provider = layer.dataProvider()
-                fields = provider.fields()
                 for cb in cbs:
+                    fields = layer.pendingFields()
                     # Add empty item if allowed
                     if cb[0]:
                         cb[1].addItem(u'--', u'')
@@ -1000,8 +999,7 @@ class lizmap:
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                provider = layer.dataProvider()
-                fields = provider.fields()
+                fields = layer.pendingFields()
                 for field in fields:
                     self.dlg.ui.liLoginFilteredLayerFields.addItem(
                         unicode(field.name()),
@@ -1031,8 +1029,7 @@ class lizmap:
 
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                provider = layer.dataProvider()
-                fields = provider.fields()
+                fields = layer.pendingFields()
                 for cb in cbs:
                     # Add empty item if allowed
                     if cb[0]:
