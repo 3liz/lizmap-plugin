@@ -2210,6 +2210,8 @@ class lizmap:
                     wmsParams = self.getLayerWmsParameters(layer)
                     if wmsParams:
                         layerOptions['externalAccess'] = wmsParams
+                else:
+                    layerOptions['externalWmsToggle'] = "False"
 
 
             # Add layer options to the json object
