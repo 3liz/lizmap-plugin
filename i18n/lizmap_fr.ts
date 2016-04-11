@@ -9,42 +9,42 @@
         <translation>LizMap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="286"/>
+        <location filename="../ui_lizmap.ui" line="284"/>
         <source>png</source>
         <translation>png</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1010"/>
+        <location filename="../ui_lizmap.ui" line="1038"/>
         <source>OSM Mapnik</source>
         <translation>OSM Mapnik</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1017"/>
+        <location filename="../ui_lizmap.ui" line="1045"/>
         <source>OSM Mapquest</source>
         <translation>OSM Mapquest</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1284"/>
+        <location filename="../ui_lizmap.ui" line="1312"/>
         <source>Key</source>
         <translation>Clé</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1160"/>
+        <location filename="../ui_lizmap.ui" line="1188"/>
         <source>Streets</source>
         <translation>Rues</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1167"/>
+        <location filename="../ui_lizmap.ui" line="1195"/>
         <source>Satellite</source>
         <translation>Satellite</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1174"/>
+        <location filename="../ui_lizmap.ui" line="1202"/>
         <source>Hybrid</source>
         <translation>Hybride</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1094"/>
+        <location filename="../ui_lizmap.ui" line="1122"/>
         <source>Terrain</source>
         <translation>Relief</translation>
     </message>
@@ -54,17 +54,17 @@
         <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1650"/>
+        <location filename="../lizmap.py" line="1651"/>
         <source>ui.msg.error.tree.read.content</source>
         <translation>Erreurs rencontrées lors de la lecture de la configuration précédente. Vous devez reconfigurer complètement les options des couches</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1519"/>
+        <location filename="../lizmap.py" line="1520"/>
         <source>ui.msg.question.refresh.title</source>
         <translation>Lizmap - Raffraîchir l&apos;arbre ?</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1519"/>
+        <location filename="../lizmap.py" line="1520"/>
         <source>ui.msg.question.refresh.content</source>
         <translation>Vous pouvez raffraîchir l&apos;arbre des couches suite en cliquant sur Oui
 Vous perdrez alors toutes les modifications réalisées depuis le dernier enregistrement.
@@ -73,12 +73,12 @@ Si vous avez renommé une couche ou un groupe, vous devrez aussi reconfigurer ce
 Raffraîchir l&apos;arbre des couches ?</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1632"/>
+        <location filename="../lizmap.py" line="1633"/>
         <source>layers.tree.title</source>
         <translation>Liste des couches</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2270"/>
+        <location filename="../lizmap.py" line="2273"/>
         <source>ui.msg.error.init.open.project</source>
         <translation>Vous devez d&apos;abord ouvrir un projet Qgis avant de lancer LizMap</translation>
     </message>
@@ -94,7 +94,7 @@ Raffraîchir l&apos;arbre des couches ?</translation>
 Sauvegarder le projet ?</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2291"/>
+        <location filename="../lizmap.py" line="2294"/>
         <source>ui.msg.error.project.option.path.relative</source>
         <translation>Les chemins des fichiers doivent être configurés en &quot;relatif&quot; dans les options du projet QGIS.</translation>
     </message>
@@ -104,7 +104,7 @@ Sauvegarder le projet ?</translation>
         <translation type="obsolete">L&apos;option &quot;Emprise annoncée&quot; doit être configurée dans l&apos;onglet &quot;Serveur OWS&quot; des propriétés du projet Qgis.</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2528"/>
+        <location filename="../lizmap.py" line="2531"/>
         <source>ui.msg.warning.title</source>
         <translation>Lizmap - Attention</translation>
     </message>
@@ -114,12 +114,12 @@ Sauvegarder le projet ?</translation>
         <translation type="obsolete">Lftp n&apos;est pas installé sur votre système. Vous ne serez pas en mesure d&apos;utiliser la synchronisation automatique de votre projet vers le serveur. Vous pouvez installer Lftp et relancer le plugin (ou Qgis), ou bien utiliser une autre méthode de synchronisation entre votre répertoire local et le serveur.</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2401"/>
+        <location filename="../lizmap.py" line="2404"/>
         <source>log.map.option.title</source>
         <translation>&lt;b&gt;Carte - options&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="684"/>
+        <location filename="../lizmap.py" line="688"/>
         <source>log.map.mapScales.warning</source>
         <translation>Échelles : Écrire une liste d&apos;entiers séparés par une virgule. Il faut au moins écrire les 2 valeurs d&apos;échelle minimale et maximale.</translation>
     </message>
@@ -129,17 +129,17 @@ Sauvegarder le projet ?</translation>
         <translation type="obsolete">&lt;b&gt;** ATTENTION **&lt;/b&gt; : Vous avez choisi d&apos;utiliser un fond de carte externe. Vous devez ajouter la projection &quot;EPSG:3857&quot; dans la zone &quot;Restrictions du système de coordonnées&quot; de l&apos;onglet &quot;OWS Server&quot; des propriétés du projet !</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2447"/>
+        <location filename="../lizmap.py" line="2450"/>
         <source>ui.msg.map.parameters.ok</source>
         <translation>Tous les paramètres de l&apos;onglet Carte sont corrects</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2451"/>
+        <location filename="../lizmap.py" line="2454"/>
         <source>ui.msg.configuration.save.ok</source>
         <translation>&lt;b&gt;Le fichier de configuration de LizMap a bien été enregistré&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2456"/>
+        <location filename="../lizmap.py" line="2459"/>
         <source>ui.msg.map.parameters.bad</source>
         <translation>Des paramètres sont manquants ou erronés dans l&apos;onglet Carte. Veuillez lire le log et corriger ces erreurs avant de relancer l&apos;action.</translation>
     </message>
@@ -221,97 +221,97 @@ Sauvegarder le projet ?</translation>
         <translation type="obsolete">&lt;b&gt;FTP - Synchronisation&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2528"/>
+        <location filename="../lizmap.py" line="2531"/>
         <source>ui.msg.warning.window.opened</source>
         <translation>Une fenêtre LizMap est déjà ouverte</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="58"/>
+        <location filename="../ui_lizmap.ui" line="56"/>
         <source>layers.label</source>
         <translation>Couches</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="147"/>
+        <location filename="../ui_lizmap.ui" line="145"/>
         <source>layers.layer.title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="157"/>
+        <location filename="../ui_lizmap.ui" line="155"/>
         <source>layers.layer.abstract</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="174"/>
+        <location filename="../ui_lizmap.ui" line="172"/>
         <source>layers.layer.link</source>
         <translation>Lien</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="249"/>
+        <location filename="../ui_lizmap.ui" line="247"/>
         <source>layers.layer.baselayer</source>
         <translation>Fond de carte ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="242"/>
+        <location filename="../ui_lizmap.ui" line="240"/>
         <source>layers.layer.groupAsLayer</source>
         <translation>Groupe comme une couche ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="197"/>
+        <location filename="../ui_lizmap.ui" line="195"/>
         <source>layers.layer.toggled</source>
         <translation>Activée ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="266"/>
+        <location filename="../ui_lizmap.ui" line="264"/>
         <source>layers.layer.singletile</source>
         <translation>Image non tuilée ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="337"/>
+        <location filename="../ui_lizmap.ui" line="335"/>
         <source>layers.layer.cached</source>
         <translation>Cache Server?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="541"/>
+        <location filename="../ui_lizmap.ui" line="539"/>
         <source>map.label</source>
         <translation>Carte</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="278"/>
+        <location filename="../ui_lizmap.ui" line="276"/>
         <source>layers.imageFormat.label</source>
         <translation>Format d&apos;image</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="708"/>
+        <location filename="../ui_lizmap.ui" line="736"/>
         <source>map.scales.label</source>
         <translation>Échelles</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="719"/>
+        <location filename="../ui_lizmap.ui" line="747"/>
         <source>map.minScale.label</source>
         <translation>Échelle min.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="742"/>
+        <location filename="../ui_lizmap.ui" line="770"/>
         <source>map.maxScale.label</source>
         <translation>Échelle max.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="786"/>
+        <location filename="../ui_lizmap.ui" line="814"/>
         <source>map.mapScales.label</source>
         <translation>Échelles</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="979"/>
+        <location filename="../ui_lizmap.ui" line="1007"/>
         <source>map.public.label</source>
         <translation>Fonds externes</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="985"/>
+        <location filename="../ui_lizmap.ui" line="1013"/>
         <source>map.public.help</source>
         <translation>Vous pouvez ajouter des fonds de carte provenant de ressources externes. Vous devez ajouter la projection &quot;Pseudo Mercator&quot; (EPSG:3857) dans les propriétés du projet (onglet OWS Server).</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2738"/>
+        <location filename="../ui_lizmap.ui" line="2793"/>
         <source>ftp.label</source>
         <translation>FTP</translation>
     </message>
@@ -359,12 +359,12 @@ http://winscp.net/eng/download.php
 puis dézipper le dans un répertoire, et sélectionner ce répertoire.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2794"/>
+        <location filename="../ui_lizmap.ui" line="2849"/>
         <source>log.label</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2810"/>
+        <location filename="../ui_lizmap.ui" line="2865"/>
         <source>log.btClearLog.label</source>
         <translation>Effacer le log</translation>
     </message>
@@ -374,7 +374,7 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation type="obsolete">Annuler la syncro</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2456"/>
+        <location filename="../lizmap.py" line="2459"/>
         <source>ui.msg.error.title</source>
         <translation>Lizmap - Erreur</translation>
     </message>
@@ -384,12 +384,12 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation type="obsolete">OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1066"/>
+        <location filename="../ui_lizmap.ui" line="1094"/>
         <source>map.google.label</source>
         <translation>Google</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="42"/>
+        <location filename="../ui_lizmap.ui" line="40"/>
         <source>layers.btSave.label</source>
         <translation>Enregistrer</translation>
     </message>
@@ -399,17 +399,17 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation type="obsolete">Enregistrer et synchroniser</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="22"/>
+        <location filename="../ui_lizmap.ui" line="2892"/>
         <source>ui.main.btHelp</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="296"/>
+        <location filename="../ui_lizmap.ui" line="294"/>
         <source>png; mode=8bit</source>
         <translation>png; mode=8bit</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="301"/>
+        <location filename="../ui_lizmap.ui" line="299"/>
         <source>jpeg</source>
         <translation>jpeg</translation>
     </message>
@@ -419,27 +419,27 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation type="obsolete">Le titre du projet doit être défini dans l&apos;onglet &quot;Serveur OWS&quot; de la fenêtre des propriétés du projet Qgis.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="346"/>
+        <location filename="../ui_lizmap.ui" line="344"/>
         <source>layers.layer.cacheExpiration</source>
         <translation>Expiration (secondes)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="363"/>
+        <location filename="../ui_lizmap.ui" line="361"/>
         <source>layers.layer.metatileSize</source>
         <translation>Metatile</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="213"/>
+        <location filename="../ui_lizmap.ui" line="211"/>
         <source>layers.popup.configure</source>
         <translation>Configurer</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="370"/>
+        <location filename="../ui_lizmap.ui" line="368"/>
         <source>0,0;_</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="206"/>
+        <location filename="../ui_lizmap.ui" line="204"/>
         <source>layers.layer.popup</source>
         <translation>Activer les popup</translation>
     </message>
@@ -469,37 +469,37 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation type="obsolete">Critère de synchronisation : time ou size</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1554"/>
+        <location filename="../ui_lizmap.ui" line="1582"/>
         <source>tools.label</source>
         <translation>Outils</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1575"/>
+        <location filename="../ui_lizmap.ui" line="1603"/>
         <source>tools.locateByLayer.label</source>
         <translation>Localiser par couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1581"/>
+        <location filename="../ui_lizmap.ui" line="1609"/>
         <source>tools.locateByLayer.description</source>
         <translation>Vous pouvez ajouter jusqu&apos;à 3 couches comme source pour l&apos;outil Localisation</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1778"/>
+        <location filename="../ui_lizmap.ui" line="1806"/>
         <source>twLocateByLayer.col.layer</source>
         <translation>Couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1783"/>
+        <location filename="../ui_lizmap.ui" line="1811"/>
         <source>twLocateByLayer.col.field</source>
         <translation>Champ</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1793"/>
+        <location filename="../ui_lizmap.ui" line="1821"/>
         <source>twLocateByLayer.col.displayGeom</source>
         <translation>Afficher la géométrie</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1627"/>
+        <location filename="../ui_lizmap.ui" line="1655"/>
         <source>tools.locateByLayer.cbDisplayGeom</source>
         <translation>Afficher la géométrie</translation>
     </message>
@@ -519,134 +519,134 @@ puis dézipper le dans un répertoire, et sélectionner ce répertoire.</transla
         <translation type="obsolete">Les couches pour l&apos;outil &quot;Localisation par couche&quot; doivent être cochées dans l&apos;option &quot;Capacités WFS&quot; de l&apos;onglet &quot;Serveur OWS&quot; dans les options du projet QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="94"/>
+        <location filename="../ui_lizmap.ui" line="92"/>
         <source>layers.rootGroupsAsBlock</source>
         <translation>Transformer les groupes racines en blocs de légende</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1808"/>
+        <location filename="../ui_lizmap.ui" line="1836"/>
         <source>twLocateByLayer.col.id</source>
         <translation>Id de la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="64"/>
+        <location filename="../ui_lizmap.ui" line="62"/>
         <source>ui.groupBox.treeLayers</source>
         <translation>Arbre des couches</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="111"/>
+        <location filename="../ui_lizmap.ui" line="109"/>
         <source>ui.groupBox.settingLayer</source>
         <translation>Options de l&apos;item sélectionné</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="578"/>
+        <location filename="../ui_lizmap.ui" line="606"/>
         <source>map.visibletools.label</source>
         <translation>Outils de la carte</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="609"/>
+        <location filename="../ui_lizmap.ui" line="637"/>
         <source>map.tool.zoom.history</source>
         <translation>Zoom précédent/suivant</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="619"/>
+        <location filename="../ui_lizmap.ui" line="647"/>
         <source>map.tool.geolocation</source>
         <translation>Positionnement automatique</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="589"/>
+        <location filename="../ui_lizmap.ui" line="617"/>
         <source>map.tool.print</source>
         <translation>Impression simple</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="599"/>
+        <location filename="../ui_lizmap.ui" line="627"/>
         <source>map.tool.measure</source>
         <translation>Outils de mesure</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="643"/>
+        <location filename="../ui_lizmap.ui" line="671"/>
         <source>map.tool.externalSearch.label</source>
         <translation>Recherche d&apos;adresse</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="656"/>
+        <location filename="../ui_lizmap.ui" line="684"/>
         <source>nominatim</source>
         <translation>Nominatim</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="777"/>
+        <location filename="../ui_lizmap.ui" line="805"/>
         <source>map.scales.help</source>
         <translation>Écrire une liste d&apos;entiers séparés par une virgule. 
 Il faut au moins écrire les 2 valeurs d&apos;échelle minimale et maximale. 
 Ex: 1000, 250000</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="381"/>
+        <location filename="../ui_lizmap.ui" line="379"/>
         <source>layers.layer.clientCacheExpiration</source>
         <translation>Cache client navigateur ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2506"/>
+        <location filename="../ui_lizmap.ui" line="2561"/>
         <source>seconds</source>
         <translation>secondes</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2149"/>
+        <location filename="../ui_lizmap.ui" line="2204"/>
         <source>tools.edition.label</source>
         <translation>Édition de couches</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2155"/>
+        <location filename="../ui_lizmap.ui" line="2210"/>
         <source>tools.edition.description</source>
         <translation>Vous pouvez ajouter jusqu&apos;à 5 couches d&apos;éditions dans la liste et choisir les droits pour chacune.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2184"/>
+        <location filename="../ui_lizmap.ui" line="2239"/>
         <source>twEdition.col.layer</source>
         <translation>Couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2189"/>
+        <location filename="../ui_lizmap.ui" line="2244"/>
         <source>twEdition.col.add</source>
         <translation>Créer</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2194"/>
+        <location filename="../ui_lizmap.ui" line="2249"/>
         <source>twEdition.col.modAttribute</source>
         <translation>Modifier les attributs</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2199"/>
+        <location filename="../ui_lizmap.ui" line="2254"/>
         <source>twEdition.col.modGeom</source>
         <translation>Modifier la géométrie</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2204"/>
+        <location filename="../ui_lizmap.ui" line="2259"/>
         <source>twEdition.col.delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2209"/>
+        <location filename="../ui_lizmap.ui" line="2264"/>
         <source>twEdition.col.id</source>
         <translation>Id de la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2236"/>
+        <location filename="../ui_lizmap.ui" line="2291"/>
         <source>tools.editionLayer.cbCreate</source>
         <translation>Créer</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2243"/>
+        <location filename="../ui_lizmap.ui" line="2298"/>
         <source>tools.editionLayer.cbModAtt</source>
         <translation>Modifier les attributs</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2250"/>
+        <location filename="../ui_lizmap.ui" line="2305"/>
         <source>tools.editionLayer.cbModGeom</source>
         <translation>Modifier la géométrie</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2257"/>
+        <location filename="../ui_lizmap.ui" line="2312"/>
         <source>tools.editionLayer.cbDel</source>
         <translation>Supprimer</translation>
     </message>
@@ -661,7 +661,7 @@ Ex: 1000, 250000</translation>
         <translation type="obsolete">Enlever la couche</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2325"/>
+        <location filename="../lizmap.py" line="2328"/>
         <source>ui.msg.error.project.layers.path.relative {}</source>
         <translation>Les fichiers des couches doivent être situés dans le répertoire du projet ou dans un des sous-répertoires. Veuillez copier les couches dans 
 {} 
@@ -707,27 +707,27 @@ avec répertoire du serveur
 {}</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2315"/>
+        <location filename="../ui_lizmap.ui" line="2370"/>
         <source>tools.loginFilteredLayers.label</source>
         <translation>Filtrer les données par utilisateur</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2321"/>
+        <location filename="../ui_lizmap.ui" line="2376"/>
         <source>tools.loginFilteredLayers.description</source>
         <translation>L&apos;utilisateur connecté ne verra que les données pour lesquelles la colonne choisie comporte le groupe auquel il appartient. Si l&apos;option &quot;Filtrer par utilisateur&quot; est cochée, alors l&apos;utilisateur ne verra que les données qui ont son login comme valeur pour la colonne choisie.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2347"/>
+        <location filename="../ui_lizmap.ui" line="2402"/>
         <source>twLogin.col.layer</source>
         <translation>Couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2352"/>
+        <location filename="../ui_lizmap.ui" line="2407"/>
         <source>twLogin.col.field</source>
         <translation>Champ</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2362"/>
+        <location filename="../ui_lizmap.ui" line="2417"/>
         <source>twLogin.col.id</source>
         <translation>Id</translation>
     </message>
@@ -742,433 +742,433 @@ avec répertoire du serveur
         <translation type="obsolete">Enlever la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="831"/>
+        <location filename="../ui_lizmap.ui" line="859"/>
         <source>map.initialExtent.label</source>
         <translation>Emprise initiale</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="837"/>
+        <location filename="../ui_lizmap.ui" line="865"/>
         <source>map.initialExtent.help</source>
         <translation>Vous pouvez définir ici l&apos;emprise initiale de la carte. 
 (Ceci est différent de l&apos;emprise maximale définie dans les propriétés du projet QGIS)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="846"/>
+        <location filename="../ui_lizmap.ui" line="874"/>
         <source>map.initialExtent.content</source>
         <translation>Emprise</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="864"/>
+        <location filename="../ui_lizmap.ui" line="892"/>
         <source>map.initialExtent.setFromProject</source>
         <translation>Définir à partir des propriétés du projet</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="871"/>
+        <location filename="../ui_lizmap.ui" line="899"/>
         <source>map.initialExtent.setFromCanvas</source>
         <translation>Définir à partir de la vue courante</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1634"/>
+        <location filename="../ui_lizmap.ui" line="1662"/>
         <source>tools.locate.layer.label</source>
         <translation>Couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1644"/>
+        <location filename="../ui_lizmap.ui" line="1672"/>
         <source>tools.locate.field.label</source>
         <translation>Attribut à afficher</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1597"/>
+        <location filename="../ui_lizmap.ui" line="1625"/>
         <source>tools.locate.filterField.label</source>
         <translation>Regroupement optionnel</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1788"/>
+        <location filename="../ui_lizmap.ui" line="1816"/>
         <source>twLocateByLayer.col.filterField</source>
         <translation>Regroupement</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="958"/>
+        <location filename="../ui_lizmap.ui" line="986"/>
         <source>baselayer.label</source>
         <translation>Fonds</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1003"/>
+        <location filename="../ui_lizmap.ui" line="1031"/>
         <source>map.osm.label</source>
         <translation>OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1024"/>
+        <location filename="../ui_lizmap.ui" line="1052"/>
         <source>OSM CycleMap</source>
         <translation>Cycle Map</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1153"/>
+        <location filename="../ui_lizmap.ui" line="1181"/>
         <source>map.bing.label</source>
         <translation>Bing Map</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1233"/>
+        <location filename="../ui_lizmap.ui" line="1261"/>
         <source>map.ign.label</source>
         <translation>IGN Géoportail</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1254"/>
+        <location filename="../ui_lizmap.ui" line="1282"/>
         <source>Scans</source>
         <translation>Scans</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1247"/>
+        <location filename="../ui_lizmap.ui" line="1275"/>
         <source>Orthophoto</source>
         <translation>Orthophoto</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1240"/>
+        <location filename="../ui_lizmap.ui" line="1268"/>
         <source>Plan</source>
         <translation>Plan</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1326"/>
+        <location filename="../ui_lizmap.ui" line="1354"/>
         <source>baselayers.external.lizmap.label</source>
         <translation>Couches Lizmap externes</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1367"/>
+        <location filename="../ui_lizmap.ui" line="1395"/>
         <source>twLizmapBaselayers.col.repository</source>
         <translation>Répertoire Lizmap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1372"/>
+        <location filename="../ui_lizmap.ui" line="1400"/>
         <source>twLizmapBaselayers.col.project</source>
         <translation>Projet</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1377"/>
+        <location filename="../ui_lizmap.ui" line="1405"/>
         <source>twLizmapBaselayers.col.layer</source>
         <translation>Couche QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1382"/>
+        <location filename="../ui_lizmap.ui" line="1410"/>
         <source>twLizmapBaselayers.col.title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1415"/>
+        <location filename="../ui_lizmap.ui" line="1443"/>
         <source>baselayers.lizmap.repository</source>
         <translation>Répertoire Lizmap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1422"/>
+        <location filename="../ui_lizmap.ui" line="1450"/>
         <source>baselayers.lizmap.project</source>
         <translation>Projet</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1439"/>
+        <location filename="../ui_lizmap.ui" line="1467"/>
         <source>baselayers.lizmap.title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1446"/>
+        <location filename="../ui_lizmap.ui" line="1474"/>
         <source>baselayers.lizmap.layer</source>
         <translation>Couche QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2699"/>
+        <location filename="../ui_lizmap.ui" line="2754"/>
         <source>tw.btLayerAdd</source>
         <translation>Ajouter la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2706"/>
+        <location filename="../ui_lizmap.ui" line="2761"/>
         <source>tw.btLayerDel</source>
         <translation>Enlever la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1332"/>
+        <location filename="../ui_lizmap.ui" line="1360"/>
         <source>baselayers.external.lizmap.description</source>
         <translation>Vous pouvez ajouter des couches de fonds provenant d&apos;autres projets QGIS publiés dans Lizmap. Pour cela, spécifiez le code du répertoire Lizmap (et non le titre), le code du projet (le nom du projet QGIS sans l&apos;extension), le nom de la couche QGIS (telle qu&apos;il apparaît dans la légende de QGIS) et un titre au choix.</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1450"/>
+        <location filename="../lizmap.py" line="1451"/>
         <source>ui.msg.baselayers.lack.input</source>
         <translation type="unfinished">Il manque des informations. Vérifiez que vous avez bien rempli tous les champs : répertoire, projet, couche QGIS et titre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="562"/>
+        <location filename="../ui_lizmap.ui" line="560"/>
         <source>map.general.options</source>
         <translation>Options générales</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="568"/>
+        <location filename="../ui_lizmap.ui" line="566"/>
         <source>map.hide.project</source>
         <translation>Masquer le projet dans Lizmap Web Client</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2443"/>
+        <location filename="../ui_lizmap.ui" line="2498"/>
         <source>tools.timemanager.label</source>
         <translation>Time Manager</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2449"/>
+        <location filename="../ui_lizmap.ui" line="2504"/>
         <source>tools.timemanager.description</source>
         <translation>Ajouter des couches ici pour afficher sur l&apos;interface Web une animation basée sur un attribut temporel (similaire au plugin QGIS TimeManager )</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2461"/>
+        <location filename="../ui_lizmap.ui" line="2516"/>
         <source>tools.tm.timeFrameType</source>
         <translation>Unité du pas</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2471"/>
+        <location filename="../ui_lizmap.ui" line="2526"/>
         <source>tools.tm.timeFrameSize</source>
         <translation>Taille du pas de temps</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2488"/>
+        <location filename="../ui_lizmap.ui" line="2543"/>
         <source>tools.tm.animationFrameLength</source>
         <translation>Durée d&apos;affichage du pas (millisecondes)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2511"/>
+        <location filename="../ui_lizmap.ui" line="2566"/>
         <source>minutes</source>
         <translation>minutes</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2516"/>
+        <location filename="../ui_lizmap.ui" line="2571"/>
         <source>hours</source>
         <translation>hours</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2521"/>
+        <location filename="../ui_lizmap.ui" line="2576"/>
         <source>days</source>
         <translation>days</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2526"/>
+        <location filename="../ui_lizmap.ui" line="2581"/>
         <source>weeks</source>
         <translation>weeks</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2531"/>
+        <location filename="../ui_lizmap.ui" line="2586"/>
         <source>months</source>
         <translation>months</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2536"/>
+        <location filename="../ui_lizmap.ui" line="2591"/>
         <source>years</source>
         <translation>years</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2621"/>
+        <location filename="../ui_lizmap.ui" line="2676"/>
         <source>tools.tm.layer</source>
         <translation>Couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2637"/>
+        <location filename="../ui_lizmap.ui" line="2692"/>
         <source>tools.tm.startAttribute</source>
         <translation>Champ de début</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2657"/>
+        <location filename="../ui_lizmap.ui" line="2712"/>
         <source>tools.tm.group</source>
         <translation>Identifiant du groupe (optionnel)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2647"/>
+        <location filename="../ui_lizmap.ui" line="2702"/>
         <source>tools.tm.groupTitle</source>
         <translation>Titre du groupe (optionnel)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2600"/>
+        <location filename="../ui_lizmap.ui" line="2655"/>
         <source>tools.tm.layerId</source>
         <translation>Id de la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2667"/>
+        <location filename="../ui_lizmap.ui" line="2722"/>
         <source>tools.tm.labelAttribute</source>
         <translation>Étiquette au survol</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="235"/>
+        <location filename="../ui_lizmap.ui" line="233"/>
         <source>layers.layer.noLegendImage</source>
         <translation>Cacher l&apos;image de légende ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="506"/>
+        <location filename="../ui_lizmap.ui" line="504"/>
         <source>layers.layer.externalWms</source>
         <translation>Demander les images directement au serveur WMS </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="435"/>
+        <location filename="../ui_lizmap.ui" line="433"/>
         <source>layer.embeddedRep</source>
         <translation>Répertoire source</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="452"/>
+        <location filename="../ui_lizmap.ui" line="450"/>
         <source>layer.embeddedProject</source>
         <translation>Projet source</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="661"/>
+        <location filename="../ui_lizmap.ui" line="689"/>
         <source>google</source>
         <translation>Google</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="666"/>
+        <location filename="../ui_lizmap.ui" line="694"/>
         <source>ign</source>
         <translation>IGN (France)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1306"/>
+        <location filename="../ui_lizmap.ui" line="1334"/>
         <source>baselayer.add.empty</source>
         <translation>Ajouter un fond vide (avec la couleur de fond du projet)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="291"/>
+        <location filename="../ui_lizmap.ui" line="289"/>
         <source>png; mode=16bit</source>
         <translation>png; mode=16bit</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1387"/>
+        <location filename="../ui_lizmap.ui" line="1415"/>
         <source>twLizmapBaselayers.col.imageFormat</source>
         <translation>Format d&apos;image (png, jpeg)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1483"/>
+        <location filename="../ui_lizmap.ui" line="1511"/>
         <source>baselayers.lizmap.imageFormat</source>
         <translation>Format d&apos;image (png, jpeg)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="256"/>
+        <location filename="../ui_lizmap.ui" line="254"/>
         <source>layers.layer.displayInLegend</source>
         <translation>Afficher dans la légende</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1798"/>
+        <location filename="../ui_lizmap.ui" line="1826"/>
         <source>tools.locate.minLength.label</source>
         <translation>Nombre caractères pour autocomplétion</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1654"/>
+        <location filename="../ui_lizmap.ui" line="1682"/>
         <source>tools.locate.minLength.tooltip</source>
         <translation>Si vous entrez une valeur supérieure à 0, une liste de choix sera automatiquement proposée avec des valeurs filtrées à partir du nombre de caractères configurés (autocomplétion)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2605"/>
+        <location filename="../ui_lizmap.ui" line="2660"/>
         <source>order</source>
         <translation>ordre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="140"/>
+        <location filename="../ui_lizmap.ui" line="138"/>
         <source>layers.layer.subgroup.metadata</source>
         <translation>Métadonnées</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="190"/>
+        <location filename="../ui_lizmap.ui" line="188"/>
         <source>layers.layer.subgroup.options</source>
         <translation>Options de carte</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="330"/>
+        <location filename="../ui_lizmap.ui" line="328"/>
         <source>layers.layer.subgroup.cache</source>
         <translation>Cache</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="426"/>
+        <location filename="../ui_lizmap.ui" line="424"/>
         <source>layers.layer.subgroup.embedded</source>
         <translation>Couches et groupes intégrés</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="490"/>
+        <location filename="../ui_lizmap.ui" line="488"/>
         <source>layers.layer.subgroup.wms</source>
         <translation>WMS tiers</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2285"/>
+        <location filename="../lizmap.py" line="2288"/>
         <source>ui.msg.error.project.option.capitalizeLayerName</source>
         <translation>Veuillez désactiver l&apos;option &quot;Nom de couches en majuscules&quot; dans l&apos;onglet &quot;Canevas et légende&quot; des options de QGIS. Cela peut créer des problèmes avec Lizmap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="101"/>
+        <location filename="../ui_lizmap.ui" line="99"/>
         <source>groups.hide.checkbox</source>
         <translation>Cacher les cases à cocher des groupes</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="909"/>
+        <location filename="../ui_lizmap.ui" line="937"/>
         <source>map.interface.label</source>
         <translation>Interface</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="915"/>
+        <location filename="../ui_lizmap.ui" line="943"/>
         <source>map.interface.hide.header</source>
         <translation>Masquer le bandeau du haut</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="922"/>
+        <location filename="../ui_lizmap.ui" line="950"/>
         <source>map.interface.hide.menu</source>
         <translation>Masque la barre de menu</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="929"/>
+        <location filename="../ui_lizmap.ui" line="957"/>
         <source>map.interface.hide.legend</source>
         <translation>Masque la légende à l&apos;ouverture</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="936"/>
+        <location filename="../ui_lizmap.ui" line="964"/>
         <source>map.interface.hide.overview.scale</source>
         <translation>Masquer l&apos;échelle et la carte miniature</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="943"/>
+        <location filename="../ui_lizmap.ui" line="971"/>
         <source>map.interface.hide.navbar</source>
         <translation>Masquer les outils de navigation</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1824"/>
+        <location filename="../ui_lizmap.ui" line="1852"/>
         <source>tools.attribute.label</source>
         <translation>Table attributaire</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1830"/>
+        <location filename="../ui_lizmap.ui" line="1858"/>
         <source>tools.attribute.description</source>
         <translation type="unfinished">En ajoutant des couches vecteur dans ce tableau, l&apos;utilisateur pourra afficher la table attributaire. Elles doivent être publiées en WFS (Propriétés du projet, onglet Serveur OWS) et vous pouvez choisir les champs à publier dans les propriétés de chaque couche, onglet Champs, et cases à cocher &quot;WFS&quot;</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1875"/>
+        <location filename="../ui_lizmap.ui" line="1903"/>
         <source>attribute.col.id</source>
         <translation>attribute layer id</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2056"/>
+        <location filename="../ui_lizmap.ui" line="2087"/>
         <source>layer</source>
         <translation>Couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2357"/>
+        <location filename="../ui_lizmap.ui" line="2412"/>
         <source>twLogin.col.private</source>
         <translation>Filtre par utilisateur</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2385"/>
+        <location filename="../ui_lizmap.ui" line="2440"/>
         <source>tool.loginFilteredLayer.cbPrivate</source>
         <translation>Filtrer par utilisateur</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1906"/>
+        <location filename="../ui_lizmap.ui" line="1934"/>
         <source>primary_key</source>
         <translation>Identifiant unique</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1865"/>
+        <location filename="../ui_lizmap.ui" line="1893"/>
         <source>pivot</source>
         <translation>Table pivot</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1923"/>
+        <location filename="../ui_lizmap.ui" line="1951"/>
         <source>tools.attributeLayer.cbIsPivot</source>
         <translation>Table pivot ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1913"/>
+        <location filename="../ui_lizmap.ui" line="1941"/>
         <source>hiddenFields</source>
         <translation>Champs à masquer</translation>
     </message>
@@ -1178,22 +1178,22 @@ avec répertoire du serveur
         <translation type="obsolete">Table pivot ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1870"/>
+        <location filename="../ui_lizmap.ui" line="1898"/>
         <source>hideAsChild</source>
         <translation>Masquer comme fils</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1940"/>
+        <location filename="../ui_lizmap.ui" line="1968"/>
         <source>tools.attributeLayer.cbHideAsChild</source>
         <translation>Masquer dans les tables filles</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1803"/>
+        <location filename="../ui_lizmap.ui" line="1831"/>
         <source>filterOnLocate</source>
         <translation>Filtrer la couche via le zoom</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1697"/>
+        <location filename="../ui_lizmap.ui" line="1725"/>
         <source>filterOnLocateTooltip</source>
         <translation>Si la couche est publiée avec l&apos;outil &quot;Table attributaire&quot; ci-dessous et que cette case est cochée, 
 zoomer sur un objet via l&apos;outil &quot;Localiser par couche&quot; appliquera également un filtre sur cette couche. 
@@ -1215,64 +1215,69 @@ Seul l&apos;objet sélectionné sera alors visible</translation>
         <translation type="obsolete">Infobulle</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2759"/>
+        <location filename="../ui_lizmap.ui" line="2814"/>
         <source>FTP</source>
         <translation>FTP</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2766"/>
+        <location filename="../ui_lizmap.ui" line="2821"/>
         <source>ftp.deactivated</source>
         <translation>Les outils de l&apos;onglet FTP ont été retirés du plugin Lizmap. Vous pouvez utiliser un client FTP comme Filezilla, FireFTP ou WinSCP pour synchroniser vos fichiers locaux vers le serveur Lizmap Web Client. Cela vous donnera plus de contrôle sur les données distantes, et vous pourrez choisir précisément quels fichiers doivent être synchronisés. Documentation : http://docs.3liz.com/fr/publisher_guide/publish_with_ftp.html</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2004"/>
+        <location filename="../ui_lizmap.ui" line="2029"/>
         <source>tools.tooltip.label</source>
         <translation>Infobulles</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2010"/>
+        <location filename="../ui_lizmap.ui" line="2038"/>
         <source>tools.tooltip.description</source>
         <translation>Vous pouvez permettre à l&apos;utilisateur d&apos;activer une infobulle au survol des objets d&apos;une couche. Choisissez une couche, ajoutez une liste de nom de champs séparés par virgule, et autorisez en option l&apos;affichage de la géométrie (et sa couleur, en écrivant un code HTML)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2063"/>
+        <location filename="../ui_lizmap.ui" line="2097"/>
         <source>fields</source>
         <translation>Champs</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2103"/>
+        <location filename="../ui_lizmap.ui" line="2154"/>
         <source>displayGeom</source>
         <translation>Afficher la géométrie</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2036"/>
+        <location filename="../ui_lizmap.ui" line="2064"/>
         <source>colorGeom</source>
         <translation>Couleur de la géométrie</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2041"/>
+        <location filename="../ui_lizmap.ui" line="2069"/>
         <source>layerId</source>
         <translation>Id de la couche</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2073"/>
+        <location filename="../ui_lizmap.ui" line="2114"/>
         <source>color</source>
         <translation>Couleur HTML</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2438"/>
+        <location filename="../lizmap.py" line="2441"/>
         <source>ui.msg.warning.toolLayer.notInWfs</source>
         <translation>Les couches pour cet outil doivent être cochées dans l&apos;option &quot;Capacités WFS&quot; de l&apos;onglet &quot;Serveur OWS&quot; dans les options du projet QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1264"/>
+        <location filename="../ui_lizmap.ui" line="1292"/>
         <source>Cadastre</source>
         <translation>Cadastre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2845"/>
+        <location filename="../ui_lizmap.ui" line="30"/>
         <source>Options in blue background are only usable with Lizmap Web Client 3</source>
         <translation>Les options sur un fond bleu sont compatibles uniquement avec Lizmap Web Client 3</translation>
+    </message>
+    <message>
+        <location filename="../ui_lizmap.ui" line="578"/>
+        <source>Information popup container</source>
+        <translation>Zone d&apos;affichage des popups</translation>
     </message>
 </context>
 <context>

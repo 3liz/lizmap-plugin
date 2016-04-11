@@ -233,6 +233,10 @@ class lizmap:
                 'widget': self.dlg.ui.cbHideGroupCheckbox,
                 'wType': 'checkbox', 'type': 'boolean', 'default': True
             },
+            'popupLocation' : {
+                'widget': self.dlg.ui.liPopupContainer,
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['', 'map', 'dock', 'minidock']
+            },
 
             'rootGroupsAsBlock' : {
                 'widget': self.dlg.ui.cbRootGroupsAsBlock,

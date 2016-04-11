@@ -567,6 +567,52 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_29">
+                <item>
+                 <widget class="QLabel" name="label_65">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                  <property name="text">
+                   <string>Information popup container</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="liPopupContainer">
+                  <item>
+                   <property name="text">
+                    <string>dock</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>minidock</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>map</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1561,7 +1607,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-379</y>
+            <y>0</y>
             <width>1162</width>
             <height>2167</height>
            </rect>
@@ -2895,6 +2941,7 @@
   <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
   <tabstop>cbHideGroupCheckbox</tabstop>
+  <tabstop>liPopupContainer</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inMapScales</tabstop>
@@ -2986,6 +3033,20 @@
   <tabstop>inTimemanagerGroupTitle</tabstop>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
+  <tabstop>btSave</tabstop>
+  <tabstop>cbIgnCadastral</tabstop>
+  <tabstop>cbAttributeLayerIsPivot</tabstop>
+  <tabstop>inAttributeLayerHiddenFields</tabstop>
+  <tabstop>cbAttributeLayerHideAsChild</tabstop>
+  <tabstop>twTooltipLayerList</tabstop>
+  <tabstop>inTooltipLayerFields</tabstop>
+  <tabstop>liTooltipLayer</tabstop>
+  <tabstop>cbTooltipLayerDisplayGeom</tabstop>
+  <tabstop>inTooltipLayerColorGeom</tabstop>
+  <tabstop>btTooltipLayerAdd</tabstop>
+  <tabstop>btTooltipLayerDel</tabstop>
+  <tabstop>btHelp</tabstop>
+  <tabstop>buttonClose</tabstop>
  </tabstops>
  <resources/>
  <connections>

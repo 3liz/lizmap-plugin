@@ -9,7 +9,7 @@
         <translation>LizMap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="22"/>
+        <location filename="../ui_lizmap.ui" line="2892"/>
         <source>ui.main.btHelp</source>
         <translation>Βοήθεια</translation>
     </message>
@@ -19,704 +19,704 @@
         <translation type="obsolete">Αποθήκευση και συγχρονισμός</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="42"/>
+        <location filename="../ui_lizmap.ui" line="40"/>
         <source>layers.btSave.label</source>
         <translation>Αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="58"/>
+        <location filename="../ui_lizmap.ui" line="56"/>
         <source>layers.label</source>
         <translation>Στρώματα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="64"/>
+        <location filename="../ui_lizmap.ui" line="62"/>
         <source>ui.groupBox.treeLayers</source>
         <translation>Δένδρο στρωματών</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="94"/>
+        <location filename="../ui_lizmap.ui" line="92"/>
         <source>layers.rootGroupsAsBlock</source>
         <translation>Αλλαγή των ομιλών σε ενότητες υπομνήματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="111"/>
+        <location filename="../ui_lizmap.ui" line="109"/>
         <source>ui.groupBox.settingLayer</source>
         <translation>Προτιμήσεις για το επιλεγμένο item</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="140"/>
+        <location filename="../ui_lizmap.ui" line="138"/>
         <source>layers.layer.subgroup.metadata</source>
         <translation>Μεταδεδομένα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="147"/>
+        <location filename="../ui_lizmap.ui" line="145"/>
         <source>layers.layer.title</source>
         <translation>Τίτλος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="157"/>
+        <location filename="../ui_lizmap.ui" line="155"/>
         <source>layers.layer.abstract</source>
         <translation>Περίληψη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="174"/>
+        <location filename="../ui_lizmap.ui" line="172"/>
         <source>layers.layer.link</source>
         <translation>Σύνδεση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="190"/>
+        <location filename="../ui_lizmap.ui" line="188"/>
         <source>layers.layer.subgroup.options</source>
         <translation>Επιλογές του χάρτη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="197"/>
+        <location filename="../ui_lizmap.ui" line="195"/>
         <source>layers.layer.toggled</source>
         <translation>Ενεργοποιημένη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="206"/>
+        <location filename="../ui_lizmap.ui" line="204"/>
         <source>layers.layer.popup</source>
         <translation>Ενεργοποιήση των popup</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="213"/>
+        <location filename="../ui_lizmap.ui" line="211"/>
         <source>layers.popup.configure</source>
         <translation>Διαμόρφωση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="235"/>
+        <location filename="../ui_lizmap.ui" line="233"/>
         <source>layers.layer.noLegendImage</source>
         <translation>Αποκρύψη την εικόνα του υπομνήματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="242"/>
+        <location filename="../ui_lizmap.ui" line="240"/>
         <source>layers.layer.groupAsLayer</source>
         <translation>Όμιλος σαν στρώμα?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="249"/>
+        <location filename="../ui_lizmap.ui" line="247"/>
         <source>layers.layer.baselayer</source>
         <translation>Φόντο χαρτών ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="256"/>
+        <location filename="../ui_lizmap.ui" line="254"/>
         <source>layers.layer.displayInLegend</source>
         <translation>Εμφάνηση του υπομνήματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="266"/>
+        <location filename="../ui_lizmap.ui" line="264"/>
         <source>layers.layer.singletile</source>
         <translation>Εικόνα σε κεραμίδια (tile) </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="278"/>
+        <location filename="../ui_lizmap.ui" line="276"/>
         <source>layers.imageFormat.label</source>
         <translation>Μορφή εικόνας</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="286"/>
+        <location filename="../ui_lizmap.ui" line="284"/>
         <source>png</source>
         <translation>png</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="291"/>
+        <location filename="../ui_lizmap.ui" line="289"/>
         <source>png; mode=16bit</source>
         <translation>png; mode=16bit</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="296"/>
+        <location filename="../ui_lizmap.ui" line="294"/>
         <source>png; mode=8bit</source>
         <translation>png; mode=8bit</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="301"/>
+        <location filename="../ui_lizmap.ui" line="299"/>
         <source>jpeg</source>
         <translation>jpeg</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="330"/>
+        <location filename="../ui_lizmap.ui" line="328"/>
         <source>layers.layer.subgroup.cache</source>
         <translation>Cache</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="337"/>
+        <location filename="../ui_lizmap.ui" line="335"/>
         <source>layers.layer.cached</source>
         <translation>Cache Server?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="346"/>
+        <location filename="../ui_lizmap.ui" line="344"/>
         <source>layers.layer.cacheExpiration</source>
         <translation>Λήξη (δευτερόλεπτα)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="363"/>
+        <location filename="../ui_lizmap.ui" line="361"/>
         <source>layers.layer.metatileSize</source>
         <translation>Metatile</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="370"/>
+        <location filename="../ui_lizmap.ui" line="368"/>
         <source>0,0;_</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="381"/>
+        <location filename="../ui_lizmap.ui" line="379"/>
         <source>layers.layer.clientCacheExpiration</source>
         <translation>Cache client περηγητή ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2506"/>
+        <location filename="../ui_lizmap.ui" line="2561"/>
         <source>seconds</source>
         <translation>Δευτερόλεπτα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="426"/>
+        <location filename="../ui_lizmap.ui" line="424"/>
         <source>layers.layer.subgroup.embedded</source>
         <translation>Στρώματα και όμιλοι ενσωματωμένα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="435"/>
+        <location filename="../ui_lizmap.ui" line="433"/>
         <source>layer.embeddedRep</source>
         <translation>Πρώτος φάκελος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="452"/>
+        <location filename="../ui_lizmap.ui" line="450"/>
         <source>layer.embeddedProject</source>
         <translation>Πρώτο έργο</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="490"/>
+        <location filename="../ui_lizmap.ui" line="488"/>
         <source>layers.layer.subgroup.wms</source>
         <translation>WMS από τρίτον</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="506"/>
+        <location filename="../ui_lizmap.ui" line="504"/>
         <source>layers.layer.externalWms</source>
         <translation>Ζήτηση των εικονών στο WMS server</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="541"/>
+        <location filename="../ui_lizmap.ui" line="539"/>
         <source>map.label</source>
         <translation>Χάρτης</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="562"/>
+        <location filename="../ui_lizmap.ui" line="560"/>
         <source>map.general.options</source>
         <translation>Γενικές λεπτομέρειες</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="568"/>
+        <location filename="../ui_lizmap.ui" line="566"/>
         <source>map.hide.project</source>
         <translation>Απόκρυψη του έργου στο Lizmap Web Client</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="578"/>
+        <location filename="../ui_lizmap.ui" line="606"/>
         <source>map.visibletools.label</source>
         <translation>Εργαλεία του χάρτη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="589"/>
+        <location filename="../ui_lizmap.ui" line="617"/>
         <source>map.tool.print</source>
         <translation>Απλή εκτύπωση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="599"/>
+        <location filename="../ui_lizmap.ui" line="627"/>
         <source>map.tool.measure</source>
         <translation>Εργαλείο μέτρησης</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="609"/>
+        <location filename="../ui_lizmap.ui" line="637"/>
         <source>map.tool.zoom.history</source>
         <translation>Zoom πριν/μετά</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="619"/>
+        <location filename="../ui_lizmap.ui" line="647"/>
         <source>map.tool.geolocation</source>
         <translation>Αυτοματή αναφορά στο χάρτη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="643"/>
+        <location filename="../ui_lizmap.ui" line="671"/>
         <source>map.tool.externalSearch.label</source>
         <translation>Αναζήτηση διευθύνσης</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="656"/>
+        <location filename="../ui_lizmap.ui" line="684"/>
         <source>nominatim</source>
         <translation>Nominatim</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="661"/>
+        <location filename="../ui_lizmap.ui" line="689"/>
         <source>google</source>
         <translation>Google</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="666"/>
+        <location filename="../ui_lizmap.ui" line="694"/>
         <source>ign</source>
         <translation>IGN (Γαλλία)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="708"/>
+        <location filename="../ui_lizmap.ui" line="736"/>
         <source>map.scales.label</source>
         <translation>Κλίμακα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="719"/>
+        <location filename="../ui_lizmap.ui" line="747"/>
         <source>map.minScale.label</source>
         <translation>Μέγιστο κλίμακα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="742"/>
+        <location filename="../ui_lizmap.ui" line="770"/>
         <source>map.maxScale.label</source>
         <translation>Μεγαλύτερο κλίμακα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="777"/>
+        <location filename="../ui_lizmap.ui" line="805"/>
         <source>map.scales.help</source>
         <translation>Γράψτε μια λίστα αριθμούς με &quot;,&quot; αναμέσα τους.
 Πρέπει τουλάχιστον να γράψετε τα 2 κλίμακα min και max
 π.χ 1000, 250000  </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="786"/>
+        <location filename="../ui_lizmap.ui" line="814"/>
         <source>map.mapScales.label</source>
         <translation>Κλίμακα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="831"/>
+        <location filename="../ui_lizmap.ui" line="859"/>
         <source>map.initialExtent.label</source>
         <translation>Ιnitial extent</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="837"/>
+        <location filename="../ui_lizmap.ui" line="865"/>
         <source>map.initialExtent.help</source>
         <translation>Μπορείτε να ορήσετε το Extent του χάρτη.(Είναι διαφορετικό με το μέγιστο Extent )</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="846"/>
+        <location filename="../ui_lizmap.ui" line="874"/>
         <source>map.initialExtent.content</source>
         <translation>Extent</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="864"/>
+        <location filename="../ui_lizmap.ui" line="892"/>
         <source>map.initialExtent.setFromProject</source>
         <translation>Δημιουργία από τις προτιμήσεις του έργου</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="871"/>
+        <location filename="../ui_lizmap.ui" line="899"/>
         <source>map.initialExtent.setFromCanvas</source>
         <translation>Δημιουργία από τη κανονική προβολή</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="958"/>
+        <location filename="../ui_lizmap.ui" line="986"/>
         <source>baselayer.label</source>
         <translation>Βάσεις χαρτών</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="979"/>
+        <location filename="../ui_lizmap.ui" line="1007"/>
         <source>map.public.label</source>
         <translation>Εξωτερικά φόντα χαρτών</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="985"/>
+        <location filename="../ui_lizmap.ui" line="1013"/>
         <source>map.public.help</source>
         <translation>Μπορείτε να προσθέτε άλλους βασικούς χάρτες από εξωτερικές πηγές. Πρέπει να βάλετε και τη προβολή &quot;Pseudo Mercator&quot; (EPSG:3857) στις προτίμησεις του έργου (καρτέλα OWS Server).  </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1003"/>
+        <location filename="../ui_lizmap.ui" line="1031"/>
         <source>map.osm.label</source>
         <translation>OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1010"/>
+        <location filename="../ui_lizmap.ui" line="1038"/>
         <source>OSM Mapnik</source>
         <translation>OSM Mapnik</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1017"/>
+        <location filename="../ui_lizmap.ui" line="1045"/>
         <source>OSM Mapquest</source>
         <translation>OSM Mapquest</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1024"/>
+        <location filename="../ui_lizmap.ui" line="1052"/>
         <source>OSM CycleMap</source>
         <translation>Cycle Map</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1066"/>
+        <location filename="../ui_lizmap.ui" line="1094"/>
         <source>map.google.label</source>
         <translation>Google</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1160"/>
+        <location filename="../ui_lizmap.ui" line="1188"/>
         <source>Streets</source>
         <translation>Οδοί</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1167"/>
+        <location filename="../ui_lizmap.ui" line="1195"/>
         <source>Satellite</source>
         <translation>Δορυφόρος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1174"/>
+        <location filename="../ui_lizmap.ui" line="1202"/>
         <source>Hybrid</source>
         <translation>Υβρίδος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1094"/>
+        <location filename="../ui_lizmap.ui" line="1122"/>
         <source>Terrain</source>
         <translation>Ανάγλυφο</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1284"/>
+        <location filename="../ui_lizmap.ui" line="1312"/>
         <source>Key</source>
         <translation>Κλειδί</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1153"/>
+        <location filename="../ui_lizmap.ui" line="1181"/>
         <source>map.bing.label</source>
         <translation>Bing Map</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1233"/>
+        <location filename="../ui_lizmap.ui" line="1261"/>
         <source>map.ign.label</source>
         <translation>IGN Géoportail</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1240"/>
+        <location filename="../ui_lizmap.ui" line="1268"/>
         <source>Plan</source>
         <translation>Σχέδιο</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1247"/>
+        <location filename="../ui_lizmap.ui" line="1275"/>
         <source>Orthophoto</source>
         <translation>Ορθοφωτογραφία</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1254"/>
+        <location filename="../ui_lizmap.ui" line="1282"/>
         <source>Scans</source>
         <translation>Scans</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1306"/>
+        <location filename="../ui_lizmap.ui" line="1334"/>
         <source>baselayer.add.empty</source>
         <translation>Προσθήκη για ένα φόντο άδειο (με το χρώμα του έργου)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1326"/>
+        <location filename="../ui_lizmap.ui" line="1354"/>
         <source>baselayers.external.lizmap.label</source>
         <translation>Εξωτερικά στώματα Lizmap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1332"/>
+        <location filename="../ui_lizmap.ui" line="1360"/>
         <source>baselayers.external.lizmap.description</source>
         <translation>Μπορείτε να προσθέτε άλλα στρώματα από άλλα έργα QGIS που είναι ήδη δημοσιευμένα στο Lizmap. Πρέπει να αναφέρετε το κωδικό του φακέλου στο Lizmap( και όχι ο τίτλος), ο κωδικός του έργου (το &apos;ονομα του έργου QGIS χώρις τον προσθέτο), το όνομα του στρώματος QGIS (όπως το βλέπουμε στη λεζάντα του QGIS) και ΄ένας τίτλος της επιλογής μας.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1367"/>
+        <location filename="../ui_lizmap.ui" line="1395"/>
         <source>twLizmapBaselayers.col.repository</source>
         <translation>Φάκελος Lizmap </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1372"/>
+        <location filename="../ui_lizmap.ui" line="1400"/>
         <source>twLizmapBaselayers.col.project</source>
         <translation>Έργο</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1377"/>
+        <location filename="../ui_lizmap.ui" line="1405"/>
         <source>twLizmapBaselayers.col.layer</source>
         <translation>Στρώμα QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1382"/>
+        <location filename="../ui_lizmap.ui" line="1410"/>
         <source>twLizmapBaselayers.col.title</source>
         <translation>Τίτλος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1387"/>
+        <location filename="../ui_lizmap.ui" line="1415"/>
         <source>twLizmapBaselayers.col.imageFormat</source>
         <translation>Μορφή της εικόνας (png, jpeg)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2605"/>
+        <location filename="../ui_lizmap.ui" line="2660"/>
         <source>order</source>
         <translation>Τακτοποίηση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1415"/>
+        <location filename="../ui_lizmap.ui" line="1443"/>
         <source>baselayers.lizmap.repository</source>
         <translation>Φάκελος Lizmap</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1422"/>
+        <location filename="../ui_lizmap.ui" line="1450"/>
         <source>baselayers.lizmap.project</source>
         <translation>Έργο</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1439"/>
+        <location filename="../ui_lizmap.ui" line="1467"/>
         <source>baselayers.lizmap.title</source>
         <translation>Τίτλος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1446"/>
+        <location filename="../ui_lizmap.ui" line="1474"/>
         <source>baselayers.lizmap.layer</source>
         <translation>Στρώμα QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1483"/>
+        <location filename="../ui_lizmap.ui" line="1511"/>
         <source>baselayers.lizmap.imageFormat</source>
         <translation>Μορφή αρχείου (png, jpeg)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2699"/>
+        <location filename="../ui_lizmap.ui" line="2754"/>
         <source>tw.btLayerAdd</source>
         <translation>Πρόσθηση του στρώματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2706"/>
+        <location filename="../ui_lizmap.ui" line="2761"/>
         <source>tw.btLayerDel</source>
         <translation>Διαγραφή του στρώματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1554"/>
+        <location filename="../ui_lizmap.ui" line="1582"/>
         <source>tools.label</source>
         <translation>Εργαλεία</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1575"/>
+        <location filename="../ui_lizmap.ui" line="1603"/>
         <source>tools.locateByLayer.label</source>
         <translation>Τοποθέτηση ανά στρώμα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1581"/>
+        <location filename="../ui_lizmap.ui" line="1609"/>
         <source>tools.locateByLayer.description</source>
         <translation>Μπορείτε να προσθέσετε μέχρι 3 στρώματα ως βάση του εργαλείου Τοποθέτηση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1627"/>
+        <location filename="../ui_lizmap.ui" line="1655"/>
         <source>tools.locateByLayer.cbDisplayGeom</source>
         <translation>Προβολή της γεωμετρίας</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1634"/>
+        <location filename="../ui_lizmap.ui" line="1662"/>
         <source>tools.locate.layer.label</source>
         <translation>Στρώμα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1644"/>
+        <location filename="../ui_lizmap.ui" line="1672"/>
         <source>tools.locate.field.label</source>
         <translation>Στοιχείο να εμφανιστεί</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1597"/>
+        <location filename="../ui_lizmap.ui" line="1625"/>
         <source>tools.locate.filterField.label</source>
         <translation>Ένωση κατ&apos;επιλογήν</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1654"/>
+        <location filename="../ui_lizmap.ui" line="1682"/>
         <source>tools.locate.minLength.tooltip</source>
         <translation>Αν συμπληρώνετε με ένα αριθμο μεγαλύτερο από 0, μια λίστα επιλογής θα προταθεί αυτόματα με τα στοιχεία φιλτραρισμένα από τον αριθμό των διαμορφωμένων χαρακτήρων</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1798"/>
+        <location filename="../ui_lizmap.ui" line="1826"/>
         <source>tools.locate.minLength.label</source>
         <translation>Αριθμός χαρακτήρων για autocomplεtion</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1778"/>
+        <location filename="../ui_lizmap.ui" line="1806"/>
         <source>twLocateByLayer.col.layer</source>
         <translation>Στρώμα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1783"/>
+        <location filename="../ui_lizmap.ui" line="1811"/>
         <source>twLocateByLayer.col.field</source>
         <translation>Στήλη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1788"/>
+        <location filename="../ui_lizmap.ui" line="1816"/>
         <source>twLocateByLayer.col.filterField</source>
         <translation>Σύμπτυξη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1793"/>
+        <location filename="../ui_lizmap.ui" line="1821"/>
         <source>twLocateByLayer.col.displayGeom</source>
         <translation>Εμφάνιση της γεωμετρίας</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1808"/>
+        <location filename="../ui_lizmap.ui" line="1836"/>
         <source>twLocateByLayer.col.id</source>
         <translation>Id του στρώματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2149"/>
+        <location filename="../ui_lizmap.ui" line="2204"/>
         <source>tools.edition.label</source>
         <translation>Επεξεργασία στρωματών</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2155"/>
+        <location filename="../ui_lizmap.ui" line="2210"/>
         <source>tools.edition.description</source>
         <translation>Μπορείτε να βάλετε μέχρι 5 στρώματα επεξεργασίας στη λίστα και να διαλέξετε τα δικαιώματα για το καθένα.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2184"/>
+        <location filename="../ui_lizmap.ui" line="2239"/>
         <source>twEdition.col.layer</source>
         <translation>Στρώμα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2189"/>
+        <location filename="../ui_lizmap.ui" line="2244"/>
         <source>twEdition.col.add</source>
         <translation>Δημιουργία</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2194"/>
+        <location filename="../ui_lizmap.ui" line="2249"/>
         <source>twEdition.col.modAttribute</source>
         <translation>Επεξεργασία των στοιχείων</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2199"/>
+        <location filename="../ui_lizmap.ui" line="2254"/>
         <source>twEdition.col.modGeom</source>
         <translation>Επεξεργασία της γεωμετρίας</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2204"/>
+        <location filename="../ui_lizmap.ui" line="2259"/>
         <source>twEdition.col.delete</source>
         <translation>Διαγραφή</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2209"/>
+        <location filename="../ui_lizmap.ui" line="2264"/>
         <source>twEdition.col.id</source>
         <translation>Id του στρώματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2236"/>
+        <location filename="../ui_lizmap.ui" line="2291"/>
         <source>tools.editionLayer.cbCreate</source>
         <translation>Δημιουργία</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2243"/>
+        <location filename="../ui_lizmap.ui" line="2298"/>
         <source>tools.editionLayer.cbModAtt</source>
         <translation>Αλλαγή των στοιχείων</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2250"/>
+        <location filename="../ui_lizmap.ui" line="2305"/>
         <source>tools.editionLayer.cbModGeom</source>
         <translation>Αλλαγή της γεωμετρίας</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2257"/>
+        <location filename="../ui_lizmap.ui" line="2312"/>
         <source>tools.editionLayer.cbDel</source>
         <translation>Διαγραφή</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2315"/>
+        <location filename="../ui_lizmap.ui" line="2370"/>
         <source>tools.loginFilteredLayers.label</source>
         <translation>Φίλτρο για τα δεδομένα ανά χρήστη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2321"/>
+        <location filename="../ui_lizmap.ui" line="2376"/>
         <source>tools.loginFilteredLayers.description</source>
         <translation type="unfinished">Ο συνδεδεμένος χρήστης δεν θα δει παρά τα δεδομένα για τα όποια η επιλεγμένη στήλη περιλαμβάνει το σύνολο στο οποίο ανήκει. If the option &quot;Filter by user&quot; is checked, the authenticated user will only see objects with the field matching the user login.</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2347"/>
+        <location filename="../ui_lizmap.ui" line="2402"/>
         <source>twLogin.col.layer</source>
         <translation>Στρώμα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2352"/>
+        <location filename="../ui_lizmap.ui" line="2407"/>
         <source>twLogin.col.field</source>
         <translation>Στήλη</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2362"/>
+        <location filename="../ui_lizmap.ui" line="2417"/>
         <source>twLogin.col.id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2443"/>
+        <location filename="../ui_lizmap.ui" line="2498"/>
         <source>tools.timemanager.label</source>
         <translation>Time Manager</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2449"/>
+        <location filename="../ui_lizmap.ui" line="2504"/>
         <source>tools.timemanager.description</source>
         <translation>Πρόσθεση των στρωμάτων εδώ για την εμφάνιση στην διαδικτυακή επιφάνεια μιας animation βασιζμένη σε χρονικό στοιχείο (σαν το plugin QGIS TimeManager )  </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2461"/>
+        <location filename="../ui_lizmap.ui" line="2516"/>
         <source>tools.tm.timeFrameType</source>
         <translation>Μονάδα μέτρησης</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2471"/>
+        <location filename="../ui_lizmap.ui" line="2526"/>
         <source>tools.tm.timeFrameSize</source>
         <translation>Μέτρηση της μονάδας μέτρησης του χρόνου</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2488"/>
+        <location filename="../ui_lizmap.ui" line="2543"/>
         <source>tools.tm.animationFrameLength</source>
         <translation>Διαρκεία εμφάνισης </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2511"/>
+        <location filename="../ui_lizmap.ui" line="2566"/>
         <source>minutes</source>
         <translation>λεπτά</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2516"/>
+        <location filename="../ui_lizmap.ui" line="2571"/>
         <source>hours</source>
         <translation>Ώρες</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2521"/>
+        <location filename="../ui_lizmap.ui" line="2576"/>
         <source>days</source>
         <translation>μέρες</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2526"/>
+        <location filename="../ui_lizmap.ui" line="2581"/>
         <source>weeks</source>
         <translation>εβδομάδες</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2531"/>
+        <location filename="../ui_lizmap.ui" line="2586"/>
         <source>months</source>
         <translation>μήνες</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2536"/>
+        <location filename="../ui_lizmap.ui" line="2591"/>
         <source>years</source>
         <translation>χρόνια</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2621"/>
+        <location filename="../ui_lizmap.ui" line="2676"/>
         <source>tools.tm.layer</source>
         <translation>Στρώμα</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2637"/>
+        <location filename="../ui_lizmap.ui" line="2692"/>
         <source>tools.tm.startAttribute</source>
         <translation>Στήλη της αρχής</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2667"/>
+        <location filename="../ui_lizmap.ui" line="2722"/>
         <source>tools.tm.labelAttribute</source>
         <translation>Ετικέτα στην υπέρπτηση</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2657"/>
+        <location filename="../ui_lizmap.ui" line="2712"/>
         <source>tools.tm.group</source>
         <translation>Αναγνωριστικό κωδικό για το σύνολο (προτίμηση)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2647"/>
+        <location filename="../ui_lizmap.ui" line="2702"/>
         <source>tools.tm.groupTitle</source>
         <translation>Τίτλος για το σύνολο (προτίμηση)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2600"/>
+        <location filename="../ui_lizmap.ui" line="2655"/>
         <source>tools.tm.layerId</source>
         <translation>Id του στρώματος</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2738"/>
+        <location filename="../ui_lizmap.ui" line="2793"/>
         <source>ftp.label</source>
         <translation>FTP</translation>
     </message>
@@ -794,12 +794,12 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">Κριτήριο συγχρονισμού : time ή size</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2794"/>
+        <location filename="../ui_lizmap.ui" line="2849"/>
         <source>log.label</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2810"/>
+        <location filename="../ui_lizmap.ui" line="2865"/>
         <source>log.btClearLog.label</source>
         <translation>Διαγραφή του log</translation>
     </message>
@@ -809,17 +809,17 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">Ακύρωση το συγχρονισμό</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2456"/>
+        <location filename="../lizmap.py" line="2459"/>
         <source>ui.msg.error.title</source>
         <translation>Lizmap - Σφάλμα</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="684"/>
+        <location filename="../lizmap.py" line="688"/>
         <source>log.map.mapScales.warning</source>
         <translation>&lt;b&gt;** ΠΡΟΣΟΧΗ **&lt;/b&gt; : Διαλέξατε τη χρήση ένος εξωτερικός βασικός χάρτης. Πρέπει να πρόσθετε τη προβολή &quot;EPSG:3857&quot; στο κουτί &quot;RΠεριορισμοί του συστήματος συντεταγμενών&quot; της καρτελάς &quot;OWS Server&quot; στους περιορισμούς του έργου !</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1650"/>
+        <location filename="../lizmap.py" line="1651"/>
         <source>ui.msg.error.tree.read.content</source>
         <translation>Σφάλματα στη διαμόρφωση. Πρέπει να κάνετε ξανά τη διαμόρφωση των προτιμησεών για τα στρώματα.</translation>
     </message>
@@ -829,17 +829,17 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">Τα στρώματα για το εργαλείο &quot;Τοποθέτηση ανά στρώμα&quot; πρέπει να είναι τσεκαρισμένα στις προτιμήσεις &quot;Εικανότητες WFS&quot; της καρτέλας &quot;Εξυπηρετητή OWS&quot; στις προτιμήσεις του έργου QGIS   </translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1450"/>
+        <location filename="../lizmap.py" line="1451"/>
         <source>ui.msg.baselayers.lack.input</source>
         <translation>Λείπουν πληροφορίες. Επιβεβαιώσετε ότι έχετε συμπληρώσει σωστά όλες οι στήλες: φάκελος, έργο, στρώμα QGIS και τίτλος</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1519"/>
+        <location filename="../lizmap.py" line="1520"/>
         <source>ui.msg.question.refresh.title</source>
         <translation>Lizmap - Ανανέωση του δενδρού ?</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1519"/>
+        <location filename="../lizmap.py" line="1520"/>
         <source>ui.msg.question.refresh.content</source>
         <translation>Μπορείτε να κάνετε την ανανέωση του δένδρου στρωματών με κλικ στο Ναι
 Θα χάσετε τότε όλες τις αλλαγές που κάνατε από τη τελευταία αποθήκευση.
@@ -848,27 +848,27 @@ http://winscp.net/eng/download.php
 Ανανέωση του δένδρου με τα στρώματα ?</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="1632"/>
+        <location filename="../lizmap.py" line="1633"/>
         <source>layers.tree.title</source>
         <translation>Λίστα των στρωματών</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2270"/>
+        <location filename="../lizmap.py" line="2273"/>
         <source>ui.msg.error.init.open.project</source>
         <translation>Πρέπει να ανοίξετε πρώτα ένα έργο Qgis πριν την έναρξη του LizMap</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2285"/>
+        <location filename="../lizmap.py" line="2288"/>
         <source>ui.msg.error.project.option.capitalizeLayerName</source>
         <translation>Κάντε απενεργοποίηση της προτιμήσης &quot;Όνομα στρωματών σε κεφαλαία&quot; στη καρτέλα &quot;Πλαίσιο και υπόμνημα&quot; από τις προτιμήσεις του QGIS.Αυτό μπορεί να δημιουργήσει προβλήματα με Lizmap  </translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2291"/>
+        <location filename="../lizmap.py" line="2294"/>
         <source>ui.msg.error.project.option.path.relative</source>
         <translation>Τα path των αρχείων πρεπεί να είναι διαμορφωσμένα σε &quot;σχετικό&quot; στις προτιμήσεις του έργου QGIS. </translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2325"/>
+        <location filename="../lizmap.py" line="2328"/>
         <source>ui.msg.error.project.layers.path.relative {}</source>
         <translation>Τα αρχεία των στρωματών πρέπει να τοποθέτουν στο φάκελο του έργου ή στο ύπο-φάκελο. Κάντε αντιγραφή των στρωματών στο
 {} 
@@ -880,22 +880,22 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">Lftp δεν είναι εγκαταστημένο στο σύστημά σας. Δεν θα μπορείτε να κάνετε το συγχρονισμό του έργου σας στον εξυπηρετητή. Μπορείτε να κάντε την εγκαταστασή και να τρέξετε ξανά το πρόσθετο, ή θα χρησιμοποιήσετε μια άλλη μέθοδο συγχρονισμού μεταξύ το τοπικό φάκελο σας και τον εξυπηρετητή.</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2401"/>
+        <location filename="../lizmap.py" line="2404"/>
         <source>log.map.option.title</source>
         <translation>&lt;b&gt;Χάρτης - περιορισμοί&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2447"/>
+        <location filename="../lizmap.py" line="2450"/>
         <source>ui.msg.map.parameters.ok</source>
         <translation>Όλες οι προτιμήσεις της καρτέλας Χάρτης είναι σωστές</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2451"/>
+        <location filename="../lizmap.py" line="2454"/>
         <source>ui.msg.configuration.save.ok</source>
         <translation>&lt;b&gt;Το αρχείο διαμόρφωσης του LizMap είναι αποθηκευμένο&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2456"/>
+        <location filename="../lizmap.py" line="2459"/>
         <source>ui.msg.map.parameters.bad</source>
         <translation>Λείπουν προτιμήσεις ή δεν λειτουργούν στη καρτέλα του χάρτη. Πρέπει να διαβάσετε το log πριν τη διορθώση τους και την επανεκκίνηση.</translation>
     </message>
@@ -978,7 +978,7 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;ακυρώθηκε&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2528"/>
+        <location filename="../lizmap.py" line="2531"/>
         <source>ui.msg.warning.title</source>
         <translation>LizMap - Προσοχή</translation>
     </message>
@@ -1021,92 +1021,92 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">&lt;b&gt;FTP - Συγχρονισμός&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2528"/>
+        <location filename="../lizmap.py" line="2531"/>
         <source>ui.msg.warning.window.opened</source>
         <translation>Ένα παραθύρο LizMap είναι ήδη ανοιχτό</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="101"/>
+        <location filename="../ui_lizmap.ui" line="99"/>
         <source>groups.hide.checkbox</source>
         <translation type="unfinished">Hide checkboxes for groups</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="909"/>
+        <location filename="../ui_lizmap.ui" line="937"/>
         <source>map.interface.label</source>
         <translation type="unfinished">Map interface</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="915"/>
+        <location filename="../ui_lizmap.ui" line="943"/>
         <source>map.interface.hide.header</source>
         <translation type="unfinished">Hide header</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="922"/>
+        <location filename="../ui_lizmap.ui" line="950"/>
         <source>map.interface.hide.menu</source>
         <translation type="unfinished">Hide menu bar</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="929"/>
+        <location filename="../ui_lizmap.ui" line="957"/>
         <source>map.interface.hide.legend</source>
         <translation type="unfinished">Hide legend panel at startup</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="936"/>
+        <location filename="../ui_lizmap.ui" line="964"/>
         <source>map.interface.hide.overview.scale</source>
         <translation type="unfinished">Hide scale and overview map</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="943"/>
+        <location filename="../ui_lizmap.ui" line="971"/>
         <source>map.interface.hide.navbar</source>
         <translation type="unfinished">Hide navigation tools</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1824"/>
+        <location filename="../ui_lizmap.ui" line="1852"/>
         <source>tools.attribute.label</source>
         <translation type="unfinished">Attribute table</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1830"/>
+        <location filename="../ui_lizmap.ui" line="1858"/>
         <source>tools.attribute.description</source>
         <translation type="unfinished">The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1875"/>
+        <location filename="../ui_lizmap.ui" line="1903"/>
         <source>attribute.col.id</source>
         <translation>attribute layer id</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2056"/>
+        <location filename="../ui_lizmap.ui" line="2087"/>
         <source>layer</source>
         <translation type="unfinished">Layer</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2357"/>
+        <location filename="../ui_lizmap.ui" line="2412"/>
         <source>twLogin.col.private</source>
         <translation type="unfinished">Filter by user</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2385"/>
+        <location filename="../ui_lizmap.ui" line="2440"/>
         <source>tool.loginFilteredLayer.cbPrivate</source>
         <translation type="unfinished">Filter by user</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1906"/>
+        <location filename="../ui_lizmap.ui" line="1934"/>
         <source>primary_key</source>
         <translation type="unfinished">Unique ID</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1865"/>
+        <location filename="../ui_lizmap.ui" line="1893"/>
         <source>pivot</source>
         <translation type="unfinished">Pivot table</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1923"/>
+        <location filename="../ui_lizmap.ui" line="1951"/>
         <source>tools.attributeLayer.cbIsPivot</source>
         <translation type="unfinished">Pivot table ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1913"/>
+        <location filename="../ui_lizmap.ui" line="1941"/>
         <source>hiddenFields</source>
         <translation type="unfinished">Fields to hide</translation>
     </message>
@@ -1116,22 +1116,22 @@ http://winscp.net/eng/download.php
         <translation type="obsolete">Pivot table ?</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1870"/>
+        <location filename="../ui_lizmap.ui" line="1898"/>
         <source>hideAsChild</source>
         <translation type="unfinished">Hide in children</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1940"/>
+        <location filename="../ui_lizmap.ui" line="1968"/>
         <source>tools.attributeLayer.cbHideAsChild</source>
         <translation type="unfinished">Hide in child subpanels</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1803"/>
+        <location filename="../ui_lizmap.ui" line="1831"/>
         <source>filterOnLocate</source>
         <translation type="unfinished">Filter layer on zoom</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1697"/>
+        <location filename="../ui_lizmap.ui" line="1725"/>
         <source>filterOnLocateTooltip</source>
         <translation>If the layer is published via the attribute layers tool below, and this checkbox is checked, 
 zooming on a feature with the locate tool will trigger the filter of the layer for the selected feature .
@@ -1153,64 +1153,69 @@ Only the selected feature will be visible on the map </translation>
         <translation type="obsolete">Tooltip</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2759"/>
+        <location filename="../ui_lizmap.ui" line="2814"/>
         <source>FTP</source>
         <translation>FTP</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2766"/>
+        <location filename="../ui_lizmap.ui" line="2821"/>
         <source>ftp.deactivated</source>
         <translation type="unfinished">The FTP sync tool has been removed. Please use a FTP client like Filezilla, WinSCP or FireFTP to synchronize your local data with the Lizmap Web Client server. This is safer because you can then have a look at the remote data, and decide precisely which files you need to synchronize. Documentation : http://docs.3liz.com/en/publisher_guide/publish_with_ftp.html </translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2004"/>
+        <location filename="../ui_lizmap.ui" line="2029"/>
         <source>tools.tooltip.label</source>
         <translation type="unfinished">Tooltip layers</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2010"/>
+        <location filename="../ui_lizmap.ui" line="2038"/>
         <source>tools.tooltip.description</source>
         <translation type="unfinished">You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionnaly choose to display the geometry. You can also choose the geometry color (use an HTML color code )</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2063"/>
+        <location filename="../ui_lizmap.ui" line="2097"/>
         <source>fields</source>
         <translation type="unfinished">Fields</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2103"/>
+        <location filename="../ui_lizmap.ui" line="2154"/>
         <source>displayGeom</source>
         <translation type="unfinished">Display geometry</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2036"/>
+        <location filename="../ui_lizmap.ui" line="2064"/>
         <source>colorGeom</source>
         <translation type="unfinished">Geometry color</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2041"/>
+        <location filename="../ui_lizmap.ui" line="2069"/>
         <source>layerId</source>
         <translation type="unfinished">Layer id</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2073"/>
+        <location filename="../ui_lizmap.ui" line="2114"/>
         <source>color</source>
         <translation type="unfinished">Color ( HTML )</translation>
     </message>
     <message>
-        <location filename="../lizmap.py" line="2438"/>
+        <location filename="../lizmap.py" line="2441"/>
         <source>ui.msg.warning.toolLayer.notInWfs</source>
         <translation>Τα στρώματα για το εργαλείο πρέπει να είναι τσεκαρισμένα στις προτιμήσεις &quot;Εικανότητες WFS&quot; της καρτέλας &quot;Εξυπηρετητή OWS&quot; στις προτιμήσεις του έργου QGIS</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="1264"/>
+        <location filename="../ui_lizmap.ui" line="1292"/>
         <source>Cadastre</source>
         <translation type="unfinished">Cadastre</translation>
     </message>
     <message>
-        <location filename="../ui_lizmap.ui" line="2845"/>
+        <location filename="../ui_lizmap.ui" line="30"/>
         <source>Options in blue background are only usable with Lizmap Web Client 3</source>
         <translation type="unfinished">Options in blue background are only usable with Lizmap Web Client 3</translation>
+    </message>
+    <message>
+        <location filename="../ui_lizmap.ui" line="578"/>
+        <source>Information popup container</source>
+        <translation type="unfinished">Information popup container</translation>
     </message>
 </context>
 <context>
