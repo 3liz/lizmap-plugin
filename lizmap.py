@@ -235,7 +235,7 @@ class lizmap:
             },
             'popupLocation' : {
                 'widget': self.dlg.ui.liPopupContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['', 'map', 'dock', 'minidock']
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map']
             },
 
             'rootGroupsAsBlock' : {
