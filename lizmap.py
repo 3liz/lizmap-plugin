@@ -335,6 +335,11 @@ class lizmap:
                 'widget': self.dlg.ui.cbPopup,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'popupSource': {
+                'widget': self.dlg.ui.liPopupSource,
+                'wType': 'list', 'type': 'string', 'default': 'lizmap',
+                'list':["auto", "lizmap", "qgis"]
+            },
             'popupTemplate': {
                 'widget': None,
                 'wType': 'text', 'type': 'string', 'default': ''
@@ -2187,9 +2192,6 @@ class lizmap:
             # unset cacheExpiration if False
             if layerOptions['cached'].lower() == 'false':
                 del layerOptions['cacheExpiration']
-            # unset popupTemplate if popup False
-            if layerOptions['popup'].lower() == 'false':
-                del layerOptions['popupTemplate']
             # unset clientCacheExpiration if not needed
             if layerOptions['clientCacheExpiration'] < 0:
                 del layerOptions['clientCacheExpiration']
@@ -2200,6 +2202,9 @@ class lizmap:
             if not layerOptions['sourceRepository'] or not layerOptions['sourceProject']:
                 del layerOptions['sourceRepository']
                 del layerOptions['sourceProject']
+            # set popupSource to auto if set to lizmap and no lizmap conf found
+            if layerOptions['popup'].lower() == 'true' and layerOptions['popupSource'] == 'lizmap' and layerOptions['popupTemplate'] == '':
+                layerOptions['popupSource'] = 'auto'
 
             # Add external WMS options if needed
             if layer and hasattr(layer, 'providerType') \

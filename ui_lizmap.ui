@@ -206,6 +206,51 @@
                    </widget>
                   </item>
                   <item>
+                   <spacer name="horizontalSpacer_30">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_67">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string>source</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="liPopupSource">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>auto</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>lizmap</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>qgis</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QPushButton" name="btConfigurePopup">
                     <property name="text">
                      <string>layers.popup.configure</string>
@@ -566,52 +611,6 @@
                  <string>map.hide.project</string>
                 </property>
                </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_29">
-                <item>
-                 <widget class="QLabel" name="label_65">
-                  <property name="styleSheet">
-                   <string notr="true">background-color:rgb(170, 255, 255);</string>
-                  </property>
-                  <property name="text">
-                   <string>Information popup container</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="liPopupContainer">
-                  <item>
-                   <property name="text">
-                    <string>dock</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>minidock</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>map</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
               </item>
              </layout>
             </widget>
@@ -988,6 +987,52 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_29">
+                <item>
+                 <widget class="QLabel" name="label_65">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                  <property name="text">
+                   <string>Information popup container</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="liPopupContainer">
+                  <item>
+                   <property name="text">
+                    <string>dock</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>minidock</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>map</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1012,8 +1057,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1178</width>
-            <height>780</height>
+            <width>955</width>
+            <height>679</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1608,7 +1653,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1162</width>
+            <width>1154</width>
             <height>2167</height>
            </rect>
           </property>
@@ -2819,8 +2864,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1178</width>
-            <height>780</height>
+            <width>121</width>
+            <height>115</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2928,6 +2973,7 @@
   <tabstop>inLayerLink</tabstop>
   <tabstop>cbToggled</tabstop>
   <tabstop>cbPopup</tabstop>
+  <tabstop>liPopupSource</tabstop>
   <tabstop>btConfigurePopup</tabstop>
   <tabstop>cbNoLegendImage</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
@@ -2941,7 +2987,6 @@
   <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
   <tabstop>cbHideGroupCheckbox</tabstop>
-  <tabstop>liPopupContainer</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
   <tabstop>inMapScales</tabstop>
@@ -2965,6 +3010,7 @@
   <tabstop>cbHideLegend</tabstop>
   <tabstop>cbHideOverview</tabstop>
   <tabstop>cbHideNavbar</tabstop>
+  <tabstop>liPopupContainer</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>cbOsmMapnik</tabstop>
   <tabstop>cbOsmMapquest</tabstop>
