@@ -141,6 +141,7 @@ class lizmap:
         self.dlg.ui.gb_generalOptions.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_timemanager.setStyleSheet(self.STYLESHEET)
         self.dlg.ui.gb_interface.setStyleSheet(self.STYLESHEET)
+        self.dlg.ui.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
 
         # List of ui widget for data driven actions and checking
         self.globalOptions = {
@@ -315,6 +316,10 @@ class lizmap:
             'emptyBaselayer': {
                 'widget': self.dlg.ui.cbAddEmptyBaselayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'startupBaselayer' : {
+                'widget': self.dlg.ui.cbStartupBaselayer,
+                'wType': 'list', 'type': 'string', 'default': '', 'list':['']
             }
         }
 
@@ -446,6 +451,29 @@ class lizmap:
                 elif item['wType'] == 'list':
                     control.currentIndexChanged.connect(slot)
 
+        # Connect baselayer checkboxes
+        self.baselayerWidgetList = {
+            'layer': self.dlg.ui.cbLayerIsBaseLayer,
+            'osm-mapnik': self.dlg.ui.cbOsmMapnik,
+            'osm-mapquest': self.dlg.ui.cbOsmMapquest,
+            'osm-cyclemap': self.dlg.ui.cbOsmCyclemap,
+            'google-street': self.dlg.ui.cbGoogleStreets,
+            'google-satellite': self.dlg.ui.cbGoogleSatellite,
+            'google-hybrid': self.dlg.ui.cbGoogleHybrid,
+            'google-terrain': self.dlg.ui.cbGoogleTerrain,
+            'bing-road': self.dlg.ui.cbBingStreets,
+            'bing-aerial': self.dlg.ui.cbBingSatellite,
+            'bing-hybrid': self.dlg.ui.cbBingHybrid,
+            'ign-plan': self.dlg.ui.cbIgnStreets,
+            'ign-photo': self.dlg.ui.cbIgnSatellite,
+            'ign-scan': self.dlg.ui.cbIgnTerrain,
+            'ign-cadastral': self.dlg.ui.cbIgnCadastral,
+            'empty': self.dlg.ui.cbAddEmptyBaselayer
+        }
+        for key, item in self.baselayerWidgetList.items():
+            slot = self.onBaselayerCheckboxChange
+            item.stateChanged.connect(slot)
+
         # tables of layers
         self.layersTable =  {
             'locateByLayer': {
@@ -491,6 +519,7 @@ class lizmap:
                 'jsonConfig' : {}
             }
         }
+        self.layerList = None
 
 
     def initGui(self):
@@ -771,7 +800,8 @@ class lizmap:
 
                 if item['wType'] == 'list':
                     listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
-                    item['widget'].setCurrentIndex(listDic[item['default']])
+                    if listDic.has_key(item['default']):
+                        item['widget'].setCurrentIndex(listDic[item['default']])
                     if jsonOptions.has_key(key):
                         if listDic.has_key(jsonOptions[key]):
                             item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
@@ -2460,20 +2490,28 @@ class lizmap:
                     QApplication.translate("lizmap", "ui.msg.configuration.save.ok"),
                     abort=False,
                     textarea=self.dlg.ui.outLog)
+                a = True
             else:
+                a = False
                 QMessageBox.critical(
                     self.dlg,
                     QApplication.translate("lizmap", "ui.msg.error.title"),
                     QApplication.translate("lizmap", "ui.msg.map.parameters.bad"),
                     QMessageBox.Ok)
+                # Go to Log tab
+                self.dlg.ui.tabWidget.setCurrentIndex(5)
 
             self.dlg.ui.outState.setText('<font color="green"></font>')
-            # Go to Log tab
-            self.dlg.ui.tabWidget.setCurrentIndex(5)
 
             # Get and check map scales
             if self.isok:
                 self.getMinMaxScales()
+                self.iface.messageBar().pushMessage(
+                    u"Lizmap",
+                    QApplication.translate("lizmap", "ui.msg.configuration.save.ok"),
+                    level=QgsMessageBar.INFO,
+                    duration=3
+                )
 
         return self.isok
 
@@ -2493,6 +2531,57 @@ class lizmap:
             lg = list(arbre.iter('legendgroup'))
             lge = dict([(a.attrib['name'],a.attrib) for a in lg if a.attrib.has_key('embedded')])
             return lge
+
+
+    def onBaselayerCheckboxChange(self):
+        '''
+        Add or remove a baselayer in cbStartupBaselayer combobox
+        when user change state of any baselayer related checkbox
+        '''
+        if not self.layerList:
+            return
+
+        # Combo to fill up with baselayers
+        combo = self.dlg.ui.cbStartupBaselayer
+
+        # First get selected item
+        idx = combo.currentIndex()
+        data = combo.itemData(idx)
+        idx = 0
+
+        # Clear the combo
+        combo.clear()
+        i=0
+        blist = []
+
+        # Fill with checked baselayers
+        # 1/ QGIS layers
+        for k,v in self.layerList.items():
+            if not v['baseLayer']:
+                continue
+            combo.addItem(v['name'], unicode(k))
+            blist.append(v['name'])
+            if data == k:
+                idx = i
+            i+=1
+
+        # 2/ External baselayers
+        for k,v in self.baselayerWidgetList.items():
+            if k != 'layer':
+                if v.isChecked():
+                    combo.addItem(k, k)
+                    blist.append(k)
+                    if data == k:
+                        idx = i
+                    i+=1
+
+        # Set last chosen item
+        combo.setCurrentIndex(idx)
+
+        # Fill self.globalOptions
+        self.globalOptions['startupBaselayer']['list'] = blist
+
+
 
 
     def warnOnClose(self):
@@ -2566,6 +2655,9 @@ class lizmap:
 
             # Fill the layer tree
             self.populateLayerTree()
+
+            # Fill baselayer startup
+            self.onBaselayerCheckboxChange()
 
             self.isok = 1
 

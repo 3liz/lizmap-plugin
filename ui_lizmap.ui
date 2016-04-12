@@ -1453,10 +1453,53 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="cbAddEmptyBaselayer">
-             <property name="text">
-              <string>baselayer.add.empty</string>
+            <widget class="QGroupBox" name="gb_baselayersOptions">
+             <property name="title">
+              <string>Baselayers options</string>
              </property>
+             <layout class="QVBoxLayout" name="verticalLayout_21">
+              <item>
+               <widget class="QCheckBox" name="cbAddEmptyBaselayer">
+                <property name="text">
+                 <string>baselayer.add.empty</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_31">
+                <item>
+                 <widget class="QLabel" name="label_73">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                  <property name="text">
+                   <string>Active baselayer at startup</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cbStartupBaselayer">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_33">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -3095,6 +3138,7 @@
   <tabstop>cbIgnTerrain</tabstop>
   <tabstop>inIgnKey</tabstop>
   <tabstop>cbAddEmptyBaselayer</tabstop>
+  <tabstop>cbStartupBaselayer</tabstop>
   <tabstop>twLizmapBaselayers</tabstop>
   <tabstop>inLizmapBaselayerRepository</tabstop>
   <tabstop>inLizmapBaselayerProject</tabstop>
