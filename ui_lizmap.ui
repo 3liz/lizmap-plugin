@@ -726,21 +726,96 @@
                 </item>
                </layout>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_30">
+                <item>
+                 <widget class="QLabel" name="label_68">
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                  <property name="text">
+                   <string>Popup click tolerance (pixels)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_31">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_70">
+                  <property name="text">
+                   <string>Points</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="inPointTolerance">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_69">
+                  <property name="text">
+                   <string>Lines</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="inLineTolerance">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_72">
+                  <property name="text">
+                   <string>Polygons</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="inPolygonTolerance">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_32">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item>
             <widget class="QGroupBox" name="gb_Scales">
@@ -790,12 +865,6 @@
                  <widget class="QLineEdit" name="inMaxScale">
                   <property name="enabled">
                    <bool>false</bool>
-                  </property>
-                  <property name="inputMethodHints">
-                   <set>Qt::ImhDigitsOnly</set>
-                  </property>
-                  <property name="maxLength">
-                   <number>10</number>
                   </property>
                  </widget>
                 </item>
@@ -852,21 +921,15 @@
                 </item>
                </layout>
               </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_71">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item>
             <widget class="QGroupBox" name="gb_extent">
@@ -932,19 +995,6 @@
               </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item>
             <widget class="QGroupBox" name="gb_interface">
@@ -1036,6 +1086,19 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1057,8 +1120,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>955</width>
-            <height>679</height>
+            <width>1178</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1653,7 +1716,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1154</width>
+            <width>1162</width>
             <height>2167</height>
            </rect>
           </property>
@@ -2864,8 +2927,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>121</width>
-            <height>115</height>
+            <width>1178</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2987,9 +3050,9 @@
   <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
   <tabstop>cbHideGroupCheckbox</tabstop>
+  <tabstop>inMapScales</tabstop>
   <tabstop>inMinScale</tabstop>
   <tabstop>inMaxScale</tabstop>
-  <tabstop>inMapScales</tabstop>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
   <tabstop>scrollArea</tabstop>
@@ -3002,6 +3065,9 @@
   <tabstop>cbActivateZoomHistory</tabstop>
   <tabstop>cbActivateGeolocation</tabstop>
   <tabstop>liExternalSearch</tabstop>
+  <tabstop>inPointTolerance</tabstop>
+  <tabstop>inLineTolerance</tabstop>
+  <tabstop>inPolygonTolerance</tabstop>
   <tabstop>inInitialExtent</tabstop>
   <tabstop>btSetExtentFromProject</tabstop>
   <tabstop>btSetExtentFromCanvas</tabstop>

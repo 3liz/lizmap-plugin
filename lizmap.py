@@ -263,6 +263,18 @@ class lizmap:
                 'widget': self.dlg.ui.cbActivateGeolocation,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'pointTolerance': {
+                'widget': self.dlg.ui.inPointTolerance,
+                'wType': 'spinbox', 'type': 'integer', 'default': 25
+            },
+            'lineTolerance': {
+                'widget': self.dlg.ui.inLineTolerance,
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'polygonTolerance': {
+                'widget': self.dlg.ui.inPolygonTolerance,
+                'wType': 'spinbox', 'type': 'integer', 'default': 5
+            },
             'hideHeader' : {
                 'widget': self.dlg.ui.cbHideHeader,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
