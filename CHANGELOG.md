@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 2.1.0
+  This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
+
+  * Baselayers - Choose active baselayer at map startup
+  * Map - Add options to configure tolerances for popup activation in pixels
+  * Layers - New option to choose popup source: auto, lizmap advanced or QGIS maptip
+  * Map - New map option to choose info popup container: dock, mini-dock or map
+  * Tools - Allow virtual fields in layer fields comboboxes
+
 ## Version 2.0.0
 
 * Add more options to Attribute layer tools ( compatible with Limap Web Client >= 3.0 : QGIS relations support, filter, export, search, selection

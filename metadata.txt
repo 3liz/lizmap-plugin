@@ -5,23 +5,18 @@ qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.0.0
+version=version 2.1.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.0.0
-  * Add more options to Attribute layer tools ( compatible with Limap Web Client >= 3.0 : QGIS relations support, filter, export, search, selection
-  * Add new Tooltip tool (compatible with LWC >= 3.0 )
-  * Advance popup dialog with colored syntax ( thanks to @slarosa )
-  * Disable FTP tab : we advise users to use a real FTP client instead (Filezilla for example )
-  * Locate by layer - Add an option to trigger a filter on selected item  (compatible with LWC >= 3.0 )
-  * Layers - Set default value to True for option 'Hide group checkboxes'
-  * Layers - use Single Tile option by default at startup
-  * Support multiple styles for a layer (compatible with LWC >= 3.0 )
-  * Handle layers with no geometry to be used for attribute table and edition tools
-  * Minor UI improvements
-
+  Version 2.1.0
+  This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
+  * Baselayers - Choose active baselayer at map startup
+  * Map - Add options to configure tolerances for popup activation in pixels
+  * Layers - New option to choose popup source: auto, lizmap advanced or QGIS maptip
+  * Map - New map option to choose info popup container: dock, mini-dock or map
+  * Tools - Allow virtual fields in layer fields comboboxes
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, ftp, webmapping, WMS

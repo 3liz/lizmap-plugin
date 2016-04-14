@@ -53,7 +53,7 @@ def description():
     return "Publication plugin for Lizmap web application, by 3liz.com"
 
 def version():
-    return "Version 2.0.0"
+    return "Version 2.1.0"
 
 def icon():
     return "icon.png"
