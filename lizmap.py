@@ -239,11 +239,6 @@ class lizmap:
                 'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map']
             },
 
-            'rootGroupsAsBlock' : {
-                'widget': self.dlg.ui.cbRootGroupsAsBlock,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-
             'print' : {
                 'widget': self.dlg.ui.cbActivatePrint,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
@@ -1767,6 +1762,8 @@ class lizmap:
             # get information about the layer or the group from the layerList dictionary
             selectedItem = self.layerList[iKey]
 
+            isLayer = selectedItem['type'] == 'layer'
+
             # set options
             for key,val in self.layerOptionsList.items():
                 if val['widget']:
@@ -1779,8 +1776,15 @@ class lizmap:
                     elif val['wType'] == 'list':
                         listDic = {val['list'][i]:i for i in range(0, len(val['list']))}
                         val['widget'].setCurrentIndex(listDic[selectedItem[key]])
+
+                    # deactivate wms checkbox if not needed
+                    if key == 'externalWmsToggle':
+                        wmsEnabled = self.getItemWmsCapability(selectedItem)
+                        self.dlg.ui.cbExternalWms.setEnabled(wmsEnabled)
+                        if not wmsEnabled:
+                            self.dlg.ui.cbExternalWms.setChecked(False)
+
             # deactivate popup configuration for groups
-            isLayer = selectedItem['type'] == 'layer'
             self.dlg.ui.btConfigurePopup.setEnabled(isLayer)
 
         else:
@@ -1797,6 +1801,21 @@ class lizmap:
                         listDic = {val['list'][i]:i for i in range(0, len(val['list']))}
                         val['widget'].setCurrentIndex(listDic[val['default']])
 
+
+    def getItemWmsCapability(self, selectedItem):
+        '''
+        Check if an item in the tree is a layer
+        and if it is a WMS layer
+        '''
+        wmsEnabled = False
+        isLayer = selectedItem['type'] == 'layer'
+        if isLayer:
+            layer = self.getQgisLayerById(selectedItem['id'])
+            layerProviderKey = layer.providerType()
+            if layerProviderKey in ('wms'):
+                if self.getLayerWmsParameters(layer):
+                    wmsEnabled = True
+        return wmsEnabled
 
     def setLayerProperty(self, key, *args):
         '''
@@ -2258,6 +2277,8 @@ class lizmap:
                     wmsParams = self.getLayerWmsParameters(layer)
                     if wmsParams:
                         layerOptions['externalAccess'] = wmsParams
+                    else:
+                        layerOptions['externalWmsToggle'] = "False"
                 else:
                     layerOptions['externalWmsToggle'] = "False"
 
