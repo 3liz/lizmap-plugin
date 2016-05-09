@@ -2568,7 +2568,6 @@ class lizmap:
         # First get selected item
         idx = combo.currentIndex()
         data = combo.itemData(idx)
-        idx = 0
 
         # Clear the combo
         combo.clear()
@@ -2603,7 +2602,32 @@ class lizmap:
         self.globalOptions['startupBaselayer']['list'] = blist
 
 
+    def setStartupBaselayerFromConfig(self):
+        '''
+        Read lizmap current cfg configuration
+        and set the startup baselayer if found
+        '''
 
+        # Get the project config file (projectname.qgs.cfg)
+        p = QgsProject.instance()
+        jsonFile = "%s.cfg" % p.fileName()
+        jsonOptions = {}
+        if os.path.exists(unicode(jsonFile)):
+            f = open(jsonFile, 'r')
+            jsonFileReader = f.read()
+            try:
+                sjson = json.loads(jsonFileReader)
+                jsonOptions = sjson['options']
+                if 'startupBaselayer' in jsonOptions:
+                    sb = jsonOptions['startupBaselayer']
+                    cb = self.dlg.ui.cbStartupBaselayer
+                    i = cb.findData(sb)
+                    if i >= 0:
+                        cb.setCurrentIndex(i)
+            except:
+                isok=0
+            finally:
+                f.close()
 
     def warnOnClose(self):
         '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
@@ -2679,6 +2703,7 @@ class lizmap:
 
             # Fill baselayer startup
             self.onBaselayerCheckboxChange()
+            self.setStartupBaselayerFromConfig()
 
             self.isok = 1
 
