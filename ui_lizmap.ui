@@ -86,13 +86,6 @@
             </column>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="cbRootGroupsAsBlock">
-            <property name="text">
-             <string>layers.rootGroupsAsBlock</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="cbHideGroupCheckbox">
             <property name="text">
@@ -594,8 +587,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1178</width>
-            <height>780</height>
+            <width>705</width>
+            <height>710</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1120,8 +1113,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1178</width>
-            <height>780</height>
+            <width>955</width>
+            <height>746</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1759,7 +1752,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1162</width>
+            <width>1154</width>
             <height>2167</height>
            </rect>
           </property>
@@ -2970,8 +2963,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1178</width>
-            <height>780</height>
+            <width>121</width>
+            <height>115</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -3101,7 +3094,6 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>inSourceRepository</tabstop>
   <tabstop>inSourceProject</tabstop>
-  <tabstop>cbRootGroupsAsBlock</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateMeasure</tabstop>
