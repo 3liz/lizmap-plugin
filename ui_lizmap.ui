@@ -37,7 +37,7 @@
      <item row="0" column="3">
       <widget class="QPushButton" name="btSave">
        <property name="text">
-        <string>layers.btSave.label</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>
@@ -53,13 +53,13 @@
      </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>layers.label</string>
+       <string>Layers</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_16">
        <item row="0" column="0">
         <widget class="QGroupBox" name="gb_tree">
          <property name="title">
-          <string>ui.groupBox.treeLayers</string>
+          <string>Project layers</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_15">
           <item row="0" column="0">
@@ -89,7 +89,7 @@
           <item row="1" column="0">
            <widget class="QCheckBox" name="cbHideGroupCheckbox">
             <property name="text">
-             <string>groups.hide.checkbox</string>
+             <string>Hide checkboxes for groups</string>
             </property>
            </widget>
           </item>
@@ -99,7 +99,7 @@
        <item row="0" column="1">
         <widget class="QGroupBox" name="gb_layerSettings">
          <property name="title">
-          <string>ui.groupBox.settingLayer</string>
+          <string>Selected item settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
@@ -128,14 +128,14 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>layers.layer.subgroup.metadata</string>
+                   <string>Metadata</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_7">
                   <property name="text">
-                   <string>layers.layer.title</string>
+                   <string>Title</string>
                   </property>
                  </widget>
                 </item>
@@ -145,7 +145,7 @@
                 <item>
                  <widget class="QLabel" name="label_8">
                   <property name="text">
-                   <string>layers.layer.abstract</string>
+                   <string>Abstract</string>
                   </property>
                  </widget>
                 </item>
@@ -162,7 +162,7 @@
                 <item>
                  <widget class="QLabel" name="label_10">
                   <property name="text">
-                   <string>layers.layer.link</string>
+                   <string>Link</string>
                   </property>
                  </widget>
                 </item>
@@ -178,14 +178,14 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>layers.layer.subgroup.options</string>
+                   <string>Map options</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbToggled">
                   <property name="text">
-                   <string>layers.layer.toggled</string>
+                   <string>Toggled?</string>
                   </property>
                  </widget>
                 </item>
@@ -194,7 +194,7 @@
                   <item>
                    <widget class="QCheckBox" name="cbPopup">
                     <property name="text">
-                     <string>layers.layer.popup</string>
+                     <string>Activate popup</string>
                     </property>
                    </widget>
                   </item>
@@ -246,7 +246,7 @@
                   <item>
                    <widget class="QPushButton" name="btConfigurePopup">
                     <property name="text">
-                     <string>layers.popup.configure</string>
+                     <string>Configure</string>
                     </property>
                    </widget>
                   </item>
@@ -268,28 +268,28 @@
                 <item>
                  <widget class="QCheckBox" name="cbNoLegendImage">
                   <property name="text">
-                   <string>layers.layer.noLegendImage</string>
+                   <string>Hide legend image?</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbGroupAsLayer">
                   <property name="text">
-                   <string>layers.layer.groupAsLayer</string>
+                   <string>Group as layer?</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbLayerIsBaseLayer">
                   <property name="text">
-                   <string>layers.layer.baselayer</string>
+                   <string>Base layer?</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbDisplayInLegend">
                   <property name="text">
-                   <string>layers.layer.displayInLegend</string>
+                   <string>Display in Legend tree</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -299,7 +299,7 @@
                 <item>
                  <widget class="QCheckBox" name="cbSingleTile">
                   <property name="text">
-                   <string>layers.layer.singletile</string>
+                   <string>Single Tile?</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -311,7 +311,7 @@
                   <item>
                    <widget class="QLabel" name="label_9">
                     <property name="text">
-                     <string>layers.imageFormat.label</string>
+                     <string>Image format</string>
                     </property>
                    </widget>
                   </item>
@@ -363,14 +363,14 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>layers.layer.subgroup.cache</string>
+                   <string>Cache</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QCheckBox" name="cbCached">
                   <property name="text">
-                   <string>layers.layer.cached</string>
+                   <string>Server cache?</string>
                   </property>
                  </widget>
                 </item>
@@ -379,7 +379,7 @@
                   <item>
                    <widget class="QLabel" name="label_12">
                     <property name="text">
-                     <string>layers.layer.cacheExpiration</string>
+                     <string>Expiration (seconds)</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -396,7 +396,7 @@
                   <item>
                    <widget class="QLabel" name="label_16">
                     <property name="text">
-                     <string>layers.layer.metatileSize</string>
+                     <string>Metatile</string>
                     </property>
                    </widget>
                   </item>
@@ -414,7 +414,7 @@
                   <item>
                    <widget class="QLabel" name="label_18">
                     <property name="text">
-                     <string>layers.layer.clientCacheExpiration</string>
+                     <string>Browser client cache?</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -459,7 +459,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>layers.layer.subgroup.embedded</string>
+                   <string>Embedded layers and groups</string>
                   </property>
                  </widget>
                 </item>
@@ -468,7 +468,7 @@
                   <item>
                    <widget class="QLabel" name="label_51">
                     <property name="text">
-                     <string>layer.embeddedRep</string>
+                     <string>Source repository</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -485,7 +485,7 @@
                   <item>
                    <widget class="QLabel" name="label_50">
                     <property name="text">
-                     <string>layer.embeddedProject</string>
+                     <string>Source project</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -523,7 +523,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>layers.layer.subgroup.wms</string>
+                   <string>Third-party WMS layers</string>
                   </property>
                  </widget>
                 </item>
@@ -539,7 +539,7 @@
                   <item>
                    <widget class="QLabel" name="label_59">
                     <property name="text">
-                     <string>layers.layer.externalWms</string>
+                     <string>Get images directly from WMS Server</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -574,7 +574,7 @@
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>map.label</string>
+       <string>Map</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_14">
        <item row="3" column="0">
@@ -595,13 +595,13 @@
            <item>
             <widget class="QGroupBox" name="gb_generalOptions">
              <property name="title">
-              <string>map.general.options</string>
+              <string>Generic options</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_15">
               <item>
                <widget class="QCheckBox" name="cbHideProject">
                 <property name="text">
-                 <string>map.hide.project</string>
+                 <string>Hide project in Lizmap Web Client</string>
                 </property>
                </widget>
               </item>
@@ -611,7 +611,7 @@
            <item>
             <widget class="QGroupBox" name="gb_visibleTools">
              <property name="title">
-              <string>map.visibletools.label</string>
+              <string>Map tools</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
@@ -622,7 +622,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string>map.tool.print</string>
+                   <string>Print</string>
                   </property>
                  </widget>
                 </item>
@@ -632,7 +632,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string>map.tool.measure</string>
+                   <string>Measure tools</string>
                   </property>
                  </widget>
                 </item>
@@ -642,7 +642,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string>map.tool.zoom.history</string>
+                   <string>Zoom history</string>
                   </property>
                  </widget>
                 </item>
@@ -652,7 +652,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string>map.tool.geolocation</string>
+                   <string>Automatic geolocation</string>
                   </property>
                  </widget>
                 </item>
@@ -676,7 +676,7 @@
                 <item>
                  <widget class="QLabel" name="label_19">
                   <property name="text">
-                   <string>map.tool.externalSearch.label</string>
+                   <string>Address search</string>
                   </property>
                  </widget>
                 </item>
@@ -816,7 +816,7 @@
               <string notr="true"/>
              </property>
              <property name="title">
-              <string>map.scales.label</string>
+              <string>Scales</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="2" column="0">
@@ -827,7 +827,7 @@
                    <bool>false</bool>
                   </property>
                   <property name="text">
-                   <string>map.minScale.label</string>
+                   <string>Min Scale</string>
                   </property>
                  </widget>
                 </item>
@@ -850,7 +850,7 @@
                    <bool>false</bool>
                   </property>
                   <property name="text">
-                   <string>map.maxScale.label</string>
+                   <string>Max Scale</string>
                   </property>
                  </widget>
                 </item>
@@ -888,7 +888,7 @@
                 <item>
                  <widget class="QLabel" name="label_15">
                   <property name="text">
-                   <string>map.mapScales.label</string>
+                   <string>Map Scales</string>
                   </property>
                  </widget>
                 </item>
@@ -927,7 +927,7 @@
            <item>
             <widget class="QGroupBox" name="gb_extent">
              <property name="title">
-              <string>map.initialExtent.label</string>
+              <string>Initial map extent</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
               <item>
@@ -942,7 +942,7 @@
                 <item>
                  <widget class="QLabel" name="label_24">
                   <property name="text">
-                   <string>map.initialExtent.content</string>
+                   <string>Extent</string>
                   </property>
                  </widget>
                 </item>
@@ -960,14 +960,14 @@
                 <item>
                  <widget class="QPushButton" name="btSetExtentFromProject">
                   <property name="text">
-                   <string>map.initialExtent.setFromProject</string>
+                   <string>Set from project properties</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="btSetExtentFromCanvas">
                   <property name="text">
-                   <string>map.initialExtent.setFromCanvas</string>
+                   <string>Set from map canvas</string>
                   </property>
                  </widget>
                 </item>
@@ -992,41 +992,41 @@
            <item>
             <widget class="QGroupBox" name="gb_interface">
              <property name="title">
-              <string>map.interface.label</string>
+              <string>Map interface</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_18">
               <item>
                <widget class="QCheckBox" name="cbHideHeader">
                 <property name="text">
-                 <string>map.interface.hide.header</string>
+                 <string>Hide header</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="cbHideMenu">
                 <property name="text">
-                 <string>map.interface.hide.menu</string>
+                 <string>Hide menu bar</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="cbHideLegend">
                 <property name="text">
-                 <string>map.interface.hide.legend</string>
+                 <string>Hide legend panel at startup</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="cbHideOverview">
                 <property name="text">
-                 <string>map.interface.hide.overview.scale</string>
+                 <string>Hide scale and overview map</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="cbHideNavbar">
                 <property name="text">
-                 <string>map.interface.hide.navbar</string>
+                 <string>Hide navigation tools</string>
                 </property>
                </widget>
               </item>
@@ -1100,7 +1100,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string>baselayer.label</string>
+       <string>Baselayers</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_12">
        <item>
@@ -1121,7 +1121,7 @@
            <item>
             <widget class="QGroupBox" name="gb_externalLayers">
              <property name="title">
-              <string>map.public.label</string>
+              <string>Public baselayers</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
@@ -1145,7 +1145,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>map.osm.label</string>
+                   <string>OpenStreetMap</string>
                   </property>
                  </widget>
                 </item>
@@ -1208,7 +1208,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>map.google.label</string>
+                   <string>Google</string>
                   </property>
                  </widget>
                 </item>
@@ -1295,7 +1295,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>map.bing.label</string>
+                   <string>Bing Map</string>
                   </property>
                  </widget>
                 </item>
@@ -1375,7 +1375,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>map.ign.label</string>
+                   <string>IGN (France)</string>
                   </property>
                  </widget>
                 </item>
@@ -1454,7 +1454,7 @@
               <item>
                <widget class="QCheckBox" name="cbAddEmptyBaselayer">
                 <property name="text">
-                 <string>baselayer.add.empty</string>
+                 <string>Add an empty base layer (with project background color)</string>
                 </property>
                </widget>
               </item>
@@ -1511,13 +1511,13 @@
            <item>
             <widget class="QGroupBox" name="gb_lizmapExternalBaselayers">
              <property name="title">
-              <string>baselayers.external.lizmap.label</string>
+              <string>External Lizmap layers</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_14">
               <item>
                <widget class="QLabel" name="label_40">
                 <property name="text">
-                 <string>baselayers.external.lizmap.description</string>
+                 <string>You can add baselayers which come from another published Lizmap project. To do so, write down the repository id (not label), the project id (QGIS filename with no extension), QGIS layer name (as appearing in QGIS legend widget) and a chosen title.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1552,27 +1552,27 @@
                 </attribute>
                 <column>
                  <property name="text">
-                  <string>twLizmapBaselayers.col.repository</string>
+                  <string>Repository</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLizmapBaselayers.col.project</string>
+                  <string>Project</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLizmapBaselayers.col.layer</string>
+                  <string>QGIS Layer</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLizmapBaselayers.col.title</string>
+                  <string>Layer title</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLizmapBaselayers.col.imageFormat</string>
+                  <string>Image format (png, jpeg)</string>
                  </property>
                 </column>
                 <column>
@@ -1600,14 +1600,14 @@
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_37">
                   <property name="text">
-                   <string>baselayers.lizmap.repository</string>
+                   <string>Repository</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="1">
                  <widget class="QLabel" name="label_36">
                   <property name="text">
-                   <string>baselayers.lizmap.project</string>
+                   <string>Project</string>
                   </property>
                  </widget>
                 </item>
@@ -1624,14 +1624,14 @@
                 <item row="0" column="3">
                  <widget class="QLabel" name="label_39">
                   <property name="text">
-                   <string>baselayers.lizmap.title</string>
+                   <string>Title</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="2">
                  <widget class="QLabel" name="label_38">
                   <property name="text">
-                   <string>baselayers.lizmap.layer</string>
+                   <string>QGIS Layer</string>
                   </property>
                  </widget>
                 </item>
@@ -1668,7 +1668,7 @@
                 <item row="0" column="4">
                  <widget class="QLabel" name="label_52">
                   <property name="text">
-                   <string>baselayers.lizmap.imageFormat</string>
+                   <string>Image format (png, jpeg)</string>
                   </property>
                  </widget>
                 </item>
@@ -1689,14 +1689,14 @@
                 <item>
                  <widget class="QPushButton" name="btLizmapBaselayerAdd">
                   <property name="text">
-                   <string>tw.btLayerAdd</string>
+                   <string>Add layer</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="btLizmapBaselayerDel">
                   <property name="text">
-                   <string>tw.btLayerDel</string>
+                   <string>Remove layer</string>
                   </property>
                  </widget>
                 </item>
@@ -1739,7 +1739,7 @@
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>tools.label</string>
+       <string>Tools</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
@@ -1760,13 +1760,13 @@
            <item>
             <widget class="QGroupBox" name="gb_locateByLayer">
              <property name="title">
-              <string>tools.locateByLayer.label</string>
+              <string>Locate by Layer</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
               <item row="0" column="0">
                <widget class="QLabel" name="label_28">
                 <property name="text">
-                 <string>tools.locateByLayer.description</string>
+                 <string>You can add up to 3 layers as a source of the locating tool</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1782,7 +1782,7 @@
                     <item row="0" column="2">
                      <widget class="QLabel" name="label_27">
                       <property name="text">
-                       <string>tools.locate.filterField.label</string>
+                       <string>Optionnal group by field</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -1812,14 +1812,14 @@
                     <item row="1" column="3">
                      <widget class="QCheckBox" name="cbLocateByLayerDisplayGeom">
                       <property name="text">
-                       <string>tools.locateByLayer.cbDisplayGeom</string>
+                       <string>Display the geometry</string>
                       </property>
                      </widget>
                     </item>
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_25">
                       <property name="text">
-                       <string>tools.locate.layer.label</string>
+                       <string>Layer</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -1829,7 +1829,7 @@
                     <item row="0" column="1">
                      <widget class="QLabel" name="label_26">
                       <property name="text">
-                       <string>tools.locate.field.label</string>
+                       <string>Display field</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -1839,7 +1839,7 @@
                     <item row="1" column="4">
                      <widget class="QSpinBox" name="inLocateByLayerMinLength">
                       <property name="toolTip">
-                       <string>tools.locate.minLength.tooltip</string>
+                       <string>If you set a value above 0, autocompletion will be used after this amount of characters while the user types. The classical combobox will be replaced by a editable text input</string>
                       </property>
                       <property name="statusTip">
                        <string/>
@@ -1865,7 +1865,7 @@
                     <item row="0" column="4">
                      <widget class="QLabel" name="label_53">
                       <property name="text">
-                       <string>tools.locate.minLength.label</string>
+                       <string>Autocompletion after</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -1901,14 +1901,14 @@
                   <item>
                    <widget class="QPushButton" name="btLocateByLayerAdd">
                     <property name="text">
-                     <string>tw.btLayerAdd</string>
+                     <string>Add layer</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btLocateByLayerDel">
                     <property name="text">
-                     <string>tw.btLayerDel</string>
+                     <string>Remove layer</string>
                     </property>
                    </widget>
                   </item>
@@ -1963,27 +1963,27 @@
                 </attribute>
                 <column>
                  <property name="text">
-                  <string>twLocateByLayer.col.layer</string>
+                  <string>Layer</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLocateByLayer.col.field</string>
+                  <string>Field</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLocateByLayer.col.filterField</string>
+                  <string>Group field</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLocateByLayer.col.displayGeom</string>
+                  <string>Display the geometry</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>tools.locate.minLength.label</string>
+                  <string>Autocompletion after</string>
                  </property>
                 </column>
                 <column>
@@ -1993,7 +1993,7 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLocateByLayer.col.id</string>
+                  <string>Layer id</string>
                  </property>
                 </column>
                 <column>
@@ -2009,13 +2009,13 @@
            <item>
             <widget class="QGroupBox" name="gb_attributeLayers">
              <property name="title">
-              <string>tools.attribute.label</string>
+              <string>Attribute table</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_19">
               <item>
                <widget class="QLabel" name="label_60">
                 <property name="text">
-                 <string>tools.attribute.description</string>
+                 <string>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -2060,7 +2060,7 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>attribute.col.id</string>
+                  <string>attribute layer id</string>
                  </property>
                 </column>
                 <column>
@@ -2108,7 +2108,7 @@
                      <string notr="true">background-color:rgb(170, 255, 255);</string>
                     </property>
                     <property name="text">
-                     <string>tools.attributeLayer.cbIsPivot</string>
+                     <string>Pivot table?</string>
                     </property>
                    </widget>
                   </item>
@@ -2125,7 +2125,7 @@
                      <string notr="true">background-color:rgb(170, 255, 255);</string>
                     </property>
                     <property name="text">
-                     <string>tools.attributeLayer.cbHideAsChild</string>
+                     <string>Hide in child subpanels</string>
                     </property>
                    </widget>
                   </item>
@@ -2154,14 +2154,14 @@
                 <item>
                  <widget class="QPushButton" name="btAttributeLayerAdd">
                   <property name="text">
-                   <string>tw.btLayerAdd</string>
+                   <string>Add layer</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="btAttributeLayerDel">
                   <property name="text">
-                   <string>tw.btLayerDel</string>
+                   <string>Remove layer</string>
                   </property>
                  </widget>
                 </item>
@@ -2186,7 +2186,7 @@
            <item>
             <widget class="QGroupBox" name="gb_tooltipLayers">
              <property name="title">
-              <string>tools.tooltip.label</string>
+              <string>Tooltip layers</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_20">
               <item>
@@ -2195,7 +2195,7 @@
                  <string notr="true">background-color:rgb(170, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>tools.tooltip.description</string>
+                 <string>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionnaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -2329,14 +2329,14 @@
                 <item>
                  <widget class="QPushButton" name="btTooltipLayerAdd">
                   <property name="text">
-                   <string>tw.btLayerAdd</string>
+                   <string>Add layer</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="btTooltipLayerDel">
                   <property name="text">
-                   <string>tw.btLayerDel</string>
+                   <string>Remove layer</string>
                   </property>
                  </widget>
                 </item>
@@ -2361,13 +2361,13 @@
            <item>
             <widget class="QGroupBox" name="gb_editionLayers">
              <property name="title">
-              <string>tools.edition.label</string>
+              <string>Layer editing</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_24">
               <item row="0" column="0">
                <widget class="QLabel" name="label_29">
                 <property name="text">
-                 <string>tools.edition.description</string>
+                 <string>You can add up to 5 layers in the list and choose editing capabilities for each one.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -2396,32 +2396,32 @@
                 </attribute>
                 <column>
                  <property name="text">
-                  <string>twEdition.col.layer</string>
+                  <string>Layer</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twEdition.col.add</string>
+                  <string>Create</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twEdition.col.modAttribute</string>
+                  <string>Modify attributes</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twEdition.col.modGeom</string>
+                  <string>Modify geometry</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twEdition.col.delete</string>
+                  <string>Delete</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twEdition.col.id</string>
+                  <string>Layer id</string>
                  </property>
                 </column>
                 <column>
@@ -2448,28 +2448,28 @@
                   <item>
                    <widget class="QCheckBox" name="cbEditionLayerCreate">
                     <property name="text">
-                     <string>tools.editionLayer.cbCreate</string>
+                     <string>Create</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbEditionLayerModifyAttribute">
                     <property name="text">
-                     <string>tools.editionLayer.cbModAtt</string>
+                     <string>Modify attributes</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbEditionLayerModifyGeometry">
                     <property name="text">
-                     <string>tools.editionLayer.cbModGeom</string>
+                     <string>Modify geometry</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbEditionLayerDeleteFeature">
                     <property name="text">
-                     <string>tools.editionLayer.cbDel</string>
+                     <string>Delete</string>
                     </property>
                    </widget>
                   </item>
@@ -2493,14 +2493,14 @@
                   <item>
                    <widget class="QPushButton" name="btEditionLayerAdd">
                     <property name="text">
-                     <string>tw.btLayerAdd</string>
+                     <string>Add layer</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btEditionLayerDel">
                     <property name="text">
-                     <string>tw.btLayerDel</string>
+                     <string>Remove layer</string>
                     </property>
                    </widget>
                   </item>
@@ -2527,7 +2527,7 @@
            <item>
             <widget class="QGroupBox" name="gb_loginFilteredLayers">
              <property name="title">
-              <string>tools.loginFilteredLayers.label</string>
+              <string>Filter layer by user</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
               <item>
@@ -2559,22 +2559,22 @@
                 </property>
                 <column>
                  <property name="text">
-                  <string>twLogin.col.layer</string>
+                  <string>Layer</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLogin.col.field</string>
+                  <string>Field</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLogin.col.private</string>
+                  <string>Filter by user</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>twLogin.col.id</string>
+                  <string>Id</string>
                  </property>
                 </column>
                 <column>
@@ -2597,7 +2597,7 @@
                   <item>
                    <widget class="QCheckBox" name="cbLoginFilteredLayerPrivate">
                     <property name="text">
-                     <string>tool.loginFilteredLayer.cbPrivate</string>
+                     <string>Filter by user</string>
                     </property>
                    </widget>
                   </item>
@@ -2621,14 +2621,14 @@
                   <item>
                    <widget class="QPushButton" name="btLoginFilteredLayerAdd">
                     <property name="text">
-                     <string>tw.btLayerAdd</string>
+                     <string>Add layer</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btLoginFilteredLayerDel">
                     <property name="text">
-                     <string>tw.btLayerDel</string>
+                     <string>Remove layer</string>
                     </property>
                    </widget>
                   </item>
@@ -2655,13 +2655,13 @@
            <item>
             <widget class="QGroupBox" name="gb_timemanager">
              <property name="title">
-              <string>tools.timemanager.label</string>
+              <string>Time Manager</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_16">
               <item>
                <widget class="QLabel" name="label_41">
                 <property name="text">
-                 <string>tools.timemanager.description</string>
+                 <string>Add layers here to let the user play an animation based on an date or date/time attribute value. Similar to QGIS Timemanager plugin, but web based.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -2673,7 +2673,7 @@
                 <item row="0" column="1">
                  <widget class="QLabel" name="label_43">
                   <property name="text">
-                   <string>tools.tm.timeFrameType</string>
+                   <string>Frame type</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2683,7 +2683,7 @@
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_42">
                   <property name="text">
-                   <string>tools.tm.timeFrameSize</string>
+                   <string>Time frame size</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2700,7 +2700,7 @@
                 <item row="0" column="2">
                  <widget class="QLabel" name="label_44">
                   <property name="text">
-                   <string>tools.tm.animationFrameLength</string>
+                   <string>Animation frame length (milliseconds)</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2787,32 +2787,32 @@
                 </property>
                 <column>
                  <property name="text">
-                  <string>tools.tm.layer</string>
+                  <string>Layer</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>tools.tm.startAttribute</string>
+                  <string>Start attribute</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>tools.tm.labelAttribute</string>
+                  <string>Hover label</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>tools.tm.group</string>
+                  <string>Group id (optionnal)</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>tools.tm.groupTitle</string>
+                  <string>Group title (optionnal)</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>tools.tm.layerId</string>
+                  <string>LayerId</string>
                  </property>
                 </column>
                 <column>
@@ -2833,7 +2833,7 @@
                 <item row="0" column="1">
                  <widget class="QLabel" name="label_45">
                   <property name="text">
-                   <string>tools.tm.layer</string>
+                   <string>Layer</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2849,7 +2849,7 @@
                 <item row="0" column="2">
                  <widget class="QLabel" name="label_46">
                   <property name="text">
-                   <string>tools.tm.startAttribute</string>
+                   <string>Start attribute</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2859,7 +2859,7 @@
                 <item row="0" column="5">
                  <widget class="QLabel" name="label_48">
                   <property name="text">
-                   <string>tools.tm.groupTitle</string>
+                   <string>Group title (optionnal)</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2869,7 +2869,7 @@
                 <item row="0" column="4">
                  <widget class="QLabel" name="label_47">
                   <property name="text">
-                   <string>tools.tm.group</string>
+                   <string>Group id (optionnal)</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2879,7 +2879,7 @@
                 <item row="0" column="3">
                  <widget class="QLabel" name="label_49">
                   <property name="text">
-                   <string>tools.tm.labelAttribute</string>
+                   <string>Hover label</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2911,14 +2911,14 @@
                   <item>
                    <widget class="QPushButton" name="btTimemanagerLayerAdd">
                     <property name="text">
-                     <string>tw.btLayerAdd</string>
+                     <string>Add layer</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btTimemanagerLayerDel">
                     <property name="text">
-                     <string>tw.btLayerDel</string>
+                     <string>Remove layer</string>
                     </property>
                    </widget>
                   </item>
@@ -2950,7 +2950,7 @@
      </widget>
      <widget class="QWidget" name="tab_ftp">
       <attribute name="title">
-       <string>ftp.label</string>
+       <string>FTP</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_18">
        <item row="0" column="0">
@@ -2978,7 +2978,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>ftp.deactivated</string>
+              <string>The FTP sync tool has been removed. Please use a FTP client like Filezilla, WinSCP or FireFTP to synchronize your local data with the Lizmap Web Client server. This is safer because you can then have a look at the remote data, and decide precisely which files you need to synchronize. Documentation: http://docs.3liz.com/en/publisher_guide/publish_with_ftp.html</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -3006,7 +3006,7 @@
      </widget>
      <widget class="QWidget" name="tab_main">
       <attribute name="title">
-       <string>log.label</string>
+       <string>Log</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0" colspan="5">
@@ -3022,7 +3022,7 @@
        <item row="1" column="0" rowspan="2">
         <widget class="QPushButton" name="btClearlog">
          <property name="text">
-          <string>log.btClearLog.label</string>
+          <string>Clear log</string>
          </property>
         </widget>
        </item>
@@ -3049,7 +3049,7 @@
      <item>
       <widget class="QPushButton" name="btHelp">
        <property name="text">
-        <string>ui.main.btHelp</string>
+        <string>Help</string>
        </property>
       </widget>
      </item>

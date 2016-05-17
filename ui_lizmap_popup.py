@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_lizmap_popup.ui'
 #
-# Created: Mon Nov  2 20:59:49 2015
-#      by: PyQt4 UI code generator 4.9.3
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +11,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_lizmap_popup(object):
     def setupUi(self, lizmap_popup):
@@ -30,7 +38,7 @@ class Ui_lizmap_popup(object):
         self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
         self.gridLayout_2.setMargin(0)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
-        self.txtPopup = QgsCodeEditorHTML(self.groupBox)
+        self.txtPopup = gui.QgsCodeEditorHTML(self.groupBox)
         self.txtPopup.setObjectName(_fromUtf8("txtPopup"))
         self.gridLayout_2.addWidget(self.txtPopup, 0, 0, 1, 1)
         self.groupBox_2 = QtGui.QGroupBox(self.splitter)
@@ -55,8 +63,8 @@ class Ui_lizmap_popup(object):
         lizmap_popup.setTabOrder(self.htmlPopup, self.bbConfigurePopup)
 
     def retranslateUi(self, lizmap_popup):
-        lizmap_popup.setWindowTitle(QtGui.QApplication.translate("lizmap_popup", "Lizmap - Popup", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("lizmap_popup", "ui.popup.source.label", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox_2.setTitle(QtGui.QApplication.translate("lizmap_popup", "ui.popup.html.label", None, QtGui.QApplication.UnicodeUTF8))
+        lizmap_popup.setWindowTitle(_translate("lizmap_popup", "Lizmap - Popup", None))
+        self.groupBox.setTitle(_translate("lizmap_popup", "Template for the popup", None))
+        self.groupBox_2.setTitle(_translate("lizmap_popup", "Preview", None))
 
-from qgis.gui import QgsCodeEditorHTML
+from qgis import gui

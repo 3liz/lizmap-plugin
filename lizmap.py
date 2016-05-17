@@ -719,8 +719,8 @@ class lizmap:
             myReturn = False
             QMessageBox.critical(
                 self.dlg,
-                QApplication.translate("lizmap", "ui.msg.error.title"),
-                QApplication.translate("lizmap", "log.map.mapScales.warning"),
+                QApplication.translate("lizmap", "Lizmap Error"),
+                QApplication.translate("lizmap", "Map scales: Write down integer scales separated by comma. You must enter at least 2 min and max values."),
                 QMessageBox.Ok)
         else:
             minScale = min(mapScales)
@@ -756,11 +756,11 @@ class lizmap:
                 isok=0
                 QMessageBox.critical(
                     self.dlg,
-                    QApplication.translate("lizmap", "ui.msg.error.title"),
-                    QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
+                    QApplication.translate("lizmap", "Lizmap Error"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
                     QMessageBox.Ok)
                 self.log(
-                    QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
             finally:
@@ -1145,7 +1145,7 @@ class lizmap:
         if not hasWfsOption:
             QMessageBox.critical(
                 self.dlg,
-                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "Lizmap Error"),
                 QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
@@ -1224,7 +1224,7 @@ class lizmap:
         if not hasWfsOption:
             QMessageBox.critical(
                 self.dlg,
-                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "Lizmap Error"),
                 QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
@@ -1296,7 +1296,7 @@ class lizmap:
         if not hasWfsOption:
             QMessageBox.critical(
                 self.dlg,
-                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "Lizmap Error"),
                 QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
@@ -1482,8 +1482,8 @@ class lizmap:
             if not val:
                 QMessageBox.critical(
                     self.dlg,
-                    QApplication.translate("lizmap", "ui.msg.error.title"),
-                    QApplication.translate("lizmap", "ui.msg.baselayers.lack.input"),
+                    QApplication.translate("lizmap", "Lizmap Error"),
+                    QApplication.translate("lizmap", "Please check that all input fields have been filled: repository, project, layer name and title"),
                     QMessageBox.Ok
                 )
                 return False
@@ -1551,7 +1551,7 @@ class lizmap:
         # Ask confirmation
         refreshIt = QMessageBox.question(
             self.dlg,
-            QApplication.translate("lizmap", 'ui.msg.question.refresh.title'),
+            QApplication.translate("lizmap", 'Lizmap - Refresh layer tree?'),
             QApplication.translate("lizmap", "ui.msg.question.refresh.content"),
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No
         )
@@ -1662,7 +1662,7 @@ class lizmap:
         # initialize the tree
         myTree = self.dlg.ui.treeLayer
         myTree.clear()
-        myTree.headerItem().setText(0, QApplication.translate( "lizmap", "layers.tree.title" ) )
+        myTree.headerItem().setText(0, QApplication.translate( "lizmap", "List of layers" ) )
         self.myDic = {}
         myGroups = self.iface.legendInterface().groups()
 
@@ -1679,9 +1679,9 @@ class lizmap:
                 jsonLayers = sjson['layers']
             except:
                 isok=0
-                QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "ui.msg.error.title"), (u""), QMessageBox.Ok)
+                QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "Lizmap Error"), (u""), QMessageBox.Ok)
                 self.log(
-                    QApplication.translate("lizmap", "ui.msg.error.tree.read.content"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
                     abort=True,
                     textarea=self.dlg.ui.outLog)
             finally:
@@ -2327,7 +2327,7 @@ class lizmap:
         # Get the project data from api
         p = QgsProject.instance()
         if not p.fileName():
-            errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.init.open.project")+'\n'
+            errorMessage+= '* '+QApplication.translate("lizmap", "You need to open a qgis project before using LizMap")+'\n'
             isok = False
 
         # Check the project state (saved or not)
@@ -2348,7 +2348,7 @@ class lizmap:
         if isok:
             # Check relative/absolute path
             if p.readEntry('Paths', 'Absolute')[0] == 'true':
-                errorMessage+= '* '+QApplication.translate("lizmap", "ui.msg.error.project.option.path.relative")+'\n'
+                errorMessage+= '* '+QApplication.translate("lizmap", "The project layer paths must be set to relative. Please change this options in the project settings.")+'\n'
                 isok = False
 
             # check active layers path layer by layer
@@ -2421,7 +2421,7 @@ class lizmap:
         if not isok and errorMessage:
             QMessageBox.critical(
                 self.dlg,
-                QApplication.translate("lizmap", "ui.msg.error.title"),
+                QApplication.translate("lizmap", "Lizmap Error"),
                 errorMessage,
                 QMessageBox.Ok)
 
@@ -2457,7 +2457,7 @@ class lizmap:
 
             # log
             self.dlg.ui.outLog.append('=' * 20)
-            self.dlg.ui.outLog.append(QApplication.translate("lizmap", "log.map.option.title"))
+            self.dlg.ui.outLog.append('<b>'+QApplication.translate("lizmap", "Map options")+'</b>')
             self.dlg.ui.outLog.append('=' * 20)
 
             # Checking configuration data
@@ -2504,7 +2504,7 @@ class lizmap:
                 # write data in the lizmap json config file
                 self.writeProjectConfigFile()
                 self.log(
-                    QApplication.translate("lizmap", "ui.msg.map.parameters.ok"),
+                    QApplication.translate("lizmap", "All the map parameters are correctly set"),
                     abort=False,
                     textarea=self.dlg.ui.outLog)
                 self.log(
@@ -2516,8 +2516,8 @@ class lizmap:
                 a = False
                 QMessageBox.critical(
                     self.dlg,
-                    QApplication.translate("lizmap", "ui.msg.error.title"),
-                    QApplication.translate("lizmap", "ui.msg.map.parameters.bad"),
+                    QApplication.translate("lizmap", "Lizmap Error"),
+                    QApplication.translate("lizmap", "Wrong or missing map parameters: please read the log and correct the printed errors."),
                     QMessageBox.Ok)
                 # Go to Log tab
                 self.dlg.ui.tabWidget.setCurrentIndex(5)
@@ -2669,8 +2669,8 @@ class lizmap:
         if self.dlg.isVisible():
             QMessageBox.warning(
                 self.dlg,
-                QApplication.translate("lizmap", "ui.msg.warning.title"),
-                QApplication.translate("lizmap", "ui.msg.warning.window.opened"),
+                QApplication.translate("lizmap", "Lizmap - Warning"),
+                QApplication.translate("lizmap", "A Lizmap window is already opened"),
                 QMessageBox.Ok)
 
         # show the dialog only if checkGlobalProjectOptions is true
