@@ -1515,7 +1515,7 @@ class Ui_lizmap(object):
         self.label_13.setText(_translate("lizmap", "Min Scale", None))
         self.label_14.setText(_translate("lizmap", "Max Scale", None))
         self.label_17.setText(_translate("lizmap", "map.scales.help", None))
-        self.label_15.setText(_translate("lizmap", "Map Scales", None))
+        self.label_15.setText(_translate("lizmap", "map.mapScales.label", None))
         self.label_71.setText(_translate("lizmap", "TextLabel", None))
         self.gb_extent.setTitle(_translate("lizmap", "Initial map extent", None))
         self.label_23.setText(_translate("lizmap", "map.initialExtent.help", None))

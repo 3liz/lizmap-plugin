@@ -888,7 +888,7 @@
                 <item>
                  <widget class="QLabel" name="label_15">
                   <property name="text">
-                   <string>Map Scales</string>
+                   <string>map.mapScales.label</string>
                   </property>
                  </widget>
                 </item>

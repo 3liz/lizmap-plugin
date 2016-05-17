@@ -2457,7 +2457,7 @@ class lizmap:
 
             # log
             self.dlg.ui.outLog.append('=' * 20)
-            self.dlg.ui.outLog.append('<b>'+QApplication.translate("lizmap", "Map options")+'</b>')
+            self.dlg.ui.outLog.append('<b>'+QApplication.translate("lizmap", "Map - options")+'</b>')
             self.dlg.ui.outLog.append('=' * 20)
 
             # Checking configuration data
