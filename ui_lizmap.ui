@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LizMap</string>
+   <string>Lizmap</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_9">
    <item row="1" column="0">
@@ -879,7 +879,9 @@
               <item row="0" column="0">
                <widget class="QLabel" name="label_17">
                 <property name="text">
-                 <string>map.scales.help</string>
+                 <string>Write down integer scales separated by coma.
+You must enter at least 2 min and max values.
+Ex: 1000, 250000</string>
                 </property>
                </widget>
               </item>
@@ -888,7 +890,7 @@
                 <item>
                  <widget class="QLabel" name="label_15">
                   <property name="text">
-                   <string>map.mapScales.label</string>
+                   <string>Map Scales</string>
                   </property>
                  </widget>
                 </item>
@@ -914,13 +916,6 @@
                 </item>
                </layout>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_71">
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -933,7 +928,8 @@
               <item>
                <widget class="QLabel" name="label_23">
                 <property name="text">
-                 <string>map.initialExtent.help</string>
+                 <string>You can define here the initial extent of the map.
+This is different to the map maximum extent (defined in QGIS project properties, &quot;OWS Server&quot; tab).</string>
                 </property>
                </widget>
               </item>
@@ -1127,7 +1123,7 @@
               <item>
                <widget class="QLabel" name="label_21">
                 <property name="text">
-                 <string>map.public.help</string>
+                 <string>You can add baselayers from public sources. If so, you must add the SCR &quot;Pseudo Mercator&quot; (EPSG:3857) in your WMS project OWS settings.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1875,20 +1871,22 @@
                     <item row="0" column="5">
                      <widget class="QLabel" name="label_66">
                       <property name="text">
-                       <string>filterOnLocate</string>
+                       <string>Filter layer on zoom</string>
                       </property>
                      </widget>
                     </item>
                     <item row="1" column="5">
                      <widget class="QCheckBox" name="cbFilterOnLocate">
                       <property name="toolTip">
-                       <string>filterOnLocateTooltip</string>
+                       <string>If the layer is published via the attribute layers tool below, and this checkbox is checked,
+zooming on a feature with the locate tool will trigger the filter of the layer for the selected feature.
+Only the selected feature will be visible on the map.</string>
                       </property>
                       <property name="styleSheet">
                        <string notr="true">background-color:rgb(170, 255, 255);</string>
                       </property>
                       <property name="text">
-                       <string>filterOnLocate</string>
+                       <string>Filter layer on zoom</string>
                       </property>
                      </widget>
                     </item>
@@ -1988,7 +1986,7 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>filterOnLocate</string>
+                  <string>Filter layer on zoom</string>
                  </property>
                 </column>
                 <column>
@@ -2035,7 +2033,7 @@
                 </property>
                 <column>
                  <property name="text">
-                  <string>layer</string>
+                  <string>Layer</string>
                  </property>
                 </column>
                 <column>
@@ -2045,17 +2043,17 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>hiddenFields</string>
+                  <string>Fields to hide</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>pivot</string>
+                  <string>Pivot table</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>hideAsChild</string>
+                  <string>Hide in children</string>
                  </property>
                 </column>
                 <column>
@@ -2077,7 +2075,7 @@
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_61">
                     <property name="text">
-                     <string>layer</string>
+                     <string>Layer</string>
                     </property>
                    </widget>
                   </item>
@@ -2098,7 +2096,7 @@
                   <item row="0" column="2">
                    <widget class="QLabel" name="label_64">
                     <property name="text">
-                     <string>hiddenFields</string>
+                     <string>Fields to hide</string>
                     </property>
                    </widget>
                   </item>
@@ -2206,27 +2204,27 @@
                <widget class="QTableWidget" name="twTooltipLayerList">
                 <column>
                  <property name="text">
-                  <string>layer</string>
+                  <string>Layer</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>fields</string>
+                  <string>Fields</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>displayGeom</string>
+                  <string>Display geometry</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>colorGeom</string>
+                  <string>Geometry color</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>layerId</string>
+                  <string>Layer id</string>
                  </property>
                 </column>
                 <column>
@@ -2244,7 +2242,7 @@
                    <string notr="true">background-color:rgb(170, 255, 255);</string>
                   </property>
                   <property name="text">
-                   <string>layer</string>
+                   <string>Layer</string>
                   </property>
                  </widget>
                 </item>
@@ -2254,7 +2252,7 @@
                    <string notr="true">background-color:rgb(170, 255, 255);</string>
                   </property>
                   <property name="text">
-                   <string>fields</string>
+                   <string>Fields</string>
                   </property>
                  </widget>
                 </item>
@@ -2271,7 +2269,7 @@
                    <string notr="true">background-color:rgb(170, 255, 255);</string>
                   </property>
                   <property name="text">
-                   <string>color</string>
+                   <string>Color (HTML)</string>
                   </property>
                  </widget>
                 </item>
@@ -2288,7 +2286,7 @@
                    <string notr="true">background-color:rgb(170, 255, 255);</string>
                   </property>
                   <property name="text">
-                   <string>displayGeom</string>
+                   <string>Display geometry</string>
                   </property>
                  </widget>
                 </item>
@@ -2311,7 +2309,7 @@
                    <string notr="true">background-color:rgb(170, 255, 255);</string>
                   </property>
                   <property name="text">
-                   <string>displayGeom</string>
+                   <string>Display geometry</string>
                   </property>
                  </widget>
                 </item>

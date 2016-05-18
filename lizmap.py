@@ -2327,7 +2327,7 @@ class lizmap:
         # Get the project data from api
         p = QgsProject.instance()
         if not p.fileName():
-            errorMessage+= '* '+QApplication.translate("lizmap", "You need to open a qgis project before using LizMap")+'\n'
+            errorMessage+= '* '+QApplication.translate("lizmap", "You need to open a qgis project before using Lizmap")+'\n'
             isok = False
 
         # Check the project state (saved or not)
@@ -2508,7 +2508,7 @@ class lizmap:
                     abort=False,
                     textarea=self.dlg.ui.outLog)
                 self.log(
-                    QApplication.translate("lizmap", "ui.msg.configuration.save.ok"),
+                    '<b>'+QApplication.translate("lizmap", "Lizmap configuration file has been updated")+'</b>',
                     abort=False,
                     textarea=self.dlg.ui.outLog)
                 a = True
@@ -2529,7 +2529,7 @@ class lizmap:
                 self.getMinMaxScales()
                 self.iface.messageBar().pushMessage(
                     u"Lizmap",
-                    QApplication.translate("lizmap", "ui.msg.configuration.save.ok"),
+                    QApplication.translate("lizmap", "Lizmap configuration file has been updated"),
                     level=QgsMessageBar.INFO,
                     duration=3
                 )
