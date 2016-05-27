@@ -11,3 +11,4 @@ TRANSLATIONS = i18n/lizmap_en.ts \
                i18n/lizmap_it.ts \
                i18n/lizmap_el.ts \
                i18n/lizmap_pt.ts \
+               i18n/lizmap_pl.ts \
