@@ -620,22 +620,22 @@ class lizmap:
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
             #add plugin to the web plugin menu
-            self.iface.addPluginToWebMenu(u"&LizMap", self.action)
+            self.iface.addPluginToWebMenu(u"&Lizmap", self.action)
             #add plugin help to the plugin menu
-            self.iface.addPluginToWebMenu(u"&LizMap", self.action_help)
+            self.iface.addPluginToWebMenu(u"&Lizmap", self.action_help)
             #add plugin about to the plugin menu
-            self.iface.addPluginToWebMenu(u"&LizMap", self.action_about)
+            self.iface.addPluginToWebMenu(u"&Lizmap", self.action_about)
             # and add button to the Web panel
             self.iface.addWebToolBarIcon(self.action)
         else:
             #add icon to the toolbar
             self.iface.addToolBarIcon(self.action)
             #add plugin to the plugin menu
-            self.iface.addPluginToMenu(u"&LizMap", self.action)
+            self.iface.addPluginToMenu(u"&Lizmap", self.action)
             #add plugin help to the plugin menu
-            self.iface.addPluginToMenu(u"&LizMap", self.action_help)
+            self.iface.addPluginToMenu(u"&Lizmap", self.action_help)
             #add plugin about to the plugin menu
-            self.iface.addPluginToMenu(u"&LizMap", self.action_about)
+            self.iface.addPluginToMenu(u"&Lizmap", self.action_about)
 
 
     def unload(self):
@@ -643,22 +643,22 @@ class lizmap:
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
             # new menu used, remove submenus from main Web menu
-            self.iface.removePluginWebMenu(u"&LizMap", self.action)
+            self.iface.removePluginWebMenu(u"&Lizmap", self.action)
             # also remove button from Web toolbar
             self.iface.removeWebToolBarIcon(self.action)
             # Remove help menu entry
-            self.iface.removePluginWebMenu(u"&LizMap", self.action_help)
+            self.iface.removePluginWebMenu(u"&Lizmap", self.action_help)
             # Remove about menu entry
-            self.iface.removePluginWebMenu(u"&LizMap", self.action_about)
+            self.iface.removePluginWebMenu(u"&Lizmap", self.action_about)
         else:
             #remove plugin
-            self.iface.removePluginMenu(u"&LizMap", self.action)
+            self.iface.removePluginMenu(u"&Lizmap", self.action)
             #remove icon
             self.iface.removeToolBarIcon(self.action)
             # Remove help menu entry
-            self.iface.removePluginMenu(u"&LizMap", self.action_help)
+            self.iface.removePluginMenu(u"&Lizmap", self.action_help)
             # Remove about menu entry
-            self.iface.removePluginMenu(u"&LizMap", self.action_about)
+            self.iface.removePluginMenu(u"&Lizmap", self.action_about)
 
 
     def showHelp(self):
