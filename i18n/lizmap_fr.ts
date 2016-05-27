@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -46,6 +45,11 @@
         <location filename="ui_lizmap.ui" line="1235"/>
         <source>Terrain</source>
         <translation>Relief</translation>
+    </message>
+    <message>
+        <location filename="lizmap.py" line="2529"/>
+        <source>Lizmap Error</source>
+        <translation>Lizmap - Erreur</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1693"/>
@@ -105,11 +109,6 @@ Raffraîchir l&apos;arbre des couches ?</translation>
         <location filename="lizmap.py" line="2542"/>
         <source>Lizmap configuration file has been updated</source>
         <translation>Le fichier de configuration de Lizmap a bien été enregistré</translation>
-    </message>
-    <message>
-        <location filename="lizmap.py" line="2529"/>
-        <source>Wrong or missing map parameters: please read the log and correct the printed errors.</source>
-        <translation>Des paramètres sont manquants ou erronés dans l&apos;onglet Carte. Veuillez lire le log et corriger ces erreurs avant de relancer l&apos;action.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2682"/>
@@ -218,8 +217,8 @@ Raffraîchir l&apos;arbre des couches ?</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2529"/>
-        <source>Lizmap Error</source>
-        <translation>Lizmap - Erreur</translation>
+        <source>Wrong or missing map parameters: please read the log and correct the printed errors.</source>
+        <translation>Des paramètres sont manquants ou erronés dans l&apos;onglet Carte. Veuillez lire le log et corriger ces erreurs avant de relancer l&apos;action.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1144"/>
@@ -269,7 +268,7 @@ Raffraîchir l&apos;arbre des couches ?</translation>
     <message>
         <location filename="ui_lizmap.ui" line="406"/>
         <source>0,0;_</source>
-        <translation></translation>
+        <translation>0,0;_</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="197"/>
@@ -547,7 +546,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="lizmap.py" line="1493"/>
         <source>Please check that all input fields have been filled: repository, project, layer name and title</source>
-        <translation type="unfinished">Il manque des informations. Vérifiez que vous avez bien rempli tous les champs : répertoire, projet, couche QGIS et titre</translation>
+        <translation>Il manque des informations. Vérifiez que vous avez bien rempli tous les champs : répertoire, projet, couche QGIS et titre</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="598"/>
@@ -777,7 +776,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="2016"/>
         <source>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</source>
-        <translation type="unfinished">En ajoutant des couches vecteur dans ce tableau, l&apos;utilisateur pourra afficher la table attributaire. Elles doivent être publiées en WFS (Propriétés du projet, onglet Serveur OWS) et vous pouvez choisir les champs à publier dans les propriétés de chaque couche, onglet Champs, et cases à cocher &quot;WFS&quot;</translation>
+        <translation>En ajoutant des couches vecteur dans ce tableau, l&apos;utilisateur pourra afficher la table attributaire. Elles doivent être publiées en WFS (Propriétés du projet, onglet Serveur OWS) et vous pouvez choisir les champs à publier dans les propriétés de chaque couche, onglet Champs, et cases à cocher &quot;WFS&quot;</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2061"/>
