@@ -1778,7 +1778,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <item row="0" column="2">
                      <widget class="QLabel" name="label_27">
                       <property name="text">
-                       <string>Optionnal group by field</string>
+                       <string>Optional group by field</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -2193,7 +2193,7 @@ Only the selected feature will be visible on the map.</string>
                  <string notr="true">background-color:rgb(170, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionnaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
+                 <string>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -2800,12 +2800,12 @@ Only the selected feature will be visible on the map.</string>
                 </column>
                 <column>
                  <property name="text">
-                  <string>Group id (optionnal)</string>
+                  <string>Group id (optional)</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>Group title (optionnal)</string>
+                  <string>Group title (optional)</string>
                  </property>
                 </column>
                 <column>
@@ -2857,7 +2857,7 @@ Only the selected feature will be visible on the map.</string>
                 <item row="0" column="5">
                  <widget class="QLabel" name="label_48">
                   <property name="text">
-                   <string>Group title (optionnal)</string>
+                   <string>Group title (optional)</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -2867,7 +2867,7 @@ Only the selected feature will be visible on the map.</string>
                 <item row="0" column="4">
                  <widget class="QLabel" name="label_47">
                   <property name="text">
-                   <string>Group id (optionnal)</string>
+                   <string>Group id (optional)</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>

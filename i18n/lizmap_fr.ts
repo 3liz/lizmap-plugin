@@ -471,7 +471,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1781"/>
-        <source>Optionnal group by field</source>
+        <source>Optional group by field</source>
         <translation>Regroupement optionnel</translation>
     </message>
     <message>
@@ -621,12 +621,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2870"/>
-        <source>Group id (optionnal)</source>
+        <source>Group id (optional)</source>
         <translation>Identifiant du groupe (optionnel)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2860"/>
-        <source>Group title (optionnal)</source>
+        <source>Group title (optional)</source>
         <translation>Titre du groupe (optionnel)</translation>
     </message>
     <message>
@@ -845,7 +845,7 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2196"/>
-        <source>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionnaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</source>
+        <source>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</source>
         <translation>Vous pouvez permettre à l&apos;utilisateur d&apos;activer une infobulle au survol des objets d&apos;une couche. Choisissez une couche, ajoutez une liste de nom de champs séparés par virgule, et autorisez en option l&apos;affichage de la géométrie (et sa couleur, en écrivant un code HTML)</translation>
     </message>
     <message>

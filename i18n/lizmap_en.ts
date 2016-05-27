@@ -471,8 +471,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1781"/>
-        <source>Optionnal group by field</source>
-        <translation>Optionnal group by field</translation>
+        <source>Optional group by field</source>
+        <translation>Optional group by field</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1974"/>
@@ -621,13 +621,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2870"/>
-        <source>Group id (optionnal)</source>
-        <translation>Group id (optionnal)</translation>
+        <source>Group id (optional)</source>
+        <translation>Group id (optional)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2860"/>
-        <source>Group title (optionnal)</source>
-        <translation>Group title (optionnal)</translation>
+        <source>Group title (optional)</source>
+        <translation>Group title (optional)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2813"/>
@@ -845,8 +845,8 @@ Only the selected feature will be visible on the map.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2196"/>
-        <source>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionnaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</source>
-        <translation>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionnaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</translation>
+        <source>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</source>
+        <translation>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2255"/>

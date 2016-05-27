@@ -676,7 +676,7 @@ class lizmap:
         QDesktopServices.openUrl( QUrl(localAbout) )
 
     def log(self,msg, level=1, abort=False, textarea=False):
-        '''Log the actions and errors and optionnaly show them in given textarea'''
+        '''Log the actions and errors and optionaly show them in given textarea'''
         if abort:
             sys.stdout = sys.stderr
         if textarea:
