@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Version 2.1.1
+
+* Add and update locales: English, Spanish, German, French, Russian, Polish, Italian, Portuguese, Greek
+* Menu - Change menu label from LizMap to Lizmap
+* Baselayers - Get the startup baselayer from configuration #56
+* Layers - Enable WMS checkbox only for WMS layers
+* Remove option to transform groups as legend blocks #57
+
 ## Version 2.1.0
   This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
 

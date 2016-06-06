@@ -5,18 +5,17 @@ qgisMinimumVersion=2.0
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.1.0
+version=version 2.1.1
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.1.0
-  This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
-  * Baselayers - Choose active baselayer at map startup
-  * Map - Add options to configure tolerances for popup activation in pixels
-  * Layers - New option to choose popup source: auto, lizmap advanced or QGIS maptip
-  * Map - New map option to choose info popup container: dock, mini-dock or map
-  * Tools - Allow virtual fields in layer fields comboboxes
+  Version 2.1.1
+  * Add and update locales: English, Spanish, German, French, Russian, Polish, Italian, Portuguese, Greek
+  * Menu - Change menu label from LizMap to Lizmap
+  * Baselayers - Get the startup baselayer from configuration #56
+  * Layers - Enable WMS checkbox only for WMS layers
+  * Remove option to transform groups as legend blocks #57
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, ftp, webmapping, WMS

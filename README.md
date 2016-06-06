@@ -1,4 +1,4 @@
-[![logo](icon.png "3Liz")][3liz]Lizmap 2.1.0
+[![logo](icon.png "3Liz")][3liz]Lizmap 2.1.1
 ==============================================
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
@@ -20,10 +20,16 @@ The Initial Developer of the Original Code are René-Luc D'Hont <rldhont@3liz.co
 
 Contributors
 --------------
-Salvatore Larosa <lrssvtml@gmail.com>
-Paolo Cavallini
-https://github.com/ewsterrenburg
+
+Salvatore Larosa  @slarosa
+Paolo Cavallini @pcav
 Arnaud Deleurme
+@ewsterrenburg
+Sławomir Bienias @SaekBinko
+Petr Tsymbarovich @mentaljam
+Víctor Herreros @vherreros
+João Gaspar
+Felix Kuehne
 
 Installation
 -----------
