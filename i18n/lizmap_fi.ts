@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" sourcelanguage="" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fi" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -24,180 +24,181 @@
     <message>
         <location filename="ui_lizmap.ui" line="1425"/>
         <source>Key</source>
-        <translation>Ключ</translation>
+        <translation>Avain</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1301"/>
         <source>Streets</source>
-        <translation>Улицы</translation>
+        <translation>Kadut</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1308"/>
         <source>Satellite</source>
-        <translation>Спутник</translation>
+        <translation>Satelliitti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1315"/>
         <source>Hybrid</source>
-        <translation>Гибрид</translation>
+        <translation>Hybrid</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1235"/>
         <source>Terrain</source>
-        <translation>Рельеф</translation>
+        <translation>Maasto</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2529"/>
         <source>Lizmap Error</source>
-        <translation>Ошибка Lizmap</translation>
+        <translation>LizMap virhe</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1693"/>
         <source>Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely</source>
-        <translation>Возникла ошибка при попытке прочитать последнюю конфигурацию дерева слоев. Пожалуйста, укажите параметры на вкладке &quot;Слои&quot; заново.</translation>
+        <translation>Havaittu virheitä luettaessa viimeistä tasorakenteen tilaa. Ole ystävällinen ja konfiguroi valinnat Tasojen välilehdellä kokonaan uudelleen</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1562"/>
         <source>Lizmap - Refresh layer tree?</source>
-        <translation>Lizmap - обновить дерево слоев?</translation>
+        <translation>Lizmap - Virkistä tasorakenne?</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1562"/>
         <source>ui.msg.question.refresh.content</source>
-        <translation>Нажмите &quot;Да&quot; для обновления дерева слоев. Учтите, что при этом вы потеряете все несохраненные изменения на этой вкладке (группировки, метаданные и параметры слоев).
-Если вы изменяли имена групп слоев, то соответствующая данным группам информация также будет потеряна.
+        <translation>Voit virkistää tasorakenteen painamalla &quot;Kyllä&quot; näppäintä.
+Huomaa kuitennkin että menetät kaikki muutokset jotka teit Tasot välilehdellä (ryhmä tai taso metadata tai valinnat) siitä lähtien kun viimeksi painoit &quot;Tallenna&quot;.
+Jos olet nimennyt uudelleen yhden tai useampia ryhmiä menetät myös niihin liittyvät tiedot.
 
-Обновить дерево?</translation>
+Virkistätkö tasorakenteen?</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1675"/>
         <source>List of layers</source>
-        <translation>Структура слоев</translation>
+        <translation>Tasolista</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2341"/>
         <source>You need to open a qgis project before using Lizmap</source>
-        <translation>Перед запуском Lizmap необходимо открыть проект QGIS.</translation>
+        <translation>Sinun tulee avata QGIS projekti ennenkuin käytät Lizmapia</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2362"/>
         <source>The project layer paths must be set to relative. Please change this options in the project settings.</source>
-        <translation>Слои проекта должны иметь относительные пути. Поменяйте данный параметр в настройках проекта.</translation>
+        <translation>Projektin tasojen polkut tulee asettaa relatiivisiksi. Ole ystävällinen ja muuta tämä vaihhtoehto projektin asetuksissa.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2682"/>
         <source>Lizmap - Warning</source>
-        <translation>Lizmap - предупреждение</translation>
+        <translation>Lizmap - Varoitus</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2472"/>
         <source>Map - options</source>
-        <translation>Карта - опции</translation>
+        <translation>Kartta - vaihtoehdot</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="729"/>
         <source>Map scales: Write down integer scales separated by comma. You must enter at least 2 min and max values.</source>
-        <translation>Укажите целочисленные значения масштабов через запятую. Необходимо указать хотя бы минимальный и максимальный масштабы.</translation>
+        <translation>Kartan mittakaavat: Kirjoita kokoonaisluku mittakaavat pilkuin eroteltuina. Sinun tulee antaa vähintäin 2 min ja max arvoa.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2518"/>
         <source>All the map parameters are correctly set</source>
-        <translation>Все параметры карты установлены верно</translation>
+        <translation>Kaikki kartan parametrit on oikein asetettu</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2542"/>
         <source>Lizmap configuration file has been updated</source>
-        <translation>Файл настроек Lizmap обновлен</translation>
+        <translation>Lizmap konfigurointitiedosto on päivitetty</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2682"/>
         <source>A Lizmap window is already opened</source>
-        <translation>Окно Lizmap уже открыто</translation>
+        <translation>Lizmap ikkuna on jo avattu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="56"/>
         <source>Layers</source>
-        <translation>Слои</translation>
+        <translation>Tasot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1623"/>
         <source>Title</source>
-        <translation>Заголовок</translation>
+        <translation>Otsikko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="148"/>
         <source>Abstract</source>
-        <translation>Описание</translation>
+        <translation>Abstrakti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="165"/>
         <source>Link</source>
-        <translation>Ссылка</translation>
+        <translation>Linkki</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="285"/>
         <source>Base layer?</source>
-        <translation>Базовый слой</translation>
+        <translation>Perustaso?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="278"/>
         <source>Group as layer?</source>
-        <translation>Группа как слой</translation>
+        <translation>Ryhmä tasona?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="188"/>
         <source>Toggled?</source>
-        <translation>Включить по умолчанию</translation>
+        <translation>Vaihda?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="302"/>
         <source>Single Tile?</source>
-        <translation>Единый тайл</translation>
+        <translation>Yksi kuvake?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="373"/>
         <source>Server cache?</source>
-        <translation>Включить кеширование на сервере</translation>
+        <translation>Palvelimen välimuisti?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="577"/>
         <source>Map</source>
-        <translation>Карта</translation>
+        <translation>Kartta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="314"/>
         <source>Image format</source>
-        <translation>Формат изображения</translation>
+        <translation>Imagen formaatti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="819"/>
         <source>Scales</source>
-        <translation>Масштабы</translation>
+        <translation>Mittakaavat</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="830"/>
         <source>Min Scale</source>
-        <translation>Минимум</translation>
+        <translation>Min mimttakaava</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="853"/>
         <source>Max Scale</source>
-        <translation>Максимум</translation>
+        <translation>Max mittakaava</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="893"/>
         <source>Map Scales</source>
-        <translation>Масштабы карты</translation>
+        <translation>Kartan mittakaavat</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1120"/>
         <source>Public baselayers</source>
-        <translation>Публичные</translation>
+        <translation>Julkiset perustasot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1126"/>
         <source>You can add baselayers from public sources. If so, you must add the SCR &quot;Pseudo Mercator&quot; (EPSG:3857) in your WMS project OWS settings.</source>
-        <translation>Вы можете указать базовые слои из публичных источников. При этом необходимо добавить &quot;Pseudo Mercator&quot; (EPSG:3857) в список доступных систем координат на вкладке &quot;Сервер OWS&quot; в свойствах проекта.</translation>
+        <translation>Voit lisätä perustasoja julkisista lähteistä. Jos lisäät, tulee Sinun lisätä SCR &quot;Pseudo Mercator&quot; (EPSG:3857) WMS projecktin OWS asetuksiin.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2972"/>
@@ -207,17 +208,17 @@
     <message>
         <location filename="ui_lizmap.ui" line="3007"/>
         <source>Log</source>
-        <translation>Журнал</translation>
+        <translation>Loki</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3023"/>
         <source>Clear log</source>
-        <translation>Очистить</translation>
+        <translation>Tyhjennä loki</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2529"/>
         <source>Wrong or missing map parameters: please read the log and correct the printed errors.</source>
-        <translation>Неправильные или отсутствующие параметры карты: исправьте ошибки, указанные на вкладке &quot;Журнал&quot;.</translation>
+        <translation>Virheellisiä tai puuttuvia karttaparametreja: ole ystävällinen lue lokia ja korjaa kirjatut virheet.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1144"/>
@@ -232,17 +233,17 @@
     <message>
         <location filename="ui_lizmap.ui" line="40"/>
         <source>Save</source>
-        <translation>Сохранить</translation>
+        <translation>Tallenna</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3050"/>
         <source>Help</source>
-        <translation>Справка</translation>
+        <translation>Apua</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="332"/>
         <source>png; mode=8bit</source>
-        <translation>png 8bit</translation>
+        <translation>png; mode=8bit</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="337"/>
@@ -252,17 +253,17 @@
     <message>
         <location filename="ui_lizmap.ui" line="382"/>
         <source>Expiration (seconds)</source>
-        <translation>Хранить кеш</translation>
+        <translation>Vanheneminen (sekunneissa)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="399"/>
         <source>Metatile</source>
-        <translation>Метатайл</translation>
+        <translation>Metaotsikko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="249"/>
         <source>Configure</source>
-        <translation>Настроить</translation>
+        <translation>Aseta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="406"/>
@@ -272,92 +273,92 @@
     <message>
         <location filename="ui_lizmap.ui" line="197"/>
         <source>Activate popup</source>
-        <translation>Всплывающее описание</translation>
+        <translation>Aktivoi popup</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1738"/>
         <source>Tools</source>
-        <translation>Инструменты</translation>
+        <translation>Työkalut</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1759"/>
         <source>Locate by Layer</source>
-        <translation>Поиск по слоям</translation>
+        <translation>Etsi tasolla</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1765"/>
         <source>You can add up to 3 layers as a source of the locating tool</source>
-        <translation>Вы можете добавить до 3х слоев в качестве основы для поиска.</translation>
+        <translation>Voit lisätä korkeintaan 3 tasoa lähteiksi sijaintityökaluun</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2834"/>
         <source>Layer</source>
-        <translation>Слой</translation>
+        <translation>Taso</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2565"/>
         <source>Field</source>
-        <translation>Поле</translation>
+        <translation>Tieto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1979"/>
         <source>Display the geometry</source>
-        <translation>Отображать геометрию</translation>
+        <translation>Näytä geometria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2912"/>
         <source>Add layer</source>
-        <translation>Добавить слой</translation>
+        <translation>Lisää taso</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2919"/>
         <source>Remove layer</source>
-        <translation>Удалить слой</translation>
+        <translation>Poista taso</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2422"/>
         <source>Layer id</source>
-        <translation>ID слоя</translation>
+        <translation>Tason id</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="62"/>
         <source>Project layers</source>
-        <translation>Слои проекта</translation>
+        <translation>Projektin tasot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="102"/>
         <source>Selected item settings</source>
-        <translation>Настройки выбранного слоя</translation>
+        <translation>Valittujen jäsenten asetukset</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="614"/>
         <source>Map tools</source>
-        <translation>Инструменты</translation>
+        <translation>Karttatyökalut</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="645"/>
         <source>Zoom history</source>
-        <translation>История масштабирования</translation>
+        <translation>Zoomaushistoria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="655"/>
         <source>Automatic geolocation</source>
-        <translation>Геолокация</translation>
+        <translation>Automaattinen maantieteellinen sijainti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="625"/>
         <source>Print</source>
-        <translation>Печать</translation>
+        <translation>Tulosta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="635"/>
         <source>Measure tools</source>
-        <translation>Измерения</translation>
+        <translation>Mittaustyökalut</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="679"/>
         <source>Address search</source>
-        <translation>Поиск адресов</translation>
+        <translation>Osoitehaku</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="692"/>
@@ -369,291 +370,294 @@
         <source>Write down integer scales separated by coma.
 You must enter at least 2 min and max values.
 Ex: 1000, 250000</source>
-        <translation>Укажите минимум 2 целочисленных значения масштаба через запятую.
-Пример: 1000, 250000</translation>
+        <translation>Kirjoita kokonaisluku mittakaavat eroteltuna pilkuin.
+Sinun tulee antaa vähintäin kaksi min ja max arvoa.
+Esim: 1000, 250000</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="417"/>
         <source>Browser client cache?</source>
-        <translation>Хранить локальный кеш</translation>
+        <translation>Selaimen välimuisti?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2719"/>
         <source>seconds</source>
-        <translation>секунд</translation>
+        <translation>sekuntia</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2362"/>
         <source>Layer editing</source>
-        <translation>Изменение слоев</translation>
+        <translation>Tason muokkaus</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2368"/>
         <source>You can add up to 5 layers in the list and choose editing capabilities for each one.</source>
-        <translation>Вы можете добавить до 5 слоев и указать доступные операции.</translation>
+        <translation>Voit lisätä korkeintaan 5 tasoa listalle ja valita kullekin muokkausmahdollisuudet.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2449"/>
         <source>Create</source>
-        <translation>Добавление</translation>
+        <translation>Luo</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2456"/>
         <source>Modify attributes</source>
-        <translation>Правка атрибутов</translation>
+        <translation>Muokkaa attribuutteja</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2463"/>
         <source>Modify geometry</source>
-        <translation>Правка геометрии</translation>
+        <translation>Muokkaa geometriaa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2470"/>
         <source>Delete</source>
-        <translation>Удаление</translation>
+        <translation>Poista</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2396"/>
         <source>ui.msg.error.project.layers.path.relative {}</source>
-        <translation>Пути слоев должны быть установлены относительно файла проекта. Пожалуйста, перенесите файлы слоев в
-{}</translation>
+        <translation>Tasopolkujen tulee olla relatiiviset projektitiedostoon.
+Ole ytävällinen ja kopio tasot hakemistoon
+{}
+tai ylempään tai viereiseen hakemistoon</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2528"/>
         <source>Filter layer by user</source>
-        <translation>Фильтровать слои по пользователям</translation>
+        <translation>Käyttäjän tasosuodatin</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2534"/>
         <source>tools.loginFilteredLayers.description</source>
-        <translation>Аутентифицированный пользователь будет видеть атрибуты слоя, только если значение выбранного поля будет совпадать с его именем или группой.</translation>
+        <translation>Käyttöoikeudet omaavat näkevät  ainoastaan datan jossa valitut ominaisuudet kohdistuvat hänen Lizmap käyttäjäryhmään, tai ainoastaan hänen  sisäänkirjoitukseen jos valinta &quot;Käyttäjän suodattama&quot; on merkitty</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2575"/>
         <source>Id</source>
-        <translation>ID</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="925"/>
         <source>Initial map extent</source>
-        <translation>Исходный охват</translation>
+        <translation>Aloittava kartan laajuus</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="931"/>
         <source>You can define here the initial extent of the map.
 This is different to the map maximum extent (defined in QGIS project properties, &quot;OWS Server&quot; tab).</source>
-        <translation>Укажите границы охвата, отображаемого при открытие проекта.
-Этот параметр отличен от максимального публикуемого охвата (вкладка &quot;Сервер OWS&quot; в свойствах проекта QGIS).</translation>
+        <translation>Voit määritellä täällä kartan alustavan laajuuden.
+Tämä on eri kuin kartan maksimi laajuus (joka on määritetty QGIS projektin asetuksissa, &quot;OWS palvelin&quot; välilehdellä).</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="941"/>
         <source>Extent</source>
-        <translation>Охват</translation>
+        <translation>Laajuus</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="959"/>
         <source>Set from project properties</source>
-        <translation>Из настроек проекта</translation>
+        <translation>Aseta projektin asetuksista</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="966"/>
         <source>Set from map canvas</source>
-        <translation>Текущий охват</translation>
+        <translation>Aseta karttapohjasta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1828"/>
         <source>Display field</source>
-        <translation>Поле</translation>
+        <translation>Näytä tieto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1781"/>
         <source>Optional group by field</source>
-        <translation>Доп. группа</translation>
+        <translation>Valinnainen tietojen ryhmä</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1974"/>
         <source>Group field</source>
-        <translation>Группа</translation>
+        <translation>Ryhmätieto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1099"/>
         <source>Baselayers</source>
-        <translation>Базовые слои</translation>
+        <translation>Perustasot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1165"/>
         <source>OSM CycleMap</source>
-        <translation>Cylcle Map</translation>
+        <translation>Pyöräkartta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1294"/>
         <source>Bing Map</source>
-        <translation>Bing Карты</translation>
+        <translation>Bing kartta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1374"/>
         <source>IGN (France)</source>
-        <translation>IGN (Франция)</translation>
+        <translation>IGN (Ranska)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1395"/>
         <source>Scans</source>
-        <translation>Сканы</translation>
+        <translation>Kadut</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1388"/>
         <source>Orthophoto</source>
-        <translation>Ортофото</translation>
+        <translation>Satelliitti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1381"/>
         <source>Plan</source>
-        <translation>План</translation>
+        <translation>Kaava</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1510"/>
         <source>External Lizmap layers</source>
-        <translation>Внешние слои Lizmap</translation>
+        <translation>Ulkoiset Lizmap tasot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1599"/>
         <source>Repository</source>
-        <translation>Репозиторий</translation>
+        <translation>Etäkirjasto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1606"/>
         <source>Project</source>
-        <translation>Проект</translation>
+        <translation>Projekti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1630"/>
         <source>QGIS Layer</source>
-        <translation>Слой QGIS</translation>
+        <translation>QGIS taso</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1566"/>
         <source>Layer title</source>
-        <translation>Отображаемое имя</translation>
+        <translation>Tason otsikko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1516"/>
         <source>You can add baselayers which come from another published Lizmap project. To do so, write down the repository id (not label), the project id (QGIS filename with no extension), QGIS layer name (as appearing in QGIS legend widget) and a chosen title.</source>
-        <translation>Вы можете добавить слои из другого опубликованного проекта Lizmap. Для этого укажите ID репозитория (не название), ID проекта (имя файла проекта без расширения), имя загружаемого слоя из легенды проекта и новое имя для отображения в данном проекте.</translation>
+        <translation>Voit lisätä perustasoja jotka on julkaistu toisessa Lizmap projektissa. Tehdäksesi näin, kirjoita etäkirjaston id (ei nimiötä), projektin id (QGIS tiedostonimi ilman loppuliitettä), QGIS tason nimi (kuten esiintyy QGIS selitepanelissa) ja valitse otsikko.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1493"/>
         <source>Please check that all input fields have been filled: repository, project, layer name and title</source>
-        <translation>Поля &quot;Репозиторий&quot;, &quot;Проект&quot;, &quot;Слой&quot; и &quot;Отображаемое имя&quot; должны быть заполнены.</translation>
+        <translation>Ole ystävällinen ja tarkista että kaikki syötettävät tiedot on annettu: etäkirjasto, projekti, tason nimi ja otsikko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="598"/>
         <source>Generic options</source>
-        <translation>Общие настройки</translation>
+        <translation>Yleiset valinnat</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="604"/>
         <source>Hide project in Lizmap Web Client</source>
-        <translation>Скрывать проект в веб интерфейсе</translation>
+        <translation>Piilota projekti Lizmap Web selaimessa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2656"/>
         <source>Time Manager</source>
-        <translation>Анимация</translation>
+        <translation>Aikahallinta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2662"/>
         <source>Add layers here to let the user play an animation based on an date or date/time attribute value. Similar to QGIS Timemanager plugin, but web based.</source>
-        <translation>Добавьте слои для анимации по дате и времени. Похоже на плагин QGIS &quot;Timemanager&quot;.</translation>
+        <translation>Lisää tähän käyttäjän suoritettavaksi animaatio joka perustuu päivään tai päivä/aika attribuutin arvoon. Samanlainen kuin QGIS Ajanhallinta liitännäinen but web-pohjainen.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2674"/>
         <source>Frame type</source>
-        <translation>Размерность</translation>
+        <translation>Raamin  tyyppi</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2684"/>
         <source>Time frame size</source>
-        <translation>Длина промежутка</translation>
+        <translation>Aika raamin koko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2701"/>
         <source>Animation frame length (milliseconds)</source>
-        <translation>Длительность кадра (миллисекунды)</translation>
+        <translation>Animaatio raamin pituus (millisekunteja)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2724"/>
         <source>minutes</source>
-        <translation>минут</translation>
+        <translation>minuutit</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2729"/>
         <source>hours</source>
-        <translation>часов</translation>
+        <translation>tunnit</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2734"/>
         <source>days</source>
-        <translation>дней</translation>
+        <translation>päivät</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2739"/>
         <source>weeks</source>
-        <translation>недель</translation>
+        <translation>viikot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2744"/>
         <source>months</source>
-        <translation>месяцев</translation>
+        <translation>kuukaudet</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2749"/>
         <source>years</source>
-        <translation>лет</translation>
+        <translation>vuodet</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2850"/>
         <source>Start attribute</source>
-        <translation>Начальное значение</translation>
+        <translation>Aloitusattribuutti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2870"/>
         <source>Group id (optional)</source>
-        <translation>ID группы (необязательно)</translation>
+        <translation>Ryhmä id (valinnainen)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2860"/>
         <source>Group title (optional)</source>
-        <translation>Название группы (необязательно)</translation>
+        <translation>Ryhmän otsikko (valinnainen)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2813"/>
         <source>LayerId</source>
-        <translation>ID слоя</translation>
+        <translation>tason id</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2880"/>
         <source>Hover label</source>
-        <translation>Показать при наведении курсора</translation>
+        <translation>Leijunimiö</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="271"/>
         <source>Hide legend image?</source>
-        <translation>Скрыть легенду</translation>
+        <translation>Piilota selitteen kuva?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="542"/>
         <source>Get images directly from WMS Server</source>
-        <translation>Загружать изображения со стороннего WMS</translation>
+        <translation>Ota kuvat suoraan WMS palvelimesta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="471"/>
         <source>Source repository</source>
-        <translation>Репозиторий</translation>
+        <translation>Lähtöaineiston etäkirjasto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="488"/>
         <source>Source project</source>
-        <translation>Проект</translation>
+        <translation>Lähtöaineiston projekti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="697"/>
@@ -663,236 +667,236 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="702"/>
         <source>ign</source>
-        <translation>IGN (Франция)</translation>
+        <translation>IGN (Ranska)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1453"/>
         <source>Add an empty base layer (with project background color)</source>
-        <translation>Добавить пустой базовый слой (цвет фона проекта)</translation>
+        <translation>Lisää tyhjä perustaso (projektin taustavärillä)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="327"/>
         <source>png; mode=16bit</source>
-        <translation>png 16bit</translation>
+        <translation>png; tila=16bit</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1667"/>
         <source>Image format (png, jpeg)</source>
-        <translation>Формат (png, jpeg)</translation>
+        <translation>Kuvan formaatti (png,jpeg)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="292"/>
         <source>Display in Legend tree</source>
-        <translation>Отображать в списке слоев</translation>
+        <translation>Näytä selitteen rakenne</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1984"/>
         <source>Autocompletion after</source>
-        <translation>Автодополнение</translation>
+        <translation>Automaattinen täydennys jälkeen</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1838"/>
         <source>If you set a value above 0, autocompletion will be used after this amount of characters while the user types. The classical combobox will be replaced by a editable text input</source>
-        <translation>Укажите минимальное число символов для активации автодополнения (0 - отключить автодополнение). При включенном автодополнении выпадающий список будет заменен на поле для ввода текста.</translation>
+        <translation>Jos asetat yllämainituun arvon 0, automaatiista täydennystä käytetään kun käyttäjä on antanut tämän määrän merkkejä. Klassinen combolaatikko korvataan muokattavalla tekstisyötteellä</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2818"/>
         <source>order</source>
-        <translation>Порядок</translation>
+        <translation>järjestys</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="131"/>
         <source>Metadata</source>
-        <translation>Метаданные</translation>
+        <translation>Metadata</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="181"/>
         <source>Map options</source>
-        <translation>Параметры карты</translation>
+        <translation>Kartan valinnat</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="366"/>
         <source>Cache</source>
-        <translation>Кеширование</translation>
+        <translation>Välimuisti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="462"/>
         <source>Embedded layers and groups</source>
-        <translation>Подключаемые слои и группы</translation>
+        <translation>Sulautetut tasot ja ryhmät</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="526"/>
         <source>Third-party WMS layers</source>
-        <translation>Сторонние WMS слои</translation>
+        <translation>Kolmannen osapuolen WMS tasot</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2356"/>
         <source>ui.msg.error.project.option.capitalizeLayerName</source>
-        <translation>Пожалуйста, отключите опцию &quot;Выводить имена слоев с прописной буквы&quot; (Установки -&gt; Параметры -&gt; Карта и легенда), так как это может вызвать ошибки в работе Lizmap.</translation>
+        <translation>Ole ystävällinen ja poista käytöstä &quot;Tason nimet isoin kirjaimin&quot; välilehdellä &quot;Karttapohja ja selite&quot; QGIS valintailkkunassa, koska se saattaa aiheuttaa ongelmia Lizmapissa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="92"/>
         <source>Hide checkboxes for groups</source>
-        <translation>Скрыть флажки для групп</translation>
+        <translation>Piilota valintalaatikot ryhmille</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="991"/>
         <source>Map interface</source>
-        <translation>Внешний вид</translation>
+        <translation>Karttaliittymä</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="997"/>
         <source>Hide header</source>
-        <translation>Скрыть верхнюю панель</translation>
+        <translation>Piilota otsikko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1004"/>
         <source>Hide menu bar</source>
-        <translation>Скрыть меню</translation>
+        <translation>Piilota valikkopalkki</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1011"/>
         <source>Hide legend panel at startup</source>
-        <translation>Скрыть легенду при открытие</translation>
+        <translation>Piilota selitepaneeli aloituksessa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1018"/>
         <source>Hide scale and overview map</source>
-        <translation>Скрыть шкалу масштаба и обзорную карту</translation>
+        <translation>Piilota mittakaava ja yleiskatsauskartta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1025"/>
         <source>Hide navigation tools</source>
-        <translation>Скрыть инструменты навигации</translation>
+        <translation>Piilota navigointityökalut</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2010"/>
         <source>Attribute table</source>
-        <translation>Таблицы атрибутов</translation>
+        <translation>Attribuuttitaulu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2016"/>
         <source>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</source>
-        <translation>Вы можете включить отображение таблиц атрибутов указанных слоев в веб-клиенте Lizmap. Для этого добавьте необходимые векторные слои в таблицу и отметьте их в разделе &quot;Характеристики WFS&quot; (вкладка &quot;Сервер OWS&quot; в свойствах проекта QGIS).</translation>
+        <translation>Valittujen tasojen attribuuttitaulut voidaan näyttää Lizmap Web selaimessa. Lisää mikä tahansa vektoritaso tähän ja julkaise ne käyttäen WFS (QGIS projekti ominaisuudet, välilehti OWS palvelin)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2061"/>
         <source>attribute layer id</source>
-        <translation>ID слоя</translation>
+        <translation>attribuuttitason id</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2598"/>
         <source>Filter by user</source>
-        <translation>Фильтровать</translation>
+        <translation>Käyttäjän suodatus</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2092"/>
         <source>primary_key</source>
-        <translation>Уникальный ID</translation>
+        <translation>Yksilöllinen id</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2051"/>
         <source>Pivot table</source>
-        <translation>Сводная таблица</translation>
+        <translation>Pivot taulu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2109"/>
         <source>Pivot table?</source>
-        <translation>Сводная таблица</translation>
+        <translation>Pivot taulu?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2099"/>
         <source>Fields to hide</source>
-        <translation>Скрыть поля</translation>
+        <translation>Piilotettavat tiedot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2056"/>
         <source>Hide in children</source>
-        <translation>Убрать в дочерние</translation>
+        <translation>Piilota seuraajassa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2126"/>
         <source>Hide in child subpanels</source>
-        <translation>Убрать в дочерние панели</translation>
+        <translation>Piilota seuraajan alipaneleissa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1989"/>
         <source>Filter layer on zoom</source>
-        <translation>Фильтр при масштабировании</translation>
+        <translation>Suodata tasoa zoomauksessa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1881"/>
         <source>If the layer is published via the attribute layers tool below, and this checkbox is checked,
 zooming on a feature with the locate tool will trigger the filter of the layer for the selected feature.
 Only the selected feature will be visible on the map.</source>
-        <translation>Если таблица атрибутов слоя опубликована (раздел &quot;Таблицы атрибутов&quot; ниже),
-а данная опция включена, то при увеличении атрибута для него включится фильтр:
-на карте будет отображаться только выбранный атрибут.</translation>
+        <translation>Jos taso on julkaistu attribuuttitaulun työkalulla alla, ja tämä  valintalaatikko on merkattu, 
+zoomaus ominaisuuteen paikantamistyökalulla laukaisee tasosuodattimen valitulle ominaisuudelle.
+Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2979"/>
         <source>The FTP sync tool has been removed. Please use a FTP client like Filezilla, WinSCP or FireFTP to synchronize your local data with the Lizmap Web Client server. This is safer because you can then have a look at the remote data, and decide precisely which files you need to synchronize. Documentation: http://docs.3liz.com/en/publisher_guide/publish_with_ftp.html</source>
-        <translation>Модуль FTP синхронизации был удален. Для синхронизации файлов проекта с веб-клиентом Lizmap используйте FTP клиент (Filezilla, WinSCP, FireFTP...). Такой подход безопаснее, так как позволяет выбирать файлы для синхронизации. Подробности: http://docs.3liz.com/en/publisher_guide/publish_with_ftp.html</translation>
+        <translation>FTP sync työkalu on poistettu. Ole ystävällinen ja käytä FTP ohjelmaa kuten Filezilla, WinSCP tai Fireftp synkronoidaksesi paikallisen datan Lizmap Web Selain palvelimen kanssa. Tämä on turvallisempaa koska siten voit myös tarkastella etädataa, ja päättää tarkalleen mitkä tiedostot sinun tulee synkronoida. Dokumentaatio: http://docs.3liz.com/en/publisher_guide/publish_with_ftp.html</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2187"/>
         <source>Tooltip layers</source>
-        <translation>Атрибутивная информация</translation>
+        <translation>Vihjetekstitasot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2196"/>
         <source>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</source>
-        <translation>Вы можете разрешить пользователям просматривать атрибутивную информацию при наведении указателя на атрибут. Для этого выберите слой и добавьте через запятую поля для отображения. Также вы можете включить отображение геометрии и выбрать ее цвет в формате HTML.</translation>
+        <translation>Voit antaa käyttäjän aktivoida vinkit liikuttaessa ominaisuuden päällä. Valitse taso, lisää pilkuin eroteltu lista tietonimistä joille vinkit näytetään ja valinnaisesti valitse näytetäänkö geometrria. Voit myös valita geometrian värin (käytä HTML värikoodeja)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2255"/>
         <source>Fields</source>
-        <translation>Поля</translation>
+        <translation>Tiedot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2312"/>
         <source>Display geometry</source>
-        <translation>Отображать геометрию</translation>
+        <translation>Näytä geometria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2222"/>
         <source>Geometry color</source>
-        <translation>Цвет геометрии</translation>
+        <translation>Geometrian väri</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2272"/>
         <source>Color (HTML)</source>
-        <translation>Цвет (HTML)</translation>
+        <translation>Väri (HTML)</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2509"/>
         <source>ui.msg.warning.toolLayer.notInWfs</source>
-        <translation>Выбранные вами слои должны быть отмечены в разделе &quot;Характеристики WFS&quot; (&quot;Проект&quot; -&gt; &quot;Свойства проекта&quot; -&gt; &quot;Сервер OWS&quot;).</translation>
+        <translation>Tasot jotka olet valinnut tälle työkalulle tulee olla merkattuja myös &quot;WFS ominaisuudet&quot; valinnassa OWS välilehdellä &quot;Projektin asetukset&quot; ikkunassa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1405"/>
         <source>Cadastre</source>
-        <translation>Cadastre</translation>
+        <translation>Kiinteistörekisteri</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="30"/>
         <source>Options in blue background are only usable with Lizmap Web Client 3</source>
-        <translation>Пункты с голубым фоном доступны только на Lizmap Web Client 3</translation>
+        <translation>Valinnat sinisellä taustalla ovat käytettävissä vain Lizmap Web selaimelle 3</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1037"/>
         <source>Information popup container</source>
-        <translation>Отображать информацию на</translation>
+        <translation>Informaation popup koonti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="220"/>
         <source>source</source>
-        <translation>источник</translation>
+        <translation>lähtöaineisto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="231"/>
         <source>auto</source>
-        <translation>авто</translation>
+        <translation>automaattinen</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="236"/>
@@ -907,47 +911,47 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap.ui" line="1045"/>
         <source>dock</source>
-        <translation>панели</translation>
+        <translation>telakka</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1050"/>
         <source>minidock</source>
-        <translation>мини-панели</translation>
+        <translation>minitelakka</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1055"/>
         <source>map</source>
-        <translation>карте</translation>
+        <translation>kartta</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="736"/>
         <source>Popup click tolerance (pixels)</source>
-        <translation>Точность клика для всплыв. сообщения (пикс.)</translation>
+        <translation>Popup klikkauksen toleranssi (pikseleinä)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="756"/>
         <source>Points</source>
-        <translation>Точки</translation>
+        <translation>Pisteet</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="770"/>
         <source>Lines</source>
-        <translation>Линии</translation>
+        <translation>Viivat</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="784"/>
         <source>Polygons</source>
-        <translation>Полигоны</translation>
+        <translation>Monikulmiot</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1447"/>
         <source>Baselayers options</source>
-        <translation>Параметры базовых слоев</translation>
+        <translation>Perustasojen valinnat</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1465"/>
         <source>Active baselayer at startup</source>
-        <translation>Базовый слой по умолчанию</translation>
+        <translation>Aktiivinen perustaso aloituksessa</translation>
     </message>
 </context>
 <context>
@@ -955,17 +959,17 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap_popup.py" line="66"/>
         <source>Lizmap - Popup</source>
-        <translation>Lizmap - всплывающие описания</translation>
+        <translation>Lizmap - Konfiguroi tason popup</translation>
     </message>
     <message>
         <location filename="ui_lizmap_popup.py" line="67"/>
         <source>Template for the popup</source>
-        <translation>Исходный текст</translation>
+        <translation>Malli popupille</translation>
     </message>
     <message>
         <location filename="ui_lizmap_popup.py" line="68"/>
         <source>Preview</source>
-        <translation>Предпросмотр</translation>
+        <translation>Esikatsele</translation>
     </message>
 </context>
 </TS>
