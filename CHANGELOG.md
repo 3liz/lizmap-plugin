@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 2.1.2
+* Add locales: Finnish, Galician
+* Update locales: Portuguese, Russian
+
+
 ## Version 2.1.1
 
 * Add and update locales: English, Spanish, German, French, Russian, Polish, Italian, Portuguese, Greek

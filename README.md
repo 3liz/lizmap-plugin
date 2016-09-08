@@ -1,4 +1,4 @@
-[![logo](icon.png "3Liz")][3liz]Lizmap 2.1.1
+[![logo](icon.png "3Liz")][3liz]Lizmap 2.1.2
 ==============================================
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
@@ -30,6 +30,8 @@ Petr Tsymbarovich @mentaljam
 Víctor Herreros @vherreros
 João Gaspar
 Felix Kuehne
+Kari Salovaara
+Xan Vieiro
 
 Installation
 -----------
