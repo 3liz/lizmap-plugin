@@ -42,15 +42,27 @@
  the provisions above, a recipient may use your version of this file under
  the terms of any one of the MPL, the GPL or the LGPL.
 
- ***** END LICENSE BLOCK ***** */ 
+ ***** END LICENSE BLOCK ***** */
 """
 
-from PyQt4 import QtCore, QtGui
-from ui_lizmap import Ui_lizmap
-# create the dialog for zoom to point
-class lizmapDialog(QtGui.QDialog):
-    def __init__(self):
-        QtGui.QDialog.__init__(self)
+import os
+from PyQt4 import QtGui, uic
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from qgis.gui import *
+
+
+FORM_CLASS, _ = uic.loadUiType(os.path.join(
+    os.path.dirname(__file__), 'ui_lizmap.ui'))
+
+
+class lizmapDialog(QtGui.QDialog, FORM_CLASS):
+    def __init__(self, parent=None):
+        """Constructor."""
+        super(lizmapDialog, self).__init__(parent)
         # Set up the user interface from Designer.
-        self.ui = Ui_lizmap()
-        self.ui.setupUi(self)
+        # After setupUI you can access any designer object by doing
+        # self.<objectname>, and you can use autoconnect slots - see
+        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
+        # #widgets-and-dialogs-with-auto-connect
+        self.setupUi(self)

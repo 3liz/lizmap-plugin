@@ -126,209 +126,209 @@ class lizmap:
         self.dlg = lizmapDialog()
 
         # Set stylesheet for QGroupBox
-        self.dlg.ui.gb_tree.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_layerSettings.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_visibleTools.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_Scales.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_extent.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_externalLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_attributeLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_tooltipLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_editionLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_loginFilteredLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_generalOptions.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_timemanager.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_interface.setStyleSheet(self.STYLESHEET)
-        self.dlg.ui.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_tree.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_layerSettings.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_visibleTools.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_Scales.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_extent.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_externalLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_attributeLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_tooltipLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_editionLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_loginFilteredLayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_generalOptions.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_timemanager.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_interface.setStyleSheet(self.STYLESHEET)
+        self.dlg.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
 
         # List of ui widget for data driven actions and checking
         self.globalOptions = {
             'mapScales': {
-                'widget': self.dlg.ui.inMapScales,
+                'widget': self.dlg.inMapScales,
                 'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
             },
             'minScale': {
-                'widget': self.dlg.ui.inMinScale,
+                'widget': self.dlg.inMinScale,
                 'wType': 'text', 'type': 'integer', 'default': 1
             },
             'maxScale': {
-                'widget': self.dlg.ui.inMaxScale,
+                'widget': self.dlg.inMaxScale,
                 'wType': 'text', 'type': 'integer', 'default': 1000000000
             },
             'initialExtent': {
-                'widget': self.dlg.ui.inInitialExtent,
+                'widget': self.dlg.inInitialExtent,
                 'wType': 'text', 'type': 'floatlist', 'default': []
             },
             'googleKey': {
-                'widget': self.dlg.ui.inGoogleKey,
+                'widget': self.dlg.inGoogleKey,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'googleHybrid' : {
-                'widget': self.dlg.ui.cbGoogleHybrid,
+                'widget': self.dlg.cbGoogleHybrid,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'googleSatellite' : {
-                'widget': self.dlg.ui.cbGoogleSatellite,
+                'widget': self.dlg.cbGoogleSatellite,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'googleTerrain' : {
-                'widget': self.dlg.ui.cbGoogleTerrain,
+                'widget': self.dlg.cbGoogleTerrain,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'googleStreets' : {
-                'widget': self.dlg.ui.cbGoogleStreets,
+                'widget': self.dlg.cbGoogleStreets,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'osmMapnik' : {
-                'widget': self.dlg.ui.cbOsmMapnik,
+                'widget': self.dlg.cbOsmMapnik,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'osmMapquest' : {
-                'widget': self.dlg.ui.cbOsmMapquest,
+                'widget': self.dlg.cbOsmMapquest,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'osmCyclemap' : {
-                'widget': self.dlg.ui.cbOsmCyclemap,
+                'widget': self.dlg.cbOsmCyclemap,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'bingKey': {
-                'widget': self.dlg.ui.inBingKey,
+                'widget': self.dlg.inBingKey,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'bingStreets' : {
-                'widget': self.dlg.ui.cbBingStreets,
+                'widget': self.dlg.cbBingStreets,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'bingSatellite' : {
-                'widget': self.dlg.ui.cbBingSatellite,
+                'widget': self.dlg.cbBingSatellite,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'bingHybrid' : {
-                'widget': self.dlg.ui.cbBingHybrid,
+                'widget': self.dlg.cbBingHybrid,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'ignKey': {
-                'widget': self.dlg.ui.inIgnKey,
+                'widget': self.dlg.inIgnKey,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'ignStreets' : {
-                'widget': self.dlg.ui.cbIgnStreets,
+                'widget': self.dlg.cbIgnStreets,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'ignSatellite' : {
-                'widget': self.dlg.ui.cbIgnSatellite,
+                'widget': self.dlg.cbIgnSatellite,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'ignTerrain' : {
-                'widget': self.dlg.ui.cbIgnTerrain,
+                'widget': self.dlg.cbIgnTerrain,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'ignCadastral' : {
-                'widget': self.dlg.ui.cbIgnCadastral,
+                'widget': self.dlg.cbIgnCadastral,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
 
             'hideGroupCheckbox' : {
-                'widget': self.dlg.ui.cbHideGroupCheckbox,
+                'widget': self.dlg.cbHideGroupCheckbox,
                 'wType': 'checkbox', 'type': 'boolean', 'default': True
             },
             'popupLocation' : {
-                'widget': self.dlg.ui.liPopupContainer,
+                'widget': self.dlg.liPopupContainer,
                 'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map']
             },
 
             'print' : {
-                'widget': self.dlg.ui.cbActivatePrint,
+                'widget': self.dlg.cbActivatePrint,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'measure' : {
-                'widget': self.dlg.ui.cbActivateMeasure,
+                'widget': self.dlg.cbActivateMeasure,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'externalSearch' : {
-                'widget': self.dlg.ui.liExternalSearch,
+                'widget': self.dlg.liExternalSearch,
                 'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ign']
             },
             'zoomHistory' : {
-                'widget': self.dlg.ui.cbActivateZoomHistory,
+                'widget': self.dlg.cbActivateZoomHistory,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'geolocation' : {
-                'widget': self.dlg.ui.cbActivateGeolocation,
+                'widget': self.dlg.cbActivateGeolocation,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'pointTolerance': {
-                'widget': self.dlg.ui.inPointTolerance,
+                'widget': self.dlg.inPointTolerance,
                 'wType': 'spinbox', 'type': 'integer', 'default': 25
             },
             'lineTolerance': {
-                'widget': self.dlg.ui.inLineTolerance,
+                'widget': self.dlg.inLineTolerance,
                 'wType': 'spinbox', 'type': 'integer', 'default': 10
             },
             'polygonTolerance': {
-                'widget': self.dlg.ui.inPolygonTolerance,
+                'widget': self.dlg.inPolygonTolerance,
                 'wType': 'spinbox', 'type': 'integer', 'default': 5
             },
             'hideHeader' : {
-                'widget': self.dlg.ui.cbHideHeader,
+                'widget': self.dlg.cbHideHeader,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'hideMenu' : {
-                'widget': self.dlg.ui.cbHideMenu,
+                'widget': self.dlg.cbHideMenu,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'hideLegend' : {
-                'widget': self.dlg.ui.cbHideLegend,
+                'widget': self.dlg.cbHideLegend,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'hideOverview' : {
-                'widget': self.dlg.ui.cbHideOverview,
+                'widget': self.dlg.cbHideOverview,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'hideNavbar' : {
-                'widget': self.dlg.ui.cbHideNavbar,
+                'widget': self.dlg.cbHideNavbar,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'hideProject': {
-                'widget': self.dlg.ui.cbHideProject,
+                'widget': self.dlg.cbHideProject,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'tmTimeFrameSize': {
-                'widget': self.dlg.ui.inTimeFrameSize,
+                'widget': self.dlg.inTimeFrameSize,
                 'wType': 'spinbox', 'type': 'integer', 'default': 10
             },
             'tmTimeFrameType' : {
-                'widget': self.dlg.ui.liTimeFrameType,
+                'widget': self.dlg.liTimeFrameType,
                 'wType': 'list', 'type': 'string', 'default': 'seconds',
                 'list':['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
             },
             'tmAnimationFrameLength': {
-                'widget': self.dlg.ui.inAnimationFrameLength,
+                'widget': self.dlg.inAnimationFrameLength,
                 'wType': 'spinbox', 'type': 'integer', 'default': 1000
             },
             'emptyBaselayer': {
-                'widget': self.dlg.ui.cbAddEmptyBaselayer,
+                'widget': self.dlg.cbAddEmptyBaselayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'startupBaselayer' : {
-                'widget': self.dlg.ui.cbStartupBaselayer,
+                'widget': self.dlg.cbStartupBaselayer,
                 'wType': 'list', 'type': 'string', 'default': '', 'list':['']
             }
         }
 
         self.layerOptionsList = {
             'title': {
-                'widget': self.dlg.ui.inLayerTitle,
+                'widget': self.dlg.inLayerTitle,
                 'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
             },
             'abstract': {
-                'widget': self.dlg.ui.teLayerAbstract,
+                'widget': self.dlg.teLayerAbstract,
                 'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True
             },
             'link': {
-                'widget': self.dlg.ui.inLayerLink,
+                'widget': self.dlg.inLayerLink,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'minScale': {
@@ -340,15 +340,15 @@ class lizmap:
                 'wType': 'text', 'type': 'integer', 'default': 1000000000000
             },
             'toggled': {
-                'widget': self.dlg.ui.cbToggled,
+                'widget': self.dlg.cbToggled,
                 'wType': 'checkbox', 'type': 'boolean', 'default': True
             },
             'popup': {
-                'widget': self.dlg.ui.cbPopup,
+                'widget': self.dlg.cbPopup,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'popupSource': {
-                'widget': self.dlg.ui.liPopupSource,
+                'widget': self.dlg.liPopupSource,
                 'wType': 'list', 'type': 'string', 'default': 'lizmap',
                 'list':["auto", "lizmap", "qgis"]
             },
@@ -357,58 +357,58 @@ class lizmap:
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'noLegendImage': {
-                'widget': self.dlg.ui.cbNoLegendImage,
+                'widget': self.dlg.cbNoLegendImage,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'groupAsLayer': {
-                'widget': self.dlg.ui.cbGroupAsLayer,
+                'widget': self.dlg.cbGroupAsLayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'baseLayer': {
-                'widget': self.dlg.ui.cbLayerIsBaseLayer,
+                'widget': self.dlg.cbLayerIsBaseLayer,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'displayInLegend': {
-                'widget': self.dlg.ui.cbDisplayInLegend,
+                'widget': self.dlg.cbDisplayInLegend,
                 'wType': 'checkbox', 'type': 'boolean', 'default': True
             },
             'singleTile': {
-                'widget': self.dlg.ui.cbSingleTile,
+                'widget': self.dlg.cbSingleTile,
                 'wType': 'checkbox', 'type': 'boolean', 'default': True,
-                'exclude': {'widget': self.dlg.ui.cbCached, 'key': 'cached'}
+                'exclude': {'widget': self.dlg.cbCached, 'key': 'cached'}
             },
             'imageFormat': {
-                'widget': self.dlg.ui.liImageFormat,
+                'widget': self.dlg.liImageFormat,
                 'wType': 'list', 'type': 'string', 'default': 'image/png',
                 'list':["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
             },
             'cached': {
-                'widget': self.dlg.ui.cbCached,
+                'widget': self.dlg.cbCached,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False,
-                'exclude': {'widget': self.dlg.ui.cbSingleTile, 'key': 'singleTile'}
+                'exclude': {'widget': self.dlg.cbSingleTile, 'key': 'singleTile'}
             },
             'cacheExpiration': {
-                'widget': self.dlg.ui.inCacheExpiration,
+                'widget': self.dlg.inCacheExpiration,
                 'wType': 'spinbox', 'type': 'integer', 'default': 0
             },
             'metatileSize': {
-                'widget': self.dlg.ui.inMetatileSize,
+                'widget': self.dlg.inMetatileSize,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'clientCacheExpiration': {
-                'widget': self.dlg.ui.inClientCacheExpiration,
+                'widget': self.dlg.inClientCacheExpiration,
                 'wType': 'spinbox', 'type': 'integer', 'default': 300
             },
             'externalWmsToggle': {
-                'widget': self.dlg.ui.cbExternalWms,
+                'widget': self.dlg.cbExternalWms,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'sourceRepository': {
-                'widget': self.dlg.ui.inSourceRepository,
+                'widget': self.dlg.inSourceRepository,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
             'sourceProject': {
-                'widget': self.dlg.ui.inSourceProject,
+                'widget': self.dlg.inSourceProject,
                 'wType': 'text', 'type': 'string', 'default': ''
             }
         }
@@ -426,10 +426,10 @@ class lizmap:
         self.enableCheckBox(False)
 
         # Catch user interaction on layer tree and inputs
-        self.dlg.ui.treeLayer.itemSelectionChanged.connect(self.setItemOptions)
+        self.dlg.treeLayer.itemSelectionChanged.connect(self.setItemOptions)
 
         # Catch user interaction on Map Scales input
-        self.dlg.ui.inMapScales.editingFinished.connect(self.getMinMaxScales)
+        self.dlg.inMapScales.editingFinished.connect(self.getMinMaxScales)
 
         # Connect widget signals to setLayerProperty method depending on widget type
         from functools import partial
@@ -448,22 +448,22 @@ class lizmap:
 
         # Connect baselayer checkboxes
         self.baselayerWidgetList = {
-            'layer': self.dlg.ui.cbLayerIsBaseLayer,
-            'osm-mapnik': self.dlg.ui.cbOsmMapnik,
-            'osm-mapquest': self.dlg.ui.cbOsmMapquest,
-            'osm-cyclemap': self.dlg.ui.cbOsmCyclemap,
-            'google-street': self.dlg.ui.cbGoogleStreets,
-            'google-satellite': self.dlg.ui.cbGoogleSatellite,
-            'google-hybrid': self.dlg.ui.cbGoogleHybrid,
-            'google-terrain': self.dlg.ui.cbGoogleTerrain,
-            'bing-road': self.dlg.ui.cbBingStreets,
-            'bing-aerial': self.dlg.ui.cbBingSatellite,
-            'bing-hybrid': self.dlg.ui.cbBingHybrid,
-            'ign-plan': self.dlg.ui.cbIgnStreets,
-            'ign-photo': self.dlg.ui.cbIgnSatellite,
-            'ign-scan': self.dlg.ui.cbIgnTerrain,
-            'ign-cadastral': self.dlg.ui.cbIgnCadastral,
-            'empty': self.dlg.ui.cbAddEmptyBaselayer
+            'layer': self.dlg.cbLayerIsBaseLayer,
+            'osm-mapnik': self.dlg.cbOsmMapnik,
+            'osm-mapquest': self.dlg.cbOsmMapquest,
+            'osm-cyclemap': self.dlg.cbOsmCyclemap,
+            'google-street': self.dlg.cbGoogleStreets,
+            'google-satellite': self.dlg.cbGoogleSatellite,
+            'google-hybrid': self.dlg.cbGoogleHybrid,
+            'google-terrain': self.dlg.cbGoogleTerrain,
+            'bing-road': self.dlg.cbBingStreets,
+            'bing-aerial': self.dlg.cbBingSatellite,
+            'bing-hybrid': self.dlg.cbBingHybrid,
+            'ign-plan': self.dlg.cbIgnStreets,
+            'ign-photo': self.dlg.cbIgnSatellite,
+            'ign-scan': self.dlg.cbIgnTerrain,
+            'ign-cadastral': self.dlg.cbIgnCadastral,
+            'empty': self.dlg.cbAddEmptyBaselayer
         }
         for key, item in self.baselayerWidgetList.items():
             slot = self.onBaselayerCheckboxChange
@@ -472,44 +472,44 @@ class lizmap:
         # tables of layers
         self.layersTable =  {
             'locateByLayer': {
-                'tableWidget': self.dlg.ui.twLocateByLayerList,
-                'removeButton' : self.dlg.ui.btLocateByLayerDel,
+                'tableWidget': self.dlg.twLocateByLayerList,
+                'removeButton' : self.dlg.btLocateByLayerDel,
                 'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'filterOnLocate', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'attributeLayers': {
-                'tableWidget': self.dlg.ui.twAttributeLayerList,
-                'removeButton' : self.dlg.ui.btAttributeLayerDel,
+                'tableWidget': self.dlg.twAttributeLayerList,
+                'removeButton' : self.dlg.btAttributeLayerDel,
                 'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'tooltipLayers': {
-                'tableWidget': self.dlg.ui.twTooltipLayerList,
-                'removeButton' : self.dlg.ui.btTooltipLayerDel,
+                'tableWidget': self.dlg.twTooltipLayerList,
+                'removeButton' : self.dlg.btTooltipLayerDel,
                 'cols': ['fields', 'displayGeom', 'colorGeom', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'editionLayers': {
-                'tableWidget': self.dlg.ui.twEditionLayerList,
-                'removeButton' : self.dlg.ui.btEditionLayerDel,
+                'tableWidget': self.dlg.twEditionLayerList,
+                'removeButton' : self.dlg.btEditionLayerDel,
                 'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'loginFilteredLayers': {
-                'tableWidget': self.dlg.ui.twLoginFilteredLayersList,
-                'removeButton' : self.dlg.ui.btLoginFilteredLayerDel,
+                'tableWidget': self.dlg.twLoginFilteredLayersList,
+                'removeButton' : self.dlg.btLoginFilteredLayerDel,
                 'cols': ['filterAttribute', 'filterPrivate', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'lizmapExternalBaselayers': {
-                'tableWidget': self.dlg.ui.twLizmapBaselayers,
-                'removeButton' : self.dlg.ui.btLizmapBaselayerDel,
+                'tableWidget': self.dlg.twLizmapBaselayers,
+                'removeButton' : self.dlg.btLizmapBaselayerDel,
                 'cols': ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
                 'jsonConfig' : {}
             },
             'timemanagerLayers': {
-                'tableWidget': self.dlg.ui.twTimemanager,
-                'removeButton' : self.dlg.ui.btTimemanagerLayerDel,
+                'tableWidget': self.dlg.twTimemanager,
+                'removeButton' : self.dlg.btTimemanagerLayerDel,
                 'cols': ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
@@ -540,22 +540,22 @@ class lizmap:
         # connect Lizmap signals and functions
 
         # save button clicked
-        self.dlg.ui.btSave.clicked.connect(self.getMapOptions)
+        self.dlg.btSave.clicked.connect(self.getMapOptions)
 
         # clear log button clicked
-        self.dlg.ui.btClearlog.clicked.connect(self.clearLog)
+        self.dlg.btClearlog.clicked.connect(self.clearLog)
 
         # refresh layer tree button click
-#        QObject.connect(self.dlg.ui.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
+#        QObject.connect(self.dlg.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
 
         # refresh layer tree button click
-        self.dlg.ui.btHelp.clicked.connect(self.showHelp)
+        self.dlg.btHelp.clicked.connect(self.showHelp)
 
         # configure popup button
-        self.dlg.ui.btConfigurePopup.clicked.connect(self.configurePopup)
+        self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
 
         # detect close event
-        self.dlg.ui.buttonClose.rejected.connect(self.warnOnClose)
+        self.dlg.buttonClose.rejected.connect(self.warnOnClose)
         self.dlg.rejected.connect(self.warnOnClose)
 
         # detect project closed
@@ -563,8 +563,8 @@ class lizmap:
         self.iface.newProjectCreated.connect(self.onNewProjectCreated)
 
         # initial extent
-        self.dlg.ui.btSetExtentFromProject.clicked.connect(self.setInitialExtentFromProject)
-        self.dlg.ui.btSetExtentFromCanvas.clicked.connect(self.setInitialExtentFromCanvas)
+        self.dlg.btSetExtentFromProject.clicked.connect(self.setInitialExtentFromProject)
+        self.dlg.btSetExtentFromCanvas.clicked.connect(self.setInitialExtentFromCanvas)
 
         # Handle tables (locate by layer, edition layers, etc.)
         #########
@@ -582,40 +582,40 @@ class lizmap:
 
         # Locate by layers
         # detect layer locate list has changed to refresh layer field list
-        self.dlg.ui.liLocateByLayerLayers.currentIndexChanged[str].connect(self.updateLocateFieldListFromLayer)
+        self.dlg.liLocateByLayerLayers.currentIndexChanged[str].connect(self.updateLocateFieldListFromLayer)
         # add a layer to the locateByLayerList
-        self.dlg.ui.btLocateByLayerAdd.clicked.connect(self.addLayerToLocateByLayer)
+        self.dlg.btLocateByLayerAdd.clicked.connect(self.addLayerToLocateByLayer)
 
 
         # Attribute layers
         # detect layer locate list has changed to refresh layer field list
-        self.dlg.ui.liAttributeLayer.currentIndexChanged[str].connect(self.updateAttributeFieldListFromLayer)
+        self.dlg.liAttributeLayer.currentIndexChanged[str].connect(self.updateAttributeFieldListFromLayer)
         # add a layer to the list of attribute layers
-        self.dlg.ui.btAttributeLayerAdd.clicked.connect(self.addLayerToAttributeLayer)
+        self.dlg.btAttributeLayerAdd.clicked.connect(self.addLayerToAttributeLayer)
 
         # Tooltip layers
         # add a layer to the tooltipLayerList
-        self.dlg.ui.btTooltipLayerAdd.clicked.connect(self.addLayerToTooltipLayer)
+        self.dlg.btTooltipLayerAdd.clicked.connect(self.addLayerToTooltipLayer)
 
         # Edition layers
         # add a layer to the editionLayerList
-        self.dlg.ui.btEditionLayerAdd.clicked.connect(self.addLayerToEditionLayer)
+        self.dlg.btEditionLayerAdd.clicked.connect(self.addLayerToEditionLayer)
 
         # Login filtered layers
         # detect layer locate list has changed to refresh layer field list
-        self.dlg.ui.liLoginFilteredLayerLayers.currentIndexChanged[str].connect(self.updateLoginFilteredFieldListFromLayer)
+        self.dlg.liLoginFilteredLayerLayers.currentIndexChanged[str].connect(self.updateLoginFilteredFieldListFromLayer)
         # add a layer to the list
-        self.dlg.ui.btLoginFilteredLayerAdd.clicked.connect(self.addLayerToLoginFilteredLayer)
+        self.dlg.btLoginFilteredLayerAdd.clicked.connect(self.addLayerToLoginFilteredLayer)
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
-        self.dlg.ui.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
+        self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
 
         # Timemanager layers
         # add a layer to the lizmap timemanager layers
-        self.dlg.ui.btTimemanagerLayerAdd.clicked.connect(self.addLayerToTimemanager)
+        self.dlg.btTimemanagerLayerAdd.clicked.connect(self.addLayerToTimemanager)
         # detect layer list has changed to refresh start attribute field list
-        self.dlg.ui.liTimemanagerLayers.currentIndexChanged[str].connect(self.updateTimemanagerFieldListFromLayer)
+        self.dlg.liTimemanagerLayers.currentIndexChanged[str].connect(self.updateTimemanagerFieldListFromLayer)
 
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
@@ -672,7 +672,7 @@ class lizmap:
     def showAbout(self):
         '''Opens the about html content with default browser'''
         localAbout = "http://hub.qgis.org/projects/lizmapplugin"
-        self.log(localAbout, abort=True, textarea=self.dlg.ui.outLog)
+        self.log(localAbout, abort=True, textarea=self.dlg.outLog)
         QDesktopServices.openUrl( QUrl(localAbout) )
 
     def log(self,msg, level=1, abort=False, textarea=False):
@@ -694,25 +694,25 @@ class lizmap:
         timeString = "%d:%02d:%02d.%03d" % \
             reduce(lambda ll,b : divmod(ll[0],b) + ll[1:],
                 [(t*1000,),1000,60,60])
-        self.log( '%s - %s' % (timeString, msg), False, textarea=self.dlg.ui.outLog)
+        self.log( '%s - %s' % (timeString, msg), False, textarea=self.dlg.outLog)
 
     def clearLog(self):
         '''Clear the content of the textarea log'''
-        self.dlg.ui.outLog.clear()
-        self.dlg.ui.outState.setText('<font color="green"></font>')
+        self.dlg.outLog.clear()
+        self.dlg.outState.setText('<font color="green"></font>')
 
     def enableCheckBox(self, value):
         '''Enable/Disable checkboxes and fields of the Layer tab'''
         for key,item in self.layerOptionsList.items():
             if item['widget'] and key not in ('sourceProject'):
                 item['widget'].setEnabled(value)
-        self.dlg.ui.btConfigurePopup.setEnabled(value)
+        self.dlg.btConfigurePopup.setEnabled(value)
 
     def getMinMaxScales(self):
         ''' Get Min Max Scales from scales input field'''
         minScale = 1
         maxScale = 1000000000
-        inMapScales = str(self.dlg.ui.inMapScales.text())
+        inMapScales = str(self.dlg.inMapScales.text())
         mapScales = [int(a.strip(' \t') ) for a in inMapScales.split(',') if str(a.strip(' \t')).isdigit()]
         mapScales.sort()
         if len(mapScales) < 2:
@@ -726,9 +726,9 @@ class lizmap:
             minScale = min(mapScales)
             maxScale = max(mapScales)
             myReturn = True
-        self.dlg.ui.inMinScale.setText(str(minScale))
-        self.dlg.ui.inMaxScale.setText(str(maxScale))
-        self.dlg.ui.inMapScales.setText(', '.join(map(str, mapScales)))
+        self.dlg.inMinScale.setText(str(minScale))
+        self.dlg.inMaxScale.setText(str(maxScale))
+        self.dlg.inMapScales.setText(', '.join(map(str, mapScales)))
 
         return myReturn
 
@@ -762,7 +762,7 @@ class lizmap:
                 self.log(
                     QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
                     abort=True,
-                    textarea=self.dlg.ui.outLog)
+                    textarea=self.dlg.outLog)
             finally:
                 f.close()
 
@@ -959,7 +959,7 @@ class lizmap:
                 pWmsExtent[2],
                 pWmsExtent[3]
             )
-            self.dlg.ui.inInitialExtent.setText(initialExtent)
+            self.dlg.inInitialExtent.setText(initialExtent)
 
     def setInitialExtentFromCanvas(self):
         '''
@@ -975,7 +975,7 @@ class lizmap:
             mcExtent.xMaximum(),
             mcExtent.yMaximum()
         )
-        self.dlg.ui.inInitialExtent.setText(initialExtent)
+        self.dlg.inInitialExtent.setText(initialExtent)
 
 
     def updateAttributeFieldListFromLayer(self):
@@ -984,17 +984,17 @@ class lizmap:
             for the layer chosen with the atribute layers combobox
         '''
         # get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liAttributeLayer)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liAttributeLayer)
 
         # remove previous items
-        self.dlg.ui.liAttributeLayerFields.clear()
+        self.dlg.liAttributeLayerFields.clear()
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 provider = layer.dataProvider()
                 fields = layer.pendingFields()
                 for field in fields:
-                    self.dlg.ui.liAttributeLayerFields.addItem(
+                    self.dlg.liAttributeLayerFields.addItem(
                         unicode(field.name()),
                         unicode(field.name())
                     )
@@ -1007,14 +1007,14 @@ class lizmap:
             for the layer chosen with the liLayerLocateLayer combobox
         '''
         # get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLocateByLayerLayers)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liLocateByLayerLayers)
 
         # remove previous items
-        self.dlg.ui.liLocateByLayerFields.clear()
+        self.dlg.liLocateByLayerFields.clear()
         # populate the fields combo boxes
         cbs = [
-            [False, self.dlg.ui.liLocateByLayerFields],
-            [True, self.dlg.ui.liLocateByLayerFilterFields]
+            [False, self.dlg.liLocateByLayerFields],
+            [True, self.dlg.liLocateByLayerFilterFields]
         ]
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
@@ -1038,16 +1038,16 @@ class lizmap:
             for the layer chosen with the liLayerLocateLayer combobox
         '''
         # get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLoginFilteredLayerLayers)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liLoginFilteredLayerLayers)
 
         # remove previous items
-        self.dlg.ui.liLoginFilteredLayerFields.clear()
+        self.dlg.liLoginFilteredLayerFields.clear()
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 fields = layer.pendingFields()
                 for field in fields:
-                    self.dlg.ui.liLoginFilteredLayerFields.addItem(
+                    self.dlg.liLoginFilteredLayerFields.addItem(
                         unicode(field.name()),
                         unicode(field.name())
                     )
@@ -1062,12 +1062,12 @@ class lizmap:
             !!! NEEDS REFACTORING !!!
         '''
         # get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liTimemanagerLayers)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liTimemanagerLayers)
 
         # populate the fields combo boxes
         cbs = [
-            [False, self.dlg.ui.liTimemanagerStartAttribute],
-            [True, self.dlg.ui.liTimemanagerLabelAttribute]
+            [False, self.dlg.liTimemanagerStartAttribute],
+            [True, self.dlg.liTimemanagerLabelAttribute]
         ]
         # remove previous items
         for cb in cbs:
@@ -1131,7 +1131,7 @@ class lizmap:
         for which to have the "locate by layer" tool'''
 
         # Get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLocateByLayerLayers)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liLocateByLayerLayers)
         if not layer:
             return False
 
@@ -1153,15 +1153,15 @@ class lizmap:
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        fieldCombobox = self.dlg.ui.liLocateByLayerFields
-        filterFieldCombobox = self.dlg.ui.liLocateByLayerFilterFields
+        fieldCombobox = self.dlg.liLocateByLayerFields
+        filterFieldCombobox = self.dlg.liLocateByLayerFilterFields
         fieldName = fieldCombobox.currentText()
         filterFieldName = filterFieldCombobox.currentText()
-        displayGeom = str(self.dlg.ui.cbLocateByLayerDisplayGeom.isChecked())
-        minLength = self.dlg.ui.inLocateByLayerMinLength.value()
-        filterOnLocate = str(self.dlg.ui.cbFilterOnLocate.isChecked())
+        displayGeom = str(self.dlg.cbLocateByLayerDisplayGeom.isChecked())
+        minLength = self.dlg.inLocateByLayerMinLength.value()
+        filterOnLocate = str(self.dlg.cbFilterOnLocate.isChecked())
 
-        lblTableWidget = self.dlg.ui.twLocateByLayerList
+        lblTableWidget = self.dlg.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 5:
             # set new rowCount
@@ -1210,7 +1210,7 @@ class lizmap:
         for which Lizmap will display attribute tables'''
 
         # Get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liAttributeLayer)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liAttributeLayer)
         if not layer:
             return False
 
@@ -1232,13 +1232,13 @@ class lizmap:
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        fieldCombobox = self.dlg.ui.liAttributeLayerFields
+        fieldCombobox = self.dlg.liAttributeLayerFields
         primaryKey = fieldCombobox.currentText()
-        hiddenFields = str(self.dlg.ui.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
-        pivot = str(self.dlg.ui.cbAttributeLayerIsPivot.isChecked())
-        hideAsChild= str(self.dlg.ui.cbAttributeLayerHideAsChild.isChecked())
+        hiddenFields = str(self.dlg.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
+        pivot = str(self.dlg.cbAttributeLayerIsPivot.isChecked())
+        hideAsChild= str(self.dlg.cbAttributeLayerHideAsChild.isChecked())
 
-        lblTableWidget = self.dlg.ui.twAttributeLayerList
+        lblTableWidget = self.dlg.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 15:
             # set new rowCount
@@ -1282,7 +1282,7 @@ class lizmap:
         for which Lizmap will propose a tooltip'''
 
         # Get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liTooltipLayer)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liTooltipLayer)
         if not layer:
             return False
 
@@ -1304,11 +1304,11 @@ class lizmap:
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        fields = str(self.dlg.ui.inTooltipLayerFields.text().encode('utf-8')).strip(' \t')
-        displayGeom = str(self.dlg.ui.cbTooltipLayerDisplayGeom.isChecked())
-        colorGeom = str(self.dlg.ui.inTooltipLayerColorGeom.text().encode('utf-8')).strip(' \t')
+        fields = str(self.dlg.inTooltipLayerFields.text().encode('utf-8')).strip(' \t')
+        displayGeom = str(self.dlg.cbTooltipLayerDisplayGeom.isChecked())
+        colorGeom = str(self.dlg.inTooltipLayerColorGeom.text().encode('utf-8')).strip(' \t')
 
-        lblTableWidget = self.dlg.ui.twTooltipLayerList
+        lblTableWidget = self.dlg.twTooltipLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 5:
             # set new rowCount
@@ -1347,24 +1347,24 @@ class lizmap:
         '''Add a layer in the list of edition layers'''
 
         # Get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liEditionLayer)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liEditionLayer)
         if not layer:
             return False
 
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        createFeature = str(self.dlg.ui.cbEditionLayerCreate.isChecked())
-        modifyAttribute = str(self.dlg.ui.cbEditionLayerModifyAttribute.isChecked())
-        modifyGeometry = str(self.dlg.ui.cbEditionLayerModifyGeometry.isChecked())
-        deleteFeature = str(self.dlg.ui.cbEditionLayerDeleteFeature.isChecked())
-        lblTableWidget = self.dlg.ui.twEditionLayerList
+        createFeature = str(self.dlg.cbEditionLayerCreate.isChecked())
+        modifyAttribute = str(self.dlg.cbEditionLayerModifyAttribute.isChecked())
+        modifyGeometry = str(self.dlg.cbEditionLayerModifyGeometry.isChecked())
+        deleteFeature = str(self.dlg.cbEditionLayerDeleteFeature.isChecked())
+        lblTableWidget = self.dlg.twEditionLayerList
 
         # check at least one checkbox is active
-        if not self.dlg.ui.cbEditionLayerCreate.isChecked() \
-        and not self.dlg.ui.cbEditionLayerModifyAttribute.isChecked() \
-        and not self.dlg.ui.cbEditionLayerModifyGeometry.isChecked() \
-        and not self.dlg.ui.cbEditionLayerDeleteFeature.isChecked():
+        if not self.dlg.cbEditionLayerCreate.isChecked() \
+        and not self.dlg.cbEditionLayerModifyAttribute.isChecked() \
+        and not self.dlg.cbEditionLayerModifyGeometry.isChecked() \
+        and not self.dlg.cbEditionLayerDeleteFeature.isChecked():
             return False
 
         # count table widget lines
@@ -1421,17 +1421,17 @@ class lizmap:
         for which to have the "login filtered layer" tool'''
 
         # Get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liLoginFilteredLayerLayers)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liLoginFilteredLayerLayers)
         if not layer:
             return False
 
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        fieldCombobox = self.dlg.ui.liLoginFilteredLayerFields
+        fieldCombobox = self.dlg.liLoginFilteredLayerFields
         filterAttribute = fieldCombobox.currentText()
-        filterPrivate = str(self.dlg.ui.cbLoginFilteredLayerPrivate.isChecked())
-        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
+        filterPrivate = str(self.dlg.cbLoginFilteredLayerPrivate.isChecked())
+        lblTableWidget = self.dlg.twLoginFilteredLayersList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount < 6:
             # set new rowCount
@@ -1471,11 +1471,11 @@ class lizmap:
         '''
 
         # Retrieve user options
-        layerRepository = str(self.dlg.ui.inLizmapBaselayerRepository.text().encode('utf-8')).strip(' \t')
-        layerProject = str(self.dlg.ui.inLizmapBaselayerProject.text().encode('utf-8')).strip(' \t')
-        layerName = str(self.dlg.ui.inLizmapBaselayerLayer.text().encode('utf-8')).strip(' \t')
-        layerTitle = str(self.dlg.ui.inLizmapBaselayerTitle.text().encode('utf-8')).strip(' \t')
-        layerImageFormat = str(self.dlg.ui.inLizmapBaselayerImageFormat.text().encode('utf-8')).strip(' \t')
+        layerRepository = str(self.dlg.inLizmapBaselayerRepository.text().encode('utf-8')).strip(' \t')
+        layerProject = str(self.dlg.inLizmapBaselayerProject.text().encode('utf-8')).strip(' \t')
+        layerName = str(self.dlg.inLizmapBaselayerLayer.text().encode('utf-8')).strip(' \t')
+        layerTitle = str(self.dlg.inLizmapBaselayerTitle.text().encode('utf-8')).strip(' \t')
+        layerImageFormat = str(self.dlg.inLizmapBaselayerImageFormat.text().encode('utf-8')).strip(' \t')
         content = [layerRepository, layerProject, layerName, layerTitle, layerImageFormat]
         # Check that every option is set
         for val in content:
@@ -1488,7 +1488,7 @@ class lizmap:
                 )
                 return False
 
-        lblTableWidget = self.dlg.ui.twLizmapBaselayers
+        lblTableWidget = self.dlg.twLizmapBaselayers
         twRowCount = lblTableWidget.rowCount()
         content.append(twRowCount) # store order
         colCount = len(content)
@@ -1512,21 +1512,21 @@ class lizmap:
         '''
 
         # Get the layer selected in the combo box
-        layer = self.getQgisLayerByNameFromCombobox(self.dlg.ui.liTimemanagerLayers)
+        layer = self.getQgisLayerByNameFromCombobox(self.dlg.liTimemanagerLayers)
         if not layer:
             return False
 
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        startAttribute = self.dlg.ui.liTimemanagerStartAttribute.currentText()
-        labelAttribute = self.dlg.ui.liTimemanagerLabelAttribute.currentText()
-        group = str(self.dlg.ui.inTimemanagerGroup.text().encode('utf-8')).strip(' \t')
-        groupTitle = str(self.dlg.ui.inTimemanagerGroupTitle.text().encode('utf-8')).strip(' \t')
+        startAttribute = self.dlg.liTimemanagerStartAttribute.currentText()
+        labelAttribute = self.dlg.liTimemanagerLabelAttribute.currentText()
+        group = str(self.dlg.inTimemanagerGroup.text().encode('utf-8')).strip(' \t')
+        groupTitle = str(self.dlg.inTimemanagerGroupTitle.text().encode('utf-8')).strip(' \t')
 
         content = [layerName, startAttribute, labelAttribute, group, groupTitle, layerId]
 
-        lblTableWidget = self.dlg.ui.twTimemanager
+        lblTableWidget = self.dlg.twTimemanager
         twRowCount = lblTableWidget.rowCount()
         content.append(twRowCount) # store order
         colCount = len(content)
@@ -1660,7 +1660,7 @@ class lizmap:
         '''
 
         # initialize the tree
-        myTree = self.dlg.ui.treeLayer
+        myTree = self.dlg.treeLayer
         myTree.clear()
         myTree.headerItem().setText(0, QApplication.translate( "lizmap", "List of layers" ) )
         self.myDic = {}
@@ -1683,7 +1683,7 @@ class lizmap:
                 self.log(
                     QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
                     abort=True,
-                    textarea=self.dlg.ui.outLog)
+                    textarea=self.dlg.outLog)
             finally:
                 f.close()
 
@@ -1751,7 +1751,7 @@ class lizmap:
     def setItemOptions(self):
         '''Restore layer/group input values when selecting a layer tree item'''
         # get the selected item
-        item = self.dlg.ui.treeLayer.currentItem()
+        item = self.dlg.treeLayer.currentItem()
         if item:
             self.enableCheckBox(True)
         else:
@@ -1780,12 +1780,12 @@ class lizmap:
                     # deactivate wms checkbox if not needed
                     if key == 'externalWmsToggle':
                         wmsEnabled = self.getItemWmsCapability(selectedItem)
-                        self.dlg.ui.cbExternalWms.setEnabled(wmsEnabled)
+                        self.dlg.cbExternalWms.setEnabled(wmsEnabled)
                         if not wmsEnabled:
-                            self.dlg.ui.cbExternalWms.setChecked(False)
+                            self.dlg.cbExternalWms.setChecked(False)
 
             # deactivate popup configuration for groups
-            self.dlg.ui.btConfigurePopup.setEnabled(isLayer)
+            self.dlg.btConfigurePopup.setEnabled(isLayer)
 
         else:
             # set default values for this layer/group
@@ -1824,7 +1824,7 @@ class lizmap:
         '''
         key = str(key)
         # get the selected item in the layer tree
-        item = self.dlg.ui.treeLayer.currentItem()
+        item = self.dlg.treeLayer.currentItem()
         # get the definition for this property
         layerOption = self.layerOptionsList[key]
         # modify the property for the selected item
@@ -1871,7 +1871,7 @@ class lizmap:
     def configurePopup(self):
         '''Open the dialog with a text field to store the popup template for one layer/group'''
         # get the selected item in the layer tree
-        item = self.dlg.ui.treeLayer.currentItem()
+        item = self.dlg.treeLayer.currentItem()
         if item and self.layerList.has_key(item.text(1)):
             # do nothing if no popup configured for this layer/group
             if self.layerList[item.text(1)]['popup'] == 'False':
@@ -1920,7 +1920,7 @@ class lizmap:
         self.lizmapPopupDialog.close()
 
         # Get the selected item in the layer tree
-        item = self.dlg.ui.treeLayer.currentItem()
+        item = self.dlg.treeLayer.currentItem()
         if item and self.layerList.has_key(item.text(1)):
             # Write the content into the global object
             self.layerList[item.text(1)]['popupTemplate'] = popupContent
@@ -1963,7 +1963,7 @@ class lizmap:
         liz2json["options"]["bbox"] = bbox
 
         # set initialExtent values if not defined
-        if not self.dlg.ui.inInitialExtent.text():
+        if not self.dlg.inInitialExtent.text():
             self.setInitialExtentFromProject()
 
         # gui user defined options
@@ -2021,7 +2021,7 @@ class lizmap:
 
 
         # list of layers for which to have the tool "locate by layer"
-        lblTableWidget = self.dlg.ui.twLocateByLayerList
+        lblTableWidget = self.dlg.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
         p = QgsProject.instance()
         wfsLayersList = p.readListEntry('WFSLayers','')[0]
@@ -2049,7 +2049,7 @@ class lizmap:
                     liz2json["locateByLayer"][layerName]["order"] = row
 
         # list of layers to display attribute table
-        lblTableWidget = self.dlg.ui.twAttributeLayerList
+        lblTableWidget = self.dlg.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["attributeLayers"] = {}
@@ -2071,7 +2071,7 @@ class lizmap:
 
 
         # list of layers to display tooltip
-        lblTableWidget = self.dlg.ui.twTooltipLayerList
+        lblTableWidget = self.dlg.twTooltipLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["tooltipLayers"] = {}
@@ -2089,7 +2089,7 @@ class lizmap:
                 liz2json["tooltipLayers"][layerName]["order"] = row
 
         # layer(s) for the edition tool
-        lblTableWidget = self.dlg.ui.twEditionLayerList
+        lblTableWidget = self.dlg.twEditionLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["editionLayers"] = {}
@@ -2115,7 +2115,7 @@ class lizmap:
 
 
         # list of layers for which to have the tool "login filtered layer"
-        lblTableWidget = self.dlg.ui.twLoginFilteredLayersList
+        lblTableWidget = self.dlg.twLoginFilteredLayersList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["loginFilteredLayers"] = {}
@@ -2133,7 +2133,7 @@ class lizmap:
 
 
         # list of Lizmap external baselayers
-        eblTableWidget = self.dlg.ui.twLizmapBaselayers
+        eblTableWidget = self.dlg.twLizmapBaselayers
         twRowCount = eblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["lizmapExternalBaselayers"] = {}
@@ -2155,7 +2155,7 @@ class lizmap:
                 liz2json["lizmapExternalBaselayers"][lName]["order"] = row
 
         # list of timemanager layers
-        lblTableWidget = self.dlg.ui.twTimemanager
+        lblTableWidget = self.dlg.twTimemanager
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
             liz2json["timemanagerLayers"] = {}
@@ -2385,7 +2385,7 @@ class lizmap:
                     QApplication.translate("lizmap", "ui.msg.error.project.layers.path.relative {}")
                     .format(projectDir) + str(layerSourcesBad),
                     abort=True,
-                    textarea=self.dlg.ui.outLog)
+                    textarea=self.dlg.outLog)
                 errorMessage+= layerPathError
 
             # check if a title has been given in the project OWS tab configuration
@@ -2438,27 +2438,27 @@ class lizmap:
             # Get configuration from input fields
 
             # Need to get theses values to check for Pseudo Mercator projection
-            in_osmMapnik = self.dlg.ui.cbOsmMapnik.isChecked()
-            in_osmMapquest = self.dlg.ui.cbOsmMapquest.isChecked()
-            in_osmCyclemap = self.dlg.ui.cbOsmCyclemap.isChecked()
-            in_googleStreets = self.dlg.ui.cbGoogleStreets.isChecked()
-            in_googleSatellite = self.dlg.ui.cbGoogleSatellite.isChecked()
-            in_googleHybrid = self.dlg.ui.cbGoogleHybrid.isChecked()
-            in_googleTerrain = self.dlg.ui.cbGoogleTerrain.isChecked()
-            in_bingStreets = self.dlg.ui.cbBingStreets.isChecked()
-            in_bingSatellite = self.dlg.ui.cbBingSatellite.isChecked()
-            in_bingHybrid = self.dlg.ui.cbBingHybrid.isChecked()
-            in_ignStreets = self.dlg.ui.cbIgnStreets.isChecked()
-            in_ignSatellite = self.dlg.ui.cbIgnSatellite.isChecked()
-            in_ignTerrain = self.dlg.ui.cbIgnTerrain.isChecked()
-            in_ignCadastral = self.dlg.ui.cbIgnCadastral.isChecked()
+            in_osmMapnik = self.dlg.cbOsmMapnik.isChecked()
+            in_osmMapquest = self.dlg.cbOsmMapquest.isChecked()
+            in_osmCyclemap = self.dlg.cbOsmCyclemap.isChecked()
+            in_googleStreets = self.dlg.cbGoogleStreets.isChecked()
+            in_googleSatellite = self.dlg.cbGoogleSatellite.isChecked()
+            in_googleHybrid = self.dlg.cbGoogleHybrid.isChecked()
+            in_googleTerrain = self.dlg.cbGoogleTerrain.isChecked()
+            in_bingStreets = self.dlg.cbBingStreets.isChecked()
+            in_bingSatellite = self.dlg.cbBingSatellite.isChecked()
+            in_bingHybrid = self.dlg.cbBingHybrid.isChecked()
+            in_ignStreets = self.dlg.cbIgnStreets.isChecked()
+            in_ignSatellite = self.dlg.cbIgnSatellite.isChecked()
+            in_ignTerrain = self.dlg.cbIgnTerrain.isChecked()
+            in_ignCadastral = self.dlg.cbIgnCadastral.isChecked()
 
             isok = True
 
             # log
-            self.dlg.ui.outLog.append('=' * 20)
-            self.dlg.ui.outLog.append('<b>'+QApplication.translate("lizmap", "Map - options")+'</b>')
-            self.dlg.ui.outLog.append('=' * 20)
+            self.dlg.outLog.append('=' * 20)
+            self.dlg.outLog.append('<b>'+QApplication.translate("lizmap", "Map - options")+'</b>')
+            self.dlg.outLog.append('=' * 20)
 
             # Checking configuration data
             # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
@@ -2483,7 +2483,7 @@ class lizmap:
 
 
             # list of layers for which to have the tool "locate by layer" set
-            lblTableWidget = self.dlg.ui.twLocateByLayerList
+            lblTableWidget = self.dlg.twLocateByLayerList
             twRowCount = lblTableWidget.rowCount()
             wfsLayersList = p.readListEntry('WFSLayers','')[0]
             if twRowCount > 0:
@@ -2497,7 +2497,7 @@ class lizmap:
                     self.log(
                         QApplication.translate("lizmap", "ui.msg.warning.toolLayer.notInWfs"),
                         abort=True,
-                        textarea=self.dlg.ui.outLog)
+                        textarea=self.dlg.outLog)
 
 
             if self.isok:
@@ -2506,11 +2506,11 @@ class lizmap:
                 self.log(
                     QApplication.translate("lizmap", "All the map parameters are correctly set"),
                     abort=False,
-                    textarea=self.dlg.ui.outLog)
+                    textarea=self.dlg.outLog)
                 self.log(
                     '<b>'+QApplication.translate("lizmap", "Lizmap configuration file has been updated")+'</b>',
                     abort=False,
-                    textarea=self.dlg.ui.outLog)
+                    textarea=self.dlg.outLog)
                 a = True
             else:
                 a = False
@@ -2520,9 +2520,9 @@ class lizmap:
                     QApplication.translate("lizmap", "Wrong or missing map parameters: please read the log and correct the printed errors."),
                     QMessageBox.Ok)
                 # Go to Log tab
-                self.dlg.ui.tabWidget.setCurrentIndex(5)
+                self.dlg.tabWidget.setCurrentIndex(5)
 
-            self.dlg.ui.outState.setText('<font color="green"></font>')
+            self.dlg.outState.setText('<font color="green"></font>')
 
             # Get and check map scales
             if self.isok:
@@ -2563,7 +2563,7 @@ class lizmap:
             return
 
         # Combo to fill up with baselayers
-        combo = self.dlg.ui.cbStartupBaselayer
+        combo = self.dlg.cbStartupBaselayer
 
         # First get selected item
         idx = combo.currentIndex()
@@ -2620,7 +2620,7 @@ class lizmap:
                 jsonOptions = sjson['options']
                 if 'startupBaselayer' in jsonOptions:
                     sb = jsonOptions['startupBaselayer']
-                    cb = self.dlg.ui.cbStartupBaselayer
+                    cb = self.dlg.cbStartupBaselayer
                     i = cb.findData(sb)
                     if i >= 0:
                         cb.setCurrentIndex(i)
@@ -2637,7 +2637,7 @@ class lizmap:
 
     def test(self):
         '''Debug method'''
-        self.log("test", abort=False, textarea=self.dlg.ui.outLog)
+        self.log("test", abort=False, textarea=self.dlg.outLog)
         QMessageBox.critical(self.dlg, "Lizmap debug", (u"test"), QMessageBox.Ok)
 
 
@@ -2678,17 +2678,17 @@ class lizmap:
             self.dlg.show()
 
             # Fill the layer list for the locate by layer tool
-            self.populateLayerCombobox(self.dlg.ui.liLocateByLayerLayers, 'vector')
+            self.populateLayerCombobox(self.dlg.liLocateByLayerLayers, 'vector')
             # Fill the layer list for the attribute layer tool
-            self.populateLayerCombobox(self.dlg.ui.liAttributeLayer, 'vector')
+            self.populateLayerCombobox(self.dlg.liAttributeLayer, 'vector')
             # Fill the layer list for the tooltip layer tool
-            self.populateLayerCombobox(self.dlg.ui.liTooltipLayer, 'vector')
+            self.populateLayerCombobox(self.dlg.liTooltipLayer, 'vector')
             # Fill the layers lists for the edition tool
-            self.populateLayerCombobox(self.dlg.ui.liEditionLayer, 'vector', ['spatialite', 'postgres'])
+            self.populateLayerCombobox(self.dlg.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool
-            self.populateLayerCombobox(self.dlg.ui.liLoginFilteredLayerLayers, 'vector')
+            self.populateLayerCombobox(self.dlg.liLoginFilteredLayerLayers, 'vector')
             # Fill the layer list for the login filtered layers tool
-            self.populateLayerCombobox(self.dlg.ui.liTimemanagerLayers, 'vector')
+            self.populateLayerCombobox(self.dlg.liTimemanagerLayers, 'vector')
 
             # Get config file data
             self.getConfig()

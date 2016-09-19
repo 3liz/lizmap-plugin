@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1220</width>
-    <height>921</height>
+    <width>1144</width>
+    <height>961</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,6 +38,24 @@
       <widget class="QPushButton" name="btSave">
        <property name="text">
         <string>Save</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_28">
+     <item>
+      <widget class="QPushButton" name="btHelp">
+       <property name="text">
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonClose">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close</set>
        </property>
       </widget>
      </item>
@@ -112,456 +130,502 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>594</width>
-               <height>862</height>
+               <width>601</width>
+               <height>784</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
               <item row="0" column="0">
-               <layout class="QVBoxLayout" name="verticalLayout">
-                <item>
-                 <widget class="QLabel" name="label_58">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Metadata</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_7">
-                  <property name="text">
-                   <string>Title</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="inLayerTitle"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>Abstract</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QTextEdit" name="teLayerAbstract">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>Link</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="inLayerLink"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_57">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Map options</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbToggled">
-                  <property name="text">
-                   <string>Toggled?</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_7">
-                  <item>
-                   <widget class="QCheckBox" name="cbPopup">
-                    <property name="text">
-                     <string>Activate popup</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_30">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_67">
-                    <property name="styleSheet">
-                     <string notr="true">background-color:rgb(170, 255, 255);</string>
-                    </property>
-                    <property name="text">
-                     <string>source</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="liPopupSource">
-                    <property name="styleSheet">
-                     <string notr="true">background-color:rgb(170, 255, 255);</string>
-                    </property>
-                    <item>
+               <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+                <property name="title">
+                 <string>Metadata</string>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_22">
+                 <item>
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>Title</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="inLayerTitle"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>Abstract</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextEdit" name="teLayerAbstract">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>70</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_10">
+                   <property name="text">
+                    <string>Link</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="inLayerLink"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
+                <property name="title">
+                 <string>Legend</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_23">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_32">
+                   <item>
+                    <widget class="QCheckBox" name="cbDisplayInLegend">
                      <property name="text">
-                      <string>auto</string>
+                      <string>Display in Legend tree</string>
                      </property>
-                    </item>
-                    <item>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="cbNoLegendImage">
                      <property name="text">
-                      <string>lizmap</string>
+                      <string>Hide legend image?</string>
                      </property>
-                    </item>
-                    <item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="cbToggled">
                      <property name="text">
-                      <string>qgis</string>
+                      <string>Toggled?</string>
                      </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="btConfigurePopup">
-                    <property name="text">
-                     <string>Configure</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbNoLegendImage">
-                  <property name="text">
-                   <string>Hide legend image?</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbGroupAsLayer">
-                  <property name="text">
-                   <string>Group as layer?</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbLayerIsBaseLayer">
-                  <property name="text">
-                   <string>Base layer?</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbDisplayInLegend">
-                  <property name="text">
-                   <string>Display in Legend tree</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbSingleTile">
-                  <property name="text">
-                   <string>Single Tile?</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_8">
-                  <item>
-                   <widget class="QLabel" name="label_9">
-                    <property name="text">
-                     <string>Image format</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="liImageFormat">
-                    <item>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_35">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_33">
+                   <item>
+                    <widget class="QCheckBox" name="cbGroupAsLayer">
                      <property name="text">
-                      <string>png</string>
+                      <string>Group as layer?</string>
                      </property>
-                    </item>
-                    <item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="cbLayerIsBaseLayer">
                      <property name="text">
-                      <string>png; mode=16bit</string>
+                      <string>Base layer?</string>
                      </property>
-                    </item>
-                    <item>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QgsCollapsibleGroupBox" name="mGroupBox_3">
+                <property name="title">
+                 <string>Popup</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_24">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_7">
+                   <item>
+                    <widget class="QCheckBox" name="cbPopup">
                      <property name="text">
-                      <string>png; mode=8bit</string>
+                      <string>Activate popup</string>
                      </property>
-                    </item>
-                    <item>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_30">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_67">
+                     <property name="styleSheet">
+                      <string notr="true">background-color:rgb(170, 255, 255);</string>
+                     </property>
                      <property name="text">
-                      <string>jpeg</string>
+                      <string>source</string>
                      </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_25">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_54">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Cache</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="cbCached">
-                  <property name="text">
-                   <string>Server cache?</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_2">
-                  <item>
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Expiration (seconds)</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSpinBox" name="inCacheExpiration">
-                    <property name="maximum">
-                     <number>2592000</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_16">
-                    <property name="text">
-                     <string>Metatile</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="inMetatileSize">
-                    <property name="inputMask">
-                     <string>0,0;_</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_15">
-                  <item>
-                   <widget class="QLabel" name="label_18">
-                    <property name="text">
-                     <string>Browser client cache?</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSpinBox" name="inClientCacheExpiration">
-                    <property name="maximum">
-                     <number>2592000</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_20">
-                    <property name="text">
-                     <string>seconds</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_9">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_55">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Embedded layers and groups</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_23">
-                  <item>
-                   <widget class="QLabel" name="label_51">
-                    <property name="text">
-                     <string>Source repository</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="inSourceRepository">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_50">
-                    <property name="text">
-                     <string>Source project</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="inSourceProject">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_26">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_56">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Third-party WMS layers</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_25">
-                  <item>
-                   <widget class="QCheckBox" name="cbExternalWms">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_59">
-                    <property name="text">
-                     <string>Get images directly from WMS Server</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_27">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="liPopupSource">
+                     <property name="styleSheet">
+                      <string notr="true">background-color:rgb(170, 255, 255);</string>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>auto</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>lizmap</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>qgis</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btConfigurePopup">
+                     <property name="text">
+                      <string>Configure</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QgsCollapsibleGroupBox" name="mGroupBox_4">
+                <property name="title">
+                 <string>Map options</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_25">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_8">
+                   <item>
+                    <widget class="QLabel" name="label_9">
+                     <property name="text">
+                      <string>Image format</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="liImageFormat">
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>png</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>png; mode=16bit</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>png; mode=8bit</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>jpeg</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_18">
+                     <property name="text">
+                      <string>Browser client cache?</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="inClientCacheExpiration">
+                     <property name="maximum">
+                      <number>2592000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_20">
+                     <property name="text">
+                      <string>seconds</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_25">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_25">
+                   <item>
+                    <widget class="QLabel" name="label_56">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Third-party WMS layers</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="cbExternalWms">
+                     <property name="text">
+                      <string>Get images directly from WMS Server</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_34">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="cbSingleTile">
+                   <property name="text">
+                    <string>Single Tile?</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="4" column="0">
+               <widget class="QgsCollapsibleGroupBox" name="mGroupBox_5">
+                <property name="title">
+                 <string>Server tile cache</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_2">
+                   <item>
+                    <widget class="QCheckBox" name="cbCached">
+                     <property name="text">
+                      <string>Server cache?</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_12">
+                     <property name="text">
+                      <string>Expiration (seconds)</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="inCacheExpiration">
+                     <property name="maximum">
+                      <number>2592000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_16">
+                     <property name="text">
+                      <string>Metatile</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="inMetatileSize">
+                     <property name="inputMask">
+                      <string>0,0;_</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_27">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_23">
+                   <item>
+                    <widget class="QLabel" name="label_55">
+                     <property name="font">
+                      <font>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Embedded layers and groups</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_51">
+                     <property name="text">
+                      <string>Source repository</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="inSourceRepository">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_50">
+                     <property name="text">
+                      <string>Source project</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="inSourceProject">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_26">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -587,8 +651,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>705</width>
-            <height>710</height>
+            <width>1102</width>
+            <height>820</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1109,8 +1173,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>955</width>
-            <height>746</height>
+            <width>1102</width>
+            <height>820</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1748,8 +1812,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1154</width>
-            <height>2167</height>
+            <width>1086</width>
+            <height>2218</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2961,8 +3025,8 @@ Only the selected feature will be visible on the map.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>121</width>
-            <height>115</height>
+            <width>1102</width>
+            <height>820</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -3042,46 +3106,25 @@ Only the selected feature will be visible on the map.</string>
      </widget>
     </widget>
    </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_28">
-     <item>
-      <widget class="QPushButton" name="btHelp">
-       <property name="text">
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonClose">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>treeLayer</tabstop>
-  <tabstop>inLayerTitle</tabstop>
-  <tabstop>teLayerAbstract</tabstop>
-  <tabstop>inLayerLink</tabstop>
-  <tabstop>cbToggled</tabstop>
   <tabstop>cbPopup</tabstop>
   <tabstop>liPopupSource</tabstop>
   <tabstop>btConfigurePopup</tabstop>
-  <tabstop>cbNoLegendImage</tabstop>
-  <tabstop>cbGroupAsLayer</tabstop>
-  <tabstop>cbLayerIsBaseLayer</tabstop>
-  <tabstop>cbDisplayInLegend</tabstop>
-  <tabstop>cbSingleTile</tabstop>
   <tabstop>liImageFormat</tabstop>
-  <tabstop>cbCached</tabstop>
   <tabstop>inCacheExpiration</tabstop>
   <tabstop>inMetatileSize</tabstop>
-  <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
   <tabstop>cbHideGroupCheckbox</tabstop>
   <tabstop>inMapScales</tabstop>
