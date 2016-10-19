@@ -136,8 +136,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>646</width>
-               <height>671</height>
+               <width>630</width>
+               <height>682</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
@@ -365,6 +365,13 @@
                     </spacer>
                    </item>
                   </layout>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="cbPopupDisplayChildren">
+                   <property name="text">
+                    <string>Display related children under each object (use relations)</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -3188,6 +3195,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbPopup</tabstop>
   <tabstop>liPopupSource</tabstop>
   <tabstop>btConfigurePopup</tabstop>
+  <tabstop>cbPopupDisplayChildren</tabstop>
   <tabstop>mGroupBox_4</tabstop>
   <tabstop>liImageFormat</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>

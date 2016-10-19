@@ -360,6 +360,10 @@ class lizmap:
                 'widget': None,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
+            'popupDisplayChildren': {
+                'widget': self.dlg.cbPopupDisplayChildren,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
             'noLegendImage': {
                 'widget': self.dlg.cbNoLegendImage,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
