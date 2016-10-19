@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1144</width>
+    <width>1251</width>
     <height>961</height>
    </rect>
   </property>
@@ -130,7 +130,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>601</width>
+               <width>610</width>
                <height>784</height>
               </rect>
              </property>
@@ -148,47 +148,51 @@
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_22">
                  <item>
-                  <widget class="QLabel" name="label_7">
-                   <property name="text">
-                    <string>Title</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="inLayerTitle"/>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>Abstract</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QTextEdit" name="teLayerAbstract">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>70</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_10">
-                   <property name="text">
-                    <string>Link</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="inLayerLink"/>
+                  <layout class="QGridLayout" name="gridLayout_8">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_7">
+                     <property name="text">
+                      <string>Title</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_8">
+                     <property name="text">
+                      <string>Abstract</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLineEdit" name="inLayerTitle"/>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QTextEdit" name="teLayerAbstract">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>70</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_10">
+                     <property name="text">
+                      <string>Link</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="inLayerLink"/>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>
@@ -201,6 +205,13 @@
                 <layout class="QVBoxLayout" name="verticalLayout_23">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_32">
+                   <item>
+                    <widget class="QCheckBox" name="cbToggled">
+                     <property name="text">
+                      <string>Toggled?</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QCheckBox" name="cbDisplayInLegend">
                      <property name="text">
@@ -215,13 +226,6 @@
                     <widget class="QCheckBox" name="cbNoLegendImage">
                      <property name="text">
                       <string>Hide legend image?</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbToggled">
-                     <property name="text">
-                      <string>Toggled?</string>
                      </property>
                     </widget>
                    </item>
@@ -651,7 +655,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1102</width>
+            <width>1209</width>
             <height>820</height>
            </rect>
           </property>
@@ -668,6 +672,24 @@
                  <string>Hide project in Lizmap Web Client</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_15">
+                <item>
+                 <widget class="QLabel" name="label_54">
+                  <property name="text">
+                   <string>Restrict access to the following groups</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="inAcl">
+                  <property name="toolTip">
+                   <string>List of group id separated by comma. Leave empty if access is not restricted.</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -1173,7 +1195,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1102</width>
+            <width>1209</width>
             <height>820</height>
            </rect>
           </property>
@@ -1811,8 +1833,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>1086</width>
+            <y>-1398</y>
+            <width>1193</width>
             <height>2218</height>
            </rect>
           </property>
@@ -3025,7 +3047,7 @@ Only the selected feature will be visible on the map.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1102</width>
+            <width>1209</width>
             <height>820</height>
            </rect>
           </property>
@@ -3117,25 +3139,38 @@ Only the selected feature will be visible on the map.</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>buttonClose</tabstop>
+  <tabstop>btSave</tabstop>
   <tabstop>treeLayer</tabstop>
+  <tabstop>cbHideGroupCheckbox</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>inLayerTitle</tabstop>
+  <tabstop>teLayerAbstract</tabstop>
+  <tabstop>inLayerLink</tabstop>
+  <tabstop>mGroupBox_2</tabstop>
+  <tabstop>cbToggled</tabstop>
+  <tabstop>cbDisplayInLegend</tabstop>
+  <tabstop>cbNoLegendImage</tabstop>
+  <tabstop>cbGroupAsLayer</tabstop>
+  <tabstop>cbLayerIsBaseLayer</tabstop>
+  <tabstop>mGroupBox_3</tabstop>
   <tabstop>cbPopup</tabstop>
   <tabstop>liPopupSource</tabstop>
   <tabstop>btConfigurePopup</tabstop>
+  <tabstop>mGroupBox_4</tabstop>
   <tabstop>liImageFormat</tabstop>
+  <tabstop>inClientCacheExpiration</tabstop>
+  <tabstop>cbExternalWms</tabstop>
+  <tabstop>cbSingleTile</tabstop>
+  <tabstop>mGroupBox_5</tabstop>
+  <tabstop>cbCached</tabstop>
   <tabstop>inCacheExpiration</tabstop>
   <tabstop>inMetatileSize</tabstop>
-  <tabstop>cbExternalWms</tabstop>
-  <tabstop>cbHideGroupCheckbox</tabstop>
-  <tabstop>inMapScales</tabstop>
-  <tabstop>inMinScale</tabstop>
-  <tabstop>inMaxScale</tabstop>
-  <tabstop>outLog</tabstop>
-  <tabstop>btClearlog</tabstop>
-  <tabstop>scrollArea</tabstop>
   <tabstop>inSourceRepository</tabstop>
   <tabstop>inSourceProject</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>cbHideProject</tabstop>
+  <tabstop>inAcl</tabstop>
   <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateMeasure</tabstop>
   <tabstop>cbActivateZoomHistory</tabstop>
@@ -3144,6 +3179,9 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>
+  <tabstop>inMapScales</tabstop>
+  <tabstop>inMinScale</tabstop>
+  <tabstop>inMaxScale</tabstop>
   <tabstop>inInitialExtent</tabstop>
   <tabstop>btSetExtentFromProject</tabstop>
   <tabstop>btSetExtentFromCanvas</tabstop>
@@ -3169,6 +3207,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbIgnStreets</tabstop>
   <tabstop>cbIgnSatellite</tabstop>
   <tabstop>cbIgnTerrain</tabstop>
+  <tabstop>cbIgnCadastral</tabstop>
   <tabstop>inIgnKey</tabstop>
   <tabstop>cbAddEmptyBaselayer</tabstop>
   <tabstop>cbStartupBaselayer</tabstop>
@@ -3181,20 +3220,35 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btLizmapBaselayerAdd</tabstop>
   <tabstop>btLizmapBaselayerDel</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>liLocateByLayerFields</tabstop>
+  <tabstop>twLocateByLayerList</tabstop>
   <tabstop>liLocateByLayerLayers</tabstop>
+  <tabstop>liLocateByLayerFields</tabstop>
   <tabstop>liLocateByLayerFilterFields</tabstop>
   <tabstop>cbLocateByLayerDisplayGeom</tabstop>
   <tabstop>inLocateByLayerMinLength</tabstop>
   <tabstop>cbFilterOnLocate</tabstop>
   <tabstop>btLocateByLayerAdd</tabstop>
   <tabstop>btLocateByLayerDel</tabstop>
-  <tabstop>twLocateByLayerList</tabstop>
   <tabstop>twAttributeLayerList</tabstop>
   <tabstop>liAttributeLayer</tabstop>
   <tabstop>liAttributeLayerFields</tabstop>
+  <tabstop>inAttributeLayerHiddenFields</tabstop>
+  <tabstop>cbAttributeLayerIsPivot</tabstop>
+  <tabstop>cbAttributeLayerHideAsChild</tabstop>
   <tabstop>btAttributeLayerAdd</tabstop>
   <tabstop>btAttributeLayerDel</tabstop>
+  <tabstop>btClearlog</tabstop>
+  <tabstop>outLog</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>btHelp</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>twTooltipLayerList</tabstop>
+  <tabstop>liTooltipLayer</tabstop>
+  <tabstop>inTooltipLayerFields</tabstop>
+  <tabstop>cbTooltipLayerDisplayGeom</tabstop>
+  <tabstop>inTooltipLayerColorGeom</tabstop>
+  <tabstop>btTooltipLayerAdd</tabstop>
+  <tabstop>btTooltipLayerDel</tabstop>
   <tabstop>twEditionLayerList</tabstop>
   <tabstop>liEditionLayer</tabstop>
   <tabstop>cbEditionLayerCreate</tabstop>
@@ -3209,12 +3263,10 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbLoginFilteredLayerPrivate</tabstop>
   <tabstop>btLoginFilteredLayerAdd</tabstop>
   <tabstop>btLoginFilteredLayerDel</tabstop>
-  <tabstop>scrollArea_4</tabstop>
-  <tabstop>cbHideProject</tabstop>
-  <tabstop>twTimemanager</tabstop>
   <tabstop>inTimeFrameSize</tabstop>
   <tabstop>liTimeFrameType</tabstop>
   <tabstop>inAnimationFrameLength</tabstop>
+  <tabstop>twTimemanager</tabstop>
   <tabstop>liTimemanagerLayers</tabstop>
   <tabstop>liTimemanagerStartAttribute</tabstop>
   <tabstop>liTimemanagerLabelAttribute</tabstop>
@@ -3222,20 +3274,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>inTimemanagerGroupTitle</tabstop>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
-  <tabstop>btSave</tabstop>
-  <tabstop>cbIgnCadastral</tabstop>
-  <tabstop>cbAttributeLayerIsPivot</tabstop>
-  <tabstop>inAttributeLayerHiddenFields</tabstop>
-  <tabstop>cbAttributeLayerHideAsChild</tabstop>
-  <tabstop>twTooltipLayerList</tabstop>
-  <tabstop>inTooltipLayerFields</tabstop>
-  <tabstop>liTooltipLayer</tabstop>
-  <tabstop>cbTooltipLayerDisplayGeom</tabstop>
-  <tabstop>inTooltipLayerColorGeom</tabstop>
-  <tabstop>btTooltipLayerAdd</tabstop>
-  <tabstop>btTooltipLayerDel</tabstop>
-  <tabstop>btHelp</tabstop>
-  <tabstop>buttonClose</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -3246,8 +3284,8 @@ Only the selected feature will be visible on the map.</string>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>527</x>
-     <y>489</y>
+     <x>628</x>
+     <y>950</y>
     </hint>
     <hint type="destinationlabel">
      <x>310</x>

@@ -157,6 +157,10 @@ class lizmap:
                 'widget': self.dlg.inMaxScale,
                 'wType': 'text', 'type': 'integer', 'default': 1000000000
             },
+            'acl': {
+                'widget': self.dlg.inAcl,
+                'wType': 'text', 'type': 'list', 'default': []
+            },
             'initialExtent': {
                 'widget': self.dlg.inInitialExtent,
                 'wType': 'text', 'type': 'floatlist', 'default': []
@@ -1970,7 +1974,6 @@ class lizmap:
         for key, item in self.globalOptions.items():
             if item['widget']:
                 inputValue = None
-
                 # Get field value depending on widget type
                 if item['wType'] == 'text':
                     inputValue = str(item['widget'].text()).strip(' \t')
@@ -1996,12 +1999,12 @@ class lizmap:
                         inputValue = str(inputValue)
 
                 elif item['type'] in ('intlist', 'floatlist', 'list'):
-                    if item['type'] in 'intlist':
+                    if item['type'] == 'intlist':
                         inputValue = [int(a) for a in inputValue.split(', ') if a.isdigit()]
                     elif item['type'] == 'floatlist':
                         inputValue = [float(a) for a in inputValue.split(', ')]
                     else:
-                        inputValue = [a for a in inputValue.split(', ')]
+                        inputValue = [a.strip() for a in inputValue.split(',') if a.strip()]
 
                 elif item['type'] == 'integer':
                     try:
