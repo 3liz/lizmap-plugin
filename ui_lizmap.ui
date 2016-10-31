@@ -1265,9 +1265,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="cbOsmMapquest">
+                 <widget class="QCheckBox" name="cbOsmStamenToner">
                   <property name="text">
-                   <string>OSM Mapquest</string>
+                   <string>OSM Stamen Toner</string>
                   </property>
                  </widget>
                 </item>
@@ -3232,7 +3232,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>liPopupContainer</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>cbOsmMapnik</tabstop>
-  <tabstop>cbOsmMapquest</tabstop>
+  <tabstop>cbOsmStamenToner</tabstop>
   <tabstop>cbOsmCyclemap</tabstop>
   <tabstop>cbGoogleStreets</tabstop>
   <tabstop>cbGoogleSatellite</tabstop>

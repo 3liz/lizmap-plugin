@@ -19,8 +19,8 @@
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1158"/>
-        <source>OSM Mapquest</source>
-        <translation>OSM Mapquest</translation>
+        <source>OSM Stame Toner</source>
+        <translation>OSM Stame Toner</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1425"/>

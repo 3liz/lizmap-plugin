@@ -189,8 +189,8 @@ class lizmap:
                 'widget': self.dlg.cbOsmMapnik,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
-            'osmMapquest' : {
-                'widget': self.dlg.cbOsmMapquest,
+            'osmStamenToner' : {
+                'widget': self.dlg.cbOsmStamenToner,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'osmCyclemap' : {
@@ -458,7 +458,7 @@ class lizmap:
         self.baselayerWidgetList = {
             'layer': self.dlg.cbLayerIsBaseLayer,
             'osm-mapnik': self.dlg.cbOsmMapnik,
-            'osm-mapquest': self.dlg.cbOsmMapquest,
+            'osm-stamen-toner': self.dlg.cbOsmStamenToner,
             'osm-cyclemap': self.dlg.cbOsmCyclemap,
             'google-street': self.dlg.cbGoogleStreets,
             'google-satellite': self.dlg.cbGoogleSatellite,
@@ -2453,7 +2453,7 @@ class lizmap:
 
             # Need to get theses values to check for Pseudo Mercator projection
             in_osmMapnik = self.dlg.cbOsmMapnik.isChecked()
-            in_osmMapquest = self.dlg.cbOsmMapquest.isChecked()
+            in_osmStamenToner = self.dlg.cbOsmStamenToner.isChecked()
             in_osmCyclemap = self.dlg.cbOsmCyclemap.isChecked()
             in_googleStreets = self.dlg.cbGoogleStreets.isChecked()
             in_googleSatellite = self.dlg.cbGoogleSatellite.isChecked()
@@ -2479,7 +2479,7 @@ class lizmap:
             p = QgsProject.instance()
 
             # public baselayers: check that the 3857 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
-            if in_osmMapnik or in_osmMapquest or in_osmCyclemap or in_googleStreets \
+            if in_osmMapnik or in_osmStamenToner or in_osmCyclemap or in_googleStreets \
             or in_googleSatellite or in_googleHybrid or in_googleTerrain \
             or in_bingSatellite or in_bingStreets or in_bingHybrid \
             or in_ignSatellite or in_ignStreets or in_ignTerrain or in_ignCadastral:
