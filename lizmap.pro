@@ -17,3 +17,5 @@ TRANSLATIONS = i18n/lizmap_en.ts \
                i18n/lizmap_de.ts \
                i18n/lizmap_fi.ts \
                i18n/lizmap_gl.ts \
+               i18n/lizmap_eu.ts \
+               i18n/lizmap_sv.ts \
