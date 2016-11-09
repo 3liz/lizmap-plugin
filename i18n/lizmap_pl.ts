@@ -18,8 +18,8 @@
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1158"/>
-        <source>OSM Stame Toner</source>
-        <translation>OSM Stame Toner</translation>
+        <source>OSM Stamen Toner</source>
+        <translation>OSM Stamen Toner</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1425"/>
@@ -370,7 +370,7 @@ Odświeżyć drzewo warstw?</translation>
         <source>Write down integer scales separated by coma.
 You must enter at least 2 min and max values.
 Ex: 1000, 250000</source>
-        <translation>Wpisz poniżej liczby całkowite oznaczające mianownik skali, oddzielone od siebie przecinkami. 
+        <translation>Wpisz poniżej liczby całkowite oznaczające mianownik skali, oddzielone od siebie przecinkami.
 Musisz wpisać przynajmniej 2 wartości minimum i maksimum.
 Na przykład: 1000, 250000</translation>
     </message>

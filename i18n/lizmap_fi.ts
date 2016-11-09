@@ -18,8 +18,8 @@
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1158"/>
-        <source>OSM Stame Toner</source>
-        <translation>OSM Stame Toner</translation>
+        <source>OSM Stamen Toner</source>
+        <translation>OSM Stamen Toner</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1425"/>
@@ -829,7 +829,7 @@ Tämä on eri kuin kartan maksimi laajuus (joka on määritetty QGIS projektin a
         <source>If the layer is published via the attribute layers tool below, and this checkbox is checked,
 zooming on a feature with the locate tool will trigger the filter of the layer for the selected feature.
 Only the selected feature will be visible on the map.</source>
-        <translation>Jos taso on julkaistu attribuuttitaulun työkalulla alla, ja tämä  valintalaatikko on merkattu, 
+        <translation>Jos taso on julkaistu attribuuttitaulun työkalulla alla, ja tämä  valintalaatikko on merkattu,
 zoomaus ominaisuuteen paikantamistyökalulla laukaisee tasosuodattimen valitulle ominaisuudelle.
 Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
     </message>

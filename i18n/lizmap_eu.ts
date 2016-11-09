@@ -19,8 +19,8 @@
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1158"/>
-        <source>OSM Mapquest</source>
-        <translation type="obsolete">OSM Mapquest</translation>
+        <source>OSM Stamen Toner</source>
+        <translation>OSM Stamen Toner</translation>
     </message>
     <message>
         <location filename="../ui_lizmap.ui" line="1537"/>
@@ -965,11 +965,6 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="../ui_lizmap.ui" line="714"/>
         <source>List of group id separated by comma. Leave empty if access is not restricted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui_lizmap.ui" line="1270"/>
-        <source>OSM Stamen Toner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
