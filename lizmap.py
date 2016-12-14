@@ -240,7 +240,7 @@ class lizmap:
             },
             'popupLocation' : {
                 'widget': self.dlg.liPopupContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map']
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock']
             },
 
             'print' : {
@@ -500,7 +500,7 @@ class lizmap:
             'editionLayers': {
                 'tableWidget': self.dlg.twEditionLayerList,
                 'removeButton' : self.dlg.btEditionLayerDel,
-                'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'layerId', 'order'],
+                'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'acl', 'layerId', 'order'],
                 'jsonConfig' : {}
             },
             'loginFilteredLayers': {
@@ -1371,6 +1371,7 @@ class lizmap:
         modifyAttribute = str(self.dlg.cbEditionLayerModifyAttribute.isChecked())
         modifyGeometry = str(self.dlg.cbEditionLayerModifyGeometry.isChecked())
         deleteFeature = str(self.dlg.cbEditionLayerDeleteFeature.isChecked())
+        acl = str(self.dlg.inEditionLayerAcl.text().encode('utf-8')).strip(' \t')
         lblTableWidget = self.dlg.twEditionLayerList
 
         # check at least one checkbox is active
@@ -1386,7 +1387,7 @@ class lizmap:
         # check if layer already added
         if twRowCount > 0:
             for row in range(twRowCount):
-                itemLayerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                itemLayerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
                 if layerId == itemLayerId:
                     return False
 
@@ -1394,7 +1395,7 @@ class lizmap:
         if twRowCount < 10:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(7)
+            lblTableWidget.setColumnCount(8)
 
             # add layer name to the line
             newItem = QTableWidgetItem(layerName)
@@ -1416,17 +1417,21 @@ class lizmap:
             newItem = QTableWidgetItem(deleteFeature)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, 4, newItem)
+            # add acl to the line
+            newItem = QTableWidgetItem(acl)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, newItem)
             # add layer id to the line
             newItem = QTableWidgetItem(layerId)
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            lblTableWidget.setItem(twRowCount, 6, newItem)
             # add order
             newItem = QTableWidgetItem(lblTableWidget.rowCount())
             newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
+            lblTableWidget.setItem(twRowCount, 7, newItem)
 
         lblTableWidget.setColumnHidden(6, True)
-        lblTableWidget.setColumnHidden(5, True)
+        lblTableWidget.setColumnHidden(7, True)
 
 
     def addLayerToLoginFilteredLayer(self):
@@ -2114,7 +2119,8 @@ class lizmap:
                 modifyAttribute = str(lblTableWidget.item(row, 2).text())
                 modifyGeometry = str(lblTableWidget.item(row, 3).text())
                 deleteFeature = str(lblTableWidget.item(row, 4).text())
-                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                acl = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
                 layer = self.getQgisLayerById(layerId)
                 geometryType = self.mapQgisGeometryType[layer.geometryType()]
                 liz2json["editionLayers"][layerName] = {}
@@ -2125,6 +2131,7 @@ class lizmap:
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyAttribute"] = modifyAttribute
                 liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
                 liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
+                liz2json["editionLayers"][layerName]["acl"] = acl
                 liz2json["editionLayers"][layerName]["order"] = row
 
 
@@ -2382,7 +2389,7 @@ class lizmap:
                         relativePath = os.path.normpath(
                             os.path.relpath(os.path.abspath(layerSource), projectDir)
                         )
-                        if not relativePath.startswith('../../') and not relativePath.startswith('..\\..\\'):
+                        if not relativePath.startswith('../../../') and not relativePath.startswith('..\\..\\..\\'):
                             layerSourcesOk.append(os.path.abspath(layerSource))
                         else:
                             layerSourcesBad.append(layerSource)

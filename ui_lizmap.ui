@@ -1859,7 +1859,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-367</y>
+            <y>-807</y>
             <width>1062</width>
             <height>2218</height>
            </rect>
@@ -2543,6 +2543,11 @@ Only the selected feature will be visible on the map.</string>
                 </column>
                 <column>
                  <property name="text">
+                  <string>Allowed groups</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>Layer id</string>
                  </property>
                 </column>
@@ -2594,6 +2599,16 @@ Only the selected feature will be visible on the map.</string>
                      <string>Delete</string>
                     </property>
                    </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_57">
+                    <property name="text">
+                     <string>Allowed groups</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="inEditionLayerAcl"/>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_16">
@@ -3172,7 +3187,7 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -3295,6 +3310,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbEditionLayerModifyAttribute</tabstop>
   <tabstop>cbEditionLayerModifyGeometry</tabstop>
   <tabstop>cbEditionLayerDeleteFeature</tabstop>
+  <tabstop>inEditionLayerAcl</tabstop>
   <tabstop>btEditionLayerAdd</tabstop>
   <tabstop>btEditionLayerDel</tabstop>
   <tabstop>twLoginFilteredLayersList</tabstop>
