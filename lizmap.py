@@ -2010,7 +2010,10 @@ class lizmap:
                     if item['wType'] in ('text', 'textarea'):
                         inputValue = unicode(inputValue)
                     else:
-                        inputValue = str(inputValue)
+                        try:
+                            inputValue = str(inputValue)
+                        except:
+                            inputValue = unicode(inputValue)
 
                 elif item['type'] in ('intlist', 'floatlist', 'list'):
                     if item['type'] == 'intlist':
