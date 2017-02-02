@@ -923,9 +923,37 @@ class lizmap:
         return returnLayer
 
 
+    def getLayers(self, ltype='all', providerTypeList=['all']):
+        '''
+            Get the list of layers
+            * ltype can be : all, vector, raster
+            * providerTypeList is a list and can be : ['all'] or a list of provider keys
+            as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
+        '''
+        layers = self.iface.legendInterface().layers()
+        if ltype == 'all':
+            return layers
+
+        # loop though the layers
+        filteredLayers = []
+        for layer in layers:
+            # vector
+            if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
+                if not hasattr(layer, 'providerType'):
+                    continue
+                if 'all' in providerTypeList or layer.providerType() in providerTypeList:
+                    filteredLayers.append(layer)
+            # raster
+            if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
+                filteredLayers.append(layer)
+
+        return filteredLayers
+
+
     def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=['all']):
         '''
             Get the list of layers and add them to a combo box
+            * combobox a Qt combobox widget
             * ltype can be : all, vector, raster
             * providerTypeList is a list and can be : ['all'] or a list of provider keys
             as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
@@ -935,18 +963,9 @@ class lizmap:
         # add empty item
         combobox.addItem ( '---', -1)
         # loop though the layers
-        layers = self.iface.legendInterface().layers()
+        layers = self.getLayers(ltype, providerTypeList)
         for layer in layers:
-            layerId = layer.id()
-            # vector
-            if layer.type() == QgsMapLayer.VectorLayer and ltype in ('all', 'vector'):
-                if not hasattr(layer, 'providerType'):
-                    continue
-                if 'all' in providerTypeList or layer.providerType() in providerTypeList:
-                    combobox.addItem ( layer.name(), unicode(layerId))
-            # raster
-            if layer.type() == QgsMapLayer.RasterLayer and ltype in ('all', 'raster'):
-                combobox.addItem ( layer.name(),unicode(layerId))
+            combobox.addItem ( layer.name(),unicode(layer.id()))
 
 
     def setInitialExtentFromProject(self):
@@ -1171,7 +1190,7 @@ class lizmap:
 
         lblTableWidget = self.dlg.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 5:
+        if twRowCount < self.dlg.liLocateByLayerLayers.count()-1:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(8)
@@ -1249,7 +1268,7 @@ class lizmap:
 
         lblTableWidget = self.dlg.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 15:
+        if twRowCount < self.dlg.liAttributeLayer.count()-1:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(8)
@@ -1323,7 +1342,7 @@ class lizmap:
 
         lblTableWidget = self.dlg.twTooltipLayerList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 5:
+        if twRowCount < self.dlg.liTooltipLayer.count()-1:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(6)
@@ -1392,7 +1411,7 @@ class lizmap:
                     return False
 
         # Add layer
-        if twRowCount < 10:
+        if twRowCount < self.dlg.liEditionLayer.count()-1:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(8)
@@ -1451,7 +1470,7 @@ class lizmap:
         filterPrivate = str(self.dlg.cbLoginFilteredLayerPrivate.isChecked())
         lblTableWidget = self.dlg.twLoginFilteredLayersList
         twRowCount = lblTableWidget.rowCount()
-        if twRowCount < 6:
+        if twRowCount < self.dlg.liLoginFilteredLayerLayers.count()-1:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(5)
@@ -1549,7 +1568,7 @@ class lizmap:
         content.append(twRowCount) # store order
         colCount = len(content)
 
-        if twRowCount < 10:
+        if twRowCount < self.dlg.liTimemanagerLayers.count()-1:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(colCount)
