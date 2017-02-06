@@ -319,6 +319,10 @@ class lizmap:
             'startupBaselayer' : {
                 'widget': self.dlg.cbStartupBaselayer,
                 'wType': 'list', 'type': 'string', 'default': '', 'list':['']
+            },
+            'limitDataToBbox' : {
+                'widget': self.dlg.cbLimitDataToBbox,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
             }
         }
 

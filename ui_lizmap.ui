@@ -368,6 +368,9 @@
                  </item>
                  <item>
                   <widget class="QCheckBox" name="cbPopupDisplayChildren">
+                   <property name="styleSheet">
+                    <string notr="true">background-color:rgb(170, 255, 255);</string>
+                   </property>
                    <property name="text">
                     <string>Display related children under each object (use relations)</string>
                    </property>
@@ -712,6 +715,9 @@
                  <widget class="QLineEdit" name="inAcl">
                   <property name="toolTip">
                    <string>List of group id separated by comma. Leave empty if access is not restricted.</string>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color:rgb(170, 255, 255);</string>
                   </property>
                  </widget>
                 </item>
@@ -1859,9 +1865,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-807</y>
+            <y>-171</y>
             <width>1062</width>
-            <height>2218</height>
+            <height>2246</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2133,6 +2139,19 @@ Only the selected feature will be visible on the map.</string>
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="cbLimitDataToBbox">
+                <property name="toolTip">
+                 <string>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Usefull for big datasets.</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color:rgb(170, 255, 255);</string>
+                </property>
+                <property name="text">
+                 <string>Limit fetched data to the current map extent and layer visibility</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QTableWidget" name="twAttributeLayerList">
                 <property name="alternatingRowColors">
                  <bool>true</bool>
@@ -2249,6 +2268,12 @@ Only the selected feature will be visible on the map.</string>
                   </item>
                   <item row="6" column="2">
                    <widget class="QCheckBox" name="cbAttributeLayerHideLayer">
+                    <property name="toolTip">
+                     <string/>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
                     <property name="text">
                      <string>Hide layer in the list</string>
                     </property>
@@ -2608,7 +2633,11 @@ Only the selected feature will be visible on the map.</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="inEditionLayerAcl"/>
+                   <widget class="QLineEdit" name="inEditionLayerAcl">
+                    <property name="styleSheet">
+                     <string notr="true">background-color:rgb(170, 255, 255);</string>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_16">
@@ -3187,7 +3216,7 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -3283,6 +3312,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbFilterOnLocate</tabstop>
   <tabstop>btLocateByLayerAdd</tabstop>
   <tabstop>btLocateByLayerDel</tabstop>
+  <tabstop>cbLimitDataToBbox</tabstop>
   <tabstop>twAttributeLayerList</tabstop>
   <tabstop>liAttributeLayer</tabstop>
   <tabstop>liAttributeLayerFields</tabstop>
