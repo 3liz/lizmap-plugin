@@ -979,7 +979,7 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2144"/>
-        <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Usefull for big datasets.</source>
+        <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
