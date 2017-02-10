@@ -55,6 +55,20 @@ Documentation
 [French doc]: http://docs.3liz.com/
 [English doc translated via Google Translate]: http://translate.google.fr/translate?sl=fr&tl=en&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http%3A%2F%2Fdocs.3liz.Com
 
+Translation
+-----------
+
+You can use the Makefile to update and compile the strings for translation.
+
+```
+# Update strings
+make transup
+
+# Compile
+make transcompile
+
+```
+
 License
 -------
 Version: MPL 2.0/GPL 2.0/LGPL 2.1
