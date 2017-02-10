@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="it" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -950,57 +949,57 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="209"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="290"/>
         <source>Popup</source>
-        <translation type="unfinished"></translation>
+        <translation>Popup</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="375"/>
         <source>Display related children under each object (use relations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra i record figli in relazione sotto ogni oggeto (usa le relazioni)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="522"/>
         <source>Server tile cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Cache delle mattonelle sul server</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="710"/>
         <source>Restrict access to the following groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Limita l&apos;accesso ai gruppi seguenti</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="717"/>
         <source>List of group id separated by comma. Leave empty if access is not restricted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista degli ID dei gruppi, separati da virgola. Lascia vuota se non ci sono restrizioni all&apos;accesso.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2144"/>
         <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>La tabella degli attributi mostrerà solo i dati relativi all&apos;estensione della mappa, e solo se il layer è visibile alla scala attuale. Utile per dati molto numerosi.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2150"/>
         <source>Limit fetched data to the current map extent and layer visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Limita i dati recuperati a quelli nell&apos;estensione e visibilità della mappa attuale</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2192"/>
         <source>Hide layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nascondi layer</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2278"/>
         <source>Hide layer in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Nascondi layer nella lista</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2631"/>
         <source>Allowed groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppi autorizzati</translation>
     </message>
 </context>
 <context>

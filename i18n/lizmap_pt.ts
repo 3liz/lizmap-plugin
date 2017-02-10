@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="pt" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="pt" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -429,7 +428,7 @@ ou para uma pasta acima ou ao lado</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2702"/>
         <source>tools.loginFilteredLayers.description</source>
-        <translation>O utilizador autenticado apenas irá ver os dados respeitantes ao seu grupo de utilizadores, ou apenas o seu login de utilizador se a opção &quot;Filtrar por utilizador&quot; estiver ativada</translation>
+        <translation>O utilizador autenticado apenas irá ver os dados respeitantes ao seu grupo de utilizadores, ou apenas ao seu login de utilizador se a opção &quot;Filtrar por utilizador&quot; estiver ativada</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2743"/>
@@ -950,57 +949,57 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="209"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="290"/>
         <source>Popup</source>
-        <translation type="unfinished"></translation>
+        <translation>Popup</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="375"/>
         <source>Display related children under each object (use relations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir ligações children sobre cada objecto (use relações)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="522"/>
         <source>Server tile cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor cache de mosaicos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="710"/>
         <source>Restrict access to the following groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Restringir acesso aos seguintes grupos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="717"/>
         <source>List of group id separated by comma. Leave empty if access is not restricted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista dos grupos id separados por vírgulas. Deixe vazio se o acesso não for restrito.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2144"/>
         <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>A tabela de atributos apenas será exibida com dados para a extensão do mapa e apenas se a camada estiver visível na escala actual do mapa. Muito útil para grandes conjuntos de dados.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2150"/>
         <source>Limit fetched data to the current map extent and layer visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitar os dados obtidos para a extensão e visibilidade actual do mapa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2192"/>
         <source>Hide layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Esconder camada</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2278"/>
         <source>Hide layer in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Esconder camada na lista</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2631"/>
         <source>Allowed groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupos permitidos</translation>
     </message>
 </context>
 <context>
