@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="es" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -15,12 +14,12 @@
     <message>
         <location filename="ui_lizmap.ui" line="1269"/>
         <source>OSM Mapnik</source>
-        <translation>OSM Mapnik</translation>
+        <translation>Mapnik de OSM</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1276"/>
         <source>OSM Stamen Toner</source>
-        <translation>OSM Stamen Toner</translation>
+        <translation>Toner de OSM Stamen </translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1543"/>
@@ -60,12 +59,12 @@
     <message>
         <location filename="lizmap.py" line="1603"/>
         <source>Lizmap - Refresh layer tree?</source>
-        <translation>Lizmpa - ¿Refrescar el árbol de capas?</translation>
+        <translation>Lizmap - ¿Refrescar el árbol de capas?</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1603"/>
         <source>ui.msg.question.refresh.content</source>
-        <translation>YPuede refrescar el árbol de capas pulsando &quot;Sí&quot;.
+        <translation>Puede refrescar el árbol de capas pulsando &quot;Sí&quot;.
 Tenga en cuenta que perderá todos los cambios hechos en esta pestaña de Capas (metadatos de capa o grupo y opciones) desde su último comando &quot;Guardar&quot;.
 Si ha renombrado uno o más grupos o capas, también perderá la información asociada.
 
@@ -911,7 +910,7 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="1168"/>
         <source>minidock</source>
-        <translation>minidock</translation>
+        <translation>minicontenedor</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1173"/>
@@ -951,57 +950,57 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="209"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Leyenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="290"/>
         <source>Popup</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplegable</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="375"/>
         <source>Display related children under each object (use relations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los hijos relacionados bajo cada objeto (usar relaciones)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="522"/>
         <source>Server tile cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Caché de cascada del servidor</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="710"/>
         <source>Restrict access to the following groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Restringir el acceso a los siguientes grupos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="717"/>
         <source>List of group id separated by comma. Leave empty if access is not restricted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Listar los id de grupo separados por comas. Dejar vacío si el acceso no está restringido.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2144"/>
         <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>La tabla de atributos sólo mostrará los datos para la extensión actual del mapa, y sólo si la capa es visible a la escala del mapa actual. Util para grandes conjuntos de datos.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2150"/>
         <source>Limit fetched data to the current map extent and layer visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitar los datos recolectados a la extensión actual del mapa y a la visibilidad de la capa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2192"/>
         <source>Hide layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar capa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2278"/>
         <source>Hide layer in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar capa del listado</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2631"/>
         <source>Allowed groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupos permitidos</translation>
     </message>
 </context>
 <context>

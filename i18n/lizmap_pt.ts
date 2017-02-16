@@ -370,7 +370,7 @@ Atualizar a árvore da camada?</translation>
         <source>Write down integer scales separated by coma.
 You must enter at least 2 min and max values.
 Ex: 1000, 250000</source>
-        <translation>Escalas do mapa: Inserir escalas inteiras separadas por vírgulas.
+        <translation>Escalas do mapa: Inserir escalas inteiras separadas por vírgulas. 
 Deve introduzir pelo menos 2 valores (min. e máx.). Ex: 1000, 250000</translation>
     </message>
     <message>
@@ -979,7 +979,7 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2144"/>
         <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
-        <translation>A tabela de atributos apenas será exibida com dados para a extensão do mapa e apenas se a camada estiver visível na escala actual do mapa. Muito útil para grandes conjuntos de dados.</translation>
+        <translation>A tabela de atributos apenas apresentará dados de acordo com a extensão do mapa e apenas se a camada estiver visível na escala atual do mapa. Muito útil para grandes conjuntos de dados.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2150"/>

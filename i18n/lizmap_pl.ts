@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="pl_PL" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="pl_PL" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -371,7 +370,7 @@ Odświeżyć drzewo warstw?</translation>
         <source>Write down integer scales separated by coma.
 You must enter at least 2 min and max values.
 Ex: 1000, 250000</source>
-        <translation>Wpisz poniżej liczby całkowite oznaczające mianownik skali, oddzielone od siebie przecinkami.
+        <translation>Wpisz poniżej liczby całkowite oznaczające mianownik skali, oddzielone od siebie przecinkami. 
 Musisz wpisać przynajmniej 2 wartości minimum i maksimum.
 Na przykład: 1000, 250000</translation>
     </message>
@@ -951,57 +950,57 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="ui_lizmap.ui" line="209"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="290"/>
         <source>Popup</source>
-        <translation type="unfinished"></translation>
+        <translation>Okienko</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="375"/>
         <source>Display related children under each object (use relations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl tabelę podrzędną pod każdym obiektem (użyj relacji)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="522"/>
         <source>Server tile cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Pamięć podręczna kafelków</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="710"/>
         <source>Restrict access to the following groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Zabroń dostępu dla podanych grup</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="717"/>
         <source>List of group id separated by comma. Leave empty if access is not restricted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wypisz ID grup oddzielając je przecinkami. Pozostaw puste, jeśli dostęp nie jest ograniczony.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2144"/>
         <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela atrybutów pokaże tylko dane widoczne w zasięgu mapy, jeśli warstwa w ogóle jest widoczna w obecnej skali. Przydatne dla dużych zbiorów danych.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2150"/>
         <source>Limit fetched data to the current map extent and layer visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogranicz pobrane dane do obecnego zasięgu mapy i widoczności warstw</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2192"/>
         <source>Hide layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj warstwę</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2278"/>
         <source>Hide layer in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryj warstwę na liście warstw</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2631"/>
         <source>Allowed groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Dozwolone grupy</translation>
     </message>
 </context>
 <context>
