@@ -1,6 +1,25 @@
 # CHANGELOG
 
+## Version 2.2.0
+
+This version add new features which are only usable with upcoming Lizmap Web Client 3.1
+
+  * Interface - Add toolips and blue background for new features
+  * Plugin - Improve makefile for transup and transcompile
+  * Attribute table - Option to fetch data only within map extent && layer scale visibility
+  * Tools layer limit linked to combobox size
+  * Map - fix bug with startup baselayer for accentuated layers/groups
+  * UI - fix issue with qgscollapsiblegroupbox import
+  * Editing - Add option to pass list of groups to restrict editing for each layer
+  * Locales - Add Euskara and Swedish, update other languages
+  * Add Stamen Toner external baselayer (and remove Maquest and OSM CycleMap)
+  * Popup - Option to display related children under each parent object
+  * Attribute table - Add an option to hide the layer in the list (first tab of attribute table tool)
+  * Add an option to restrict access to project for given groups
+  * Interface - Reorganize layers options
+
 ## Version 2.1.2
+
 * Add locales: Finnish, Galician
 * Update locales: Portuguese, Russian
 
@@ -14,7 +33,8 @@
 * Remove option to transform groups as legend blocks #57
 
 ## Version 2.1.0
-  This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
+
+This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
 
   * Baselayers - Choose active baselayer at map startup
   * Map - Add options to configure tolerances for popup activation in pixels
