@@ -1000,17 +1000,17 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="372"/>
         <source>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</source>
-        <translation>Une fois cochée, Lizmap affichera dans la popup en dessous des données parentes les données filles. Vous devez activer les popups pour les couches parentes et filles</translation>
+        <translation>Avec cette option cochée, Lizmap affichera dans la popup les données filles en dessous de chaque parent. Vous devez activer les popups pour les couches parentes et filles</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2271"/>
         <source>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</source>
-        <translation>Le bouton &quot;Détail&quot; pour ouvrir la table attributaire ne sera pas afficher dans Lizmap, mais les fonctionnalités comme la sélection et le filtrage resteront actvies.</translation>
+        <translation>Le bouton &quot;Détail&quot; pour ouvrir la table attributaire ne sera pas affiché dans Lizmap, mais les fonctionnalités comme la sélection et le filtrage resteront activées.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2637"/>
         <source>Use a comma separated list of Lizmap groups ids to restrict access to this layer editing.</source>
-        <translation>Utilisez une liste d&apos;identifiants de groupes Lizmap séparées par virgule afin de restreindre l&apos;accès à l&apos;édition de cette couche.</translation>
+        <translation>Utilisez une liste d&apos;identifiants de groupes Lizmap séparés par virgule pour restreindre l&apos;accès à l&apos;édition de cette couche.</translation>
     </message>
 </context>
 <context>
