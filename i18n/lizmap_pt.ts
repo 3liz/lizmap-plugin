@@ -153,7 +153,7 @@ Atualizar a árvore da camada?</translation>
     <message>
         <location filename="ui_lizmap.ui" line="509"/>
         <source>Single Tile?</source>
-        <translation>Mosaico Único?</translation>
+        <translation>Mosaico único?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="530"/>
@@ -258,7 +258,7 @@ Atualizar a árvore da camada?</translation>
     <message>
         <location filename="ui_lizmap.ui" line="554"/>
         <source>Metatile</source>
-        <translation>Metatile</translation>
+        <translation>Mosaico grande</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="350"/>
@@ -303,7 +303,7 @@ Atualizar a árvore da camada?</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2097"/>
         <source>Display the geometry</source>
-        <translation>Exibir geometria</translation>
+        <translation>Mostrar a geometria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3080"/>
@@ -386,7 +386,7 @@ Deve introduzir pelo menos 2 valores (min. e máx.). Ex: 1000, 250000</translati
     <message>
         <location filename="ui_lizmap.ui" line="2511"/>
         <source>Layer editing</source>
-        <translation>Edição de camada</translation>
+        <translation>Camadas para Edição</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2517"/>
@@ -465,12 +465,12 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="1946"/>
         <source>Display field</source>
-        <translation>Exibir campo</translation>
+        <translation>Mostrar campo</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1899"/>
         <source>Optional group by field</source>
-        <translation>Campo opcional para agrupar por campo</translation>
+        <translation>Campo opcional para agrupar</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2092"/>
@@ -480,7 +480,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="1217"/>
         <source>Baselayers</source>
-        <translation>Tema base</translation>
+        <translation>Temas base</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1283"/>
@@ -540,7 +540,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="1634"/>
         <source>You can add baselayers which come from another published Lizmap project. To do so, write down the repository id (not label), the project id (QGIS filename with no extension), QGIS layer name (as appearing in QGIS legend widget) and a chosen title.</source>
-        <translation>Pode adicionar camadas base que vêm de outros projetos Lizmap publicados. Para isso, escreva o id do repositório (não o rótulo), o id  do projeto (nome do ficheiro QGIS sem extensão), o nome da camada QGIS (como aparece no widget de legenda QGIS) e escolha um título.</translation>
+        <translation>Pode adicionar temas base que provêm de outros projetos Lizmap publicados. Para isso, escreva o id do repositório (não o rótulo), o id  do projeto (nome do ficheiro QGIS sem extensão), o nome da camada QGIS (como aparece no widget da legenda QGIS) e escolha um título.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1534"/>
@@ -565,7 +565,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="2830"/>
         <source>Add layers here to let the user play an animation based on an date or date/time attribute value. Similar to QGIS Timemanager plugin, but web based.</source>
-        <translation>Adicione camadas aqui para que o utilizador possa usar a animação tendo em conta um valor de atributo de data ou data/hora. Semelhante ao módulo QGIS Timemananger, mas em formato web.</translation>
+        <translation>Adicione camadas para que o utilizador possa fruir duma animação baseada num valor de atributo de data ou de data/hora. Semelhante ao plugin Timemananger do QGIS, mas em formato web.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2842"/>
@@ -575,12 +575,12 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="2852"/>
         <source>Time frame size</source>
-        <translation>Duração do tempo do frame</translation>
+        <translation>Duração da frame</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2869"/>
         <source>Animation frame length (milliseconds)</source>
-        <translation>Comprimento da animação do frame (milisegundos)</translation>
+        <translation>Comprimento da frame de animação (milisegundos)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2892"/>
@@ -645,7 +645,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="487"/>
         <source>Get images directly from WMS Server</source>
-        <translation>Obter imagens directamente a partir do Servidor WMS</translation>
+        <translation>Obter imagens diretamente a partir do Servidor WMS</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="601"/>
@@ -670,7 +670,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="1571"/>
         <source>Add an empty base layer (with project background color)</source>
-        <translation>Adicionar uma camada base vazia (com cor de fundo do projeto)</translation>
+        <translation>Adicionar um tema base vazio (com a cor de fundo do projeto)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="412"/>
@@ -685,12 +685,12 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="224"/>
         <source>Display in Legend tree</source>
-        <translation>Exibir na árvore da legenda</translation>
+        <translation>Mostrar na árvore da legenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2102"/>
         <source>Autocompletion after</source>
-        <translation>Autopreenchimento após</translation>
+        <translation>Preenchimento automático após</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1956"/>
@@ -770,7 +770,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="2134"/>
         <source>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</source>
-        <translation>A tabela de atributos das camadas escolhidas pode ser exibida no Lizmap Web Client. Adicione aqui qualquer camada vetorial e publique-a como WFS (Propriedades do projeto QGIS, separador Servidor OWS)</translation>
+        <translation>A tabela de atributos das camadas escolhidas pode ser mostrada no Lizmap Web Client. Adicione aqui qualquer camada vetorial e publique-a como WFS (Propriedades do projeto QGIS, separador Servidor OWS)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2197"/>
@@ -800,7 +800,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="2235"/>
         <source>Fields to hide</source>
-        <translation>Campos a serem ocultados</translation>
+        <translation>Campos a ocultar</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2187"/>
@@ -839,7 +839,7 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2345"/>
         <source>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</source>
-        <translation>Pode deixar o utilizador ativar as tooltips do mapa quando passa por cima dos elementos. Escolha a camada, adicione uma lista separada por vírgulas dos nomes dos campos a serem exibidos na tooltip, e opcionalmente escolha a exibição da geometria. Pode também escolher a cor da geometria (use um código de cor HTML)</translation>
+        <translation>Pode deixar o utilizador ativar as tooltips do mapa quando passa por cima dos elementos. Escolha a camada, adicione uma lista separada por vírgulas dos nomes dos campos a serem mostrados na tooltip, e opcionalmente escolha mostrar geometria. Pode também escolher a cor da geometria (utilize um código de cor HTML)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2404"/>
@@ -849,7 +849,7 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2461"/>
         <source>Display geometry</source>
-        <translation>Exibir geometria</translation>
+        <translation>Mostrar geometria</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2371"/>
@@ -939,12 +939,12 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="1565"/>
         <source>Baselayers options</source>
-        <translation>Opções das camadas base</translation>
+        <translation>Opções dos Temas base</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1583"/>
         <source>Active baselayer at startup</source>
-        <translation>Camada base ativa ao iniciar</translation>
+        <translation>Tema base ativo ao iniciar</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="209"/>
@@ -959,7 +959,7 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="375"/>
         <source>Display related children under each object (use relations)</source>
-        <translation>Exibir ligações children sobre cada objecto (use relações)</translation>
+        <translation>Exibir ligações children sobre cada objeto (use relações)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="522"/>
@@ -984,7 +984,7 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2150"/>
         <source>Limit fetched data to the current map extent and layer visibility</source>
-        <translation>Limitar os dados obtidos para a extensão e visibilidade actual do mapa</translation>
+        <translation>Limitar os dados obtidos para a extensão e visibilidade atual do mapa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2192"/>

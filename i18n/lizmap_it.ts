@@ -770,7 +770,7 @@ Questo parametro è diverso dall&apos;estensione massima (definita nelle proprie
     <message>
         <location filename="ui_lizmap.ui" line="2134"/>
         <source>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</source>
-        <translation>La tabella degli attributi del laye selezionato può essere visualizzata in Lizmap Web Client. Aggiungi qualsiasi layer e pubblicali come WFS (proprietà progetto QGIS, linguetta Server OWS)</translation>
+        <translation>La tabella degli attributi del layer selezionato può essere visualizzata in Lizmap Web Client. Aggiungi qualsiasi layer vettoriale e pubblicalo come WFS (proprietà progetto QGIS, linguetta Server OWS)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2197"/>
