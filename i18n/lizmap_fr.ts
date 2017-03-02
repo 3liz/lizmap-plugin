@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -996,22 +995,22 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="30"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Les options sur un fond bleu sont compatibles uniquement avec Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="372"/>
         <source>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une fois cochée, Lizmap affichera dans la popup en dessous des données parentes les données filles. Vous devez activer les popups pour les couches parentes et filles</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2271"/>
         <source>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le bouton &quot;Détail&quot; pour ouvrir la table attributaire ne sera pas afficher dans Lizmap, mais les fonctionnalités comme la sélection et le filtrage resteront actvies.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2637"/>
         <source>Use a comma separated list of Lizmap groups ids to restrict access to this layer editing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisez une liste d&apos;identifiants de groupes Lizmap séparées par virgule afin de restreindre l&apos;accès à l&apos;édition de cette couche.</translation>
     </message>
 </context>
 <context>
