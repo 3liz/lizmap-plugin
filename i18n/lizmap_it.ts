@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="it" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -154,7 +153,7 @@ Vuoi aggiornare l&apos;elenco dei layers?</translation>
     <message>
         <location filename="ui_lizmap.ui" line="512"/>
         <source>Single Tile?</source>
-        <translation>Singola tile?</translation>
+        <translation>Singola immagine?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="533"/>
@@ -950,7 +949,7 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="378"/>
         <source>Display related children under each object (use relations)</source>
-        <translation>Mostra i record figli in relazione sotto ogni oggeto (usa le relazioni)</translation>
+        <translation>Mostra i record figli in relazione sotto ogni oggetto (usa le relazioni)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="525"/>
@@ -995,22 +994,22 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="30"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="372"/>
         <source>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2271"/>
         <source>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2637"/>
         <source>Use a comma separated list of Lizmap groups ids to restrict access to this layer editing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

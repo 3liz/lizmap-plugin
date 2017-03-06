@@ -550,7 +550,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="704"/>
         <source>Hide project in Lizmap Web Client</source>
-        <translation>Esconder o projeto no Lizmap Web Client</translation>
+        <translation>Ocultar o projeto no Lizmap Web Client</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2826"/>
@@ -635,7 +635,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="234"/>
         <source>Hide legend image?</source>
-        <translation>Esconder a imagem da legenda?</translation>
+        <translation>Ocultar a imagem na legenda?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="490"/>
@@ -725,7 +725,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="116"/>
         <source>Hide checkboxes for groups</source>
-        <translation>Esconder caixas de verificação para os grupos</translation>
+        <translation>Ocultar caixas de verificação para grupos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1112"/>
@@ -735,27 +735,27 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="1118"/>
         <source>Hide header</source>
-        <translation>Esconder cabeçalho</translation>
+        <translation>Ocultar cabeçalho</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1125"/>
         <source>Hide menu bar</source>
-        <translation>Esconder barra do menu</translation>
+        <translation>Ocultar barra de menu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1132"/>
         <source>Hide legend panel at startup</source>
-        <translation>Esconder painel de legenda ao iniciar</translation>
+        <translation>Ocultar painel da legenda ao iniciar</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1139"/>
         <source>Hide scale and overview map</source>
-        <translation>Esconder escala e mapa de enquadramento</translation>
+        <translation>Ocultar escala e mapa de enquadramento</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1146"/>
         <source>Hide navigation tools</source>
-        <translation>Esconder ferramentas de navegação</translation>
+        <translation>Ocultar ferramentas de navegação</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2127"/>
@@ -800,12 +800,12 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="2186"/>
         <source>Hide in children</source>
-        <translation>Esconder nos filhos</translation>
+        <translation>Ocultar filhos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2261"/>
         <source>Hide in child subpanels</source>
-        <translation>Esconder nos sub-painéis filho</translation>
+        <translation>Ocultar nos sub-painéis filho</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2106"/>
@@ -979,12 +979,12 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2191"/>
         <source>Hide layer</source>
-        <translation>Esconder camada</translation>
+        <translation>Ocultar camada</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2277"/>
         <source>Hide layer in the list</source>
-        <translation>Esconder camada na lista</translation>
+        <translation>Ocultar camada na lista</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2630"/>

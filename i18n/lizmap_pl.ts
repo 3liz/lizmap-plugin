@@ -1005,12 +1005,12 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="ui_lizmap.ui" line="2271"/>
         <source>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</source>
-        <translation type="unfinished"/>
+        <translation>Przycisk &quot;Szczegóły&quot; nie będzie widoczny w Lizmap, by móc otworzyć tabelę atrybutów, ale opcje relacji, takie jak selekcja i filtr, będą dostępne.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2637"/>
         <source>Use a comma separated list of Lizmap groups ids to restrict access to this layer editing.</source>
-        <translation type="unfinished"/>
+        <translation>Wypisz, oddzielając przecinkami, nazwy id grup użytkowników, aby ograniczyć odstęp do edycji tej warstwy. </translation>
     </message>
 </context>
 <context>
