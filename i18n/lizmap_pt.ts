@@ -411,7 +411,7 @@ Deve introduzir pelo menos 2 valores (min. e máx.). Ex: 1000, 250000</translati
     <message>
         <location filename="ui_lizmap.ui" line="2623"/>
         <source>Delete</source>
-        <translation>Apagar</translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2438"/>
