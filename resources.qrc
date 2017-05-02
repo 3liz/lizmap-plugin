@@ -1,6 +1,41 @@
 <RCC>
     <qresource prefix="/plugins/lizmap" >
-        <file>icon.png</file>
-        <file>help.png</file>
+        <file>icons/icon.png</file>
+        <file>icons/help.png</file>
+        <file>icons/01-home-dark.png</file>
+        <file>icons/01-home-white.png</file>
+        <file>icons/02-switcher-dark.png</file>
+        <file>icons/02-switcher-white.png</file>
+        <file>icons/03-metadata-dark.png</file>
+        <file>icons/03-metadata-white.png</file>
+        <file>icons/04-locate-dark.png</file>
+        <file>icons/04-locate-white.png</file>
+        <file>icons/05-login-dark.png</file>
+        <file>icons/05-login-white.png</file>
+        <file>icons/06-measure-dark.png</file>
+        <file>icons/06-measure-white.png</file>
+        <file>icons/07-geolocation-dark.png</file>
+        <file>icons/07-geolocation-white.png</file>
+        <file>icons/08-print-dark.png</file>
+        <file>icons/08-print-white.png</file>
+        <file>icons/09-search-dark.png</file>
+        <file>icons/09-search-white.png</file>
+        <file>icons/10-edition-dark.png</file>
+        <file>icons/10-edition-white.png</file>
+        <file>icons/11-attribute-dark.png</file>
+        <file>icons/11-attribute-white.png</file>
+        <file>icons/12-user-dark.png</file>
+        <file>icons/12-user-white.png</file>
+        <file>icons/13-timemanager-dark.png</file>
+        <file>icons/13-timemanager-white.png</file>
+        <file>icons/14-permalink-dark.png</file>
+        <file>icons/14-permalink-white.png</file>
+        <file>icons/15-baselayer-dark.png</file>
+        <file>icons/15-baselayer-white.png</file>
+        <file>icons/16-tooltip-dark.png</file>
+        <file>icons/16-tooltip-white.png</file>
+        <file>icons/help.png</file>
+        <file>icons/icon.png</file>
+
     </qresource>
 </RCC>

@@ -132,14 +132,8 @@ class lizmap:
         self.dlg.gb_Scales.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_extent.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_externalLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_locateByLayer.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_attributeLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_tooltipLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_editionLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_loginFilteredLayers.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_generalOptions.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_timemanager.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_interface.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
 
@@ -526,28 +520,28 @@ class lizmap:
 
     def initGui(self):
         '''Create action that will start plugin configuration'''
-        self.action = QAction(QIcon(":/plugins/lizmap/icon.png"),
+        self.action = QAction(QIcon(":/plugins/lizmap/icons/icon.png"),
                                     "lizmap", self.iface.mainWindow())
 
         # connect the action to the run method
         self.action.triggered.connect(self.run)
 
         # Create action for help dialog
-        self.action_help = QAction(QIcon(":/plugins/lizmap/help.png"),
+        self.action_help = QAction(QIcon(":/plugins/lizmap/icons/help.png"),
                                     "&Help...", self.iface.mainWindow())
         # connect help action to help dialog
         self.action_help.triggered.connect(self.showHelp)
 
         # Create action for about dialog
-        self.action_about = QAction(QIcon(":/plugins/lizmap/help.png"),
+        self.action_about = QAction(QIcon(":/plugins/lizmap/icons/help.png"),
                                     "&About...", self.iface.mainWindow())
         # connect about action to about dialog
         self.action_about.triggered.connect(self.showAbout)
 
         # connect Lizmap signals and functions
 
-        # save button clicked
-        self.dlg.btSave.clicked.connect(self.getMapOptions)
+        # detect apply button clicked
+        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.getMapOptions)
 
         # clear log button clicked
         self.dlg.btClearlog.clicked.connect(self.clearLog)
@@ -555,15 +549,15 @@ class lizmap:
         # refresh layer tree button click
 #        QObject.connect(self.dlg.btRefreshTree, SIGNAL("clicked()"), self.refreshLayerTree )
 
-        # refresh layer tree button click
-        self.dlg.btHelp.clicked.connect(self.showHelp)
+        # Show help
+        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.showHelp)
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
 
         # detect close event
-        self.dlg.buttonClose.rejected.connect(self.warnOnClose)
-        self.dlg.rejected.connect(self.warnOnClose)
+        self.dlg.buttonBox.rejected.connect(self.onDialogClose)
+        self.dlg.rejected.connect(self.onDialogClose)
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
@@ -706,7 +700,6 @@ class lizmap:
     def clearLog(self):
         '''Clear the content of the textarea log'''
         self.dlg.outLog.clear()
-        self.dlg.outState.setText('<font color="green"></font>')
 
     def enableCheckBox(self, value):
         '''Enable/Disable checkboxes and fields of the Layer tab'''
@@ -2563,8 +2556,6 @@ class lizmap:
                 # Go to Log tab
                 self.dlg.tabWidget.setCurrentIndex(5)
 
-            self.dlg.outState.setText('<font color="green"></font>')
-
             # Get and check map scales
             if self.isok:
                 self.getMinMaxScales()
@@ -2670,11 +2661,11 @@ class lizmap:
             finally:
                 f.close()
 
-    def warnOnClose(self):
+    def onDialogClose(self):
         '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-        print "close"
+        print "lizmap dialog close"
         #~ self.writeProjectConfigFile()
-
+        #self.dlg.close()
 
     def test(self):
         '''Debug method'''
@@ -2700,7 +2691,6 @@ class lizmap:
         '''
         self.reinitDefaultProperties()
         self.dlg.close()
-
 
 
     def run(self):
