@@ -179,6 +179,17 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Dataviz</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/plugins/lizmap/icons/dataviz-icon-white.png</normalon>
+            <selectedon>:/plugins/lizmap/icons/dataviz-icon-dark.png</selectedon>
+           </iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Time Manager</string>
           </property>
           <property name="icon">
@@ -247,7 +258,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -267,8 +278,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>723</width>
-                <height>773</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1464,8 +1475,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>594</width>
-                <height>772</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2089,8 +2100,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>764</width>
-                <height>364</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2363,8 +2374,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>498</width>
-                <height>418</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2578,8 +2589,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>764</width>
-                <height>305</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2786,8 +2797,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>430</width>
-                <height>397</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2981,8 +2992,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>330</width>
-                <height>305</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3111,6 +3122,311 @@ Only the selected feature will be visible on the map.</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page">
+          <layout class="QVBoxLayout" name="verticalLayout_16">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_11">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_11">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>766</width>
+                <height>776</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_19">
+               <item>
+                <widget class="QLabel" name="label_78">
+                 <property name="text">
+                  <string>Lizmap can use data from project layers to draw and display charts, such as bar charts, pie charts or scatter plots. You can add a layer in the following table and choose the type of chart and which data field must be used. We recommand to use PostGIS views or virtual layers to prepare the data, and to keep data small.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_34">
+                 <item>
+                  <widget class="QLabel" name="label_79">
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="text">
+                    <string>Dataviz container</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="liDatavizContainer">
+                   <item>
+                    <property name="text">
+                     <string>dock</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>bottomdock</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>right-dock</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_29">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="twDatavizLayers">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+                 </property>
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <column>
+                  <property name="text">
+                   <string>Layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Title</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Type</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>X field(s)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Y field(s)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Color</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Layout</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Id</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>order</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="label_77">
+                   <property name="text">
+                    <string>Y field(s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_71">
+                   <property name="text">
+                    <string>Title</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="inDatavizPlotTitle"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer"/>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QComboBox" name="liDatavizPlotType">
+                   <item>
+                    <property name="text">
+                     <string>bar</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>bar_h</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>pie</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>scatter</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_58">
+                   <property name="text">
+                    <string>Layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="4">
+                  <widget class="QLabel" name="label_74">
+                   <property name="text">
+                    <string>Type</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="4">
+                  <widget class="QgsColorButtonV2" name="inDatavizPlotColor">
+                   <property name="color">
+                    <color>
+                     <red>0</red>
+                     <green>170</green>
+                     <blue>255</blue>
+                    </color>
+                   </property>
+                   <property name="defaultColor">
+                    <color>
+                     <red>0</red>
+                     <green>170</green>
+                     <blue>255</blue>
+                    </color>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="4">
+                  <widget class="QLabel" name="label_75">
+                   <property name="text">
+                    <string>Color</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_76">
+                   <property name="text">
+                    <string>X field(s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLineEdit" name="inDatavizPlotXfield">
+                   <property name="toolTip">
+                    <string>Field names separated by comma</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="inDatavizPlotYfield">
+                   <property name="toolTip">
+                    <string>Field names separated by comma</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="label_80">
+                   <property name="text">
+                    <string>Layout</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QLineEdit" name="inDatavizLayout">
+                   <property name="toolTip">
+                    <string>Plot.ly layout options, separated by ; For example: showlegend:true,barmode:stack</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="4">
+                  <widget class="QgsFieldComboBox" name="mFieldComboBox"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_35">
+                 <item>
+                  <widget class="QPushButton" name="btDatavizAddLayer">
+                   <property name="text">
+                    <string>Add layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btDatavizRemoveLayer">
+                   <property name="text">
+                    <string>Remove layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_36">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="pageTimemanager">
           <layout class="QVBoxLayout" name="verticalLayout_30">
            <property name="margin">
@@ -3129,8 +3445,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>439</width>
-                <height>471</height>
+                <width>784</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3466,6 +3782,21 @@ Only the selected feature will be visible on the map.</string>
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <tabstops>

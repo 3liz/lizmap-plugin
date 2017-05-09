@@ -36,6 +36,8 @@
         <file>icons/16-tooltip-white.png</file>
         <file>icons/help.png</file>
         <file>icons/icon.png</file>
+        <file>icons/dataviz-icon-white.png</file>
+        <file>icons/dataviz-icon-dark.png</file>
 
     </qresource>
 </RCC>

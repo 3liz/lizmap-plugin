@@ -49,7 +49,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
@@ -313,6 +313,10 @@ class lizmap:
             'limitDataToBbox' : {
                 'widget': self.dlg.cbLimitDataToBbox,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'datavizLocation' : {
+                'widget': self.dlg.liDatavizContainer,
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'bottomdock', 'right-dock']
             }
         }
 
@@ -513,6 +517,12 @@ class lizmap:
                 'removeButton' : self.dlg.btTimemanagerLayerDel,
                 'cols': ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
                 'jsonConfig' : {}
+            },
+            'datavizLayers': {
+                'tableWidget': self.dlg.twDatavizLayers,
+                'removeButton' : self.dlg.btDatavizRemoveLayer,
+                'cols': ['title', 'type', 'x_field', 'y_field', 'color', 'layout_config', 'layerId', 'order'],
+                'jsonConfig' : {}
             }
         }
         self.layerList = None
@@ -617,6 +627,9 @@ class lizmap:
         self.dlg.btTimemanagerLayerAdd.clicked.connect(self.addLayerToTimemanager)
         # detect layer list has changed to refresh start attribute field list
         self.dlg.liTimemanagerLayers.currentIndexChanged[str].connect(self.updateTimemanagerFieldListFromLayer)
+
+        # Add a layer to the lizmap dataviz layers
+        self.dlg.btDatavizAddLayer.clicked.connect(self.addLayerToDataviz)
 
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
@@ -878,7 +891,7 @@ class lizmap:
                         value = v[key]
                     else:
                         value = ''
-                    newItem = QTableWidgetItem(str(value))
+                    newItem = QTableWidgetItem(unicode(value))
                     newItem.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(twRowCount, i, newItem)
                     i+=1
@@ -1575,6 +1588,51 @@ class lizmap:
         lblTableWidget.setColumnHidden(colCount - 2, True)
 
 
+    def addLayerToDataviz(self):
+        '''
+        Add a layer in the list of
+        Dataviz layer
+        '''
+
+        # Get the layer selected in the combo box
+        layer = self.dlg.liDatavizPlotLayer.currentLayer()
+        if not layer:
+            return False
+
+        # Retrieve layer information
+        layerName = layer.name()
+        layerId = layer.id()
+        ptitle = unicode(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
+        ptype = self.dlg.liDatavizPlotType.currentText()
+        pxfields = str(self.dlg.inDatavizPlotXfield.text().encode('utf-8')).strip(' \t')
+        pyfields = str(self.dlg.inDatavizPlotYfield.text().encode('utf-8')).strip(' \t')
+        color = self.dlg.inDatavizPlotColor.color()
+        pcolor = "%s" % color.name()
+        playout = str(self.dlg.inDatavizLayout.text().encode('utf-8')).strip(' \t')
+
+        content = [layerName, ptitle, ptype, pxfields, pyfields, pcolor, playout, layerId]
+
+        lblTableWidget = self.dlg.twDatavizLayers
+        twRowCount = lblTableWidget.rowCount()
+        content.append(twRowCount) # store order
+        colCount = len(content)
+
+        if twRowCount < self.dlg.liDatavizPlotLayer.count()-1:
+            # set new rowCount
+            lblTableWidget.setRowCount(twRowCount + 1)
+            lblTableWidget.setColumnCount(colCount)
+
+            i=0
+            for val in content:
+                newItem = QTableWidgetItem(val)
+                newItem.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, i, newItem)
+                i+=1
+        lblTableWidget.setColumnHidden(colCount - 1, True)
+        lblTableWidget.setColumnHidden(colCount - 2, True)
+
+
+
     def refreshLayerTree(self):
         '''Refresh the layer tree on user demand. Uses method populateLayerTree'''
         # Ask confirmation
@@ -2211,6 +2269,32 @@ class lizmap:
                 liz2json["timemanagerLayers"][layerName]["layerId"] = layerId
                 liz2json["timemanagerLayers"][layerName]["order"] = row
 
+        # list of dataviz layers
+        lblTableWidget = self.dlg.twDatavizLayers
+        twRowCount = lblTableWidget.rowCount()
+        if twRowCount > 0:
+            liz2json["datavizLayers"] = {}
+            for row in range(twRowCount):
+                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                ptitle = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                ptype = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                pxfields = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                pyfields = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
+                pcolor = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                playout = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
+                prow = {}
+                prow["title"] = ptitle
+                prow["type"] = ptype
+                prow["x_field"] = pxfields
+                prow["y_field"] = pyfields
+                prow["color"] = pcolor
+                prow["layout_config"] = playout
+                prow["layerId"] = layerId
+                prow["order"] = row
+                liz2json["datavizLayers"][row] = prow
+
+
 
         # gui user defined layers options
         for k,v in self.layerList.items():
@@ -2720,6 +2804,8 @@ class lizmap:
             self.populateLayerCombobox(self.dlg.liLoginFilteredLayerLayers, 'vector')
             # Fill the layer list for the login filtered layers tool
             self.populateLayerCombobox(self.dlg.liTimemanagerLayers, 'vector')
+            # Dataviz layer combo
+            self.dlg.liDatavizPlotLayer.setFilters( QgsMapLayerProxyModel.VectorLayer )
 
             # Get config file data
             self.getConfig()
