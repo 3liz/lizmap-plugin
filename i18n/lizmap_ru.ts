@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ru" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -273,7 +272,7 @@
     <message>
         <location filename="ui_lizmap.ui" line="298"/>
         <source>Activate popup</source>
-        <translation>Всплывающее описание</translation>
+        <translation>Включить всплывающие описания</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1855"/>
@@ -938,77 +937,77 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap.ui" line="209"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Легенда</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="290"/>
         <source>Popup</source>
-        <translation type="unfinished"></translation>
+        <translation>Всплывающее описание</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="378"/>
         <source>Display related children under each object (use relations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Отображать дочерние элементы для каждого объекта (использовать отношения)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="525"/>
         <source>Server tile cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Кеширование тайлов на сервере</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="713"/>
         <source>Restrict access to the following groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Ограничить доступ для следующих групп</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="720"/>
         <source>List of group id separated by comma. Leave empty if access is not restricted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Список id групп через запятую. Оставьте поле пустым для неограниченного доступа.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2143"/>
         <source>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>В таблице атрибутов будут отображаться данные только для текущего охвата карты, и только если слой видим в пределах масштаба. Полезно для больших наборов данных.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2149"/>
         <source>Limit fetched data to the current map extent and layer visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Ограничить доступные данные текущим охватом карты и настройками видимости слоев</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2191"/>
         <source>Hide layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть слой</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2277"/>
         <source>Hide layer in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть слой в списке</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2630"/>
         <source>Allowed groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрешенные группы</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="30"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Пункты с голубым фоном доступны только на Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="372"/>
         <source>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Если включено, Lizmap будет отображать данные дочерних объектов под каждым родительским всплывающим окном. Для этого необходимо активировать всплывающие окна для родительского и дочернего слоев.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2271"/>
         <source>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lizmap не будет отображать кнопку открытия таблицы атрибутов «Подробно», но связанные функции, такие как выбор и фильтр будут доступны.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2637"/>
         <source>Use a comma separated list of Lizmap groups ids to restrict access to this layer editing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Список id групп через запятую, которым разрешено изменение слоев.</translation>
     </message>
 </context>
 <context>
