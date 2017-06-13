@@ -2695,7 +2695,7 @@ class lizmap:
         for k,v in self.layerList.items():
             if not v['baseLayer']:
                 continue
-            combo.addItem(v['name'], unicode(k))
+            combo.addItem(v['name'], v['name'])
             blist.append(v['name'])
             if data == k:
                 idx = i
