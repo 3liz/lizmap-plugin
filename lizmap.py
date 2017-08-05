@@ -226,7 +226,7 @@ class lizmap:
 
             'hideGroupCheckbox' : {
                 'widget': self.dlg.cbHideGroupCheckbox,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'popupLocation' : {
                 'widget': self.dlg.liPopupContainer,
