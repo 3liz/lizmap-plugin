@@ -2487,7 +2487,8 @@ class lizmap:
                         relativePath = os.path.normpath(
                             os.path.relpath(os.path.abspath(layerSource), projectDir)
                         )
-                        if not relativePath.startswith('../../../') and not relativePath.startswith('..\\..\\..\\'):
+                        if (not relativePath.startswith('../../../') and not relativePath.startswith('..\\..\\..\\')) \
+                        or (layerProviderKey == 'ogr' and layerSource.startswith('http')):
                             layerSourcesOk.append(os.path.abspath(layerSource))
                         else:
                             layerSourcesBad.append(layerSource)
