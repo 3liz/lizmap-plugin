@@ -358,6 +358,10 @@ class lizmap:
                 'widget': None,
                 'wType': 'text', 'type': 'string', 'default': ''
             },
+            'popupMaxFeatures': {
+                'widget': self.dlg.sbPopupMaxFeatures,
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
             'popupDisplayChildren': {
                 'widget': self.dlg.cbPopupDisplayChildren,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
