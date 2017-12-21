@@ -364,7 +364,7 @@ QListWidget::item::selected {
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Automatic geolocation</string>
+                       <string>Automatic geolocation (Only available in HTTPS)</string>
                       </property>
                      </widget>
                     </item>
