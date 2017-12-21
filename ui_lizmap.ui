@@ -3825,11 +3825,7 @@ Only the selected feature will be visible on the map.</string>
                   <item>
                    <layout class="QGridLayout" name="gridLayout">
                     <item row="1" column="3">
-                     <widget class="QgsMapLayerComboBox" name="atlasLayer">
-                      <property name="filters">
-                       <set>QgsMapLayerProxyModel::VectorLayer</set>
-                      </property>
-                     </widget>
+                     <widget class="QgsMapLayerComboBox" name="atlasLayer"/>
                     </item>
                     <item row="8" column="1">
                      <widget class="QLabel" name="label_84">

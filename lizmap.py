@@ -2898,6 +2898,8 @@ class lizmap:
             self.populateLayerCombobox(self.dlg.liTimemanagerLayers, 'vector')
             # Dataviz layer combo
             self.dlg.liDatavizPlotLayer.setFilters( QgsMapLayerProxyModel.VectorLayer )
+            # Atlas layer combo
+            self.dlg.atlasLayer.setFilters( QgsMapLayerProxyModel.VectorLayer )
 
             # Get config file data
             self.getConfig()
