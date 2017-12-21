@@ -258,7 +258,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -1134,6 +1134,40 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_37">
+                           <item>
+                            <widget class="QLabel" name="label_81">
+                             <property name="text">
+                              <string>Max features in popup</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QSpinBox" name="sbPopupMaxFeatures">
+                             <property name="minimum">
+                              <number>1</number>
+                             </property>
+                             <property name="value">
+                              <number>10</number>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_37">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_36">
                            <item>
                             <widget class="QCheckBox" name="cbPopupDisplayChildren">
@@ -1475,8 +1509,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>594</width>
+                <height>772</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2100,8 +2134,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>764</width>
+                <height>364</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2374,8 +2408,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>498</width>
+                <height>418</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2589,8 +2623,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>764</width>
+                <height>305</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2797,8 +2831,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>430</width>
+                <height>397</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2992,8 +3026,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>330</width>
+                <height>305</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3137,8 +3171,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>766</width>
-                <height>776</height>
+                <width>267</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3445,8 +3479,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>439</width>
+                <height>471</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
