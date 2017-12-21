@@ -38,6 +38,7 @@
         <file>icons/icon.png</file>
         <file>icons/dataviz-icon-white.png</file>
         <file>icons/dataviz-icon-dark.png</file>
-
+        <file>icons/atlas-icon-white.png</file>
+        <file>icons/atlas-icon-dark.png</file>
     </qresource>
 </RCC>

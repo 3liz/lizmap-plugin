@@ -201,6 +201,17 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Atlas</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normalon>:/plugins/lizmap/icons/atlas-icon-white.png</normalon>
+            <selectedon>:/plugins/lizmap/icons/atlas-icon-dark.png</selectedon>
+           </iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Log</string>
           </property>
           <property name="icon">
@@ -824,8 +835,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>784</width>
-                <height>794</height>
+                <width>445</width>
+                <height>142</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -903,8 +914,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>486</width>
-                       <height>756</height>
+                       <width>477</width>
+                       <height>714</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3771,6 +3782,305 @@ Only the selected feature will be visible on the map.</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page_2">
+          <layout class="QVBoxLayout" name="verticalLayout_20">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_12">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_12">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>764</width>
+                <height>774</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_41">
+               <item>
+                <widget class="QLabel" name="label_81">
+                 <property name="text">
+                  <string>Choose a vector layer containing a set of atlas features. Lizmap will propose a menu to let the user activate one feature at a time. Several actions can be triggered: display the feature popup, filter the layer and its children, zoom to the feature, etc.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_90">
+                 <property name="text">
+                  <string>Please use a vector layer with reasonable number of features !</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox">
+                 <property name="title">
+                  <string>Layer options</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_42">
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout">
+                    <item row="1" column="3">
+                     <widget class="QgsMapLayerComboBox" name="atlasLayer">
+                      <property name="filters">
+                       <set>QgsMapLayerProxyModel::VectorLayer</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="1">
+                     <widget class="QLabel" name="label_84">
+                      <property name="text">
+                       <string>Zoom to feature</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="10" column="1">
+                     <widget class="QLabel" name="label_86">
+                      <property name="text">
+                       <string>Trigger filter</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="9" column="3">
+                     <widget class="QCheckBox" name="atlasDisplayPopup">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QLabel" name="label_82">
+                      <property name="text">
+                       <string>Atlas layer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="1">
+                     <widget class="QLabel" name="label_83">
+                      <property name="text">
+                       <string>Feature label</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="9" column="1">
+                     <widget class="QLabel" name="label_85">
+                      <property name="text">
+                       <string>Display popup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="10" column="3">
+                     <widget class="QCheckBox" name="atlasTriggerFilter">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="3">
+                     <widget class="QCheckBox" name="atlasDisplayLayerDescription">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QLabel" name="label_88">
+                      <property name="text">
+                       <string>Display layer description</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="3">
+                     <widget class="QgsFieldComboBox" name="atlasFeatureLabel"/>
+                    </item>
+                    <item row="0" column="3">
+                     <widget class="QCheckBox" name="atlasEnabled">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QLabel" name="label_91">
+                      <property name="text">
+                       <string>Enable atlas for this project ?</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="1">
+                     <widget class="QLabel" name="label_92">
+                      <property name="text">
+                       <string>Highlight geometry</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="3">
+                     <widget class="QCheckBox" name="atlasHighlightGeometry">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="1">
+                     <widget class="QLabel" name="label_93">
+                      <property name="text">
+                       <string>Sort field</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="3">
+                     <widget class="QgsFieldComboBox" name="atlasSortField"/>
+                    </item>
+                    <item row="8" column="3">
+                     <widget class="QComboBox" name="atlasZoom">
+                      <item>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>zoom</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>center</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QLabel" name="label_96">
+                      <property name="text">
+                       <string>Layer primary key (must be integer for PostgreSQL)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="3">
+                     <widget class="QgsFieldComboBox" name="atlasPrimaryKey"/>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_2">
+                 <property name="title">
+                  <string>Atlas options</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_44">
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout_5">
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_94">
+                      <property name="text">
+                       <string>Step duration (seconds)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_95">
+                      <property name="text">
+                       <string>Show atlas tool on startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="atlasShowAtStartup">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QSpinBox" name="atlasDuration">
+                      <property name="minimum">
+                       <number>2</number>
+                      </property>
+                      <property name="maximum">
+                       <number>60</number>
+                      </property>
+                      <property name="value">
+                       <number>5</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="0">
+                     <widget class="QLabel" name="label_89">
+                      <property name="text">
+                       <string>Auto-play on startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="1">
+                     <widget class="QCheckBox" name="atlasAutoPlay">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_87">
+                      <property name="text">
+                       <string>Right dock max-width (%)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QSpinBox" name="atlasMaxWidth">
+                      <property name="minimum">
+                       <number>20</number>
+                      </property>
+                      <property name="maximum">
+                       <number>50</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>5</number>
+                      </property>
+                      <property name="value">
+                       <number>25</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="pageLog">
           <layout class="QVBoxLayout" name="verticalLayout_40">
            <property name="margin">
@@ -3855,6 +4165,154 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>inMetatileSize</tabstop>
   <tabstop>inSourceRepository</tabstop>
   <tabstop>inSourceProject</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>cbHideProject</tabstop>
+  <tabstop>inAcl</tabstop>
+  <tabstop>cbActivatePrint</tabstop>
+  <tabstop>cbActivateMeasure</tabstop>
+  <tabstop>cbActivateZoomHistory</tabstop>
+  <tabstop>cbActivateGeolocation</tabstop>
+  <tabstop>liExternalSearch</tabstop>
+  <tabstop>inPointTolerance</tabstop>
+  <tabstop>inLineTolerance</tabstop>
+  <tabstop>inPolygonTolerance</tabstop>
+  <tabstop>inMinScale</tabstop>
+  <tabstop>inMaxScale</tabstop>
+  <tabstop>inMapScales</tabstop>
+  <tabstop>inInitialExtent</tabstop>
+  <tabstop>btSetExtentFromProject</tabstop>
+  <tabstop>btSetExtentFromCanvas</tabstop>
+  <tabstop>cbHideHeader</tabstop>
+  <tabstop>cbHideMenu</tabstop>
+  <tabstop>cbHideLegend</tabstop>
+  <tabstop>cbHideOverview</tabstop>
+  <tabstop>cbHideNavbar</tabstop>
+  <tabstop>liPopupContainer</tabstop>
+  <tabstop>scrollArea_7</tabstop>
+  <tabstop>scrollArea_10</tabstop>
+  <tabstop>mGroupBox_2</tabstop>
+  <tabstop>cbNoLegendImage</tabstop>
+  <tabstop>mGroupBox_3</tabstop>
+  <tabstop>cbPopupDisplayChildren</tabstop>
+  <tabstop>mGroupBox_4</tabstop>
+  <tabstop>mGroupBox_5</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>cbOsmMapnik</tabstop>
+  <tabstop>cbOsmStamenToner</tabstop>
+  <tabstop>cbGoogleStreets</tabstop>
+  <tabstop>cbGoogleSatellite</tabstop>
+  <tabstop>cbGoogleHybrid</tabstop>
+  <tabstop>cbGoogleTerrain</tabstop>
+  <tabstop>inGoogleKey</tabstop>
+  <tabstop>cbBingStreets</tabstop>
+  <tabstop>cbBingSatellite</tabstop>
+  <tabstop>cbBingHybrid</tabstop>
+  <tabstop>inBingKey</tabstop>
+  <tabstop>cbIgnStreets</tabstop>
+  <tabstop>cbIgnSatellite</tabstop>
+  <tabstop>cbIgnTerrain</tabstop>
+  <tabstop>cbIgnCadastral</tabstop>
+  <tabstop>inIgnKey</tabstop>
+  <tabstop>cbAddEmptyBaselayer</tabstop>
+  <tabstop>cbStartupBaselayer</tabstop>
+  <tabstop>twLizmapBaselayers</tabstop>
+  <tabstop>inLizmapBaselayerLayer</tabstop>
+  <tabstop>inLizmapBaselayerProject</tabstop>
+  <tabstop>inLizmapBaselayerTitle</tabstop>
+  <tabstop>inLizmapBaselayerRepository</tabstop>
+  <tabstop>inLizmapBaselayerImageFormat</tabstop>
+  <tabstop>btLizmapBaselayerAdd</tabstop>
+  <tabstop>btLizmapBaselayerDel</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>twLocateByLayerList</tabstop>
+  <tabstop>cbLocateByLayerDisplayGeom</tabstop>
+  <tabstop>liLocateByLayerLayers</tabstop>
+  <tabstop>inLocateByLayerMinLength</tabstop>
+  <tabstop>liLocateByLayerFields</tabstop>
+  <tabstop>cbFilterOnLocate</tabstop>
+  <tabstop>liLocateByLayerFilterFields</tabstop>
+  <tabstop>btLocateByLayerAdd</tabstop>
+  <tabstop>btLocateByLayerDel</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>cbLimitDataToBbox</tabstop>
+  <tabstop>twAttributeLayerList</tabstop>
+  <tabstop>liAttributeLayerFields</tabstop>
+  <tabstop>cbAttributeLayerIsPivot</tabstop>
+  <tabstop>inAttributeLayerHiddenFields</tabstop>
+  <tabstop>cbAttributeLayerHideAsChild</tabstop>
+  <tabstop>liAttributeLayer</tabstop>
+  <tabstop>cbAttributeLayerHideLayer</tabstop>
+  <tabstop>btAttributeLayerAdd</tabstop>
+  <tabstop>btAttributeLayerDel</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>twEditionLayerList</tabstop>
+  <tabstop>liEditionLayer</tabstop>
+  <tabstop>cbEditionLayerCreate</tabstop>
+  <tabstop>cbEditionLayerModifyAttribute</tabstop>
+  <tabstop>cbEditionLayerModifyGeometry</tabstop>
+  <tabstop>cbEditionLayerDeleteFeature</tabstop>
+  <tabstop>inEditionLayerAcl</tabstop>
+  <tabstop>btEditionLayerAdd</tabstop>
+  <tabstop>btEditionLayerDel</tabstop>
+  <tabstop>scrollArea_8</tabstop>
+  <tabstop>twTooltipLayerList</tabstop>
+  <tabstop>inTooltipLayerFields</tabstop>
+  <tabstop>liTooltipLayer</tabstop>
+  <tabstop>cbTooltipLayerDisplayGeom</tabstop>
+  <tabstop>inTooltipLayerColorGeom</tabstop>
+  <tabstop>btTooltipLayerAdd</tabstop>
+  <tabstop>btTooltipLayerDel</tabstop>
+  <tabstop>scrollArea_5</tabstop>
+  <tabstop>twLoginFilteredLayersList</tabstop>
+  <tabstop>liLoginFilteredLayerLayers</tabstop>
+  <tabstop>liLoginFilteredLayerFields</tabstop>
+  <tabstop>cbLoginFilteredLayerPrivate</tabstop>
+  <tabstop>btLoginFilteredLayerAdd</tabstop>
+  <tabstop>btLoginFilteredLayerDel</tabstop>
+  <tabstop>scrollArea_11</tabstop>
+  <tabstop>liDatavizContainer</tabstop>
+  <tabstop>twDatavizLayers</tabstop>
+  <tabstop>inDatavizPlotTitle</tabstop>
+  <tabstop>liDatavizPlotLayer</tabstop>
+  <tabstop>liDatavizPlotType</tabstop>
+  <tabstop>inDatavizPlotColor</tabstop>
+  <tabstop>inDatavizPlotXfield</tabstop>
+  <tabstop>inDatavizPlotYfield</tabstop>
+  <tabstop>inDatavizLayout</tabstop>
+  <tabstop>mFieldComboBox</tabstop>
+  <tabstop>btDatavizAddLayer</tabstop>
+  <tabstop>btDatavizRemoveLayer</tabstop>
+  <tabstop>scrollArea_9</tabstop>
+  <tabstop>inTimeFrameSize</tabstop>
+  <tabstop>inAnimationFrameLength</tabstop>
+  <tabstop>liTimeFrameType</tabstop>
+  <tabstop>twTimemanager</tabstop>
+  <tabstop>liTimemanagerStartAttribute</tabstop>
+  <tabstop>liTimemanagerLayers</tabstop>
+  <tabstop>inTimemanagerGroup</tabstop>
+  <tabstop>inTimemanagerGroupTitle</tabstop>
+  <tabstop>liTimemanagerLabelAttribute</tabstop>
+  <tabstop>btTimemanagerLayerAdd</tabstop>
+  <tabstop>btTimemanagerLayerDel</tabstop>
+  <tabstop>scrollArea_12</tabstop>
+  <tabstop>atlasEnabled</tabstop>
+  <tabstop>atlasLayer</tabstop>
+  <tabstop>atlasPrimaryKey</tabstop>
+  <tabstop>atlasDisplayLayerDescription</tabstop>
+  <tabstop>atlasFeatureLabel</tabstop>
+  <tabstop>atlasSortField</tabstop>
+  <tabstop>atlasHighlightGeometry</tabstop>
+  <tabstop>atlasZoom</tabstop>
+  <tabstop>atlasDisplayPopup</tabstop>
+  <tabstop>atlasTriggerFilter</tabstop>
+  <tabstop>atlasShowAtStartup</tabstop>
+  <tabstop>atlasMaxWidth</tabstop>
+  <tabstop>atlasDuration</tabstop>
+  <tabstop>atlasAutoPlay</tabstop>
+  <tabstop>outLog</tabstop>
+  <tabstop>btClearlog</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -3887,6 +4345,54 @@ Only the selected feature will be visible on the map.</string>
     <hint type="destinationlabel">
      <x>538</x>
      <y>16</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>atlasLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>atlasFeatureLabel</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1025</x>
+     <y>175</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1025</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>atlasLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>atlasSortField</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1025</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1025</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>atlasLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>atlasPrimaryKey</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>870</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>898</x>
+     <y>209</y>
     </hint>
    </hints>
   </connection>

@@ -317,6 +317,64 @@ class lizmap:
             'datavizLocation' : {
                 'widget': self.dlg.liDatavizContainer,
                 'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'bottomdock', 'right-dock']
+            },
+
+
+            'atlasEnabled' : {
+                'widget': self.dlg.atlasEnabled,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasLayer': {
+                'widget': self.dlg.atlasLayer,
+                'wType': 'layers', 'type': 'layer', 'default': '', 'list':[]
+            },
+            'atlasPrimaryKey': {
+                'widget': self.dlg.atlasPrimaryKey,
+                'wType': 'fields', 'type': 'field', 'default': ''
+            },
+            'atlasDisplayLayerDescription' : {
+                'widget': self.dlg.atlasDisplayLayerDescription,
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'atlasFeatureLabel': {
+                'widget': self.dlg.atlasFeatureLabel,
+                'wType': 'fields', 'type': 'field', 'default': ''
+            },
+            'atlasSortField': {
+                'widget': self.dlg.atlasSortField,
+                'wType': 'fields', 'type': 'field', 'default': ''
+            },
+            'atlasHighlightGeometry' : {
+                'widget': self.dlg.atlasHighlightGeometry,
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'atlasZoom' : {
+                'widget': self.dlg.atlasZoom,
+                'wType': 'list', 'type': 'string', 'default': 'zoom', 'list':['', 'zoom', 'center']
+            },
+            'atlasDisplayPopup' : {
+                'widget': self.dlg.atlasDisplayPopup,
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'atlasTriggerFilter' : {
+                'widget': self.dlg.atlasTriggerFilter,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasShowAtStartup' : {
+                'widget': self.dlg.atlasShowAtStartup,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasAutoPlay' : {
+                'widget': self.dlg.atlasAutoPlay,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasMaxWidth' : {
+                'widget': self.dlg.atlasMaxWidth,
+                'wType': 'spinbox', 'type': 'integer', 'default': 25
+            },
+            'atlasDuration' : {
+                'widget': self.dlg.atlasDuration,
+                'wType': 'spinbox', 'type': 'integer', 'default': 5
             }
         }
 
@@ -455,6 +513,10 @@ class lizmap:
                     control.stateChanged.connect(slot)
                 elif item['wType'] == 'list':
                     control.currentIndexChanged.connect(slot)
+                elif item['wType'] == 'layers':
+                    control.layerChanged.connect(slot)
+                elif item['wType'] == 'fields':
+                    control.fieldChanged.connect(slot)
 
         # Connect baselayer checkboxes
         self.baselayerWidgetList = {
@@ -817,6 +879,24 @@ class lizmap:
                     if jsonOptions.has_key(key):
                         if listDic.has_key(jsonOptions[key]):
                             item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
+
+        # Set layer combobox
+        for key, item in self.globalOptions.items():
+            if item['widget']:
+                if item['wType'] == 'layers':
+                    if jsonOptions.has_key(key):
+                        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+                            if lyr.id() == jsonOptions[key]:
+                                item['widget'].setLayer(lyr)
+                                break
+
+        # Then set field combobox
+        for key, item in self.globalOptions.items():
+            if item['widget']:
+                if item['wType'] == 'fields':
+                    if jsonOptions.has_key(key):
+                        item['widget'].setField(str(jsonOptions[key]))
+
 
         # Fill the table widgets
         for key, item in self.layersTable.items():
@@ -1621,17 +1701,15 @@ class lizmap:
         content.append(twRowCount) # store order
         colCount = len(content)
 
-        if twRowCount < self.dlg.liDatavizPlotLayer.count()-1:
-            # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(colCount)
-
-            i=0
-            for val in content:
-                newItem = QTableWidgetItem(val)
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, i, newItem)
-                i+=1
+        # set new rowCount
+        lblTableWidget.setRowCount(twRowCount + 1)
+        lblTableWidget.setColumnCount(colCount)
+        i=0
+        for val in content:
+            newItem = QTableWidgetItem(val)
+            newItem.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, i, newItem)
+            i+=1
         lblTableWidget.setColumnHidden(colCount - 1, True)
         lblTableWidget.setColumnHidden(colCount - 2, True)
 
@@ -1739,6 +1817,8 @@ class lizmap:
                         elif item['wType'] == 'list':
                             if jsonLayers[jsonKey][key] in item['list']:
                                 self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+
+
                 # popupContent
                 if key == 'popupTemplate':
                     if jsonLayers[jsonKey].has_key(key):
@@ -2077,6 +2157,13 @@ class lizmap:
                 if item['wType'] == 'list':
                     listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
                     inputValue = item['list'][item['widget'].currentIndex()]
+
+                if item['wType'] == 'layers':
+                    lay = item['widget'].layer(item['widget'].currentIndex())
+                    inputValue = lay.id()
+
+                if item['wType'] == 'fields':
+                    inputValue = item['widget'].currentField()
 
                 # Cast value depending of data type
                 if item['type'] == 'string':
