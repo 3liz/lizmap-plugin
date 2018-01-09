@@ -46,11 +46,7 @@
 """
 
 import os
-from PyQt4 import QtGui, uic
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.gui import *
-
+from PyQt4 import QtGui, uic, QtCore
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'ui_lizmap.ui'))

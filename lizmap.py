@@ -46,9 +46,29 @@
  ***** END LICENSE BLOCK ***** */
 """
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import (
+    qVersion,
+    QCoreApplication,
+    QTranslator,
+    QSettings,
+    QFileInfo
+)
+from PyQt4.QtGui import (
+    QApplication,
+    QTableWidgetItem,
+    QTreeWidgetItem,
+    QAction,
+    QIcon,
+    QDialogButtonBox
+)
+from qgis.core import (
+    QGis,
+    QgsApplication,
+    QgsMapLayerRegistry,
+    QgsProject,
+    QgsMapLayer,
+    QgsMapRenderer
+)
 from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
 # Initialize Qt resources from file resources.py
 import resources
