@@ -51,7 +51,8 @@ from PyQt4.QtCore import (
     QCoreApplication,
     QTranslator,
     QSettings,
-    QFileInfo
+    QFileInfo,
+    Qt
 )
 from PyQt4.QtGui import (
     QApplication,
