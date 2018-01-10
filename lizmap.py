@@ -60,7 +60,8 @@ from PyQt4.QtGui import (
     QTreeWidgetItem,
     QAction,
     QIcon,
-    QDialogButtonBox
+    QDialogButtonBox,
+    QMessageBox
 )
 from qgis.core import (
     QGis,
@@ -2750,8 +2751,7 @@ class lizmap:
                     QApplication.translate("lizmap", "Lizmap Error"),
                     QApplication.translate("lizmap", "Wrong or missing map parameters: please read the log and correct the printed errors."),
                     QMessageBox.Ok)
-                # Go to Log tab
-                self.dlg.tabWidget.setCurrentIndex(5)
+
 
             # Get and check map scales
             if self.isok:
