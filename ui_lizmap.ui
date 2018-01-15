@@ -3440,7 +3440,7 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="8" column="3">
-                  <widget class="QgsColorButtonV2" name="inDatavizPlotColor">
+                  <widget class="QgsColorButton" name="inDatavizPlotColor">
                    <property name="color">
                     <color>
                      <red>0</red>
@@ -3465,7 +3465,7 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="10" column="3">
-                  <widget class="QgsColorButtonV2" name="inDatavizPlotColor2">
+                  <widget class="QgsColorButton" name="inDatavizPlotColor2">
                    <property name="color">
                     <color>
                      <red>255</red>
@@ -4173,7 +4173,7 @@ Only the selected feature will be visible on the map.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgis.gui</header>
   </customwidget>

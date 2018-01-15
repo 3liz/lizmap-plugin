@@ -46,6 +46,7 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
+from __future__ import absolute_import
 def name():
     return "lizmap"
 
@@ -72,5 +73,5 @@ def email():
 
 def classFactory(iface):
     # load lizmap class from file lizmap
-    from lizmap import lizmap
+    from .lizmap import lizmap
     return lizmap(iface)
