@@ -609,7 +609,7 @@ class lizmap:
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'y_field', 'color', 'layout_config', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'y_field', 'color', 'has_y2_field', 'y2_field', 'color2', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }
@@ -1705,36 +1705,44 @@ class lizmap:
         if not layer:
             return False
 
-        # Retrieve layer information
+        ptype = self.dlg.liDatavizPlotType.currentText()
+        ptitle = unicode(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
         layerName = layer.name()
         layerId = layer.id()
-        ptitle = unicode(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
-        ptype = self.dlg.liDatavizPlotType.currentText()
-        pxfields = str(self.dlg.inDatavizPlotXfield.text().encode('utf-8')).strip(' \t')
-        pyfields = str(self.dlg.inDatavizPlotYfield.text().encode('utf-8')).strip(' \t')
+
+        pxfields = str(self.dlg.inDatavizPlotXfield.currentField().encode('utf-8'))
+
+        pyfields = str(self.dlg.inDatavizPlotYfield.currentField().encode('utf-8'))
         color = self.dlg.inDatavizPlotColor.color()
         pcolor = "%s" % color.name()
-        playout = str(self.dlg.inDatavizLayout.text().encode('utf-8')).strip(' \t')
 
-        content = [layerName, ptitle, ptype, pxfields, pyfields, pcolor, playout, layerId]
+        py2fields = ''
+        pcolor2 = ''
+        hasYField2 = str(self.dlg.cbDatavizYField2.isChecked())
+        if self.dlg.cbDatavizYField2.isChecked():
+            py2fields = str(self.dlg.inDatavizPlotYfield2.currentField().encode('utf-8')).strip(' \t')
+            color2 = self.dlg.inDatavizPlotColor2.color()
+            pcolor2 = "%s" % color2.name()
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content.append(twRowCount) # store order
+        content = [layerName, ptitle, ptype, pxfields, pyfields, pcolor, hasYField2, py2fields, pcolor2, layerId, twRowCount]
         colCount = len(content)
 
-        # set new rowCount
+        # set new rowCount and col count
         lblTableWidget.setRowCount(twRowCount + 1)
         lblTableWidget.setColumnCount(colCount)
+
         i=0
         for val in content:
             newItem = QTableWidgetItem(val)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, i, newItem)
+            print i
+            print val
             i+=1
-        lblTableWidget.setColumnHidden(colCount - 1, True)
+        # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
-
 
 
     def refreshLayerTree(self):
@@ -2394,15 +2402,19 @@ class lizmap:
                 pxfields = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
                 pyfields = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
                 pcolor = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
-                playout = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
+                hasy2fields = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                py2fields = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
+                pcolor2 = str(lblTableWidget.item(row, 8).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 9).text().encode('utf-8'))
                 prow = {}
                 prow["title"] = ptitle
                 prow["type"] = ptype
                 prow["x_field"] = pxfields
                 prow["y_field"] = pyfields
                 prow["color"] = pcolor
-                prow["layout_config"] = playout
+                prow["has_y2_field"] = hasy2fields
+                prow["y2_field"] = py2fields
+                prow["color2"] = pcolor2
                 prow["layerId"] = layerId
                 prow["order"] = row
                 liz2json["datavizLayers"][row] = prow
