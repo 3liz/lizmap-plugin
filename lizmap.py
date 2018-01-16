@@ -340,8 +340,10 @@ class lizmap:
                 'widget': self.dlg.liDatavizContainer,
                 'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'bottomdock', 'right-dock']
             },
-
-
+            'datavizTemplate': {
+                'widget': self.dlg.inDatavizTemplate,
+                'wType': 'html', 'type': 'string', 'default': ''
+            },
             'atlasEnabled' : {
                 'widget': self.dlg.atlasEnabled,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
@@ -529,7 +531,7 @@ class lizmap:
                 slot = partial(self.setLayerProperty, key)
                 if item['wType'] in ('text', 'spinbox'):
                     control.editingFinished.connect(slot)
-                elif item['wType'] == 'textarea':
+                elif item['wType'] in ('textarea', 'html'):
                     control.textChanged.connect(slot)
                 elif item['wType'] == 'checkbox':
                     control.stateChanged.connect(slot)
@@ -877,7 +879,7 @@ class lizmap:
                         if jsonOptions[key].lower() in ('yes', 'true', 't', '1'):
                             item['widget'].setChecked(True)
 
-                if item['wType'] in ('text', 'textarea'):
+                if item['wType'] in ('text', 'textarea', 'html'):
                     if isinstance(item['default'], (list, tuple)):
                         item['widget'].setText(", ".join(map(str, item['default'])))
                     else:
@@ -887,6 +889,18 @@ class lizmap:
                             item['widget'].setText(", ".join(map(str, jsonOptions[key])))
                         else:
                             item['widget'].setText(str(jsonOptions[key]))
+
+                #if item['wType'] in ('html'):
+                    #if isinstance(item['default'], (list, tuple)):
+                        #item['widget'].setHtml(", ".join(map(str, item['default'])))
+                    #else:
+                        #item['widget'].setHtml(str(item['default']))
+                    #if jsonOptions.has_key(key):
+                        #if isinstance(jsonOptions[key], (list, tuple)):
+                            #item['widget'].setHtml(", ".join(map(str, jsonOptions[key])))
+                        #else:
+                            #item['widget'].setHtml(str(jsonOptions[key]))
+
 
 
                 if item['wType'] == 'spinbox':
@@ -2172,7 +2186,7 @@ class lizmap:
             if item['widget']:
                 inputValue = None
                 # Get field value depending on widget type
-                if item['wType'] == 'text':
+                if item['wType'] in ['text', 'html']:
                     inputValue = str(item['widget'].text()).strip(' \t')
 
                 if item['wType'] == 'textarea':

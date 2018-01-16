@@ -3251,7 +3251,7 @@ Only the selected feature will be visible on the map.</string>
                 </widget>
                </item>
                <item>
-                <widget class="QPlainTextEdit" name="inDatavizTemplate"/>
+                <widget class="QgsCodeEditorHTML" name="inDatavizTemplate"/>
                </item>
                <item>
                 <widget class="QTableWidget" name="twDatavizLayers">
@@ -4190,6 +4190,11 @@ Only the selected feature will be visible on the map.</string>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QTextEdit</extends>
+   <header location="global">qgis.gui</header>
   </customwidget>
  </customwidgets>
  <tabstops>
