@@ -3403,11 +3403,7 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer">
-                   <property name="filters">
-                    <set>QgsMapLayerProxyModel::HasGeometry|QgsMapLayerProxyModel::LineLayer|QgsMapLayerProxyModel::NoGeometry|QgsMapLayerProxyModel::PluginLayer|QgsMapLayerProxyModel::PointLayer|QgsMapLayerProxyModel::PolygonLayer|QgsMapLayerProxyModel::VectorLayer</set>
-                   </property>
-                  </widget>
+                  <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer"/>
                  </item>
                  <item row="3" column="0">
                   <widget class="QLabel" name="label_58">

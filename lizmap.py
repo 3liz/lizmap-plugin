@@ -1752,8 +1752,6 @@ class lizmap:
             newItem = QTableWidgetItem(val)
             newItem.setFlags(Qt.ItemIsEnabled)
             lblTableWidget.setItem(twRowCount, i, newItem)
-            print i
-            print val
             i+=1
         # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
