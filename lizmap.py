@@ -2731,7 +2731,8 @@ class lizmap(object):
                     continue
                 layerProviderKey = mc.layer( i ).providerType()
                 # Only for layers stored in disk
-                if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr'):
+                if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr') \
+                and not layerSource.lower().startswith('mysql'):
                     try:
                         relativePath = os.path.normpath(
                             os.path.relpath(os.path.abspath(layerSource), projectDir)
