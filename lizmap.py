@@ -1783,7 +1783,7 @@ class lizmap(object):
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No
         )
         if refreshIt == QMessageBox.Yes:
-            self.populateLayerTree2()
+            self.populateLayerTree()
 
     def setTreeItemData(self, itemType, itemKey, jsonLayers):
         '''Define default data or data from previous configuration for one item (layer or group)
@@ -1884,102 +1884,10 @@ class lizmap(object):
                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
 
 
-    def populateLayerTree(self):
-        '''Populate the layer tree of the Layers tab from Qgis legend interface
-        Needs to be refactored.
-        '''
-
-        # initialize the tree
-        myTree = self.dlg.treeLayer
-        myTree.clear()
-        myTree.headerItem().setText(0, QApplication.translate( "lizmap", "List of layers" ) )
-        self.myDic = {}
-        myGroups = self.iface.legendInterface().groups()
-
-        # Check if a json configuration file exists (myproject.qgs.cfg)
-        isok = 1
-        p = QgsProject.instance()
-        jsonFile = "%s.cfg" % p.fileName()
-        jsonLayers = {}
-        if os.path.exists(str(jsonFile)):
-            f = open(jsonFile, 'r')
-            jsonFileReader = f.read()
-            try:
-                sjson = json.loads(jsonFileReader)
-                jsonLayers = sjson['layers']
-            except:
-                isok=0
-                QMessageBox.critical(self.dlg, QApplication.translate("lizmap", "Lizmap Error"), (u""), QMessageBox.Ok)
-                self.log(
-                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
-                    abort=True,
-                    textarea=self.dlg.outLog)
-            finally:
-                f.close()
-
-        # Loop through groupLayerRelationship to reconstruct the tree
-        for a in self.iface.legendInterface().groupLayerRelationship():
-            # Initialize values
-            parentItem = None
-            myId = a[0]
-
-            # Select an existing item, select the header item or create the item
-            if myId in self.myDic:
-                # If the item already exists in self.myDic, select it
-                parentItem = self.myDic[myId]['item']
-            elif myId == '':
-                # If the id is empty string, this is a root layer, select the headerItem
-                parentItem = myTree.headerItem()
-            else:
-                # else create the item and add it to the header item
-                # add the item to the dictionary
-                self.myDic[myId] = {'id' : myId}
-                self.ldisplay = True
-                if myId in myGroups:
-                    # it is a group
-                    self.setTreeItemData('group', myId, jsonLayers)
-                else:
-                    # it is a layer
-                    self.setTreeItemData('layer', myId, jsonLayers)
-
-                if self.ldisplay:
-
-                    parentItem = QTreeWidgetItem(['%s' % str(self.myDic[myId]['name']), '%s' % str(self.myDic[myId]['id']), '%s' % self.myDic[myId]['type']])
-                    myTree.addTopLevelItem(parentItem)
-                    self.myDic[myId]['item'] = parentItem
-                else:
-                    del self.myDic[myId]
-
-            # loop through the children and add children to the parent item
-            for b in a[1]:
-                self.myDic[b] = {'id' : b}
-                self.ldisplay = True
-                if b in myGroups:
-                    # it is a group
-                    self.setTreeItemData('group', b, jsonLayers)
-                else:
-                    # it is a layer
-                    self.setTreeItemData('layer', b, jsonLayers)
-
-                # add children item to its parent
-                if self.ldisplay:
-                    childItem = QTreeWidgetItem(['%s' % str(self.myDic[b]['name']), '%s' % str(self.myDic[b]['id']), '%s' % self.myDic[b]['type']])
-                    if myId == '':
-                        myTree.addTopLevelItem(childItem)
-                    else:
-                        parentItem.addChild(childItem)
-                    self.myDic[b]['item'] = childItem
-                else:
-                    del self.myDic[b]
-        myTree.expandAll()
-
-        # Add the self.myDic to the global layerList dictionary
-        self.layerList = self.myDic
-
-        self.enableCheckBox(False)
-
-
     def processNode(self, node, parentNode, jsonLayers):
+        '''
+        Process a single node of the QGIS layer tree and adds it to Lizmap layer tree
+        '''
         for child in node.children():
             if isinstance(child, QgsLayerTreeGroup):
                 self.log(QApplication.translate("lizmap", "group = %s" % child.name()),abort=False,textarea=self.dlg.outLog)
@@ -2029,7 +1937,7 @@ class lizmap(object):
                 self.processNode(child, item, jsonLayers)
 
 
-    def populateLayerTree2(self):
+    def populateLayerTree(self):
         '''Populate the layer tree of the Layers tab from Qgis legend interface
         Needs to be refactored.
         '''
@@ -3069,7 +2977,7 @@ class lizmap(object):
             self.embeddedGroups = None
 
             # Fill the layer tree
-            self.populateLayerTree2()
+            self.populateLayerTree()
 
             # Fill baselayer startup
             self.onBaselayerCheckboxChange()
