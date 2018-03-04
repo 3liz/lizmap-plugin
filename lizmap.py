@@ -106,6 +106,9 @@ import urllib.request, urllib.parse, urllib.error
 import json
 # supprocess module, to load external command line tools
 import subprocess
+
+from shutil import copyfile
+
 # element tree to get some project properties not exposed to python api
 try:
     from xml.etree import ElementTree as ET # Python >= 2.5
@@ -873,13 +876,14 @@ class lizmap(object):
                         self.layersTable[key]['jsonConfig'] = {}
             except:
                 isok=0
+                copyfile(jsonFile, "%s.back" % jsonFile)
                 QMessageBox.critical(
                     self.dlg,
                     QApplication.translate("lizmap", "Lizmap Error"),
-                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     QMessageBox.Ok)
                 self.log(
-                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     abort=True,
                     textarea=self.dlg.outLog)
             finally:
@@ -1890,13 +1894,11 @@ class lizmap(object):
         '''
         for child in node.children():
             if isinstance(child, QgsLayerTreeGroup):
-                self.log(QApplication.translate("lizmap", "group = %s" % child.name()),abort=False,textarea=self.dlg.outLog)
                 myId = child.name()
                 mytype = 'group'
             elif isinstance(child, QgsLayerTreeLayer):
                 myId = child.layerId()
                 mytype = 'layer'
-                self.log(QApplication.translate("lizmap", "layer = %s" % child.name()),abort=False,textarea=self.dlg.outLog)
 
             # Initialize values
             item = None
@@ -1904,11 +1906,9 @@ class lizmap(object):
             # Select an existing item, select the header item or create the item
             if myId in self.myDic:
                 # If the item already exists in self.myDic, select it
-                self.log(QApplication.translate("lizmap", "item %s already exists" % myId),abort=False,textarea=self.dlg.outLog)
                 item = self.myDic[myId]['item']
             elif myId == '':
                 # If the id is empty string, this is a root layer, select the headerItem
-                self.log(QApplication.translate("lizmap", "this is the root"),abort=False,textarea=self.dlg.outLog)
                 item = self.dlg.treeLayer.headerItem()
             else:
                 # else create the item and add it to the header item
@@ -1920,17 +1920,14 @@ class lizmap(object):
                 else:
                     # it is a layer
                     self.setTreeItemData('layer', myId, jsonLayers)
-                self.log(QApplication.translate("lizmap", "create the item %s" % myId),abort=False,textarea=self.dlg.outLog)
+
                 item = QTreeWidgetItem(['%s' % str(self.myDic[myId]['name']), '%s' % str(self.myDic[myId]['id']), '%s' % self.myDic[myId]['type']])
                 self.myDic[myId]['item'] = item
 
                 # Move group or layer to its parent node
                 if not parentNode:
-                    self.log(QApplication.translate("lizmap", "pas de parent pour %s" % myId),abort=False,textarea=self.dlg.outLog)
                     self.dlg.treeLayer.addTopLevelItem(item)
                 else:
-                    self.log(QApplication.translate("lizmap", "%s a un parent" % myId),abort=False,textarea=self.dlg.outLog)
-                    #self.log(QApplication.translate("lizmap", "-- parent = %s" % parentNode.text()),abort=False,textarea=self.dlg.outLog)
                     parentNode.addChild(item)
 
             if mytype == 'group':
