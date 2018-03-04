@@ -2511,7 +2511,10 @@ class lizmap(object):
                     else:
                         propVal = str(propVal)
                 elif val['type'] == 'integer':
-                    propVal = int(propVal)
+                    try:
+                        propVal = int(propVal)
+                    except:
+                        propVal = 1
                 elif val['type'] == 'boolean':
                     propVal = str(propVal)
                 layerOptions[key] = propVal
