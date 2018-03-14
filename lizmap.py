@@ -252,7 +252,7 @@ class lizmap:
             },
             'popupLocation' : {
                 'widget': self.dlg.liPopupContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock']
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
             },
 
             'print' : {
