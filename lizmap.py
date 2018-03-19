@@ -1725,7 +1725,7 @@ class lizmap:
         layerId = layer.id()
 
         pxfields = str(self.dlg.inDatavizPlotXfield.currentField().encode('utf-8'))
-        aggregation = self.dlg.inDatavizAggregation.currentText()
+        aggregation = self.dlg.liDatavizAggregation.currentText()
 
         pyfields = str(self.dlg.inDatavizPlotYfield.currentField().encode('utf-8'))
         color = self.dlg.inDatavizPlotColor.color()
