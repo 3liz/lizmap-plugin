@@ -611,7 +611,7 @@ class lizmap:
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'y_field', 'color', 'has_y2_field', 'y2_field', 'color2', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'has_y2_field', 'y2_field', 'color2', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }
@@ -1725,6 +1725,7 @@ class lizmap:
         layerId = layer.id()
 
         pxfields = str(self.dlg.inDatavizPlotXfield.currentField().encode('utf-8'))
+        aggregation = self.dlg.inDatavizAggregation.currentText()
 
         pyfields = str(self.dlg.inDatavizPlotYfield.currentField().encode('utf-8'))
         color = self.dlg.inDatavizPlotColor.color()
@@ -1740,7 +1741,7 @@ class lizmap:
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ptitle, ptype, pxfields, pyfields, pcolor, hasYField2, py2fields, pcolor2, layerId, twRowCount]
+        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, hasYField2, py2fields, pcolor2, layerId, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -2412,16 +2413,18 @@ class lizmap:
                 ptitle = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                 ptype = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                 pxfields = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
-                pyfields = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
-                pcolor = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
-                hasy2fields = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
-                py2fields = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
-                pcolor2 = str(lblTableWidget.item(row, 8).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 9).text().encode('utf-8'))
+                paggregation = str(lblTableWidget.item(row, 4).text())
+                pyfields = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                pcolor = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                hasy2fields = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
+                py2fields = str(lblTableWidget.item(row, 8).text().encode('utf-8'))
+                pcolor2 = str(lblTableWidget.item(row, 9).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 10).text().encode('utf-8'))
                 prow = {}
                 prow["title"] = ptitle
                 prow["type"] = ptype
                 prow["x_field"] = pxfields
+                prow["aggregation"] = paggregation
                 prow["y_field"] = pyfields
                 prow["color"] = pcolor
                 prow["has_y2_field"] = hasy2fields
