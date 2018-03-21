@@ -611,7 +611,7 @@ class lizmap:
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'has_y2_field', 'y2_field', 'color2', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'colorfield', 'color',  'has_y2_field', 'y2_field', 'colorfield2', 'color2', 'popup_display_child_plot', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }
@@ -720,6 +720,11 @@ class lizmap:
 
         # Add a layer to the lizmap dataviz layers
         self.dlg.btDatavizAddLayer.clicked.connect(self.addLayerToDataviz)
+
+        # Add empty item in some field comboboxes
+        # only in QGIS 3.0
+        #self.dlg.inDatavizColorField.setAllowEmptyFieldName(True)
+        #self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
 
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
@@ -1729,19 +1734,28 @@ class lizmap:
 
         pyfields = str(self.dlg.inDatavizPlotYfield.currentField().encode('utf-8'))
         color = self.dlg.inDatavizPlotColor.color()
+        colorfield = ''
+        if self.dlg.cbDatavizUseColorField.isChecked():
+            colorfield = str(self.dlg.inDatavizColorField.currentField().encode('utf-8'))
         pcolor = "%s" % color.name()
 
         py2fields = ''
         pcolor2 = ''
+        colorfield2 = ''
         hasYField2 = str(self.dlg.cbDatavizYField2.isChecked())
         if self.dlg.cbDatavizYField2.isChecked():
             py2fields = str(self.dlg.inDatavizPlotYfield2.currentField().encode('utf-8')).strip(' \t')
             color2 = self.dlg.inDatavizPlotColor2.color()
+            colorfield2 = ''
+            if self.dlg.cbDatavizUseColorField2.isChecked():
+                colorfield2 = str(self.dlg.inDatavizColorField2.currentField().encode('utf-8'))
             pcolor2 = "%s" % color2.name()
+
+        popup_display_child_plot = str(self.dlg.cbDatavizDisplayChildPlot.isChecked())
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, hasYField2, py2fields, pcolor2, layerId, twRowCount]
+        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot, layerId, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -2416,10 +2430,13 @@ class lizmap:
                 paggregation = str(lblTableWidget.item(row, 4).text())
                 pyfields = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 pcolor = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
-                hasy2fields = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
-                py2fields = str(lblTableWidget.item(row, 8).text().encode('utf-8'))
-                pcolor2 = str(lblTableWidget.item(row, 9).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 10).text().encode('utf-8'))
+                colorfield = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
+                hasy2fields = str(lblTableWidget.item(row, 8).text().encode('utf-8'))
+                py2fields = str(lblTableWidget.item(row, 9).text().encode('utf-8'))
+                pcolor2 = str(lblTableWidget.item(row, 10).text().encode('utf-8'))
+                colorfield2 = str(lblTableWidget.item(row, 11).text().encode('utf-8'))
+                popup_display_child_plot = str(lblTableWidget.item(row, 12).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 13).text().encode('utf-8'))
                 prow = {}
                 prow["title"] = ptitle
                 prow["type"] = ptype
@@ -2427,9 +2444,12 @@ class lizmap:
                 prow["aggregation"] = paggregation
                 prow["y_field"] = pyfields
                 prow["color"] = pcolor
+                prow["colorfield"] = colorfield
                 prow["has_y2_field"] = hasy2fields
                 prow["y2_field"] = py2fields
                 prow["color2"] = pcolor2
+                prow["colorfield2"] = colorfield2
+                prow["popup_display_child_plot"] = popup_display_child_plot
                 prow["layerId"] = layerId
                 prow["order"] = row
                 liz2json["datavizLayers"][row] = prow
