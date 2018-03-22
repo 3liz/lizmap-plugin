@@ -3481,6 +3481,11 @@ Only the selected feature will be visible on the map.</string>
                   <widget class="QComboBox" name="liDatavizAggregation">
                    <item>
                     <property name="text">
+                     <string></string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
                      <string>avg</string>
                     </property>
                    </item>
