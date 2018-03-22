@@ -611,7 +611,7 @@ class lizmap:
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'colorfield', 'color',  'has_y2_field', 'y2_field', 'colorfield2', 'color2', 'popup_display_child_plot', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field', 'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }

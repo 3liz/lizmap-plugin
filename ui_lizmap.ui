@@ -3315,12 +3315,12 @@ Only the selected feature will be visible on the map.</string>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Color field</string>
+                   <string>Color</string>
                   </property>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Color</string>
+                   <string>Color field</string>
                   </property>
                  </column>
                  <column>
@@ -3596,7 +3596,7 @@ Only the selected feature will be visible on the map.</string>
                 </layout>
                </item>
                <item>
-                <widget class="QCheckBox" name="cbDatavizInPopupChildren">
+                <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
                  <property name="text">
                   <string>Display filtered plot in popups of parent layer</string>
                  </property>
