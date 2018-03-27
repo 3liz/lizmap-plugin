@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1070</width>
+    <width>1036</width>
     <height>845</height>
    </rect>
   </property>
@@ -289,7 +289,7 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -778,6 +778,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
                         <string>map</string>
                        </property>
                       </item>
+                      <item>
+                       <property name="text">
+                        <string>bottomdock</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>right-dock</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                     <item>
@@ -835,7 +845,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -914,8 +924,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>492</width>
-                       <height>756</height>
+                       <width>470</width>
+                       <height>749</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1520,7 +1530,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -2145,7 +2155,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -2419,7 +2429,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -2634,7 +2644,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -2842,7 +2852,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -3037,7 +3047,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -3181,9 +3191,9 @@ Only the selected feature will be visible on the map.</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>772</width>
-                <height>776</height>
+                <y>-78</y>
+                <width>725</width>
+                <height>854</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3295,12 +3305,22 @@ Only the selected feature will be visible on the map.</string>
                  </column>
                  <column>
                   <property name="text">
+                   <string>Aggregation</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>Y field</string>
                   </property>
                  </column>
                  <column>
                   <property name="text">
                    <string>Color</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Color field</string>
                   </property>
                  </column>
                  <column>
@@ -3320,6 +3340,21 @@ Only the selected feature will be visible on the map.</string>
                  </column>
                  <column>
                   <property name="text">
+                   <string>Color field 2</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Popup for main layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Popup for children</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>Id</string>
                   </property>
                  </column>
@@ -3332,7 +3367,10 @@ Only the selected feature will be visible on the map.</string>
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="10" column="0">
+                 <item row="11" column="1">
+                  <widget class="QgsFieldComboBox" name="inDatavizColorField"/>
+                 </item>
+                 <item row="12" column="0">
                   <widget class="QCheckBox" name="cbDatavizYField2">
                    <property name="text">
                     <string>2nd Y field</string>
@@ -3425,21 +3463,75 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="1">
+                 <item row="12" column="1">
                   <widget class="QgsFieldComboBox" name="inDatavizPlotYfield2">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="2">
-                  <widget class="QLabel" name="label_75">
+                 <item row="5" column="2">
+                  <widget class="QLabel" name="label_98">
                    <property name="text">
-                    <string>Color</string>
+                    <string>Group ?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="3">
+                 <item row="5" column="3">
+                  <widget class="QComboBox" name="liDatavizAggregation">
+                   <item>
+                    <property name="text">
+                     <string></string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>avg</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>sum</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>count</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>median</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>stddev</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>min</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>max</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>first</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>last</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="11" column="3">
                   <widget class="QgsColorButton" name="inDatavizPlotColor">
                    <property name="color">
                     <color>
@@ -3457,14 +3549,17 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="2">
-                  <widget class="QLabel" name="label_80">
+                 <item row="11" column="2">
+                  <widget class="QLabel" name="label_75">
                    <property name="text">
                     <string>Color</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="3">
+                 <item row="13" column="1">
+                  <widget class="QgsFieldComboBox" name="inDatavizColorField2"/>
+                 </item>
+                 <item row="13" column="3">
                   <widget class="QgsColorButton" name="inDatavizPlotColor2">
                    <property name="color">
                     <color>
@@ -3482,7 +3577,35 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="13" column="2">
+                  <widget class="QLabel" name="label_80">
+                   <property name="text">
+                    <string>Color</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="13" column="0">
+                  <widget class="QCheckBox" name="cbDatavizUseColorField2">
+                   <property name="text">
+                    <string>Color field 2 ?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="11" column="0">
+                  <widget class="QCheckBox" name="cbDatavizUseColorField">
+                   <property name="text">
+                    <string>Color field ?</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
+                 <property name="text">
+                  <string>Display filtered plot in popups of parent layer</string>
+                 </property>
+                </widget>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_35">
@@ -3539,7 +3662,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>790</width>
+                <width>756</width>
                 <height>794</height>
                </rect>
               </property>
@@ -3843,7 +3966,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>770</width>
+                <width>736</width>
                 <height>774</height>
                </rect>
               </property>
@@ -4205,6 +4328,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbLayerIsBaseLayer</tabstop>
   <tabstop>cbPopup</tabstop>
   <tabstop>liPopupSource</tabstop>
+  <tabstop>cbPopupDisplayChildren</tabstop>
   <tabstop>btConfigurePopup</tabstop>
   <tabstop>liImageFormat</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
@@ -4245,7 +4369,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>mGroupBox_2</tabstop>
   <tabstop>cbNoLegendImage</tabstop>
   <tabstop>mGroupBox_3</tabstop>
-  <tabstop>cbPopupDisplayChildren</tabstop>
   <tabstop>mGroupBox_4</tabstop>
   <tabstop>mGroupBox_5</tabstop>
   <tabstop>scrollArea_3</tabstop>
@@ -4274,6 +4397,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>inLizmapBaselayerRepository</tabstop>
   <tabstop>inLizmapBaselayerImageFormat</tabstop>
   <tabstop>btLizmapBaselayerAdd</tabstop>
+  <tabstop>sbPopupMaxFeatures</tabstop>
   <tabstop>btLizmapBaselayerDel</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>twLocateByLayerList</tabstop>
@@ -4329,11 +4453,16 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>inDatavizPlotTitle</tabstop>
   <tabstop>liDatavizPlotLayer</tabstop>
   <tabstop>inDatavizPlotXfield</tabstop>
+  <tabstop>liDatavizAggregation</tabstop>
   <tabstop>inDatavizPlotYfield</tabstop>
+  <tabstop>cbDatavizUseColorField</tabstop>
+  <tabstop>inDatavizColorField</tabstop>
   <tabstop>inDatavizPlotColor</tabstop>
   <tabstop>cbDatavizYField2</tabstop>
   <tabstop>inDatavizPlotYfield2</tabstop>
   <tabstop>inDatavizPlotColor2</tabstop>
+  <tabstop>cbDatavizUseColorField2</tabstop>
+  <tabstop>inDatavizColorField2</tabstop>
   <tabstop>btDatavizAddLayer</tabstop>
   <tabstop>btDatavizRemoveLayer</tabstop>
   <tabstop>scrollArea_9</tabstop>
@@ -4365,7 +4494,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>atlasAutoPlay</tabstop>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
-  <tabstop>sbPopupMaxFeatures</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -4408,11 +4536,11 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1025</x>
-     <y>175</y>
+     <x>772</x>
+     <y>187</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1025</x>
+     <x>772</x>
      <y>280</y>
     </hint>
    </hints>
@@ -4424,11 +4552,11 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1025</x>
+     <x>772</x>
      <y>187</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1025</x>
+     <x>772</x>
      <y>313</y>
     </hint>
    </hints>
@@ -4440,12 +4568,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>870</x>
-     <y>171</y>
+     <x>772</x>
+     <y>187</y>
     </hint>
     <hint type="destinationlabel">
-     <x>898</x>
-     <y>209</y>
+     <x>772</x>
+     <y>220</y>
     </hint>
    </hints>
   </connection>
@@ -4456,12 +4584,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>871</x>
-     <y>647</y>
+     <x>765</x>
+     <y>533</y>
     </hint>
     <hint type="destinationlabel">
-     <x>871</x>
-     <y>680</y>
+     <x>765</x>
+     <y>586</y>
     </hint>
    </hints>
   </connection>
@@ -4472,12 +4600,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>871</x>
-     <y>647</y>
+     <x>765</x>
+     <y>533</y>
     </hint>
     <hint type="destinationlabel">
-     <x>763</x>
-     <y>713</y>
+     <x>765</x>
+     <y>619</y>
     </hint>
    </hints>
   </connection>
@@ -4488,12 +4616,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>806</x>
-     <y>647</y>
+     <x>765</x>
+     <y>533</y>
     </hint>
     <hint type="destinationlabel">
-     <x>868</x>
-     <y>747</y>
+     <x>765</x>
+     <y>686</y>
     </hint>
    </hints>
   </connection>
@@ -4504,12 +4632,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>392</x>
-     <y>745</y>
+     <x>400</x>
+     <y>683</y>
     </hint>
     <hint type="destinationlabel">
-     <x>821</x>
-     <y>747</y>
+     <x>765</x>
+     <y>686</y>
     </hint>
    </hints>
   </connection>
@@ -4520,12 +4648,108 @@ Only the selected feature will be visible on the map.</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>343</x>
-     <y>735</y>
+     <x>400</x>
+     <y>683</y>
     </hint>
     <hint type="destinationlabel">
-     <x>953</x>
-     <y>734</y>
+     <x>1020</x>
+     <y>720</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>liDatavizPlotLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>inDatavizColorField</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>765</x>
+     <y>533</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>765</x>
+     <y>652</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>liDatavizPlotLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>inDatavizColorField2</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>765</x>
+     <y>533</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>765</x>
+     <y>719</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbDatavizUseColorField</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>inDatavizColorField</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>331</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>568</x>
+     <y>636</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbDatavizUseColorField</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>inDatavizPlotColor</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>308</x>
+     <y>638</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>919</x>
+     <y>637</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbDatavizUseColorField2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>inDatavizColorField2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>705</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>707</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbDatavizUseColorField2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>inDatavizPlotColor2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>707</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>937</x>
+     <y>703</y>
     </hint>
    </hints>
   </connection>

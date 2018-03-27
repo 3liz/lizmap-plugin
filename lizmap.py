@@ -271,7 +271,7 @@ class lizmap(object):
             },
             'popupLocation' : {
                 'widget': self.dlg.liPopupContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock']
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
             },
 
             'print' : {
@@ -630,7 +630,7 @@ class lizmap(object):
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'y_field', 'color', 'has_y2_field', 'y2_field', 'color2', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field', 'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }
@@ -739,6 +739,11 @@ class lizmap(object):
 
         # Add a layer to the lizmap dataviz layers
         self.dlg.btDatavizAddLayer.clicked.connect(self.addLayerToDataviz)
+
+        # Add empty item in some field comboboxes
+        # only in QGIS 3.0
+        #self.dlg.inDatavizColorField.setAllowEmptyFieldName(True)
+        #self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
 
         # first check if Web menu availbale in this QGIS version
         if hasattr(self.iface, "addPluginToWebMenu"):
@@ -1746,21 +1751,31 @@ class lizmap(object):
         ptype = self.dlg.liDatavizPlotType.currentText()
         pxfields = str(self.dlg.inDatavizPlotXfield.currentField())
         pyfields = str(self.dlg.inDatavizPlotYfield.currentField())
+        aggregation = self.dlg.liDatavizAggregation.currentText()
 
         color = self.dlg.inDatavizPlotColor.color()
+        colorfield = ''
+        if self.dlg.cbDatavizUseColorField.isChecked():
+            colorfield = str(self.dlg.inDatavizColorField.currentField())
         pcolor = "%s" % color.name()
 
         py2fields = ''
         pcolor2 = ''
+        colorfield2 = ''
         hasYField2 = str(self.dlg.cbDatavizYField2.isChecked())
         if self.dlg.cbDatavizYField2.isChecked():
             py2fields = str(self.dlg.inDatavizPlotYfield2.currentField()).strip(' \t')
             color2 = self.dlg.inDatavizPlotColor2.color()
+            colorfield2 = ''
+            if self.dlg.cbDatavizUseColorField2.isChecked():
+                colorfield2 = str(self.dlg.inDatavizColorField2.currentField())
             pcolor2 = "%s" % color2.name()
+
+        popup_display_child_plot = str(self.dlg.cbDatavizDisplayChildPlot.isChecked())
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ptitle, ptype, pxfields, pyfields, pcolor, hasYField2, py2fields, pcolor2, layerId, twRowCount]
+        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot, layerId, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -2429,21 +2444,29 @@ class lizmap(object):
                 ptitle = str(lblTableWidget.item(row, 1).text())
                 ptype = str(lblTableWidget.item(row, 2).text())
                 pxfields = str(lblTableWidget.item(row, 3).text())
-                pyfields = str(lblTableWidget.item(row, 4).text())
-                pcolor = str(lblTableWidget.item(row, 5).text())
-                hasy2fields = str(lblTableWidget.item(row, 6).text())
-                py2fields = str(lblTableWidget.item(row, 7).text())
-                pcolor2 = str(lblTableWidget.item(row, 8).text())
-                layerId = str(lblTableWidget.item(row, 9).text())
+                paggregation = str(lblTableWidget.item(row, 4).text())
+                pyfields = str(lblTableWidget.item(row, 5).text())
+                pcolor = str(lblTableWidget.item(row, 6).text())
+                colorfield = str(lblTableWidget.item(row, 7).text())
+                hasy2fields = str(lblTableWidget.item(row, 8).text())
+                py2fields = str(lblTableWidget.item(row, 9).text())
+                pcolor2 = str(lblTableWidget.item(row, 10).text())
+                colorfield2 = str(lblTableWidget.item(row, 11).text())
+                popup_display_child_plot = str(lblTableWidget.item(row, 12).text())
+                layerId = str(lblTableWidget.item(row, 13).text())
                 prow = {}
                 prow["title"] = ptitle
                 prow["type"] = ptype
                 prow["x_field"] = pxfields
+                prow["aggregation"] = paggregation
                 prow["y_field"] = pyfields
                 prow["color"] = pcolor
+                prow["colorfield"] = colorfield
                 prow["has_y2_field"] = hasy2fields
                 prow["y2_field"] = py2fields
                 prow["color2"] = pcolor2
+                prow["colorfield2"] = colorfield2
+                prow["popup_display_child_plot"] = popup_display_child_plot
                 prow["layerId"] = layerId
                 prow["order"] = row
                 liz2json["datavizLayers"][row] = prow
