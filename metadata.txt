@@ -2,30 +2,30 @@
 [general]
 name=lizmap
 qgisMinimumVersion=2.0
+qgisMaximumVersion=2.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.3.0
+version=version 2.4.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.3.0
-  * Interface - Improve look & feel
-  Version 2.2.0
-  * Interface - Add toolips and blue background for new features
-  * Plugin - Improve makefile for transup and transcompile
-  * Attribute table - Option to fetch data only within map extent && layer scale visibility
-  * Tools layer limit linked to combobox size
-  * Map - fix bug with startup baselayer for accentuated layers/groups
-  * UI - fix issue with qgscollapsiblegroupbox import
-  * Editing - Add option to pass list of groups to restrict editing for each layer
-  * Locales - Add Euskara and Swedish, update other languages
-  * Add Stamen Toner external baselayer (and remove Maquest and OSM CycleMap)
-  * Popup - Option to display related children under each parent object
-  * Attribute table - Add an option to hide the layer in the list (first tab of attribute table tool)
-  * Add an option to restrict access to project for given groups
-  * Interface - Reorganize layers options
+  Version 2.4.0
+  * [FEATURE] Dataviz - new tool to add charts based on layers data
+  * [FEATURE] Dataviz - Add an option to display the child plot filtered in parent layer popup
+  * [FEATURE] Dataviz - Add an option to group the values: sum, count, average, etc.
+  * [FEATURE] Popup - Allow to use popup in bottom dock or in right dock
+  * [BUGFIX] Fix bug when the layer scale is not set
+  * [BUGFIX] Support MySQL Layer
+  * [FEATURE] Dataviz - Add a field to enter a HTML template for plot positionning
+  * [BUGFIX] Python - replace modules import *
+  * [FEATURE] New Atlas tool to navigate through a layer features
+  * [FEATURE] Configure the amount of features per layer displayed in popup
+  * [BUGFIX] Allow layers with datasource starting with HTTP
+  * Update locales
+  * [BUGFIX] Baselayers - fix get startup baselayer from project #56
+
 
 
 ; tags are in comma separated value format, spaces are allowed
