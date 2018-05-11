@@ -84,9 +84,6 @@ from qgis.core import (
     QgsLayerTreeGroup,
     QgsLayerTreeLayer
 )
-from qgis.gui import (
-    QgsMessageBar
-)
 
 # Initialize Qt resources from file resources.py
 from . import resources
@@ -2826,7 +2823,7 @@ class lizmap(object):
                 self.iface.messageBar().pushMessage(
                     u"Lizmap",
                     QApplication.translate("lizmap", "Lizmap configuration file has been updated"),
-                    level=QgsMessageBar.INFO,
+                    level=Qgis.Success,
                     duration=3
                 )
 
