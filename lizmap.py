@@ -1165,8 +1165,7 @@ class lizmap(object):
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                provider = layer.dataProvider()
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for field in fields:
                     self.dlg.liAttributeLayerFields.addItem(
                         str(field.name()),
@@ -1193,7 +1192,7 @@ class lizmap(object):
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 for cb in cbs:
-                    fields = layer.pendingFields()
+                    fields = layer.fields()
                     # Add empty item if allowed
                     if cb[0]:
                         cb[1].addItem(u'--', u'')
@@ -1219,7 +1218,7 @@ class lizmap(object):
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for field in fields:
                     self.dlg.liLoginFilteredLayerFields.addItem(
                         str(field.name()),
@@ -1249,7 +1248,7 @@ class lizmap(object):
 
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for cb in cbs:
                     # Add empty item if allowed
                     if cb[0]:
@@ -2618,7 +2617,7 @@ class lizmap(object):
     def checkGlobalProjectOptions(self):
         ''' Checks that the needed options are correctly set : relative path, project saved, etc.'''
 
-        isok = True;
+        isok = True
         errorMessage = ''
         # Get the project data from api
         p = QgsProject.instance()

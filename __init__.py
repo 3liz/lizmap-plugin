@@ -47,29 +47,7 @@
  This script initializes the plugin, making it known to QGIS.
 """
 from __future__ import absolute_import
-def name():
-    return "lizmap"
 
-def description():
-    return "Publication plugin for Lizmap web application, by 3liz.com"
-
-def version():
-    return "Version 2.3.0"
-
-def icon():
-    return "icon.png"
-
-def qgisMinimumVersion():
-    return "2.0"
-
-def category():
-    return "Web"
-
-def author():
-    return "3liz"
-
-def email():
-    return "mdouchin@3liz.com"
 
 def classFactory(iface):
     # load lizmap class from file lizmap
