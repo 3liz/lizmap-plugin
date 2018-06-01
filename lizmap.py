@@ -433,7 +433,7 @@ class lizmap:
             },
             'popupSource': {
                 'widget': self.dlg.liPopupSource,
-                'wType': 'list', 'type': 'string', 'default': 'lizmap',
+                'wType': 'list', 'type': 'string', 'default': 'auto',
                 'list':["auto", "lizmap", "qgis"]
             },
             'popupTemplate': {
