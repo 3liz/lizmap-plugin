@@ -47,11 +47,7 @@
 
 import os
 from qgis.PyQt import QtGui, uic, QtCore
-try:
-    from qgis.PyQt.QtGui import QDialog
-except:
-    from qgis.PyQt.QtWidgets import QDialog
-
+from qgis.PyQt.QtWidgets import QDialog
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'ui_lizmap.ui'))
