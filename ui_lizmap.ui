@@ -269,7 +269,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -845,8 +845,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>445</width>
+                <height>139</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -924,7 +924,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>470</width>
+                       <width>477</width>
                        <height>749</height>
                       </rect>
                      </property>
@@ -1533,8 +1533,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>594</width>
+                <height>772</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2158,8 +2158,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>764</width>
+                <height>364</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2432,8 +2432,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>498</width>
+                <height>418</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2644,8 +2644,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>764</width>
+                <height>305</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2849,8 +2849,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>430</width>
+                <height>397</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3044,8 +3044,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>330</width>
+                <height>305</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3190,7 +3190,7 @@ Only the selected feature will be visible on the map.</string>
                 <x>0</x>
                 <y>0</y>
                 <width>725</width>
-                <height>854</height>
+                <height>871</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3346,6 +3346,11 @@ Only the selected feature will be visible on the map.</string>
                  <column>
                   <property name="text">
                    <string>Popup for main layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Only show childs</string>
                   </property>
                  </column>
                  <column>
@@ -3598,6 +3603,13 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="3" column="3">
+                  <widget class="QCheckBox" name="cbDatavizOnlyShowChilds">
+                   <property name="text">
+                    <string>Only show childs</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -3662,8 +3674,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>439</width>
+                <height>471</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3966,8 +3978,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>736</width>
-                <height>774</height>
+                <width>487</width>
+                <height>651</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4295,23 +4307,23 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgis.gui</header>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
