@@ -4307,23 +4307,23 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
