@@ -611,7 +611,7 @@ class lizmap:
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field', 'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'only_show_childs', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field', 'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'only_show_child', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }
@@ -1752,11 +1752,11 @@ class lizmap:
             pcolor2 = "%s" % color2.name()
 
         popup_display_child_plot = str(self.dlg.cbDatavizDisplayChildPlot.isChecked())
-        only_show_childs = str(self.dlg.cbDatavizOnlyShowChilds.isChecked())
+        only_show_child = str(self.dlg.cbDatavizOnlyShowChild.isChecked())
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot, only_show_childs, layerId, twRowCount]
+        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot, only_show_child, layerId, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -2437,7 +2437,7 @@ class lizmap:
                 pcolor2 = str(lblTableWidget.item(row, 10).text().encode('utf-8'))
                 colorfield2 = str(lblTableWidget.item(row, 11).text().encode('utf-8'))
                 popup_display_child_plot = str(lblTableWidget.item(row, 12).text().encode('utf-8'))
-                only_show_childs = str(lblTableWidget.item(row, 13).text().encode('utf-8'))
+                only_show_child = str(lblTableWidget.item(row, 13).text().encode('utf-8'))
                 layerId = str(lblTableWidget.item(row, 14).text().encode('utf-8'))
                 prow = {}
                 prow["title"] = ptitle
@@ -2452,7 +2452,7 @@ class lizmap:
                 prow["color2"] = pcolor2
                 prow["colorfield2"] = colorfield2
                 prow["popup_display_child_plot"] = popup_display_child_plot
-                prow["only_show_childs"] = only_show_childs
+                prow["only_show_child"] = only_show_child
                 prow["layerId"] = layerId
                 prow["order"] = row
                 liz2json["datavizLayers"][row] = prow
