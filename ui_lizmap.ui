@@ -289,8 +289,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>756</width>
-                <height>794</height>
+                <width>743</width>
+                <height>773</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -3188,9 +3188,9 @@ Only the selected feature will be visible on the map.</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-123</y>
                 <width>725</width>
-                <height>871</height>
+                <height>899</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3350,7 +3350,7 @@ Only the selected feature will be visible on the map.</string>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Only show childs</string>
+                   <string>Only show child</string>
                   </property>
                  </column>
                  <column>
@@ -3603,19 +3603,19 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="3">
-                  <widget class="QCheckBox" name="cbDatavizOnlyShowChilds">
-                   <property name="text">
-                    <string>Only show childs</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </item>
                <item>
                 <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
                  <property name="text">
                   <string>Display filtered plot in popups of parent layer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="cbDatavizOnlyShowChild">
+                 <property name="text">
+                  <string>Only show in child popup</string>
                  </property>
                 </widget>
                </item>
