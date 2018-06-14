@@ -77,19 +77,16 @@ import resources
 # Import the code for the dialog
 from lizmapdialog import lizmapDialog
 # import other needed tool
-import sys, os, glob
-# configuration parser
-import ConfigParser
+import sys, os
 # date and time
-import time, datetime
+import time
 # regex
 import re
 # url decoding
 import urllib
 # json handling
 import json
-# supprocess module, to load external command line tools
-import subprocess
+
 # element tree to get some project properties not exposed to python api
 try:
     from xml.etree import ElementTree as ET # Python >= 2.5
@@ -2530,7 +2527,6 @@ class lizmap:
 
             # Cache Metatile: unset metatileSize if empty
             # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
-            import re
             p = re.compile('ab*')
             # unset metatileSize
             if not re.match('\d,\d', layerOptions['metatileSize']):
