@@ -2581,6 +2581,16 @@ class lizmap:
         f.write(jsonFileContent.encode('utf-8'))
         f.close()
 
+        # Ask to save the project
+        if p.isDirty():
+            self.iface.messageBar().pushMessage(
+                u"Lizmap",
+                QApplication.translate("lizmap", "Please do not forget to save the QGIS project before publishing your map"),
+                level=QgsMessageBar.WARNING,
+                duration=30
+            )
+
+
 
     def getLayerWmsParameters(self, layer):
         '''
@@ -2610,10 +2620,6 @@ class lizmap:
         if not p.fileName():
             errorMessage+= '* '+QApplication.translate("lizmap", "You need to open a qgis project before using Lizmap")+'\n'
             isok = False
-
-        # Check the project state (saved or not)
-        if isok and p.isDirty():
-            p.write()
 
         if isok:
             # Get the project folder
@@ -2676,7 +2682,7 @@ class lizmap:
             if not p.readEntry('WMSServiceCapabilities', "/")[1]:
                 p.writeEntry('WMSServiceCapabilities', "/", "True")
             if p.readEntry('WMSServiceTitle','')[0] == u'':
-                p.writeEntry('WMSServiceTitle', '', u'My QGIS project title')
+                p.writeEntry('WMSServiceTitle', '', u'%s' % p.fileInfo().baseName())
 
 
             # check if a bbox has been given in the project OWS tab configuration
@@ -2696,10 +2702,6 @@ class lizmap:
                     pWmsExtent[2] = u'%s' % fullExtent.xMaximum()
                     pWmsExtent[3] = u'%s' % fullExtent.yMaximum()
                     p.writeEntry('WMSExtent', '', pWmsExtent)
-
-        # Save project
-        if p.isDirty():
-            p.write()
 
         if not isok and errorMessage:
             QMessageBox.critical(
@@ -2759,9 +2761,6 @@ class lizmap:
                 if not pmFound:
                     crsList[0].append('EPSG:3857')
                     p.writeEntry('WMSCrsList', '', crsList[0])
-                    p.write()
-
-
 
 
             # list of layers for which to have the tool "locate by layer" set
@@ -2810,7 +2809,7 @@ class lizmap:
                     u"Lizmap",
                     QApplication.translate("lizmap", "Lizmap configuration file has been updated"),
                     level=QgsMessageBar.INFO,
-                    duration=3
+                    duration=2
                 )
 
         return self.isok
