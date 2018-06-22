@@ -6,28 +6,18 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.3.0
+version=version 2.4.1
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.3.0
-  * Interface - Improve look & feel
-  Version 2.2.0
-  * Interface - Add toolips and blue background for new features
-  * Plugin - Improve makefile for transup and transcompile
-  * Attribute table - Option to fetch data only within map extent && layer scale visibility
-  * Tools layer limit linked to combobox size
-  * Map - fix bug with startup baselayer for accentuated layers/groups
+  Version 2.4.1
+  * Do not save project from lizmap plugin but let the user do it
+  * Fix icons in plugin manager, remove unused imports
   * UI - fix issue with qgscollapsiblegroupbox import
-  * Editing - Add option to pass list of groups to restrict editing for each layer
-  * Locales - Add Euskara and Swedish, update other languages
-  * Add Stamen Toner external baselayer (and remove Maquest and OSM CycleMap)
-  * Popup - Option to display related children under each parent object
-  * Attribute table - Add an option to hide the layer in the list (first tab of attribute table tool)
-  * Add an option to restrict access to project for given groups
-  * Interface - Reorganize layers options
-
+  * Update locales
+  * Change of default mode of popup source to 'auto'
+  * Dataviz - add of a button in Dataviz who permit you to hide parent plot
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS
@@ -39,7 +29,7 @@ tags=lizmap, server, web, publication, webmapping, WMS
 homepage=https://github.com/3liz/lizmap-plugin
 tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
-icon=icon.png
+icon=icons/icon.png
 
 ; experimental flag
 experimental=False

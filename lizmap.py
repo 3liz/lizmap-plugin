@@ -90,20 +90,15 @@ from . import resources
 # Import the code for the dialog
 from .lizmapdialog import lizmapDialog
 # import other needed tool
-import sys, os, glob
-# configuration parser
-import configparser
+import sys, os
 # date and time
-import time, datetime
+import time
 # regex
 import re
 # url decoding
 import urllib.request, urllib.parse, urllib.error
 # json handling
 import json
-# supprocess module, to load external command line tools
-import subprocess
-
 from shutil import copyfile
 
 # element tree to get some project properties not exposed to python api
@@ -449,7 +444,7 @@ class lizmap(object):
             },
             'popupSource': {
                 'widget': self.dlg.liPopupSource,
-                'wType': 'list', 'type': 'string', 'default': 'lizmap',
+                'wType': 'list', 'type': 'string', 'default': 'auto',
                 'list':["auto", "lizmap", "qgis"]
             },
             'popupTemplate': {
@@ -627,7 +622,7 @@ class lizmap(object):
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton' : self.dlg.btDatavizRemoveLayer,
-                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field', 'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'layerId', 'order'],
+                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field', 'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'only_show_child', 'layerId', 'order'],
                 'jsonConfig' : {}
             }
         }
@@ -1768,10 +1763,11 @@ class lizmap(object):
             pcolor2 = "%s" % color2.name()
 
         popup_display_child_plot = str(self.dlg.cbDatavizDisplayChildPlot.isChecked())
+        only_show_child = str(self.dlg.cbDatavizOnlyShowChild.isChecked())
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot, layerId, twRowCount]
+        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot, only_show_child, layerId, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -2449,7 +2445,8 @@ class lizmap(object):
                 pcolor2 = str(lblTableWidget.item(row, 10).text())
                 colorfield2 = str(lblTableWidget.item(row, 11).text())
                 popup_display_child_plot = str(lblTableWidget.item(row, 12).text())
-                layerId = str(lblTableWidget.item(row, 13).text())
+                only_show_child = str(lblTableWidget.item(row, 13).text())
+                layerId = str(lblTableWidget.item(row, 14).text())
                 prow = {}
                 prow["title"] = ptitle
                 prow["type"] = ptype
@@ -2463,6 +2460,7 @@ class lizmap(object):
                 prow["color2"] = pcolor2
                 prow["colorfield2"] = colorfield2
                 prow["popup_display_child_plot"] = popup_display_child_plot
+                prow["only_show_child"] = only_show_child
                 prow["layerId"] = layerId
                 prow["order"] = row
                 liz2json["datavizLayers"][row] = prow
@@ -2540,7 +2538,6 @@ class lizmap(object):
 
             # Cache Metatile: unset metatileSize if empty
             # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
-            import re
             p = re.compile('ab*')
             # unset metatileSize
             if not re.match('\d,\d', layerOptions['metatileSize']):
@@ -2595,6 +2592,16 @@ class lizmap(object):
         f.write(jsonFileContent)
         f.close()
 
+        # Ask to save the project
+        if p.isDirty():
+            self.iface.messageBar().pushMessage(
+                u"Lizmap",
+                QApplication.translate("lizmap", "Please do not forget to save the QGIS project before publishing your map"),
+                level=Qgis.Warning,
+                duration=30
+            )
+
+
 
     def getLayerWmsParameters(self, layer):
         '''
@@ -2624,10 +2631,6 @@ class lizmap(object):
         if not p.fileName():
             errorMessage+= '* '+QApplication.translate("lizmap", "You need to open a qgis project before using Lizmap")+'\n'
             isok = False
-
-        # Check the project state (saved or not)
-        if isok and p.isDirty():
-            p.write()
 
         if isok:
             # Get the project folder
@@ -2690,7 +2693,7 @@ class lizmap(object):
             if not p.readEntry('WMSServiceCapabilities', "/")[1]:
                 p.writeEntry('WMSServiceCapabilities', "/", "True")
             if p.readEntry('WMSServiceTitle','')[0] == u'':
-                p.writeEntry('WMSServiceTitle', '', u'My QGIS project title')
+                p.writeEntry('WMSServiceTitle', '', u'%s' % p.fileInfo().baseName())
 
 
             # check if a bbox has been given in the project OWS tab configuration
@@ -2710,10 +2713,6 @@ class lizmap(object):
                     pWmsExtent[2] = u'%s' % fullExtent.xMaximum()
                     pWmsExtent[3] = u'%s' % fullExtent.yMaximum()
                     p.writeEntry('WMSExtent', '', pWmsExtent)
-
-        # Save project
-        if p.isDirty():
-            p.write()
 
         if not isok and errorMessage:
             QMessageBox.critical(
@@ -2773,9 +2772,6 @@ class lizmap(object):
                 if not pmFound:
                     crsList[0].append('EPSG:3857')
                     p.writeEntry('WMSCrsList', '', crsList[0])
-                    p.write()
-
-
 
 
             # list of layers for which to have the tool "locate by layer" set

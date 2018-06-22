@@ -48,7 +48,6 @@
 """
 from __future__ import absolute_import
 
-
 def classFactory(iface):
     # load lizmap class from file lizmap
     from .lizmap import lizmap

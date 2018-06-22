@@ -1,6 +1,35 @@
 # CHANGELOG
 
-##  Version 2.3.0
+## Version 2.4.1
+
+* Do not save project from lizmap plugin but let the user do it
+* Fix icons in plugin manager, remove unused imports
+* UI - fix issue with qgscollapsiblegroupbox import
+* Update locales
+* Change of default mode of popup source to 'auto'
+* Dataviz - add of a button in Dataviz who permit you to hide parent plot
+
+## Version 2.4.0
+
+This version add new features which are only usable with upcoming Lizmap Web Client 3.2.*
+
+* [FEATURE] Dataviz - new tool to add charts based on layers data
+* [FEATURE] Dataviz - Add an option to display the child plot filtered in parent layer popup
+* [FEATURE] Dataviz - Add an option to group the values: sum, count, average, etc.
+* [FEATURE] Popup - Allow to use popup in bottom dock or in right dock
+* [BUGFIX] Fix bug when the layer scale is not set
+* [BUGFIX] Support MySQL Layer
+* [FEATURE] Dataviz - Add a field to enter a HTML template for plot positionning
+* [BUGFIX] Python - replace modules import *
+* [FEATURE] New Atlas tool to navigate through a layer features
+* [FEATURE] Configure the amount of features per layer displayed in popup
+* [BUGFIX] Allow layers with datasource starting with HTTP
+* Update locales
+* [BUGFIX] Baselayers - fix get startup baselayer from project #56
+
+
+
+## Version 2.3.0
 
 * Interface - Improve look & feel
 

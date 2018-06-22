@@ -1,4 +1,4 @@
-[![logo](icon.png "3Liz")][3liz]Lizmap 2.2.0
+[![logo](icon.png "3Liz")][3liz]Lizmap 2.4.0
 ==============================================
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
