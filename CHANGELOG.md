@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 2.4.1
+
+* Do not save project from lizmap plugin but let the user do it
+* Fix icons in plugin manager, remove unused imports
+* UI - fix issue with qgscollapsiblegroupbox import
+* Update locales
+* Change of default mode of popup source to 'auto'
+* Dataviz - add of a button in Dataviz who permit you to hide parent plot
+
 ## Version 2.4.0
 
 This version add new features which are only usable with upcoming Lizmap Web Client 3.2.*

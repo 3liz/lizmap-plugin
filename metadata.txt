@@ -6,27 +6,18 @@ qgisMaximumVersion=2.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.4.0
+version=version 2.4.1
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.4.0
-  * [FEATURE] Dataviz - new tool to add charts based on layers data
-  * [FEATURE] Dataviz - Add an option to display the child plot filtered in parent layer popup
-  * [FEATURE] Dataviz - Add an option to group the values: sum, count, average, etc.
-  * [FEATURE] Popup - Allow to use popup in bottom dock or in right dock
-  * [BUGFIX] Fix bug when the layer scale is not set
-  * [BUGFIX] Support MySQL Layer
-  * [FEATURE] Dataviz - Add a field to enter a HTML template for plot positionning
-  * [BUGFIX] Python - replace modules import *
-  * [FEATURE] New Atlas tool to navigate through a layer features
-  * [FEATURE] Configure the amount of features per layer displayed in popup
-  * [BUGFIX] Allow layers with datasource starting with HTTP
+  Version 2.4.1
+  * Do not save project from lizmap plugin but let the user do it
+  * Fix icons in plugin manager, remove unused imports
+  * UI - fix issue with qgscollapsiblegroupbox import
   * Update locales
-  * [BUGFIX] Baselayers - fix get startup baselayer from project #56
-
-
+  * Change of default mode of popup source to 'auto'
+  * Dataviz - add of a button in Dataviz who permit you to hide parent plot
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS
