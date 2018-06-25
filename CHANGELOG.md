@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.0.0
+
+* First version of lizmap plugin for QGIS 3 created from the version 2.4.1 for QGIS 2
+
 ## Version 2.4.1
 
 * Do not save project from lizmap plugin but let the user do it
