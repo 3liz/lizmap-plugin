@@ -12,7 +12,7 @@ version=version 3.0.0
 ; start of optional metadata
 changelog=
   Version 3.0.0
-  * First version for QGIS 3 created with 2.4.1 features
+  * First version of lizmap plugin for QGIS 3 created from the version 2.4.1 for QGIS 2
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS
