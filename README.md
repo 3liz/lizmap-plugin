@@ -82,3 +82,41 @@ Software distributed under the License is distributed on an "AS IS" basis, WITHO
 
   [QGIS Server Tutorial]: http://www.qgis.org/wiki/QGIS_Server_Tutorial
   [3liz]:http://www.3liz.com
+
+API
+----
+
+You can use the `lizmap_api` class of `lizmap.py` to get the Lizmap JSON configuration for a specific project.
+
+For example:
+
+```
+import sys,os
+qgisPrefixPath = "/usr/local/"
+sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/"))
+sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/plugins/"))
+os.environ["QGIS_DEBUG"] = '-1'
+os.environ['QGIS_PREFIX_PATH'] = qgisPrefixPath
+
+from qgis.core import QgsApplication
+QgsApplication.setPrefixPath(qgisPrefixPath, True)
+app = QgsApplication([], False)
+app.initQgis()
+
+# Run the lizmap config exporter
+from lizmap import lizmap
+project_path = '/home/username/test.qgs'
+lv = lizmap.lizmap_api()
+if lv:
+    # get the JSON content
+    json_content = lv.get_json_config(project_path)
+
+    # get the configuration as dictionary
+    dic_content = lv.lizmap_json_config
+
+# Exit
+QgsApplication.exitQgis()
+app.exit()
+```
+
+
