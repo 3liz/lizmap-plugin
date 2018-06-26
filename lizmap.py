@@ -98,6 +98,405 @@ try:
 except ImportError:
     import elementtree.ElementTree as ET # module Python originel
 
+
+class lizmap_api(object):
+
+    def __init__(self):
+
+        self.lizmap_json_config = {}
+
+        self.mapQgisGeometryType = {
+            0 : 'point',
+            1 : 'line',
+            2 : 'polygon',
+            3 : 'unknown',
+            4 : 'none'
+        }
+        self.globalOptions = {
+            'mapScales': {
+                'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
+            },
+            'minScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1
+            },
+            'maxScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1000000000
+            },
+            'acl': {
+                'wType': 'text', 'type': 'list', 'default': []
+            },
+            'initialExtent': {
+                'wType': 'text', 'type': 'floatlist', 'default': []
+            },
+            'googleKey': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'googleHybrid' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleSatellite' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleTerrain' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleStreets' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'osmMapnik' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'osmStamenToner' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingKey': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'bingStreets' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingSatellite' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingHybrid' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignKey': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'ignStreets' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignSatellite' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignTerrain' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignCadastral' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+
+            'hideGroupCheckbox' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'popupLocation' : {
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
+            },
+
+            'print' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'measure' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'externalSearch' : {
+                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ign']
+            },
+            'zoomHistory' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'geolocation' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'pointTolerance': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 25
+            },
+            'lineTolerance': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'polygonTolerance': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 5
+            },
+            'hideHeader' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideMenu' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideLegend' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideOverview' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideNavbar' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideProject': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'tmTimeFrameSize': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'tmTimeFrameType' : {
+                'wType': 'list', 'type': 'string', 'default': 'seconds',
+                'list':['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
+            },
+            'tmAnimationFrameLength': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 1000
+            },
+            'emptyBaselayer': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'startupBaselayer' : {
+                'wType': 'list', 'type': 'string', 'default': '', 'list':['']
+            },
+            'limitDataToBbox' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'datavizLocation' : {
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'bottomdock', 'right-dock']
+            },
+            'datavizTemplate': {
+                'wType': 'html', 'type': 'string', 'default': ''
+            },
+            'atlasEnabled' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasLayer': {
+                'wType': 'layers', 'type': 'layer', 'default': '', 'list':[]
+            },
+            'atlasPrimaryKey': {
+                'wType': 'fields', 'type': 'field', 'default': ''
+            },
+            'atlasDisplayLayerDescription' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'atlasFeatureLabel': {
+                'wType': 'fields', 'type': 'field', 'default': ''
+            },
+            'atlasSortField': {
+                'wType': 'fields', 'type': 'field', 'default': ''
+            },
+            'atlasHighlightGeometry' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'atlasZoom' : {
+                'wType': 'list', 'type': 'string', 'default': 'zoom', 'list':['', 'zoom', 'center']
+            },
+            'atlasDisplayPopup' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'atlasTriggerFilter' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasShowAtStartup' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasAutoPlay' : {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasMaxWidth' : {
+                'wType': 'spinbox', 'type': 'integer', 'default': 25
+            },
+            'atlasDuration' : {
+                'wType': 'spinbox', 'type': 'integer', 'default': 5
+            }
+        }
+
+        self.layerOptionsList = {
+            'title': {
+                'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
+            },
+            'abstract': {
+                'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True
+            },
+            'link': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'minScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1
+            },
+            'maxScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1000000000000
+            },
+            'toggled': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'popup': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'popupSource': {
+                'wType': 'list', 'type': 'string', 'default': 'auto',
+                'list':["auto", "lizmap", "qgis"]
+            },
+            'popupTemplate': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'popupMaxFeatures': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'popupDisplayChildren': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'noLegendImage': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'groupAsLayer': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'baseLayer': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'displayInLegend': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'singleTile': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True,
+            },
+            'imageFormat': {
+                'wType': 'list', 'type': 'string', 'default': 'image/png',
+                'list':["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
+            },
+            'cached': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False,
+            },
+            'cacheExpiration': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 0
+            },
+            'metatileSize': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'clientCacheExpiration': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 300
+            },
+            'externalWmsToggle': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'sourceRepository': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'sourceProject': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            }
+        }
+
+    def get_json_config(self, project_path, p_global_options={}, p_layer_options={}):
+        '''
+        Returns the lizmap JSON configuration
+        '''
+        # Read the project
+        self.project = None
+        if not os.path.exists(project_path):
+            return None
+
+        from qgis.core import QgsProject
+        p = QgsProject()
+        pr = p.read(project_path)
+        if not pr:
+            return None
+        self.project = p
+
+        # Set the options from the default
+        self.set_global_options(p_global_options)
+        self.set_layer_options(p_layer_options)
+
+        # Write json to the cfg file
+        import json
+        jsonFileContent = json.dumps(
+            self.lizmap_json_config,
+            sort_keys=False,
+            indent=4
+        )
+        return jsonFileContent
+
+
+    def set_global_options(self, p_global_options={}):
+        '''
+        Set the global lizmap configuration options
+        '''
+        if not self.project:
+            return None
+
+        # options
+        self.lizmap_json_config["options"] = {}
+        # projection
+        # project projection
+
+        pCrs = self.project.crs()
+        pAuthid = pCrs.authid()
+        pProj4 = pCrs.toProj4()
+
+        self.lizmap_json_config["options"]["projection"] = {}
+        self.lizmap_json_config["options"]["projection"]["proj4"] = '%s' % pProj4
+        self.lizmap_json_config["options"]["projection"]["ref"] = '%s' % pAuthid
+        # wms extent
+        pWmsExtent = self.project.readListEntry('WMSExtent','')[0]
+        if len(pWmsExtent) > 1:
+            bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0],pWmsExtent[1],pWmsExtent[2],pWmsExtent[3]))
+        else:
+            bbox = []
+        self.lizmap_json_config["options"]["bbox"] = bbox
+
+        # Set default
+        for key, item in list(self.globalOptions.items()):
+            # Add value to the option
+            if key in p_global_options and p_global_options[key]:
+                self.lizmap_json_config["options"][key] = p_global_options[key]
+            else:
+                self.lizmap_json_config["options"][key] = item['default']
+
+    def set_layer_options(self, p_layer_options={}):
+        '''
+        Set the configuration options for all the project layers
+        '''
+        self.lizmap_json_config["layers"] = {}
+
+        if not self.project:
+            return None
+
+        layers = {}
+        for layer in self.project.mapLayers().values():
+            lo = {}
+            lo['id'] = layer.id()
+            lo['name'] = layer.name()
+            lo['title'] = layer.title()
+            lo['abstract'] = layer.abstract()
+            lo['type'] = 'layer'
+            geometryType = '-1'
+            if layer.type() == 0: # if it is a vector layer
+                geometryType = self.mapQgisGeometryType[layer.geometryType()]
+            if geometryType != -1:
+                lo["geometryType"] = geometryType
+
+            lExtent = layer.extent()
+            lo["extent"] = eval(
+                '[%s, %s, %s, %s]' % (
+                    lExtent.xMinimum(),
+                    lExtent.yMinimum(),
+                    lExtent.xMaximum(),
+                    lExtent.yMaximum()
+                )
+            )
+            lo['crs'] = layer.crs().authid()
+
+            # styles
+            if layer and hasattr(layer, 'styleManager'):
+                lsm = layer.styleManager()
+                ls  = lsm.styles()
+                if len( ls ) > 1:
+                    lo['styles'] = ls
+
+            # lizmap default options for layer
+            for key, item in list(self.layerOptionsList.items()):
+                lo[key] = item['default']
+
+            # Add metadata
+            if layer.hasScaleBasedVisibility():
+                lo['minScale'] = layer.minimumScale()
+                lo['maxScale'] = layer.maximumScale()
+
+            # override with passed p_layer_options parameter
+            for key, item in list(self.layerOptionsList.items()):
+                if key in p_layer_options and p_layer_options[key]:
+                    # do not override some options ( must be set by QGIS
+                    if key not in ('minScale', 'maxScale'):
+                        lo[key] = p_layer_options[key]
+
+            self.lizmap_json_config['layers'][layer.name()] = lo
+
+
 class lizmap(object):
     if sys.platform.startswith('win'):
         style = ['0', '0', '0', '5%']
@@ -149,6 +548,9 @@ class lizmap(object):
         # Create the dialog and keep reference
         self.dlg = lizmapDialog()
 
+        # Import variable
+        lv = lizmap_api()
+
         # Set stylesheet for QGroupBox
         self.dlg.gb_tree.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_layerSettings.setStyleSheet(self.STYLESHEET)
@@ -162,350 +564,94 @@ class lizmap(object):
         self.dlg.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
 
         # List of ui widget for data driven actions and checking
-        self.globalOptions = {
-            'mapScales': {
-                'widget': self.dlg.inMapScales,
-                'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
-            },
-            'minScale': {
-                'widget': self.dlg.inMinScale,
-                'wType': 'text', 'type': 'integer', 'default': 1
-            },
-            'maxScale': {
-                'widget': self.dlg.inMaxScale,
-                'wType': 'text', 'type': 'integer', 'default': 1000000000
-            },
-            'acl': {
-                'widget': self.dlg.inAcl,
-                'wType': 'text', 'type': 'list', 'default': []
-            },
-            'initialExtent': {
-                'widget': self.dlg.inInitialExtent,
-                'wType': 'text', 'type': 'floatlist', 'default': []
-            },
-            'googleKey': {
-                'widget': self.dlg.inGoogleKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'googleHybrid' : {
-                'widget': self.dlg.cbGoogleHybrid,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'googleSatellite' : {
-                'widget': self.dlg.cbGoogleSatellite,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'googleTerrain' : {
-                'widget': self.dlg.cbGoogleTerrain,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'googleStreets' : {
-                'widget': self.dlg.cbGoogleStreets,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'osmMapnik' : {
-                'widget': self.dlg.cbOsmMapnik,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'osmStamenToner' : {
-                'widget': self.dlg.cbOsmStamenToner,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'bingKey': {
-                'widget': self.dlg.inBingKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'bingStreets' : {
-                'widget': self.dlg.cbBingStreets,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'bingSatellite' : {
-                'widget': self.dlg.cbBingSatellite,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'bingHybrid' : {
-                'widget': self.dlg.cbBingHybrid,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignKey': {
-                'widget': self.dlg.inIgnKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'ignStreets' : {
-                'widget': self.dlg.cbIgnStreets,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignSatellite' : {
-                'widget': self.dlg.cbIgnSatellite,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignTerrain' : {
-                'widget': self.dlg.cbIgnTerrain,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignCadastral' : {
-                'widget': self.dlg.cbIgnCadastral,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
+        self.globalOptions = lv.globalOptions
+        # Add widgets (not done in lizmap_var to avoid dependencies on ui)
+        self.globalOptions['mapScales']['widget'] = self.dlg.inMapScales
+        self.globalOptions['minScale']['widget'] = self.dlg.inMinScale
+        self.globalOptions['maxScale']['widget'] = self.dlg.inMaxScale
+        self.globalOptions['acl']['widget'] = self.dlg.inAcl
+        self.globalOptions['initialExtent']['widget'] = self.dlg.inInitialExtent
+        self.globalOptions['googleKey']['widget'] = self.dlg.inGoogleKey
+        self.globalOptions['googleHybrid']['widget'] = self.dlg.cbGoogleHybrid
+        self.globalOptions['googleSatellite']['widget'] = self.dlg.cbGoogleSatellite
+        self.globalOptions['googleTerrain']['widget'] = self.dlg.cbGoogleTerrain
+        self.globalOptions['googleStreets']['widget'] = self.dlg.cbGoogleStreets
+        self.globalOptions['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
+        self.globalOptions['osmStamenToner']['widget'] = self.dlg.cbOsmStamenToner
+        self.globalOptions['bingKey']['widget'] = self.dlg.inBingKey
+        self.globalOptions['bingStreets']['widget'] = self.dlg.cbBingStreets
+        self.globalOptions['bingSatellite']['widget'] = self.dlg.cbBingSatellite
+        self.globalOptions['bingHybrid']['widget'] = self.dlg.cbBingHybrid
+        self.globalOptions['ignKey']['widget'] = self.dlg.inIgnKey
+        self.globalOptions['ignStreets']['widget'] = self.dlg.cbIgnStreets
+        self.globalOptions['ignSatellite']['widget'] = self.dlg.cbIgnSatellite
+        self.globalOptions['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
+        self.globalOptions['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
+        self.globalOptions['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
+        self.globalOptions['popupLocation']['widget'] = self.dlg.liPopupContainer
+        self.globalOptions['print']['widget'] = self.dlg.cbActivatePrint
+        self.globalOptions['measure']['widget'] = self.dlg.cbActivateMeasure
+        self.globalOptions['externalSearch']['widget'] = self.dlg.liExternalSearch
+        self.globalOptions['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
+        self.globalOptions['geolocation']['widget'] = self.dlg.cbActivateGeolocation
+        self.globalOptions['pointTolerance']['widget'] = self.dlg.inPointTolerance
+        self.globalOptions['lineTolerance']['widget'] = self.dlg.inLineTolerance
+        self.globalOptions['polygonTolerance']['widget'] = self.dlg.inPolygonTolerance
+        self.globalOptions['hideHeader']['widget'] = self.dlg.cbHideHeader
+        self.globalOptions['hideMenu']['widget'] = self.dlg.cbHideMenu
+        self.globalOptions['hideLegend']['widget'] = self.dlg.cbHideLegend
+        self.globalOptions['hideOverview']['widget'] = self.dlg.cbHideOverview
+        self.globalOptions['hideNavbar']['widget'] = self.dlg.cbHideNavbar
+        self.globalOptions['hideProject']['widget'] = self.dlg.cbHideProject
+        self.globalOptions['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
+        self.globalOptions['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
+        self.globalOptions['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
+        self.globalOptions['emptyBaselayer']['widget'] = self.dlg.cbAddEmptyBaselayer
+        self.globalOptions['startupBaselayer']['widget'] = self.dlg.cbStartupBaselayer
+        self.globalOptions['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
+        self.globalOptions['datavizLocation']['widget'] = self.dlg.liDatavizContainer
+        self.globalOptions['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
+        self.globalOptions['atlasEnabled']['widget'] = self.dlg.atlasEnabled
+        self.globalOptions['atlasLayer']['widget'] = self.dlg.atlasLayer
+        self.globalOptions['atlasPrimaryKey']['widget'] = self.dlg.atlasPrimaryKey
+        self.globalOptions['atlasDisplayLayerDescription']['widget'] = self.dlg.atlasDisplayLayerDescription
+        self.globalOptions['atlasFeatureLabel']['widget'] = self.dlg.atlasFeatureLabel
+        self.globalOptions['atlasSortField']['widget'] = self.dlg.atlasSortField
+        self.globalOptions['atlasHighlightGeometry']['widget'] = self.dlg.atlasHighlightGeometry
+        self.globalOptions['atlasZoom']['widget'] = self.dlg.atlasZoom
+        self.globalOptions['atlasDisplayPopup']['widget'] = self.dlg.atlasDisplayPopup
+        self.globalOptions['atlasTriggerFilter']['widget'] = self.dlg.atlasTriggerFilter
+        self.globalOptions['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
+        self.globalOptions['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
+        self.globalOptions['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
+        self.globalOptions['atlasDuration']['widget'] = self.dlg.atlasDuration
 
-            'hideGroupCheckbox' : {
-                'widget': self.dlg.cbHideGroupCheckbox,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'popupLocation' : {
-                'widget': self.dlg.liPopupContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
-            },
-
-            'print' : {
-                'widget': self.dlg.cbActivatePrint,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'measure' : {
-                'widget': self.dlg.cbActivateMeasure,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'externalSearch' : {
-                'widget': self.dlg.liExternalSearch,
-                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ign']
-            },
-            'zoomHistory' : {
-                'widget': self.dlg.cbActivateZoomHistory,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'geolocation' : {
-                'widget': self.dlg.cbActivateGeolocation,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'pointTolerance': {
-                'widget': self.dlg.inPointTolerance,
-                'wType': 'spinbox', 'type': 'integer', 'default': 25
-            },
-            'lineTolerance': {
-                'widget': self.dlg.inLineTolerance,
-                'wType': 'spinbox', 'type': 'integer', 'default': 10
-            },
-            'polygonTolerance': {
-                'widget': self.dlg.inPolygonTolerance,
-                'wType': 'spinbox', 'type': 'integer', 'default': 5
-            },
-            'hideHeader' : {
-                'widget': self.dlg.cbHideHeader,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideMenu' : {
-                'widget': self.dlg.cbHideMenu,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideLegend' : {
-                'widget': self.dlg.cbHideLegend,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideOverview' : {
-                'widget': self.dlg.cbHideOverview,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideNavbar' : {
-                'widget': self.dlg.cbHideNavbar,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideProject': {
-                'widget': self.dlg.cbHideProject,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'tmTimeFrameSize': {
-                'widget': self.dlg.inTimeFrameSize,
-                'wType': 'spinbox', 'type': 'integer', 'default': 10
-            },
-            'tmTimeFrameType' : {
-                'widget': self.dlg.liTimeFrameType,
-                'wType': 'list', 'type': 'string', 'default': 'seconds',
-                'list':['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
-            },
-            'tmAnimationFrameLength': {
-                'widget': self.dlg.inAnimationFrameLength,
-                'wType': 'spinbox', 'type': 'integer', 'default': 1000
-            },
-            'emptyBaselayer': {
-                'widget': self.dlg.cbAddEmptyBaselayer,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'startupBaselayer' : {
-                'widget': self.dlg.cbStartupBaselayer,
-                'wType': 'list', 'type': 'string', 'default': '', 'list':['']
-            },
-            'limitDataToBbox' : {
-                'widget': self.dlg.cbLimitDataToBbox,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'datavizLocation' : {
-                'widget': self.dlg.liDatavizContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'bottomdock', 'right-dock']
-            },
-            'datavizTemplate': {
-                'widget': self.dlg.inDatavizTemplate,
-                'wType': 'html', 'type': 'string', 'default': ''
-            },
-            'atlasEnabled' : {
-                'widget': self.dlg.atlasEnabled,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasLayer': {
-                'widget': self.dlg.atlasLayer,
-                'wType': 'layers', 'type': 'layer', 'default': '', 'list':[]
-            },
-            'atlasPrimaryKey': {
-                'widget': self.dlg.atlasPrimaryKey,
-                'wType': 'fields', 'type': 'field', 'default': ''
-            },
-            'atlasDisplayLayerDescription' : {
-                'widget': self.dlg.atlasDisplayLayerDescription,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'atlasFeatureLabel': {
-                'widget': self.dlg.atlasFeatureLabel,
-                'wType': 'fields', 'type': 'field', 'default': ''
-            },
-            'atlasSortField': {
-                'widget': self.dlg.atlasSortField,
-                'wType': 'fields', 'type': 'field', 'default': ''
-            },
-            'atlasHighlightGeometry' : {
-                'widget': self.dlg.atlasHighlightGeometry,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'atlasZoom' : {
-                'widget': self.dlg.atlasZoom,
-                'wType': 'list', 'type': 'string', 'default': 'zoom', 'list':['', 'zoom', 'center']
-            },
-            'atlasDisplayPopup' : {
-                'widget': self.dlg.atlasDisplayPopup,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'atlasTriggerFilter' : {
-                'widget': self.dlg.atlasTriggerFilter,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasShowAtStartup' : {
-                'widget': self.dlg.atlasShowAtStartup,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasAutoPlay' : {
-                'widget': self.dlg.atlasAutoPlay,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasMaxWidth' : {
-                'widget': self.dlg.atlasMaxWidth,
-                'wType': 'spinbox', 'type': 'integer', 'default': 25
-            },
-            'atlasDuration' : {
-                'widget': self.dlg.atlasDuration,
-                'wType': 'spinbox', 'type': 'integer', 'default': 5
-            }
-        }
-
-        self.layerOptionsList = {
-            'title': {
-                'widget': self.dlg.inLayerTitle,
-                'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
-            },
-            'abstract': {
-                'widget': self.dlg.teLayerAbstract,
-                'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True
-            },
-            'link': {
-                'widget': self.dlg.inLayerLink,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'minScale': {
-                'widget': None,
-                'wType': 'text', 'type': 'integer', 'default': 1
-            },
-            'maxScale': {
-                'widget': None,
-                'wType': 'text', 'type': 'integer', 'default': 1000000000000
-            },
-            'toggled': {
-                'widget': self.dlg.cbToggled,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'popup': {
-                'widget': self.dlg.cbPopup,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'popupSource': {
-                'widget': self.dlg.liPopupSource,
-                'wType': 'list', 'type': 'string', 'default': 'auto',
-                'list':["auto", "lizmap", "qgis"]
-            },
-            'popupTemplate': {
-                'widget': None,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'popupMaxFeatures': {
-                'widget': self.dlg.sbPopupMaxFeatures,
-                'wType': 'spinbox', 'type': 'integer', 'default': 10
-            },
-            'popupDisplayChildren': {
-                'widget': self.dlg.cbPopupDisplayChildren,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'noLegendImage': {
-                'widget': self.dlg.cbNoLegendImage,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'groupAsLayer': {
-                'widget': self.dlg.cbGroupAsLayer,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'baseLayer': {
-                'widget': self.dlg.cbLayerIsBaseLayer,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'displayInLegend': {
-                'widget': self.dlg.cbDisplayInLegend,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'singleTile': {
-                'widget': self.dlg.cbSingleTile,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True,
-                'exclude': {'widget': self.dlg.cbCached, 'key': 'cached'}
-            },
-            'imageFormat': {
-                'widget': self.dlg.liImageFormat,
-                'wType': 'list', 'type': 'string', 'default': 'image/png',
-                'list':["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
-            },
-            'cached': {
-                'widget': self.dlg.cbCached,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False,
-                'exclude': {'widget': self.dlg.cbSingleTile, 'key': 'singleTile'}
-            },
-            'cacheExpiration': {
-                'widget': self.dlg.inCacheExpiration,
-                'wType': 'spinbox', 'type': 'integer', 'default': 0
-            },
-            'metatileSize': {
-                'widget': self.dlg.inMetatileSize,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'clientCacheExpiration': {
-                'widget': self.dlg.inClientCacheExpiration,
-                'wType': 'spinbox', 'type': 'integer', 'default': 300
-            },
-            'externalWmsToggle': {
-                'widget': self.dlg.cbExternalWms,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'sourceRepository': {
-                'widget': self.dlg.inSourceRepository,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'sourceProject': {
-                'widget': self.dlg.inSourceProject,
-                'wType': 'text', 'type': 'string', 'default': ''
-            }
-        }
+        self.layerOptionsList = lv.layerOptionsList
+        # Add widget information
+        self.layerOptionsList['title']['widget'] = self.dlg.inLayerTitle
+        self.layerOptionsList['abstract']['widget'] = self.dlg.teLayerAbstract
+        self.layerOptionsList['link']['widget'] = self.dlg.inLayerLink
+        self.layerOptionsList['minScale']['widget'] = None
+        self.layerOptionsList['maxScale']['widget'] = None
+        self.layerOptionsList['toggled']['widget'] = self.dlg.cbToggled
+        self.layerOptionsList['popup']['widget'] = self.dlg.cbPopup
+        self.layerOptionsList['popupSource']['widget'] = self.dlg.liPopupSource
+        self.layerOptionsList['popupTemplate']['widget'] = None
+        self.layerOptionsList['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
+        self.layerOptionsList['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
+        self.layerOptionsList['noLegendImage']['widget'] = self.dlg.cbNoLegendImage
+        self.layerOptionsList['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
+        self.layerOptionsList['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
+        self.layerOptionsList['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
+        self.layerOptionsList['singleTile']['widget'] = self.dlg.cbSingleTile
+        self.layerOptionsList['imageFormat']['widget'] = self.dlg.liImageFormat
+        self.layerOptionsList['cached']['widget'] = self.dlg.cbCached
+        self.layerOptionsList['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
+        self.layerOptionsList['metatileSize']['widget'] = self.dlg.inMetatileSize
+        self.layerOptionsList['clientCacheExpiration']['widget'] = self.dlg.inClientCacheExpiration
+        self.layerOptionsList['externalWmsToggle']['widget'] = self.dlg.cbExternalWms
+        self.layerOptionsList['sourceRepository']['widget'] = self.dlg.inSourceRepository
+        self.layerOptionsList['sourceProject']['widget'] = self.dlg.inSourceProject
 
         # map qgis geometry type
         self.mapQgisGeometryType = {
