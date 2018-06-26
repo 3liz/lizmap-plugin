@@ -90,7 +90,7 @@ You can use the `lizmap_api` class of `lizmap.py` to get the Lizmap JSON configu
 
 For example:
 
-```
+```python3
 import sys,os
 qgisPrefixPath = "/usr/local/"
 sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/"))
