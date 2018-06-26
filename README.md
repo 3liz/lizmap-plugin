@@ -105,11 +105,37 @@ app.initQgis()
 
 # Run the lizmap config exporter
 from lizmap import lizmap
-project_path = '/home/username/test.qgs'
+project_path = '/home/mdouchin/test_a_sup.qgs'
 lv = lizmap.lizmap_api()
 if lv:
-    # get the JSON content
+    # get the JSON content with default values
     json_content = lv.get_json_config(project_path)
+
+    # OR:
+
+    # get the JSON content with user defined values
+    my_global_options = {
+        'mapScales': [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000], # set the map scales
+        'osmMapnik': True, # add the OSM mapnik baselayer
+        'osmStamenToner': True, # add the OSM Stamen Toner baselayer
+        'print': True # activate the print tool
+    }
+    my_layer_options = {
+        'MY LAYER NAME': {
+            'title': 'My new title', # change title
+            'popup': True, # active popup
+            'cached': True, # activate server cache
+            'singleTile': False, # set tiled mode on
+            'imageFormat': "image/jpeg", # set image format
+            'toggled': False # do not display the layer at project startup
+        }
+    }
+    json_content = lv.get_json_config(
+        project_path,
+        p_global_options=my_global_options,
+        p_layer_options=my_layer_options
+    )
+    print(json_content)
 
     # get the configuration as dictionary
     dic_content = lv.lizmap_json_config

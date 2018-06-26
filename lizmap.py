@@ -488,12 +488,16 @@ class lizmap_api(object):
                 lo['maxScale'] = layer.maximumScale()
 
             # override with passed p_layer_options parameter
+            lid = layer.name()
             for key, item in list(self.layerOptionsList.items()):
-                if key in p_layer_options and p_layer_options[key]:
-                    # do not override some options ( must be set by QGIS
-                    if key not in ('minScale', 'maxScale'):
-                        lo[key] = p_layer_options[key]
+                if lid in p_layer_options and p_layer_options[lid]:
+                    plo = p_layer_options[lid]
+                    if key in plo and plo[key]:
+                        # do not override some options ( must be set by QGIS
+                        if key not in ('id', 'name', 'minScale', 'maxScale'):
+                            lo[key] = plo[key]
 
+            # set config
             self.lizmap_json_config['layers'][layer.name()] = lo
 
 
