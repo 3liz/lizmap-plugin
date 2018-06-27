@@ -1,7 +1,3 @@
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
-from builtins import input
 #!/usr/bin/env python
 # This script uploads a plugin package on the server
 #
