@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
  Lizmap
@@ -45,15 +43,8 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-from __future__ import print_function
-from __future__ import absolute_import
-from future import standard_library
 from functools import reduce
-standard_library.install_aliases()
-from builtins import str
-from builtins import map
-from builtins import range
-from builtins import object
+
 # Import the PyQt and QGIS libraries
 from qgis.PyQt.QtCore import (
     qVersion,
