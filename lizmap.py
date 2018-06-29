@@ -75,7 +75,8 @@ from qgis.core import (
     QgsMapSettings,
     QgsMapLayerProxyModel,
     QgsLayerTreeGroup,
-    QgsLayerTreeLayer
+    QgsLayerTreeLayer,
+    QgsWkbTypes,
 )
 
 # Initialize Qt resources from file resources.py
@@ -621,6 +622,10 @@ class lizmap(object):
         }
         self.layerList = None
 
+    @staticmethod
+    def tr(sentence):
+        """Return a translated string."""
+        return QApplication.translate('lizmap', sentence)
 
     def initGui(self):
         '''Create action that will start plugin configuration'''
@@ -1538,6 +1543,17 @@ class lizmap(object):
                 itemLayerId = str(lblTableWidget.item(row, 6).text())
                 if layerId == itemLayerId:
                     return False
+
+        # Check Z or M values which be lost when editing
+        geometry_type = layer.wkbType()
+        has_m_values = QgsWkbTypes.hasM(geometry_type)
+        has_z_values = QgsWkbTypes.hasZ(geometry_type)
+        if has_z_values or has_m_values:
+            QMessageBox.warning(
+                self.dlg,
+                self.tr('Editing Z/M Values'),
+                self.tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
+            )
 
         # Add layer
         if twRowCount < self.dlg.liEditionLayer.count()-1:
