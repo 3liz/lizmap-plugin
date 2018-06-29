@@ -51,6 +51,7 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     QTranslator,
     QSettings,
+    QUrl,
     QFileInfo,
     Qt
 )
@@ -63,6 +64,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox
 )
 from qgis.PyQt.QtGui import (
+    QDesktopServices,
     QIcon
 )
 from qgis.core import (
@@ -771,10 +773,9 @@ class lizmap(object):
             # Remove about menu entry
             self.iface.removePluginMenu(u"&Lizmap", self.action_about)
 
-
     def showHelp(self):
         '''Opens the html help file content with default browser'''
-        if self.locale in ('fr'):
+        if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
             localHelpUrl = "http://docs.3liz.com/%s/" % self.locale
         else:
             localHelpUrl = 'http://translate.google.fr/translate?sl=fr&tl=%s&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com' % self.locale
