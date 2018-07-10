@@ -25,6 +25,11 @@ setup(
     description="Python API to create lizmap configuration",
     url='https://github.com/3liz/lizmap-plugin',
     packages=['lizmap_api'],
+    entry_points={
+        'console_scripts': [
+            'lizmapcfg = lizmap_api.commands:create_config',
+        ]
+    },
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',

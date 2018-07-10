@@ -43,13 +43,20 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-from qgis.core import QgsProject
+from qgis.core import (QgsProject,
+                       QgsMapLayer)
 
 # import other needed tool
 import os
 import json
 
-class lizmap_config:
+
+
+class LizmapConfigError(Exception): 
+    pass
+
+
+class LizmapConfig:
 
     # Static data
 
@@ -61,7 +68,7 @@ class lizmap_config:
         4 : 'none'
     }
 
-    globalOptions = {
+    globalOptionDefinitions = {
         'mapScales': {
             'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
         },
@@ -244,7 +251,7 @@ class lizmap_config:
         }
     }
 
-    layerOptionsList = {
+    layerOptionDefinitions = {
         'title': {
             'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
         },
@@ -321,138 +328,231 @@ class lizmap_config:
         }
     }
 
+    def __init__(self, project):
+        """ Configuration setup
+        """
+        if not isinstance(project, QgsProject):
+            self.project = self._load_project(project)
+        else:
+            self.project = project
 
+        self._WFSLayers = self.project.readListEntry('WFSLayers','')[0]
+        self._layer_attributes = {}
+        self._global_options   = {}
+        self._layer_options    = {}
 
-    def __init__(self):
+    def _load_project(self, path):
+        """ Read a qgis project from path
+        """
+        if not os.path.exists(path):
+            raise FileNotFoundError(path)
+        project = QgsProject()
+        if not project.read(path):
+            raise  LizmapConfigError("Error reading qgis project")
+        return project
 
-        self.lizmap_json_config = {}
+    def get_layer_by_name(self, name):
+        """ Return a unique layer by its name
+        """
+        matches = sel.project.mapLayersByName(name)
+        if len(matches) > 0:
+            return matches[0]
 
-    def get_json_config(self, project_path, p_global_options={}, p_layer_options={}):
-        '''
-        Returns the lizmap JSON configuration
-        '''
-        # Read the project
-        self.project = None
-        if not os.path.exists(project_path):
-            return None
-
-        from qgis.core import QgsProject
-        p = QgsProject()
-        pr = p.read(project_path)
-        if not pr:
-            return None
-        self.project = p
-
+    def to_json(self, p_global_options=None, p_layer_options=None, p_attributes_options=None, 
+                      sort_keys=False,indent=4, **kwargs):
+        """ Returns the lizmap JSON configuration
+        """
         # Set the options from the default
-        self.set_global_options(p_global_options)
+        self.set_global_options(p_global_options or {})
         self.set_layer_options(p_layer_options)
 
+        if p_attributes_options:
+            self.set_layer_attributes(p_attributes_options)
+        
+        config = {
+            'options': self._global_options,
+            'layers' : self._layer_options,
+        }
+
+        if len(self._layer_attributes):
+            config['attributeLayers'] = self._attributes_layers
+
         # Write json to the cfg file
-        import json
-        jsonFileContent = json.dumps(
-            self.lizmap_json_config,
-            sort_keys=False,
-            indent=4
-        )
+        jsonFileContent = json.dumps(config,sort_keys=sort_keys, indent=indent, **kwargs)
         return jsonFileContent
 
+    def set_global_options(self, options):
+        """ Set the global lizmap configuration options
+        """
+        # set defaults
+        self._global_options = {}
+        self._global_options.update((k,v['default']) for k,v in  self.globalOptionDefinitions.items())
+       
+        # Set custom options
+        self._global_options.update((k,v) for k,v in options if k in self.globalOptionDefinitions)
 
-    def set_global_options(self, p_global_options={}):
-        '''
-        Set the global lizmap configuration options
-        '''
-        if not self.project:
-            return None
-
-        # options
-        self.lizmap_json_config["options"] = {}
         # projection
         # project projection
-
         pCrs = self.project.crs()
-        pAuthid = pCrs.authid()
-        pProj4 = pCrs.toProj4()
-
-        self.lizmap_json_config["options"]["projection"] = {}
-        self.lizmap_json_config["options"]["projection"]["proj4"] = '%s' % pProj4
-        self.lizmap_json_config["options"]["projection"]["ref"] = '%s' % pAuthid
+        self._global_options["projection"] = { "proj4": str(pCrs.toProj4()), "ref"  : str(pCrs.authid()) }
         # wms extent
         pWmsExtent = self.project.readListEntry('WMSExtent','')[0]
         if len(pWmsExtent) > 1:
             bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0],pWmsExtent[1],pWmsExtent[2],pWmsExtent[3]))
         else:
             bbox = []
-        self.lizmap_json_config["options"]["bbox"] = bbox
+        self._global_options["bbox"] = bbox
 
-        # Set default
-        for key, item in list(self.globalOptions.items()):
-            # Add value to the option
-            if key in p_global_options and p_global_options[key]:
-                self.lizmap_json_config["options"][key] = p_global_options[key]
-            else:
-                self.lizmap_json_config["options"][key] = item['default']
+    def add_layer( self, layer, **options ):
+        """ Add a layer to the configuration
 
-    def set_layer_options(self, p_layer_options={}):
-        '''
-        Set the configuration options for all the project layers
-        '''
-        self.lizmap_json_config["layers"] = {}
+            Pass options as keyword arguments
+        """
+        lo = {}
+        # lizmap default options for layer
+        lo.update( (key,item['default']) for key,item in self.layerOptionDefinitions.items() )
 
-        if not self.project:
-            return None
+        lo['title'] = layer.title()
+        lo['abstract'] = layer.abstract()
+        lo['type'] = 'layer'
+        geometryType = '-1'
+        if layer.type() == 0: # if it is a vector layer
+            geometryType = self.mapQgisGeometryType[layer.geometryType()]
+        if geometryType != -1:
+            lo["geometryType"] = geometryType
 
-        layers = {}
-        for layer in self.project.mapLayers().values():
-            lo = {}
-            lo['id'] = layer.id()
-            lo['name'] = layer.name()
-            lo['title'] = layer.title()
-            lo['abstract'] = layer.abstract()
-            lo['type'] = 'layer'
-            geometryType = '-1'
-            if layer.type() == 0: # if it is a vector layer
-                geometryType = self.mapQgisGeometryType[layer.geometryType()]
-            if geometryType != -1:
-                lo["geometryType"] = geometryType
-
-            lExtent = layer.extent()
-            lo["extent"] = eval(
-                '[%s, %s, %s, %s]' % (
-                    lExtent.xMinimum(),
-                    lExtent.yMinimum(),
-                    lExtent.xMaximum(),
-                    lExtent.yMaximum()
-                )
+        lExtent = layer.extent()
+        lo["extent"] = eval(
+            '[%s, %s, %s, %s]' % (
+                lExtent.xMinimum(),
+                lExtent.yMinimum(),
+                lExtent.xMaximum(),
+                lExtent.yMaximum()
             )
-            lo['crs'] = layer.crs().authid()
+        )
+        lo['crs'] = layer.crs().authid()
 
-            # styles
-            if layer and hasattr(layer, 'styleManager'):
-                lsm = layer.styleManager()
-                ls  = lsm.styles()
-                if len( ls ) > 1:
-                    lo['styles'] = ls
+        # styles
+        if layer and hasattr(layer, 'styleManager'):
+            ls = layer.styleManager().styles()
+            if len( ls ) > 1:
+                lo['styles'] = ls
 
-            # lizmap default options for layer
-            for key, item in list(self.layerOptionsList.items()):
-                lo[key] = item['default']
+        # Override with passed p_layer_options parameter
+        lo.update( (k,v) for k,v in options if k in self.layerOptionDefinitions ) 
 
-            # Add metadata
-            if layer.hasScaleBasedVisibility():
-                lo['minScale'] = layer.minimumScale()
-                lo['maxScale'] = layer.maximumScale()
+        # The folowing should not be overrided
+        lo['id']   = layer.id()
+        lo['name'] = layer.name()
 
-            # override with passed p_layer_options parameter
-            lid = layer.name()
-            for key, item in list(self.layerOptionsList.items()):
-                if lid in p_layer_options and p_layer_options[lid]:
-                    plo = p_layer_options[lid]
-                    if key in plo and plo[key]:
-                        # do not override some options ( must be set by QGIS
-                        if key not in ('id', 'name', 'minScale', 'maxScale'):
-                            lo[key] = plo[key]
+        # Add metadata
+        if layer.hasScaleBasedVisibility():
+            lo['minScale'] = layer.minimumScale()
+            lo['maxScale'] = layer.maximumScale()
 
-            # set config
-            self.lizmap_json_config['layers'][layer.name()] = lo
+        # set config
+        lid = str(layer.name())
+        self._layer_options[lid] = lo
+        return lo
+
+    def set_layer_options(self, p_layer_options=None ):
+        """ Set the configuration options for the the project layers
+
+            :param p_layer_options: dict of options for each layers
+                    if p_layer options is None, add all layers otherwise add layer for
+                    all layer names specified in p_layer_options 
+        """
+        self._layer_options = {}
+
+        if p_layer_options is None:
+            for layer in self.project.mapLayers().values():
+                self.add_layer( layer )
+        else:
+            for lname, options in p_layer_options.items():
+                layer = self.get_layer_by_name(lname)
+                if layer:
+                    self.add_layer( layer, **options)
+       
+        return self._layer_options
+
+    def hasWFSCapabilities( self, layer ):
+        """ Test if layer has WFS capabilities
+        """
+        return layer.id() in self._WFSLayers
+
+    def publish_layer_attribute_table(self, layer, primaryKey, hiddenFields=[], pivot=False, hideAsChild=False,
+                                                   hideLayer=False, **kwargs ):
+        """ publish attribute table
+        """
+        # Check that the layer has WFS enabled
+        if not self.hasWFSCapabilities(layer):
+            raise LizmapConfigError("WFS Required for layer %s" % layer.name())
+        
+        lyr_name  = layer.name()
+        lyr_attrs = self._attributes_layers.get(lyr_name) 
+        if ly_attrs is None:
+            lyr_attrs = { 'order': len(self._attributes_layers) }
+
+        lyr_attrs.update( primaryKey=primaryKey, hiddenFields=','.join(hiddenFields), pivot=pivot,
+                          hideAsChild=hideAsChild, hideLayer=hideLayer,
+                          layerId=layer.id())
+
+        self._layer_attributes[lyr_name] = lyr_attrs
+        return lyr_attrs
+
+    def set_layer_attributes( self, p_attributes_options):
+        """ Set the attribute options
+        """
+        self._layer_attributes = {}
+        for lname, options in p_attributes_options.items():
+            layer = self.get_layer_by_name(lname)
+            if layer:
+                self.publish_layer_attribute_table(layer, **options)
+  
+    def set_title( self, title ):
+        """ Set WMS title
+        """
+        self.project.writeEntry( "WMSServiceTitle", "/", title)
+
+    def set_description( self, description ):
+        """ Set WMS description
+        """
+        self.project.writeEntry( "WMSServiceDescription", "/", description )
+        self.project.setDirty()
+
+    def configure_server_options(self, WMStitle=None, WMSDescription=None, WFSLayersPrecision=6):
+        """ Configure server options for layers in the qgis project
+
+            The method will set WMS/WMS publication options for the layers in the project
+        """
+        if WMSTitle is not None: 
+            self.set_title(WMSTitle)
+        if WMSDescription is not None:
+            self.set_description(WMSDescription)
+            
+        prj.writeEntry( "WFSLayers", "/", [lid for lid,lyr in prj.mapLayers().items() if lyr.type() == QgsMapLayer.VectorLayer] )
+        for lid,lyr in prj.mapLayers().items():
+            if lyr.type() == QgsMapLayer.VectorLayer:
+                prj.writeEntry( "WFSLayersPrecision", "/"+lid, WFSLayersPrecision )
+        prj.writeEntry( "WCSLayers", "/", [lid for lid,lyr in prj.mapLayers().items() if lyr.type() == QgsMapLayer.RasterLayer] )
+        prj.setDirty()
+
+        # Update WFS layer list
+        self._WFSLayers = prj.readListEntry('WFSLayers','')[0]
+
+    def from_template(self, template, context = {}, **kwargs ):
+        """ Read a configuration from a jinja2 template
+        """
+        # set context 
+        ctx = dict(context)
+        layers = self.project.mapLayers().values()
+        ctx['layers'] = layers
+        ctx['vectorlayers']  = [l for l in layers if l.type() == QgsMapLayer.VectorLayer]
+        ctx['rasterlayers' ] = [l for l in layers if l.type() == QgsMapLayer.RasterLayer]
+        options = json.loads(template.render(context))
+        
+        return self.to_json( options.get('options'), options.get('layers'), options.get('attributeLayers'),
+                             **kwargs)
+
 
 

@@ -106,10 +106,10 @@ app.initQgis()
 # Run the lizmap config exporter
 from lizmap import lizmap
 project_path = '/home/mdouchin/test_a_sup.qgs'
-lv = lizmap.lizmap_api()
+lv = lizmap.LizmapConfig(project_path)
 if lv:
     # get the JSON content with default values
-    json_content = lv.get_json_config(project_path)
+    json_content = lv.to_json()
 
     # OR:
 
@@ -130,8 +130,7 @@ if lv:
             'toggled': False # do not display the layer at project startup
         }
     }
-    json_content = lv.get_json_config(
-        project_path,
+    json_content = lv.to_json(
         p_global_options=my_global_options,
         p_layer_options=my_layer_options
     )

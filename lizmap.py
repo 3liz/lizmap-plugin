@@ -98,7 +98,7 @@ try:
 except ImportError:
     import elementtree.ElementTree as ET # module Python originel
 
-from .lizmap_api.config import lizmap_config
+from .lizmap_api.config import LizmapConfig
 
 class lizmap(object):
     if sys.platform.startswith('win'):
@@ -151,9 +151,6 @@ class lizmap(object):
         # Create the dialog and keep reference
         self.dlg = lizmapDialog()
 
-        # Import variable
-        lv = lizmap_config()
-
         # Set stylesheet for QGroupBox
         self.dlg.gb_tree.setStyleSheet(self.STYLESHEET)
         self.dlg.gb_layerSettings.setStyleSheet(self.STYLESHEET)
@@ -167,7 +164,7 @@ class lizmap(object):
         self.dlg.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
 
         # List of ui widget for data driven actions and checking
-        self.globalOptions = lv.globalOptions
+        self.globalOptions = LizmapConfig.globalOptionDefinitions
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.globalOptions['mapScales']['widget'] = self.dlg.inMapScales
         self.globalOptions['minScale']['widget'] = self.dlg.inMinScale
@@ -229,7 +226,7 @@ class lizmap(object):
         self.globalOptions['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
         self.globalOptions['atlasDuration']['widget'] = self.dlg.atlasDuration
 
-        self.layerOptionsList = lv.layerOptionsList
+        self.layerOptionsList = LizmapConfig.layerOptionDefinitions
         # Add widget information
         self.layerOptionsList['title']['widget'] = self.dlg.inLayerTitle
         self.layerOptionsList['abstract']['widget'] = self.dlg.teLayerAbstract
