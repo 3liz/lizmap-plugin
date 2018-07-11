@@ -49,6 +49,7 @@ from qgis.core import (QgsProject,
 # import other needed tool
 import os
 import json
+import collections
 
 
 
@@ -321,15 +322,18 @@ class LizmapConfig:
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
         'sourceRepository': {
-            'wType': 'text', 'type': 'string', 'default': ''
+                'wType': 'text', 'type': 'string', 'default': '', '_api': False
         },
         'sourceProject': {
-            'wType': 'text', 'type': 'string', 'default': ''
+                'wType': 'text', 'type': 'string', 'default': '', '_api': False
         }
     }
 
-    def __init__(self, project):
+    def __init__(self, project, fix_json=False):
         """ Configuration setup
+
+            :param fix_json: fix the json parsing,
+                see https://github.com/3liz/lizmap-web-client/issues/925
         """
         if not isinstance(project, QgsProject):
             self.project = self._load_project(project)
@@ -340,6 +344,7 @@ class LizmapConfig:
         self._layer_attributes = {}
         self._global_options   = {}
         self._layer_options    = {}
+        self._fix_json         = fix_json
 
     def _load_project(self, path):
         """ Read a qgis project from path
@@ -377,6 +382,19 @@ class LizmapConfig:
         if len(self._layer_attributes):
             config['attributeLayers'] = self._attributes_layers
 
+        if self._fix_json:
+            # Fix https://github.com/3liz/lizmap-web-client/issues/925
+            # copy config
+            def map_dict( ob ):
+                if isinstance(ob, collections.Mapping):
+                    return {k: map_dict(v) for k, v in ob.items()}
+                elif isinstance(ob,bool):
+                    return str(ob)
+                else:
+                    return ob
+
+            config = map_dict(config)
+
         # Write json to the cfg file
         jsonFileContent = json.dumps(config,sort_keys=sort_keys, indent=indent, **kwargs)
         return jsonFileContent
@@ -386,8 +404,8 @@ class LizmapConfig:
         """
         # set defaults
         self._global_options = {}
-        self._global_options.update((k,v['default']) for k,v in  self.globalOptionDefinitions.items())
-       
+        self._global_options.update((k,v['default']) for k,v in self.globalOptionDefinitions.items() if v.get('_api',True))
+      
         # Set custom options
         self._global_options.update((k,v) for k,v in options if k in self.globalOptionDefinitions)
 
@@ -403,6 +421,9 @@ class LizmapConfig:
             bbox = []
         self._global_options["bbox"] = bbox
 
+        if self._global_options["initialExtent"] == []:
+            self._global_options["initialExtent"] = bbox
+
     def add_layer( self, layer, **options ):
         """ Add a layer to the configuration
 
@@ -410,9 +431,9 @@ class LizmapConfig:
         """
         lo = {}
         # lizmap default options for layer
-        lo.update( (key,item['default']) for key,item in self.layerOptionDefinitions.items() )
+        lo.update( (k,v['default']) for k,v in self.layerOptionDefinitions.items() if v.get('_api',True) )
 
-        lo['title'] = layer.title()
+        lo['title'] = layer.title() or layer.name()
         lo['abstract'] = layer.abstract()
         lo['type'] = 'layer'
         geometryType = '-1'

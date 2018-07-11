@@ -137,12 +137,13 @@ def create_config(argv=None):
     parser.add_argument('--description'   , metavar="TEXT", help="Set project description")
     parser.add_argument('-o', '--output'  , default=None, metavar="PATH", help="Output file")
     parser.add_argument('--verbose'       , action='store_true', help="Verbose mode")
+    parser.add_argument('--fix-json'      , action='store_true', help="Fix json syntax")
 
     args = parser.parse_args(argv)
 
     init_qgis(verbose=args.verbose)
 
-    config = LizmapConfig(args.project)        
+    config = LizmapConfig(args.project, fix_json=args.fix_json)        
 
     output = args.project
     if args.output:
