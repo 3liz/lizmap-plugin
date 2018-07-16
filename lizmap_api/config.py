@@ -359,7 +359,7 @@ class LizmapConfig:
     def get_layer_by_name(self, name):
         """ Return a unique layer by its name
         """
-        matches = sel.project.mapLayersByName(name)
+        matches = self.project.mapLayersByName(name)
         if len(matches) > 0:
             return matches[0]
 
@@ -380,7 +380,7 @@ class LizmapConfig:
         }
 
         if len(self._layer_attributes):
-            config['attributeLayers'] = self._attributes_layers
+            config['attributeLayers'] = self._layer_attributes
 
         if self._fix_json:
             # Fix https://github.com/3liz/lizmap-web-client/issues/925
@@ -407,7 +407,7 @@ class LizmapConfig:
         self._global_options.update((k,v['default']) for k,v in self.globalOptionDefinitions.items() if v.get('_api',True))
       
         # Set custom options
-        self._global_options.update((k,v) for k,v in options if k in self.globalOptionDefinitions)
+        self._global_options.update((k,v) for k,v in options.items() if k in self.globalOptionDefinitions)
 
         # projection
         # project projection
@@ -510,9 +510,9 @@ class LizmapConfig:
             raise LizmapConfigError("WFS Required for layer %s" % layer.name())
         
         lyr_name  = layer.name()
-        lyr_attrs = self._attributes_layers.get(lyr_name) 
-        if ly_attrs is None:
-            lyr_attrs = { 'order': len(self._attributes_layers) }
+        lyr_attrs = self._layer_attributes.get(lyr_name) 
+        if lyr_attrs is None:
+            lyr_attrs = { 'order': len(self._layer_attributes) }
 
         lyr_attrs.update( primaryKey=primaryKey, hiddenFields=','.join(hiddenFields), pivot=pivot,
                           hideAsChild=hideAsChild, hideLayer=hideLayer,
@@ -567,10 +567,14 @@ class LizmapConfig:
         # set context 
         ctx = dict(context)
         layers = self.project.mapLayers().values()
-        ctx['layers'] = layers
+        ctx['project'] = self.project
+        ctx['layers']  = layers
         ctx['vectorlayers']  = [l for l in layers if l.type() == QgsMapLayer.VectorLayer]
         ctx['rasterlayers' ] = [l for l in layers if l.type() == QgsMapLayer.RasterLayer]
-        options = json.loads(template.render(context))
+        rendered = template.render(ctx)
+        with open("/srv/projects/test_lizmap_api/api_output.json","w") as fp:
+            fp.write(rendered)
+        options = json.loads(template.render(ctx))
         
         return self.to_json( options.get('options'), options.get('layers'), options.get('attributeLayers'),
                              **kwargs)
