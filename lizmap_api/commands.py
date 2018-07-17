@@ -115,19 +115,18 @@ def install_message_hook( verbose=False ):
 __description__="""Generate a Lizmap configuration file from Qgis project"""
 __version__="1.0"
 
-
+def api_version():
+    try:
+        return pkg_resources.get_distribution("lizmap-api").version
+    except DistributionNotFound:
+        return "0.0.0"
 
 def create_config(argv=None):
     """ Create a lizmap configuration file
     """
     import argparse
 
-    try:
-        api_version = pkg_resources.get_distribution("lizmap-api").version
-    except DistributionNotFound:
-        api_version = "0.0.0"
-
-    version = "version %s (api %s)" % (__version__,api_version)
+    version = "version %s (api %s)" % (__version__,api_version())
     parser = argparse.ArgumentParser(description=__description__)
     parser.add_argument('project'         , metavar="PATH", help="Qgis project file")
     parser.add_argument('--version'       , action='version', version=version, help="show version and exit")

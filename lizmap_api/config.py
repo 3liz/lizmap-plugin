@@ -367,9 +367,12 @@ class LizmapConfig:
                       sort_keys=False,indent=4, **kwargs):
         """ Returns the lizmap JSON configuration
         """
-        # Set the options from the default
-        self.set_global_options(p_global_options or {})
-        self.set_layer_options(p_layer_options)
+        # Set the options from the default only if overriden or not defined
+        if p_global_options is not None or len(self._global_options) == 0:
+            self.set_global_options(p_global_options)
+
+        if p_layer_options is not None or len(self._layer_options) == 0:
+            self.set_layer_options(p_layer_options)
 
         if p_attributes_options:
             self.set_layer_attributes(p_attributes_options)
@@ -407,7 +410,8 @@ class LizmapConfig:
         self._global_options.update((k,v['default']) for k,v in self.globalOptionDefinitions.items() if v.get('_api',True))
       
         # Set custom options
-        self._global_options.update((k,v) for k,v in options.items() if k in self.globalOptionDefinitions)
+        if options is not None:
+            self._global_options.update((k,v) for k,v in options.items() if k in self.globalOptionDefinitions)
 
         # projection
         # project projection
