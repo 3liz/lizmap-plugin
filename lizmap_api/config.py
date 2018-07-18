@@ -420,7 +420,7 @@ class LizmapConfig:
         # wms extent
         pWmsExtent = self.project.readListEntry('WMSExtent','')[0]
         if len(pWmsExtent) > 1:
-            bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0],pWmsExtent[1],pWmsExtent[2],pWmsExtent[3]))
+            bbox = [pWmsExtent[0],pWmsExtent[1],pWmsExtent[2],pWmsExtent[3]]
         else:
             bbox = []
         self._global_options["bbox"] = bbox
@@ -447,14 +447,11 @@ class LizmapConfig:
             lo["geometryType"] = geometryType
 
         lExtent = layer.extent()
-        lo["extent"] = eval(
-            '[%s, %s, %s, %s]' % (
-                lExtent.xMinimum(),
-                lExtent.yMinimum(),
-                lExtent.xMaximum(),
-                lExtent.yMaximum()
-            )
-        )
+        lo["extent"] = [lExtent.xMinimum(),
+                        lExtent.yMinimum(),
+                        lExtent.xMaximum(),
+                        lExtent.yMaximum()]
+    
         lo['crs'] = layer.crs().authid()
 
         # styles
@@ -545,7 +542,12 @@ class LizmapConfig:
         self.project.writeEntry( "WMSServiceDescription", "/", description )
         self.project.setDirty()
 
-    def configure_server_options(self, WMStitle=None, WMSDescription=None, WFSLayersPrecision=6):
+    def set_wmsextent( self, xmin, ymin, xmax, ymax):
+        """ Set WMS extent
+        """
+        self.project.writeEntry( "WMSExtent", "/", [str(xmin), str(ymin), str(xmax), str(ymax)])
+
+    def configure_server_options(self, WMSTitle=None, WMSDescription=None, WFSLayersPrecision=6, WMSExtent=None):
         """ Configure server options for layers in the qgis project
 
             The method will set WMS/WMS publication options for the layers in the project
@@ -554,7 +556,11 @@ class LizmapConfig:
             self.set_title(WMSTitle)
         if WMSDescription is not None:
             self.set_description(WMSDescription)
-            
+        if WMSExtent is not None:
+            self.set_wmsextent(*WMSExtent)
+        
+        prj = self.project
+
         prj.writeEntry( "WFSLayers", "/", [lid for lid,lyr in prj.mapLayers().items() if lyr.type() == QgsMapLayer.VectorLayer] )
         for lid,lyr in prj.mapLayers().items():
             if lyr.type() == QgsMapLayer.VectorLayer:
