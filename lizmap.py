@@ -198,6 +198,13 @@ class lizmap:
                 'widget': self.dlg.cbGoogleStreets,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+			'osmCyclemap' : {
+                'widget': self.dlg.cbOCM,
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },'OCMKey': {
+                'widget': self.dlg.inOCMKey,
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
             'osmMapnik' : {
                 'widget': self.dlg.cbOsmMapnik,
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
@@ -544,6 +551,7 @@ class lizmap:
             'layer': self.dlg.cbLayerIsBaseLayer,
             'osm-mapnik': self.dlg.cbOsmMapnik,
             'osm-stamen-toner': self.dlg.cbOsmStamenToner,
+			'osmCyclemap': self.dlg.cbOCM,
             'google-street': self.dlg.cbGoogleStreets,
             'google-satellite': self.dlg.cbGoogleSatellite,
             'google-hybrid': self.dlg.cbGoogleHybrid,
