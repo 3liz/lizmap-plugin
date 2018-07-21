@@ -1565,7 +1565,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </font>
                       </property>
                       <property name="text">
-                       <string>OpenStreetMaps</string>
+                       <string>OpenStreetMap</string>
                       </property>
                      </widget>
                     </item>
