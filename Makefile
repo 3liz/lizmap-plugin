@@ -249,3 +249,8 @@ pep8:
 	@echo "-----------"
 	@echo "Ignored in PEP8 check:"
 	@echo $(PEP8EXCLUDE)
+
+
+dist-api:
+	python3 setup.py sdist --dist-dir=dist
+

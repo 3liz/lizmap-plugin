@@ -82,3 +82,66 @@ Software distributed under the License is distributed on an "AS IS" basis, WITHO
 
   [QGIS Server Tutorial]: http://www.qgis.org/wiki/QGIS_Server_Tutorial
   [3liz]:http://www.3liz.com
+
+API
+----
+
+You can use the `lizmap_api` class of `lizmap.py` to get the Lizmap JSON configuration for a specific project.
+
+For example:
+
+```python3
+import sys,os
+qgisPrefixPath = "/usr/local/"
+sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/"))
+sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/plugins/"))
+os.environ["QGIS_DEBUG"] = '-1'
+os.environ['QGIS_PREFIX_PATH'] = qgisPrefixPath
+
+from qgis.core import QgsApplication
+QgsApplication.setPrefixPath(qgisPrefixPath, True)
+app = QgsApplication([], False)
+app.initQgis()
+
+# Run the lizmap config exporter
+from lizmap import lizmap
+project_path = '/home/mdouchin/test_a_sup.qgs'
+lv = lizmap.LizmapConfig(project_path)
+if lv:
+    # get the JSON content with default values
+    json_content = lv.to_json()
+
+    # OR:
+
+    # get the JSON content with user defined values
+    my_global_options = {
+        'mapScales': [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000], # set the map scales
+        'osmMapnik': True, # add the OSM mapnik baselayer
+        'osmStamenToner': True, # add the OSM Stamen Toner baselayer
+        'print': True # activate the print tool
+    }
+    my_layer_options = {
+        'MY LAYER NAME': {
+            'title': 'My new title', # change title
+            'popup': True, # active popup
+            'cached': True, # activate server cache
+            'singleTile': False, # set tiled mode on
+            'imageFormat': "image/jpeg", # set image format
+            'toggled': False # do not display the layer at project startup
+        }
+    }
+    json_content = lv.to_json(
+        p_global_options=my_global_options,
+        p_layer_options=my_layer_options
+    )
+    print(json_content)
+
+    # get the configuration as dictionary
+    dic_content = lv.lizmap_json_config
+
+# Exit
+QgsApplication.exitQgis()
+app.exit()
+```
+
+
