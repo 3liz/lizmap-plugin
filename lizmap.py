@@ -52,10 +52,12 @@ from PyQt4.QtCore import (
     QTranslator,
     QSettings,
     QFileInfo,
+    QUrl,
     Qt
 )
 from PyQt4.QtGui import (
     QApplication,
+    QDesktopServices,
     QTableWidgetItem,
     QTreeWidgetItem,
     QAction,
@@ -660,10 +662,6 @@ class lizmap:
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
 
-        # detect close event
-        self.dlg.buttonBox.rejected.connect(self.onDialogClose)
-        self.dlg.rejected.connect(self.onDialogClose)
-
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
         self.iface.newProjectCreated.connect(self.onNewProjectCreated)
@@ -777,7 +775,7 @@ class lizmap:
 
     def showHelp(self):
         '''Opens the html help file content with default browser'''
-        if self.locale in ('fr'):
+        if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
             localHelpUrl = "http://docs.3liz.com/%s/" % self.locale
         else:
             localHelpUrl = 'http://translate.google.fr/translate?sl=fr&tl=%s&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com' % self.locale
@@ -2914,12 +2912,6 @@ class lizmap:
                 isok=0
             finally:
                 f.close()
-
-    def onDialogClose(self):
-        '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-        print "lizmap dialog close"
-        #~ self.writeProjectConfigFile()
-        #self.dlg.close()
 
     def test(self):
         '''Debug method'''
