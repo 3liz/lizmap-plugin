@@ -662,10 +662,6 @@ class lizmap:
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
 
-        # detect close event
-        self.dlg.buttonBox.rejected.connect(self.onDialogClose)
-        self.dlg.rejected.connect(self.onDialogClose)
-
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
         self.iface.newProjectCreated.connect(self.onNewProjectCreated)
@@ -2916,12 +2912,6 @@ class lizmap:
                 isok=0
             finally:
                 f.close()
-
-    def onDialogClose(self):
-        '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-        print "lizmap dialog close"
-        #~ self.writeProjectConfigFile()
-        #self.dlg.close()
 
     def test(self):
         '''Debug method'''
