@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
  Lizmap
@@ -45,8 +43,10 @@
 
  ***** END LICENSE BLOCK ***** */
 """
+from functools import reduce
+
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import (
+from qgis.PyQt.QtCore import (
     qVersion,
     QCoreApplication,
     QTranslator,
@@ -54,28 +54,32 @@ from PyQt4.QtCore import (
     QFileInfo,
     Qt
 )
-from PyQt4.QtGui import (
+from qgis.PyQt.QtWidgets import (
     QApplication,
     QTableWidgetItem,
     QTreeWidgetItem,
     QAction,
-    QIcon,
     QDialogButtonBox,
     QMessageBox
 )
+from qgis.PyQt.QtGui import (
+    QIcon
+)
 from qgis.core import (
-    QGis,
+    Qgis,
     QgsApplication,
-    QgsMapLayerRegistry,
     QgsProject,
     QgsMapLayer,
-    QgsMapRenderer
+    QgsMapSettings,
+    QgsMapLayerProxyModel,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer
 )
-from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
+
 # Initialize Qt resources from file resources.py
-import resources
+from . import resources
 # Import the code for the dialog
-from lizmapdialog import lizmapDialog
+from .lizmapdialog import lizmapDialog
 # import other needed tool
 import sys, os
 # date and time
@@ -83,9 +87,10 @@ import time
 # regex
 import re
 # url decoding
-import urllib
+import urllib.request, urllib.parse, urllib.error
 # json handling
 import json
+from shutil import copyfile
 
 # element tree to get some project properties not exposed to python api
 try:
@@ -93,7 +98,9 @@ try:
 except ImportError:
     import elementtree.ElementTree as ET # module Python originel
 
-class lizmap:
+from .lizmap_api.config import LizmapConfig
+
+class lizmap(object):
     if sys.platform.startswith('win'):
         style = ['0', '0', '0', '5%']
         margin = '4.0'
@@ -119,12 +126,12 @@ class lizmap:
 
         # Qgis version
         try:
-            self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
+            self.QgisVersion = str(Qgis.QGIS_VERSION_INT)
         except:
-            self.QgisVersion = unicode(QGis.qgisVersion)[ 0 ]
+            self.QgisVersion = str(Qgis.qgisVersion)[ 0 ]
 
         # initialize plugin directory
-        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/lizmap"
+        self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
         localePath = ""
         self.locale = QSettings().value("locale/userLocale")[0:2]
@@ -157,357 +164,94 @@ class lizmap:
         self.dlg.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
 
         # List of ui widget for data driven actions and checking
-        self.globalOptions = {
-            'mapScales': {
-                'widget': self.dlg.inMapScales,
-                'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
-            },
-            'minScale': {
-                'widget': self.dlg.inMinScale,
-                'wType': 'text', 'type': 'integer', 'default': 1
-            },
-            'maxScale': {
-                'widget': self.dlg.inMaxScale,
-                'wType': 'text', 'type': 'integer', 'default': 1000000000
-            },
-            'acl': {
-                'widget': self.dlg.inAcl,
-                'wType': 'text', 'type': 'list', 'default': []
-            },
-            'initialExtent': {
-                'widget': self.dlg.inInitialExtent,
-                'wType': 'text', 'type': 'floatlist', 'default': []
-            },
-            'googleKey': {
-                'widget': self.dlg.inGoogleKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'googleHybrid' : {
-                'widget': self.dlg.cbGoogleHybrid,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'googleSatellite' : {
-                'widget': self.dlg.cbGoogleSatellite,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'googleTerrain' : {
-                'widget': self.dlg.cbGoogleTerrain,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'googleStreets' : {
-                'widget': self.dlg.cbGoogleStreets,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-			'osmCyclemap' : {
-                'widget': self.dlg.cbOCM,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },'OCMKey': {
-                'widget': self.dlg.inOCMKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'osmMapnik' : {
-                'widget': self.dlg.cbOsmMapnik,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'osmStamenToner' : {
-                'widget': self.dlg.cbOsmStamenToner,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'bingKey': {
-                'widget': self.dlg.inBingKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'bingStreets' : {
-                'widget': self.dlg.cbBingStreets,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'bingSatellite' : {
-                'widget': self.dlg.cbBingSatellite,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'bingHybrid' : {
-                'widget': self.dlg.cbBingHybrid,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignKey': {
-                'widget': self.dlg.inIgnKey,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'ignStreets' : {
-                'widget': self.dlg.cbIgnStreets,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignSatellite' : {
-                'widget': self.dlg.cbIgnSatellite,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignTerrain' : {
-                'widget': self.dlg.cbIgnTerrain,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'ignCadastral' : {
-                'widget': self.dlg.cbIgnCadastral,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
+        self.globalOptions = LizmapConfig.globalOptionDefinitions
+        # Add widgets (not done in lizmap_var to avoid dependencies on ui)
+        self.globalOptions['mapScales']['widget'] = self.dlg.inMapScales
+        self.globalOptions['minScale']['widget'] = self.dlg.inMinScale
+        self.globalOptions['maxScale']['widget'] = self.dlg.inMaxScale
+        self.globalOptions['acl']['widget'] = self.dlg.inAcl
+        self.globalOptions['initialExtent']['widget'] = self.dlg.inInitialExtent
+        self.globalOptions['googleKey']['widget'] = self.dlg.inGoogleKey
+        self.globalOptions['googleHybrid']['widget'] = self.dlg.cbGoogleHybrid
+        self.globalOptions['googleSatellite']['widget'] = self.dlg.cbGoogleSatellite
+        self.globalOptions['googleTerrain']['widget'] = self.dlg.cbGoogleTerrain
+        self.globalOptions['googleStreets']['widget'] = self.dlg.cbGoogleStreets
+        self.globalOptions['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
+        self.globalOptions['osmStamenToner']['widget'] = self.dlg.cbOsmStamenToner
+        self.globalOptions['bingKey']['widget'] = self.dlg.inBingKey
+        self.globalOptions['bingStreets']['widget'] = self.dlg.cbBingStreets
+        self.globalOptions['bingSatellite']['widget'] = self.dlg.cbBingSatellite
+        self.globalOptions['bingHybrid']['widget'] = self.dlg.cbBingHybrid
+        self.globalOptions['ignKey']['widget'] = self.dlg.inIgnKey
+        self.globalOptions['ignStreets']['widget'] = self.dlg.cbIgnStreets
+        self.globalOptions['ignSatellite']['widget'] = self.dlg.cbIgnSatellite
+        self.globalOptions['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
+        self.globalOptions['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
+        self.globalOptions['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
+        self.globalOptions['popupLocation']['widget'] = self.dlg.liPopupContainer
+        self.globalOptions['print']['widget'] = self.dlg.cbActivatePrint
+        self.globalOptions['measure']['widget'] = self.dlg.cbActivateMeasure
+        self.globalOptions['externalSearch']['widget'] = self.dlg.liExternalSearch
+        self.globalOptions['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
+        self.globalOptions['geolocation']['widget'] = self.dlg.cbActivateGeolocation
+        self.globalOptions['pointTolerance']['widget'] = self.dlg.inPointTolerance
+        self.globalOptions['lineTolerance']['widget'] = self.dlg.inLineTolerance
+        self.globalOptions['polygonTolerance']['widget'] = self.dlg.inPolygonTolerance
+        self.globalOptions['hideHeader']['widget'] = self.dlg.cbHideHeader
+        self.globalOptions['hideMenu']['widget'] = self.dlg.cbHideMenu
+        self.globalOptions['hideLegend']['widget'] = self.dlg.cbHideLegend
+        self.globalOptions['hideOverview']['widget'] = self.dlg.cbHideOverview
+        self.globalOptions['hideNavbar']['widget'] = self.dlg.cbHideNavbar
+        self.globalOptions['hideProject']['widget'] = self.dlg.cbHideProject
+        self.globalOptions['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
+        self.globalOptions['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
+        self.globalOptions['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
+        self.globalOptions['emptyBaselayer']['widget'] = self.dlg.cbAddEmptyBaselayer
+        self.globalOptions['startupBaselayer']['widget'] = self.dlg.cbStartupBaselayer
+        self.globalOptions['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
+        self.globalOptions['datavizLocation']['widget'] = self.dlg.liDatavizContainer
+        self.globalOptions['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
+        self.globalOptions['atlasEnabled']['widget'] = self.dlg.atlasEnabled
+        self.globalOptions['atlasLayer']['widget'] = self.dlg.atlasLayer
+        self.globalOptions['atlasPrimaryKey']['widget'] = self.dlg.atlasPrimaryKey
+        self.globalOptions['atlasDisplayLayerDescription']['widget'] = self.dlg.atlasDisplayLayerDescription
+        self.globalOptions['atlasFeatureLabel']['widget'] = self.dlg.atlasFeatureLabel
+        self.globalOptions['atlasSortField']['widget'] = self.dlg.atlasSortField
+        self.globalOptions['atlasHighlightGeometry']['widget'] = self.dlg.atlasHighlightGeometry
+        self.globalOptions['atlasZoom']['widget'] = self.dlg.atlasZoom
+        self.globalOptions['atlasDisplayPopup']['widget'] = self.dlg.atlasDisplayPopup
+        self.globalOptions['atlasTriggerFilter']['widget'] = self.dlg.atlasTriggerFilter
+        self.globalOptions['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
+        self.globalOptions['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
+        self.globalOptions['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
+        self.globalOptions['atlasDuration']['widget'] = self.dlg.atlasDuration
 
-            'hideGroupCheckbox' : {
-                'widget': self.dlg.cbHideGroupCheckbox,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'popupLocation' : {
-                'widget': self.dlg.liPopupContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
-            },
-
-            'print' : {
-                'widget': self.dlg.cbActivatePrint,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'measure' : {
-                'widget': self.dlg.cbActivateMeasure,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'externalSearch' : {
-                'widget': self.dlg.liExternalSearch,
-                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ign']
-            },
-            'zoomHistory' : {
-                'widget': self.dlg.cbActivateZoomHistory,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'geolocation' : {
-                'widget': self.dlg.cbActivateGeolocation,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'pointTolerance': {
-                'widget': self.dlg.inPointTolerance,
-                'wType': 'spinbox', 'type': 'integer', 'default': 25
-            },
-            'lineTolerance': {
-                'widget': self.dlg.inLineTolerance,
-                'wType': 'spinbox', 'type': 'integer', 'default': 10
-            },
-            'polygonTolerance': {
-                'widget': self.dlg.inPolygonTolerance,
-                'wType': 'spinbox', 'type': 'integer', 'default': 5
-            },
-            'hideHeader' : {
-                'widget': self.dlg.cbHideHeader,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideMenu' : {
-                'widget': self.dlg.cbHideMenu,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideLegend' : {
-                'widget': self.dlg.cbHideLegend,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideOverview' : {
-                'widget': self.dlg.cbHideOverview,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideNavbar' : {
-                'widget': self.dlg.cbHideNavbar,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'hideProject': {
-                'widget': self.dlg.cbHideProject,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'tmTimeFrameSize': {
-                'widget': self.dlg.inTimeFrameSize,
-                'wType': 'spinbox', 'type': 'integer', 'default': 10
-            },
-            'tmTimeFrameType' : {
-                'widget': self.dlg.liTimeFrameType,
-                'wType': 'list', 'type': 'string', 'default': 'seconds',
-                'list':['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
-            },
-            'tmAnimationFrameLength': {
-                'widget': self.dlg.inAnimationFrameLength,
-                'wType': 'spinbox', 'type': 'integer', 'default': 1000
-            },
-            'emptyBaselayer': {
-                'widget': self.dlg.cbAddEmptyBaselayer,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'startupBaselayer' : {
-                'widget': self.dlg.cbStartupBaselayer,
-                'wType': 'list', 'type': 'string', 'default': '', 'list':['']
-            },
-            'limitDataToBbox' : {
-                'widget': self.dlg.cbLimitDataToBbox,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'datavizLocation' : {
-                'widget': self.dlg.liDatavizContainer,
-                'wType': 'list', 'type': 'string', 'default': 'dock', 'list':['dock', 'bottomdock', 'right-dock']
-            },
-            'datavizTemplate': {
-                'widget': self.dlg.inDatavizTemplate,
-                'wType': 'html', 'type': 'string', 'default': ''
-            },
-            'atlasEnabled' : {
-                'widget': self.dlg.atlasEnabled,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasLayer': {
-                'widget': self.dlg.atlasLayer,
-                'wType': 'layers', 'type': 'layer', 'default': '', 'list':[]
-            },
-            'atlasPrimaryKey': {
-                'widget': self.dlg.atlasPrimaryKey,
-                'wType': 'fields', 'type': 'field', 'default': ''
-            },
-            'atlasDisplayLayerDescription' : {
-                'widget': self.dlg.atlasDisplayLayerDescription,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'atlasFeatureLabel': {
-                'widget': self.dlg.atlasFeatureLabel,
-                'wType': 'fields', 'type': 'field', 'default': ''
-            },
-            'atlasSortField': {
-                'widget': self.dlg.atlasSortField,
-                'wType': 'fields', 'type': 'field', 'default': ''
-            },
-            'atlasHighlightGeometry' : {
-                'widget': self.dlg.atlasHighlightGeometry,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'atlasZoom' : {
-                'widget': self.dlg.atlasZoom,
-                'wType': 'list', 'type': 'string', 'default': 'zoom', 'list':['', 'zoom', 'center']
-            },
-            'atlasDisplayPopup' : {
-                'widget': self.dlg.atlasDisplayPopup,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'atlasTriggerFilter' : {
-                'widget': self.dlg.atlasTriggerFilter,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasShowAtStartup' : {
-                'widget': self.dlg.atlasShowAtStartup,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasAutoPlay' : {
-                'widget': self.dlg.atlasAutoPlay,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'atlasMaxWidth' : {
-                'widget': self.dlg.atlasMaxWidth,
-                'wType': 'spinbox', 'type': 'integer', 'default': 25
-            },
-            'atlasDuration' : {
-                'widget': self.dlg.atlasDuration,
-                'wType': 'spinbox', 'type': 'integer', 'default': 5
-            }
-        }
-
-        self.layerOptionsList = {
-            'title': {
-                'widget': self.dlg.inLayerTitle,
-                'wType': 'text', 'type': 'string', 'default':'', 'isMetadata':True
-            },
-            'abstract': {
-                'widget': self.dlg.teLayerAbstract,
-                'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata':True
-            },
-            'link': {
-                'widget': self.dlg.inLayerLink,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'minScale': {
-                'widget': None,
-                'wType': 'text', 'type': 'integer', 'default': 1
-            },
-            'maxScale': {
-                'widget': None,
-                'wType': 'text', 'type': 'integer', 'default': 1000000000000
-            },
-            'toggled': {
-                'widget': self.dlg.cbToggled,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'popup': {
-                'widget': self.dlg.cbPopup,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'popupSource': {
-                'widget': self.dlg.liPopupSource,
-                'wType': 'list', 'type': 'string', 'default': 'auto',
-                'list':["auto", "lizmap", "qgis"]
-            },
-            'popupTemplate': {
-                'widget': None,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'popupMaxFeatures': {
-                'widget': self.dlg.sbPopupMaxFeatures,
-                'wType': 'spinbox', 'type': 'integer', 'default': 10
-            },
-            'popupDisplayChildren': {
-                'widget': self.dlg.cbPopupDisplayChildren,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'noLegendImage': {
-                'widget': self.dlg.cbNoLegendImage,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'groupAsLayer': {
-                'widget': self.dlg.cbGroupAsLayer,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'baseLayer': {
-                'widget': self.dlg.cbLayerIsBaseLayer,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'displayInLegend': {
-                'widget': self.dlg.cbDisplayInLegend,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True
-            },
-            'singleTile': {
-                'widget': self.dlg.cbSingleTile,
-                'wType': 'checkbox', 'type': 'boolean', 'default': True,
-                'exclude': {'widget': self.dlg.cbCached, 'key': 'cached'}
-            },
-            'imageFormat': {
-                'widget': self.dlg.liImageFormat,
-                'wType': 'list', 'type': 'string', 'default': 'image/png',
-                'list':["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
-            },
-            'cached': {
-                'widget': self.dlg.cbCached,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False,
-                'exclude': {'widget': self.dlg.cbSingleTile, 'key': 'singleTile'}
-            },
-            'cacheExpiration': {
-                'widget': self.dlg.inCacheExpiration,
-                'wType': 'spinbox', 'type': 'integer', 'default': 0
-            },
-            'metatileSize': {
-                'widget': self.dlg.inMetatileSize,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'clientCacheExpiration': {
-                'widget': self.dlg.inClientCacheExpiration,
-                'wType': 'spinbox', 'type': 'integer', 'default': 300
-            },
-            'externalWmsToggle': {
-                'widget': self.dlg.cbExternalWms,
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
-            'sourceRepository': {
-                'widget': self.dlg.inSourceRepository,
-                'wType': 'text', 'type': 'string', 'default': ''
-            },
-            'sourceProject': {
-                'widget': self.dlg.inSourceProject,
-                'wType': 'text', 'type': 'string', 'default': ''
-            }
-        }
+        self.layerOptionsList = LizmapConfig.layerOptionDefinitions
+        # Add widget information
+        self.layerOptionsList['title']['widget'] = self.dlg.inLayerTitle
+        self.layerOptionsList['abstract']['widget'] = self.dlg.teLayerAbstract
+        self.layerOptionsList['link']['widget'] = self.dlg.inLayerLink
+        self.layerOptionsList['minScale']['widget'] = None
+        self.layerOptionsList['maxScale']['widget'] = None
+        self.layerOptionsList['toggled']['widget'] = self.dlg.cbToggled
+        self.layerOptionsList['popup']['widget'] = self.dlg.cbPopup
+        self.layerOptionsList['popupSource']['widget'] = self.dlg.liPopupSource
+        self.layerOptionsList['popupTemplate']['widget'] = None
+        self.layerOptionsList['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
+        self.layerOptionsList['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
+        self.layerOptionsList['noLegendImage']['widget'] = self.dlg.cbNoLegendImage
+        self.layerOptionsList['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
+        self.layerOptionsList['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
+        self.layerOptionsList['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
+        self.layerOptionsList['singleTile']['widget'] = self.dlg.cbSingleTile
+        self.layerOptionsList['imageFormat']['widget'] = self.dlg.liImageFormat
+        self.layerOptionsList['cached']['widget'] = self.dlg.cbCached
+        self.layerOptionsList['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
+        self.layerOptionsList['metatileSize']['widget'] = self.dlg.inMetatileSize
+        self.layerOptionsList['clientCacheExpiration']['widget'] = self.dlg.inClientCacheExpiration
+        self.layerOptionsList['externalWmsToggle']['widget'] = self.dlg.cbExternalWms
+        self.layerOptionsList['sourceRepository']['widget'] = self.dlg.inSourceRepository
+        self.layerOptionsList['sourceProject']['widget'] = self.dlg.inSourceProject
 
         # map qgis geometry type
         self.mapQgisGeometryType = {
@@ -529,7 +273,7 @@ class lizmap:
 
         # Connect widget signals to setLayerProperty method depending on widget type
         from functools import partial
-        for key, item in self.layerOptionsList.items():
+        for key, item in list(self.layerOptionsList.items()):
             if item['widget']:
                 control = item['widget']
                 slot = partial(self.setLayerProperty, key)
@@ -551,7 +295,6 @@ class lizmap:
             'layer': self.dlg.cbLayerIsBaseLayer,
             'osm-mapnik': self.dlg.cbOsmMapnik,
             'osm-stamen-toner': self.dlg.cbOsmStamenToner,
-			'osmCyclemap': self.dlg.cbOCM,
             'google-street': self.dlg.cbGoogleStreets,
             'google-satellite': self.dlg.cbGoogleSatellite,
             'google-hybrid': self.dlg.cbGoogleHybrid,
@@ -565,7 +308,7 @@ class lizmap:
             'ign-cadastral': self.dlg.cbIgnCadastral,
             'empty': self.dlg.cbAddEmptyBaselayer
         }
-        for key, item in self.baselayerWidgetList.items():
+        for key, item in list(self.baselayerWidgetList.items()):
             slot = self.onBaselayerCheckboxChange
             item.stateChanged.connect(slot)
 
@@ -677,13 +420,13 @@ class lizmap:
 
         # Manage "delete line" button
         from functools import partial
-        for key, item in self.layersTable.items():
+        for key, item in list(self.layersTable.items()):
             control = item['removeButton']
             slot = partial( self.removeSelectedLayerFromTable, key )
             control.clicked.connect( slot )
 
         # Delete layers from table when deleted from registry
-        lr = QgsMapLayerRegistry.instance()
+        lr = QgsProject.instance()
         lr.layersRemoved.connect( self.removeLayerFromTableByLayerIds )
 
         # Locate by layers
@@ -816,7 +559,7 @@ class lizmap:
 
     def enableCheckBox(self, value):
         '''Enable/Disable checkboxes and fields of the Layer tab'''
-        for key,item in self.layerOptionsList.items():
+        for key,item in list(self.layerOptionsList.items()):
             if item['widget'] and key not in ('sourceProject'):
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
@@ -854,26 +597,27 @@ class lizmap:
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
         jsonOptions = {}
-        if os.path.exists(unicode(jsonFile)):
+        if os.path.exists(str(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
             try:
                 sjson = json.loads(jsonFileReader)
                 jsonOptions = sjson['options']
-                for key in self.layersTable.keys():
-                    if sjson.has_key(key):
+                for key in list(self.layersTable.keys()):
+                    if key in sjson:
                         self.layersTable[key]['jsonConfig'] = sjson[key]
                     else:
                         self.layersTable[key]['jsonConfig'] = {}
             except:
                 isok=0
+                copyfile(jsonFile, "%s.back" % jsonFile)
                 QMessageBox.critical(
                     self.dlg,
                     QApplication.translate("lizmap", "Lizmap Error"),
-                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     QMessageBox.Ok)
                 self.log(
-                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
+                    QApplication.translate("lizmap", "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     abort=True,
                     textarea=self.dlg.outLog)
             finally:
@@ -881,11 +625,11 @@ class lizmap:
 
 
         # Set the global options (map, tools, etc.)
-        for key, item in self.globalOptions.items():
+        for key, item in list(self.globalOptions.items()):
             if item['widget']:
                 if item['wType'] == 'checkbox':
                     item['widget'].setChecked(item['default'])
-                    if jsonOptions.has_key(key):
+                    if key in jsonOptions:
                         if jsonOptions[key].lower() in ('yes', 'true', 't', '1'):
                             item['widget'].setChecked(True)
 
@@ -894,7 +638,7 @@ class lizmap:
                         item['widget'].setText(", ".join(map(str, item['default'])))
                     else:
                         item['widget'].setText(str(item['default']))
-                    if jsonOptions.has_key(key):
+                    if key in jsonOptions:
                         if isinstance(jsonOptions[key], (list, tuple)):
                             item['widget'].setText(", ".join(map(str, jsonOptions[key])))
                         else:
@@ -915,37 +659,37 @@ class lizmap:
 
                 if item['wType'] == 'spinbox':
                     item['widget'].setValue(int(item['default']))
-                    if jsonOptions.has_key(key):
+                    if key in jsonOptions:
                         item['widget'].setValue(int(jsonOptions[key]))
 
                 if item['wType'] == 'list':
                     listDic = {item['list'][i]:i for i in range(0, len(item['list']))}
-                    if listDic.has_key(item['default']):
+                    if item['default'] in listDic:
                         item['widget'].setCurrentIndex(listDic[item['default']])
-                    if jsonOptions.has_key(key):
-                        if listDic.has_key(jsonOptions[key]):
+                    if key in jsonOptions:
+                        if jsonOptions[key] in listDic:
                             item['widget'].setCurrentIndex(listDic[jsonOptions[key]])
 
         # Set layer combobox
-        for key, item in self.globalOptions.items():
+        for key, item in list(self.globalOptions.items()):
             if item['widget']:
                 if item['wType'] == 'layers':
-                    if jsonOptions.has_key(key):
-                        for lyr in QgsMapLayerRegistry.instance().mapLayers().values():
+                    if key in jsonOptions:
+                        for lyr in list(QgsProject.instance().mapLayers().values()):
                             if lyr.id() == jsonOptions[key]:
                                 item['widget'].setLayer(lyr)
                                 break
 
         # Then set field combobox
-        for key, item in self.globalOptions.items():
+        for key, item in list(self.globalOptions.items()):
             if item['widget']:
                 if item['wType'] == 'fields':
-                    if jsonOptions.has_key(key):
+                    if key in jsonOptions:
                         item['widget'].setField(str(jsonOptions[key]))
 
 
         # Fill the table widgets
-        for key, item in self.layersTable.items():
+        for key, item in list(self.layersTable.items()):
             self.loadConfigIntoTableWidget(key)
 
         return True
@@ -968,9 +712,9 @@ class lizmap:
         # For edition layers, fill capabilities
         # Fill editionlayers capabilities
         if key == 'editionLayers' and json:
-            for k,v in json.items():
-                if v.has_key('capabilities'):
-                    for x,y in v['capabilities'].items():
+            for k,v in list(json.items()):
+                if 'capabilities' in v:
+                    for x,y in list(v['capabilities'].items()):
                         json[k][x] = y
 
         # empty previous content
@@ -987,17 +731,17 @@ class lizmap:
 
         if json:
             # reorder data if needed
-            if json.items()[0][1].has_key('order'):
+            if 'order' in list(json.items())[0][1]:
                 data = [(k, json[k]) for k in  sorted(json, key=lambda key: json[key]['order']) ]
             else:
-                data = json.items()
+                data = list(json.items())
 
             # load content from json file
-            lr = QgsMapLayerRegistry.instance()
-            projectLayersIds = lr.mapLayers().keys()
+            lr = QgsProject.instance()
+            projectLayersIds = list(lr.mapLayers().keys())
             for k,v in data:
                 # check if the layer still exists in the QGIS project
-                if 'layerId' in v.keys():
+                if 'layerId' in list(v.keys()):
                     if v['layerId'] not in projectLayersIds:
                         continue
                 twRowCount = widget.rowCount()
@@ -1007,7 +751,7 @@ class lizmap:
                 i=0
                 if storeLayerId:
                     # add layer name column - get name from layer if possible (if user has renamed the layer)
-                    if 'layerId' in v.keys():
+                    if 'layerId' in list(v.keys()):
                         layer = lr.mapLayer(v['layerId'])
                         if layer:
                             k = layer.name()
@@ -1017,11 +761,11 @@ class lizmap:
                     i+=1
                 # other information
                 for key in attributes:
-                    if v.has_key(key):
+                    if key in v:
                         value = v[key]
                     else:
                         value = ''
-                    newItem = QTableWidgetItem(unicode(value))
+                    newItem = QTableWidgetItem(str(value))
                     newItem.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(twRowCount, i, newItem)
                     i+=1
@@ -1038,7 +782,7 @@ class lizmap:
 
     def getQgisLayerById(self, myId):
         '''Get a QgsLayer by its Id'''
-        for layer in self.iface.legendInterface().layers():
+        for layer in QgsProject.instance().mapLayers().values():
             if myId == layer.id():
                 return layer
         return None
@@ -1046,9 +790,9 @@ class lizmap:
     def getQgisLayerByNameFromCombobox(self, layerComboBox):
         '''Get a layer by its name'''
         returnLayer = None
-        uniqueId = unicode(layerComboBox.itemData(layerComboBox.currentIndex()))
+        uniqueId = str(layerComboBox.itemData(layerComboBox.currentIndex()))
         try:
-            myInstance = QgsMapLayerRegistry.instance()
+            myInstance = QgsProject.instance()
             layer = myInstance.mapLayer(uniqueId)
             if layer:
                 if layer.isValid():
@@ -1065,7 +809,7 @@ class lizmap:
             * providerTypeList is a list and can be : ['all'] or a list of provider keys
             as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
         '''
-        layers = self.iface.legendInterface().layers()
+        layers = QgsProject.instance().mapLayers().values()
         if ltype == 'all':
             return layers
 
@@ -1100,7 +844,7 @@ class lizmap:
         # loop though the layers
         layers = self.getLayers(ltype, providerTypeList)
         for layer in layers:
-            combobox.addItem ( layer.name(),unicode(layer.id()))
+            combobox.addItem ( layer.name(),str(layer.id()))
 
 
     def setInitialExtentFromProject(self):
@@ -1153,12 +897,11 @@ class lizmap:
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                provider = layer.dataProvider()
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for field in fields:
                     self.dlg.liAttributeLayerFields.addItem(
-                        unicode(field.name()),
-                        unicode(field.name())
+                        str(field.name()),
+                        str(field.name())
                     )
         else:
             return None
@@ -1181,15 +924,15 @@ class lizmap:
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
                 for cb in cbs:
-                    fields = layer.pendingFields()
+                    fields = layer.fields()
                     # Add empty item if allowed
                     if cb[0]:
                         cb[1].addItem(u'--', u'')
                     # Add fields to the combo
                     for field in fields:
                         cb[1].addItem(
-                            unicode(field.name()),
-                            unicode(field.name())
+                            str(field.name()),
+                            str(field.name())
                         )
         else:
             return None
@@ -1207,11 +950,11 @@ class lizmap:
         # populate the columns combo box
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for field in fields:
                     self.dlg.liLoginFilteredLayerFields.addItem(
-                        unicode(field.name()),
-                        unicode(field.name())
+                        str(field.name()),
+                        str(field.name())
                     )
         else:
             return None
@@ -1237,7 +980,7 @@ class lizmap:
 
         if layer:
             if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.pendingFields()
+                fields = layer.fields()
                 for cb in cbs:
                     # Add empty item if allowed
                     if cb[0]:
@@ -1245,8 +988,8 @@ class lizmap:
                     # Add fields to the combo
                     for field in fields:
                         cb[1].addItem(
-                            unicode(field.name()),
-                            unicode(field.name())
+                            str(field.name()),
+                            str(field.name())
                         )
         else:
             return None
@@ -1266,7 +1009,7 @@ class lizmap:
         '''
         Remove layers from tables when deleted from layer registry
         '''
-        for key, item in self.layersTable.items():
+        for key, item in list(self.layersTable.items()):
             tw = self.layersTable[key]['tableWidget']
 
             # Count lines
@@ -1282,7 +1025,7 @@ class lizmap:
             # Remove layer if layerId match
             for row in range(twRowCount):
                 if tw.item(row, idx):
-                    itemLayerId = str(tw.item(row, idx).text().encode('utf-8'))
+                    itemLayerId = str(tw.item(row, idx).text())
                     if itemLayerId in layerIds:
                         tw.removeRow( row )
 
@@ -1396,7 +1139,7 @@ class lizmap:
         layerId = layer.id()
         fieldCombobox = self.dlg.liAttributeLayerFields
         primaryKey = fieldCombobox.currentText()
-        hiddenFields = str(self.dlg.inAttributeLayerHiddenFields.text().encode('utf-8')).strip(' \t')
+        hiddenFields = str(self.dlg.inAttributeLayerHiddenFields.text()).strip(' \t')
         pivot = str(self.dlg.cbAttributeLayerIsPivot.isChecked())
         hideAsChild= str(self.dlg.cbAttributeLayerHideAsChild.isChecked())
         hideLayer= str(self.dlg.cbAttributeLayerHideLayer.isChecked())
@@ -1471,9 +1214,9 @@ class lizmap:
         # Retrieve layer information
         layerName = layer.name()
         layerId = layer.id()
-        fields = str(self.dlg.inTooltipLayerFields.text().encode('utf-8')).strip(' \t')
+        fields = str(self.dlg.inTooltipLayerFields.text()).strip(' \t')
         displayGeom = str(self.dlg.cbTooltipLayerDisplayGeom.isChecked())
-        colorGeom = str(self.dlg.inTooltipLayerColorGeom.text().encode('utf-8')).strip(' \t')
+        colorGeom = str(self.dlg.inTooltipLayerColorGeom.text()).strip(' \t')
 
         lblTableWidget = self.dlg.twTooltipLayerList
         twRowCount = lblTableWidget.rowCount()
@@ -1525,7 +1268,7 @@ class lizmap:
         modifyAttribute = str(self.dlg.cbEditionLayerModifyAttribute.isChecked())
         modifyGeometry = str(self.dlg.cbEditionLayerModifyGeometry.isChecked())
         deleteFeature = str(self.dlg.cbEditionLayerDeleteFeature.isChecked())
-        acl = str(self.dlg.inEditionLayerAcl.text().encode('utf-8')).strip(' \t')
+        acl = str(self.dlg.inEditionLayerAcl.text()).strip(' \t')
         lblTableWidget = self.dlg.twEditionLayerList
 
         # check at least one checkbox is active
@@ -1541,7 +1284,7 @@ class lizmap:
         # check if layer already added
         if twRowCount > 0:
             for row in range(twRowCount):
-                itemLayerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                itemLayerId = str(lblTableWidget.item(row, 6).text())
                 if layerId == itemLayerId:
                     return False
 
@@ -1643,11 +1386,11 @@ class lizmap:
         '''
 
         # Retrieve user options
-        layerRepository = str(self.dlg.inLizmapBaselayerRepository.text().encode('utf-8')).strip(' \t')
-        layerProject = str(self.dlg.inLizmapBaselayerProject.text().encode('utf-8')).strip(' \t')
-        layerName = str(self.dlg.inLizmapBaselayerLayer.text().encode('utf-8')).strip(' \t')
-        layerTitle = str(self.dlg.inLizmapBaselayerTitle.text().encode('utf-8')).strip(' \t')
-        layerImageFormat = str(self.dlg.inLizmapBaselayerImageFormat.text().encode('utf-8')).strip(' \t')
+        layerRepository = str(self.dlg.inLizmapBaselayerRepository.text()).strip(' \t')
+        layerProject = str(self.dlg.inLizmapBaselayerProject.text()).strip(' \t')
+        layerName = str(self.dlg.inLizmapBaselayerLayer.text()).strip(' \t')
+        layerTitle = str(self.dlg.inLizmapBaselayerTitle.text()).strip(' \t')
+        layerImageFormat = str(self.dlg.inLizmapBaselayerImageFormat.text()).strip(' \t')
         content = [layerRepository, layerProject, layerName, layerTitle, layerImageFormat]
         # Check that every option is set
         for val in content:
@@ -1693,8 +1436,8 @@ class lizmap:
         layerId = layer.id()
         startAttribute = self.dlg.liTimemanagerStartAttribute.currentText()
         labelAttribute = self.dlg.liTimemanagerLabelAttribute.currentText()
-        group = str(self.dlg.inTimemanagerGroup.text().encode('utf-8')).strip(' \t')
-        groupTitle = str(self.dlg.inTimemanagerGroupTitle.text().encode('utf-8')).strip(' \t')
+        group = str(self.dlg.inTimemanagerGroup.text()).strip(' \t')
+        groupTitle = str(self.dlg.inTimemanagerGroupTitle.text()).strip(' \t')
 
         content = [layerName, startAttribute, labelAttribute, group, groupTitle, layerId]
 
@@ -1729,19 +1472,19 @@ class lizmap:
         if not layer:
             return False
 
-        ptype = self.dlg.liDatavizPlotType.currentText()
-        ptitle = unicode(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
         layerName = layer.name()
         layerId = layer.id()
 
-        pxfields = str(self.dlg.inDatavizPlotXfield.currentField().encode('utf-8'))
+        ptitle = str(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
+        ptype = self.dlg.liDatavizPlotType.currentText()
+        pxfields = str(self.dlg.inDatavizPlotXfield.currentField())
+        pyfields = str(self.dlg.inDatavizPlotYfield.currentField())
         aggregation = self.dlg.liDatavizAggregation.currentText()
 
-        pyfields = str(self.dlg.inDatavizPlotYfield.currentField().encode('utf-8'))
         color = self.dlg.inDatavizPlotColor.color()
         colorfield = ''
         if self.dlg.cbDatavizUseColorField.isChecked():
-            colorfield = str(self.dlg.inDatavizColorField.currentField().encode('utf-8'))
+            colorfield = str(self.dlg.inDatavizColorField.currentField())
         pcolor = "%s" % color.name()
 
         py2fields = ''
@@ -1749,11 +1492,11 @@ class lizmap:
         colorfield2 = ''
         hasYField2 = str(self.dlg.cbDatavizYField2.isChecked())
         if self.dlg.cbDatavizYField2.isChecked():
-            py2fields = str(self.dlg.inDatavizPlotYfield2.currentField().encode('utf-8')).strip(' \t')
+            py2fields = str(self.dlg.inDatavizPlotYfield2.currentField()).strip(' \t')
             color2 = self.dlg.inDatavizPlotColor2.color()
             colorfield2 = ''
             if self.dlg.cbDatavizUseColorField2.isChecked():
-                colorfield2 = str(self.dlg.inDatavizColorField2.currentField().encode('utf-8'))
+                colorfield2 = str(self.dlg.inDatavizColorField2.currentField())
             pcolor2 = "%s" % color2.name()
 
         popup_display_child_plot = str(self.dlg.cbDatavizDisplayChildPlot.isChecked())
@@ -1799,7 +1542,7 @@ class lizmap:
 
         # DEFAULT VALUES : generic default values for layers and group
         self.myDic[itemKey]['name'] = "%s" % itemKey
-        for key, item in self.layerOptionsList.items():
+        for key, item in list(self.layerOptionsList.items()):
             self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
 
@@ -1807,7 +1550,7 @@ class lizmap:
         embeddedGroups = self.embeddedGroups
         if itemType == 'group':
             # embedded group ?
-            if embeddedGroups and embeddedGroups.has_key(itemKey):
+            if embeddedGroups and itemKey in embeddedGroups:
                 pName = embeddedGroups[itemKey]['project']
                 pName = os.path.splitext(os.path.basename(pName))[0]
                 self.myDic[itemKey]['sourceProject'] = pName
@@ -1840,7 +1583,8 @@ class lizmap:
                 self.myDic[itemKey]['minScale'] = layer.minimumScale()
                 self.myDic[itemKey]['maxScale'] = layer.maximumScale()
             # toggled : check if layer is toggled in qgis legend
-            self.myDic[itemKey]['toggled'] = self.iface.legendInterface().isLayerVisible(layer)
+            #self.myDic[itemKey]['toggled'] = layer.self.iface.legendInterface().isLayerVisible(layer)
+            self.myDic[itemKey]['toggled'] = False
             # group as layer : always False obviously because it is already a layer
             self.myDic[itemKey]['groupAsLayer'] = False
             # embedded layer ?
@@ -1851,13 +1595,13 @@ class lizmap:
 
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
-        if jsonLayers.has_key('%s' % self.myDic[itemKey]['name']):
+        if '%s' % self.myDic[itemKey]['name'] in jsonLayers:
             jsonKey = '%s' % self.myDic[itemKey]['name']
             # loop through layer options to override
-            for key, item in self.layerOptionsList.items():
+            for key, item in list(self.layerOptionsList.items()):
                 # override only for ui widgets
                 if item['widget']:
-                    if jsonLayers[jsonKey].has_key(key):
+                    if key in jsonLayers[jsonKey]:
                         # checkboxes
                         if item['wType'] == 'checkbox':
                             if jsonLayers[jsonKey][key].lower() in ('yes', 'true', 't', '1'):
@@ -1871,7 +1615,7 @@ class lizmap:
                         # text inputs
                         elif item['wType'] in ('text', 'textarea'):
                             if jsonLayers[jsonKey][key] != '':
-                                if item.has_key('isMetadata'): # title and abstract
+                                if 'isMetadata' in item: # title and abstract
                                     if not keepMetadata:
                                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                                 else:
@@ -1884,8 +1628,54 @@ class lizmap:
 
                 # popupContent
                 if key == 'popupTemplate':
-                    if jsonLayers[jsonKey].has_key(key):
+                    if key in jsonLayers[jsonKey]:
                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+
+
+    def processNode(self, node, parentNode, jsonLayers):
+        '''
+        Process a single node of the QGIS layer tree and adds it to Lizmap layer tree
+        '''
+        for child in node.children():
+            if isinstance(child, QgsLayerTreeGroup):
+                myId = child.name()
+                mytype = 'group'
+            elif isinstance(child, QgsLayerTreeLayer):
+                myId = child.layerId()
+                mytype = 'layer'
+
+            # Initialize values
+            item = None
+
+            # Select an existing item, select the header item or create the item
+            if myId in self.myDic:
+                # If the item already exists in self.myDic, select it
+                item = self.myDic[myId]['item']
+            elif myId == '':
+                # If the id is empty string, this is a root layer, select the headerItem
+                item = self.dlg.treeLayer.headerItem()
+            else:
+                # else create the item and add it to the header item
+                # add the item to the dictionary
+                self.myDic[myId] = {'id' : myId}
+                if mytype == 'group':
+                    # it is a group
+                    self.setTreeItemData('group', myId, jsonLayers)
+                else:
+                    # it is a layer
+                    self.setTreeItemData('layer', myId, jsonLayers)
+
+                item = QTreeWidgetItem(['%s' % str(self.myDic[myId]['name']), '%s' % str(self.myDic[myId]['id']), '%s' % self.myDic[myId]['type']])
+                self.myDic[myId]['item'] = item
+
+                # Move group or layer to its parent node
+                if not parentNode:
+                    self.dlg.treeLayer.addTopLevelItem(item)
+                else:
+                    parentNode.addChild(item)
+
+            if mytype == 'group':
+                self.processNode(child, item, jsonLayers)
 
 
     def populateLayerTree(self):
@@ -1898,14 +1688,13 @@ class lizmap:
         myTree.clear()
         myTree.headerItem().setText(0, QApplication.translate( "lizmap", "List of layers" ) )
         self.myDic = {}
-        myGroups = self.iface.legendInterface().groups()
 
         # Check if a json configuration file exists (myproject.qgs.cfg)
         isok = 1
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
         jsonLayers = {}
-        if os.path.exists(unicode(jsonFile)):
+        if os.path.exists(str(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
             try:
@@ -1921,60 +1710,11 @@ class lizmap:
             finally:
                 f.close()
 
-        # Loop through groupLayerRelationship to reconstruct the tree
-        for a in self.iface.legendInterface().groupLayerRelationship():
-            # Initialize values
-            parentItem = None
-            myId = a[0]
+        # Get layer tree root
+        root = QgsProject.instance().layerTreeRoot()
 
-            # Select an existing item, select the header item or create the item
-            if myId in self.myDic:
-                # If the item already exists in self.myDic, select it
-                parentItem = self.myDic[myId]['item']
-            elif myId == '':
-                # If the id is empty string, this is a root layer, select the headerItem
-                parentItem = myTree.headerItem()
-            else:
-                # else create the item and add it to the header item
-                # add the item to the dictionary
-                self.myDic[myId] = {'id' : myId}
-                self.ldisplay = True
-                if myId in myGroups:
-                    # it is a group
-                    self.setTreeItemData('group', myId, jsonLayers)
-                else:
-                    # it is a layer
-                    self.setTreeItemData('layer', myId, jsonLayers)
-
-                if self.ldisplay:
-
-                    parentItem = QTreeWidgetItem(['%s' % unicode(self.myDic[myId]['name']), '%s' % unicode(self.myDic[myId]['id']), '%s' % self.myDic[myId]['type']])
-                    myTree.addTopLevelItem(parentItem)
-                    self.myDic[myId]['item'] = parentItem
-                else:
-                    del self.myDic[myId]
-
-            # loop through the children and add children to the parent item
-            for b in a[1]:
-                self.myDic[b] = {'id' : b}
-                self.ldisplay = True
-                if b in myGroups:
-                    # it is a group
-                    self.setTreeItemData('group', b, jsonLayers)
-                else:
-                    # it is a layer
-                    self.setTreeItemData('layer', b, jsonLayers)
-
-                # add children item to its parent
-                if self.ldisplay:
-                    childItem = QTreeWidgetItem(['%s' % unicode(self.myDic[b]['name']), '%s' % unicode(self.myDic[b]['id']), '%s' % self.myDic[b]['type']])
-                    if myId == '':
-                        myTree.addTopLevelItem(childItem)
-                    else:
-                        parentItem.addChild(childItem)
-                    self.myDic[b]['item'] = childItem
-                else:
-                    del self.myDic[b]
+        # Recursively process layer tree nodes
+        self.processNode(root, None, jsonLayers)
         myTree.expandAll()
 
         # Add the self.myDic to the global layerList dictionary
@@ -1992,14 +1732,14 @@ class lizmap:
             self.enableCheckBox(False)
 
         iKey = item.text(1)
-        if self.layerList.has_key(iKey):
+        if iKey in self.layerList:
             # get information about the layer or the group from the layerList dictionary
             selectedItem = self.layerList[iKey]
 
             isLayer = selectedItem['type'] == 'layer'
 
             # set options
-            for key,val in self.layerOptionsList.items():
+            for key,val in list(self.layerOptionsList.items()):
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         val['widget'].setText(selectedItem[key])
@@ -2023,7 +1763,7 @@ class lizmap:
 
         else:
             # set default values for this layer/group
-            for key,val in self.layerOptionsList.items():
+            for key,val in list(self.layerOptionsList.items()):
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         val['widget'].setText(val['default'])
@@ -2062,7 +1802,7 @@ class lizmap:
         # get the definition for this property
         layerOption = self.layerOptionsList[key]
         # modify the property for the selected item
-        if item and self.layerList.has_key(item.text(1)):
+        if item and item.text(1) in self.layerList:
             if layerOption['wType'] == 'text':
                 self.layerList[item.text(1)][key] = layerOption['widget'].text()
                 self.setLayerMeta(item, key)
@@ -2077,7 +1817,7 @@ class lizmap:
                 self.layerList[item.text(1)][key] = layerOption['list'][layerOption['widget'].currentIndex()]
 
             # Deactivate the "exclude" widget if necessary
-            if (layerOption.has_key('exclude')
+            if ('exclude' in layerOption
                 and layerOption['wType'] == 'checkbox'
                 and layerOption['widget'].isChecked()
                 and layerOption['exclude']['widget'].isChecked()
@@ -2090,7 +1830,7 @@ class lizmap:
     def setLayerMeta(self, item, key):
         '''Set a the title/abstract Qgis metadata when corresponding item is changed
         Used in setLayerProperty'''
-        if self.layerOptionsList[key].has_key('isMetadata'):
+        if 'isMetadata' in self.layerOptionsList[key]:
             # modify the layer.title|abstract() if possible (qgis >= 1.8)
             if self.layerList[item.text(1)]['type'] == 'layer':
                 layer = self.getQgisLayerById(item.text(1))
@@ -2106,13 +1846,13 @@ class lizmap:
         '''Open the dialog with a text field to store the popup template for one layer/group'''
         # get the selected item in the layer tree
         item = self.dlg.treeLayer.currentItem()
-        if item and self.layerList.has_key(item.text(1)):
+        if item and item.text(1) in self.layerList:
             # do nothing if no popup configured for this layer/group
             if self.layerList[item.text(1)]['popup'] == 'False':
                 return False
 
             # Import the code for the dialog
-            from lizmappopupdialog import lizmapPopupDialog
+            from .lizmappopupdialog import lizmapPopupDialog
             self.lizmapPopupDialog = lizmapPopupDialog()
 
             self.lizmapPopupDialog.ui.groupBox.setStyleSheet(self.STYLESHEET)
@@ -2129,7 +1869,7 @@ class lizmap:
             self.lizmapPopupDialog.ui.bbConfigurePopup.rejected.connect(self.popupNotConfigured)
 
             # Set the content of the QTextEdit if needed
-            if self.layerList[item.text(1)].has_key('popupTemplate'):
+            if 'popupTemplate' in self.layerList[item.text(1)]:
                 self.layerList[item.text(1)]['popup'] = True
                 self.lizmapPopupDialog.ui.txtPopup.setText(self.layerList[item.text(1)]['popupTemplate'])
                 self.lizmapPopupDialog.ui.htmlPopup.setHtml(self.layerList[item.text(1)]['popupTemplate'])
@@ -2140,7 +1880,7 @@ class lizmap:
     def updatePopupHtml(self):
         '''Update the html preview of the popup dialog from the plain text template text'''
         # Get the content
-        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.text())
+        popupContent = str(self.lizmapPopupDialog.ui.txtPopup.text())
 
         # Update html preview
         self.lizmapPopupDialog.ui.htmlPopup.setHtml(popupContent)
@@ -2148,14 +1888,14 @@ class lizmap:
     def popupConfigured(self):
         '''Save the content of the popup template'''
         # Get the content before closing the dialog
-        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.text())
+        popupContent = str(self.lizmapPopupDialog.ui.txtPopup.text())
 
         # Close the popup dialog
         self.lizmapPopupDialog.close()
 
         # Get the selected item in the layer tree
         item = self.dlg.treeLayer.currentItem()
-        if item and self.layerList.has_key(item.text(1)):
+        if item and item.text(1) in self.layerList:
             # Write the content into the global object
             self.layerList[item.text(1)]['popupTemplate'] = popupContent
 
@@ -2170,9 +1910,9 @@ class lizmap:
         '''Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)'''
 
         # get information from Qgis api
-        r = QgsMapRenderer()
+        #r = QgsMapRenderer()
         # add all the layers to the renderer
-        r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
+        #r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
         # Get the project data
         p = QgsProject.instance()
         # options
@@ -2181,8 +1921,8 @@ class lizmap:
         liz2json["layers"] = {}
         # projection
         # project projection
-        mc = self.iface.mapCanvas()
-        pCrs = mc.mapRenderer().destinationCrs()
+        mc = self.iface.mapCanvas().mapSettings()
+        pCrs = mc.destinationCrs()
         pAuthid = pCrs.authid()
         pProj4 = pCrs.toProj4()
         liz2json["options"]["projection"] = {}
@@ -2201,7 +1941,7 @@ class lizmap:
             self.setInitialExtentFromProject()
 
         # gui user defined options
-        for key, item in self.globalOptions.items():
+        for key, item in list(self.globalOptions.items()):
             if item['widget']:
                 inputValue = None
                 # Get field value depending on widget type
@@ -2231,12 +1971,12 @@ class lizmap:
                 # Cast value depending of data type
                 if item['type'] == 'string':
                     if item['wType'] in ('text', 'textarea'):
-                        inputValue = unicode(inputValue)
+                        inputValue = str(inputValue)
                     else:
                         try:
                             inputValue = str(inputValue)
                         except:
-                            inputValue = unicode(inputValue)
+                            inputValue = str(inputValue)
 
                 elif item['type'] in ('intlist', 'floatlist', 'list'):
                     if item['type'] == 'intlist':
@@ -2259,7 +1999,7 @@ class lizmap:
                 if (inputValue and inputValue != "False"):
                     liz2json["options"][key] = inputValue
                 else:
-                    if item.has_key('alwaysExport'):
+                    if 'alwaysExport' in item:
                         liz2json["options"][key] = item['default']
 
 
@@ -2274,13 +2014,13 @@ class lizmap:
                 # check that the layer is checked in the WFS capabilities
                 layerId = str(lblTableWidget.item(row, 6).text())
                 if layerId in wfsLayersList:
-                    layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                    fieldName = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                    filterFieldName = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                    layerName = str(lblTableWidget.item(row, 0).text())
+                    fieldName = str(lblTableWidget.item(row, 1).text())
+                    filterFieldName = str(lblTableWidget.item(row, 2).text())
                     displayGeom = str(lblTableWidget.item(row, 3).text())
                     minLength = str(lblTableWidget.item(row, 4).text())
                     filterOnLocate = str(lblTableWidget.item(row, 5).text())
-                    layerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                    layerId = str(lblTableWidget.item(row, 6).text())
                     liz2json["locateByLayer"][layerName] = {}
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     if filterFieldName and filterFieldName != '--':
@@ -2298,13 +2038,13 @@ class lizmap:
             liz2json["attributeLayers"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                primaryKey = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                hiddenFields = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
+                layerName = str(lblTableWidget.item(row, 0).text())
+                primaryKey = str(lblTableWidget.item(row, 1).text())
+                hiddenFields = str(lblTableWidget.item(row, 2).text())
                 pivot = str(lblTableWidget.item(row, 3).text())
                 hideAsChild = str(lblTableWidget.item(row, 4).text())
                 hideLayer = str(lblTableWidget.item(row, 5).text())
-                layerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 6).text())
                 liz2json["attributeLayers"][layerName] = {}
                 liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
                 liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
@@ -2321,11 +2061,11 @@ class lizmap:
         if twRowCount > 0:
             liz2json["tooltipLayers"] = {}
             for row in range(twRowCount):
-                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                fields = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                layerName = str(lblTableWidget.item(row, 0).text())
+                fields = str(lblTableWidget.item(row, 1).text())
                 displayGeom = str(lblTableWidget.item(row, 2).text())
-                colorGeom = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
+                colorGeom = str(lblTableWidget.item(row, 3).text())
+                layerId = str(lblTableWidget.item(row, 4).text())
                 liz2json["tooltipLayers"][layerName] = {}
                 liz2json["tooltipLayers"][layerName]["fields"] = fields
                 liz2json["tooltipLayers"][layerName]["displayGeom"] = displayGeom
@@ -2340,13 +2080,13 @@ class lizmap:
             liz2json["editionLayers"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
+                layerName = str(lblTableWidget.item(row, 0).text())
                 createFeature = str(lblTableWidget.item(row, 1).text())
                 modifyAttribute = str(lblTableWidget.item(row, 2).text())
                 modifyGeometry = str(lblTableWidget.item(row, 3).text())
                 deleteFeature = str(lblTableWidget.item(row, 4).text())
-                acl = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
+                acl = str(lblTableWidget.item(row, 5).text())
+                layerId = str(lblTableWidget.item(row, 6).text())
                 layer = self.getQgisLayerById(layerId)
                 geometryType = self.mapQgisGeometryType[layer.geometryType()]
                 liz2json["editionLayers"][layerName] = {}
@@ -2368,10 +2108,10 @@ class lizmap:
             liz2json["loginFilteredLayers"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                filterAttribute = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
+                layerName = str(lblTableWidget.item(row, 0).text())
+                filterAttribute = str(lblTableWidget.item(row, 1).text())
                 filterPrivate = str(lblTableWidget.item(row, 2).text())
-                layerId = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                layerId = str(lblTableWidget.item(row, 3).text())
                 liz2json["loginFilteredLayers"][layerName] = {}
                 liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
                 liz2json["loginFilteredLayers"][layerName]["filterPrivate"] = filterPrivate
@@ -2386,11 +2126,11 @@ class lizmap:
             liz2json["lizmapExternalBaselayers"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                lRepository = str(eblTableWidget.item(row, 0).text().encode('utf-8'))
-                lProject = str(eblTableWidget.item(row, 1).text().encode('utf-8'))
-                lName = str(eblTableWidget.item(row, 2).text().encode('utf-8'))
-                lTitle = str(eblTableWidget.item(row, 3).text().encode('utf-8'))
-                lImageFormat = str(eblTableWidget.item(row, 4).text().encode('utf-8'))
+                lRepository = str(eblTableWidget.item(row, 0).text())
+                lProject = str(eblTableWidget.item(row, 1).text())
+                lName = str(eblTableWidget.item(row, 2).text())
+                lTitle = str(eblTableWidget.item(row, 3).text())
+                lImageFormat = str(eblTableWidget.item(row, 4).text())
                 if lImageFormat not in ('png', 'png; mode=16bit', 'png; mode=8bit', 'jpg', 'jpeg'):
                     lImageFormat = 'png'
                 liz2json["lizmapExternalBaselayers"][lName] = {}
@@ -2408,12 +2148,12 @@ class lizmap:
             liz2json["timemanagerLayers"] = {}
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
-                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                startAttribute = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                labelAttribute = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
-                tmGroup = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
-                tmGroupTitle = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
+                layerName = str(lblTableWidget.item(row, 0).text())
+                startAttribute = str(lblTableWidget.item(row, 1).text())
+                labelAttribute = str(lblTableWidget.item(row, 2).text())
+                tmGroup = str(lblTableWidget.item(row, 3).text())
+                tmGroupTitle = str(lblTableWidget.item(row, 4).text())
+                layerId = str(lblTableWidget.item(row, 5).text())
                 liz2json["timemanagerLayers"][layerName] = {}
                 liz2json["timemanagerLayers"][layerName]["startAttribute"] = startAttribute
                 if labelAttribute and labelAttribute != '--':
@@ -2429,21 +2169,21 @@ class lizmap:
         if twRowCount > 0:
             liz2json["datavizLayers"] = {}
             for row in range(twRowCount):
-                layerName = str(lblTableWidget.item(row, 0).text().encode('utf-8'))
-                ptitle = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
-                ptype = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
-                pxfields = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
+                layerName = str(lblTableWidget.item(row, 0).text())
+                ptitle = str(lblTableWidget.item(row, 1).text())
+                ptype = str(lblTableWidget.item(row, 2).text())
+                pxfields = str(lblTableWidget.item(row, 3).text())
                 paggregation = str(lblTableWidget.item(row, 4).text())
-                pyfields = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
-                pcolor = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
-                colorfield = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
-                hasy2fields = str(lblTableWidget.item(row, 8).text().encode('utf-8'))
-                py2fields = str(lblTableWidget.item(row, 9).text().encode('utf-8'))
-                pcolor2 = str(lblTableWidget.item(row, 10).text().encode('utf-8'))
-                colorfield2 = str(lblTableWidget.item(row, 11).text().encode('utf-8'))
-                popup_display_child_plot = str(lblTableWidget.item(row, 12).text().encode('utf-8'))
-                only_show_child = str(lblTableWidget.item(row, 13).text().encode('utf-8'))
-                layerId = str(lblTableWidget.item(row, 14).text().encode('utf-8'))
+                pyfields = str(lblTableWidget.item(row, 5).text())
+                pcolor = str(lblTableWidget.item(row, 6).text())
+                colorfield = str(lblTableWidget.item(row, 7).text())
+                hasy2fields = str(lblTableWidget.item(row, 8).text())
+                py2fields = str(lblTableWidget.item(row, 9).text())
+                pcolor2 = str(lblTableWidget.item(row, 10).text())
+                colorfield2 = str(lblTableWidget.item(row, 11).text())
+                popup_display_child_plot = str(lblTableWidget.item(row, 12).text())
+                only_show_child = str(lblTableWidget.item(row, 13).text())
+                layerId = str(lblTableWidget.item(row, 14).text())
                 prow = {}
                 prow["title"] = ptitle
                 prow["type"] = ptype
@@ -2465,7 +2205,7 @@ class lizmap:
 
 
         # gui user defined layers options
-        for k,v in self.layerList.items():
+        for k,v in list(self.layerList.items()):
             addToCfg = True
             ltype = v['type']
             gal = v['groupAsLayer']
@@ -2487,8 +2227,8 @@ class lizmap:
             #~ # add layerOption only for geo layers
             #~ if geometryType != 4:
             layerOptions = {}
-            layerOptions["id"] = unicode(k)
-            layerOptions["name"] = unicode(v['name'])
+            layerOptions["id"] = str(k)
+            layerOptions["name"] = str(v['name'])
             layerOptions["type"] = ltype
 
             # geometry type
@@ -2517,11 +2257,11 @@ class lizmap:
 
 
             # Loop through the layer options and set properties from the dictionary
-            for key, val in self.layerOptionsList.items():
+            for key, val in list(self.layerOptionsList.items()):
                 propVal = v[key]
                 if val['type'] == 'string':
                     if val['wType'] in ('text', 'textarea'):
-                        propVal = unicode(propVal)
+                        propVal = str(propVal)
                     else:
                         propVal = str(propVal)
                 elif val['type'] == 'integer':
@@ -2558,7 +2298,7 @@ class lizmap:
 
             # Add external WMS options if needed
             if layer and hasattr(layer, 'providerType') \
-            and layerOptions.has_key('externalWmsToggle') \
+            and 'externalWmsToggle' in layerOptions \
             and layerOptions['externalWmsToggle'].lower() == 'true':
                 layerProviderKey = layer.providerType()
                 # Only for layers stored in disk
@@ -2573,7 +2313,7 @@ class lizmap:
 
 
             # Add layer options to the json object
-            liz2json["layers"]["%s" % unicode(v['name'])] = layerOptions
+            liz2json["layers"]["%s" % str(v['name'])] = layerOptions
 
         # Write json to the cfg file
         jsonFileContent = json.dumps(
@@ -2586,7 +2326,7 @@ class lizmap:
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
         f = open(jsonFile, 'w')
-        f.write(jsonFileContent.encode('utf-8'))
+        f.write(jsonFileContent)
         f.close()
 
         # Ask to save the project
@@ -2594,7 +2334,7 @@ class lizmap:
             self.iface.messageBar().pushMessage(
                 u"Lizmap",
                 QApplication.translate("lizmap", "Please do not forget to save the QGIS project before publishing your map"),
-                level=QgsMessageBar.WARNING,
+                level=Qgis.Warning,
                 duration=30
             )
 
@@ -2613,7 +2353,7 @@ class lizmap:
         wmsParams = dict([ [b for b in a.split('=') ] for a in uri.split('&')])
 
         # urldecode WMS url
-        wmsParams['url'] = urllib.unquote(wmsParams['url']).decode('utf8').replace('&&', '&').replace('==','=')
+        wmsParams['url'] = urllib.parse.unquote(wmsParams['url']).replace('&&', '&').replace('==','=')
 
         return wmsParams
 
@@ -2621,7 +2361,7 @@ class lizmap:
     def checkGlobalProjectOptions(self):
         ''' Checks that the needed options are correctly set : relative path, project saved, etc.'''
 
-        isok = True;
+        isok = True
         errorMessage = ''
         # Get the project data from api
         p = QgsProject.instance()
@@ -2653,7 +2393,7 @@ class lizmap:
             layerPathError = ''
 
             for i in range(mc.layerCount()):
-                layerSource =    unicode('%s' % mc.layer( i ).source() )
+                layerSource =    str('%s' % mc.layer( i ).source() )
                 if not hasattr(mc.layer( i ), 'providerType'):
                     continue
                 layerProviderKey = mc.layer( i ).providerType()
@@ -2809,15 +2549,14 @@ class lizmap:
                     QApplication.translate("lizmap", "Wrong or missing map parameters: please read the log and correct the printed errors."),
                     QMessageBox.Ok)
 
-
             # Get and check map scales
             if self.isok:
                 self.getMinMaxScales()
                 self.iface.messageBar().pushMessage(
                     u"Lizmap",
                     QApplication.translate("lizmap", "Lizmap configuration file has been updated"),
-                    level=QgsMessageBar.INFO,
-                    duration=2
+                    level=Qgis.Success,
+                    duration=3
                 )
 
         return self.isok
@@ -2836,7 +2575,7 @@ class lizmap:
         with open(projectPath, 'r') as f:
             arbre = ET.parse(f)
             lg = list(arbre.iter('legendgroup'))
-            lge = dict([(a.attrib['name'],a.attrib) for a in lg if a.attrib.has_key('embedded')])
+            lge = dict([(a.attrib['name'],a.attrib) for a in lg if 'embedded' in a.attrib])
             return lge
 
 
@@ -2862,7 +2601,7 @@ class lizmap:
 
         # Fill with checked baselayers
         # 1/ QGIS layers
-        for k,v in self.layerList.items():
+        for k,v in list(self.layerList.items()):
             if not v['baseLayer']:
                 continue
             combo.addItem(v['name'], v['name'])
@@ -2872,7 +2611,7 @@ class lizmap:
             i+=1
 
         # 2/ External baselayers
-        for k,v in self.baselayerWidgetList.items():
+        for k,v in list(self.baselayerWidgetList.items()):
             if k != 'layer':
                 if v.isChecked():
                     combo.addItem(k, k)
@@ -2898,7 +2637,7 @@ class lizmap:
         p = QgsProject.instance()
         jsonFile = "%s.cfg" % p.fileName()
         jsonOptions = {}
-        if os.path.exists(unicode(jsonFile)):
+        if os.path.exists(str(jsonFile)):
             f = open(jsonFile, 'r')
             jsonFileReader = f.read()
             try:
@@ -2917,7 +2656,8 @@ class lizmap:
 
     def onDialogClose(self):
         '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-        print "lizmap dialog close"
+        # fix_print_with_import
+        print("lizmap dialog close")
         #~ self.writeProjectConfigFile()
         #self.dlg.close()
 
@@ -2928,7 +2668,7 @@ class lizmap:
 
 
     def reinitDefaultProperties(self):
-        for key in self.layersTable.keys():
+        for key in list(self.layersTable.keys()):
             self.layersTable[key]['jsonConfig'] = {}
 
 
@@ -2985,7 +2725,8 @@ class lizmap:
             self.layerList = {}
 
             # Get embedded groups
-            self.embeddedGroups = self.getProjectEmbeddedGroup()
+            #self.embeddedGroups = self.getProjectEmbeddedGroup()
+            self.embeddedGroups = None
 
             # Fill the layer tree
             self.populateLayerTree()

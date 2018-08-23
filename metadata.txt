@@ -1,23 +1,18 @@
 ; the next section is mandatory
 [general]
 name=lizmap
-qgisMinimumVersion=2.0
-qgisMaximumVersion=2.99
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.4.1
+version=version 3.0.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.4.1
-  * Do not save project from lizmap plugin but let the user do it
-  * Fix icons in plugin manager, remove unused imports
-  * UI - fix issue with qgscollapsiblegroupbox import
-  * Update locales
-  * Change of default mode of popup source to 'auto'
-  * Dataviz - add of a button in Dataviz who permit you to hide parent plot
+  Version 3.0.0
+  * First version of lizmap plugin for QGIS 3 created from the version 2.4.1 for QGIS 2
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS
@@ -32,7 +27,7 @@ repository=https://github.com/3liz/lizmap-plugin
 icon=icons/icon.png
 
 ; experimental flag
-experimental=False
+experimental=True
 
 ; deprecated flag (applies to the whole plugin and not only to the uploaded version)
 deprecated=False

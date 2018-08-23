@@ -1,3 +1,4 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'ui_lizmap_popup.ui'
@@ -6,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from qgis.PyQt import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
