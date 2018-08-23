@@ -1,6 +1,8 @@
 [![logo](icon.png "3Liz")][3liz]Lizmap 2.4.0
 ==============================================
 
+**WARNING** the master branch is compatible only with QGIS 3.x from August 23rd 2018. The branch *qgis2* targets QGIS 2.x compatibiliy.
+
 Publication plugin for Lizmap Web Application, by 3LIZ.
 
     begin       : 2011-11-01
@@ -21,17 +23,20 @@ The Initial Developer of the Original Code are René-Luc D'Hont <rldhont@3liz.co
 Contributors
 --------------
 
-Salvatore Larosa  @slarosa
-Paolo Cavallini @pcav
-Arnaud Deleurme
-@ewsterrenburg
-Sławomir Bienias @SaekBinko
-Petr Tsymbarovich @mentaljam
-Víctor Herreros @vherreros
-João Gaspar
-Felix Kuehne
-Kari Salovaara
-Xan Vieiro
+* Salvatore Larosa  @slarosa
+* Paolo Cavallini @pcav
+* Arnaud Deleurme
+* @ewsterrenburg
+* Sławomir Bienias @SaekBinko
+* Petr Tsymbarovich @mentaljam
+* Víctor Herreros @vherreros
+* João Gaspar
+* Felix Kuehne
+* Kari Salovaara
+* Xan Vieiro
+* Etienne Trimaille @Gustry
+
+*Please propose a PR to add yourself if you are missing*
 
 Installation
 -----------
