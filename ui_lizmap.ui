@@ -1601,7 +1601,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </item>
                    </layout>
                   </item>
-				              <item>
+                              <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_21">
                     <property name="spacing">
                      <number>5</number>
@@ -1635,7 +1635,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </property>
                      </widget>
                     </item>
-                    
+
                     <item>
                      <spacer name="horizontalSpacer_18">
                       <property name="orientation">
@@ -3323,7 +3323,7 @@ Only the selected feature will be visible on the map.</string>
                <item>
                 <widget class="QLabel" name="label_97">
                  <property name="text">
-                  <string>Optionnal container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
+                  <string>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
                  </property>
                 </widget>
                </item>

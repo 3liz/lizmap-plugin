@@ -133,7 +133,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 ## Version 1.9.6
 
-* Tools - Add "time manager" optionnal tool to animate vector layers based on date/time attribute
+* Tools - Add "time manager" optional tool to animate vector layers based on date/time attribute
 * Map - add option to hide the project in LizmapWebClient
 * Baselayers - option to add external Lizmap project layers as baselayers
 * Table widgets - refactor code to retrieve options from json config
@@ -145,7 +145,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 ## Version 1.9.5
 
-* Locate by layer - add optionnal group field to create parent category filter
+* Locate by layer - add optional group field to create parent category filter
 * New option : set the initial map extent at map loading
 * Debug: remove old sip api translation methods
 * Translation : corrections for english translation (by @ewsterrenburg )

@@ -1016,11 +1016,6 @@ Only the selected feature will be visible on the map.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="3326"/>
-        <source>Optionnal container template (HTML with Bootstrap, use the id of the plot, such as $1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
@@ -1328,6 +1323,11 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="3326"/>
+        <source>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

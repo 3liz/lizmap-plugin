@@ -1020,11 +1020,6 @@ Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui_lizmap.ui" line="3326"/>
-        <source>Optionnal container template (HTML with Bootstrap, use the id of the plot, such as $1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
@@ -1332,6 +1327,11 @@ Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui_lizmap.ui" line="3326"/>
+        <source>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
