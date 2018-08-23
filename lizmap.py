@@ -51,6 +51,7 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     QTranslator,
     QSettings,
+    QUrl,
     QFileInfo,
     Qt
 )
@@ -63,6 +64,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox
 )
 from qgis.PyQt.QtGui import (
+    QDesktopServices,
     QIcon
 )
 from qgis.core import (
@@ -73,7 +75,8 @@ from qgis.core import (
     QgsMapSettings,
     QgsMapLayerProxyModel,
     QgsLayerTreeGroup,
-    QgsLayerTreeLayer
+    QgsLayerTreeLayer,
+    QgsWkbTypes,
 )
 
 # Initialize Qt resources from file resources.py
@@ -365,6 +368,10 @@ class lizmap(object):
         }
         self.layerList = None
 
+    @staticmethod
+    def tr(sentence):
+        """Return a translated string."""
+        return QApplication.translate('lizmap', sentence)
 
     def initGui(self):
         '''Create action that will start plugin configuration'''
@@ -402,10 +409,6 @@ class lizmap(object):
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
-
-        # detect close event
-        self.dlg.buttonBox.rejected.connect(self.onDialogClose)
-        self.dlg.rejected.connect(self.onDialogClose)
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
@@ -517,10 +520,9 @@ class lizmap(object):
             # Remove about menu entry
             self.iface.removePluginMenu(u"&Lizmap", self.action_about)
 
-
     def showHelp(self):
         '''Opens the html help file content with default browser'''
-        if self.locale in ('fr'):
+        if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
             localHelpUrl = "http://docs.3liz.com/%s/" % self.locale
         else:
             localHelpUrl = 'http://translate.google.fr/translate?sl=fr&tl=%s&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com' % self.locale
@@ -1287,6 +1289,17 @@ class lizmap(object):
                 itemLayerId = str(lblTableWidget.item(row, 6).text())
                 if layerId == itemLayerId:
                     return False
+
+        # Check Z or M values which be lost when editing
+        geometry_type = layer.wkbType()
+        has_m_values = QgsWkbTypes.hasM(geometry_type)
+        has_z_values = QgsWkbTypes.hasZ(geometry_type)
+        if has_z_values or has_m_values:
+            QMessageBox.warning(
+                self.dlg,
+                self.tr('Editing Z/M Values'),
+                self.tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
+            )
 
         # Add layer
         if twRowCount < self.dlg.liEditionLayer.count()-1:
@@ -2653,13 +2666,6 @@ class lizmap(object):
                 isok=0
             finally:
                 f.close()
-
-    def onDialogClose(self):
-        '''Method triggered when the user closes the lizmap dialog by pressing Esc or clicking the x button'''
-        # fix_print_with_import
-        print("lizmap dialog close")
-        #~ self.writeProjectConfigFile()
-        #self.dlg.close()
 
     def test(self):
         '''Debug method'''
