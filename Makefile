@@ -51,7 +51,7 @@
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # LOCALES = af
-LOCALES = de el en es eu fi fr gl it pl pt ru sv
+LOCALES = de el en es eu fi fr gl hu it nl pl pt pt_BR ru sv
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to

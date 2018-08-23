@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" sourcelanguage="" version="2.0">
 <context>
     <name>lizmap</name>
     <message>
@@ -986,7 +985,7 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3270"/>
         <source>Lizmap can use data from project layers to draw and display charts, such as bar charts, pie charts or scatter plots. You can add a layer in the following table and choose the type of chart and which data field must be used. We recommand to use PostGIS views or virtual layers to prepare the data, and to keep data small.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lizmap peut utiliser des données provenant de couches du projet pour dessiner et afficher des graphiques, tels que des graphiques en barre, des camemberts ou des nuages de points. Vous pouvez ajouter un calque dans le tableau suivant et choisir le type de graphique et le champ de données à utiliser. Nous vous recommandons d&apos;utiliser des vues PostGIS ou des couches virtuelles pour préparer les données et conserver de petites données.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3285"/>
@@ -1091,7 +1090,7 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3425"/>
         <source>Popup for children</source>
-        <translation type="unfinished"></translation>
+        <translation>Popup pour les couches filles</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3435"/>
@@ -1191,7 +1190,7 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4059"/>
         <source>Choose a vector layer containing a set of atlas features. Lizmap will propose a menu to let the user activate one feature at a time. Several actions can be triggered: display the feature popup, filter the layer and its children, zoom to the feature, etc.</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez une couche vectorielle contenant un ensemble d&apos;entités pour l&apos;atlas; Lizmap proposera un menu permettant à l&apos;utilisateur d&apos;activer une entité à la fois. Plusieurs actions peuvent être déclenchées : afficher la popup de l&apos;entité, filtrer la couche et ses enfants, zoomer sur l&apos;entité, etc.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4069"/>
@@ -1291,47 +1290,47 @@ Seul l&apos;objet sélectionné sera alors visible.</translation>
     <message>
         <location filename="lizmap.py" line="622"/>
         <source>Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreurs rencontrées lors de la lecture du dernier état de l&apos;arborescence. Veuillez reconfigurer complètement les options de l&apos;onglet Calques. Le fichier .cfg précédent a été enregistré sous le nom .cfg.back</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Editing Z/M Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Edition des valeurs Z/M</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Be careful, editing this layer with Lizmap will set the Z and M to 0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Attention, l&apos;édition de cette couche avec Lizmap modifiera la valeur Z et M des géométries à 0.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2354"/>
         <source>Please do not forget to save the QGIS project before publishing your map</source>
-        <translation type="unfinished"></translation>
+        <translation>N&apos;oubliez pas de sauvegarder le projet QGIS avant de publier votre carte</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1627"/>
         <source>ThunderForest</source>
-        <translation type="unfinished"></translation>
+        <translation>ThunderForest</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1634"/>
         <source>Open Cycle Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Cycle Map</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3420"/>
         <source>Only show child</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer seulement les enfants</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer seulement dans la popup des enfants</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3326"/>
         <source>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle de conteneur facultatif (Bootstrap HTML, utilisez l&apos;id du graph, par exemple $ 1)</translation>
     </message>
 </context>
 <context>
