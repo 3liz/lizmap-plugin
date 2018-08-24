@@ -35,6 +35,7 @@ Contributors
 * Kari Salovaara
 * Xan Vieiro
 * Etienne Trimaille @Gustry
+* José Macau
 
 *Please propose a PR to add yourself if you are missing*
 
