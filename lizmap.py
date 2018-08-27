@@ -419,7 +419,7 @@ class lizmap:
             },
             'link': {
                 'widget': self.dlg.inLayerLink,
-                'wType': 'text', 'type': 'string', 'default': ''
+                'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
             },
             'minScale': {
                 'widget': None,
@@ -1827,6 +1827,9 @@ class lizmap:
                 if layer.abstract():
                     self.myDic[itemKey]['abstract'] = layer.abstract()
                     keepMetadata = True
+                if layer.metadataUrl():
+                    self.myDic[itemKey]['link'] = layer.metadataUrl()
+                    keepMetadata = True
 
             # hide non geo layers (csv, etc.)
             #if layer.type() == 0:
@@ -1869,7 +1872,7 @@ class lizmap:
                         # text inputs
                         elif item['wType'] in ('text', 'textarea'):
                             if jsonLayers[jsonKey][key] != '':
-                                if item.has_key('isMetadata'): # title and abstract
+                                if item.has_key('isMetadata'): # title and abstract and link
                                     if not keepMetadata:
                                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                                 else:
@@ -2086,10 +2089,10 @@ class lizmap:
 
 
     def setLayerMeta(self, item, key):
-        '''Set a the title/abstract Qgis metadata when corresponding item is changed
+        '''Set a the title/abstract/link Qgis metadata when corresponding item is changed
         Used in setLayerProperty'''
         if self.layerOptionsList[key].has_key('isMetadata'):
-            # modify the layer.title|abstract() if possible (qgis >= 1.8)
+            # modify the layer.title|abstract|link() if possible
             if self.layerList[item.text(1)]['type'] == 'layer':
                 layer = self.getQgisLayerById(item.text(1))
                 if layer:
@@ -2098,6 +2101,8 @@ class lizmap:
                             layer.setTitle(u"%s" % self.layerList[item.text(1)][key])
                         if key == 'abstract':
                             layer.setAbstract(u"%s" % self.layerList[item.text(1)][key])
+                        if key == 'link':
+                            layer.setAttributionUrl(u"%s" % self.layerList[item.text(1)][key])
 
 
     def configurePopup(self):
