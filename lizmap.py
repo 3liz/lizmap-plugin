@@ -52,7 +52,8 @@ from qgis.PyQt.QtCore import (
     QTranslator,
     QSettings,
     QFileInfo,
-    Qt
+    Qt,
+    QUrl
 )
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -63,7 +64,8 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox
 )
 from qgis.PyQt.QtGui import (
-    QIcon
+    QIcon,
+    QDesktopServices
 )
 from qgis.core import (
     Qgis,
