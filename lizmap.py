@@ -2146,24 +2146,24 @@ class lizmap:
             from lizmappopupdialog import lizmapPopupDialog
             self.lizmapPopupDialog = lizmapPopupDialog()
 
-            self.lizmapPopupDialog.ui.groupBox.setStyleSheet(self.STYLESHEET)
-            self.lizmapPopupDialog.ui.groupBox_2.setStyleSheet(self.STYLESHEET)
+            self.lizmapPopupDialog.groupBox.setStyleSheet(self.STYLESHEET)
+            self.lizmapPopupDialog.groupBox_2.setStyleSheet(self.STYLESHEET)
 
             # Connect popup dialog signals and slots
             # When the plain text template is modified
-            self.lizmapPopupDialog.ui.txtPopup.textChanged.connect(self.updatePopupHtml)
+            self.lizmapPopupDialog.txtPopup.textChanged.connect(self.updatePopupHtml)
             # When the ui is closed with the x
             self.lizmapPopupDialog.rejected.connect(self.popupNotConfigured)
             # When the ui is closed with the OK button
-            self.lizmapPopupDialog.ui.bbConfigurePopup.accepted.connect(self.popupConfigured)
+            self.lizmapPopupDialog.bbConfigurePopup.accepted.connect(self.popupConfigured)
             # When the ui is closed with the CANCEL button
-            self.lizmapPopupDialog.ui.bbConfigurePopup.rejected.connect(self.popupNotConfigured)
+            self.lizmapPopupDialog.bbConfigurePopup.rejected.connect(self.popupNotConfigured)
 
             # Set the content of the QTextEdit if needed
             if self.layerList[item.text(1)].has_key('popupTemplate'):
                 self.layerList[item.text(1)]['popup'] = True
-                self.lizmapPopupDialog.ui.txtPopup.setText(self.layerList[item.text(1)]['popupTemplate'])
-                self.lizmapPopupDialog.ui.htmlPopup.setHtml(self.layerList[item.text(1)]['popupTemplate'])
+                self.lizmapPopupDialog.txtPopup.setText(self.layerList[item.text(1)]['popupTemplate'])
+                self.lizmapPopupDialog.htmlPopup.setHtml(self.layerList[item.text(1)]['popupTemplate'])
 
             # Show the popup configuration window
             self.lizmapPopupDialog.show()
@@ -2171,15 +2171,15 @@ class lizmap:
     def updatePopupHtml(self):
         '''Update the html preview of the popup dialog from the plain text template text'''
         # Get the content
-        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.text())
+        popupContent = unicode(self.lizmapPopupDialog.txtPopup.text())
 
         # Update html preview
-        self.lizmapPopupDialog.ui.htmlPopup.setHtml(popupContent)
+        self.lizmapPopupDialog.htmlPopup.setHtml(popupContent)
 
     def popupConfigured(self):
         '''Save the content of the popup template'''
         # Get the content before closing the dialog
-        popupContent = unicode(self.lizmapPopupDialog.ui.txtPopup.text())
+        popupContent = unicode(self.lizmapPopupDialog.txtPopup.text())
 
         # Close the popup dialog
         self.lizmapPopupDialog.close()
