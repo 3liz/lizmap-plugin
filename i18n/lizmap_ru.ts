@@ -1002,7 +1002,7 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>
