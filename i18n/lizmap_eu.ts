@@ -139,7 +139,7 @@
     <message>
         <location filename="ui_lizmap.ui" line="1046"/>
         <source>Group as layer?</source>
-        <translation type="unfinished"/>
+        <translation>Multzoa geruza bailitzan?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1005"/>
@@ -149,32 +149,32 @@
     <message>
         <location filename="ui_lizmap.ui" line="1364"/>
         <source>Single Tile?</source>
-        <translation type="unfinished"/>
+        <translation>Teila bakarra?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1385"/>
         <source>Server cache?</source>
-        <translation type="unfinished"/>
+        <translation>Zerbitzarian cacheatu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1238"/>
         <source>Image format</source>
-        <translation type="unfinished"/>
+        <translation>Irudiaren formatua</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="542"/>
         <source>Scales</source>
-        <translation type="unfinished"/>
+        <translation>Eskalak</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="553"/>
         <source>Min Scale</source>
-        <translation type="unfinished"/>
+        <translation>Eskala Minimoa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="576"/>
         <source>Max Scale</source>
-        <translation type="unfinished"/>
+        <translation>Eskala Maximoa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="616"/>
@@ -184,7 +184,7 @@
     <message>
         <location filename="ui_lizmap.ui" line="1544"/>
         <source>Public baselayers</source>
-        <translation type="unfinished"/>
+        <translation>Oinarri geruza publikoak</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1550"/>
@@ -194,12 +194,12 @@
     <message>
         <location filename="ui_lizmap.ui" line="215"/>
         <source>Log</source>
-        <translation type="unfinished"/>
+        <translation>Log-a</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4352"/>
         <source>Clear log</source>
-        <translation type="unfinished"/>
+        <translation>Garbitu log-a</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2568"/>
@@ -214,7 +214,7 @@
     <message>
         <location filename="ui_lizmap.ui" line="1694"/>
         <source>Google</source>
-        <translation type="unfinished"/>
+        <translation>Google</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1262"/>
@@ -229,17 +229,17 @@
     <message>
         <location filename="ui_lizmap.ui" line="1392"/>
         <source>Expiration (seconds)</source>
-        <translation type="unfinished"/>
+        <translation>Amaiera (segundutan)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1409"/>
         <source>Metatile</source>
-        <translation type="unfinished"/>
+        <translation>Metateila</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1138"/>
         <source>Configure</source>
-        <translation type="unfinished"/>
+        <translation>Konfiguratu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1416"/>
@@ -259,12 +259,12 @@
     <message>
         <location filename="ui_lizmap.ui" line="3924"/>
         <source>Layer</source>
-        <translation type="unfinished"/>
+        <translation>Geruza</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3153"/>
         <source>Field</source>
-        <translation type="unfinished"/>
+        <translation>Eremua</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2356"/>
@@ -309,7 +309,7 @@
     <message>
         <location filename="ui_lizmap.ui" line="348"/>
         <source>Print</source>
-        <translation type="unfinished"/>
+        <translation>Imprimatu</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="358"/>
@@ -371,7 +371,7 @@ Ex: 1000, 250000</source>
     <message>
         <location filename="ui_lizmap.ui" line="2829"/>
         <source>Delete</source>
-        <translation type="unfinished"/>
+        <translation>Ezabatu</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2443"/>
@@ -391,7 +391,7 @@ Ex: 1000, 250000</source>
     <message>
         <location filename="ui_lizmap.ui" line="3430"/>
         <source>Id</source>
-        <translation type="unfinished"/>
+        <translation>Id-a</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="648"/>
@@ -407,7 +407,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="664"/>
         <source>Extent</source>
-        <translation type="unfinished"/>
+        <translation>=Eremu espaziala</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="682"/>
@@ -452,12 +452,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="1882"/>
         <source>Scans</source>
-        <translation type="unfinished"/>
+        <translation>Kaleak</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1875"/>
         <source>Orthophoto</source>
-        <translation type="unfinished"/>
+        <translation>Satelitea</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1868"/>
@@ -472,12 +472,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="2073"/>
         <source>Repository</source>
-        <translation type="unfinished"/>
+        <translation>Biltegia</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2080"/>
         <source>Project</source>
-        <translation type="unfinished"/>
+        <translation>Proiektua</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="2104"/>
@@ -512,7 +512,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="193"/>
         <source>Time Manager</source>
-        <translation type="unfinished"/>
+        <translation>Denbora kudeatzailea</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3752"/>
@@ -612,7 +612,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
     <message>
         <location filename="ui_lizmap.ui" line="420"/>
         <source>google</source>
-        <translation type="unfinished"/>
+        <translation>Google</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="425"/>
@@ -889,7 +889,7 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap.ui" line="997"/>
         <source>Legend</source>
-        <translation type="unfinished"/>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1078"/>
@@ -994,7 +994,7 @@ Only the selected feature will be visible on the map.</source>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Mota</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>

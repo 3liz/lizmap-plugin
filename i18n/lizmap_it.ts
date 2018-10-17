@@ -974,7 +974,7 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="182"/>
         <source>Dataviz</source>
-        <translation type="unfinished"/>
+        <translation>Dataviz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1165"/>
@@ -1004,12 +1004,12 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Colore</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3476"/>
@@ -1029,7 +1029,7 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="204"/>
         <source>Atlas</source>
-        <translation type="unfinished"/>
+        <translation>Atlante</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="237"/>
@@ -1249,7 +1249,7 @@ Only the selected feature will be visible on the map.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4206"/>
         <source>zoom</source>
-        <translation type="unfinished"/>
+        <translation>zoom</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4211"/>

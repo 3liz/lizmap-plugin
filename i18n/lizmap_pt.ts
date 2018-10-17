@@ -1289,42 +1289,42 @@ Apenas o elemento selecionado será visível no mapa.</translation>
     <message>
         <location filename="lizmap.py" line="622"/>
         <source>Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back</source>
-        <translation type="unfinished"/>
+        <translation>Foram encontrados erros durante a leitura do último estado da árvore de camadas. Por favor, configure novamente todas as opções no separador Camadas. O ficheiro .cfg anterior foi guardado como .cfg.back</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Editing Z/M Values</source>
-        <translation type="unfinished"/>
+        <translation>Edição de Valores Z/M</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Be careful, editing this layer with Lizmap will set the Z and M to 0.</source>
-        <translation type="unfinished"/>
+        <translation>Atenção, ao editar esta camada o Lizmap irá definir zero como valor para Z e M.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2354"/>
         <source>Please do not forget to save the QGIS project before publishing your map</source>
-        <translation type="unfinished"/>
+        <translation>Por favor, não se esqueça de guardar o projeto QGIS antes de publicar seu mapa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1627"/>
         <source>ThunderForest</source>
-        <translation type="unfinished"/>
+        <translation>ThunderForest</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1634"/>
         <source>Open Cycle Map</source>
-        <translation type="unfinished"/>
+        <translation>Open Cycle Map</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3420"/>
         <source>Only show child</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar apenas subordinado</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar apenas na popup subordinada</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3326"/>

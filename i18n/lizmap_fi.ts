@@ -1006,7 +1006,7 @@ Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Tyyppi</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>

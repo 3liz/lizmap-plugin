@@ -1284,42 +1284,42 @@ Só a entidade seleccionada será visible no mapa.</translation>
     <message>
         <location filename="lizmap.py" line="622"/>
         <source>Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back</source>
-        <translation type="unfinished"/>
+        <translation>Atopáronse erros na lectura do estado da última árbores de capas. Configure completamente de novo as opcións na lapela Capas. Os .cfg previos gardáronse como .cfg.back</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Editing Z/M Values</source>
-        <translation type="unfinished"/>
+        <translation>Editar Valores Z/M</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Be careful, editing this layer with Lizmap will set the Z and M to 0.</source>
-        <translation type="unfinished"/>
+        <translation>Teña coidado, editar esta capa con Lizmap establecerá os valores Z e M a 0.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2354"/>
         <source>Please do not forget to save the QGIS project before publishing your map</source>
-        <translation type="unfinished"/>
+        <translation>Non esqueza gardar o proxecto QGIS antes de publicar o seu mapa</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1627"/>
         <source>ThunderForest</source>
-        <translation type="unfinished"/>
+        <translation>ThunderForest</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1634"/>
         <source>Open Cycle Map</source>
-        <translation type="unfinished"/>
+        <translation>Open Cycle Map</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3420"/>
         <source>Only show child</source>
-        <translation type="unfinished"/>
+        <translation>Só amosar as aniñadas</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
-        <translation type="unfinished"/>
+        <translation>Amosar só as aniñadas na xanela emerxente</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3326"/>

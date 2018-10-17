@@ -899,7 +899,7 @@ Only the selected feature will be visible on the map </translation>
     <message>
         <location filename="ui_lizmap.ui" line="997"/>
         <source>Legend</source>
-        <translation type="unfinished"/>
+        <translation>Υπόμνημα</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1078"/>

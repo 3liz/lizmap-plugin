@@ -898,7 +898,7 @@ Nur das ausgewählte Objekt wird in der Karte sichtbar sein.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="997"/>
         <source>Legend</source>
-        <translation type="unfinished"/>
+        <translation>Legende</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1078"/>
@@ -1003,7 +1003,7 @@ Nur das ausgewählte Objekt wird in der Karte sichtbar sein.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>

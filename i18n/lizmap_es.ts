@@ -1005,7 +1005,7 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>
