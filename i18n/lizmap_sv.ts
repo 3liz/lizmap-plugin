@@ -900,7 +900,7 @@ Endast valt feature kommer att synas på kartan.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="997"/>
         <source>Legend</source>
-        <translation type="unfinished"/>
+        <translation>Teckenförklaring</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1078"/>
@@ -1005,7 +1005,7 @@ Endast valt feature kommer att synas på kartan.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Skriv</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>

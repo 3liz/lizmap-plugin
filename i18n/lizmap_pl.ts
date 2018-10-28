@@ -1130,22 +1130,22 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3561"/>
         <source>avg</source>
-        <translation type="unfinished"/>
+        <translation>avg</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3566"/>
         <source>sum</source>
-        <translation type="unfinished"/>
+        <translation>sum</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3571"/>
         <source>count</source>
-        <translation type="unfinished"/>
+        <translation>count</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3576"/>
         <source>median</source>
-        <translation type="unfinished"/>
+        <translation>median</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3581"/>
