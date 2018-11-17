@@ -1174,6 +1174,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                              <property name="value">
                               <number>10</number>
                              </property>
+                             <property name="maximum">
+                              <number>199</number>
+                             </property>
                             </widget>
                            </item>
                            <item>
