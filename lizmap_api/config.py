@@ -53,7 +53,7 @@ import collections
 
 
 
-class LizmapConfigError(Exception): 
+class LizmapConfigError(Exception):
     pass
 
 
@@ -329,6 +329,13 @@ class LizmapConfig:
         }
     }
 
+    datavizOptionDefinitions = {
+        'plotType' : {
+            'wType': 'list', 'type': 'string', 'default': 'scatter',
+            'list':['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar']
+        }
+    }
+
     def __init__(self, project, fix_json=False):
         """ Configuration setup
 
@@ -363,7 +370,7 @@ class LizmapConfig:
         if len(matches) > 0:
             return matches[0]
 
-    def to_json(self, p_global_options=None, p_layer_options=None, p_attributes_options=None, 
+    def to_json(self, p_global_options=None, p_layer_options=None, p_attributes_options=None,
                       sort_keys=False,indent=4, **kwargs):
         """ Returns the lizmap JSON configuration
         """
@@ -376,7 +383,7 @@ class LizmapConfig:
 
         if p_attributes_options:
             self.set_layer_attributes(p_attributes_options)
-        
+
         config = {
             'options': self._global_options,
             'layers' : self._layer_options,
@@ -408,7 +415,7 @@ class LizmapConfig:
         # set defaults
         self._global_options = {}
         self._global_options.update((k,v['default']) for k,v in self.globalOptionDefinitions.items() if v.get('_api',True))
-      
+
         # Set custom options
         if options is not None:
             self._global_options.update((k,v) for k,v in options.items() if k in self.globalOptionDefinitions)
@@ -451,7 +458,7 @@ class LizmapConfig:
                         lExtent.yMinimum(),
                         lExtent.xMaximum(),
                         lExtent.yMaximum()]
-    
+
         lo['crs'] = layer.crs().authid()
 
         # styles
@@ -461,7 +468,7 @@ class LizmapConfig:
                 lo['styles'] = ls
 
         # Override with passed p_layer_options parameter
-        lo.update( (k,v) for k,v in options if k in self.layerOptionDefinitions ) 
+        lo.update( (k,v) for k,v in options if k in self.layerOptionDefinitions )
 
         # The folowing should not be overrided
         lo['id']   = layer.id()
@@ -482,7 +489,7 @@ class LizmapConfig:
 
             :param p_layer_options: dict of options for each layers
                     if p_layer options is None, add all layers otherwise add layer for
-                    all layer names specified in p_layer_options 
+                    all layer names specified in p_layer_options
         """
         self._layer_options = {}
 
@@ -494,7 +501,7 @@ class LizmapConfig:
                 layer = self.get_layer_by_name(lname)
                 if layer:
                     self.add_layer( layer, **options)
-       
+
         return self._layer_options
 
     def hasWFSCapabilities( self, layer ):
@@ -509,9 +516,9 @@ class LizmapConfig:
         # Check that the layer has WFS enabled
         if not self.hasWFSCapabilities(layer):
             raise LizmapConfigError("WFS Required for layer %s" % layer.name())
-        
+
         lyr_name  = layer.name()
-        lyr_attrs = self._layer_attributes.get(lyr_name) 
+        lyr_attrs = self._layer_attributes.get(lyr_name)
         if lyr_attrs is None:
             lyr_attrs = { 'order': len(self._layer_attributes) }
 
@@ -530,7 +537,7 @@ class LizmapConfig:
             layer = self.get_layer_by_name(lname)
             if layer:
                 self.publish_layer_attribute_table(layer, **options)
-  
+
     def set_title( self, title ):
         """ Set WMS title
         """
@@ -552,13 +559,13 @@ class LizmapConfig:
 
             The method will set WMS/WMS publication options for the layers in the project
         """
-        if WMSTitle is not None: 
+        if WMSTitle is not None:
             self.set_title(WMSTitle)
         if WMSDescription is not None:
             self.set_description(WMSDescription)
         if WMSExtent is not None:
             self.set_wmsextent(*WMSExtent)
-        
+
         prj = self.project
 
         prj.writeEntry( "WFSLayers", "/", [lid for lid,lyr in prj.mapLayers().items() if lyr.type() == QgsMapLayer.VectorLayer] )
@@ -574,7 +581,7 @@ class LizmapConfig:
     def from_template(self, template, context = {}, **kwargs ):
         """ Read a configuration from a jinja2 template
         """
-        # set context 
+        # set context
         ctx = dict(context)
         layers = self.project.mapLayers().values()
         ctx['project'] = self.project
@@ -585,7 +592,7 @@ class LizmapConfig:
         with open("/srv/projects/test_lizmap_api/api_output.json","w") as fp:
             fp.write(rendered)
         options = json.loads(template.render(ctx))
-        
+
         return self.to_json( options.get('options'), options.get('layers'), options.get('attributeLayers'),
                              **kwargs)
 
