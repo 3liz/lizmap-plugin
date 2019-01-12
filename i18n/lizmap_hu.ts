@@ -968,12 +968,12 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="127"/>
         <source>Locate by layer</source>
-        <translation type="unfinished"/>
+        <translation>Helymeghatározás réteg alapján</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="182"/>
         <source>Dataviz</source>
-        <translation type="unfinished"/>
+        <translation>Dataviz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1165"/>
@@ -988,17 +988,17 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3285"/>
         <source>Dataviz container</source>
-        <translation type="unfinished"/>
+        <translation>Dataviz /adatvizualizációs/ tároló</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3298"/>
         <source>bottomdock</source>
-        <translation type="unfinished"/>
+        <translation>alsó rögzítési hely</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3303"/>
         <source>right-dock</source>
-        <translation type="unfinished"/>
+        <translation>jobb oldali rögzítési hely</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3511"/>
@@ -1008,17 +1008,17 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Szín</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3476"/>
         <source>bar</source>
-        <translation type="unfinished"/>
+        <translation>oszlop</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3486"/>
         <source>pie</source>
-        <translation type="unfinished"/>
+        <translation>körcikk</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3466"/>
@@ -1028,22 +1028,22 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="204"/>
         <source>Atlas</source>
-        <translation type="unfinished"/>
+        <translation>Atlasz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="237"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt; A kék háttérrel rendelkező beállítási lehetőségek csak a Lizmap Webkliens 3.2-es verziójában használhatók. &lt;span style=&quot; font-weight:600;&quot;&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="378"/>
         <source>Automatic geolocation (Only available in HTTPS)</source>
-        <translation type="unfinished"/>
+        <translation>Automatikus helymeghatározás (Csak HTTPS esetén működik)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3458"/>
         <source>X field</source>
-        <translation type="unfinished"/>
+        <translation>X mező</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3375"/>
@@ -1053,52 +1053,52 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3504"/>
         <source>Y field</source>
-        <translation type="unfinished"/>
+        <translation>Y mező</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3390"/>
         <source>Color field</source>
-        <translation type="unfinished"/>
+        <translation>Szín mező</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3395"/>
         <source>Second Y field ?</source>
-        <translation type="unfinished"/>
+        <translation>Második Y mező?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3400"/>
         <source>Y Field 2</source>
-        <translation type="unfinished"/>
+        <translation>Y mező 2</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3405"/>
         <source>Color 2</source>
-        <translation type="unfinished"/>
+        <translation>Szín 2</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3410"/>
         <source>Color field 2</source>
-        <translation type="unfinished"/>
+        <translation>Szín mező 2</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3415"/>
         <source>Popup for main layer</source>
-        <translation type="unfinished"/>
+        <translation>Az alap-réteg felugróablaka.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3425"/>
         <source>Popup for children</source>
-        <translation type="unfinished"/>
+        <translation>A leszármazottak felugróablaka.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3435"/>
         <source>Plot Id</source>
-        <translation type="unfinished"/>
+        <translation>Plot Id</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3448"/>
         <source>2nd Y field</source>
-        <translation type="unfinished"/>
+        <translation>2. Y mező</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3471"/>
@@ -1108,12 +1108,12 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3481"/>
         <source>histogram</source>
-        <translation type="unfinished"/>
+        <translation>hisztogram</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3491"/>
         <source>histogram2d</source>
-        <translation type="unfinished"/>
+        <translation>hisztogram 2d</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3496"/>
@@ -1123,62 +1123,62 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3548"/>
         <source>Group ?</source>
-        <translation type="unfinished"/>
+        <translation>Csoport ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3561"/>
         <source>avg</source>
-        <translation type="unfinished"/>
+        <translation>avg</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3566"/>
         <source>sum</source>
-        <translation type="unfinished"/>
+        <translation>sum</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3571"/>
         <source>count</source>
-        <translation type="unfinished"/>
+        <translation>count</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3576"/>
         <source>median</source>
-        <translation type="unfinished"/>
+        <translation>median</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3581"/>
         <source>stddev</source>
-        <translation type="unfinished"/>
+        <translation>stddev</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3586"/>
         <source>min</source>
-        <translation type="unfinished"/>
+        <translation>min</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3591"/>
         <source>max</source>
-        <translation type="unfinished"/>
+        <translation>max</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3596"/>
         <source>first</source>
-        <translation type="unfinished"/>
+        <translation>első</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3601"/>
         <source>last</source>
-        <translation type="unfinished"/>
+        <translation>utolsó</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3662"/>
         <source>Color field 2 ?</source>
-        <translation type="unfinished"/>
+        <translation>Szín mező 2 ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3669"/>
         <source>Color field ?</source>
-        <translation type="unfinished"/>
+        <translation>Szín mező ?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3678"/>
@@ -1198,12 +1198,12 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4076"/>
         <source>Layer options</source>
-        <translation type="unfinished"/>
+        <translation>Réteg-beállítások</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4087"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished"/>
+        <translation>Zoom az elemre</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4094"/>
@@ -1213,17 +1213,17 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4111"/>
         <source>Atlas layer</source>
-        <translation type="unfinished"/>
+        <translation>Atlasz réteg</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4118"/>
         <source>Feature label</source>
-        <translation type="unfinished"/>
+        <translation>Elem-címke</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4125"/>
         <source>Display popup</source>
-        <translation type="unfinished"/>
+        <translation>Felugró ablak mutatása</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4149"/>
@@ -1248,37 +1248,37 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4206"/>
         <source>zoom</source>
-        <translation type="unfinished"/>
+        <translation>zoom</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4211"/>
         <source>center</source>
-        <translation type="unfinished"/>
+        <translation>középpont</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4219"/>
         <source>Layer primary key (must be integer for PostgreSQL)</source>
-        <translation type="unfinished"/>
+        <translation>Réteg elsődleges kulcs (PostgreSQL-ben kötelezően egész szám típus /integer/)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4234"/>
         <source>Atlas options</source>
-        <translation type="unfinished"/>
+        <translation>Atlasz beállítások</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4242"/>
         <source>Step duration (seconds)</source>
-        <translation type="unfinished"/>
+        <translation>Léptetés időtartama (másodperc)</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4249"/>
         <source>Show atlas tool on startup</source>
-        <translation type="unfinished"/>
+        <translation>Atlasz mutatása betöltéskor</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4276"/>
         <source>Auto-play on startup</source>
-        <translation type="unfinished"/>
+        <translation>Automatikus lejátszás betöltéskor</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4290"/>
@@ -1293,37 +1293,37 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Editing Z/M Values</source>
-        <translation type="unfinished"/>
+        <translation>A Z/M értékek módosítása</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Be careful, editing this layer with Lizmap will set the Z and M to 0.</source>
-        <translation type="unfinished"/>
+        <translation>Legyen óvatos, a réteg módosításával a Lizmap a Z és M értékeket 0-ra fogja állítani.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2354"/>
         <source>Please do not forget to save the QGIS project before publishing your map</source>
-        <translation type="unfinished"/>
+        <translation>Ne feledje elmenteni a QGIS projektet a térkép publikálása előtt</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1627"/>
         <source>ThunderForest</source>
-        <translation type="unfinished"/>
+        <translation>ThunderForest</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1634"/>
         <source>Open Cycle Map</source>
-        <translation type="unfinished"/>
+        <translation>Open Cycle Map</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3420"/>
         <source>Only show child</source>
-        <translation type="unfinished"/>
+        <translation>Csak a leszármazottak mutatása</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
-        <translation type="unfinished"/>
+        <translation>Mutatás csak a leszármazott-felugróablakban.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3326"/>

@@ -1028,7 +1028,7 @@ Nur das ausgewählte Objekt wird in der Karte sichtbar sein.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="204"/>
         <source>Atlas</source>
-        <translation type="unfinished"/>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="237"/>
