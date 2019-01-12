@@ -1150,17 +1150,17 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3581"/>
         <source>stddev</source>
-        <translation type="unfinished"/>
+        <translation>stddev</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3586"/>
         <source>min</source>
-        <translation type="unfinished"/>
+        <translation>min</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3591"/>
         <source>max</source>
-        <translation type="unfinished"/>
+        <translation>max</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3596"/>
@@ -1290,42 +1290,42 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="lizmap.py" line="622"/>
         <source>Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back</source>
-        <translation type="unfinished"/>
+        <translation>Napotkano błędy podczas odczytu stanu ostatniej warstwy. Proszę, przekonfiguruj opcje w karcie Warstw. Stary plik .cfg zostanie zapisany jako .cfg.back</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Editing Z/M Values</source>
-        <translation type="unfinished"/>
+        <translation>Edycja wartości Z/M</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="1300"/>
         <source>Be careful, editing this layer with Lizmap will set the Z and M to 0.</source>
-        <translation type="unfinished"/>
+        <translation>Ostrożnie! Edycja tej warstwy ustawi wartości Z i M na 0.</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="2354"/>
         <source>Please do not forget to save the QGIS project before publishing your map</source>
-        <translation type="unfinished"/>
+        <translation>Proszę, nie zapomnij zapisać projektu QGIS przed publikacją swojej mapy</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1627"/>
         <source>ThunderForest</source>
-        <translation type="unfinished"/>
+        <translation>ThunderForest</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1634"/>
         <source>Open Cycle Map</source>
-        <translation type="unfinished"/>
+        <translation>Open Cycle Map</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3420"/>
         <source>Only show child</source>
-        <translation type="unfinished"/>
+        <translation>Pokaż tylko dzieci</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3685"/>
         <source>Only show in child popup</source>
-        <translation type="unfinished"/>
+        <translation>Pokaż tylko dzieci w okienku</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3326"/>
