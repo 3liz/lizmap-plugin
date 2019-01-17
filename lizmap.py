@@ -2377,7 +2377,7 @@ class lizmap(object):
             return None
 
         # Split WMS parameters
-        wmsParams = dict([ [b for b in a.split('=') ] for a in uri.split('&')])
+        wmsParams = dict((p.split('=')+[''])[:2] for p in uri.split('&'))
 
         # urldecode WMS url
         wmsParams['url'] = urllib.parse.unquote(wmsParams['url']).replace('&&', '&').replace('==','=')
