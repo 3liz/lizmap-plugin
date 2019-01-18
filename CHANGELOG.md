@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## Version 3.0.1
+
+* [FEATURE] auto add the link from metadataUrl in QGIS
+* [FEATURE] Api: new class to get lizmap JSON config from project
+* [FEATURE] Add open cycle map as base layer
+* Dataviz - Fix plot type localized list
+* Update popup max features maximum constraint to 199
+* Fix - Enable popup configuration of a project layer
+* Add command line tool for generating config with API
+* Add a warning about losing Z M values
+* Install lizmap api as standard python package
+* Add Brazilian, Dutch, Hungarian, Norwegian, Romanian, Czech and Slovenian locales
+* Update locales German, French, Italian, Polish, Swedish and Hungarian
+
 ## Version 3.0.0
 
 * First version of lizmap plugin for QGIS 3 created from the version 2.4.1 for QGIS 2
