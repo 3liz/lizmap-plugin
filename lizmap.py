@@ -2469,7 +2469,7 @@ class lizmap:
                 ptitle = str(lblTableWidget.item(row, 1).text().encode('utf-8'))
                 ptype = str(lblTableWidget.item(row, 2).text().encode('utf-8'))
                 pxfields = str(lblTableWidget.item(row, 3).text().encode('utf-8'))
-                paggregation = str(lblTableWidget.item(row, 4).text())
+                paggregation = str(lblTableWidget.item(row, 4).text().encode('utf-8'))
                 pyfields = str(lblTableWidget.item(row, 5).text().encode('utf-8'))
                 pcolor = str(lblTableWidget.item(row, 6).text().encode('utf-8'))
                 colorfield = str(lblTableWidget.item(row, 7).text().encode('utf-8'))
