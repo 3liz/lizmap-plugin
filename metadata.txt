@@ -6,18 +6,21 @@ qgisMaximumVersion=2.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
 category=Web
-version=version 2.4.1
+version=version 2.4.2
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 2.4.1
-  * Do not save project from lizmap plugin but let the user do it
-  * Fix icons in plugin manager, remove unused imports
-  * UI - fix issue with qgscollapsiblegroupbox import
-  * Update locales
-  * Change of default mode of popup source to 'auto'
-  * Dataviz - add of a button in Dataviz who permit you to hide parent plot
+  Version 2.4.2
+  * Feature - Auto add the link from metadataUrl in QGIS
+  * Feature - Add open cycle map
+  * Dataviz - Fix encoding bug with plot title
+  * Use compiled UI file on the fly
+  * Dataviz - Fix plot type with translated values
+  * Update popup max features maximum constraint to 199
+  * Add Brazilian, Dutch, Hungarian, Norwegian, Romanian, Czech and Slovenian locales
+  * Update locales German, French, Italian, Polish, Swedish and Hungarian
+  * Fix missing import about help, add languages
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS

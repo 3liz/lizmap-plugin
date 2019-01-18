@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## Version 2.4.2
+
+* Feature - Auto add the link from metadataUrl in QGIS
+* Feature - Add open cycle map
+* Dataviz - Fix encoding bug with plot title
+* Use compiled UI file on the fly
+* Dataviz - Fix plot type with translated values
+* Update popup max features maximum constraint to 199
+* Add Brazilian, Dutch, Hungarian, Norwegian, Romanian, Czech and Slovenian locales
+* Update locales German, French, Italian, Polish, Swedish and Hungarian
+* Fix missing import about help, add languages
+
+
 ## Version 2.4.1
 
 * Do not save project from lizmap plugin but let the user do it
