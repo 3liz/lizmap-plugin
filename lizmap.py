@@ -1642,7 +1642,7 @@ class lizmap(object):
                         # text inputs
                         elif item['wType'] in ('text', 'textarea'):
                             if jsonLayers[jsonKey][key] != '':
-                                if 'isMetadata' in item: # title and abstract
+                                if 'isMetadata' in item: # title and abstract and link
                                     if not keepMetadata:
                                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                                 else:
@@ -1855,10 +1855,10 @@ class lizmap(object):
 
 
     def setLayerMeta(self, item, key):
-        '''Set a the title/abstract Qgis metadata when corresponding item is changed
+        '''Set a the title/abstract/link Qgis metadata when corresponding item is changed
         Used in setLayerProperty'''
         if 'isMetadata' in self.layerOptionsList[key]:
-            # modify the layer.title|abstract() if possible (qgis >= 1.8)
+            # modify the layer.title|abstract|link() if possible
             if self.layerList[item.text(1)]['type'] == 'layer':
                 layer = self.getQgisLayerById(item.text(1))
                 if layer:
@@ -1867,7 +1867,8 @@ class lizmap(object):
                             layer.setTitle(u"%s" % self.layerList[item.text(1)][key])
                         if key == 'abstract':
                             layer.setAbstract(u"%s" % self.layerList[item.text(1)][key])
-
+                        if key == 'link':
+                            layer.setAttributionUrl(u"%s" % self.layerList[item.text(1)][key])
 
     def configurePopup(self):
         '''Open the dialog with a text field to store the popup template for one layer/group'''
