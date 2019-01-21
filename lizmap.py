@@ -1607,8 +1607,8 @@ class lizmap(object):
 
             # layer scale visibility
             if layer.hasScaleBasedVisibility():
-                self.myDic[itemKey]['minScale'] = layer.minimumScale()
-                self.myDic[itemKey]['maxScale'] = layer.maximumScale()
+                self.myDic[itemKey]['minScale'] = layer.maximumScale()
+                self.myDic[itemKey]['maxScale'] = layer.minimumScale()
             # toggled : check if layer is toggled in qgis legend
             #self.myDic[itemKey]['toggled'] = layer.self.iface.legendInterface().isLayerVisible(layer)
             self.myDic[itemKey]['toggled'] = False
