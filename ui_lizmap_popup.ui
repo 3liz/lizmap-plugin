@@ -9,14 +9,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>391</height>
+    <width>743</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Lizmap - Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
+   <property name="margin">
+    <number>6</number>
+   </property>
    <item row="0" column="0">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
@@ -24,19 +27,25 @@
      </property>
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
-       <string>ui.popup.source.label</string>
+       <string>Template for the popup</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
-        <widget class="QTextEdit" name="txtPopup"/>
+        <widget class="QgsCodeEditorHTML" name="txtPopup"/>
        </item>
       </layout>
      </widget>
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
-       <string>ui.popup.html.label</string>
+       <string>Preview</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QTextEdit" name="htmlPopup">
          <property name="enabled">
@@ -60,6 +69,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QTextEdit</extends>
+   <header location="global">qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>txtPopup</tabstop>
   <tabstop>htmlPopup</tabstop>

@@ -1,5 +1,7 @@
-[![logo](icon.png "3Liz")][3liz]Lizmap 1.9.5.1
+[![logo](icon.png "3Liz")][3liz]Lizmap 3.0.1
 ==============================================
+
+**WARNING** the master branch is compatible only with QGIS 3.x from August 23rd 2018. The branch *qgis2* targets QGIS 2.x compatibiliy.
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
 
@@ -20,29 +22,58 @@ The Initial Developer of the Original Code are René-Luc D'Hont <rldhont@3liz.co
 
 Contributors
 --------------
-Salvatore Larosa <lrssvtml@gmail.com>
-Paolo Cavallini
-https://github.com/ewsterrenburg
+
+* Salvatore Larosa  @slarosa
+* Paolo Cavallini @pcav
+* Arnaud Deleurme
+* @ewsterrenburg
+* Sławomir Bienias @SaekBinko
+* Petr Tsymbarovich @mentaljam
+* Víctor Herreros @vherreros
+* João Gaspar
+* Felix Kuehne
+* Kari Salovaara
+* Xan Vieiro
+* Etienne Trimaille @Gustry
+* José Macau
+
+*Please propose a PR to add yourself if you are missing*
 
 Installation
---------------
+-----------
+
+from github repository:
 
 1. Clone the repo: `git clone git@github.com:3liz/lizmap-plugin.git`
-2. `cp lizmap-plugin ~/.qgis/python/plugins`
-3. `cd ~/.qgis/python/plugins ~/.qgis/python/plugins`
+2. `cp lizmap-plugin ~/.qgis2/python/plugins`
+3. `cd ~/.qgis2/python/plugins`
 4. `mv lizmap-plugin lizmap`
 
-or from QGIS
+or from QGIS application:
 
-1. Plugins menu -> Fetch Python Plugins
-2. Select LizMap plugin
-3. Install/Upgrade plugin
+1. Plugins menu -> Manage and Install Plugins...
+2. Select LizMap plugin from Not installed list
+3. Install plugin
 
 Documentation
 --------------
 
 [French doc]: http://docs.3liz.com/
 [English doc translated via Google Translate]: http://translate.google.fr/translate?sl=fr&tl=en&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http%3A%2F%2Fdocs.3liz.Com
+
+Translation
+-----------
+
+You can use the Makefile to update and compile the strings for translation.
+
+```
+# Update strings
+make transup
+
+# Compile
+make transcompile
+
+```
 
 License
 -------
@@ -57,3 +88,66 @@ Software distributed under the License is distributed on an "AS IS" basis, WITHO
 
   [QGIS Server Tutorial]: http://www.qgis.org/wiki/QGIS_Server_Tutorial
   [3liz]:http://www.3liz.com
+
+API
+----
+
+You can use the `lizmap_api` class of `lizmap.py` to get the Lizmap JSON configuration for a specific project.
+
+For example:
+
+```python3
+import sys,os
+qgisPrefixPath = "/usr/local/"
+sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/"))
+sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/plugins/"))
+os.environ["QGIS_DEBUG"] = '-1'
+os.environ['QGIS_PREFIX_PATH'] = qgisPrefixPath
+
+from qgis.core import QgsApplication
+QgsApplication.setPrefixPath(qgisPrefixPath, True)
+app = QgsApplication([], False)
+app.initQgis()
+
+# Run the lizmap config exporter
+from lizmap import lizmap
+project_path = '/home/mdouchin/test_a_sup.qgs'
+lv = lizmap.LizmapConfig(project_path)
+if lv:
+    # get the JSON content with default values
+    json_content = lv.to_json()
+
+    # OR:
+
+    # get the JSON content with user defined values
+    my_global_options = {
+        'mapScales': [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000], # set the map scales
+        'osmMapnik': True, # add the OSM mapnik baselayer
+        'osmStamenToner': True, # add the OSM Stamen Toner baselayer
+        'print': True # activate the print tool
+    }
+    my_layer_options = {
+        'MY LAYER NAME': {
+            'title': 'My new title', # change title
+            'popup': True, # active popup
+            'cached': True, # activate server cache
+            'singleTile': False, # set tiled mode on
+            'imageFormat': "image/jpeg", # set image format
+            'toggled': False # do not display the layer at project startup
+        }
+    }
+    json_content = lv.to_json(
+        p_global_options=my_global_options,
+        p_layer_options=my_layer_options
+    )
+    print(json_content)
+
+    # get the configuration as dictionary
+    dic_content = lv.lizmap_json_config
+
+# Exit
+QgsApplication.exitQgis()
+app.exit()
+```
+
+

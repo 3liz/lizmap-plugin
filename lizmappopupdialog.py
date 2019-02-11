@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  lizmapDialog
@@ -45,12 +44,16 @@
  ***** END LICENSE BLOCK ***** */
 """
 
-from PyQt4 import QtCore, QtGui
-from ui_lizmap_popup import Ui_lizmap_popup
+from os.path import join, dirname
+
+from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt import uic
+
+FORM_CLASS, _ = uic.loadUiType(join(dirname(__file__), 'ui_lizmap_popup.ui'))
+
+
 # create the dialog for zoom to point
-class lizmapPopupDialog(QtGui.QDialog):
+class lizmapPopupDialog(QDialog, FORM_CLASS):
     def __init__(self):
-        QtGui.QDialog.__init__(self)
-        # Set up the user interface from Designer.
-        self.ui = Ui_lizmap_popup()
-        self.ui.setupUi(self)
+        QDialog.__init__(self)
+        self.setupUi(self)

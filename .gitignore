@@ -5,6 +5,14 @@
 *.swp
 *.pyc
 *.DS_Store
+.idea
 
 lizmap.cfg
+
+.idea/
+
+*.egg-info
+
+build/
+dist/
 

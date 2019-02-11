@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  Lizmap
@@ -46,31 +45,8 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-def name():
-    return "lizmap"
-
-def description():
-    return "Publication plugin for Lizmap web application, by 3liz.com"
-
-def version():
-    return "Version 1.9.5.1"
-
-def icon():
-    return "icon.png"
-
-def qgisMinimumVersion():
-    return "2.0"
-
-def category():
-    return "Web"
-
-def author():
-    return "3liz"
-
-def email():
-    return "mdouchin@3liz.com"
 
 def classFactory(iface):
     # load lizmap class from file lizmap
-    from lizmap import lizmap
+    from .lizmap import lizmap
     return lizmap(iface)
