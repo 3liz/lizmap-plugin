@@ -4,7 +4,7 @@ name=lizmap
 qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
-about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : http://docs.3liz.com
+about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 version=version 3.0.1
 ; end of mandatory metadata
