@@ -978,7 +978,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="1165"/>
         <source>Max features in popup</source>
-        <translation type="unfinished"/>
+        <translation>Elemek maximális száma a felugróablakban.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3270"/>
@@ -1023,7 +1023,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3466"/>
         <source>scatter</source>
-        <translation type="unfinished"/>
+        <translation>szórás</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="204"/>
@@ -1048,7 +1048,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3375"/>
         <source>Aggregation</source>
-        <translation type="unfinished"/>
+        <translation>Halmaz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3504"/>
@@ -1103,7 +1103,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3471"/>
         <source>box</source>
-        <translation type="unfinished"/>
+        <translation>doboz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3481"/>
@@ -1118,7 +1118,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3496"/>
         <source>polar</source>
-        <translation type="unfinished"/>
+        <translation>poláris</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3548"/>
@@ -1193,7 +1193,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4069"/>
         <source>Please use a vector layer with reasonable number of features !</source>
-        <translation type="unfinished"/>
+        <translation>Kérem használjon vektor réteget ésszerű elemszámmal!</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4076"/>
@@ -1208,7 +1208,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4094"/>
         <source>Trigger filter</source>
-        <translation type="unfinished"/>
+        <translation>Szűrő alkalmazása</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4111"/>
@@ -1228,22 +1228,22 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4149"/>
         <source>Display layer description</source>
-        <translation type="unfinished"/>
+        <translation>Rétegleírás mutatása</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4166"/>
         <source>Enable atlas for this project ?</source>
-        <translation type="unfinished"/>
+        <translation>Atlasz engedélyezése a projekthez?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4173"/>
         <source>Highlight geometry</source>
-        <translation type="unfinished"/>
+        <translation>Geometriai elem kiemelése</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4190"/>
         <source>Sort field</source>
-        <translation type="unfinished"/>
+        <translation>Rendezési mező</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4206"/>
@@ -1283,7 +1283,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4290"/>
         <source>Right dock max-width (%)</source>
-        <translation type="unfinished"/>
+        <translation>Jobb oldali rögzítési hely maximális szélessége (%)</translation>
     </message>
     <message>
         <location filename="lizmap.py" line="622"/>
@@ -1328,7 +1328,7 @@ Csak a megadott elemek lesznek láthatóak a térképen.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3326"/>
         <source>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</source>
-        <translation type="unfinished"/>
+        <translation>Opcionális tároló-sablon (HTML with Bootstrap, használja a plot id-t pl: $1)</translation>
     </message>
 </context>
 <context>

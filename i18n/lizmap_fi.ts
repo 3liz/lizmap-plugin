@@ -976,7 +976,7 @@ Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="182"/>
         <source>Dataviz</source>
-        <translation type="unfinished"/>
+        <translation>Dataviz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1165"/>
@@ -1031,7 +1031,7 @@ Ainoastaan valitut ominaisuudet ovat näkyvissä kartalla.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="204"/>
         <source>Atlas</source>
-        <translation type="unfinished"/>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="237"/>
