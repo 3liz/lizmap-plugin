@@ -258,6 +258,7 @@ class lizmap(object):
 
         self.datavizOptions = LizmapConfig.datavizOptionDefinitions
         self.datavizOptions['plotType']['widget'] = self.dlg.liDatavizPlotType
+        self.datavizOptions['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
 
         # map qgis geometry type
         self.mapQgisGeometryType = {
@@ -1506,7 +1507,7 @@ class lizmap(object):
         ptype = self.dlg.liDatavizPlotType.itemData(self.dlg.liDatavizPlotType.currentIndex())
         pxfields = str(self.dlg.inDatavizPlotXfield.currentField())
         pyfields = str(self.dlg.inDatavizPlotYfield.currentField())
-        aggregation = self.dlg.liDatavizAggregation.currentText()
+        aggregation = self.dlg.liDatavizAggregation.itemData(self.dlg.liDatavizAggregation.currentIndex())
 
         color = self.dlg.inDatavizPlotColor.color()
         colorfield = ''

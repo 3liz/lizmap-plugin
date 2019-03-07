@@ -333,6 +333,10 @@ class LizmapConfig:
         'plotType' : {
             'wType': 'list', 'type': 'string', 'default': 'scatter',
             'list':['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar']
+        },
+        'plotAggregation' : {
+            'wType': 'list', 'type': 'string', 'default': '',
+            'list':['', 'avg', 'sum', 'count', 'median', 'stddev', 'min', 'max', 'first', 'last']
         }
     }
 
