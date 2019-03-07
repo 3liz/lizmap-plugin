@@ -515,6 +515,10 @@ class lizmap:
             'plotType' : {
                 'widget': self.dlg.liDatavizPlotType,
                 'wType': 'list', 'type': 'string', 'default': 'scatter', 'list':['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar']
+            },
+            'plotAggregation' : {
+                'widget': self.dlg.liDatavizAggregation,
+                'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'avg', 'sum', 'count', 'median', 'stddev', 'min', 'max', 'first', 'last']
             }
         }
 
@@ -1766,7 +1770,7 @@ class lizmap:
         layerId = layer.id()
 
         pxfields = str(self.dlg.inDatavizPlotXfield.currentField().encode('utf-8'))
-        aggregation = self.dlg.liDatavizAggregation.currentText()
+        aggregation = self.dlg.liDatavizAggregation.itemData(self.dlg.liDatavizAggregation.currentIndex())
 
         pyfields = str(self.dlg.inDatavizPlotYfield.currentField().encode('utf-8'))
         color = self.dlg.inDatavizPlotColor.color()
