@@ -975,7 +975,7 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="182"/>
         <source>Dataviz</source>
-        <translation type="unfinished"/>
+        <translation>Visualización de datos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="1165"/>
@@ -1010,12 +1010,12 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3655"/>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Color</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3476"/>
         <source>bar</source>
-        <translation type="unfinished"/>
+        <translation>barra</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3486"/>
@@ -1030,7 +1030,7 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="204"/>
         <source>Atlas</source>
-        <translation type="unfinished"/>
+        <translation>Atlas</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="237"/>
@@ -1045,7 +1045,7 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3458"/>
         <source>X field</source>
-        <translation type="unfinished"/>
+        <translation>campo X</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3375"/>
@@ -1055,12 +1055,12 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="3504"/>
         <source>Y field</source>
-        <translation type="unfinished"/>
+        <translation>campo Y</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3390"/>
         <source>Color field</source>
-        <translation type="unfinished"/>
+        <translation>campo Color</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="3395"/>
@@ -1235,7 +1235,7 @@ En el mapa sólo será visible la característica seleccionada.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4166"/>
         <source>Enable atlas for this project ?</source>
-        <translation type="unfinished"/>
+        <translation>¿Permitir Atlas en este proyecto?</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4173"/>
