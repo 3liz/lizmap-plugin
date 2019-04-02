@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 2.4.3
+
+* Update Spanish, Italian, Czech, Finnish and Hungarian locales
+* Bugfix dataviz plot aggregation localize list
+
+
 ## Version 2.4.2
 
 * Feature - Auto add the link from metadataUrl in QGIS
