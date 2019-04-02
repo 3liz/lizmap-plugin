@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Version 3.0.2
+
+* Update Czech, Finnish, Hungarian, Spanish and Italian locales
+* [Bugfix] dataviz plot aggregation localize list
+* [Bugfix] support wms urls thet have parameters with no =
+* [Bugfix] fix #122 with reversed min and maxscales
+
 ## Version 3.0.1
 
 * [FEATURE] auto add the link from metadataUrl in QGIS
