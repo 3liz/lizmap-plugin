@@ -46,7 +46,8 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
+
 def classFactory(iface):
     # load lizmap class from file lizmap
-    from .lizmap import lizmap
-    return lizmap(iface)
+    from .lizmap import Lizmap
+    return Lizmap(iface)
