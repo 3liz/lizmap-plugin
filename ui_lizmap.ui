@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1036</width>
-    <height>845</height>
+    <width>1047</width>
+    <height>970</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -221,13 +221,18 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Log</string>
+           <string>Filter data with form</string>
           </property>
           <property name="icon">
            <iconset>
-            <normalon>:/plugins/lizmap/icons/03-metadata-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/03-metadata-dark.png</selectedon>
+            <normalon>:/plugins/lizmap/icons/filter-icon-white.png</normalon>
+            <selectedon>:/plugins/lizmap/icons/filter-icon-dark.png</selectedon>
            </iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Log</string>
           </property>
          </item>
         </widget>
@@ -316,8 +321,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>820</width>
-                <height>884</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -881,8 +886,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -960,8 +965,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>514</width>
-                       <height>813</height>
+                       <width>481</width>
+                       <height>875</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1581,8 +1586,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2281,8 +2286,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>755</width>
+                <height>361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2564,8 +2569,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>480</width>
+                <height>416</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2785,8 +2790,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>736</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2999,8 +3004,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>421</width>
+                <height>393</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3203,8 +3208,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>859</height>
+                <width>326</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3348,8 +3353,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>802</width>
-                <height>866</height>
+                <width>596</width>
+                <height>885</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3697,14 +3702,14 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="11" column="3">
                   <widget class="QgsColorButton" name="inDatavizPlotColor">
-                   <property name="color" stdset="0">
+                   <property name="color">
                     <color>
                      <red>0</red>
                      <green>170</green>
                      <blue>255</blue>
                     </color>
                    </property>
-                   <property name="defaultColor" stdset="0">
+                   <property name="defaultColor">
                     <color>
                      <red>0</red>
                      <green>170</green>
@@ -3725,14 +3730,14 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="13" column="3">
                   <widget class="QgsColorButton" name="inDatavizPlotColor2">
-                   <property name="color" stdset="0">
+                   <property name="color">
                     <color>
                      <red>255</red>
                      <green>170</green>
                      <blue>0</blue>
                     </color>
                    </property>
-                   <property name="defaultColor" stdset="0">
+                   <property name="defaultColor">
                     <color>
                      <red>255</red>
                      <green>170</green>
@@ -3842,8 +3847,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>820</width>
-                <height>884</height>
+                <width>442</width>
+                <height>466</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4146,8 +4151,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>800</width>
-                <height>864</height>
+                <width>485</width>
+                <height>627</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4432,6 +4437,278 @@ Only the selected feature will be visible on the map.</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page_3">
+          <layout class="QVBoxLayout" name="verticalLayout_45">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_13">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_13">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>749</width>
+                <height>901</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_46">
+               <item>
+                <widget class="QLabel" name="label_99">
+                 <property name="styleSheet">
+                  <string notr="true">background-color:rgb(170, 255, 255);</string>
+                 </property>
+                 <property name="text">
+                  <string>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="twFormFilterLayers">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+                 </property>
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <column>
+                  <property name="text">
+                   <string>Layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Title</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Type</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Field</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Min date</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Max date</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Format</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Splitter</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Provider</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Layer id</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>order</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayout_6">
+                 <item row="5" column="2">
+                  <widget class="QComboBox" name="liFormFilterFieldType">
+                   <item>
+                    <property name="text">
+                     <string>Text</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Unique values</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Numeric</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Date</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="10" column="2">
+                  <widget class="QLineEdit" name="liFormFilterSplitter"/>
+                 </item>
+                 <item row="8" column="2">
+                  <widget class="QgsFieldComboBox" name="liFormFilterMaxDate">
+                   <property name="allowEmptyFieldName">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="label_107">
+                   <property name="text">
+                    <string>Min date</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_104">
+                   <property name="text">
+                    <string>Title</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="label_106">
+                   <property name="text">
+                    <string>Max date</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLabel" name="label_102">
+                   <property name="text">
+                    <string>Type</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="2">
+                  <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
+                   <property name="allowEmptyFieldName">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="2">
+                  <widget class="QComboBox" name="liFormFilterFormat">
+                   <item>
+                    <property name="text">
+                     <string>Checkboxes</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Combo box</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="label_100">
+                   <property name="text">
+                    <string>Field</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
+                  <widget class="QLabel" name="label_101">
+                   <property name="text">
+                    <string>Format</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="label_105">
+                   <property name="text">
+                    <string>Splitter</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="2">
+                  <widget class="QgsFieldComboBox" name="liFormFilterField">
+                   <property name="allowEmptyFieldName">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_103">
+                   <property name="text">
+                    <string>Layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QgsMapLayerComboBox" name="liFormFilterLayer"/>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QLineEdit" name="inFormFilterFieldTitle"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_38">
+                 <item>
+                  <widget class="QPushButton" name="btFormFilterAddField">
+                   <property name="text">
+                    <string>Add layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btFormFilterRemoveField">
+                   <property name="text">
+                    <string>Remove layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_38">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="pageLog">
           <layout class="QVBoxLayout" name="verticalLayout_40">
            <property name="leftMargin">
@@ -4484,23 +4761,23 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgis.gui</header>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
@@ -4683,8 +4960,24 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>atlasMaxWidth</tabstop>
   <tabstop>atlasDuration</tabstop>
   <tabstop>atlasAutoPlay</tabstop>
+  <tabstop>scrollArea_13</tabstop>
+  <tabstop>twFormFilterLayers</tabstop>
+  <tabstop>liFormFilterLayer</tabstop>
+  <tabstop>inFormFilterFieldTitle</tabstop>
+  <tabstop>liFormFilterFieldType</tabstop>
+  <tabstop>liFormFilterField</tabstop>
+  <tabstop>liFormFilterMinDate</tabstop>
+  <tabstop>liFormFilterMaxDate</tabstop>
+  <tabstop>liFormFilterFormat</tabstop>
+  <tabstop>liFormFilterSplitter</tabstop>
+  <tabstop>btFormFilterAddField</tabstop>
+  <tabstop>btFormFilterRemoveField</tabstop>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
+  <tabstop>mGroupBox_2</tabstop>
+  <tabstop>mGroupBox_3</tabstop>
+  <tabstop>mGroupBox_4</tabstop>
+  <tabstop>mGroupBox_5</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -4696,7 +4989,7 @@ Only the selected feature will be visible on the map.</string>
    <hints>
     <hint type="sourcelabel">
      <x>834</x>
-     <y>818</y>
+     <y>952</y>
     </hint>
     <hint type="destinationlabel">
      <x>310</x>
@@ -4727,12 +5020,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>772</x>
-     <y>187</y>
+     <x>378</x>
+     <y>145</y>
     </hint>
     <hint type="destinationlabel">
-     <x>772</x>
-     <y>280</y>
+     <x>378</x>
+     <y>145</y>
     </hint>
    </hints>
   </connection>
@@ -4743,12 +5036,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>772</x>
-     <y>187</y>
+     <x>378</x>
+     <y>145</y>
     </hint>
     <hint type="destinationlabel">
-     <x>772</x>
-     <y>313</y>
+     <x>378</x>
+     <y>145</y>
     </hint>
    </hints>
   </connection>
@@ -4759,12 +5052,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>772</x>
-     <y>187</y>
+     <x>378</x>
+     <y>145</y>
     </hint>
     <hint type="destinationlabel">
-     <x>772</x>
-     <y>220</y>
+     <x>378</x>
+     <y>145</y>
     </hint>
    </hints>
   </connection>
@@ -4775,12 +5068,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>765</x>
-     <y>533</y>
+     <x>377</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>765</x>
-     <y>586</y>
+     <x>377</x>
+     <y>572</y>
     </hint>
    </hints>
   </connection>
@@ -4791,12 +5084,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>765</x>
-     <y>533</y>
+     <x>377</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>765</x>
-     <y>619</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4807,12 +5100,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>765</x>
-     <y>533</y>
+     <x>377</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>765</x>
-     <y>686</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4823,12 +5116,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>400</x>
-     <y>683</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
-     <x>765</x>
-     <y>686</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4839,12 +5132,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>400</x>
-     <y>683</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1020</x>
-     <y>720</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4855,12 +5148,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>765</x>
-     <y>533</y>
+     <x>377</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>765</x>
-     <y>652</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4871,12 +5164,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setLayer(QgsMapLayer*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>765</x>
-     <y>533</y>
+     <x>377</x>
+     <y>544</y>
     </hint>
     <hint type="destinationlabel">
-     <x>765</x>
-     <y>719</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4887,12 +5180,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>331</x>
-     <y>635</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
-     <x>568</x>
-     <y>636</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4903,12 +5196,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>308</x>
-     <y>638</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
-     <x>919</x>
-     <y>637</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4919,12 +5212,12 @@ Only the selected feature will be visible on the map.</string>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>347</x>
-     <y>705</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
-     <x>461</x>
-     <y>707</y>
+     <x>377</x>
+     <y>573</y>
     </hint>
    </hints>
   </connection>
@@ -4935,12 +5228,60 @@ Only the selected feature will be visible on the map.</string>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>312</x>
-     <y>707</y>
+     <x>377</x>
+     <y>573</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>573</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>liFormFilterLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>liFormFilterField</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1017</x>
+     <y>635</y>
     </hint>
     <hint type="destinationlabel">
      <x>937</x>
-     <y>703</y>
+     <y>737</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>liFormFilterLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>liFormFilterMinDate</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1017</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>491</x>
+     <y>774</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>liFormFilterLayer</sender>
+   <signal>layerChanged(QgsMapLayer*)</signal>
+   <receiver>liFormFilterMaxDate</receiver>
+   <slot>setLayer(QgsMapLayer*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1017</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>545</x>
+     <y>800</y>
     </hint>
    </hints>
   </connection>

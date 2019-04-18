@@ -340,6 +340,17 @@ class LizmapConfig:
         }
     }
 
+    formFilterOptionDefinitions = {
+        'type' : {
+            'wType': 'list', 'type': 'string', 'default': 'text',
+            'list':['text', 'uniquevalues', 'numeric', 'date']
+        },
+        'uniqueValuesFormat' : {
+            'wType': 'list', 'type': 'string', 'default': 'checkboxes',
+            'list':['checkboxes', 'select']
+        }
+    }
+
     def __init__(self, project, fix_json=False):
         """ Configuration setup
 
