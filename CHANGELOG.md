@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.0.3
+
+* [FEATURE] Add new tool to configure Form filtering based on db layers
+* automatic fix from PyCharm about PEP8
+* review TAB order in QtDesigner
+
 ## Version 3.0.2
 
 * Update Czech, Finnish, Hungarian, Spanish and Italian locales

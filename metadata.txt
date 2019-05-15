@@ -6,16 +6,15 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=version 3.0.2
+version=version 3.0.3
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 3.0.2
-  * Update Czech, Finnish, Hungarian, Spanish and Italian locales
-  * [Bugfix] dataviz plot aggregation localize list
-  * [Bugfix] support wms urls thet have parameters with no =
-  * [Bugfix] fix #122 with reversed min and maxscales 
+  Version 3.0.3
+  * [FEATURE] Add new tool to configure Form filtering based on db layers
+  * automatic fix from PyCharm about PEP8
+  * review TAB order in QtDesigner
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS
