@@ -7,7 +7,7 @@ from qgispluginbooster.parameters import Parameters
 from qgispluginbooster.release import release
 
 
-class TestTranslation(unittest.TestCase):
+class TestRelease(unittest.TestCase):
 
     def setUp(self):
         arg_dict = yaml.safe_load(open(".qgis-plugin-booster"))

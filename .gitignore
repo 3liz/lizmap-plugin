@@ -4,6 +4,7 @@ docs/_autosummary/
 
 __pycache__/
 *.pyc
+*.tar
 
 qgis_plugin_booster_testing/i18n
 
