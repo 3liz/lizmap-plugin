@@ -52,7 +52,10 @@ class Translation():
                 o=self.parameters.transifex_organization, p=self.parameters.project_slug))
 
     def update_strings(self):
-        cmd = ['pylupdate5', '-noobsolete']
+        """
+        Update TS files from plugin source strings
+        """
+        cmd = [self.parameters.pylupdate5_path, '-noobsolete']
         for ext in ('py', 'ui'):
             for file in glob.glob('{dir}/**/*.{ext}'.format(dir=self.parameters.src_dir, ext=ext), recursive=True):
                 cmd.append(file)
@@ -65,11 +68,23 @@ class Translation():
         else:
             print('Successfuly run pylupdate5: {}'.format(output.stdout))
 
-    def compile_string(self):
-        pass
-
+    def compile_strings(self):
+        """
+        Compile TS file into QM files
+        """
+        cmd = [self.parameters.lrelease_path]
+        for file in glob.glob('{dir}/i18n/*.ts'.format(dir=self.parameters.src_dir)):
+            cmd.append(file)
+        output = subprocess.run(cmd, capture_output=True, text=True)
+        if output.returncode != 0:
+            raise TranslationFailed(output.stderr)
+        else:
+            print('Successfuly run lrelease: {}'.format(output.stdout))
 
     def pull(self):
+        """
+        Pull TS files from Transifex
+        """
         resource = self.__get_resource()
         existing_langs = self._t.list_languages(project_slug=self.parameters.project_slug, resource_slug=resource['slug'])
         existing_langs.remove(self.parameters.translation_source_language)

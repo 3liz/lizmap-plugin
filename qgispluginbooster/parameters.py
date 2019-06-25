@@ -53,6 +53,12 @@ class Parameters:
         The repository URL. Will be deduced if run on Travis.
         Required to create new resources on Transifex.
 
+    lrelease_path: str
+        The path of lrelease executable
+
+    pylupdate5_path: str
+        The path of pylupdate executable
+
 
     """
     def __init__(self, definition: dict):
@@ -68,3 +74,5 @@ class Parameters:
         self.translation_source_language = definition.get('translation_source_language', 'en')
         self.translation_languages = definition.get('translation_languages', {})
         self.repository_url = definition.get('repository_url', 'https://www.github.com/{s}'.format(s=os.environ.get('TRAVIS_REPO_SLUG')))
+        self.lrelease_path = definition.get('lrelease_path', 'lrelease')
+        self.pylupdate5_path = definition.get('pylupdate5_path', 'pylupdate5')

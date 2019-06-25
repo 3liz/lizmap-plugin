@@ -10,3 +10,5 @@ translation_languages:
   - fr
   - it
   - de
+
+lrelease_path: /usr/local/opt/qt5/bin/lrelease

@@ -90,7 +90,7 @@ class Transifex(object):
             url, auth=self.auth, headers={'content-type': 'application/json'},
         )
 
-    def list_resources(self, project_slug):
+    def list_resources(self, project_slug) -> list:
         """
         List all resources in a project
 

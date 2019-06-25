@@ -23,6 +23,7 @@ def release(parameters: Parameters,
     if transifex_token is not None:
         tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
         tr.pull()
+        tr.compile_strings()
 
 
 """

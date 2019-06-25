@@ -28,6 +28,7 @@ class TestTranslation(unittest.TestCase):
 
     def test_pull(self):
         self.t.pull()
+        self.t.compile_strings()
 
 
 if __name__ == '__main__':
