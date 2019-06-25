@@ -10,10 +10,12 @@ def release(parameters: Parameters,
             release_version: str,
             translation: bool = True):
 
+    # set version in metadata
     replace_in_file('{}/metadata.txt'.format(parameters.src_dir),
                     r'^version=.*\$',
                     'version=${}'.format(release_version))
 
+    # replace any DEBUG=False in the plugin main file
     replace_in_file('{d}/{f}'.format(d=parameters.src_dir, f=parameters.plugin_main_file),
                     r'^DEBUG\s*=\s*True',
                     'DEBUG = False')
@@ -21,6 +23,7 @@ def release(parameters: Parameters,
     if translation:
         tr = Translation(parameters, create_project=False)
         tr.pull()
+
 
 """
 if [[ -d .tx ]]; then

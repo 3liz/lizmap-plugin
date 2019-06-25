@@ -4,7 +4,7 @@ import subprocess
 from pytransifex.api import Transifex
 from qgispluginbooster.parameters import Parameters
 from qgispluginbooster.exceptions import TranslationFailed, TransifexNoResource, TransifexManyResources
-from qgispluginbooster.utils import touch_file, fix_pylupdate_encoding
+from qgispluginbooster.utils import touch_file
 
 
 class Translation():
@@ -59,8 +59,10 @@ class Translation():
             raise TranslationFailed(output.stderr)
         else:
             print('Successfuly run pylupdate5: {}'.format(output.stdout))
-        # fix strings are handled as latin-1
-        #fix_pylupdate_encoding(self.ts_file)
+
+    def compile_string(self):
+        pass
+
 
     def pull(self):
         resource = self.__get_resource()
