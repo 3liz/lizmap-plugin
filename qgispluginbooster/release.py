@@ -8,7 +8,7 @@ from qgispluginbooster.utils import replace_in_file
 
 def release(parameters: Parameters,
             release_version: str,
-            translation: bool = True):
+            transifex_token: str = None):
 
     # set version in metadata
     replace_in_file('{}/metadata.txt'.format(parameters.src_dir),
@@ -20,8 +20,8 @@ def release(parameters: Parameters,
                     r'^DEBUG\s*=\s*True',
                     'DEBUG = False')
 
-    if translation:
-        tr = Translation(parameters, create_project=False)
+    if transifex_token is not None:
+        tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
         tr.pull()
 
 

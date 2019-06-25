@@ -8,18 +8,23 @@ from qgispluginbooster.utils import touch_file
 
 
 class Translation():
-    def __init__(self, parameters: Parameters, create_project: bool = True):
+    def __init__(self, parameters: Parameters,
+                 transifex_token: str,
+                 create_project: bool = True):
         """
         Parameters
         ----------
         parameters:
+
+        transifex_token:
+            Transifex API token
 
         create_project:
             if True, it will create the project, resource and language on Transifex
 
         """
         self.parameters = parameters
-        self._t = Transifex(parameters.transifex_token, parameters.transifex_organization, i18n_type='QT')
+        self._t = Transifex(transifex_token, parameters.transifex_organization, i18n_type='QT')
         assert self._t.ping()
         self.ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.src_dir,
                                                           res=self.parameters.project_slug,

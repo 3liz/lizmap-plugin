@@ -17,7 +17,7 @@ class TestTranslation(unittest.TestCase):
         pass
 
     def test_release(self):
-        release(self.parameters, '1.2.3', translation=False)
+        release(self.parameters, '1.2.3')
 
 
 if __name__ == '__main__':

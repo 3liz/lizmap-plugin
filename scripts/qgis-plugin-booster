@@ -20,12 +20,15 @@ if __name__ == "__main__":
     # release
     release_parser = subparsers.add_parser('release', help='release the plugin')
     release_parser.add_argument('release_version', help='The version to be released')
+    release_parser.add_argument('--transifex-token', help='The Transifex API token')
 
     # pull-translation
-    release_parser = subparsers.add_parser('pull-translation', help='release the plugin')
+    pull_tr_parser = subparsers.add_parser('pull-translation', help='release the plugin')
+    pull_tr_parser.add_argument('transifex_token', help='The Transifex API token')
 
     # push-translation
-    release_parser = subparsers.add_parser('push-translation', help='release the plugin')
+    push_tr_parser = subparsers.add_parser('push-translation', help='release the plugin')
+    push_tr_parser.add_argument('transifex_token', help='The Transifex API token')
 
     args = parser.parse_args()
 
@@ -45,15 +48,15 @@ if __name__ == "__main__":
     parameters = Parameters(arg_dict)
 
     if args.command == 'release':
-        success = release(parameters, release_version=args.release_version)
+        success = release(parameters, release_version=args.release_version, transifex_token=args.transifex_token)
         if not success:
             exit_val = 1
     elif args.command == 'pull-translation':
-            success = Translation(parameters).pull()
+            success = Translation(parameters, args.transifex_token).pull()
             if not success:
                 exit_val = 1
     elif args.command == 'push-translation':
-        success = Translation(parameters).push()
+        success = Translation(parameters, args.transifex_token).push()
         if not success:
             exit_val = 1
 

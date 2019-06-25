@@ -4,6 +4,11 @@ language: python
 python:
   - 3.7
 
+addons:
+  apt:
+    packages:
+      - pyqt5-dev-tools
+
 env:
   global:
   # transifex_token
