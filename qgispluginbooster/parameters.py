@@ -41,9 +41,17 @@ class Parameters:
         The username of the coordinator in Transifex.
         Required to create new languages.
 
+    transifex_organization: str
+        The organization name in Transifex
+        Defaults to: `organization`
+
     translation_source_language:
         The source language for translations.
         Defaults to: 'en'
+
+    repository_url: str
+        The repository URL. Will be deduced if run on Travis.
+        Required to create new resources on Transifex.
 
 
     """
@@ -56,5 +64,7 @@ class Parameters:
         self.project_slug = definition.get('project_slug', os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(slugify(self.plugin_name))).split('/')[1])
         self.transifex_token = definition.get('transifex_token', '')
         self.transifex_coordinator = definition.get('transifex_coordinator', '')
+        self.transifex_organization = definition.get('transifex_organization', self.organization_slug)
         self.translation_source_language = definition.get('translation_source_language', 'en')
         self.translation_languages = definition.get('translation_languages', {})
+        self.repository_url = definition.get('repository_url', 'https://www.github.com/{s}'.format(s=os.environ.get('TRAVIS_REPO_SLUG')))

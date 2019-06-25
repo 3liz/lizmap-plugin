@@ -4,7 +4,7 @@ import subprocess
 from pytransifex.api import Transifex
 from qgispluginbooster.parameters import Parameters
 from qgispluginbooster.exceptions import TranslationFailed, TransifexNoResource, TransifexManyResources
-from qgispluginbooster.utils import touch_file
+from qgispluginbooster.utils import touch_file, fix_pylupdate_encoding
 
 
 class Translation():
@@ -19,34 +19,32 @@ class Translation():
 
         """
         self.parameters = parameters
-        self.t = Transifex(parameters.transifex_token, parameters.organization_slug, i18n_type='QT')
-        assert self.t.ping()
+        self._t = Transifex(parameters.transifex_token, parameters.transifex_organization, i18n_type='QT')
+        assert self._t.ping()
         self.ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.src_dir,
                                                           res=self.parameters.project_slug,
                                                           lan=self.parameters.translation_source_language)
 
-        if self.parameters.project_slug == 'ubercoolx':
-            self.t.delete_projet(self.parameters.project_slug)
-
-        if self.t.project_exists(parameters.project_slug):
-            print('Project {o}/{p} exists on Transifex'.format(o=self.parameters.organization_slug,
+        if self._t.project_exists(parameters.project_slug):
+            print('Project {o}/{p} exists on Transifex'.format(o=self.parameters.transifex_organization,
                                                                p=self.parameters.project_slug))
         elif create_project:
-            print('project does not exists on Transifex, creating one as {o}/{p}'.format(o=self.parameters.organization_slug,
+            print('project does not exists on Transifex, creating one as {o}/{p}'.format(o=self.parameters.transifex_organization,
                                                                                          p=self.parameters.project_slug))
-            self.t.new_project(slug=parameters.project_slug,
-                               repository_url='https://github.com/opengisch',
-                               source_language_code=parameters.translation_source_language)
+            self._t.new_project(slug=parameters.project_slug,
+                                repository_url=self.parameters.repository_url,
+                                source_language_code=parameters.translation_source_language)
             self.update_strings()
-            print('creating resource in {o}/{p} with {f}'.format(o=self.parameters.organization_slug,
+            print('creating resource in {o}/{p} with {f}'.format(o=self.parameters.transifex_organization,
                                                                  p=self.parameters.project_slug,
                                                                  f=self.ts_file))
-            self.t.new_resource(project_slug=self.parameters.project_slug,
-                                path_to_file=self.ts_file,
-                                resource_slug=self.parameters.project_slug)
+            self._t.new_resource(project_slug=self.parameters.project_slug,
+                                 path_to_file=self.ts_file,
+                                 resource_slug=self.parameters.project_slug)
+            print('OK')
         else:
             raise TranslationFailed('Project {o}/{p} does notexists on Transifex'.format(
-                o=self.parameters.organization_slug, p=self.parameters.project_slug))
+                o=self.parameters.transifex_organization, p=self.parameters.project_slug))
 
     def update_strings(self):
         cmd = ['pylupdate5', '-noobsolete']
@@ -61,29 +59,31 @@ class Translation():
             raise TranslationFailed(output.stderr)
         else:
             print('Successfuly run pylupdate5: {}'.format(output.stdout))
+        # fix strings are handled as latin-1
+        #fix_pylupdate_encoding(self.ts_file)
 
     def pull(self):
         resource = self.__get_resource()
-        existing_langs = self.t.list_languages(project_slug=self.parameters.project_slug, resource_slug=resource['slug'])
+        existing_langs = self._t.list_languages(project_slug=self.parameters.project_slug, resource_slug=resource['slug'])
         existing_langs.remove(self.parameters.translation_source_language)
         print('{c} languages found for resource ''{s}'' ({langs})'.format(s=resource['slug'], c=len(existing_langs), langs=existing_langs))
         for lang in self.parameters.translation_languages:
             if lang not in existing_langs:
                 print('creating missing language: {}'.format(lang))
-                self.t.new_language(self.parameters.project_slug, lang, [self.parameters.transifex_coordinator])
+                self._t.new_language(self.parameters.project_slug, lang, [self.parameters.transifex_coordinator])
                 existing_langs.append(lang)
         for lang in existing_langs:
             ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.src_dir,
                                                          res=self.parameters.project_slug,
                                                          lan=lang)
             print('downloading translation file: {}'.format(ts_file))
-            self.t.get_translation(self.parameters.project_slug, resource['slug'], lang, ts_file)
+            self._t.get_translation(self.parameters.project_slug, resource['slug'], lang, ts_file)
 
     def push(self):
         pass
 
     def __get_resource(self) -> dict:
-        resources = self.t.list_resources(self.parameters.project_slug)
+        resources = self._t.list_resources(self.parameters.project_slug)
         if len(resources) == 0:
             raise TransifexNoResource("project '{}' has no resource on Transifex".format(self.parameters.project_slug))
         if len(resources) > 1:

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/swiss_locator">
+        <file>icons/opengisch.png</file>
+    </qresource>
+</RCC>

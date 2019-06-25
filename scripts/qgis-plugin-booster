@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     # release
     release_parser = subparsers.add_parser('release', help='release the plugin')
-    release_parser.add_argument('-v', '--release-version', help='The version to be released')
+    release_parser.add_argument('release_version', help='The version to be released')
 
     # pull-translation
     release_parser = subparsers.add_parser('pull-translation', help='release the plugin')
@@ -42,13 +42,10 @@ if __name__ == "__main__":
     exit_val = 0
 
     arg_dict = yaml.safe_load(open(".qgis-plugin-booster"))
-    for arg in vars(args):
-        arg_dict[arg] = getattr(args, arg)
     parameters = Parameters(arg_dict)
 
     if args.command == 'release':
-        assert parameters.release_version is not None
-        success = release(parameters)
+        success = release(parameters, release_version=args.release_version)
         if not success:
             exit_val = 1
     elif args.command == 'pull-translation':

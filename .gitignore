@@ -5,5 +5,7 @@ docs/_autosummary/
 __pycache__/
 *.pyc
 
+qgis_plugin_booster_testing/i18n
+
 .idea
 .DS_Store

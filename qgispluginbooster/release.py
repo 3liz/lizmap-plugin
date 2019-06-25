@@ -7,11 +7,12 @@ from qgispluginbooster.utils import replace_in_file
 
 
 def release(parameters: Parameters,
+            release_version: str,
             translation: bool = True):
 
     replace_in_file('{}/metadata.txt'.format(parameters.src_dir),
                     r'^version=.*\$',
-                    'version=${}'.format(parameters.release_version))
+                    'version=${}'.format(release_version))
 
     replace_in_file('{d}/{f}'.format(d=parameters.src_dir, f=parameters.plugin_main_file),
                     r'^DEBUG\s*=\s*True',

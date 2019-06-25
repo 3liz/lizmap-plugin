@@ -1,0 +1,24 @@
+
+[general]
+name=QGIS Plugin Booster Testing
+qgisMinimumVersion=3.2
+description=This is a testing plugin for QGIS Plugin Booster
+about=Downloading would be useless
+version=dev
+author=Denis Rouzaud
+email=denis@opengis.ch
+
+# Tags are comma separated with spaces allowed
+tags=
+
+tracker=https://github.com/opengisch/qgis-plugin-booser
+homepage=https://github.com/opengisch/qgis-plugin-booser
+repository=https://github.com/opengisch/qgis-plugin-booser
+
+category=plugins
+
+# experimental flag
+experimental=True
+
+# change icon...
+icon=icons/opengisch.png
