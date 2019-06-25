@@ -1,3 +1,5 @@
 python-slugify
 pyyaml
 requests
+gitpython
+PyQt5

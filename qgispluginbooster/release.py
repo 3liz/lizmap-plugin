@@ -27,13 +27,7 @@ def release(parameters: Parameters,
 
 
 """
-if [[ -d .tx ]]; then
-  # Pull translations from transifx
-  ${DIR}/../translate/pull-transifex-translations.sh
-  ${DIR}/../translate/compile-strings.sh i18n/*.ts
-else
-  echo -e "\033[0;33mNo .tx folder present in repository, not pulling any translations\033[0m"
-fi
+
 
 # Tar up all the static files from the git directory
 echo -e " \e[33mExporting plugin version ${TRAVIS_TAG} from folder ${PLUGIN_SRC_DIR}"
