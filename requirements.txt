@@ -3,3 +3,4 @@ pyyaml
 pytransifex
 gitpython
 PyQt5
+nose2
