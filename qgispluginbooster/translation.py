@@ -1,7 +1,7 @@
 
 import glob
 import subprocess
-from pytransifex.api import Transifex
+from pytransifex import Transifex
 from qgispluginbooster.parameters import Parameters
 from qgispluginbooster.exceptions import TranslationFailed, TransifexNoResource, TransifexManyResources
 from qgispluginbooster.utils import touch_file
@@ -36,14 +36,14 @@ class Translation():
         elif create_project:
             print('project does not exists on Transifex, creating one as {o}/{p}'.format(o=self.parameters.transifex_organization,
                                                                                          p=self.parameters.project_slug))
-            self._t.new_project(slug=parameters.project_slug,
+            self._t.create_project(slug=parameters.project_slug,
                                 repository_url=self.parameters.repository_url,
                                 source_language_code=parameters.translation_source_language)
             self.update_strings()
             print('creating resource in {o}/{p} with {f}'.format(o=self.parameters.transifex_organization,
                                                                  p=self.parameters.project_slug,
                                                                  f=self.ts_file))
-            self._t.new_resource(project_slug=self.parameters.project_slug,
+            self._t.create_resource(project_slug=self.parameters.project_slug,
                                  path_to_file=self.ts_file,
                                  resource_slug=self.parameters.project_slug)
             print('OK')
@@ -92,7 +92,7 @@ class Translation():
         for lang in self.parameters.translation_languages:
             if lang not in existing_langs:
                 print('creating missing language: {}'.format(lang))
-                self._t.new_language(self.parameters.project_slug, lang, [self.parameters.transifex_coordinator])
+                self._t.create_language(self.parameters.project_slug, lang, [self.parameters.transifex_coordinator])
                 existing_langs.append(lang)
         for lang in existing_langs:
             ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.src_dir,

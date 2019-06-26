@@ -6,7 +6,7 @@ import os
 
 from qgispluginbooster.parameters import Parameters
 from qgispluginbooster.translation import Translation
-
+from pytransifex.exceptions import PyTransifexException
 
 class TestTranslation(unittest.TestCase):
 
@@ -18,12 +18,14 @@ class TestTranslation(unittest.TestCase):
         self.t = Translation(self.parameters, transifex_token=self.parameters.transifex_token)
 
     def tearDown(self):
-        pass
-        # self.t._t.delete_projet(self.parameters.project_slug)
+        try:
+            self.t._t.delete_project(self.parameters.project_slug)
+        except PyTransifexException:
+            pass
 
     def test_creation(self):
         self.t = Translation(self.parameters, transifex_token=self.parameters.transifex_token)
-        self.t._t.delete_projet(self.parameters.project_slug)
+        self.tearDown()
         self.t = Translation(self.parameters, transifex_token=self.parameters.transifex_token)
 
     def test_pull(self):

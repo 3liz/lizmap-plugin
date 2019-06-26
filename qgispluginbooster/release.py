@@ -38,25 +38,24 @@ def create_archive(parameters: Parameters, output: str):
 
     repo.git.archive(stash, '--prefix', parameters.src_dir, '-o', output)
 
-    repo.git.submodule('foreach',
+    #repo.git.submodule('foreach',
 
     # read https://ttboj.wordpress.com/2015/07/23/git-archive-with-submodules-and-tar-magic/
     # a = tarfile.open('test.tar.gz', 'a:')
 
-    return
 
-    "git archive --prefix=${PLUGIN_REPO_NAME}/ -o ${CURDIR}/${PLUGIN_REPO_NAME}-${RELEASE_VERSION}.tar ${STASH:-HEAD} ${PLUGIN_SRC_DIR}"
-    g.archive("""--prefix={project_slug}/ 
+"""
+git archive --prefix=${PLUGIN_REPO_NAME}/ -o ${CURDIR}/${PLUGIN_REPO_NAME}-${RELEASE_VERSION}.tar ${STASH:-HEAD} ${PLUGIN_SRC_DIR}"
+    g.archive("--prefix={project_slug}/ 
                  -o {output} 
-                 {stash} {src_dir}""".format(project_slug=parameters.project_slug,
+                 {stash} {src_dir}".format(project_slug=parameters.project_slug,
                                              output=output,
                                              stash=stash,
                                              src_dir=parameters.src_dir))
 
 
-"""
 
- git archive --prefix=qgis-plugin-booster-testing/  -o qgis-plugin-booster-testing-1.2.3.tar  b571cc0c96905fec145bb73b8ca7773a50c9b4f6 qgis_plugin_booster_testing
+
 
 # Tar up all the static files from the git directory
 echo -e " \e[33mExporting plugin version ${TRAVIS_TAG} from folder ${PLUGIN_SRC_DIR}"
