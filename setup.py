@@ -33,6 +33,11 @@ setup(
         'Development Status :: 3 - Alpha'
     ],
     install_requires = [
+        'python-slugify',
+        'pyyaml',
+        'pytransifex',
+        'gitpython',
+        'PyQt5'
     ],
     python_requires=">={vmaj}.{vmin}".format(vmaj=python_min_version[0], vmin=python_min_version[1]),
 )
