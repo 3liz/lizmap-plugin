@@ -16,7 +16,7 @@ setup(
         'qgispluginci'
     ],
     scripts = [
-        'scripts/qgis-'
+        'scripts/qgis-plugin-ci'
     ],
     version = '[VERSION]',
     description = 'Let QGIS-plugin-ci package and release your QGIS plugins for you.',

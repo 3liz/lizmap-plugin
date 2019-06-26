@@ -38,6 +38,8 @@ def create_archive(parameters: Parameters, output: str):
 
     repo.git.archive(stash, '--prefix', parameters.src_dir, '-o', output)
 
+    repo.git.submodule('update', '--init', '--recursive')
+
     #repo.git.submodule('foreach',
 
     # read https://ttboj.wordpress.com/2015/07/23/git-archive-with-submodules-and-tar-magic/
