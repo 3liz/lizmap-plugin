@@ -1,6 +1,6 @@
 
 
-plugin_name: QGIS Plugin Booster Testing
+plugin_name: QGIS Plugin CI Testing
 organization_slug: opengisch
 transifex_token: 1/da2f8eae9ca10b89de78a84ca8ea45a89c34aead
 transifex_coordinator: geoninja

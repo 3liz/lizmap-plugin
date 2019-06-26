@@ -8,6 +8,7 @@ from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
 from pytransifex.exceptions import PyTransifexException
 
+
 class TestTranslation(unittest.TestCase):
 
     def setUp(self):
