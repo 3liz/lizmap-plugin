@@ -1,4 +1,4 @@
-# plugin_ci
+# QGIS Plugin CI
 
 Contains scripts to perform automated testing and deployment for QGIS plugins.
 These scripts are written for and tested on GitHub, Travis-CI and Transifex.

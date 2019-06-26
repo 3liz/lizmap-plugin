@@ -5,7 +5,7 @@ organization_slug: opengisch
 transifex_token: 1/da2f8eae9ca10b89de78a84ca8ea45a89c34aead
 transifex_coordinator: geoninja
 transifex_organization: pytransifex
-repository_url: https://www.github.com/opengisch/qgis-plugin-booster
+repository_url: https://www.github.com/opengisch/qgis-plugin-ci
 translation_languages:
   - fr
   - it

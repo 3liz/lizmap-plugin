@@ -29,5 +29,5 @@ def classFactory(iface):
     :type iface: QgsInterface
     """
     #
-    from .qgis_plugin_booster_testing_plugin import QgisPluginBooster
-    return QgisPluginBooster(iface)
+    from .qgis_plugin_ci_testing_plugin import QgisPluginCiTesting
+    return QgisPluginCiTesting(iface)

@@ -6,7 +6,7 @@ __pycache__/
 *.pyc
 *.tar
 
-qgis_plugin_booster_testing/i18n
+qgis_plugin_ci_testing/i18n
 
 .idea
 .DS_Store

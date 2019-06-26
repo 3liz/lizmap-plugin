@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 
- QGIS Plugin Booster Testing
+ QGIS Plugin CI Testing
  Copyright (C) 2019 Denis Rouzaud
 
  ***************************************************************************/
@@ -25,7 +25,7 @@ from PyQt5.QtCore import QCoreApplication, QLocale, QSettings, QTranslator
 from qgis.gui import QgisInterface
 
 
-class QgisPluginBooster:
+class QgisPluginCiTesting:
 
     def __init__(self, iface: QgisInterface):
         self.iface = iface

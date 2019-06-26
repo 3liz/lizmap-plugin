@@ -4,14 +4,14 @@ import unittest
 import yaml
 import os
 
-from qgispluginbooster.parameters import Parameters
-from qgispluginbooster.translation import Translation
+from qgispluginci.parameters import Parameters
+from qgispluginci.translation import Translation
 from pytransifex.exceptions import PyTransifexException
 
 class TestTranslation(unittest.TestCase):
 
     def setUp(self):
-        arg_dict = yaml.safe_load(open(".qgis-plugin-booster"))
+        arg_dict = yaml.safe_load(open(".qgis-plugin-ci"))
         self.parameters = Parameters(arg_dict)
         self.parameters.transifex_token = os.getenv('transifex_token')
         assert self.parameters.transifex_token is not None

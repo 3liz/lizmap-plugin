@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 import git
-from qgispluginbooster.parameters import Parameters
-from qgispluginbooster.translation import Translation
-from qgispluginbooster.utils import replace_in_file
+from qgispluginci.parameters import Parameters
+from qgispluginci.translation import Translation
+from qgispluginci.utils import replace_in_file
 
 
 def release(parameters: Parameters,

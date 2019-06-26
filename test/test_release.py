@@ -3,14 +3,14 @@
 import unittest
 import yaml
 
-from qgispluginbooster.parameters import Parameters
-from qgispluginbooster.release import release
+from qgispluginci.parameters import Parameters
+from qgispluginci.release import release
 
 
 class TestRelease(unittest.TestCase):
 
     def setUp(self):
-        arg_dict = yaml.safe_load(open(".qgis-plugin-booster"))
+        arg_dict = yaml.safe_load(open(".qgis-plugin-ci"))
         self.parameters = Parameters(arg_dict)
 
     def tearDown(self):

@@ -2,9 +2,9 @@
 
 import argparse
 import yaml
-from qgispluginbooster.release import release
-from qgispluginbooster.translation import Translation
-from qgispluginbooster.parameters import Parameters
+from qgispluginci.release import release
+from qgispluginci.translation import Translation
+from qgispluginci.parameters import Parameters
 
 if __name__ == "__main__":
     """
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", help="print the version and exit", action='store_true')
 
-    subparsers = parser.add_subparsers(title='commands', description='qgis-plugin-booster command', dest='command')
+    subparsers = parser.add_subparsers(title='commands', description='qgis-plugin-ci command', dest='command')
 
     # release
     release_parser = subparsers.add_parser('release', help='release the plugin')
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     # print the version and exit
     if args.version:
-        print('qgis-plugin-booster version: {}'.format('[DEV]'))
+        print('qgis-plugin-ci version: {}'.format('[DEV]'))
         parser.exit()
 
     # if no command is passed, print the help and exit
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     exit_val = 0
 
-    arg_dict = yaml.safe_load(open(".qgis-plugin-booster"))
+    arg_dict = yaml.safe_load(open(".qgis-plugin-ci"))
     parameters = Parameters(arg_dict)
 
     if args.command == 'release':

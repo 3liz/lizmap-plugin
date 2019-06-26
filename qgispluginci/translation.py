@@ -2,9 +2,9 @@
 import glob
 import subprocess
 from pytransifex import Transifex
-from qgispluginbooster.parameters import Parameters
-from qgispluginbooster.exceptions import TranslationFailed, TransifexNoResource, TransifexManyResources
-from qgispluginbooster.utils import touch_file
+from qgispluginci.parameters import Parameters
+from qgispluginci.exceptions import TranslationFailed, TransifexNoResource, TransifexManyResources
+from qgispluginci.utils import touch_file
 
 
 class Translation():

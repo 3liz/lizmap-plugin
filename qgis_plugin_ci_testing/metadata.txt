@@ -1,8 +1,8 @@
 
 [general]
-name=QGIS Plugin Booster Testing
+name=QGIS Plugin CI Testing
 qgisMinimumVersion=3.2
-description=This is a testing plugin for QGIS Plugin Booster
+description=This is a testing plugin for QGIS Plugin CI
 about=Downloading would be useless
 version=dev
 author=Denis Rouzaud
@@ -11,9 +11,9 @@ email=denis@opengis.ch
 # Tags are comma separated with spaces allowed
 tags=
 
-tracker=https://github.com/opengisch/qgis-plugin-booser
-homepage=https://github.com/opengisch/qgis-plugin-booser
-repository=https://github.com/opengisch/qgis-plugin-booser
+tracker=https://github.com/opengisch/qgis-plugin-ci
+homepage=https://github.com/opengisch/qgis-plugin-ci
+repository=https://github.com/opengisch/qgis-plugin-ci
 
 category=plugins
 
