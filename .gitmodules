@@ -1,3 +1,0 @@
-[submodule "qgis_plugin_ci_testing/qgissettingmanager"]
-	path = qgis_plugin_ci_testing/qgissettingmanager
-	url = https://github.com/opengisch/qgissettingmanager.git
