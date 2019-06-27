@@ -21,6 +21,7 @@ if __name__ == "__main__":
     release_parser = subparsers.add_parser('release', help='release the plugin')
     release_parser.add_argument('release_version', help='The version to be released')
     release_parser.add_argument('--transifex-token', help='The Transifex API token')
+    release_parser.add_argument('--github-token', help='The Github API token')
 
     # pull-translation
     pull_tr_parser = subparsers.add_parser('pull-translation', help='release the plugin')
@@ -48,7 +49,10 @@ if __name__ == "__main__":
     parameters = Parameters(arg_dict)
 
     if args.command == 'release':
-        success = release(parameters, release_version=args.release_version, transifex_token=args.transifex_token)
+        success = release(parameters,
+                          release_version=args.release_version,
+                          transifex_token=args.transifex_token,
+                          github_token=args.github_token)
         if not success:
             exit_val = 1
     elif args.command == 'pull-translation':

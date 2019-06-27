@@ -5,6 +5,7 @@ import tarfile
 import zipfile
 from tempfile import mkstemp
 from glob import glob
+from github import Github
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
@@ -13,6 +14,7 @@ from qgispluginci.utils import replace_in_file
 
 def release(parameters: Parameters,
             release_version: str,
+            github_token: str = None,
             transifex_token: str = None):
 
     # set version in metadata
@@ -33,6 +35,7 @@ def release(parameters: Parameters,
     output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
+    upload_archive(parameters, release_tag=release_version, github_token=github_token)
 
 
 def create_archive(parameters: Parameters,
@@ -83,48 +86,13 @@ def create_archive(parameters: Parameters,
                 zf.writestr(fn, fl)
 
 
+def upload_archive(parameters: Parameters,
+                  release_tag: str,
+                  github_token: str):
 
+    slug = '{}/{}'.format(parameters.organization_slug, parameters.project_slug)
+    print('{}/{}'.format(parameters.organization_slug, parameters.project_slug))
+    repo = Github(github_token).get_repo(slug)
+    rel = repo.get_release(id=release_tag)
+    print(rel)
 
-
-
-
-"""
-
-
-# Extract to a temporary location and add translations
-TEMPDIR=/tmp/build-${PLUGIN_REPO_NAME}
-mkdir -p ${TEMPDIR}/${PLUGIN_REPO_NAME}/${PLUGIN_REPO_NAME}/i18n
-tar -xf ${CURDIR}/${PLUGIN_REPO_NAME}-${RELEASE_VERSION}.tar -C ${TEMPDIR}
-if [[ "${PLUGIN_SRC_DIR}" != "${PLUGIN_REPO_NAME}" ]]; then
-  mv ${TEMPDIR}/${PLUGIN_REPO_NAME}/${PLUGIN_SRC_DIR}/* ${TEMPDIR}/${PLUGIN_REPO_NAME}/${PLUGIN_REPO_NAME}
-  rmdir ${TEMPDIR}/${PLUGIN_REPO_NAME}/${PLUGIN_SRC_DIR}
-fi
-if [[ -d i18n ]]; then
-  mv i18n/*.qm ${TEMPDIR}/${PLUGIN_REPO_NAME}/${PLUGIN_REPO_NAME}/i18n
-else
-  if [[ -d .tx ]]; then
-    echo -e "\033[0;33mNo i18n folder is present, even though pytransifex is. Something seems to be going wrong.\033[0m"
-  fi
-fi
-
-pushd ${TEMPDIR}/${PLUGIN_REPO_NAME}
-zip -r ${CURDIR}/${ZIPFILENAME} ${PLUGIN_REPO_NAME}
-popd
-
-echo "## Detailed changelog" > /tmp/changelog
-git log HEAD^...$(git describe --abbrev=0 --tags HEAD^) --pretty=format:"### %s%n%n%b" >> /tmp/changelog
-
-CHANGELOG_OPTION=""
-if [[ "$APPEND_CHANGELOG" = "true" ]]; then
-  CHANGELOG_OPTION="-c /tmp/changelog"
-fi
-
-
-${DIR}/create_release.py -f ${CURDIR}/${ZIPFILENAME} ${APPEND_CHANGELOG:+-c /tmp/changelog} -o /tmp/release_notes
-cat /tmp/release_notes
-if [[ ${PUSH_TO} =~ ^github$ ]]; then
-  ${DIR}/publish_plugin_github.sh
-else
-  ${DIR}/publish_plugin_osgeo.py -u "${OSGEO_USERNAME}" -w "${OSGEO_PASSWORD}" -r "${TRAVIS_TAG}" ${ZIPFILENAME} -c /tmp/release_notes
-fi
-"""

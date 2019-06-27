@@ -4,3 +4,4 @@ pytransifex
 gitpython
 PyQt5
 nose2
+PyGithub

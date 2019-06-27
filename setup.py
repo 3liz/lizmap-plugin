@@ -37,7 +37,8 @@ setup(
         'pyyaml',
         'pytransifex',
         'gitpython',
-        'PyQt5'
+        'PyQt5',
+        'PyGithub'
     ],
     python_requires=">={vmaj}.{vmin}".format(vmaj=python_min_version[0], vmin=python_min_version[1]),
 )
