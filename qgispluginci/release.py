@@ -2,7 +2,9 @@
 
 import git
 import tarfile
+import zipfile
 from tempfile import mkstemp
+from glob import glob
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
@@ -28,12 +30,14 @@ def release(parameters: Parameters,
         tr.pull()
         tr.compile_strings()
 
-    output = '{project_slug}-{release_version}.tar'.format(project_slug=parameters.project_slug,
+    output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)
-    create_archive(parameters, output=output)
+    create_archive(parameters, output=output, add_translations=transifex_token is not None)
 
 
-def create_archive(parameters: Parameters, output: str):
+def create_archive(parameters: Parameters,
+                   output: str,
+                   add_translations: bool = False):
     top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
 
     repo = git.Repo()
@@ -41,9 +45,10 @@ def create_archive(parameters: Parameters, output: str):
         stash = repo.git.stash('create')
     except git.exc.GitCommandError:
         stash = 'HEAD'
+    # create TAR archive
     repo.git.archive(stash, '--prefix', '{}/'.format(parameters.src_dir), '-o', top_tar_file, parameters.src_dir)
-
     with tarfile.open(top_tar_file, mode="a") as tt:
+        # adding submodules
         for submodule in repo.submodules:
             _, sub_tar_file = mkstemp(suffix='.tar')
             if submodule.path.split('/')[0] != parameters.src_dir:
@@ -56,54 +61,35 @@ def create_archive(parameters: Parameters, output: str):
             with tarfile.open(sub_tar_file, mode="r:") as st:
                 for m in st.getmembers():
                     tt.addfile(m)
-        tt.list()
-            #print("adding {} as {}".format(replacement, replace))
-            #t.add(replacement, arcname=replace)
-            #t.list()
-        #tar - -concatenate - -file =${CURDIR} /${PLUGIN_REPO_NAME} -${RELEASE_VERSION}.tar / tmp / tmp.tar
-        #git archive - -prefix =${PLUGIN_REPO_NAME} /${path} / HEAD > / tmp / tmp.tar
+        print('files in TAR archive:')
+        print(tt.list())
+
+        # add translation files
+        if add_translations:
+            for file in glob('i18n/*.qm'):
+                tt.addfile(tarfile.TarInfo('{s}/i18n/{f}'.format(s=parameters.src_dir, f=file)), file)
+
+    # converting to ZIP
+    # why using TAR before? because it provides the prefix and makes things easier
+    with zipfile.ZipFile(file=output, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+        # adding the content of TAR archive
+        with tarfile.open(top_tar_file, mode='r:') as tt:
+            for m in tt.getmembers():
+                if m.type == tarfile.DIRTYPE:
+                    continue
+                f = tt.extractfile(m)
+                fl = f.read()
+                fn = m.name
+                zf.writestr(fn, fl)
 
 
 
-    #repo.git.submodule('foreach',
 
-    # read https://ttboj.wordpress.com/2015/07/23/git-archive-with-submodules-and-tar-magic/
-    # a = tarfile.open('test.tar.gz', 'a:')
+
 
 
 """
-git archive --prefix=${PLUGIN_REPO_NAME}/ -o ${CURDIR}/${PLUGIN_REPO_NAME}-${RELEASE_VERSION}.tar ${STASH:-HEAD} ${PLUGIN_SRC_DIR}"
-    g.archive("--prefix={project_slug}/ 
-                 -o {output} 
-                 {stash} {src_dir}".format(project_slug=parameters.project_slug,
-                                             output=output,
-                                             stash=stash,
-                                             src_dir=parameters.src_dir))
 
-
-
-
-
-# Tar up all the static files from the git directory
-echo -e " \e[33mExporting plugin version ${TRAVIS_TAG} from folder ${PLUGIN_SRC_DIR}"
-# create a stash to save uncommitted changes (metadata)
-STASH=$(git stash create)
-git archive --prefix=${PLUGIN_REPO_NAME}/ -o ${CURDIR}/${PLUGIN_REPO_NAME}-${RELEASE_VERSION}.tar ${STASH:-HEAD} ${PLUGIN_SRC_DIR}
-
-# include submodules as part of the tar
-echo "also archive submodules..."
-git submodule foreach | while read entering path; do
-    temp="${path%\'}"
-    temp="${temp#\'}"
-    path=${temp}
-    [ "$path" = "" ] && continue
-    [[ ! "$path" =~ ^"${PLUGIN_SRC_DIR}" ]] && echo "skipping non-plugin submodule $path" && continue
-    pushd ${path} > /dev/null
-    git archive --prefix=${PLUGIN_REPO_NAME}/${path}/ HEAD > /tmp/tmp.tar
-    tar --concatenate --file=${CURDIR}/${PLUGIN_REPO_NAME}-${RELEASE_VERSION}.tar /tmp/tmp.tar
-    rm /tmp/tmp.tar
-    popd > /dev/null
-done
 
 # Extract to a temporary location and add translations
 TEMPDIR=/tmp/build-${PLUGIN_REPO_NAME}

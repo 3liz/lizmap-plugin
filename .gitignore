@@ -5,6 +5,7 @@ docs/_autosummary/
 __pycache__/
 *.pyc
 *.tar
+*.zip
 
 qgis_plugin_ci_testing/i18n
 
