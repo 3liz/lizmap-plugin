@@ -37,7 +37,10 @@ def create_archive(parameters: Parameters, output: str):
     top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
 
     repo = git.Repo()
-    stash = repo.git.stash('create') or 'HEAD'
+    try:
+        stash = repo.git.stash('create')
+    except git.exc.GitCommandError:
+        stash = 'HEAD'
     repo.git.archive(stash, '--prefix', '{}/'.format(parameters.src_dir), '-o', top_tar_file, parameters.src_dir)
 
     with tarfile.open(top_tar_file, mode="a") as tt:
