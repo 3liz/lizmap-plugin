@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 
 import git
+import tarfile
+from tempfile import mkstemp
+
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
 from qgispluginci.utils import replace_in_file
@@ -31,14 +34,33 @@ def release(parameters: Parameters,
 
 
 def create_archive(parameters: Parameters, output: str):
+    top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
 
     repo = git.Repo()
-
     stash = repo.git.stash('create') or 'HEAD'
+    repo.git.archive(stash, '--prefix', '{}/'.format(parameters.src_dir), '-o', top_tar_file, parameters.src_dir)
 
-    repo.git.archive(stash, '--prefix', parameters.src_dir, '-o', output)
+    with tarfile.open(top_tar_file, mode="a") as tt:
+        for submodule in repo.submodules:
+            _, sub_tar_file = mkstemp(suffix='.tar')
+            if submodule.path.split('/')[0] != parameters.src_dir:
+                print('skipping submodule not in plugin source directory ({})'.format(submodule.name))
+                continue
+            submodule.update(init=True)
+            sub_repo = submodule.module()
+            print(sub_repo)
+            sub_repo.git.archive('HEAD', '--prefix', '{}/'.format(submodule.path), '-o', sub_tar_file)
+            with tarfile.open(sub_tar_file, mode="r:") as st:
+                for m in st.getmembers():
+                    tt.addfile(m)
+        tt.list()
+            #print("adding {} as {}".format(replacement, replace))
+            #t.add(replacement, arcname=replace)
+            #t.list()
+        #tar - -concatenate - -file =${CURDIR} /${PLUGIN_REPO_NAME} -${RELEASE_VERSION}.tar / tmp / tmp.tar
+        #git archive - -prefix =${PLUGIN_REPO_NAME} /${path} / HEAD > / tmp / tmp.tar
 
-    repo.git.submodule('update', '--init', '--recursive')
+
 
     #repo.git.submodule('foreach',
 
