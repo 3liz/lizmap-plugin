@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 
+import os
 import git
 import tarfile
 import zipfile
 from tempfile import mkstemp
 from glob import glob
-from github import Github
+from github import Github, GithubException
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
 from qgispluginci.utils import replace_in_file
+from qgispluginci.exceptions import GithubReleaseNotFound
 
 
 def release(parameters: Parameters,
@@ -35,7 +37,7 @@ def release(parameters: Parameters,
     output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
-    upload_archive(parameters, release_tag=release_version, github_token=github_token)
+    upload_archive_to_github(parameters, archive=output, release_tag=release_version, github_token=github_token)
 
 
 def create_archive(parameters: Parameters,
@@ -86,13 +88,24 @@ def create_archive(parameters: Parameters,
                 zf.writestr(fn, fl)
 
 
-def upload_archive(parameters: Parameters,
-                  release_tag: str,
-                  github_token: str):
+def upload_archive_to_github(parameters: Parameters,
+                             archive: str,
+                             release_tag: str,
+                             github_token: str):
 
     slug = '{}/{}'.format(parameters.organization_slug, parameters.project_slug)
     print('{}/{}'.format(parameters.organization_slug, parameters.project_slug))
     repo = Github(github_token).get_repo(slug)
-    rel = repo.get_release(id=release_tag)
-    print(rel)
+    try:
+        release = repo.get_release(id=release_tag)
+        release.upload_asset(path=archive, content_type='application/octet-stream')
+        release = repo.get_release(id=release_tag)
+        print(release)
+        # todo check size + put submodule in correct folder in archive
+        print('size: ', os.path.getsize(archive))
+        for a in release.get_assets():
+            print(a.name, a.size)
+    except GithubException as e:
+        raise GithubReleaseNotFound('Release {} not found'.format(release_tag))
+
 

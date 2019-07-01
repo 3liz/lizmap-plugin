@@ -33,9 +33,6 @@ class Parameters:
         The project slug on SCM host (e.g. Github) and translation platform (e.g. Transifex).
         Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG`environment variable.
         Otherwise, defaults to
-        
-    transifex_token: str
-        The API token required for translations.
 
     transifex_coordinator: str
         The username of the coordinator in Transifex.
@@ -68,7 +65,6 @@ class Parameters:
         self.plugin_main_file = definition.get('plugin_main_file', '{}_plugin.py'.format(slugify(self.plugin_name, separator='_')))
         self.organization_slug = definition.get('organization_slug', os.environ.get('TRAVIS_REPO_SLUG', '').split('/')[0])
         self.project_slug = definition.get('project_slug', os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(slugify(self.plugin_name))).split('/')[1])
-        self.transifex_token = definition.get('transifex_token', '')
         self.transifex_coordinator = definition.get('transifex_coordinator', '')
         self.transifex_organization = definition.get('transifex_organization', self.organization_slug)
         self.translation_source_language = definition.get('translation_source_language', 'en')

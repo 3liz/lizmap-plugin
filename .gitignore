@@ -9,5 +9,7 @@ __pycache__/
 
 qgis_plugin_ci_testing/i18n
 
+.tokens
+
 .idea
 .DS_Store
