@@ -11,7 +11,7 @@ from github import Github, GithubException
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
 from qgispluginci.utils import replace_in_file
-from qgispluginci.exceptions import GithubReleaseNotFound
+from qgispluginci.exceptions import GithubReleaseNotFound, GithubReleaseCouldNotUploadAsset
 
 
 def release(parameters: Parameters,
@@ -37,7 +37,8 @@ def release(parameters: Parameters,
     output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
-    upload_archive_to_github(parameters, archive=output, release_tag=release_version, github_token=github_token)
+    if github_token:
+        upload_archive_to_github(parameters, archive=output, release_tag=release_version, github_token=github_token)
 
 
 def create_archive(parameters: Parameters,
@@ -75,8 +76,8 @@ def create_archive(parameters: Parameters,
         if add_translations:
             print("adding translations")
             for file in glob('{}/i18n/*.qm'.format(parameters.src_dir)):
-                print(os.path.basename(file))
-                tt.addfile(tarfile.TarInfo('{s}/i18n/{f}'.format(s=parameters.src_dir, f=os.path.basename(file))), file)
+                print('  {}'.format(os.path.basename(file)))
+                tt.addfile(tarfile.TarInfo('{s}/{s}/i18n/{f}'.format(s=parameters.src_dir, f=os.path.basename(file))), file)
 
     # converting to ZIP
     # why using TAR before? because it provides the prefix and makes things easier
@@ -109,14 +110,17 @@ def upload_archive_to_github(parameters: Parameters,
     try:
         print('Getting release on {}/{}'.format(parameters.organization_slug, parameters.project_slug))
         gh_release = repo.get_release(id=release_tag)
-        print(gh_release)
+        print(gh_release, gh_release.tag_name, gh_release.upload_url)
     except GithubException as e:
         raise GithubReleaseNotFound('Release {} not found'.format(release_tag))
     try:
         print('Uploading archive {}'.format(archive))
-        gh_release.upload_asset(path=archive, content_type='application/octet-stream')
+        assert os.path.exists(archive)
+        gh_release.upload_asset(archive)
+        print('OK')
     except GithubException as e:
-        raise GithubReleaseNotFound('Could not update asset for release {}.'.format(release_tag))
+        print(e)
+        raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
 
 
 

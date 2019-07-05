@@ -11,6 +11,11 @@ class TransifexNoResource(Exception):
 class TransifexManyResources(Warning):
     pass
 
+
 class GithubReleaseNotFound(Exception):
+    pass
+
+
+class GithubReleaseCouldNotUploadAsset(Exception):
     pass
 

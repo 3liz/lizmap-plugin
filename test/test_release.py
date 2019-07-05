@@ -59,7 +59,6 @@ class TestRelease(unittest.TestCase):
         release(self.parameters, RELEASE_VERSION_TEST, github_token=self.github_token)
 
         gh_release = self.repo.get_release(id=RELEASE_VERSION_TEST)
-        # todo check size + put submodule in correct folder in archive
         archive_name = 'qgis-plugin-ci-{}.zip'.format(RELEASE_VERSION_TEST)
         fs = os.path.getsize(archive_name)
         print('size: ', fs)
