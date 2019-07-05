@@ -48,11 +48,13 @@ def create_archive(parameters: Parameters,
 
     repo = git.Repo()
     try:
+        print('try to create stash')
         stash = repo.git.stash('create')
+        print('done')
     except git.exc.GitCommandError:
         stash = 'HEAD'
     # create TAR archive
-    print('archive plugin')
+    print('archive plugin with stash: {}'.format(stash))
     repo.git.archive(stash, '--prefix', '{}/'.format(parameters.src_dir), '-o', top_tar_file, parameters.src_dir)
     with tarfile.open(top_tar_file, mode="a") as tt:
         # adding submodules
