@@ -51,6 +51,7 @@ def create_archive(parameters: Parameters,
     except git.exc.GitCommandError:
         stash = 'HEAD'
     # create TAR archive
+    print('archive plugin')
     repo.git.archive(stash, '--prefix', '{}/'.format(parameters.src_dir), '-o', top_tar_file, parameters.src_dir)
     with tarfile.open(top_tar_file, mode="a") as tt:
         # adding submodules
@@ -61,18 +62,21 @@ def create_archive(parameters: Parameters,
                 continue
             submodule.update(init=True)
             sub_repo = submodule.module()
-            print(sub_repo)
+            print('archive submodule:', sub_repo)
             sub_repo.git.archive('HEAD', '--prefix', '{}/'.format(submodule.path), '-o', sub_tar_file)
             with tarfile.open(sub_tar_file, mode="r:") as st:
                 for m in st.getmembers():
-                    tt.addfile(m)
-        print('files in TAR archive:')
-        print(tt.list())
+                    # print('adding', m, m.type, m.isfile())
+                    if not m.isfile():
+                        continue
+                    tt.add(m.name, arcname='{}/{}'.format(parameters.src_dir, m.name))
 
         # add translation files
         if add_translations:
-            for file in glob('i18n/*.qm'):
-                tt.addfile(tarfile.TarInfo('{s}/i18n/{f}'.format(s=parameters.src_dir, f=file)), file)
+            print("adding translations")
+            for file in glob('{}/i18n/*.qm'.format(parameters.src_dir)):
+                print(os.path.basename(file))
+                tt.addfile(tarfile.TarInfo('{s}/i18n/{f}'.format(s=parameters.src_dir, f=os.path.basename(file))), file)
 
     # converting to ZIP
     # why using TAR before? because it provides the prefix and makes things easier
@@ -80,12 +84,19 @@ def create_archive(parameters: Parameters,
         # adding the content of TAR archive
         with tarfile.open(top_tar_file, mode='r:') as tt:
             for m in tt.getmembers():
-                if m.type == tarfile.DIRTYPE:
+                if m.isdir():
                     continue
                 f = tt.extractfile(m)
                 fl = f.read()
                 fn = m.name
                 zf.writestr(fn, fl)
+
+    print('-------')
+    print('files in ZIP archive:')
+    with zipfile.ZipFile(file=output, mode='r') as zf:
+        for f in zf.namelist():
+            print(f)
+    print('-------')
 
 
 def upload_archive_to_github(parameters: Parameters,
@@ -94,18 +105,18 @@ def upload_archive_to_github(parameters: Parameters,
                              github_token: str):
 
     slug = '{}/{}'.format(parameters.organization_slug, parameters.project_slug)
-    print('{}/{}'.format(parameters.organization_slug, parameters.project_slug))
     repo = Github(github_token).get_repo(slug)
     try:
-        release = repo.get_release(id=release_tag)
-        release.upload_asset(path=archive, content_type='application/octet-stream')
-        release = repo.get_release(id=release_tag)
-        print(release)
-        # todo check size + put submodule in correct folder in archive
-        print('size: ', os.path.getsize(archive))
-        for a in release.get_assets():
-            print(a.name, a.size)
+        print('Getting release on {}/{}'.format(parameters.organization_slug, parameters.project_slug))
+        gh_release = repo.get_release(id=release_tag)
+        print(gh_release)
     except GithubException as e:
         raise GithubReleaseNotFound('Release {} not found'.format(release_tag))
+    try:
+        print('Uploading archive {}'.format(archive))
+        gh_release.upload_asset(path=archive, content_type='application/octet-stream')
+    except GithubException as e:
+        raise GithubReleaseNotFound('Could not update asset for release {}.'.format(release_tag))
+
 
 
