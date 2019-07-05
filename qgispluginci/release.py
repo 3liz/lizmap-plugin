@@ -48,10 +48,10 @@ def create_archive(parameters: Parameters,
 
     repo = git.Repo()
     try:
-        print('try to create stash')
         stash = repo.git.stash('create')
-        print('done')
     except git.exc.GitCommandError:
+        stash = 'HEAD'
+    if stash == '' or stash is None:
         stash = 'HEAD'
     # create TAR archive
     print('archive plugin with stash: {}'.format(stash))
