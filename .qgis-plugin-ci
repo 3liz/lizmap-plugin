@@ -11,4 +11,4 @@ translation_languages:
   - it
   - de
 
-lrelease_path: /usr/local/opt/qt5/bin/lrelease
+#lrelease_path: /usr/local/opt/qt5/bin/lrelease
