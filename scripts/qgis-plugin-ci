@@ -20,8 +20,11 @@ if __name__ == "__main__":
     # release
     release_parser = subparsers.add_parser('release', help='release the plugin')
     release_parser.add_argument('release_version', help='The version to be released')
-    release_parser.add_argument('--transifex-token', help='The Transifex API token')
-    release_parser.add_argument('--github-token', help='The Github API token')
+    release_parser.add_argument('--transifex-token', help='The Transifex API token. '
+                                                          'If specified translations will be pulled and compiled.')
+    release_parser.add_argument('--github-token', help='The Github API token. '
+                                                       'If specified, the archive will be pushed to an already '
+                                                       'existing release.')
 
     # pull-translation
     pull_tr_parser = subparsers.add_parser('pull-translation', help='release the plugin')
