@@ -102,7 +102,10 @@ class Translation():
             self._t.get_translation(self.parameters.project_slug, resource['slug'], lang, ts_file)
 
     def push(self):
-        pass
+        resource = self.__get_resource()
+        self._t.update_source_translation(project_slug=self.parameters.project_slug,
+                                  resource_slug=resource['slug'],
+                                  path_to_file=self.ts_file)
 
     def __get_resource(self) -> dict:
         resources = self._t.list_resources(self.parameters.project_slug)

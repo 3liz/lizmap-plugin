@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import git
 import tarfile
 import zipfile
 from tempfile import mkstemp
 from glob import glob
 from github import Github, GithubException
+import xmlrpc.client
+import re
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
@@ -17,7 +20,9 @@ from qgispluginci.exceptions import GithubReleaseNotFound, GithubReleaseCouldNot
 def release(parameters: Parameters,
             release_version: str,
             github_token: str = None,
-            transifex_token: str = None):
+            transifex_token: str = None,
+            osgeo_username: str = None,
+            osgeo_password: str = None):
 
     # set version in metadata
     replace_in_file('{}/metadata.txt'.format(parameters.src_dir),
@@ -38,7 +43,10 @@ def release(parameters: Parameters,
                                                            release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
     if github_token:
-        upload_archive_to_github(parameters, archive=output, release_tag=release_version, github_token=github_token)
+        upload_asset_to_github_release(parameters, archive=output, release_tag=release_version, github_token=github_token)
+    if osgeo_username is not None:
+        assert osgeo_password is not None
+        upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=output)
 
 
 def create_archive(parameters: Parameters,
@@ -102,10 +110,10 @@ def create_archive(parameters: Parameters,
     print('-------')
 
 
-def upload_archive_to_github(parameters: Parameters,
-                             archive: str,
-                             release_tag: str,
-                             github_token: str):
+def upload_asset_to_github_release(parameters: Parameters,
+                                   archive: str,
+                                   release_tag: str,
+                                   github_token: str):
 
     slug = '{}/{}'.format(parameters.organization_slug, parameters.project_slug)
     repo = Github(github_token).get_repo(slug)
@@ -125,4 +133,41 @@ def upload_archive_to_github(parameters: Parameters,
         raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
 
 
+def upload_plugin_to_osgeo(username: str, password: str, archive: str):
+    """
+    Upload the plugin to QGIS repository
+
+    Parameters
+    ----------
+    username
+        The username
+    password
+        The password
+    archive
+        The plugin archive file path to be uploaded
+    """
+    address = "https://{username}:{password}@plugins.qgis.org:443/plugins/RPC2/".format(
+        username=username,
+        password=password)
+
+    server = xmlrpc.client.ServerProxy(address, verbose=False)
+
+    try:
+        with open(archive, 'rb') as handle:
+            plugin_id, version_id = server.plugin.upload(
+                xmlrpc.client.Binary(handle.read()))
+        print("Plugin ID: %s" % plugin_id)
+        print("Version ID: %s" % version_id)
+    except xmlrpc.client.ProtocolError as err:
+        print("A protocol error occurred")
+        print("URL: %s" % re.sub(r':[^/].*@', ':******@', err.url))
+        print("HTTP/HTTPS headers: %s" % err.headers)
+        print("Error code: %d" % err.errcode)
+        print("Error message: %s" % err.errmsg)
+        sys.exit(1)
+    except xmlrpc.client.Fault as err:
+        print("A fault occurred")
+        print("Fault code: %d" % err.faultCode)
+        print("Fault string: %s" % err.faultString)
+        sys.exit(1)
 

@@ -33,6 +33,10 @@ class TestTranslation(unittest.TestCase):
         self.t.pull()
         self.t.compile_strings()
 
+    def test_push(self):
+        self.t.update_strings()
+        self.t.push()
+
 
 if __name__ == '__main__':
     unittest.main()

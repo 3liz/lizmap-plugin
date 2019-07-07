@@ -26,12 +26,13 @@ if __name__ == "__main__":
                                                        'If specified, the archive will be pushed to an already '
                                                        'existing release.')
 
+
     # pull-translation
-    pull_tr_parser = subparsers.add_parser('pull-translation', help='release the plugin')
+    pull_tr_parser = subparsers.add_parser('pull-translation', help='pull translations from Transifex')
     pull_tr_parser.add_argument('transifex_token', help='The Transifex API token')
 
     # push-translation
-    push_tr_parser = subparsers.add_parser('push-translation', help='release the plugin')
+    push_tr_parser = subparsers.add_parser('push-translation', help='update strings and push translations')
     push_tr_parser.add_argument('transifex_token', help='The Transifex API token')
 
     args = parser.parse_args()
@@ -63,7 +64,9 @@ if __name__ == "__main__":
             if not success:
                 exit_val = 1
     elif args.command == 'push-translation':
-        success = Translation(parameters, args.transifex_token).push()
+        t = Translation(parameters, args.transifex_token)
+        t.update_strings()
+        t.push()
         if not success:
             exit_val = 1
 

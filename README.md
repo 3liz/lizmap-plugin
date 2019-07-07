@@ -5,16 +5,12 @@ These scripts are written for and tested on GitHub, Travis-CI and Transifex.
 
 ## Base functionality
 
- - Automatically push plugin releases to the QGIS plugin repository
- - Automatically upload plugin releases to GitHub releases
- - Create releases and write the changelog for releases on the GitHub web interface
- - Push translation source strings to transifex on commits to master
- - Pull the latest translations from transifex on release
-
-## Advanced functionality
-
- - Create a custom repository for QGIS plugins:
-   https://raw.githubusercontent.com/QGEP/qgepplugin/master/plugins.xml
+ - Deploy plugin releases on QGIS official plugin repository
+ - Publish plugin in Github releases, option to deploy a custom repository
+ - Easily integrated in Travis-CI
+ - Completely handle translations with Transifex: create the project and the languages, pull and push translations 
+   
+   
    
  - DEBUG, in plugin main file you can have a global variable as `DEBUG = True`, which will be changed to `False` when releasing the plugin.
 
