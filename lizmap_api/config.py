@@ -148,7 +148,7 @@ class LizmapConfig:
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
         'externalSearch' : {
-            'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ign']
+            'wType': 'list', 'type': 'string', 'default': '', 'list':['', 'nominatim', 'google', 'ban', 'ign']
         },
         'zoomHistory' : {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
