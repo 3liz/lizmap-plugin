@@ -442,7 +442,7 @@ class LizmapConfig:
         # wms extent
         pWmsExtent = self.project.readListEntry('WMSExtent','')[0]
         if len(pWmsExtent) > 1:
-            bbox = [pWmsExtent[0],pWmsExtent[1],pWmsExtent[2],pWmsExtent[3]]
+            bbox = [float(pWmsExtent[0]),float(pWmsExtent[1]),float(pWmsExtent[2]),float(pWmsExtent[3])]
         else:
             bbox = []
         self._global_options["bbox"] = bbox
