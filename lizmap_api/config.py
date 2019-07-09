@@ -492,13 +492,13 @@ class LizmapConfig:
         # Add metadata
         if layer.hasScaleBasedVisibility():
             if layer.maximumScale() < 0:
-               lo['minScale'] = 0
-           else:
-               lo['minScale'] = layer.maximumScale()
-           if layer.minimumScale() < 0:
-               lo['maxScale'] = 0
-           else:
-               lo['maxScale'] = layer.minimumScale()
+                lo['minScale'] = 0
+            else:
+                lo['minScale'] = layer.maximumScale()
+            if layer.minimumScale() < 0:
+                lo['maxScale'] = 0
+            else:
+                lo['maxScale'] = layer.minimumScale()
 
         # set config
         lid = str(layer.name())
