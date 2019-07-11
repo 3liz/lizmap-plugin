@@ -4454,8 +4454,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>214</width>
-                <height>618</height>
+                <width>749</width>
+                <height>901</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -4551,7 +4551,35 @@ Only the selected feature will be visible on the map.</string>
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_6">
-                 <item row="5" column="2">
+                 <item row="8" column="2">
+                  <widget class="QComboBox" name="liFormFilterFormat">
+                   <item>
+                    <property name="text">
+                     <string>Checkboxes</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Combo box</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="11" column="0">
+                  <widget class="QLabel" name="label_106">
+                   <property name="text">
+                    <string>Max date</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_100">
+                   <property name="text">
+                    <string>Field</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="2">
                   <widget class="QComboBox" name="liFormFilterFieldType">
                    <item>
                     <property name="text">
@@ -4575,88 +4603,36 @@ Only the selected feature will be visible on the map.</string>
                    </item>
                   </widget>
                  </item>
-                 <item row="10" column="2">
-                  <widget class="QLineEdit" name="liFormFilterSplitter"/>
-                 </item>
-                 <item row="8" column="2">
+                 <item row="11" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMaxDate">
                    <property name="allowEmptyFieldName">
                     <bool>true</bool>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="0">
+                 <item row="10" column="0">
                   <widget class="QLabel" name="label_107">
                    <property name="text">
                     <string>Min date</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
+                 <item row="4" column="0">
                   <widget class="QLabel" name="label_104">
                    <property name="text">
                     <string>Title</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="0">
-                  <widget class="QLabel" name="label_106">
-                   <property name="text">
-                    <string>Max date</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="0">
+                 <item row="6" column="0">
                   <widget class="QLabel" name="label_102">
                    <property name="text">
                     <string>Type</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="2">
+                 <item row="10" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
-                   <property name="allowEmptyFieldName">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="2">
-                  <widget class="QComboBox" name="liFormFilterFormat">
-                   <item>
-                    <property name="text">
-                     <string>Checkboxes</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Combo box</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="6" column="0">
-                  <widget class="QLabel" name="label_100">
-                   <property name="text">
-                    <string>Field</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="0">
-                  <widget class="QLabel" name="label_101">
-                   <property name="text">
-                    <string>Format</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="0">
-                  <widget class="QLabel" name="label_105">
-                   <property name="text">
-                    <string>Splitter</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="2">
-                  <widget class="QgsFieldComboBox" name="liFormFilterField">
                    <property name="allowEmptyFieldName">
                     <bool>true</bool>
                    </property>
@@ -4672,8 +4648,32 @@ Only the selected feature will be visible on the map.</string>
                  <item row="2" column="2">
                   <widget class="QgsMapLayerComboBox" name="liFormFilterLayer"/>
                  </item>
-                 <item row="3" column="2">
+                 <item row="4" column="2">
                   <widget class="QLineEdit" name="inFormFilterFieldTitle"/>
+                 </item>
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="label_101">
+                   <property name="text">
+                    <string>Format</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QgsFieldComboBox" name="liFormFilterField">
+                   <property name="allowEmptyFieldName">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
+                  <widget class="QLabel" name="label_105">
+                   <property name="text">
+                    <string>Splitter</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="2">
+                  <widget class="QLineEdit" name="liFormFilterSplitter"/>
                  </item>
                 </layout>
                </item>
@@ -4682,14 +4682,14 @@ Only the selected feature will be visible on the map.</string>
                  <item>
                   <widget class="QPushButton" name="btFormFilterAddField">
                    <property name="text">
-                    <string>Add layer</string>
+                    <string>Add layer field</string>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="btFormFilterRemoveField">
                    <property name="text">
-                    <string>Remove layer</string>
+                    <string>Remove layer field</string>
                    </property>
                   </widget>
                  </item>
@@ -4968,13 +4968,13 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>scrollArea_13</tabstop>
   <tabstop>twFormFilterLayers</tabstop>
   <tabstop>liFormFilterLayer</tabstop>
+  <tabstop>liFormFilterField</tabstop>
   <tabstop>inFormFilterFieldTitle</tabstop>
   <tabstop>liFormFilterFieldType</tabstop>
-  <tabstop>liFormFilterField</tabstop>
-  <tabstop>liFormFilterMinDate</tabstop>
-  <tabstop>liFormFilterMaxDate</tabstop>
   <tabstop>liFormFilterFormat</tabstop>
   <tabstop>liFormFilterSplitter</tabstop>
+  <tabstop>liFormFilterMinDate</tabstop>
+  <tabstop>liFormFilterMaxDate</tabstop>
   <tabstop>btFormFilterAddField</tabstop>
   <tabstop>btFormFilterRemoveField</tabstop>
   <tabstop>outLog</tabstop>
