@@ -74,6 +74,8 @@ from qgis.core import (
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsWkbTypes,
+    QgsAttributeEditorField,
+    QgsAttributeEditorContainer
 )
 
 # Initialize Qt resources from file resources.py
@@ -421,6 +423,7 @@ class Lizmap(object):
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
+        self.dlg.btQgisPopupFromForm.clicked.connect(self.setTooltipContentFromForm)
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
@@ -597,6 +600,7 @@ class Lizmap(object):
             if item['widget'] and key not in ('sourceProject'):
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
+        self.dlg.btQgisPopupFromForm.setEnabled(value)
 
     def getMinMaxScales(self):
         """ Get Min Max Scales from scales input field"""
@@ -1835,6 +1839,7 @@ class Lizmap(object):
 
             # deactivate popup configuration for groups
             self.dlg.btConfigurePopup.setEnabled(isLayer)
+            self.dlg.btQgisPopupFromForm.setEnabled(isLayer)
 
         else:
             # set default values for this layer/group
@@ -1975,6 +1980,213 @@ class Lizmap(object):
     def popupNotConfigured(self):
         """Popup configuration dialog has been close with cancel or x : do nothing"""
         self.lizmapPopupDialog.close()
+
+
+    def createPopupNodeItemFromForm(self, layer, node, level, headers, html):
+        regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
+        a = ''
+        h = ''
+        if isinstance(node, QgsAttributeEditorField):
+            fidx = node.idx()
+            fields = layer.fields()
+            field = fields[fidx]
+
+            # display field name or alias if filled
+            alias = field.alias()
+            name = field.name()
+            fname = alias if alias else name
+
+            # adapt the view depending on the field type
+            fset = field.editorWidgetSetup()
+            ftype = fset.type()
+            fconf = fset.config()
+            fview = '"%s"' % name
+            if ftype == 'ExternalResource':
+                dview = fconf['DocumentViewer']
+                fview = '''
+                    concat(
+                        '<a href="',
+                        "{0}",
+                        '" target="_blank">{1}</a>'
+                    )
+                '''.format(
+                    name,
+                    fname
+                )
+                if dview == 1:
+                    # image
+                    fview = '''
+                        concat(
+                            '<a href="',
+                            "{0}",
+                            '" target="_blank">',
+                            '
+                            <img src="',
+                            "{0}",
+                            '" width="100%" title="{1}">',
+                            '
+                            </a>'
+                        )
+                    '''.format(
+                        name,
+                        fname
+                    )
+                if dview == 2:
+                    # web view
+                    fview = '''
+                        concat(
+                            '<a href="',
+                            "{0}",
+                            '" target="_blank">
+                            ',
+                            '
+                            <iframe src="',
+                            "{0}",
+                            '" width="100%" height="300" title="{1}"/>',
+                            '
+                            </a>'
+                        )
+                    '''.format(
+                        name,
+                        fname
+                    )
+
+            a+= '\n' + '  '*level
+            a+= '''
+            [% CASE
+                WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
+                THEN concat(
+                    '<p>', '<b>{1}</b>',
+                    '<div class="field">', {2}, '</div>',
+                    '</p>'
+                )
+                ELSE ''
+            END %]
+            '''.format(
+                name,
+                fname,
+                fview
+            )
+
+
+        if isinstance(node, QgsAttributeEditorContainer):
+            l = level
+            # create div container
+            if l == 1:
+                act = ''
+                if not headers:
+                    act = 'active'
+                a+= '\n' + '  '*l + '<div id="popup_dd_%s" class="tab-pane %s">' % (
+                    regex.sub('_', node.name()),
+                    act
+                )
+                h+=  '\n    ' + '<li class="%s"><a href="#popup_dd_%s" data-toggle="tab">%s</a></li>' % (
+                    act,
+                    regex.sub('_', node.name()),
+                    node.name()
+                )
+                headers.append(h)
+            if l > 1:
+                a+= '\n' + '  '*l + '<fieldset>'
+                a+= '\n' + '  '*l + '<legend>%s</legend>' % node.name()
+                a+= '\n' + '  '*l + '<div>'
+
+            level+=1
+            for n in node.children():
+                a+= self.createPopupNodeItemFromForm(layer, n, level, headers, html)
+
+            if l == 1:
+                a+= '\n' + '  '*l + '</div>'
+            if l > 1:
+                a+= '\n' + '  '*l + '</div>'
+                a+= '\n' + '  '*l + '</fieldset>'
+
+        html+= a
+        return html
+
+    def setTooltipContentFromForm(self):
+        item = self.dlg.treeLayer.currentItem()
+        if item and item.text(1) in self.layerList:
+            lid = item.text(1)
+            layers = [a for a in QgsProject.instance().mapLayers().values() if a.id() == lid]
+            if not layers:
+                return None
+        else:
+            return None
+        layer = layers[0]
+
+        cfg = layer.editFormConfig()
+        lay = cfg.layout()
+        if lay != 1:
+            return None
+
+        # Get root
+        root = cfg.invisibleRootContainer()
+
+        # Build HTML headers and body content by using recursive method
+        htmlheaders = []
+        htmlheader = ''
+        htmlcontent = ''
+        htmlcontent+= self.createPopupNodeItemFromForm(layer, root, 0, htmlheaders, htmlcontent)
+        if htmlheaders:
+            htmlheader = '<ul class="nav nav-tabs">\n' + '\n'.join(htmlheaders) + '\n</ul>'
+            htmlcontent = '\n<div class="tab-content">' + htmlcontent + '\n</div>'
+
+        # package css style, header and content
+        html = ''
+        style = self.getTooltipContentFromFormStyle()
+        html+= style
+        html+= '\n<div class="container popup_lizmap_dd" style="width:100%;">'
+        html+= '\n' + htmlheader + '\n' + htmlcontent
+        html+= '\n' + '</div>'
+
+        layer.setMapTipTemplate(html)
+
+        return True
+
+    def getTooltipContentFromFormStyle(self):
+
+        return '''
+    <style>
+        div.popup_lizmap_dd {
+            margin: 2px;
+        }
+        div.popup_lizmap_dd div {
+            padding: 5px;
+        }
+        div.popup_lizmap_dd div.tab-content{
+            border: 1px solid rgba(150,150,150,0.5);
+        }
+        div.popup_lizmap_dd ul.nav.nav-tabs li a {
+            border: 1px solid rgba(150,150,150,0.5);
+            border-bottom: none;
+            color: grey;
+        }
+        div.popup_lizmap_dd ul.nav.nav-tabs li.active a {
+            color: #333333;
+        }
+        div.popup_lizmap_dd div.tab-content div.tab-pane div {
+            border: 1px solid rgba(150,150,150,0.5);
+            border-radius: 5px;
+            background-color: rgba(150,150,150,0.5);
+        }
+        div.popup_lizmap_dd div.tab-content div.tab-pane div.field,
+        div.popup_lizmap_dd div.field,
+        div.popup_lizmap_dd div.tab-content div.field {
+            background-color: white;
+            border: 1px solid white;
+        }
+        div.popup_lizmap_dd div.tab-content legend {
+            font-weight: bold;
+            font-size: 1em !important;
+            color: #333333;
+            border-bottom: none;
+            margin-top: 15px !important;
+        }
+
+    </style>
+    '''
+
 
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)"""

@@ -248,7 +248,7 @@ QListWidget::item::selected {
           <string notr="true">background-color:rgb(170, 255, 255);</string>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -891,8 +891,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>443</width>
-                <height>143</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -970,8 +970,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>466</width>
-                       <height>786</height>
+                       <width>481</width>
+                       <height>875</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1049,6 +1049,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <widget class="QCheckBox" name="cbToggled">
                              <property name="text">
                               <string>Toggled?</string>
+                             </property>
+                             <property name="checked">
+                              <bool>true</bool>
                              </property>
                             </widget>
                            </item>
@@ -1181,7 +1184,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            <item>
                             <widget class="QPushButton" name="btConfigurePopup">
                              <property name="text">
-                              <string>Configure</string>
+                              <string>configure</string>
                              </property>
                             </widget>
                            </item>
@@ -1201,12 +1204,36 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_37">
+                          <widget class="QLabel" name="label_108">
+                           <property name="styleSheet">
+                            <string notr="true">background-color:rgb(170, 255, 255);</string>
+                           </property>
+                           <property name="text">
+                            <string>The qgis option uses the layer Tooltip HTML template. Use the button below to copy the form Drag&amp;Drop design to the Tooltip template</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_39">
                            <item>
-                            <widget class="QLabel" name="label_81">
+                            <widget class="QPushButton" name="btQgisPopupFromForm">
                              <property name="styleSheet">
                               <string notr="true">background-color:rgb(170, 255, 255);</string>
                              </property>
+                             <property name="text">
+                              <string>Copy the form drag &amp; drop template</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_37">
+                           <item>
+                            <widget class="QLabel" name="label_81">
                              <property name="text">
                               <string>Max features in popup</string>
                              </property>
@@ -1244,6 +1271,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           <layout class="QHBoxLayout" name="horizontalLayout_36">
                            <item>
                             <widget class="QCheckBox" name="cbPopupDisplayChildren">
+                             <property name="maximumSize">
+                              <size>
+                               <width>30</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
                              <property name="toolTip">
                               <string>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</string>
                              </property>
@@ -1257,9 +1290,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            </item>
                            <item>
                             <widget class="QLabel" name="label">
-                             <property name="styleSheet">
-                              <string notr="true">background-color:rgb(170, 255, 255);</string>
-                             </property>
                              <property name="text">
                               <string>Display related children under each object (use relations)</string>
                              </property>
@@ -1591,8 +1621,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>561</width>
-                <height>819</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2291,8 +2321,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>361</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2574,8 +2604,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>416</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2795,15 +2825,15 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>736</width>
-                <height>301</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <widget class="QLabel" name="label_29">
                  <property name="text">
-                  <string>You can add up to 5 layers in the list and choose editing capabilities for each one.</string>
+                  <string>You can add layers in the list below and choose editing capabilities for each one.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -3009,8 +3039,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>421</width>
-                <height>393</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3213,8 +3243,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>326</width>
-                <height>301</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3358,16 +3388,13 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>596</width>
-                <height>885</height>
+                <width>751</width>
+                <height>903</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
                <item>
                 <widget class="QLabel" name="label_78">
-                 <property name="styleSheet">
-                  <string notr="true">background-color:rgb(170, 255, 255);</string>
-                 </property>
                  <property name="text">
                   <string>Lizmap can use data from project layers to draw and display charts, such as bar charts, pie charts or scatter plots. You can add a layer in the following table and choose the type of chart and which data field must be used. We recommand to use PostGIS views or virtual layers to prepare the data, and to keep data small.</string>
                  </property>
@@ -3852,8 +3879,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>442</width>
-                <height>466</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4156,16 +4183,13 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>485</width>
-                <height>627</height>
+                <width>749</width>
+                <height>901</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
                <item>
                 <widget class="QLabel" name="label_81">
-                 <property name="styleSheet">
-                  <string notr="true">background-color:rgb(170, 255, 255);</string>
-                 </property>
                  <property name="text">
                   <string>Choose a vector layer containing a set of atlas features. Lizmap will propose a menu to let the user activate one feature at a time. Several actions can be triggered: display the feature popup, filter the layer and its children, zoom to the feature, etc.</string>
                  </property>
@@ -4828,7 +4852,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbLayerIsBaseLayer</tabstop>
   <tabstop>cbPopup</tabstop>
   <tabstop>liPopupSource</tabstop>
-  <tabstop>btConfigurePopup</tabstop>
   <tabstop>sbPopupMaxFeatures</tabstop>
   <tabstop>cbPopupDisplayChildren</tabstop>
   <tabstop>liImageFormat</tabstop>
