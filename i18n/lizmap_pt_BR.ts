@@ -688,7 +688,7 @@ Esta é diferente da extensão máxima do mapa (definida nas propriedades do pro
     <message>
         <location filename="ui_lizmap.ui" line="2449"/>
         <source>If you set a value above 0, autocompletion will be used after this amount of characters while the user types. The classical combobox will be replaced by a editable text input</source>
-        <translation>Se você definir um valor acima de 0, o preenchimento automático será usado após esse número de caracteres enquanto o usuário digita. A combobox será substituída por uma entrada de texto editável</translation>
+        <translation>Se você definir um valor acima de 0, o preenchimento automático será usado após esse número de caracteres enquanto o usuário digita. A caixa de combinação será substituída por uma entrada de texto editável</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4547"/>
@@ -1337,27 +1337,27 @@ Apenas o elemento será visível no mapa</translation>
     <message>
         <location filename="ui_lizmap.ui" line="224"/>
         <source>Filter data with form</source>
-        <translation type="unfinished"/>
+        <translation>Filtrar dados com formulário</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="457"/>
         <source>ban</source>
-        <translation type="unfinished"/>
+        <translation>ban</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4468"/>
         <source>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</source>
-        <translation type="unfinished"/>
+        <translation>Essa ferramenta mostra um formulário baseado nos campos da camada vetorial e permite ao usuário filtrar os dados exibidos. Você pode escolher os campos para mostrar no formulário e o tipo de dados de entrada.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4591"/>
         <source>Min date</source>
-        <translation type="unfinished"/>
+        <translation>Data inicial</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4605"/>
         <source>Max date</source>
-        <translation type="unfinished"/>
+        <translation>Data final</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4647"/>
@@ -1367,42 +1367,42 @@ Apenas o elemento será visível no mapa</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4654"/>
         <source>Splitter</source>
-        <translation type="unfinished"/>
+        <translation>Separador</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4537"/>
         <source>Provider</source>
-        <translation type="unfinished"/>
+        <translation>Fornecedor</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4558"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>Texto</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4563"/>
         <source>Unique values</source>
-        <translation type="unfinished"/>
+        <translation>Valores únicos</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4568"/>
         <source>Numeric</source>
-        <translation type="unfinished"/>
+        <translation>Numérico</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4573"/>
         <source>Date</source>
-        <translation type="unfinished"/>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4627"/>
         <source>Checkboxes</source>
-        <translation type="unfinished"/>
+        <translation>Caixas de Seleção</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4632"/>
         <source>Combo box</source>
-        <translation type="unfinished"/>
+        <translation>Caixa de combinação</translation>
     </message>
 </context>
 <context>

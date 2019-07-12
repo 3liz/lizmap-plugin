@@ -1338,27 +1338,27 @@ Pouze vybraná funkce bude na mapě zobrazena.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="224"/>
         <source>Filter data with form</source>
-        <translation type="unfinished"/>
+        <translation>Filtrovat data pomocí formuláře</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="457"/>
         <source>ban</source>
-        <translation type="unfinished"/>
+        <translation>ban</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4468"/>
         <source>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</source>
-        <translation type="unfinished"/>
+        <translation>Tento nástroj zobrazuje formulář založený na polích vektorové vrstvy a umožňuje uživateli filtrovat zobrazovaná data. Můžete vybrat pole, která se mají zobrazit ve formuláři, a typ vstupu.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4591"/>
         <source>Min date</source>
-        <translation type="unfinished"/>
+        <translation>Min datum</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4605"/>
         <source>Max date</source>
-        <translation type="unfinished"/>
+        <translation>Max datum</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4647"/>
@@ -1368,42 +1368,42 @@ Pouze vybraná funkce bude na mapě zobrazena.</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4654"/>
         <source>Splitter</source>
-        <translation type="unfinished"/>
+        <translation>rozbočovač</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4537"/>
         <source>Provider</source>
-        <translation type="unfinished"/>
+        <translation>Poskytovatel</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4558"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>Text</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4563"/>
         <source>Unique values</source>
-        <translation type="unfinished"/>
+        <translation>Jedinečné hodnoty</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4568"/>
         <source>Numeric</source>
-        <translation type="unfinished"/>
+        <translation>Číslelný</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4573"/>
         <source>Date</source>
-        <translation type="unfinished"/>
+        <translation>Datum</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4627"/>
         <source>Checkboxes</source>
-        <translation type="unfinished"/>
+        <translation>Zaškrtávací pole</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4632"/>
         <source>Combo box</source>
-        <translation type="unfinished"/>
+        <translation>Combo box</translation>
     </message>
 </context>
 <context>

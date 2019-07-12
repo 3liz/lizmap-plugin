@@ -1338,27 +1338,27 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="ui_lizmap.ui" line="224"/>
         <source>Filter data with form</source>
-        <translation type="unfinished"/>
+        <translation>Filtruj dane przez formularz</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="457"/>
         <source>ban</source>
-        <translation type="unfinished"/>
+        <translation>ban</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4468"/>
         <source>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</source>
-        <translation type="unfinished"/>
+        <translation>To narzędzie pokazuje formularz bazujący na polach tabeli warstwy wektorowej i pozwala użytkownikowi filtrować dane. Możesz wybrać pola, które mają się wyświetlić w formularzu.</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4591"/>
         <source>Min date</source>
-        <translation type="unfinished"/>
+        <translation>Minimalna data</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4605"/>
         <source>Max date</source>
-        <translation type="unfinished"/>
+        <translation>Maksymalna data</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4647"/>
@@ -1373,37 +1373,37 @@ Tylko zaznaczone obiekty będą widoczne na mapie</translation>
     <message>
         <location filename="ui_lizmap.ui" line="4537"/>
         <source>Provider</source>
-        <translation type="unfinished"/>
+        <translation>Dostawca</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4558"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>Tekst</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4563"/>
         <source>Unique values</source>
-        <translation type="unfinished"/>
+        <translation>Unikalne wartości</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4568"/>
         <source>Numeric</source>
-        <translation type="unfinished"/>
+        <translation>Liczbowy</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4573"/>
         <source>Date</source>
-        <translation type="unfinished"/>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4627"/>
         <source>Checkboxes</source>
-        <translation type="unfinished"/>
+        <translation>Wybór wielokrotny</translation>
     </message>
     <message>
         <location filename="ui_lizmap.ui" line="4632"/>
         <source>Combo box</source>
-        <translation type="unfinished"/>
+        <translation>Pole wyboru</translation>
     </message>
 </context>
 <context>
