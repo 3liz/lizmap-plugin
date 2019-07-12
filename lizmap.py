@@ -1995,12 +1995,19 @@ class Lizmap(object):
             alias = field.alias()
             name = field.name()
             fname = alias if alias else name
+            fname = fname.replace("'", "’")
 
             # adapt the view depending on the field type
             fset = field.editorWidgetSetup()
             ftype = fset.type()
             fconf = fset.config()
             fview = '"%s"' % name
+
+            # If hidden field, do nothing
+            if ftype == 'Hidden':
+                return html
+
+            # External ressource: file, url, photo, iframe
             if ftype == 'ExternalResource':
                 dview = fconf['DocumentViewer']
                 fview = '''
@@ -2050,6 +2057,97 @@ class Lizmap(object):
                         name,
                         fname
                     )
+
+
+            # Value relation
+            if ftype == 'ValueRelation':
+                vlid = fconf['Layer']
+                fexp = '''
+                    "{0}" = attribute(@parent, '{1}')
+                '''.format(
+                    fconf['Key'],
+                    name
+                )
+                filterExp = fconf['FilterExpression'].strip()
+                if filterExp:
+                    fexp+= ' AND %s' % filterExp
+                fview = '''
+                    aggregate(
+                        layer:='{0}',
+                        aggregate:='concatenate',
+                        expression:="{1}",
+                        filter:={2}
+                    )
+                '''.format(
+                    vlid,
+                    fconf['Value'],
+                    fexp
+                )
+
+            # Value relation
+            if ftype == 'RelationReference':
+                rem = QgsProject.instance().relationManager()
+                rel = rem.relation(fconf['Relation'])
+                vlay = rel.referencedLayer()
+                vlid = rel.referencedLayerId()
+                parent_pk = rel.resolveReferencedField(name)
+                fexp = '''
+                    "{0}" = attribute(@parent, '{1}')
+                '''.format(
+                    parent_pk,
+                    name
+                )
+                fview = '''
+                    aggregate(
+                        layer:='{0}',
+                        aggregate:='concatenate',
+                        expression:={1},
+                        filter:={2}
+                    )
+                '''.format(
+                    vlid,
+                    vlay.displayExpression(),
+                    fexp
+                )
+
+            # Value map
+            if ftype == 'ValueMap':
+                fmap = fconf['map']
+                m = []
+                # build hstore
+                for d in fmap:
+                    m.append( ['%s=>%s' % (v.replace("'", "’"), k.replace("'", "’")) for k,v in d.items()][0] )
+                hmap = ', '.join(m)
+                fview = '''
+                    map_get(
+                        hstore_to_map('{0}'),
+                        "{1}"
+                    )
+                '''.format(
+                    hmap,
+                    name
+                )
+
+            # Date
+            if ftype == 'DateTime':
+                dfor = fconf['display_format']
+                fview = '''
+                    format_date(
+                        "{0}",
+                        '{1}'
+                    )
+                '''.format(
+                    name,
+                    dfor
+                )
+
+
+            # fview = '''
+                # represent_value("{0}")
+            # '''.format(
+                # name
+            # )
+
 
             a+= '\n' + '  '*level
             a+= '''
