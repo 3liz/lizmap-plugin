@@ -13,7 +13,7 @@ env:
 
 install:
   - pip install -r requirements.txt
-  - python setup.py install
+  - python setup.py test
 
 script:
   - nose2 -v
