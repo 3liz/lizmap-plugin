@@ -20,12 +20,12 @@ setup(
     ],
     package_data={'': ['plugins.xml.template']},
     include_package_data=True,  # required for files in MANIFEST.in
-    version='[VERSION]',
+    version='__VERSION__',
     description='Let QGIS-plugin-ci package and release your QGIS plugins for you. Have a tea or go skiing meanwhile.',
     author='Denis Rouzaud',
     author_email='denis.rouzaud@gmail.com',
     url='https://github.com/opengisch/qgis-plugin-ci',
-    download_url='https://github.com/opengisch/qgis-plugin-ci/archive/[VERSION].tar.gz',
+    download_url='https://github.com/opengisch/qgis-plugin-ci/archive/__VERSION__.tar.gz',
     keywords=['QGIS'],
     classifiers=[
         'Topic :: Scientific/Engineering :: GIS',

@@ -11,11 +11,11 @@ def replace_in_file(file_path: str, pattern: str, new: str, encoding = "utf8"):
 
 
 def configure_file(source_file: str, dest_file: str, replace: dict):
-    with open(source_file, 'r') as f:
+    with open(source_file, 'r', encoding='utf-8') as f:
         content = f.read()
     for pattern, new in replace.items():
         content = re.sub(pattern, new, content, flags=re.M)
-    with open(dest_file, 'w') as f:
+    with open(dest_file, 'w', encoding='utf-8') as f:
         f.write(content)
 
 

@@ -4,18 +4,18 @@
         <description><![CDATA[__DESCRIPTION__]]></description>
         <version>__RELEASE_VERSION__</version>
         <qgis_minimum_version>__QGIS_MIN_VERSION__</qgis_minimum_version>
-        <homepage>http://github.com/__ORG__/__REPO__</homepage>
+        <homepage>__HOMEPAGE__</homepage>
         <file_name>__PLUGINZIP__</file_name>
         <icon>__ICON__</icon>
         <author_name>__AUTHOR__</author_name>
-        <download_url>https://github.com/__ORG__/__REPO__/releases/download/__TAG_VERSION__/__PLUGINZIP__</download_url>
+        <download_url>https://github.com/__ORG__/__REPO__/releases/download/__RELEASE_TAG__/__PLUGINZIP__</download_url>
         <uploaded_by>__OSGEO_USERNAME__</uploaded_by>
         <create_date>__CREATE_DATE__</create_date>
-	    <update_date>__RELEASE_DATE__</update_date>
+        <update_date>__RELEASE_DATE__</update_date>
         <experimental>__EXPERIMENTAL__</experimental>
         <deprecated>__DEPRECATED__</deprecated>
         <tracker>__ISSUE_TRACKER__</tracker>
-        <repository>__REPO__</repository>
+        <repository>__REPO_URL__</repository>
         <tags>__TAGS__</tags>
     </pyqgis_plugin>
 </plugins>

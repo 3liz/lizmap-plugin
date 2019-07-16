@@ -10,5 +10,7 @@ translation_languages:
   - fr
   - it
   - de
+create_date: 1985-07-21
+author: Geo Ninja
 
 #lrelease_path: /usr/local/opt/qt5/bin/lrelease

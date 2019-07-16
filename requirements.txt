@@ -3,5 +3,7 @@ pyyaml
 pytransifex
 gitpython
 PyQt5
-nose2
 PyGithub
+
+# for testing
+nose2

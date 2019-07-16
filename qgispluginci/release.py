@@ -11,6 +11,7 @@ from github import Github, GithubException
 import xmlrpc.client
 import re
 import pkg_resources
+import datetime
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
@@ -20,11 +21,34 @@ from qgispluginci.exceptions import GithubReleaseNotFound, GithubReleaseCouldNot
 
 def release(parameters: Parameters,
             release_version: str,
+            release_tag: str = None,
             github_token: str = None,
             upload_plugin_repo_github: str = False,
             transifex_token: str = None,
             osgeo_username: str = None,
             osgeo_password: str = None):
+    """
+    
+    Parameters
+    ----------
+    parameters
+        The configuration parameters 
+    release_version: 
+        The release version (x.y.z)
+    release_tag:
+        The release tag (vx.y.z).
+        If not given, the release version will be used
+    github_token
+        The Github token
+    upload_plugin_repo_github
+        If true, a custom repo will be created as a release asset on Github and could later be used in QGIS as a custom plugin repository.
+    transifex_token
+        The Transifex token
+    osgeo_username
+        osgeo username to upload the plugin to official QGIS repository
+    osgeo_password
+        osgeo password to upload the plugin to official QGIS repository
+    """
 
     # set version in metadata
     replace_in_file('{}/metadata.txt'.format(parameters.src_dir),
@@ -45,9 +69,24 @@ def release(parameters: Parameters,
                                                            release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
     if github_token is not None:
-        upload_asset_to_github_release(parameters, archive=output, release_tag=release_version, github_token=github_token)
+        upload_asset_to_github_release(
+            parameters, asset_path=output, release_tag=release_version, github_token=github_token
+        )
         if upload_plugin_repo_github:
-            xml_repo = create_plugin_repo()
+            xml_repo = create_plugin_repo(
+                parameters=parameters,
+                release_version=release_version,
+                release_tag=release_tag,
+                archive=output,
+                osgeo_username=osgeo_username
+            )
+            upload_asset_to_github_release(
+                parameters,
+                asset_path=xml_repo,
+                release_tag=release_version,
+                github_token=github_token,
+                asset_name='plugins.xml'
+            )
 
     if osgeo_username is not None:
         assert osgeo_password is not None
@@ -57,6 +96,7 @@ def release(parameters: Parameters,
 def create_archive(parameters: Parameters,
                    output: str,
                    add_translations: bool = False):
+    
     top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
 
     repo = git.Repo()
@@ -116,9 +156,11 @@ def create_archive(parameters: Parameters,
 
 
 def upload_asset_to_github_release(parameters: Parameters,
-                                   archive: str,
+                                   asset_path: str,
                                    release_tag: str,
-                                   github_token: str):
+                                   github_token: str,
+                                   asset_name: str = None
+                                   ):
 
     slug = '{}/{}'.format(parameters.organization_slug, parameters.project_slug)
     repo = Github(github_token).get_repo(slug)
@@ -129,22 +171,54 @@ def upload_asset_to_github_release(parameters: Parameters,
     except GithubException as e:
         raise GithubReleaseNotFound('Release {} not found'.format(release_tag))
     try:
-        print('Uploading archive {}'.format(archive))
-        assert os.path.exists(archive)
-        gh_release.upload_asset(archive)
+        assert os.path.exists(asset_path)
+        if asset_name:
+            print('Uploading asset: {} as {}'.format(asset_path, asset_name))
+            # TODO: waiting for new release
+            # https://github.com/PyGithub/PyGithub/issues/1172
+            gh_release.upload_asset(path=asset_path, label=asset_name)
+        else:
+            print('Uploading asset: {}'.format(asset_path))
+            gh_release.upload_asset(asset_path)
         print('OK')
     except GithubException as e:
         print(e)
         raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
 
 
-def create_plugin_repo() -> str:
+def create_plugin_repo(parameters: Parameters,
+                       release_version: str, 
+                       release_tag: str,
+                       archive: str,
+                       osgeo_username) -> str:
     """
     Creates the plugin repo as an XML file
     """
     xml_template = pkg_resources.resource_filename('qgispluginci', 'plugins.xml.template')
     _, xml_repo = mkstemp(suffix='.xml')
-    configure_file(xml_template, xml_repo, {})
+
+    replace_dict = {
+        '__RELEASE_VERSION__': release_version,
+        '__RELEASE_TAG__': release_tag or release_version,
+        '__PLUGIN_NAME__': parameters.plugin_name,
+        '__RELEASE_DATE__': datetime.date.today().strftime('%Y-%m-%d'),
+        '__CREATE_DATE__': parameters.create_date.strftime('%Y-%m-%d'),
+        '__ORG__': parameters.organization_slug,
+        '__REPO__': parameters.project_slug,
+        '__PLUGINZIP__': archive,
+        '__OSGEO_USERNAME__': osgeo_username or parameters.author,
+        '__DEPRECATED__': str(parameters.deprecated),
+        '__EXPERIMENTAL__': str(parameters.experimental),
+        '__TAGS__': parameters.tags,
+        '__ICON__': parameters.icon,
+        '__AUTHOR__': parameters.author,
+        '__QGIS_MIN_VERSION__': parameters.qgis_minimum_version,
+        '__DESCRIPTION__': parameters.description,
+        '__ISSUE_TRACKER__': parameters.issue_tracker,
+        '__HOMEPAGE__': parameters.homepage,
+        '__REPO_URL__': parameters.repository_url
+    }
+    configure_file(xml_template, xml_repo, replace_dict)
     return xml_repo
 
 

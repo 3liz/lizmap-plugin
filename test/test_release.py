@@ -3,13 +3,16 @@
 import os
 import unittest
 import yaml
-from github import Github
+import filecmp
+import urllib.request
+from tempfile import mkstemp
+from github import Github, GithubException
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.release import release
 from qgispluginci.translation import Translation
 from qgispluginci.exceptions import GithubReleaseNotFound
-from github import GithubException
+
 
 # if change, also update on .travis.yml
 RELEASE_VERSION_TEST = '0.1.2'
@@ -51,6 +54,14 @@ class TestRelease(unittest.TestCase):
     def test_release_upload_github(self):
         release(self.parameters, RELEASE_VERSION_TEST, github_token=self.github_token, upload_plugin_repo_github=True)
 
+        # check the custom plugin repo
+        _, xml_repo = mkstemp(suffix='.xml')
+        url = 'https://github.com/opengisch/qgis-plugin-ci/releases/download/{}/plugins.xml'.format(RELEASE_VERSION_TEST)
+        # TODO uncomment when new release
+        #urllib.request.urlretrieve(url, xml_repo)
+        #self.assertTrue(filecmp('test/plugins.xml.expected', xml_repo))
+
+        # compare archive file size
         gh_release = self.repo.get_release(id=RELEASE_VERSION_TEST)
         archive_name = 'qgis-plugin-ci-{}.zip'.format(RELEASE_VERSION_TEST)
         fs = os.path.getsize(archive_name)

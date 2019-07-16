@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
 import os
+import re
 from slugify import slugify
+import datetime
 
 
 class Parameters:
@@ -46,9 +48,10 @@ class Parameters:
         The source language for translations.
         Defaults to: 'en'
 
-    repository_url: str
-        The repository URL. Will be deduced if run on Travis.
-        Required to create new resources on Transifex.
+    create_date: datetime.date
+        The date of creation of the plugin.
+        The would be used in the custom repository XML.
+        Format: YYYY-MM-DD
 
     lrelease_path: str
         The path of lrelease executable
@@ -69,6 +72,29 @@ class Parameters:
         self.transifex_organization = definition.get('transifex_organization', self.organization_slug)
         self.translation_source_language = definition.get('translation_source_language', 'en')
         self.translation_languages = definition.get('translation_languages', {})
-        self.repository_url = definition.get('repository_url', 'https://www.github.com/{s}'.format(s=os.environ.get('TRAVIS_REPO_SLUG')))
+        self.create_date = datetime.datetime.strptime(str(definition.get('create_date', datetime.date.today())), '%Y-%m-%d')
         self.lrelease_path = definition.get('lrelease_path', 'lrelease')
         self.pylupdate5_path = definition.get('pylupdate5_path', 'pylupdate5')
+
+        # read from metadata
+        self.author = self.__get_from_metadata('author', '')
+        self.description = self.__get_from_metadata('description')
+        self.qgis_minimum_version = self.__get_from_metadata('qgisMinimumVersion')
+        self.icon = self.__get_from_metadata('icon', '')
+        self.tags = self.__get_from_metadata('tags', '')
+        self.experimental = self.__get_from_metadata('experimental', False)
+        self.deprecated = self.__get_from_metadata('deprecated', False)
+        self.issue_tracker = self.__get_from_metadata('tracker')
+        self.homepage = self.__get_from_metadata('homepage')
+        self.repository_url = self.__get_from_metadata('repository')
+
+    def __get_from_metadata(self, key: str, default_value: any = None) -> str:
+        metadata_file = '{}/metadata.txt'.format(self.src_dir)
+        with open(metadata_file) as f:
+            for line in f:
+                m = re.match(r'{}\s*=\s*(.*)$'.format(key), line)
+                if m:
+                    return m.group(1)
+        if default_value is None:
+            raise Exception('missing key in metadata: {}'.format(key))
+        return default_value
