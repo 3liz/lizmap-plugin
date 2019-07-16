@@ -11,7 +11,9 @@ env:
   #  github_token
   - secure: "Rotw5IvMPKugnm+Ohvrt2RZNGZK2beQIg2IEfvVK+2f37QeySehs/JoekI7xMPdKtlp2TX9ZT3WY29y6E192GmarCsFjuCbJWZ0PFvOIJSb5zmjO1L3HSTbNMTCU8Kewiv0LODM9k/KoXraizOQYewnD52bjgO3BupfYcRtODuyQDYFThZ9a5S6cvEGr4iV34Uviwlm0rLvWrwncfsoKH/2WAzDdChXhNoawtJugF2OHhZcXm1gXdHPfhWiNIzpZVO01wdt4PPSOBj/cGCVXTaWN/yus8qoF3xaPzB85dsox2H34IBsllJCV+/AFjbpwJD6LZbD7tgLDknmj7ILTFG7/B/ddSuEycxcO9+C4njRVxZFxg9/Lu3No1iDA5tMpiFUbAbXPzZL013tXo4DTbth2EnaaDPtY0pwvq9yZX/Or7Z3EFsYGyKPnN3cOiT4UWrZ04fqTyeMtW7jBR+6vOKkM9rw0dJ1yAqQbNgFZ428ktB9oknHxAkKuBieXceaeC3jaT9NSOybzwvPWDh3J5OD0InsaaQF7mK8DA7F15YbrU46vEL5H5TTcz57w+TMbo/VsxVWR8rhTCR3DvzmgwAwqU0pU95m/Uj8QoZTLIaf+qCCeX/Vj0q1k/b2aWAKV7IJm3vWOPalk+TYo5FByp9RCCN8dSHcBBZfSxrALslA="
 
-install: pip install -r requirements.txt
+install:
+  - pip install -r requirements.txt
+  - python setup.py install
 
 script:
   - nose2 -v

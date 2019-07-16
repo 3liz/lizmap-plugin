@@ -10,16 +10,18 @@ from glob import glob
 from github import Github, GithubException
 import xmlrpc.client
 import re
+import pkg_resources
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
-from qgispluginci.utils import replace_in_file
+from qgispluginci.utils import replace_in_file, configure_file
 from qgispluginci.exceptions import GithubReleaseNotFound, GithubReleaseCouldNotUploadAsset
 
 
 def release(parameters: Parameters,
             release_version: str,
             github_token: str = None,
+            upload_plugin_repo_github: str = False,
             transifex_token: str = None,
             osgeo_username: str = None,
             osgeo_password: str = None):
@@ -42,8 +44,11 @@ def release(parameters: Parameters,
     output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
-    if github_token:
+    if github_token is not None:
         upload_asset_to_github_release(parameters, archive=output, release_tag=release_version, github_token=github_token)
+        if upload_plugin_repo_github:
+            xml_repo = create_plugin_repo()
+
     if osgeo_username is not None:
         assert osgeo_password is not None
         upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=output)
@@ -131,6 +136,16 @@ def upload_asset_to_github_release(parameters: Parameters,
     except GithubException as e:
         print(e)
         raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
+
+
+def create_plugin_repo() -> str:
+    """
+    Creates the plugin repo as an XML file
+    """
+    xml_template = pkg_resources.resource_filename('qgispluginci', 'plugins.xml.template')
+    _, xml_repo = mkstemp(suffix='.xml')
+    configure_file(xml_template, xml_repo, {})
+    return xml_repo
 
 
 def upload_plugin_to_osgeo(username: str, password: str, archive: str):

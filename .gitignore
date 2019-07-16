@@ -1,6 +1,9 @@
 # Sphinx documentation
 docs/_build/
 docs/_autosummary/
+build/
+dist/
+*.egg-info
 
 __pycache__/
 *.pyc

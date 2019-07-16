@@ -1,7 +1,7 @@
 from setuptools import setup
 import sys
 
-python_min_version = (3, 7)
+python_min_version=(3, 7)
 
 if sys.version_info < python_min_version:
     sys.exit('qgis-plugin-ci requires at least Python version {vmaj}.{vmin}.\n'
@@ -11,28 +11,30 @@ if sys.version_info < python_min_version:
         curver=sys.version))
 
 setup(
-    name = 'qgis-plugin-ci',
-    packages = [
+    name='qgis-plugin-ci',
+    packages=[
         'qgispluginci'
     ],
-    scripts = [
+    scripts=[
         'scripts/qgis-plugin-ci'
     ],
-    version = '[VERSION]',
-    description = 'Let QGIS-plugin-ci package and release your QGIS plugins for you.',
-    author = 'Denis Rouzaud',
-    author_email = 'denis.rouzaud@gmail.com',
-    url = 'https://github.com/opengisch/qgis-plugin-ci',
-    download_url = 'https://github.com/opengisch/qgis-plugin-ci/archive/[VERSION].tar.gz', # I'll explain this in a second
-    keywords = ['QGIS'],
-    classifiers = [
+    package_data={'': ['plugins.xml.template']},
+    include_package_data=True,  # required for files in MANIFEST.in
+    version='[VERSION]',
+    description='Let QGIS-plugin-ci package and release your QGIS plugins for you. Have a tea or go skiing meanwhile.',
+    author='Denis Rouzaud',
+    author_email='denis.rouzaud@gmail.com',
+    url='https://github.com/opengisch/qgis-plugin-ci',
+    download_url='https://github.com/opengisch/qgis-plugin-ci/archive/[VERSION].tar.gz',
+    keywords=['QGIS'],
+    classifiers=[
         'Topic :: Scientific/Engineering :: GIS',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Intended Audience :: System Administrators',
         'Intended Audience :: Information Technology',
         'Development Status :: 3 - Alpha'
     ],
-    install_requires = [
+    install_requires=[
         'python-slugify',
         'pyyaml',
         'pytransifex',

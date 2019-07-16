@@ -25,6 +25,8 @@ if __name__ == "__main__":
     release_parser.add_argument('--github-token', help='The Github API token. '
                                                        'If specified, the archive will be pushed to an already '
                                                        'existing release.')
+    release_parser.add_argument('--create-plugin-repo', action='store_true',
+                                help='Will create a XML repo as a Github release asset. Github token is required.')
 
 
     # pull-translation
@@ -56,19 +58,18 @@ if __name__ == "__main__":
         success = release(parameters,
                           release_version=args.release_version,
                           transifex_token=args.transifex_token,
-                          github_token=args.github_token)
+                          github_token=args.github_token,
+                          upload_plugin_repo_github=args.create_plugin_repo)
         if not success:
             exit_val = 1
     elif args.command == 'pull-translation':
-            success = Translation(parameters, args.transifex_token).pull()
-            if not success:
-                exit_val = 1
+        success = Translation(parameters, args.transifex_token).pull()
+        if not success:
+            exit_val = 1
     elif args.command == 'push-translation':
         t = Translation(parameters, args.transifex_token)
         t.update_strings()
         t.push()
-        if not success:
-            exit_val = 1
 
     exit(exit_val)
 

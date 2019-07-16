@@ -14,8 +14,8 @@
 	    <update_date>__RELEASE_DATE__</update_date>
         <experimental>__EXPERIMENTAL__</experimental>
         <deprecated>__DEPRECATED__</deprecated>
-        <tracker>https://github.com/__ORG__/__REPO__/issues</tracker>
-        <repository>https://github.com/__ORG__/__REPO__</repository>
+        <tracker>__ISSUE_TRACKER__</tracker>
+        <repository>__REPO__</repository>
         <tags>__TAGS__</tags>
     </pyqgis_plugin>
 </plugins>

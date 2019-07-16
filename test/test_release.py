@@ -49,7 +49,7 @@ class TestRelease(unittest.TestCase):
         release(self.parameters, RELEASE_VERSION_TEST, transifex_token=self.transifex_token)
 
     def test_release_upload_github(self):
-        release(self.parameters, RELEASE_VERSION_TEST, github_token=self.github_token)
+        release(self.parameters, RELEASE_VERSION_TEST, github_token=self.github_token, upload_plugin_repo_github=True)
 
         gh_release = self.repo.get_release(id=RELEASE_VERSION_TEST)
         archive_name = 'qgis-plugin-ci-{}.zip'.format(RELEASE_VERSION_TEST)
@@ -61,6 +61,7 @@ class TestRelease(unittest.TestCase):
                 self.assertEqual(fs, a.size, 'asset size doesn\'t march archive size.')
                 break
             self.assertTrue(False, 'asset not found')
+
 
 
 if __name__ == '__main__':
