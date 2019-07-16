@@ -13,7 +13,7 @@ env:
 
 install:
   - pip install -r requirements.txt
-  - sed -i "s/__VERSION__/${TRAVIS_TAG:9.9.9}/g" setup.py
+  - sed -i "s/__VERSION__/${TRAVIS_TAG:=9.9.9}/g" setup.py
   - python setup.py install
 
 script:
