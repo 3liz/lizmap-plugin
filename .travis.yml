@@ -30,7 +30,7 @@ deploy:
     secure: "nHPAVzs/jB8symXaJJTtNOzyw275wo0MR6DcM+2OPM19An1wPORhl5l5aZlrJ8R/GJu4hUEqLP1ePYGNZmrKKw++hh+vKkp7YE6U90Ryyt7cb0CIebjo/o2zp61tslpGejqKux8tWXsSQPHJWhsQx6Mk9WfXPszt4d2CtIu+tqes7XxHeM8y0qgLhRJ+wg1kc6Jbl2MCqq+qjv/VUFOQYVJXqd6tqdssC3wjxRhbzBQd1YQph0qAxQTgeJ/pJ5KDadzuWluayntnjgiNCkvjsPcIMuUG+cA3SJmOWhoB5q2tIaDq2yOa937un1OcM0Pl5EC4UtT3bQcJpy0AH6nJpUB6aBwQvD8E9qfKoSAMnCIZOgLPc0z80GFSX29s+DmAQncj8h14r9y5LU1+r7enagD+IQm5jf1GyGKTT76bgpO9Y9DswsfSnfXmpM9nJ+fPASGCxOaKrjIFNNh8HObD0dMSSwcu3hRqSTf21DKHUBWyFfkSFZ/Te6ymI59EnUjes4P8rWq8637FXo33u6YEtPpkZd6LoBY81DQvpLuIg3o2d33GP7ZBj2DTabxEEQ2pse7RitiPwGirpWO7/OcbD4Xed5oyWVVnYC3TD/USTC19pCs36BSsMHKQQahYa+KVf0S8S9seG1aqcjbbyXjFxa0lHrcV5evSllCE9MGkKfk="
   on:
     tags: true
-    distributions: sdist bdist_wheel
+    distributions: sdist
     repo: opengisch/qgis-plugin-ci
     branch: master
 
