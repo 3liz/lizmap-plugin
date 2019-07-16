@@ -30,6 +30,6 @@ deploy:
   on:
     tags: true
     distributions: sdist
-    repo: opengisch/qgis-plugin-ci
+
 
 
