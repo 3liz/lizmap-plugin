@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
     # package
     package_parser = subparsers.add_parser('package', help='creates an archive of the plugin')
+    package_parser.add_argument('release_version', help='The version to be released')
     package_parser.add_argument('--transifex-token', help='The Transifex API token. '
                                                           'If specified translations will be pulled and compiled.')
 
@@ -58,7 +59,7 @@ if __name__ == "__main__":
     arg_dict = yaml.safe_load(open(".qgis-plugin-ci"))
     parameters = Parameters(arg_dict)
 
-    if args.command == 'release':
+    if args.command == 'package':
         success = release(
             parameters,
             release_version=args.release_version,

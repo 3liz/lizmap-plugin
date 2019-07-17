@@ -108,17 +108,17 @@ def create_archive(parameters: Parameters,
     # create TAR archive
     print('archive plugin with stash: {}'.format(stash))
     repo.git.archive(stash, '--prefix', '{}/'.format(parameters.plugin_path), '-o', top_tar_file, parameters.plugin_path)
-    with tarfile.open(top_tar_file, mode="a") as tt:
-        # adding submodules
-        for submodule in repo.submodules:
-            _, sub_tar_file = mkstemp(suffix='.tar')
-            if submodule.path.split('/')[0] != parameters.plugin_path:
-                print('skipping submodule not in plugin source directory ({})'.format(submodule.name))
-                continue
-            submodule.update(init=True)
-            sub_repo = submodule.module()
-            print('archive submodule:', sub_repo)
-            sub_repo.git.archive('HEAD', '--prefix', '{}/'.format(submodule.path), '-o', sub_tar_file)
+    # adding submodules
+    for submodule in repo.submodules:
+        _, sub_tar_file = mkstemp(suffix='.tar')
+        if submodule.path.split('/')[0] != parameters.plugin_path:
+            print('skipping submodule not in plugin source directory ({})'.format(submodule.name))
+            continue
+        submodule.update(init=True)
+        sub_repo = submodule.module()
+        print('archive submodule:', sub_repo)
+        sub_repo.git.archive('HEAD', '--prefix', '{}/'.format(submodule.path), '-o', sub_tar_file)
+        with tarfile.open(top_tar_file, mode="a") as tt:
             with tarfile.open(sub_tar_file, mode="r:") as st:
                 for m in st.getmembers():
                     # print('adding', m, m.type, m.isfile())
@@ -126,8 +126,9 @@ def create_archive(parameters: Parameters,
                         continue
                     tt.add(m.name, arcname='{}/{}'.format(parameters.plugin_path, m.name))
 
-        # add translation files
-        if add_translations:
+    # add translation files
+    if add_translations:
+        with tarfile.open(top_tar_file, mode="a") as tt:
             print("adding translations")
             for file in glob('{}/i18n/*.qm'.format(parameters.plugin_path)):
                 print('  {}'.format(os.path.basename(file)))
