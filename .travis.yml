@@ -13,7 +13,7 @@ env:
 
 install:
   - pip install -r requirements.txt
-  - sed -i "s/__VERSION__/${TRAVIS_TAG:=0.0.0}/g" setup.py
+  - sed -i "s/__VERSION__/${TRAVIS_TAG:-0.0.0}/g" setup.py
   - python setup.py install
 
 script:
@@ -25,6 +25,7 @@ deploy:
   provider: pypi
   skip_existing: true
   skip_cleanup: true
+  distributions: sdist
   user:
     secure: "K/wtvhISwCuhx0Za/Q8tSDcS49cM4y0lviaE+dg2OGOhTKv2ArCQSo8ATatKzJdIiiiBkvu0hZJVnSXNTOEhVBHfhFZAfGyaj5opMlhnCPlkStWkJQjMioqQw93aNL5YYsQNmyaGsv+HwCT4u14gTH/9UO+THbYKxd1Vl2uDP3fUodvIjduC+JxeWpIkMLPnqh0aTUWXVyvuvlUg1tdqf0H/vPIitaCAzVl1VQpSQWQ/8+xYP+lzZUs7UWaUdFCQC0sLsI19wY8WCzcugX/sb50Anm2uFC0GwRmTMTiV9neGC8tjv5dICJKs9KmciCngXLND1D/1vq+z2iCI4a2rlT7nUBDaDjEowIY2qsnxT1IvUTr4bgJNLl1m+ff6VDWkiMgWV/yO2XALG3JoEnbI6Zd9CaCUBvzi9a4/eDATAXi7RBWDHMY2Z+FjA49f4ud1GRw6OR8vBPCS1mDehdKPIzD+60HvYew+YwlkzauH7y9Zb0sy861+amo+q3RTkr4ek5sdgzUhxTdlPAf12d1EwDz7hcwRNXeFOghf/Qc9H8IDb6pWj/0itCr65v4nNw5Un1u0UEuBFQmHBJHvknYPYKpWWJXCquXln559Yh15YYqnfaZklqx4b135qWSuYCBIBw8lG1MV9tRg2yxsGcC+hTXRnSGkjPmQBPdtX5PWMfs="
   password:
