@@ -55,10 +55,9 @@ def release(parameters: Parameters,
                     r'^version=.*\$',
                     'version=${}'.format(release_version))
 
-    # replace any DEBUG=False in the plugin main file
-    replace_in_file('{d}/{f}'.format(d=parameters.src_dir, f=parameters.plugin_main_file),
-                    r'^DEBUG\s*=\s*True',
-                    'DEBUG = False')
+    # replace any DEBUG=False in all Python files
+    for file in glob('{}/**/*.py'.format(parameters.src_dir), recursive=True):
+        replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
 
     if transifex_token is not None:
         tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
