@@ -161,10 +161,10 @@ def upload_asset_to_github_release(parameters: Parameters,
                                    asset_name: str = None
                                    ):
 
-    slug = '{}/{}'.format(parameters.organization_slug, parameters.project_slug)
+    slug = '{}/{}'.format(parameters.github_organization_slug, parameters.project_slug)
     repo = Github(github_token).get_repo(slug)
     try:
-        print('Getting release on {}/{}'.format(parameters.organization_slug, parameters.project_slug))
+        print('Getting release on {}/{}'.format(parameters.github_organization_slug, parameters.project_slug))
         gh_release = repo.get_release(id=release_tag)
         print(gh_release, gh_release.tag_name, gh_release.upload_url)
     except GithubException as e:
@@ -202,7 +202,7 @@ def create_plugin_repo(parameters: Parameters,
         '__PLUGIN_NAME__': parameters.plugin_name,
         '__RELEASE_DATE__': datetime.date.today().strftime('%Y-%m-%d'),
         '__CREATE_DATE__': parameters.create_date.strftime('%Y-%m-%d'),
-        '__ORG__': parameters.organization_slug,
+        '__ORG__': parameters.github_organization_slug,
         '__REPO__': parameters.project_slug,
         '__PLUGINZIP__': archive,
         '__OSGEO_USERNAME__': osgeo_username or parameters.author,

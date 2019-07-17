@@ -14,7 +14,7 @@ class Parameters:
         The directory of the source code in the repository.
         Defaults to: `slugify(plugin_name, separator='_')`
 
-    organization_slug: str
+    github_organization_slug: str
         The organization slug on SCM host (e.g. Github) and translation platform (e.g. Transifex).
         Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG`environment variable.
         
@@ -55,9 +55,9 @@ class Parameters:
             'project_slug',
             os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(slugify(self.plugin_name))).split('/')[1]
         )
-        self.organization_slug = definition.get('organization_slug', os.environ.get('TRAVIS_REPO_SLUG', '').split('/')[0])
+        self.github_organization_slug = definition.get('github_organization_slug', os.environ.get('TRAVIS_REPO_SLUG', '').split('/')[0])
         self.transifex_coordinator = definition.get('transifex_coordinator', '')
-        self.transifex_organization = definition.get('transifex_organization', self.organization_slug)
+        self.transifex_organization = definition.get('transifex_organization', self.github_organization_slug)
         self.translation_source_language = definition.get('translation_source_language', 'en')
         self.translation_languages = definition.get('translation_languages', {})
         self.create_date = datetime.datetime.strptime(str(definition.get('create_date', datetime.date.today())), '%Y-%m-%d')

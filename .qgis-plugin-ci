@@ -1,11 +1,10 @@
 
 
 plugin_path: qgis_plugin_ci_testing
-organization_slug: opengisch
+github_organization_slug: opengisch
 project_slug: qgis-plugin-ci
 transifex_coordinator: geoninja
 transifex_organization: pytransifex
-repository_url: https://www.github.com/opengisch/qgis-plugin-ci
 translation_languages:
   - fr
   - it
