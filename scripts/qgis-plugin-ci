@@ -17,6 +17,11 @@ if __name__ == "__main__":
 
     subparsers = parser.add_subparsers(title='commands', description='qgis-plugin-ci command', dest='command')
 
+    # package
+    package_parser = subparsers.add_parser('package', help='creates an archive of the plugin')
+    package_parser.add_argument('--transifex-token', help='The Transifex API token. '
+                                                          'If specified translations will be pulled and compiled.')
+
     # release
     release_parser = subparsers.add_parser('release', help='release the plugin')
     release_parser.add_argument('release_version', help='The version to be released')
@@ -27,7 +32,6 @@ if __name__ == "__main__":
                                                        'existing release.')
     release_parser.add_argument('--create-plugin-repo', action='store_true',
                                 help='Will create a XML repo as a Github release asset. Github token is required.')
-
 
     # pull-translation
     pull_tr_parser = subparsers.add_parser('pull-translation', help='pull translations from Transifex')
@@ -55,11 +59,20 @@ if __name__ == "__main__":
     parameters = Parameters(arg_dict)
 
     if args.command == 'release':
-        success = release(parameters,
-                          release_version=args.release_version,
-                          transifex_token=args.transifex_token,
-                          github_token=args.github_token,
-                          upload_plugin_repo_github=args.create_plugin_repo)
+        success = release(
+            parameters,
+            release_version=args.release_version,
+            transifex_token=args.transifex_token
+        )
+
+    elif args.command == 'release':
+        success = release(
+            parameters,
+            release_version=args.release_version,
+            transifex_token=args.transifex_token,
+            github_token=args.github_token,
+            upload_plugin_repo_github=args.create_plugin_repo
+        )
         if not success:
             exit_val = 1
     elif args.command == 'pull-translation':

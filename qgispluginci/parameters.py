@@ -10,7 +10,7 @@ class Parameters:
     """
     Attributes
     ----------
-    src_dir: str
+    plugin_path: str
         The directory of the source code in the repository.
         Defaults to: `slugify(plugin_name, separator='_')`
 
@@ -49,7 +49,7 @@ class Parameters:
 
     """
     def __init__(self, definition: dict):
-        self.plugin_path = definition['src_dir']
+        self.plugin_path = definition['plugin_path']
         self.plugin_name = self.__get_from_metadata('name')
         self.project_slug = definition.get(
             'project_slug',
