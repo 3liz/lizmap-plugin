@@ -107,7 +107,7 @@ def create_archive(parameters: Parameters,
         stash = 'HEAD'
     # create TAR archive
     print('archive plugin with stash: {}'.format(stash))
-    repo.git.archive(stash, '--prefix', '{}/'.format(parameters.plugin_path), '-o', top_tar_file, parameters.plugin_path)
+    repo.git.archive(stash, '-o', top_tar_file, parameters.plugin_path)
     # adding submodules
     for submodule in repo.submodules:
         _, sub_tar_file = mkstemp(suffix='.tar')
@@ -124,7 +124,7 @@ def create_archive(parameters: Parameters,
                     # print('adding', m, m.type, m.isfile())
                     if not m.isfile():
                         continue
-                    tt.add(m.name, arcname='{}/{}'.format(parameters.plugin_path, m.name))
+                    tt.add(m.name)
 
     # add translation files
     if add_translations:
