@@ -12,6 +12,7 @@ import xmlrpc.client
 import re
 import pkg_resources
 import datetime
+import pyqt5ac
 
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
@@ -59,10 +60,18 @@ def release(parameters: Parameters,
     for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):
         replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
 
+    # compile qrc files
+    pyqt5ac.main(ioPaths=[
+        ['{}/*.qrc'.format(parameters.plugin_path), '{}/%%FILENAME%%_rc.py'.format(parameters.plugin_path)]
+    ])
+
     if transifex_token is not None:
         tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
         tr.pull()
         tr.compile_strings()
+
+    # compile qrc files
+
 
     output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)

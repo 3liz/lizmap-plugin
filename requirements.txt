@@ -4,6 +4,7 @@ pytransifex
 gitpython
 PyQt5
 PyGithub
+pyqt5ac
 
 # for testing
 nose2

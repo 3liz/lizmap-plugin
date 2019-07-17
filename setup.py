@@ -40,7 +40,8 @@ setup(
         'pytransifex',
         'gitpython',
         'PyQt5',
-        'PyGithub'
+        'PyGithub',
+        'pyqt5ac'
     ],
     python_requires=">={vmaj}.{vmin}".format(vmaj=python_min_version[0], vmin=python_min_version[1]),
 )
