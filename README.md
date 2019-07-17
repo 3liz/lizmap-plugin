@@ -22,6 +22,14 @@ These scripts are written for and tested on GitHub, Travis-CI and Transifex.
 
 In any Python module, you can have a global variable as `DEBUG = True`, which will be changed to `False` when packaging the plugin.
 
+# Excluding files in the plugin archive
+
+If you want to avoid some files to be shipped with your plugin, create a ``.gitattributes`` file in which you can specify the files to ignore. For instance:
+```
+resources.qrc export-ignore
+```
+
+
 
 # Activating unit tests
 

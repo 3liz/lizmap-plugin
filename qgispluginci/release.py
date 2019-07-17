@@ -60,11 +60,6 @@ def release(parameters: Parameters,
     for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):
         replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
 
-    # compile qrc files
-    pyqt5ac.main(ioPaths=[
-        ['{}/*.qrc'.format(parameters.plugin_path), '{}/%%FILENAME%%_rc.py'.format(parameters.plugin_path)]
-    ])
-
     if transifex_token is not None:
         tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
         tr.pull()
@@ -141,7 +136,22 @@ def create_archive(parameters: Parameters,
             print("adding translations")
             for file in glob('{}/i18n/*.qm'.format(parameters.plugin_path)):
                 print('  {}'.format(os.path.basename(file)))
-                tt.addfile(tarfile.TarInfo('{s}/{s}/i18n/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))), file)
+                tt.addfile(
+                    tarfile.TarInfo('{s}/i18n/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))),
+                    file
+                )
+
+    # compile qrc files
+    pyqt5ac.main(ioPaths=[
+        ['{}/*.qrc'.format(parameters.plugin_path), '{}/%%FILENAME%%_rc.py'.format(parameters.plugin_path)]
+    ])
+    for file in glob('{}/*_rc.py'.format(parameters.plugin_path)):
+        with tarfile.open(top_tar_file, mode="a") as tt:
+            print('  {}'.format(os.path.basename(file)))
+            tt.addfile(
+                tarfile.TarInfo('{s}/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))),
+                file
+            )
 
     # converting to ZIP
     # why using TAR before? because it provides the prefix and makes things easier
