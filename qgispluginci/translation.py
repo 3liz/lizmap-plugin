@@ -26,7 +26,7 @@ class Translation():
         self.parameters = parameters
         self._t = Transifex(transifex_token, parameters.transifex_organization, i18n_type='QT')
         assert self._t.ping()
-        self.ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.src_dir,
+        self.ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.plugin_path,
                                                           res=self.parameters.project_slug,
                                                           lan=self.parameters.translation_source_language)
 
@@ -57,7 +57,7 @@ class Translation():
         """
         cmd = [self.parameters.pylupdate5_path, '-noobsolete']
         for ext in ('py', 'ui'):
-            for file in glob.glob('{dir}/**/*.{ext}'.format(dir=self.parameters.src_dir, ext=ext), recursive=True):
+            for file in glob.glob('{dir}/**/*.{ext}'.format(dir=self.parameters.plugin_path, ext=ext), recursive=True):
                 cmd.append(file)
         touch_file(self.ts_file)
         cmd.append('-ts')
@@ -73,7 +73,7 @@ class Translation():
         Compile TS file into QM files
         """
         cmd = [self.parameters.lrelease_path]
-        for file in glob.glob('{dir}/i18n/*.ts'.format(dir=self.parameters.src_dir)):
+        for file in glob.glob('{dir}/i18n/*.ts'.format(dir=self.parameters.plugin_path)):
             cmd.append(file)
         output = subprocess.run(cmd, capture_output=True, text=True)
         if output.returncode != 0:
@@ -95,7 +95,7 @@ class Translation():
                 self._t.create_language(self.parameters.project_slug, lang, [self.parameters.transifex_coordinator])
                 existing_langs.append(lang)
         for lang in existing_langs:
-            ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.src_dir,
+            ts_file = '{dir}/i18n/{res}_{lan}.ts'.format(dir=self.parameters.plugin_path,
                                                          res=self.parameters.project_slug,
                                                          lan=lang)
             print('downloading translation file: {}'.format(ts_file))

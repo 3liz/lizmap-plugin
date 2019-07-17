@@ -49,7 +49,7 @@ class Parameters:
 
     """
     def __init__(self, definition: dict):
-        self.src_dir = definition['src_dir']
+        self.plugin_path = definition['src_dir']
         self.plugin_name = self.__get_from_metadata('name')
         self.project_slug = definition.get(
             'project_slug',
@@ -77,7 +77,7 @@ class Parameters:
         self.repository_url = self.__get_from_metadata('repository')
 
     def __get_from_metadata(self, key: str, default_value: any = None) -> str:
-        metadata_file = '{}/metadata.txt'.format(self.src_dir)
+        metadata_file = '{}/metadata.txt'.format(self.plugin_path)
         with open(metadata_file) as f:
             for line in f:
                 m = re.match(r'{}\s*=\s*(.*)$'.format(key), line)

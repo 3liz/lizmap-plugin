@@ -1,6 +1,6 @@
 
 
-src_dir: qgis_plugin_ci_testing
+plugin_path: qgis_plugin_ci_testing
 organization_slug: opengisch
 project_slug: qgis-plugin-ci
 transifex_coordinator: geoninja

@@ -51,12 +51,12 @@ def release(parameters: Parameters,
     """
 
     # set version in metadata
-    replace_in_file('{}/metadata.txt'.format(parameters.src_dir),
+    replace_in_file('{}/metadata.txt'.format(parameters.plugin_path),
                     r'^version=.*\$',
                     'version=${}'.format(release_version))
 
     # replace any DEBUG=False in all Python files
-    for file in glob('{}/**/*.py'.format(parameters.src_dir), recursive=True):
+    for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):
         replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
 
     if transifex_token is not None:
@@ -107,12 +107,12 @@ def create_archive(parameters: Parameters,
         stash = 'HEAD'
     # create TAR archive
     print('archive plugin with stash: {}'.format(stash))
-    repo.git.archive(stash, '--prefix', '{}/'.format(parameters.src_dir), '-o', top_tar_file, parameters.src_dir)
+    repo.git.archive(stash, '--prefix', '{}/'.format(parameters.plugin_path), '-o', top_tar_file, parameters.plugin_path)
     with tarfile.open(top_tar_file, mode="a") as tt:
         # adding submodules
         for submodule in repo.submodules:
             _, sub_tar_file = mkstemp(suffix='.tar')
-            if submodule.path.split('/')[0] != parameters.src_dir:
+            if submodule.path.split('/')[0] != parameters.plugin_path:
                 print('skipping submodule not in plugin source directory ({})'.format(submodule.name))
                 continue
             submodule.update(init=True)
@@ -124,14 +124,14 @@ def create_archive(parameters: Parameters,
                     # print('adding', m, m.type, m.isfile())
                     if not m.isfile():
                         continue
-                    tt.add(m.name, arcname='{}/{}'.format(parameters.src_dir, m.name))
+                    tt.add(m.name, arcname='{}/{}'.format(parameters.plugin_path, m.name))
 
         # add translation files
         if add_translations:
             print("adding translations")
-            for file in glob('{}/i18n/*.qm'.format(parameters.src_dir)):
+            for file in glob('{}/i18n/*.qm'.format(parameters.plugin_path)):
                 print('  {}'.format(os.path.basename(file)))
-                tt.addfile(tarfile.TarInfo('{s}/{s}/i18n/{f}'.format(s=parameters.src_dir, f=os.path.basename(file))), file)
+                tt.addfile(tarfile.TarInfo('{s}/{s}/i18n/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))), file)
 
     # converting to ZIP
     # why using TAR before? because it provides the prefix and makes things easier
