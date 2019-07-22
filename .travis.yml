@@ -14,6 +14,7 @@ env:
 install:
   - pip install -r requirements.txt
   - sed -i "s/__VERSION__/${TRAVIS_TAG:-0.0.0}/g" setup.py
+  - sed -i "s/__VERSION__/${TRAVIS_TAG:-0.0.0}/g" scripts/qgis-plugin-ci
   - python setup.py install
 
 script:
