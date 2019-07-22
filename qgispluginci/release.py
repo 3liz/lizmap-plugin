@@ -193,9 +193,7 @@ def upload_asset_to_github_release(parameters: Parameters,
         assert os.path.exists(asset_path)
         if asset_name:
             print('Uploading asset: {} as {}'.format(asset_path, asset_name))
-            # TODO: waiting for new release
-            # https://github.com/PyGithub/PyGithub/issues/1172
-            gh_release.upload_asset(path=asset_path, label=asset_name)
+            gh_release.upload_asset(path=asset_path, label=asset_name, name=asset_name)
         else:
             print('Uploading asset: {}'.format(asset_path))
             gh_release.upload_asset(asset_path)

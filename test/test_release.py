@@ -57,9 +57,8 @@ class TestRelease(unittest.TestCase):
         # check the custom plugin repo
         _, xml_repo = mkstemp(suffix='.xml')
         url = 'https://github.com/opengisch/qgis-plugin-ci/releases/download/{}/plugins.xml'.format(RELEASE_VERSION_TEST)
-        # TODO uncomment when new release
-        #urllib.request.urlretrieve(url, xml_repo)
-        #self.assertTrue(filecmp('test/plugins.xml.expected', xml_repo))
+        urllib.request.urlretrieve(url, xml_repo)
+        self.assertTrue(filecmp('test/plugins.xml.expected', xml_repo))
 
         # compare archive file size
         gh_release = self.repo.get_release(id=RELEASE_VERSION_TEST)
