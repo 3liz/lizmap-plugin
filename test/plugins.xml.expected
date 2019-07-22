@@ -11,7 +11,7 @@
         <download_url>https://github.com/opengisch/qgis-plugin-ci/releases/download/0.1.2/qgis-plugin-ci-0.1.2.zip</download_url>
         <uploaded_by>Denis Rouzaud</uploaded_by>
         <create_date>1985-07-21</create_date>
-            <update_date>2019-07-16</update_date>
+        <update_date>__TODAY__</update_date>
         <experimental>True</experimental>
         <deprecated>False</deprecated>
         <tracker>https://github.com/opengisch/qgis-plugin-ci/issues</tracker>
