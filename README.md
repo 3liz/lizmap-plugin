@@ -119,13 +119,13 @@ One can easily set up a deployment using Travis.
 2. Specify the environment variables required to connect to the different platforms (Osgeo, Github, Transifex). You can add them either using the Travis CLI with `travis encrypt` or use the web interface to add the variables.
 3. Add a deploy step to release the plugin:
 
-
-    deploy:
-      provider: script
-      script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password {OSGEO_PASSWORD}
-      on:
-        tags: true
-
+```
+deploy:
+  provider: script
+  script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password {OSGEO_PASSWORD}
+  on:
+    tags: true
+```
 
 # Using Transifex to translate your plugin
 
