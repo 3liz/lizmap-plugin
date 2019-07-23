@@ -68,15 +68,17 @@ if __name__ == "__main__":
     arg_dict = yaml.safe_load(open(".qgis-plugin-ci"))
     parameters = Parameters(arg_dict)
 
+    # PACKAGE
     if args.command == 'package':
-        success = release(
+        release(
             parameters,
             release_version=args.release_version,
             transifex_token=args.transifex_token
         )
 
+    # RELEASE
     elif args.command == 'release':
-        success = release(
+        release(
             parameters,
             release_version=args.release_version,
             transifex_token=args.transifex_token,
@@ -85,12 +87,12 @@ if __name__ == "__main__":
             osgeo_username=args.osgeo_username,
             osgeo_password=args.osgeo_password
         )
-        if not success:
-            exit_val = 1
+
+    # TRANSLATION PULL
     elif args.command == 'pull-translation':
-        success = Translation(parameters, args.transifex_token).pull()
-        if not success:
-            exit_val = 1
+        Translation(parameters, args.transifex_token).pull()
+
+    # TRANSLATION PUSH
     elif args.command == 'push-translation':
         t = Translation(parameters, args.transifex_token)
         t.update_strings()
