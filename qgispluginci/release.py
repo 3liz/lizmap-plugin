@@ -59,7 +59,7 @@ def release(parameters: Parameters,
     replace_in_file(
         '{}/metadata.txt'.format(parameters.plugin_path),
         r'^version=.*$',
-        'version=${}'.format(release_version)
+        'version={}'.format(release_version)
     )
 
     # replace any DEBUG=False in all Python files
