@@ -20,19 +20,28 @@ if __name__ == "__main__":
     # package
     package_parser = subparsers.add_parser('package', help='creates an archive of the plugin')
     package_parser.add_argument('release_version', help='The version to be released')
-    package_parser.add_argument('--transifex-token', help='The Transifex API token. '
-                                                          'If specified translations will be pulled and compiled.')
+    package_parser.add_argument(
+        '--transifex-token',
+        help='The Transifex API token. If specified translations will be pulled and compiled.'
+    )
 
     # release
     release_parser = subparsers.add_parser('release', help='release the plugin')
     release_parser.add_argument('release_version', help='The version to be released')
-    release_parser.add_argument('--transifex-token', help='The Transifex API token. '
-                                                          'If specified translations will be pulled and compiled.')
-    release_parser.add_argument('--github-token', help='The Github API token. '
-                                                       'If specified, the archive will be pushed to an already '
-                                                       'existing release.')
-    release_parser.add_argument('--create-plugin-repo', action='store_true',
-                                help='Will create a XML repo as a Github release asset. Github token is required.')
+    release_parser.add_argument(
+        '--transifex-token',
+        help='The Transifex API token. If specified translations will be pulled and compiled.'
+    )
+    release_parser.add_argument(
+        '--github-token',
+        help='The Github API token. If specified, the archive will be pushed to an already existing release.'
+    )
+    release_parser.add_argument(
+        '--create-plugin-repo', action='store_true',
+        help='Will create a XML repo as a Github release asset. Github token is required.'
+    )
+    release_parser.add_argument('--osgeo-username', help='The Osgeo user name to publish the plugin.')
+    release_parser.add_argument('--osgeo-password', help='The Osgeo password to publish the plugin.')
 
     # pull-translation
     pull_tr_parser = subparsers.add_parser('pull-translation', help='pull translations from Transifex')
@@ -72,7 +81,9 @@ if __name__ == "__main__":
             release_version=args.release_version,
             transifex_token=args.transifex_token,
             github_token=args.github_token,
-            upload_plugin_repo_github=args.create_plugin_repo
+            upload_plugin_repo_github=args.create_plugin_repo,
+            osgeo_username=args.osgeo_username,
+            osgeo_password=args.osgeo_password
         )
         if not success:
             exit_val = 1
