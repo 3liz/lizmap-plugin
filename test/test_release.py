@@ -63,7 +63,11 @@ class TestRelease(unittest.TestCase):
         url = 'https://github.com/opengisch/qgis-plugin-ci/releases/download/{}/plugins.xml'.format(RELEASE_VERSION_TEST)
         urllib.request.urlretrieve(url, xml_repo)
         replace_in_file(xml_repo, r'<update_date>[\w-]+<\/update_date>', '<update_date>__TODAY__</update_date>')
-        self.assertTrue(filecmp.cmp('test/plugins.xml.expected', xml_repo, shallow=False))
+        if not filecmp.cmp('test/plugins.xml.expected', xml_repo, shallow=False):
+            import difflib
+            text1 = open('test/plugins.xml.expected').readlines()
+            text2 = open(xml_repo).readlines()
+            self.assertFalse(True, '\n'.join(difflib.unified_diff(text1, text2)))
 
         # compare archive file size
         gh_release = self.repo.get_release(id=RELEASE_VERSION_TEST)
