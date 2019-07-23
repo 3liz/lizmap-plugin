@@ -71,8 +71,8 @@ def release(parameters: Parameters,
         tr.pull()
         tr.compile_strings()
 
-    output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
-                                                           release_version=release_version)
+    # zipname apparently must have the same name as the package repository
+    output = '{zipname}-{release_version}.zip'.format(zipname=parameters.plugin_path, release_version=release_version)
     create_archive(parameters, output=output, add_translations=transifex_token is not None)
     if github_token is not None:
         upload_asset_to_github_release(
