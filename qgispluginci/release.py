@@ -10,7 +10,11 @@ from glob import glob
 from github import Github, GithubException
 import xmlrpc.client
 import re
-import pkg_resources
+try:
+  import importlib.resources as importlib_resources
+except ImportError:
+  # In Py<3.7 fall-back to backported `importlib_resources`.
+  import importlib_resources
 import datetime
 import pyqt5ac
 
@@ -64,9 +68,6 @@ def release(parameters: Parameters,
         tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
         tr.pull()
         tr.compile_strings()
-
-    # compile qrc files
-
 
     output = '{project_slug}-{release_version}.zip'.format(project_slug=parameters.project_slug,
                                                            release_version=release_version)
@@ -211,9 +212,7 @@ def create_plugin_repo(parameters: Parameters,
     """
     Creates the plugin repo as an XML file
     """
-    xml_template = pkg_resources.resource_filename('qgispluginci', 'plugins.xml.template')
     _, xml_repo = mkstemp(suffix='.xml')
-
     replace_dict = {
         '__RELEASE_VERSION__': release_version,
         '__RELEASE_TAG__': release_tag or release_version,
@@ -235,7 +234,8 @@ def create_plugin_repo(parameters: Parameters,
         '__HOMEPAGE__': parameters.homepage,
         '__REPO_URL__': parameters.repository_url
     }
-    configure_file(xml_template, xml_repo, replace_dict)
+    with importlib_resources.path('qgispluginci', 'plugins.xml.template') as xml_template:
+        configure_file(xml_template, xml_repo, replace_dict)
     return xml_repo
 
 
