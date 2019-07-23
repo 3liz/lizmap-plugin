@@ -19,7 +19,6 @@ setup(
         'scripts/qgis-plugin-ci'
     ],
     package_data={'qgispluginci': ['plugins.xml.template']},
-    include_package_data=True,  # required for files in MANIFEST.in
     version='__VERSION__',
     description='Let QGIS-plugin-ci package and release your QGIS plugins for you. Have a tea or go hiking meanwhile.',
     author='Denis Rouzaud',
