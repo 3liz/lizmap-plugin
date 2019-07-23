@@ -56,9 +56,11 @@ def release(parameters: Parameters,
     """
 
     # set version in metadata
-    replace_in_file('{}/metadata.txt'.format(parameters.plugin_path),
-                    r'^version=.*\$',
-                    'version=${}'.format(release_version))
+    replace_in_file(
+        '{}/metadata.txt'.format(parameters.plugin_path),
+        r'^version=.*$',
+        'version=${}'.format(release_version)
+    )
 
     # replace any DEBUG=False in all Python files
     for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):

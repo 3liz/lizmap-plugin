@@ -2,7 +2,7 @@ import re
 import os
 
 
-def replace_in_file(file_path: str, pattern: str, new: str, encoding = "utf8"):
+def replace_in_file(file_path: str, pattern, new: str, encoding: str = "utf8"):
     with open(file_path, 'r', encoding=encoding) as f:
         content = f.read()
     content = re.sub(pattern, new, content, flags=re.M)
