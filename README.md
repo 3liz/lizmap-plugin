@@ -10,6 +10,95 @@ These scripts are written for and tested on GitHub, Travis-CI and Transifex.
    
 # Base functionality
 
+## Command line
+
+```commandline
+usage: qgis-plugin-ci [-h] [-v]
+                      {package,release,pull-translation,push-translation} ...
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         print the version and exit
+
+commands:
+  qgis-plugin-ci command
+
+  {package,release,pull-translation,push-translation}
+    package             creates an archive of the plugin
+    release             release the plugin
+    pull-translation    pull translations from Transifex
+    push-translation    update strings and push translations
+```
+
+#### Package
+
+```commandline
+usage: qgis-plugin-ci package [-h] [--transifex-token TRANSIFEX_TOKEN]
+                              release_version
+
+positional arguments:
+  release_version       The version to be released
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --transifex-token TRANSIFEX_TOKEN
+                        The Transifex API token. If specified translations
+                        will be pulled and compiled.
+```
+
+#### Release
+
+```commandline
+usage: qgis-plugin-ci release [-h] [--transifex-token TRANSIFEX_TOKEN]
+                              [--github-token GITHUB_TOKEN]
+                              [--create-plugin-repo]
+                              [--osgeo-username OSGEO_USERNAME]
+                              [--osgeo-password OSGEO_PASSWORD]
+                              release_version
+
+positional arguments:
+  release_version       The version to be released
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --transifex-token TRANSIFEX_TOKEN
+                        The Transifex API token. If specified translations
+                        will be pulled and compiled.
+  --github-token GITHUB_TOKEN
+                        The Github API token. If specified, the archive will
+                        be pushed to an already existing release.
+  --create-plugin-repo  Will create a XML repo as a Github release asset.
+                        Github token is required.
+  --osgeo-username OSGEO_USERNAME
+                        The Osgeo user name to publish the plugin.
+  --osgeo-password OSGEO_PASSWORD
+                        The Osgeo password to publish the plugin.
+```
+
+#### Pull translations
+
+```commandline
+usage: qgis-plugin-ci pull-translation [-h] transifex_token
+
+positional arguments:
+  transifex_token  The Transifex API token
+
+optional arguments:
+  -h, --help       show this help message and exit
+```
+
+#### Push translations
+
+```commandline
+usage: qgis-plugin-ci push-translation [-h] transifex_token
+
+positional arguments:
+  transifex_token  The Transifex API token
+
+optional arguments:
+  -h, --help       show this help message and exit
+```
+
 ## QRC and UI files
 
 - any .qrc file in the source top directory (plugin_path) will be compiled and output as filename_rc.py. You can then import it using ``import plugin_path.resources_rc``
