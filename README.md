@@ -22,6 +22,27 @@ When releasing, you can publish the plugin :
 1. In the official QGIS plugin repository. You need to provide user name and password for your Osgeo account.
 2. As a custom repository in Github releases and which can be added later in QGIS. The address will be: https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml
 
+## Automatic deployment on Travis
+
+One can easily set up a deployment using Travis.
+
+1. Add `qgis-plugin-ci` to `requirements.txt` or have `pip install qgis-plugin-ci` in `install` step.
+2. Specify the environment variables required to connect to the different platforms (Osgeo, Github, Transifex). You can add them either using the Travis CLI with `travis encrypt` or use the web interface to add the variables.
+3. Add a deploy step to release the plugin:
+
+
+    deploy:
+      provider: script
+      script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password {OSGEO_PASSWORD}
+      on:
+        tags: true
+
+
+# Using Transifex to translate your plugin
+
+
+
+
 # Advanced functionality
 
 ## Debug
