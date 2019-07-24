@@ -154,7 +154,7 @@ jobs:
           qgis-plugin-ci release ${TRAVIS_TAG}
           --transifex-token ${TX_TOKEN}
           --github-token ${GH_TOKEN}
-          --osgeo-username 3nids
+          --osgeo-username ${OSGEO_USERNAME}
           --osgeo-password ${OSGEO_PASSWORD}
 
 ```
