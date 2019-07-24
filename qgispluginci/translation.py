@@ -108,10 +108,11 @@ class Translation():
     def push(self):
         resource = self.__get_resource()
         print('pushing resource: {} with file {}'.format(resource['slug'], self.ts_file))
-        self._t.update_source_translation(
+        result = self._t.update_source_translation(
             project_slug=self.parameters.project_slug,
             resource_slug=resource['slug'],
             path_to_file=self.ts_file)
+        print('done: {}'.format(result))
 
     def __get_resource(self) -> dict:
         resources = self._t.list_resources(self.parameters.project_slug)
