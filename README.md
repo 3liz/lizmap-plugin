@@ -8,7 +8,7 @@ These scripts are written for and tested on GitHub, Travis-CI and Transifex.
  - Easily integrated in Travis-CI
  - Completely handle translations with Transifex: create the project and the languages, pull and push translations 
    
-# Base functionality
+# Command line
 
 ## Package
 
@@ -104,9 +104,11 @@ When releasing, you can publish the plugin :
 1. In the official QGIS plugin repository. You need to provide user name and password for your Osgeo account.
 2. As a custom repository in Github releases and which can be added later in QGIS. The address will be: https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml
 
-# Using Transifex to translate your plugin
+
 
 ## Automatic deployment on Travis
+
+### Basic configuration
 
 One can easily set up a deployment using Travis.
 
@@ -122,6 +124,7 @@ deploy:
     tags: true
 ```
 
+### Submodules
 
 If you have any submodule configured using ssh and not https, you need to change the connection url by doing:
 
@@ -135,10 +138,28 @@ before_install:
   - git submodule update --init --recursive
 ````
 
+### Using Transifex to translate your plugin
+
+```yaml
+jobs:
+  include:
+    - stage: push-translation
+      if: branch = master
+      script: qgis-plugin-ci push-translation ${TX_TOKEN}
+
+    - stage: deploy
+      if: tag IS present
+      script:
+        - >
+          qgis-plugin-ci release ${TRAVIS_TAG}
+          --transifex-token ${TX_TOKEN}
+          --github-token ${GH_TOKEN}
+          --osgeo-username 3nids
+          --osgeo-password ${OSGEO_PASSWORD}
+
+```
 
 
-
-# Advanced functionality
 
 ## Debug
 
