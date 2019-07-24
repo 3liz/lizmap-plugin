@@ -5,7 +5,7 @@
         <version>0.1.2</version>
         <qgis_minimum_version>3.2</qgis_minimum_version>
         <homepage>https://github.com/opengisch/qgis-plugin-ci</homepage>
-        <file_name>qgis_plugin_ci_testing.0.1.2.zip</file_name>
+        <file_name>qgis-plugin-ci-testing.0.1.2.zip</file_name>
         <icon>icons/opengisch.png</icon>
         <author_name>Denis Rouzaud</author_name>
         <download_url>https://github.com/opengisch/qgis-plugin-ci/releases/download/0.1.2/qgis_plugin_ci_testing.0.1.2.zip</download_url>
