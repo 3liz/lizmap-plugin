@@ -86,9 +86,13 @@ class Translation():
         Pull TS files from Transifex
         """
         resource = self.__get_resource()
-        existing_langs = self._t.list_languages(project_slug=self.parameters.project_slug, resource_slug=resource['slug'])
+        existing_langs = self._t.list_languages(
+            project_slug=self.parameters.project_slug, resource_slug=resource['slug']
+        )
         existing_langs.remove(self.parameters.translation_source_language)
-        print('{c} languages found for resource ''{s}'' ({langs})'.format(s=resource['slug'], c=len(existing_langs), langs=existing_langs))
+        print('{c} languages found for resource ''{s}'' ({langs})'.format(
+            s=resource['slug'], c=len(existing_langs), langs=existing_langs)
+        )
         for lang in self.parameters.translation_languages:
             if lang not in existing_langs:
                 print('creating missing language: {}'.format(lang))
@@ -103,9 +107,11 @@ class Translation():
 
     def push(self):
         resource = self.__get_resource()
-        self._t.update_source_translation(project_slug=self.parameters.project_slug,
-                                  resource_slug=resource['slug'],
-                                  path_to_file=self.ts_file)
+        print('pushing resource: {} with file {}'.format(resource['slug'], self.ts_file))
+        self._t.update_source_translation(
+            project_slug=self.parameters.project_slug,
+            resource_slug=resource['slug'],
+            path_to_file=self.ts_file)
 
     def __get_resource(self) -> dict:
         resources = self._t.list_resources(self.parameters.project_slug)
