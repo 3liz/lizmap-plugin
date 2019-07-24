@@ -10,27 +10,7 @@ These scripts are written for and tested on GitHub, Travis-CI and Transifex.
    
 # Base functionality
 
-## Command line
-
-```commandline
-usage: qgis-plugin-ci [-h] [-v]
-                      {package,release,pull-translation,push-translation} ...
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         print the version and exit
-
-commands:
-  qgis-plugin-ci command
-
-  {package,release,pull-translation,push-translation}
-    package             creates an archive of the plugin
-    release             release the plugin
-    pull-translation    pull translations from Transifex
-    push-translation    update strings and push translations
-```
-
-#### Package
+## Package
 
 ```commandline
 usage: qgis-plugin-ci package [-h] [--transifex-token TRANSIFEX_TOKEN]
@@ -46,7 +26,7 @@ optional arguments:
                         will be pulled and compiled.
 ```
 
-#### Release
+## Release
 
 ```commandline
 usage: qgis-plugin-ci release [-h] [--transifex-token TRANSIFEX_TOKEN]
@@ -75,7 +55,7 @@ optional arguments:
                         The Osgeo password to publish the plugin.
 ```
 
-#### Pull translations
+## Pull translations
 
 ```commandline
 usage: qgis-plugin-ci pull-translation [-h] transifex_token
@@ -87,7 +67,7 @@ optional arguments:
   -h, --help       show this help message and exit
 ```
 
-#### Push translations
+## Push translations
 
 ```commandline
 usage: qgis-plugin-ci push-translation [-h] transifex_token
