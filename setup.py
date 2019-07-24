@@ -22,7 +22,7 @@ setup(
         ]
     },
     package_data={'qgispluginci': ['plugins.xml.template']},
-    version='0.0.0',
+    version='__VERSION__',
     description='Let QGIS-plugin-ci package and release your QGIS plugins for you. Have a tea or go hiking meanwhile.',
     author='Denis Rouzaud',
     author_email='denis.rouzaud@gmail.com',

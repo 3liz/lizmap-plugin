@@ -52,7 +52,8 @@ def main():
 
     # print the version and exit
     if args.version:
-        print('qgis-plugin-ci version: {}'.format('__VERSION__'))
+        import pkg_resources
+        print('qgis-plugin-ci version: {}'.format(pkg_resources.get_distribution('qgis-plugin-ci').version))
         parser.exit()
 
     # if no command is passed, print the help and exit
