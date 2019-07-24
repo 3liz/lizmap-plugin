@@ -150,7 +150,7 @@ def create_archive(parameters: Parameters,
     ])
     for file in glob('{}/*_rc.py'.format(parameters.plugin_path)):
         with tarfile.open(top_tar_file, mode="a") as tt:
-            print('  {}'.format(os.path.basename(file)))
+            print('  adding resource: {}'.format(os.path.basename(file)))
             tt.addfile(
                 tarfile.TarInfo('{s}/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))),
                 file

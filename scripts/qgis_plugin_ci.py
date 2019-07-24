@@ -6,11 +6,8 @@ from qgispluginci.release import release
 from qgispluginci.translation import Translation
 from qgispluginci.parameters import Parameters
 
-if __name__ == "__main__":
-    """
-    Main process
-    """
 
+def main():
     # create the top-level parser
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", help="print the version and exit", action='store_true')
@@ -98,5 +95,8 @@ if __name__ == "__main__":
         t.update_strings()
         t.push()
 
-    exit(exit_val)
+    return exit_val
 
+
+if __name__ == "__main__":
+    exit(main())

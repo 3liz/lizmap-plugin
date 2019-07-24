@@ -13,13 +13,16 @@ if sys.version_info < python_min_version:
 setup(
     name='qgis-plugin-ci',
     packages=[
-        'qgispluginci'
+        'qgispluginci',
+        'scripts'
     ],
-    scripts=[
-        'scripts/qgis-plugin-ci'
-    ],
+    entry_points={
+        'console_scripts': [
+            'qgis-plugin-ci = scripts.qgis_plugin_ci:main'
+        ]
+    },
     package_data={'qgispluginci': ['plugins.xml.template']},
-    version='__VERSION__',
+    version='0.0.0',
     description='Let QGIS-plugin-ci package and release your QGIS plugins for you. Have a tea or go hiking meanwhile.',
     author='Denis Rouzaud',
     author_email='denis.rouzaud@gmail.com',
