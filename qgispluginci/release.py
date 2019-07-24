@@ -138,11 +138,9 @@ def create_archive(parameters: Parameters,
         with tarfile.open(top_tar_file, mode="a") as tt:
             print("adding translations")
             for file in glob('{}/i18n/*.qm'.format(parameters.plugin_path)):
-                print('  {}'.format(os.path.basename(file)))
-                tt.addfile(
-                    tarfile.TarInfo('{s}/i18n/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))),
-                    file
-                )
+                print('  adding translation: {}'.format(os.path.basename(file)))
+                # https://stackoverflow.com/a/48462950/1548052
+                tt.add(file)
 
     # compile qrc files
     pyqt5ac.main(ioPaths=[
@@ -150,11 +148,9 @@ def create_archive(parameters: Parameters,
     ])
     for file in glob('{}/*_rc.py'.format(parameters.plugin_path)):
         with tarfile.open(top_tar_file, mode="a") as tt:
-            print('  adding resource: {}'.format(os.path.basename(file)))
-            tt.addfile(
-                tarfile.TarInfo('{s}/{f}'.format(s=parameters.plugin_path, f=os.path.basename(file))),
-                file
-            )
+            print('  adding resource: {}'.format(file))
+            # https://stackoverflow.com/a/48462950/1548052
+            tt.add(file)
 
     # converting to ZIP
     # why using TAR before? because it provides the prefix and makes things easier
@@ -177,12 +173,13 @@ def create_archive(parameters: Parameters,
     print('-------')
 
 
-def upload_asset_to_github_release(parameters: Parameters,
-                                   asset_path: str,
-                                   release_tag: str,
-                                   github_token: str,
-                                   asset_name: str = None
-                                   ):
+def upload_asset_to_github_release(
+        parameters: Parameters,
+        asset_path: str,
+        release_tag: str,
+        github_token: str,
+        asset_name: str = None
+):
 
     slug = '{}/{}'.format(parameters.github_organization_slug, parameters.project_slug)
     repo = Github(github_token).get_repo(slug)
@@ -206,11 +203,13 @@ def upload_asset_to_github_release(parameters: Parameters,
         raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
 
 
-def create_plugin_repo(parameters: Parameters,
-                       release_version: str, 
-                       release_tag: str,
-                       archive: str,
-                       osgeo_username) -> str:
+def create_plugin_repo(
+        parameters: Parameters,
+        release_version: str,
+        release_tag: str,
+        archive: str,
+        osgeo_username
+) -> str:
     """
     Creates the plugin repo as an XML file
     """
