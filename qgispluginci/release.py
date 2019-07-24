@@ -71,19 +71,18 @@ def release(parameters: Parameters,
         tr.pull()
         tr.compile_strings()
 
-    # zipname: use dot and not dash since it's causing issues
-    output = '{zipname}.{release_version}.zip'.format(zipname=parameters.plugin_path, release_version=release_version)
-    create_archive(parameters, output=output, add_translations=transifex_token is not None)
+    archive_name = parameters.archive_name(release_version)
+    create_archive(parameters, archive_name=archive_name, add_translations=transifex_token is not None)
     if github_token is not None:
         upload_asset_to_github_release(
-            parameters, asset_path=output, release_tag=release_version, github_token=github_token
+            parameters, asset_path=archive_name, release_tag=release_version, github_token=github_token
         )
         if upload_plugin_repo_github:
             xml_repo = create_plugin_repo(
                 parameters=parameters,
                 release_version=release_version,
                 release_tag=release_tag,
-                archive=output,
+                archive=archive_name,
                 osgeo_username=osgeo_username
             )
             upload_asset_to_github_release(
@@ -96,11 +95,11 @@ def release(parameters: Parameters,
 
     if osgeo_username is not None:
         assert osgeo_password is not None
-        upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=output)
+        upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
 
 
 def create_archive(parameters: Parameters,
-                   output: str,
+                   archive_name: str,
                    add_translations: bool = False):
     
     top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
@@ -154,7 +153,7 @@ def create_archive(parameters: Parameters,
 
     # converting to ZIP
     # why using TAR before? because it provides the prefix and makes things easier
-    with zipfile.ZipFile(file=output, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(file=archive_name, mode='w', compression=zipfile.ZIP_DEFLATED) as zf:
         # adding the content of TAR archive
         with tarfile.open(top_tar_file, mode='r:') as tt:
             for m in tt.getmembers():
@@ -167,7 +166,7 @@ def create_archive(parameters: Parameters,
 
     print('-------')
     print('files in ZIP archive:')
-    with zipfile.ZipFile(file=output, mode='r') as zf:
+    with zipfile.ZipFile(file=archive_name, mode='r') as zf:
         for f in zf.namelist():
             print(f)
     print('-------')

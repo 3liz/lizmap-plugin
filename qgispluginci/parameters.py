@@ -51,9 +51,10 @@ class Parameters:
     def __init__(self, definition: dict):
         self.plugin_path = definition['plugin_path']
         self.plugin_name = self.__get_from_metadata('name')
+        self.plugin_slug = slugify(self.plugin_name)
         self.project_slug = definition.get(
             'project_slug',
-            os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(slugify(self.plugin_name))).split('/')[1]
+            os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(self.project_slug)).split('/')[1]
         )
         self.github_organization_slug = definition.get('github_organization_slug', os.environ.get('TRAVIS_REPO_SLUG', '').split('/')[0])
         self.transifex_coordinator = definition.get('transifex_coordinator', '')
@@ -75,6 +76,15 @@ class Parameters:
         self.issue_tracker = self.__get_from_metadata('tracker')
         self.homepage = self.__get_from_metadata('homepage')
         self.repository_url = self.__get_from_metadata('repository')
+
+    def archive_name(self, release_version: str) -> str:
+        """
+        Returns the archive file name
+        """
+        # zipname: use dot before version number
+        # and not dash since it's causing issues
+        return '{zipname}.{release_version}.zip'.format(zipname=self.plugin_slug,
+                                                        release_version=release_version)
 
     def __get_from_metadata(self, key: str, default_value: any = None) -> str:
         metadata_file = '{}/metadata.txt'.format(self.plugin_path)
