@@ -99,6 +99,19 @@ optional arguments:
   -h, --help       show this help message and exit
 ```
 
+## Directory structure
+
+It is expected that:
+
+* a `.qgis-plugin-ci` file contains the configuration at the top directory
+* the source files of the plugin are within a directory (possibly could work at top level, but not tested)
+
+## The configuration file
+
+In `.qgis-plugin-ci`, you should at least provide the following configuration:
+
+* plugin_path
+
 ## QRC and UI files
 
 - any .qrc file in the source top directory (plugin_path) will be compiled and output as filename_rc.py. You can then import it using ``import plugin_path.resources_rc``
