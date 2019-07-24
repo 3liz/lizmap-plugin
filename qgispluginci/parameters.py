@@ -54,7 +54,7 @@ class Parameters:
         self.plugin_slug = slugify(self.plugin_name)
         self.project_slug = definition.get(
             'project_slug',
-            os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(self.project_slug)).split('/')[1]
+            os.environ.get('TRAVIS_REPO_SLUG', '.../{}'.format(self.plugin_slug)).split('/')[1]
         )
         self.github_organization_slug = definition.get('github_organization_slug', os.environ.get('TRAVIS_REPO_SLUG', '').split('/')[0])
         self.transifex_coordinator = definition.get('transifex_coordinator', '')
