@@ -124,6 +124,8 @@ When releasing, you can publish the plugin :
 1. In the official QGIS plugin repository. You need to provide user name and password for your Osgeo account.
 2. As a custom repository in Github releases and which can be added later in QGIS. The address will be: https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml
 
+# Using Transifex to translate your plugin
+
 ## Automatic deployment on Travis
 
 One can easily set up a deployment using Travis.
@@ -140,7 +142,18 @@ deploy:
     tags: true
 ```
 
-# Using Transifex to translate your plugin
+
+If you have any submodule configured using ssh and not https, you need to change the connection url by doing:
+
+````yaml
+git:
+  submodules: false
+
+before_install:
+  # cannot use SSH to fetch submodule
+  - sed -i 's#git@github.com:#https://github.com/#' .gitmodules
+  - git submodule update --init --recursive
+````
 
 
 
