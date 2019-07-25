@@ -79,12 +79,11 @@ optional arguments:
   -h, --help       show this help message and exit
 ```
 
-## Directory structure
+## Requirements
 
-It is expected that:
-
+* The code is under a __git__ repository (`git archive` is used to bundle the plugin).
 * a `.qgis-plugin-ci` file contains the configuration at the top directory
-* the source files of the plugin are within a directory (possibly could work at top level, but not tested)
+* the source files of the plugin are within a sub-directory (possibly could work at top level, but not tested)
 
 ## The configuration file
 
