@@ -3,6 +3,8 @@ import sys
 
 python_min_version=(3, 7)
 
+VERSION = __VERSION__
+
 if sys.version_info < python_min_version:
     sys.exit('qgis-plugin-ci requires at least Python version {vmaj}.{vmin}.\n'
              'You are currently running this installation with\n\n{curver}'.format(
@@ -22,12 +24,12 @@ setup(
         ]
     },
     package_data={'qgispluginci': ['plugins.xml.template']},
-    version='__VERSION__',
+    version=VERSION,
     description='Let QGIS-plugin-ci package and release your QGIS plugins for you. Have a tea or go hiking meanwhile.',
     author='Denis Rouzaud',
     author_email='denis.rouzaud@gmail.com',
     url='https://github.com/opengisch/qgis-plugin-ci',
-    download_url='https://github.com/opengisch/qgis-plugin-ci/archive/__VERSION__.tar.gz',
+    download_url='https://github.com/opengisch/qgis-plugin-ci/archive/{}.tar.gz'.format(VERSION),
     keywords=['QGIS'],
     classifiers=[
         'Topic :: Scientific/Engineering :: GIS',

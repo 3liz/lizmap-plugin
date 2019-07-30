@@ -21,7 +21,7 @@ import pyqt5ac
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
 from qgispluginci.utils import replace_in_file, configure_file
-from qgispluginci.exceptions import GithubReleaseNotFound, GithubReleaseCouldNotUploadAsset
+from qgispluginci.exceptions import GithubReleaseNotFound, GithubReleaseCouldNotUploadAsset, UncommitedChanges
 
 
 def release(parameters: Parameters,
@@ -55,24 +55,15 @@ def release(parameters: Parameters,
         osgeo password to upload the plugin to official QGIS repository
     """
 
-    # set version in metadata
-    replace_in_file(
-        '{}/metadata.txt'.format(parameters.plugin_path),
-        r'^version=.*$',
-        'version={}'.format(release_version)
-    )
-
-    # replace any DEBUG=False in all Python files
-    for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):
-        replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
-
     if transifex_token is not None:
         tr = Translation(parameters, create_project=False, transifex_token=transifex_token)
         tr.pull()
         tr.compile_strings()
 
     archive_name = parameters.archive_name(release_version)
-    create_archive(parameters, archive_name=archive_name, add_translations=transifex_token is not None)
+
+    create_archive(parameters, release_version, archive_name, add_translations=transifex_token is not None)
+
     if github_token is not None:
         upload_asset_to_github_release(
             parameters, asset_path=archive_name, release_tag=release_version, github_token=github_token
@@ -98,13 +89,32 @@ def release(parameters: Parameters,
         upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
 
 
-def create_archive(parameters: Parameters,
-                   archive_name: str,
-                   add_translations: bool = False):
+def create_archive(
+        parameters: Parameters,
+        release_version: str,
+        archive_name: str,
+        add_translations: bool = False):
+
+    repo = git.Repo()
     
     top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
 
-    repo = git.Repo()
+    # keep track of current state
+
+    if repo.index.diff(None):
+        raise UncommitedChanges('You have uncommitted changes. Stash or commit them.')
+
+    # set version in metadata
+    replace_in_file(
+        '{}/metadata.txt'.format(parameters.plugin_path),
+        r'^version=.*$',
+        'version={}'.format(release_version)
+    )
+
+    # replace any DEBUG=False in all Python files
+    for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):
+        replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
+
     try:
         stash = repo.git.stash('create')
     except git.exc.GitCommandError:
@@ -170,6 +180,9 @@ def create_archive(parameters: Parameters,
         for f in zf.namelist():
             print(f)
     print('-------')
+
+    # checkout to reset changes
+    repo.git.checkout('--', '.')
 
 
 def upload_asset_to_github_release(
@@ -276,4 +289,6 @@ def upload_plugin_to_osgeo(username: str, password: str, archive: str):
         print("Fault code: %d" % err.faultCode)
         print("Fault string: %s" % err.faultString)
         sys.exit(1)
+
+
 

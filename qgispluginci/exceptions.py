@@ -19,3 +19,7 @@ class GithubReleaseNotFound(Exception):
 class GithubReleaseCouldNotUploadAsset(Exception):
     pass
 
+
+class UncommitedChanges(Exception):
+    pass
+
