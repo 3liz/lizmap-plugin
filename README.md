@@ -173,6 +173,7 @@ resources.qrc export-ignore
 
 # Sample plugins
 
-* https://github.com/VeriVD/qgis_VeriVD
+* https://github.com/opengisch/qgis_geomapfish_locator (translated, released on official repo)
+* https://github.com/VeriVD/qgis_VeriVD (released on custom repo as Github release)
 
   
