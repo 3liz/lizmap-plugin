@@ -13,14 +13,12 @@ env:
 
 install:
   - pip install -r requirements.txt
-  - sed -i "s/__VERSION__/${TRAVIS_TAG:-0.0.0}/g" setup.py
+  - sed "s/__VERSION__/${TRAVIS_TAG:-0.0.0}/g" setup.py.in > setup.py
   - python setup.py install
-  - git checkout HEAD -- setup.py # reset so there is no uncommitted changed
 
 script:
   - qgis-plugin-ci --version
   - nose2 -v
-  - sed -i "s/__VERSION__/${TRAVIS_TAG:-0.0.0}/g" setup.py # reconfigure for deploy
 
 deploy:
   on:
