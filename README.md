@@ -81,7 +81,8 @@ optional arguments:
 
 ## Requirements
 
-* The code is under a __git__ repository (`git archive` is used to bundle the plugin).
+* The code is under a __git__ repository (`git archive` is used to bundle the plugin)
+* There is no uncommitted changes when doing a release
 * a `.qgis-plugin-ci` file contains the configuration at the top directory
 * the source files of the plugin are within a sub-directory (possibly could work at top level, but not tested)
 
