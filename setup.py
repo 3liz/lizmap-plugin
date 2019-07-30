@@ -3,7 +3,7 @@ import sys
 
 python_min_version=(3, 7)
 
-VERSION = __VERSION__
+VERSION = '__VERSION__'
 
 if sys.version_info < python_min_version:
     sys.exit('qgis-plugin-ci requires at least Python version {vmaj}.{vmin}.\n'
