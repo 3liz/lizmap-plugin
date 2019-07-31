@@ -31,7 +31,8 @@ def release(parameters: Parameters,
             upload_plugin_repo_github: str = False,
             transifex_token: str = None,
             osgeo_username: str = None,
-            osgeo_password: str = None):
+            osgeo_password: str = None,
+            allow_uncommitted_changes: bool = False):
     """
     
     Parameters
@@ -53,6 +54,9 @@ def release(parameters: Parameters,
         osgeo username to upload the plugin to official QGIS repository
     osgeo_password
         osgeo password to upload the plugin to official QGIS repository
+    allow_uncommitted_changes
+        If False, uncommitted changes are not allowed before packaging.
+        If True and some changes are detected, a hard reset on a stash create will be used to revert changes made by qgis-plugin-ci.
     """
 
     if transifex_token is not None:
@@ -62,7 +66,11 @@ def release(parameters: Parameters,
 
     archive_name = parameters.archive_name(release_version)
 
-    create_archive(parameters, release_version, archive_name, add_translations=transifex_token is not None)
+    create_archive(
+        parameters, release_version, archive_name,
+        add_translations=transifex_token is not None,
+        allow_uncommitted_changes=allow_uncommitted_changes
+    )
 
     if github_token is not None:
         upload_asset_to_github_release(
@@ -93,16 +101,20 @@ def create_archive(
         parameters: Parameters,
         release_version: str,
         archive_name: str,
-        add_translations: bool = False):
+        add_translations: bool = False,
+        allow_uncommitted_changes: bool = False):
 
     repo = git.Repo()
     
     top_tar_handle, top_tar_file = mkstemp(suffix='.tar')
 
     # keep track of current state
-
+    initial_stash = None
     if repo.index.diff(None):
-        raise UncommitedChanges('You have uncommitted changes. Stash or commit them.')
+        if not allow_uncommitted_changes:
+            raise UncommitedChanges('You have uncommitted changes. Stash or commit them.')
+        else:
+            initial_stash = repo.git.stash('create')
 
     # set version in metadata
     replace_in_file(
@@ -115,6 +127,7 @@ def create_archive(
     for file in glob('{}/**/*.py'.format(parameters.plugin_path), recursive=True):
         replace_in_file(file, r'^DEBUG\s*=\s*True', 'DEBUG = False')
 
+    # keep track of current state
     try:
         stash = repo.git.stash('create')
     except git.exc.GitCommandError:
@@ -182,7 +195,11 @@ def create_archive(
     print('-------')
 
     # checkout to reset changes
-    repo.git.checkout('--', '.')
+    if initial_stash:
+        repo.git.reset('--hard', initial_stash)
+        repo.git.reset('HEAD^')
+    else:
+        repo.git.checkout('--', '.')
 
 
 def upload_asset_to_github_release(

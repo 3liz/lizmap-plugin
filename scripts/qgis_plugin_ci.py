@@ -18,8 +18,12 @@ def main():
     package_parser = subparsers.add_parser('package', help='creates an archive of the plugin')
     package_parser.add_argument('release_version', help='The version to be released')
     package_parser.add_argument(
-        '--transifex-token',
-        help='The Transifex API token. If specified translations will be pulled and compiled.'
+        '--transifex-token', help='The Transifex API token. If specified translations will be pulled and compiled.'
+    )
+    package_parser.add_argument(
+        '--allow-uncommitted-changes', action='store_true',
+        help='If False, uncommitted changes are not allowed before packaging. If True and some changes are detected,'
+             ' a hard reset on a stash create will be used to revert changes made by qgis-plugin-ci.'
     )
 
     # release
@@ -71,7 +75,8 @@ def main():
         release(
             parameters,
             release_version=args.release_version,
-            transifex_token=args.transifex_token
+            transifex_token=args.transifex_token,
+            allow_uncommitted_changes=args.allow_uncommitted_changes
         )
 
     # RELEASE
