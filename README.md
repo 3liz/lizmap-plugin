@@ -14,6 +14,7 @@ These scripts are written for and tested on GitHub, Travis-CI and Transifex.
 
 ```commandline
 usage: qgis-plugin-ci package [-h] [--transifex-token TRANSIFEX_TOKEN]
+                              [--allow-uncommitted-changes]
                               release_version
 
 positional arguments:
@@ -24,6 +25,11 @@ optional arguments:
   --transifex-token TRANSIFEX_TOKEN
                         The Transifex API token. If specified translations
                         will be pulled and compiled.
+  --allow-uncommitted-changes
+                        If False, uncommitted changes are not allowed before
+                        packaging. If True and some changes are detected, a
+                        hard reset on a stash create will be used to revert
+                        changes made by qgis-plugin-ci.
 ```
 
 ## Release
@@ -82,7 +88,7 @@ optional arguments:
 ## Requirements
 
 * The code is under a __git__ repository (`git archive` is used to bundle the plugin)
-* There is no uncommitted changes when doing a release
+* There is no uncommitted changes when doing a package/release (there is an option to allow this)
 * a `.qgis-plugin-ci` file contains the configuration at the top directory
 * the source files of the plugin are within a sub-directory (possibly could work at top level, but not tested)
 
