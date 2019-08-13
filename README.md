@@ -89,8 +89,8 @@ optional arguments:
 
 * The code is under a __git__ repository (`git archive` is used to bundle the plugin)
 * There is no uncommitted changes when doing a package/release (there is an option to allow this)
-* a `.qgis-plugin-ci` file contains the configuration at the top directory
-* the source files of the plugin are within a sub-directory (possibly could work at top level, but not tested)
+* A `.qgis-plugin-ci` file contains the configuration at the top directory
+* The source files of the plugin are within a sub-directory (possibly could work at top level, but not tested)
 
 ## The configuration file
 
