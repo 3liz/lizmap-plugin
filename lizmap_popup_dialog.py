@@ -1,6 +1,6 @@
 """
 /***************************************************************************
- lizmapDialog
+ LizmapDialog
                  A QGIS plugin
  Publication plugin for Lizmap web application, by 3liz.com
                 -------------------
@@ -44,21 +44,16 @@
  ***** END LICENSE BLOCK ***** */
 """
 
-import os
-from qgis.PyQt import QtGui, uic, QtCore
+from os.path import join, dirname
+
 from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt import uic
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'ui_lizmap.ui'))
+FORM_CLASS, _ = uic.loadUiType(join(dirname(__file__), 'ui_lizmap_popup.ui'))
 
 
-class lizmapDialog(QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
-        """Constructor."""
-        super(lizmapDialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
+# create the dialog for zoom to point
+class LizmapPopupDialog(QDialog, FORM_CLASS):
+    def __init__(self):
+        QDialog.__init__(self)
         self.setupUi(self)

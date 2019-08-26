@@ -1,6 +1,6 @@
 #!/bin/bash
 LOCALES=$*
-PLUGIN=lizmap
+PLUGIN=Lizmap
 # Get newest .py files so we don't update strings unnecessarily
 
 CHANGED_FILES=0

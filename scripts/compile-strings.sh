@@ -1,7 +1,7 @@
 #!/bin/bash
 LRELEASE=$1
 LOCALES=$2
-PLUGIN=lizmap
+PLUGIN=Lizmap
 
 for LOCALE in $LOCALES
 do

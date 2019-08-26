@@ -48,6 +48,5 @@
 
 
 def classFactory(iface):
-    # load lizmap class from file lizmap
     from .lizmap import Lizmap
     return Lizmap(iface)

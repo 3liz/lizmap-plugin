@@ -66,7 +66,7 @@ SOURCES = \
 	lizmap.py \
 	lizmapdialog.py
 
-PLUGINNAME = lizmap
+PLUGINNAME = Lizmap
 
 PY_FILES = \
 	lizmap.py \

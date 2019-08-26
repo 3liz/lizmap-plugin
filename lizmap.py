@@ -88,7 +88,7 @@ from qgis.core import (
 )
 
 from . import resources
-from .lizmapdialog import lizmapDialog
+from .lizmap_dialog import LizmapDialog
 from .lizmap_api.config import LizmapConfig
 
 
@@ -134,7 +134,7 @@ class Lizmap:
         QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog and keep reference
-        self.dlg = lizmapDialog()
+        self.dlg = LizmapDialog()
 
         # Set stylesheet for QGroupBox
         self.dlg.gb_tree.setStyleSheet(self.STYLESHEET)
@@ -376,7 +376,7 @@ class Lizmap:
     def initGui(self):
         """Create action that will start plugin configuration"""
         self.action = QAction(QIcon(":/plugins/lizmap/icons/icon.png"),
-                              "lizmap", self.iface.mainWindow())
+                              "Lizmap", self.iface.mainWindow())
 
         # connect the action to the run method
         self.action.triggered.connect(self.run)
@@ -1732,7 +1732,7 @@ class Lizmap:
         # initialize the tree
         myTree = self.dlg.treeLayer
         myTree.clear()
-        myTree.headerItem().setText(0, QApplication.translate("lizmap", "List of layers"))
+        myTree.headerItem().setText(0, self.tr("List of layers"))
         self.myDic = {}
 
         # Check if a json configuration file exists (myproject.qgs.cfg)
@@ -1898,8 +1898,8 @@ class Lizmap:
                 return False
 
             # Import the code for the dialog
-            from .lizmappopupdialog import lizmapPopupDialog
-            self.lizmapPopupDialog = lizmapPopupDialog()
+            from .lizmap_popup_dialog import LizmapPopupDialog
+            self.lizmapPopupDialog = LizmapPopupDialog()
 
             self.lizmapPopupDialog.groupBox.setStyleSheet(self.STYLESHEET)
             self.lizmapPopupDialog.groupBox_2.setStyleSheet(self.STYLESHEET)
