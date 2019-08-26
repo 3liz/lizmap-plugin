@@ -43,6 +43,15 @@
 
  ***** END LICENSE BLOCK ***** */
 """
+import sys
+import os
+import time
+import re
+import urllib.parse
+import json
+
+from xml.etree import ElementTree as ET
+from shutil import copyfile
 from functools import reduce
 
 # Import the PyQt and QGIS libraries
@@ -78,32 +87,12 @@ from qgis.core import (
     QgsAttributeEditorContainer
 )
 
-# Initialize Qt resources from file resources.py
 from . import resources
-# Import the code for the dialog
 from .lizmapdialog import lizmapDialog
-# import other needed tool
-import sys, os
-# date and time
-import time
-# regex
-import re
-# url decoding
-import urllib.request, urllib.parse, urllib.error
-# json handling
-import json
-from shutil import copyfile
-
-# element tree to get some project properties not exposed to python api
-try:
-    from xml.etree import ElementTree as ET  # Python >= 2.5
-except ImportError:
-    import elementtree.ElementTree as ET  # module Python originel
-
 from .lizmap_api.config import LizmapConfig
 
 
-class Lizmap(object):
+class Lizmap:
     if sys.platform.startswith('win'):
         style = ['0', '0', '0', '5%']
         margin = '4.0'
@@ -126,9 +115,6 @@ class Lizmap(object):
     def __init__(self, iface):
         """Save reference to the QGIS interface"""
         self.iface = iface
-
-        # Qgis version
-        self.QgisVersion = str(Qgis.QGIS_VERSION_INT)
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -513,47 +499,25 @@ class Lizmap(object):
         # self.dlg.inDatavizColorField.setAllowEmptyFieldName(True)
         # self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
 
-        # first check if Web menu availbale in this QGIS version
-        if hasattr(self.iface, "addPluginToWebMenu"):
-            # add plugin to the web plugin menu
-            self.iface.addPluginToWebMenu(u"&Lizmap", self.action)
-            # add plugin help to the plugin menu
-            self.iface.addPluginToWebMenu(u"&Lizmap", self.action_help)
-            # add plugin about to the plugin menu
-            self.iface.addPluginToWebMenu(u"&Lizmap", self.action_about)
-            # and add button to the Web panel
-            self.iface.addWebToolBarIcon(self.action)
-        else:
-            # add icon to the toolbar
-            self.iface.addToolBarIcon(self.action)
-            # add plugin to the plugin menu
-            self.iface.addPluginToMenu(u"&Lizmap", self.action)
-            # add plugin help to the plugin menu
-            self.iface.addPluginToMenu(u"&Lizmap", self.action_help)
-            # add plugin about to the plugin menu
-            self.iface.addPluginToMenu(u"&Lizmap", self.action_about)
+        # add plugin to the web plugin menu
+        self.iface.addPluginToWebMenu("&Lizmap", self.action)
+        # add plugin help to the plugin menu
+        self.iface.addPluginToWebMenu("&Lizmap", self.action_help)
+        # add plugin about to the plugin menu
+        self.iface.addPluginToWebMenu("&Lizmap", self.action_about)
+        # and add button to the Web panel
+        self.iface.addWebToolBarIcon(self.action)
 
     def unload(self):
         """Remove the plugin menu item and icon"""
-        # first check if Web menu availbale in this QGIS version
-        if hasattr(self.iface, "addPluginToWebMenu"):
-            # new menu used, remove submenus from main Web menu
-            self.iface.removePluginWebMenu(u"&Lizmap", self.action)
-            # also remove button from Web toolbar
-            self.iface.removeWebToolBarIcon(self.action)
-            # Remove help menu entry
-            self.iface.removePluginWebMenu(u"&Lizmap", self.action_help)
-            # Remove about menu entry
-            self.iface.removePluginWebMenu(u"&Lizmap", self.action_about)
-        else:
-            # remove plugin
-            self.iface.removePluginMenu(u"&Lizmap", self.action)
-            # remove icon
-            self.iface.removeToolBarIcon(self.action)
-            # Remove help menu entry
-            self.iface.removePluginMenu(u"&Lizmap", self.action_help)
-            # Remove about menu entry
-            self.iface.removePluginMenu(u"&Lizmap", self.action_about)
+        # new menu used, remove submenus from main Web menu
+        self.iface.removePluginWebMenu("&Lizmap", self.action)
+        # also remove button from Web toolbar
+        self.iface.removeWebToolBarIcon(self.action)
+        # Remove help menu entry
+        self.iface.removePluginWebMenu("&Lizmap", self.action_help)
+        # Remove about menu entry
+        self.iface.removePluginWebMenu("&Lizmap", self.action_about)
 
     def showHelp(self):
         """Opens the html help file content with default browser"""
@@ -565,7 +529,7 @@ class Lizmap(object):
 
     def showAbout(self):
         """Opens the about html content with default browser"""
-        localAbout = "http://hub.qgis.org/projects/lizmapplugin"
+        localAbout = "https://github.com/3liz/lizmap-plugin/"
         self.log(localAbout, abort=True, textarea=self.dlg.outLog)
         QDesktopServices.openUrl(QUrl(localAbout))
 
@@ -835,13 +799,16 @@ class Lizmap(object):
             returnLayer = None
         return returnLayer
 
-    def getLayers(self, ltype='all', providerTypeList=['all']):
+    def getLayers(self, ltype='all', providerTypeList=None):
         """
             Get the list of layers
             * ltype can be : all, vector, raster
             * providerTypeList is a list and can be : ['all'] or a list of provider keys
             as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
         """
+        if providerTypeList is None:
+            providerTypeList = ['all']
+
         layers = QgsProject.instance().mapLayers().values()
         if ltype == 'all':
             return layers
@@ -861,7 +828,7 @@ class Lizmap(object):
 
         return filteredLayers
 
-    def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=['all']):
+    def populateLayerCombobox(self, combobox, ltype='all', providerTypeList=None):
         """
             Get the list of layers and add them to a combo box
             * combobox a Qt combobox widget
@@ -869,6 +836,9 @@ class Lizmap(object):
             * providerTypeList is a list and can be : ['all'] or a list of provider keys
             as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
         """
+        if providerTypeList is None:
+            providerTypeList = ['all']
+
         # empty combobox
         combobox.clear()
         # add empty item
@@ -917,7 +887,7 @@ class Lizmap(object):
     def updateAttributeFieldListFromLayer(self):
         """
             Fill the combobox with the list of fields
-            for the layer chosen with the atribute layers combobox
+            for the layer chosen with the attribute layers combobox
         """
         # get the layer selected in the combo box
         layer = self.getQgisLayerByNameFromCombobox(self.dlg.liAttributeLayer)
@@ -957,7 +927,7 @@ class Lizmap(object):
                     fields = layer.fields()
                     # Add empty item if allowed
                     if cb[0]:
-                        cb[1].addItem(u'--', u'')
+                        cb[1].addItem('--', '')
                     # Add fields to the combo
                     for field in fields:
                         cb[1].addItem(
@@ -1013,7 +983,7 @@ class Lizmap(object):
                 for cb in cbs:
                     # Add empty item if allowed
                     if cb[0]:
-                        cb[1].addItem(u'--', u'')
+                        cb[1].addItem('--', '')
                     # Add fields to the combo
                     for field in fields:
                         cb[1].addItem(
@@ -1642,17 +1612,15 @@ class Lizmap(object):
 
             # layer name
             layer = self.getQgisLayerById(itemKey)
-            lname = '%s' % layer.name()
             self.myDic[itemKey]['name'] = layer.name()
             # title and abstract
             self.myDic[itemKey]['title'] = layer.name()
-            if hasattr(layer, "title"):  # only from qgis>=1.8
-                if layer.title():
-                    self.myDic[itemKey]['title'] = layer.title()
-                    keepMetadata = True
-                if layer.abstract():
-                    self.myDic[itemKey]['abstract'] = layer.abstract()
-                    keepMetadata = True
+            if layer.title():
+                self.myDic[itemKey]['title'] = layer.title()
+                keepMetadata = True
+            if layer.abstract():
+                self.myDic[itemKey]['abstract'] = layer.abstract()
+                keepMetadata = True
 
             # hide non geo layers (csv, etc.)
             # if layer.type() == 0:
@@ -1780,7 +1748,7 @@ class Lizmap(object):
                 jsonLayers = sjson['layers']
             except:
                 isok = 0
-                QMessageBox.critical(self.dlg, self.tr("Lizmap Error"), (u""), QMessageBox.Ok)
+                QMessageBox.critical(self.dlg, self.tr("Lizmap Error"), "", QMessageBox.Ok)
                 self.log(
                     self.tr(
                         "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
@@ -1914,11 +1882,11 @@ class Lizmap(object):
                 if layer:
                     if hasattr(layer, key):
                         if key == 'title':
-                            layer.setTitle(u"%s" % self.layerList[item.text(1)][key])
+                            layer.setTitle("%s" % self.layerList[item.text(1)][key])
                         if key == 'abstract':
-                            layer.setAbstract(u"%s" % self.layerList[item.text(1)][key])
+                            layer.setAbstract("%s" % self.layerList[item.text(1)][key])
                         if key == 'link':
-                            layer.setAttributionUrl(u"%s" % self.layerList[item.text(1)][key])
+                            layer.setAttributionUrl("%s" % self.layerList[item.text(1)][key])
 
     def configurePopup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
@@ -2058,7 +2026,6 @@ class Lizmap(object):
                         fname
                     )
 
-
             # Value relation
             if ftype == 'ValueRelation':
                 vlid = fconf['Layer']
@@ -2141,16 +2108,14 @@ class Lizmap(object):
                     dfor
                 )
 
-
             # fview = '''
                 # represent_value("{0}")
             # '''.format(
                 # name
             # )
 
-
-            a+= '\n' + '  '*level
-            a+= '''
+            a += '\n' + '  '*level
+            a += '''
             [% CASE
                 WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
                 THEN concat(
@@ -2744,7 +2709,7 @@ class Lizmap(object):
         # Ask to save the project
         if p.isDirty():
             self.iface.messageBar().pushMessage(
-                u"Lizmap",
+                "Lizmap",
                 self.tr("Please do not forget to save the QGIS project before publishing your map"),
                 level=Qgis.Warning,
                 duration=30
@@ -2839,25 +2804,25 @@ class Lizmap(object):
             # first set the WMSServiceCapabilities to true
             if not p.readEntry('WMSServiceCapabilities', "/")[1]:
                 p.writeEntry('WMSServiceCapabilities', "/", "True")
-            if p.readEntry('WMSServiceTitle', '')[0] == u'':
-                p.writeEntry('WMSServiceTitle', '', u'%s' % p.fileInfo().baseName())
+            if p.readEntry('WMSServiceTitle', '')[0] == '':
+                p.writeEntry('WMSServiceTitle', '', '%s' % p.fileInfo().baseName())
 
             # check if a bbox has been given in the project OWS tab configuration
             pWmsExtentLe = p.readListEntry('WMSExtent', '')
             pWmsExtent = pWmsExtentLe[0]
             fullExtent = self.iface.mapCanvas().extent()
             if len(pWmsExtent) < 1:
-                pWmsExtent.append(u'%s' % fullExtent.xMinimum())
-                pWmsExtent.append(u'%s' % fullExtent.yMinimum())
-                pWmsExtent.append(u'%s' % fullExtent.xMaximum())
-                pWmsExtent.append(u'%s' % fullExtent.yMaximum())
+                pWmsExtent.append('%s' % fullExtent.xMinimum())
+                pWmsExtent.append('%s' % fullExtent.yMinimum())
+                pWmsExtent.append('%s' % fullExtent.xMaximum())
+                pWmsExtent.append('%s' % fullExtent.yMaximum())
                 p.writeEntry('WMSExtent', '', pWmsExtent)
             else:
                 if not pWmsExtent[0] or not pWmsExtent[1] or not pWmsExtent[2] or not pWmsExtent[3]:
-                    pWmsExtent[0] = u'%s' % fullExtent.xMinimum()
-                    pWmsExtent[1] = u'%s' % fullExtent.yMinimum()
-                    pWmsExtent[2] = u'%s' % fullExtent.xMaximum()
-                    pWmsExtent[3] = u'%s' % fullExtent.yMaximum()
+                    pWmsExtent[0] = '%s' % fullExtent.xMinimum()
+                    pWmsExtent[1] = '%s' % fullExtent.yMinimum()
+                    pWmsExtent[2] = '%s' % fullExtent.xMaximum()
+                    pWmsExtent[3] = '%s' % fullExtent.yMaximum()
                     p.writeEntry('WMSExtent', '', pWmsExtent)
 
         if not isok and errorMessage:
@@ -2959,7 +2924,7 @@ class Lizmap(object):
             if self.isok:
                 self.getMinMaxScales()
                 self.iface.messageBar().pushMessage(
-                    u"Lizmap",
+                    "Lizmap",
                     self.tr("Lizmap configuration file has been updated"),
                     level=Qgis.Success,
                     duration=3
@@ -3060,7 +3025,7 @@ class Lizmap(object):
     def test(self):
         """Debug method"""
         self.log("test", abort=False, textarea=self.dlg.outLog)
-        QMessageBox.critical(self.dlg, "Lizmap debug", (u"test"), QMessageBox.Ok)
+        QMessageBox.critical(self.dlg, "Lizmap debug", "test", QMessageBox.Ok)
 
     def reinitDefaultProperties(self):
         for key in list(self.layersTable.keys()):
@@ -3144,4 +3109,4 @@ class Lizmap(object):
             result = self.dlg.exec_()
             # See if OK was pressed
             if result == 1:
-                QMessageBox.warning(self.dlg, "Debug", ("Quit !"), QMessageBox.Ok)
+                QMessageBox.warning(self.dlg, "Debug", "Quit !", QMessageBox.Ok)
