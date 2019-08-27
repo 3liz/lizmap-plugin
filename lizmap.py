@@ -64,7 +64,6 @@ from qgis.PyQt.QtCore import (
     Qt
 )
 from qgis.PyQt.QtWidgets import (
-    QApplication,
     QTableWidgetItem,
     QTreeWidgetItem,
     QAction,
@@ -90,6 +89,7 @@ from qgis.core import (
 from . import resources
 from .lizmap_dialog import LizmapDialog
 from .lizmap_api.config import LizmapConfig
+from .tools import tr
 
 
 class Lizmap:
@@ -377,10 +377,7 @@ class Lizmap:
         self.clock = None
         self.isok = None
 
-    @staticmethod
-    def tr(sentence):
-        """Return a translated string."""
-        return QApplication.translate('lizmap', sentence)
+
 
     def initGui(self):
         """Create action that will start plugin configuration"""
@@ -588,8 +585,8 @@ class Lizmap:
             my_return = False
             QMessageBox.critical(
                 self.dlg,
-                self.tr("Lizmap Error"),
-                self.tr(
+                tr("Lizmap Error"),
+                tr(
                     "Map scales: Write down integer scales separated by comma. You must enter at least 2 min and max values."),
                 QMessageBox.Ok)
         else:
@@ -626,12 +623,12 @@ class Lizmap:
                 copyfile(json_file, "%s.back" % json_file)
                 QMessageBox.critical(
                     self.dlg,
-                    self.tr("Lizmap Error"),
-                    self.tr(
+                    tr("Lizmap Error"),
+                    tr(
                         "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     QMessageBox.Ok)
                 self.log(
-                    self.tr(
+                    tr(
                         "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     abort=True,
                     textarea=self.dlg.outLog)
@@ -1000,8 +997,8 @@ class Lizmap:
         if not has_wfs_option:
             QMessageBox.critical(
                 self.dlg,
-                self.tr("Lizmap Error"),
-                self.tr("ui.msg.warning.toolLayer.notInWfs"),
+                tr("Lizmap Error"),
+                tr("ui.msg.warning.toolLayer.notInWfs"),
                 QMessageBox.Ok)
             return False
         return True
@@ -1217,8 +1214,8 @@ class Lizmap:
         if has_z_values or has_m_values:
             QMessageBox.warning(
                 self.dlg,
-                self.tr('Editing Z/M Values'),
-                self.tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
+                tr('Editing Z/M Values'),
+                tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
             )
 
         # Add layer
@@ -1328,8 +1325,8 @@ class Lizmap:
             if not val:
                 QMessageBox.critical(
                     self.dlg,
-                    self.tr("Lizmap Error"),
-                    self.tr(
+                    tr("Lizmap Error"),
+                    tr(
                         "Please check that all input fields have been filled: repository, project, layer name and title"),
                     QMessageBox.Ok
                 )
@@ -1520,8 +1517,8 @@ class Lizmap:
         # Ask confirmation
         refresh_it = QMessageBox.question(
             self.dlg,
-            self.tr('Lizmap - Refresh layer tree?'),
-            self.tr("ui.msg.question.refresh.content"),
+            tr('Lizmap - Refresh layer tree?'),
+            tr("ui.msg.question.refresh.content"),
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No
         )
         if refresh_it == QMessageBox.Yes:
@@ -1675,7 +1672,7 @@ class Lizmap:
         # initialize the tree
         myTree = self.dlg.treeLayer
         myTree.clear()
-        myTree.headerItem().setText(0, self.tr("List of layers"))
+        myTree.headerItem().setText(0, tr("List of layers"))
         self.myDic = {}
 
         # Check if a json configuration file exists (myproject.qgs.cfg)
@@ -1691,9 +1688,9 @@ class Lizmap:
                 jsonLayers = sjson['layers']
             except:
                 isok = 0
-                QMessageBox.critical(self.dlg, self.tr("Lizmap Error"), "", QMessageBox.Ok)
+                QMessageBox.critical(self.dlg, tr("Lizmap Error"), "", QMessageBox.Ok)
                 self.log(
-                    self.tr(
+                    tr(
                         "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
                     abort=True,
                     textarea=self.dlg.outLog)
@@ -2641,7 +2638,7 @@ class Lizmap:
         if p.isDirty():
             self.iface.messageBar().pushMessage(
                 "Lizmap",
-                self.tr("Please do not forget to save the QGIS project before publishing your map"),
+                tr("Please do not forget to save the QGIS project before publishing your map"),
                 level=Qgis.Warning,
                 duration=30
             )
@@ -2671,7 +2668,7 @@ class Lizmap:
         # Get the project data from api
         p = QgsProject.instance()
         if not p.fileName():
-            errorMessage += '* ' + self.tr("You need to open a qgis project before using Lizmap") + '\n'
+            errorMessage += '* ' + tr("You need to open a qgis project before using Lizmap") + '\n'
             isok = False
 
         if isok:
@@ -2682,13 +2679,13 @@ class Lizmap:
             # Check if Qgis/capitaliseLayerName is set
             s = QSettings()
             if s.value('Qgis/capitaliseLayerName') and s.value('Qgis/capitaliseLayerName', type=bool):
-                errorMessage += '* ' + self.tr("ui.msg.error.project.option.capitalizeLayerName") + '\n'
+                errorMessage += '* ' + tr("ui.msg.error.project.option.capitalizeLayerName") + '\n'
                 isok = False
 
         if isok:
             # Check relative/absolute path
             if p.readEntry('Paths', 'Absolute')[0] == 'true':
-                errorMessage += '* ' + self.tr(
+                errorMessage += '* ' + tr(
                     "The project layer paths must be set to relative. Please change this options in the project settings.") + '\n'
                 isok = False
 
@@ -2723,9 +2720,9 @@ class Lizmap:
                         layerPathError += '--> %s \n' % mc.layer(i).name()
 
             if len(layerSourcesBad) > 0:
-                errorMessage += '* ' + self.tr("ui.msg.error.project.layers.path.relative {}").format(projectDir) + '\n'
+                errorMessage += '* ' + tr("ui.msg.error.project.layers.path.relative {}").format(projectDir) + '\n'
                 self.log(
-                    self.tr("ui.msg.error.project.layers.path.relative {}")
+                    tr("ui.msg.error.project.layers.path.relative {}")
                     .format(projectDir) + str(layerSourcesBad),
                     abort=True,
                     textarea=self.dlg.outLog)
@@ -2759,7 +2756,7 @@ class Lizmap:
         if not isok and errorMessage:
             QMessageBox.critical(
                 self.dlg,
-                self.tr("Lizmap Error"),
+                tr("Lizmap Error"),
                 errorMessage,
                 QMessageBox.Ok)
 
@@ -2793,7 +2790,7 @@ class Lizmap:
 
             # log
             self.dlg.outLog.append('=' * 20)
-            self.dlg.outLog.append('<b>' + self.tr("Map - options") + '</b>')
+            self.dlg.outLog.append('<b>' + tr("Map - options") + '</b>')
             self.dlg.outLog.append('=' * 20)
 
             # Checking configuration data
@@ -2827,7 +2824,7 @@ class Lizmap:
                         good = False
                 if not good:
                     self.log(
-                        self.tr("ui.msg.warning.toolLayer.notInWfs"),
+                        tr("ui.msg.warning.toolLayer.notInWfs"),
                         abort=True,
                         textarea=self.dlg.outLog)
 
@@ -2835,11 +2832,11 @@ class Lizmap:
                 # write data in the lizmap json config file
                 self.writeProjectConfigFile()
                 self.log(
-                    self.tr("All the map parameters are correctly set"),
+                    tr("All the map parameters are correctly set"),
                     abort=False,
                     textarea=self.dlg.outLog)
                 self.log(
-                    '<b>' + self.tr("Lizmap configuration file has been updated") + '</b>',
+                    '<b>' + tr("Lizmap configuration file has been updated") + '</b>',
                     abort=False,
                     textarea=self.dlg.outLog)
                 a = True
@@ -2847,8 +2844,8 @@ class Lizmap:
                 a = False
                 QMessageBox.critical(
                     self.dlg,
-                    self.tr("Lizmap Error"),
-                    self.tr("Wrong or missing map parameters: please read the log and correct the printed errors."),
+                    tr("Lizmap Error"),
+                    tr("Wrong or missing map parameters: please read the log and correct the printed errors."),
                     QMessageBox.Ok)
 
             # Get and check map scales
@@ -2856,7 +2853,7 @@ class Lizmap:
                 self.getMinMaxScales()
                 self.iface.messageBar().pushMessage(
                     "Lizmap",
-                    self.tr("Lizmap configuration file has been updated"),
+                    tr("Lizmap configuration file has been updated"),
                     level=Qgis.Success,
                     duration=3
                 )
@@ -2982,8 +2979,8 @@ class Lizmap:
         if self.dlg.isVisible():
             QMessageBox.warning(
                 self.dlg,
-                self.tr("Lizmap - Warning"),
-                self.tr("A Lizmap window is already opened"),
+                tr("Lizmap - Warning"),
+                tr("A Lizmap window is already opened"),
                 QMessageBox.Ok)
 
         # show the dialog only if checkGlobalProjectOptions is true
