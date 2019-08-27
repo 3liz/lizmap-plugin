@@ -1066,7 +1066,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -1131,7 +1131,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -1196,7 +1196,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -1249,7 +1249,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -1432,7 +1432,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -1476,7 +1476,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -1540,7 +1540,7 @@ class Lizmap:
         if not layer:
             return False
 
-        # Check that the chosen layer is checked in the WFS Capabilities (OWS tab)
+        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return False
 
@@ -2814,14 +2814,14 @@ class Lizmap:
                     textarea=self.dlg.outLog)
                 errorMessage += layerPathError
 
-            # check if a title has been given in the project OWS tab configuration
+            # check if a title has been given in the project QGIS Server tab configuration
             # first set the WMSServiceCapabilities to true
             if not p.readEntry('WMSServiceCapabilities', "/")[1]:
                 p.writeEntry('WMSServiceCapabilities', "/", "True")
             if p.readEntry('WMSServiceTitle', '')[0] == '':
                 p.writeEntry('WMSServiceTitle', '', '%s' % p.fileInfo().baseName())
 
-            # check if a bbox has been given in the project OWS tab configuration
+            # check if a bbox has been given in the project QGIS Server tab configuration
             pWmsExtentLe = p.readListEntry('WMSExtent', '')
             pWmsExtent = pWmsExtentLe[0]
             fullExtent = self.iface.mapCanvas().extent()

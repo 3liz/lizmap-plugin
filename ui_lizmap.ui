@@ -689,7 +689,7 @@ Ex: 1000, 250000</string>
                    <widget class="QLabel" name="label_23">
                     <property name="text">
                      <string>You can define here the initial extent of the map.
-This is different to the map maximum extent (defined in QGIS project properties, &quot;OWS Server&quot; tab).</string>
+This is different to the map maximum extent (defined in QGIS project properties, &quot;QGIS Server&quot; tab).</string>
                     </property>
                    </widget>
                   </item>
@@ -1635,7 +1635,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <widget class="QLabel" name="label_21">
                     <property name="text">
-                     <string>You can add baselayers from public sources. If so, you must add the SCR &quot;Pseudo Mercator&quot; (EPSG:3857) in your WMS project OWS settings.</string>
+                     <string>You can add baselayers from public sources. If so, you must add the SCR &quot;Pseudo Mercator&quot; (EPSG:3857) in your WMS project, QGIS Server settings.</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -2625,7 +2625,7 @@ Only the selected feature will be visible on the map.</string>
                <item>
                 <widget class="QLabel" name="label_60">
                  <property name="text">
-                  <string>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, tab OWS Server)</string>
+                  <string>The attribute table of the chosen layers can be displayed in Lizmap Web Client. Add any vector layers here and publish them as WFS (QGIS project properties, QGIS Server tab)</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
