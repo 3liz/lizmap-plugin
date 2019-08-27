@@ -260,6 +260,9 @@ class Lizmap:
         # Disable checkboxes on the layer tab
         self.enableCheckBox(False)
 
+        # Disable deprecated lizmap functions #121
+        self.dlg.gb_lizmapExternalBaselayers.setVisible(False)
+
         # Catch user interaction on layer tree and inputs
         self.dlg.treeLayer.itemSelectionChanged.connect(self.setItemOptions)
 
@@ -697,9 +700,10 @@ class Lizmap:
         return True
 
     def loadConfigIntoTableWidget(self, key):
-        """
-        Load the data taken from lizmap config file
-        and fill the table widget
+        """Load data from lizmap config file into the widget.
+
+        :param key: The key section to load according to the table.
+        :type key: basestring
         """
         # Get parameters for the widget
         lt = self.layersTable[key]
@@ -777,6 +781,12 @@ class Lizmap:
         # hide layer_id column (if present, always
         if store_layer_id:
             widget.setColumnHidden(col_count - 2, True)
+
+        if key == 'lizmapExternalBaselayers':
+            # We enable this widget only if there is at least one existing entry in the CFG. #121
+            rows = widget.rowCount()
+            if rows >= 1:
+                self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
 
     @staticmethod
     def get_qgis_layer_by_id(my_id):
