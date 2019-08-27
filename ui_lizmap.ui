@@ -292,7 +292,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>6</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2334,8 +2334,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>361</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2926,7 +2926,7 @@ Only the selected feature will be visible on the map.</string>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_10">
                    <item>
-                    <widget class="QComboBox" name="liEditionLayer">
+                    <widget class="QgsMapLayerComboBox" name="liEditionLayer">
                      <property name="minimumSize">
                       <size>
                        <width>78</width>
@@ -3058,8 +3058,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>421</width>
+                <height>393</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3078,15 +3078,6 @@ Only the selected feature will be visible on the map.</string>
                </item>
                <item>
                 <widget class="QTableWidget" name="twTooltipLayerList">
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
                  <column>
                   <property name="text">
                    <string>Layer</string>
@@ -3159,7 +3150,7 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QgsMapLayerComboBox" name="liTooltipLayer">
+                  <widget class="QComboBox" name="liTooltipLayer">
                    <property name="styleSheet">
                     <string notr="true"/>
                    </property>

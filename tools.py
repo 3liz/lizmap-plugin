@@ -46,6 +46,40 @@
 
 from qgis.PyQt.QtWidgets import QApplication
 
+from qgis.core import QgsMapLayer, QgsProject
+
+
+def get_layers(type_layer='all', provider_type=None):
+    """Get the list of layers from the project.
+
+    :param type_layer: Type of layers to fetch. all, vector, raster.
+    :type type_layer: basestring
+
+    :param provider_type: List of provider such as 'all' or ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
+    :type provider_type: list
+    """
+    if provider_type is None:
+        provider_type = ['all']
+
+    layers = QgsProject.instance().mapLayers().values()
+    if type_layer == 'all':
+        return layers
+
+    # loop though the layers
+    filtered_layers = []
+    for layer in layers:
+        # vector
+        if layer.type() == QgsMapLayer.VectorLayer and type_layer in ('all', 'vector'):
+            if not hasattr(layer, 'providerType'):
+                continue
+            if 'all' in provider_type or layer.providerType() in provider_type:
+                filtered_layers.append(layer)
+        # raster
+        if layer.type() == QgsMapLayer.RasterLayer and type_layer in ('all', 'raster'):
+            filtered_layers.append(layer)
+
+    return filtered_layers
+
 
 def tr(sentence):
     """Return a translated string."""
