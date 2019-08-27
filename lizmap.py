@@ -375,6 +375,7 @@ class Lizmap:
         self.action_help = None
         self.action_about = None
         self.clock = None
+        self.isok = None
 
     @staticmethod
     def tr(sentence):
@@ -812,12 +813,12 @@ class Lizmap:
         return return_layer
 
     def get_layers(self, ltype='all', provider_type=None):
-        """
-            Get the list of layers
-            * ltype can be : all, vector, raster
-            * providerTypeList is a list and can be : ['all'] or a list of provider keys
-            as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
+        """Get the list of layers from the project.
 
+        :param ltype: Type of layers to fetch. all, vector, raster.
+        :type ltype: list
+
+        :param provider_type: List of provider such as 'all' or ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
         :type provider_type: list
         """
         if provider_type is None:
@@ -1087,37 +1088,37 @@ class Lizmap:
             lblTableWidget.setColumnCount(8)
 
             # add layer name to the line
-            newItem = QTableWidgetItem(layer.name())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, newItem)
+            item = QTableWidgetItem(layer.name())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, item)
             # add field name to the line
-            newItem = QTableWidgetItem(fieldName)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, newItem)
+            item = QTableWidgetItem(fieldName)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, item)
             # add filter field name to the line
-            newItem = QTableWidgetItem(filterFieldName)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            item = QTableWidgetItem(filterFieldName)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, item)
             # add displayGeom option to the line
-            newItem = QTableWidgetItem(displayGeom)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            item = QTableWidgetItem(displayGeom)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, item)
             # add minLength to the line
-            newItem = QTableWidgetItem(str(minLength))
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            item = QTableWidgetItem(str(minLength))
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, item)
             # add filterOnLocate to the line
-            newItem = QTableWidgetItem(filterOnLocate)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            item = QTableWidgetItem(filterOnLocate)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, item)
             # add layer id to the line
-            newItem = QTableWidgetItem(layer.id())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
+            item = QTableWidgetItem(layer.id())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 6, item)
             # add order
-            newItem = QTableWidgetItem(lblTableWidget.rowCount())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 7, newItem)
+            item = QTableWidgetItem(lblTableWidget.rowCount())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 7, item)
 
         lblTableWidget.setColumnHidden(6, True)
         lblTableWidget.setColumnHidden(7, True)
@@ -1152,37 +1153,37 @@ class Lizmap:
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(8)
             # add layer name to the line
-            newItem = QTableWidgetItem(layerName)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, newItem)
+            item = QTableWidgetItem(layerName)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, item)
             # add primary key attribute to the line
-            newItem = QTableWidgetItem(primaryKey)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, newItem)
+            item = QTableWidgetItem(primaryKey)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, item)
             # add "hiddenFields"
-            newItem = QTableWidgetItem(hiddenFields)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            item = QTableWidgetItem(hiddenFields)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, item)
             # add "pivot"
-            newItem = QTableWidgetItem(pivot)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            item = QTableWidgetItem(pivot)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, item)
             # add "hideAsChild"
-            newItem = QTableWidgetItem(hideAsChild)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            item = QTableWidgetItem(hideAsChild)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, item)
             # add "hideLayer"
-            newItem = QTableWidgetItem(hideLayer)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            item = QTableWidgetItem(hideLayer)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, item)
             # add layer id to the line
-            newItem = QTableWidgetItem(layerId)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
+            item = QTableWidgetItem(layerId)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 6, item)
             # add order
-            newItem = QTableWidgetItem(lblTableWidget.rowCount())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 7, newItem)
+            item = QTableWidgetItem(lblTableWidget.rowCount())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 7, item)
 
         lblTableWidget.setColumnHidden(6, True)
         lblTableWidget.setColumnHidden(7, True)
@@ -1214,29 +1215,29 @@ class Lizmap:
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(6)
             # add layer name to the line
-            newItem = QTableWidgetItem(layerName)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, newItem)
+            item = QTableWidgetItem(layerName)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, item)
             # add "fields"
-            newItem = QTableWidgetItem(fields)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, newItem)
+            item = QTableWidgetItem(fields)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, item)
             # add "displayGeom"
-            newItem = QTableWidgetItem(displayGeom)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            item = QTableWidgetItem(displayGeom)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, item)
             # add "colorGeom"
-            newItem = QTableWidgetItem(colorGeom)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            item = QTableWidgetItem(colorGeom)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, item)
             # add layer id to the line
-            newItem = QTableWidgetItem(layerId)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            item = QTableWidgetItem(layerId)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, item)
             # add order
-            newItem = QTableWidgetItem(lblTableWidget.rowCount())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            item = QTableWidgetItem(lblTableWidget.rowCount())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, item)
 
         lblTableWidget.setColumnHidden(4, True)
         lblTableWidget.setColumnHidden(5, True)
@@ -1298,37 +1299,37 @@ class Lizmap:
             lblTableWidget.setColumnCount(8)
 
             # add layer name to the line
-            newItem = QTableWidgetItem(layerName)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, newItem)
+            item = QTableWidgetItem(layerName)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, item)
             # create feature
-            newItem = QTableWidgetItem(createFeature)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, newItem)
+            item = QTableWidgetItem(createFeature)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, item)
             # modify attributes
-            newItem = QTableWidgetItem(modifyAttribute)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            item = QTableWidgetItem(modifyAttribute)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, item)
             # modify geometry
-            newItem = QTableWidgetItem(modifyGeometry)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            item = QTableWidgetItem(modifyGeometry)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, item)
             # delete feature
-            newItem = QTableWidgetItem(deleteFeature)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            item = QTableWidgetItem(deleteFeature)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, item)
             # add acl to the line
-            newItem = QTableWidgetItem(acl)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, newItem)
+            item = QTableWidgetItem(acl)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 5, item)
             # add layer id to the line
-            newItem = QTableWidgetItem(layerId)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, newItem)
+            item = QTableWidgetItem(layerId)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 6, item)
             # add order
-            newItem = QTableWidgetItem(lblTableWidget.rowCount())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 7, newItem)
+            item = QTableWidgetItem(lblTableWidget.rowCount())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 7, item)
 
         lblTableWidget.setColumnHidden(6, True)
         lblTableWidget.setColumnHidden(7, True)
@@ -1356,25 +1357,25 @@ class Lizmap:
             lblTableWidget.setColumnCount(5)
 
             # add layer name to the line
-            newItem = QTableWidgetItem(layerName)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, newItem)
+            item = QTableWidgetItem(layerName)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 0, item)
             # add filter attribute to the line
-            newItem = QTableWidgetItem(filterAttribute)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, newItem)
+            item = QTableWidgetItem(filterAttribute)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 1, item)
             # add filterPrivate
-            newItem = QTableWidgetItem(filterPrivate)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, newItem)
+            item = QTableWidgetItem(filterPrivate)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 2, item)
             # add layer id to the line
-            newItem = QTableWidgetItem(layerId)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, newItem)
+            item = QTableWidgetItem(layerId)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 3, item)
             # add order
-            newItem = QTableWidgetItem(lblTableWidget.rowCount())
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, newItem)
+            item = QTableWidgetItem(lblTableWidget.rowCount())
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, 4, item)
 
         lblTableWidget.setColumnHidden(3, True)
         lblTableWidget.setColumnHidden(4, True)
@@ -1416,9 +1417,9 @@ class Lizmap:
             # Add content the the widget line
             i = 0
             for val in content:
-                newItem = QTableWidgetItem(val)
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, i, newItem)
+                item = QTableWidgetItem(val)
+                item.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, i, item)
                 i += 1
 
     def addLayerToTimemanager(self):
@@ -1458,9 +1459,9 @@ class Lizmap:
 
             i = 0
             for val in content:
-                newItem = QTableWidgetItem(val)
-                newItem.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, i, newItem)
+                item = QTableWidgetItem(val)
+                item.setFlags(Qt.ItemIsEnabled)
+                lblTableWidget.setItem(twRowCount, i, item)
                 i += 1
         lblTableWidget.setColumnHidden(colCount - 1, True)
         lblTableWidget.setColumnHidden(colCount - 2, True)
@@ -1522,9 +1523,9 @@ class Lizmap:
 
         i = 0
         for val in content:
-            newItem = QTableWidgetItem(val)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, i, newItem)
+            item = QTableWidgetItem(val)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, i, item)
             i += 1
         # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
@@ -1567,18 +1568,17 @@ class Lizmap:
 
         i = 0
         for val in content:
-            newItem = QTableWidgetItem(val)
-            newItem.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, i, newItem)
+            item = QTableWidgetItem(val)
+            item.setFlags(Qt.ItemIsEnabled)
+            lblTableWidget.setItem(twRowCount, i, item)
             i += 1
 
         lblTableWidget.setColumnHidden(colCount - 2, True)
         # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
 
-
     def updateFormFilterVisibleFields(self):
-        ''' Show/Hide fields depending of chosen type'''
+        """Show/Hide fields depending of chosen type"""
         ftype = self.dlg.liFormFilterFieldType.itemData(self.dlg.liFormFilterFieldType.currentIndex())
         self.dlg.liFormFilterMinDate.setEnabled( (ftype == 'date') )
         self.dlg.liFormFilterMaxDate.setEnabled( (ftype == 'date') )
@@ -2263,7 +2263,6 @@ class Lizmap:
 
     </style>
     '''
-
 
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)"""
