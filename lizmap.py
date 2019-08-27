@@ -439,9 +439,14 @@ class Lizmap:
         lr.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
         # Locate by layers
-        # detect layer locate list has changed to refresh layer field list
-        self.dlg.liLocateByLayerLayers.currentIndexChanged[str].connect(self.update_locate_field_list_from_layer)
-        # add a layer to the locateByLayerList
+        self.dlg.twLocateByLayerList.setColumnHidden(6, True)
+        self.dlg.twLocateByLayerList.setColumnHidden(7, True)
+        self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFields.setLayer)
+        self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFilterFields.setLayer)
+        self.dlg.liLocateByLayerFields.setLayer(self.dlg.liLocateByLayerLayers.currentLayer())
+        self.dlg.liLocateByLayerFilterFields.setLayer(self.dlg.liLocateByLayerLayers.currentLayer())
+        self.dlg.liLocateByLayerFields.setAllowEmptyFieldName(False)
+        self.dlg.liLocateByLayerFilterFields.setAllowEmptyFieldName(True)
         self.dlg.btLocateByLayerAdd.clicked.connect(self.add_layer_to_locate_by_layer)
 
         # Attribute layers
@@ -924,37 +929,6 @@ class Lizmap:
         else:
             return None
 
-    def update_locate_field_list_from_layer(self):
-        """
-            Fill the combobox with the list of fields
-            for the layer chosen with the liLayerLocateLayer combobox
-        """
-        # get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liLocateByLayerLayers)
-
-        # remove previous items
-        self.dlg.liLocateByLayerFields.clear()
-        # populate the fields combo boxes
-        cbs = [
-            [False, self.dlg.liLocateByLayerFields],
-            [True, self.dlg.liLocateByLayerFilterFields]
-        ]
-        if layer:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                for cb in cbs:
-                    fields = layer.fields()
-                    # Add empty item if allowed
-                    if cb[0]:
-                        cb[1].addItem('--', '')
-                    # Add fields to the combo
-                    for field in fields:
-                        cb[1].addItem(
-                            str(field.name()),
-                            str(field.name())
-                        )
-        else:
-            return None
-
     def update_login_filtered_field_list_from_layer(self):
         """
             Fill the combobox with the list of fields
@@ -1060,69 +1034,73 @@ class Lizmap:
         return True
 
     def add_layer_to_locate_by_layer(self):
-        """Add a layer in the list of layers
-        for which to have the "locate by layer" tool"""
+        """Add a layer in the 'locate by layer' tool."""
+        row = self.dlg.twLocateByLayerList.rowCount()
+        if row > 2:
+            return
 
-        # Get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liLocateByLayerLayers)
+        layer = self.dlg.liLocateByLayerLayers.currentLayer()
         if not layer:
-            return False
+            return
 
         # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
-            return False
+            return
 
-        # Retrieve layer information
-        fieldCombobox = self.dlg.liLocateByLayerFields
-        filterFieldCombobox = self.dlg.liLocateByLayerFilterFields
-        fieldName = fieldCombobox.currentText()
-        filterFieldName = filterFieldCombobox.currentText()
-        displayGeom = str(self.dlg.cbLocateByLayerDisplayGeom.isChecked())
-        minLength = self.dlg.inLocateByLayerMinLength.value()
-        filterOnLocate = str(self.dlg.cbFilterOnLocate.isChecked())
+        display_field = self.dlg.liLocateByLayerFields.currentText()
 
-        lblTableWidget = self.dlg.twLocateByLayerList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount < self.dlg.liLocateByLayerLayers.count() - 1:
+        if not display_field:
+            return
+
+        filter_field = self.dlg.liLocateByLayerFilterFields.currentText()
+        display_geom = str(self.dlg.cbLocateByLayerDisplayGeom.isChecked())
+        min_length = self.dlg.inLocateByLayerMinLength.value()
+        filter_on_locate = str(self.dlg.cbFilterOnLocate.isChecked())
+
+        if row < self.dlg.liLocateByLayerLayers.count() - 1:
             # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(8)
+            self.dlg.twLocateByLayerList.setRowCount(row + 1)
+            self.dlg.twLocateByLayerList.setColumnCount(8)
 
             # add layer name to the line
             item = QTableWidgetItem(layer.name())
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, item)
+            self.dlg.twLocateByLayerList.setItem(row, 0, item)
+
             # add field name to the line
-            item = QTableWidgetItem(fieldName)
+            item = QTableWidgetItem(display_field)
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, item)
+            self.dlg.twLocateByLayerList.setItem(row, 1, item)
+
             # add filter field name to the line
-            item = QTableWidgetItem(filterFieldName)
+            item = QTableWidgetItem(filter_field)
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, item)
+            self.dlg.twLocateByLayerList.setItem(row, 2, item)
+
             # add displayGeom option to the line
-            item = QTableWidgetItem(displayGeom)
+            item = QTableWidgetItem(display_geom)
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, item)
+            self.dlg.twLocateByLayerList.setItem(row, 3, item)
+
             # add minLength to the line
-            item = QTableWidgetItem(str(minLength))
+            item = QTableWidgetItem(str(min_length))
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, item)
+            self.dlg.twLocateByLayerList.setItem(row, 4, item)
+
             # add filterOnLocate to the line
-            item = QTableWidgetItem(filterOnLocate)
+            item = QTableWidgetItem(filter_on_locate)
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, item)
+            self.dlg.twLocateByLayerList.setItem(row, 5, item)
+
             # add layer id to the line
             item = QTableWidgetItem(layer.id())
             item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, item)
-            # add order
-            item = QTableWidgetItem(lblTableWidget.rowCount())
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 7, item)
+            self.dlg.twLocateByLayerList.setItem(row, 6, item)
 
-        lblTableWidget.setColumnHidden(6, True)
-        lblTableWidget.setColumnHidden(7, True)
+            # add order
+            item = QTableWidgetItem(row)
+            item.setFlags(Qt.ItemIsEnabled)
+            self.dlg.twLocateByLayerList.setItem(row, 7, item)
 
     def addLayerToAttributeLayer(self):
         """Add a layer in the list of layers
@@ -3063,7 +3041,8 @@ class Lizmap:
             self.dlg.show()
 
             # Fill the layer list for the locate by layer tool
-            self.populate_layer_combobox(self.dlg.liLocateByLayerLayers, 'vector')
+            # self.populate_layer_combobox(self.dlg.liLocateByLayerLayers, 'vector')
+            self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
             # Fill the layer list for the attribute layer tool
             self.populate_layer_combobox(self.dlg.liAttributeLayer, 'vector')
             # Fill the layer list for the tooltip layer tool

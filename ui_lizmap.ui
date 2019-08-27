@@ -292,7 +292,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -321,8 +321,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>720</width>
+                <height>805</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -891,8 +891,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>443</width>
+                <height>143</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -936,7 +936,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <number>1</number>
                     </property>
                     <attribute name="headerDefaultSectionSize">
-                     <number>50</number>
+                     <number>57</number>
                     </attribute>
                     <attribute name="headerMinimumSectionSize">
                      <number>50</number>
@@ -970,8 +970,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>481</width>
-                       <height>875</height>
+                       <width>466</width>
+                       <height>859</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1621,8 +1621,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>561</width>
+                <height>882</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2477,7 +2477,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QComboBox" name="liLocateByLayerLayers">
+                      <widget class="QgsMapLayerComboBox" name="liLocateByLayerLayers">
                        <property name="maximumSize">
                         <size>
                          <width>150</width>
@@ -2503,7 +2503,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QComboBox" name="liLocateByLayerFields">
+                      <widget class="QgsFieldComboBox" name="liLocateByLayerFields">
                        <property name="maximumSize">
                         <size>
                          <width>150</width>
@@ -2538,7 +2538,7 @@ Only the selected feature will be visible on the map.</string>
                       </widget>
                      </item>
                      <item row="1" column="2">
-                      <widget class="QComboBox" name="liLocateByLayerFilterFields">
+                      <widget class="QgsFieldComboBox" name="liLocateByLayerFilterFields">
                        <property name="maximumSize">
                         <size>
                          <width>150</width>
@@ -2617,8 +2617,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>480</width>
+                <height>416</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2838,8 +2838,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>736</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3052,8 +3052,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>421</width>
+                <height>393</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3256,8 +3256,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>326</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3401,8 +3401,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>751</width>
-                <height>903</height>
+                <width>596</width>
+                <height>879</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3747,14 +3747,14 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="11" column="3">
                   <widget class="QgsColorButton" name="inDatavizPlotColor">
-                   <property name="color">
+                   <property name="color" stdset="0">
                     <color>
                      <red>0</red>
                      <green>170</green>
                      <blue>255</blue>
                     </color>
                    </property>
-                   <property name="defaultColor">
+                   <property name="defaultColor" stdset="0">
                     <color>
                      <red>0</red>
                      <green>170</green>
@@ -3775,14 +3775,14 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="13" column="3">
                   <widget class="QgsColorButton" name="inDatavizPlotColor2">
-                   <property name="color">
+                   <property name="color" stdset="0">
                     <color>
                      <red>255</red>
                      <green>170</green>
                      <blue>0</blue>
                     </color>
                    </property>
-                   <property name="defaultColor">
+                   <property name="defaultColor" stdset="0">
                     <color>
                      <red>255</red>
                      <green>170</green>
@@ -3892,8 +3892,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>442</width>
+                <height>466</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4196,8 +4196,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>749</width>
-                <height>901</height>
+                <width>485</width>
+                <height>627</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4491,8 +4491,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>749</width>
-                <height>901</height>
+                <width>274</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -4642,7 +4642,7 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="11" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMaxDate">
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4670,7 +4670,7 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="10" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4697,7 +4697,7 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="3" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterField">
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
