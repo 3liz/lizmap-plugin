@@ -450,10 +450,11 @@ class Lizmap:
         self.dlg.btLocateByLayerAdd.clicked.connect(self.add_layer_to_locate_by_layer)
 
         # Attribute layers
-        # detect layer locate list has changed to refresh layer field list
-        self.dlg.liAttributeLayer.currentIndexChanged[str].connect(self.update_attribute_field_list_from_layer)
-        # add a layer to the list of attribute layers
-        self.dlg.btAttributeLayerAdd.clicked.connect(self.addLayerToAttributeLayer)
+        self.dlg.twAttributeLayerList.setColumnHidden(6, True)
+        self.dlg.twAttributeLayerList.setColumnHidden(7, True)
+        self.dlg.liAttributeLayer.layerChanged.connect(self.dlg.liAttributeLayerFields.setLayer)
+        self.dlg.liAttributeLayerFields.setLayer(self.dlg.liAttributeLayer.currentLayer())
+        self.dlg.btAttributeLayerAdd.clicked.connect(self.add_layer_to_attribute_layer)
 
         # Tooltip layers
         # add a layer to the tooltipLayerList
@@ -907,28 +908,6 @@ class Lizmap:
         )
         self.dlg.inInitialExtent.setText(initial_extent)
 
-    def update_attribute_field_list_from_layer(self):
-        """
-            Fill the combobox with the list of fields
-            for the layer chosen with the attribute layers combobox
-        """
-        # get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liAttributeLayer)
-
-        # remove previous items
-        self.dlg.liAttributeLayerFields.clear()
-        # populate the columns combo box
-        if layer:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.fields()
-                for field in fields:
-                    self.dlg.liAttributeLayerFields.addItem(
-                        str(field.name()),
-                        str(field.name())
-                    )
-        else:
-            return None
-
     def update_login_filtered_field_list_from_layer(self):
         """
             Fill the combobox with the list of fields
@@ -1035,7 +1014,8 @@ class Lizmap:
 
     def add_layer_to_locate_by_layer(self):
         """Add a layer in the 'locate by layer' tool."""
-        row = self.dlg.twLocateByLayerList.rowCount()
+        table = self.dlg.twLocateByLayerList
+        row = table.rowCount()
         if row > 2:
             return
 
@@ -1043,7 +1023,6 @@ class Lizmap:
         if not layer:
             return
 
-        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
             return
 
@@ -1059,113 +1038,94 @@ class Lizmap:
 
         if row < self.dlg.liLocateByLayerLayers.count() - 1:
             # set new rowCount
-            self.dlg.twLocateByLayerList.setRowCount(row + 1)
-            self.dlg.twLocateByLayerList.setColumnCount(8)
+            table.setRowCount(row + 1)
 
             # add layer name to the line
             item = QTableWidgetItem(layer.name())
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 0, item)
+            table.setItem(row, 0, item)
 
             # add field name to the line
             item = QTableWidgetItem(display_field)
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 1, item)
+            table.setItem(row, 1, item)
 
             # add filter field name to the line
             item = QTableWidgetItem(filter_field)
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 2, item)
+            table.setItem(row, 2, item)
 
             # add displayGeom option to the line
             item = QTableWidgetItem(display_geom)
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 3, item)
+            table.setItem(row, 3, item)
 
             # add minLength to the line
             item = QTableWidgetItem(str(min_length))
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 4, item)
+            table.setItem(row, 4, item)
 
             # add filterOnLocate to the line
             item = QTableWidgetItem(filter_on_locate)
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 5, item)
+            table.setItem(row, 5, item)
 
             # add layer id to the line
             item = QTableWidgetItem(layer.id())
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 6, item)
+            table.setItem(row, 6, item)
 
             # add order
             item = QTableWidgetItem(row)
-            item.setFlags(Qt.ItemIsEnabled)
-            self.dlg.twLocateByLayerList.setItem(row, 7, item)
+            table.setItem(row, 7, item)
 
-    def addLayerToAttributeLayer(self):
-        """Add a layer in the list of layers
-        for which Lizmap will display attribute tables"""
-
-        # Get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liAttributeLayer)
+    def add_layer_to_attribute_layer(self):
+        """Add a layer in the 'attribute table' tool."""
+        layer = self.dlg.liAttributeLayer.currentLayer()
         if not layer:
-            return False
+            return
 
-        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
-            return False
+            return
 
-        # Retrieve layer information
-        layerName = layer.name()
-        layerId = layer.id()
-        fieldCombobox = self.dlg.liAttributeLayerFields
-        primaryKey = fieldCombobox.currentText()
-        hiddenFields = str(self.dlg.inAttributeLayerHiddenFields.text()).strip(' \t')
+        name = layer.name()
+        layer_id = layer.id()
+        primary_key = self.dlg.liAttributeLayerFields.currentText()
+        hidden_fields = str(self.dlg.inAttributeLayerHiddenFields.text()).strip(' \t')
         pivot = str(self.dlg.cbAttributeLayerIsPivot.isChecked())
-        hideAsChild = str(self.dlg.cbAttributeLayerHideAsChild.isChecked())
-        hideLayer = str(self.dlg.cbAttributeLayerHideLayer.isChecked())
+        hide_as_child = str(self.dlg.cbAttributeLayerHideAsChild.isChecked())
+        hide_layer = str(self.dlg.cbAttributeLayerHideLayer.isChecked())
 
-        lblTableWidget = self.dlg.twAttributeLayerList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount < self.dlg.liAttributeLayer.count() - 1:
+        table = self.dlg.twAttributeLayerList
+        row = table.rowCount()
+        if row < self.dlg.liAttributeLayer.count() - 1:
             # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(8)
+            table.setRowCount(row + 1)
+
             # add layer name to the line
-            item = QTableWidgetItem(layerName)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, item)
+            item = QTableWidgetItem(name)
+            table.setItem(row, 0, item)
+
             # add primary key attribute to the line
-            item = QTableWidgetItem(primaryKey)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, item)
+            item = QTableWidgetItem(primary_key)
+            table.setItem(row, 1, item)
+
             # add "hiddenFields"
-            item = QTableWidgetItem(hiddenFields)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, item)
+            item = QTableWidgetItem(hidden_fields)
+            table.setItem(row, 2, item)
+
             # add "pivot"
             item = QTableWidgetItem(pivot)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, item)
-            # add "hideAsChild"
-            item = QTableWidgetItem(hideAsChild)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, item)
-            # add "hideLayer"
-            item = QTableWidgetItem(hideLayer)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, item)
-            # add layer id to the line
-            item = QTableWidgetItem(layerId)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 6, item)
-            # add order
-            item = QTableWidgetItem(lblTableWidget.rowCount())
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 7, item)
+            table.setItem(row, 3, item)
 
-        lblTableWidget.setColumnHidden(6, True)
-        lblTableWidget.setColumnHidden(7, True)
+            # add "hideAsChild"
+            item = QTableWidgetItem(hide_as_child)
+            table.setItem(row, 4, item)
+
+            # add "hideLayer"
+            item = QTableWidgetItem(hide_layer)
+            table.setItem(row, 5, item)
+
+            # add layer id to the line
+            item = QTableWidgetItem(layer_id)
+            table.setItem(row, 6, item)
+
+            # add order
+            item = QTableWidgetItem(table.rowCount())
+            table.setItem(row, 7, item)
 
     def addLayerToTooltipLayer(self):
         """Add a layer in the list of layers
@@ -3040,11 +3000,9 @@ class Lizmap:
         if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
             self.dlg.show()
 
-            # Fill the layer list for the locate by layer tool
-            # self.populate_layer_combobox(self.dlg.liLocateByLayerLayers, 'vector')
             self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            # Fill the layer list for the attribute layer tool
-            self.populate_layer_combobox(self.dlg.liAttributeLayer, 'vector')
+            self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+
             # Fill the layer list for the tooltip layer tool
             self.populate_layer_combobox(self.dlg.liTooltipLayer, 'vector')
             # Fill the layers lists for the edition tool
