@@ -457,7 +457,8 @@ class Lizmap:
         self.dlg.btAttributeLayerAdd.clicked.connect(self.add_layer_to_attribute_layer)
 
         # Tooltip layers
-        # add a layer to the tooltipLayerList
+        self.dlg.twTooltipLayerList.setColumnHidden(4, True)
+        self.dlg.twTooltipLayerList.setColumnHidden(5, True)
         self.dlg.btTooltipLayerAdd.clicked.connect(self.addLayerToTooltipLayer)
 
         # Edition layers
@@ -782,13 +783,6 @@ class Lizmap:
                     widget.setItem(tw_row_count, i, new_item)
                     i += 1
 
-        # hide las columns
-        # order (always at the end)
-        widget.setColumnHidden(col_count - 1, True)
-        # hide layer_id column (if present, always
-        if store_layer_id:
-            widget.setColumnHidden(col_count - 2, True)
-
         if key == 'lizmapExternalBaselayers':
             # We enable this widget only if there is at least one existing entry in the CFG. #121
             rows = widget.rowCount()
@@ -1033,8 +1027,9 @@ class Lizmap:
 
         filter_field = self.dlg.liLocateByLayerFilterFields.currentText()
         display_geom = str(self.dlg.cbLocateByLayerDisplayGeom.isChecked())
-        min_length = self.dlg.inLocateByLayerMinLength.value()
+        min_length = str(self.dlg.inLocateByLayerMinLength.value())
         filter_on_locate = str(self.dlg.cbFilterOnLocate.isChecked())
+        order = str(row)
 
         if row < self.dlg.liLocateByLayerLayers.count() - 1:
             # set new rowCount
@@ -1057,7 +1052,7 @@ class Lizmap:
             table.setItem(row, 3, item)
 
             # add minLength to the line
-            item = QTableWidgetItem(str(min_length))
+            item = QTableWidgetItem(min_length)
             table.setItem(row, 4, item)
 
             # add filterOnLocate to the line
@@ -1069,7 +1064,7 @@ class Lizmap:
             table.setItem(row, 6, item)
 
             # add order
-            item = QTableWidgetItem(row)
+            item = QTableWidgetItem(order)
             table.setItem(row, 7, item)
 
     def add_layer_to_attribute_layer(self):
@@ -1091,6 +1086,7 @@ class Lizmap:
 
         table = self.dlg.twAttributeLayerList
         row = table.rowCount()
+        order = str(row)
         if row < self.dlg.liAttributeLayer.count() - 1:
             # set new rowCount
             table.setRowCount(row + 1)
@@ -1124,62 +1120,56 @@ class Lizmap:
             table.setItem(row, 6, item)
 
             # add order
-            item = QTableWidgetItem(table.rowCount())
+            item = QTableWidgetItem(order)
             table.setItem(row, 7, item)
 
     def addLayerToTooltipLayer(self):
-        """Add a layer in the list of layers
-        for which Lizmap will propose a tooltip"""
-
-        # Get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liTooltipLayer)
+        """Add a layer in the 'tooltip' tool."""
+        layer = self.dlg.liTooltipLayer.currentLayer()
         if not layer:
-            return False
+            return
 
-        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
-            return False
+            return
 
         # Retrieve layer information
-        layerName = layer.name()
-        layerId = layer.id()
+        layer_name = layer.name()
+        layer_id = layer.id()
         fields = str(self.dlg.inTooltipLayerFields.text()).strip(' \t')
-        displayGeom = str(self.dlg.cbTooltipLayerDisplayGeom.isChecked())
-        colorGeom = str(self.dlg.inTooltipLayerColorGeom.text()).strip(' \t')
+        display_geom = str(self.dlg.cbTooltipLayerDisplayGeom.isChecked())
+        color_geom = str(self.dlg.inTooltipLayerColorGeom.text()).strip(' \t')
 
-        lblTableWidget = self.dlg.twTooltipLayerList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount < self.dlg.liTooltipLayer.count() - 1:
+        table = self.dlg.twTooltipLayerList
+        row = table.rowCount()
+        order = str(row)
+        if row < self.dlg.liTooltipLayer.count() - 1:
+
             # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(6)
+            table.setRowCount(row + 1)
+
             # add layer name to the line
-            item = QTableWidgetItem(layerName)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, item)
+            item = QTableWidgetItem(layer_name)
+            table.setItem(row, 0, item)
+
             # add "fields"
             item = QTableWidgetItem(fields)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, item)
-            # add "displayGeom"
-            item = QTableWidgetItem(displayGeom)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, item)
-            # add "colorGeom"
-            item = QTableWidgetItem(colorGeom)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, item)
-            # add layer id to the line
-            item = QTableWidgetItem(layerId)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, item)
-            # add order
-            item = QTableWidgetItem(lblTableWidget.rowCount())
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 5, item)
+            table.setItem(row, 1, item)
 
-        lblTableWidget.setColumnHidden(4, True)
-        lblTableWidget.setColumnHidden(5, True)
+            # add "displayGeom"
+            item = QTableWidgetItem(display_geom)
+            table.setItem(row, 2, item)
+
+            # add "colorGeom"
+            item = QTableWidgetItem(color_geom)
+            table.setItem(row, 3, item)
+
+            # add layer id to the line
+            item = QTableWidgetItem(layer_id)
+            table.setItem(row, 4, item)
+
+            # add order
+            item = QTableWidgetItem(order)
+            table.setItem(row, 5, item)
 
     def addLayerToEditionLayer(self):
         """Add a layer in the list of edition layers"""
@@ -3002,9 +2992,8 @@ class Lizmap:
 
             self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+            self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
-            # Fill the layer list for the tooltip layer tool
-            self.populate_layer_combobox(self.dlg.liTooltipLayer, 'vector')
             # Fill the layers lists for the edition tool
             self.populate_layer_combobox(self.dlg.liEditionLayer, 'vector', ['spatialite', 'postgres'])
             # Fill the layer list for the login filtered layers tool
