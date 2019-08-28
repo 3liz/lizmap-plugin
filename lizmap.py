@@ -89,7 +89,7 @@ from qgis.core import (
 from . import resources
 from .lizmap_dialog import LizmapDialog
 from .lizmap_api.config import LizmapConfig
-from .tools import tr, get_layers
+from .tools import tr, get_layers, excluded_providers
 
 
 class Lizmap:
@@ -462,10 +462,11 @@ class Lizmap:
         self.dlg.btEditionLayerAdd.clicked.connect(self.add_layer_to_edition)
 
         # Login filtered layers
-        # detect layer locate list has changed to refresh layer field list
-        self.dlg.liLoginFilteredLayerLayers.currentIndexChanged[str].connect(self.update_login_filtered_field_list_from_layer)
-        # add a layer to the list
-        self.dlg.btLoginFilteredLayerAdd.clicked.connect(self.addLayerToLoginFilteredLayer)
+        self.dlg.twLoginFilteredLayersList.setColumnHidden(3, True)
+        self.dlg.twLoginFilteredLayersList.setColumnHidden(4, True)
+        self.dlg.liLoginFilteredLayerLayers.layerChanged.connect(self.dlg.liLoginFilteredLayerFields.setLayer)
+        self.dlg.liLoginFilteredLayerFields.setLayer(self.dlg.liLoginFilteredLayerLayers.currentLayer())
+        self.dlg.btLoginFilteredLayerAdd.clicked.connect(self.add_layer_to_login_filtered_layer)
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
@@ -867,28 +868,6 @@ class Lizmap:
         )
         self.dlg.inInitialExtent.setText(initial_extent)
 
-    def update_login_filtered_field_list_from_layer(self):
-        """
-            Fill the combobox with the list of fields
-            for the layer chosen with the liLayerLocateLayer combobox
-        """
-        # get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liLoginFilteredLayerLayers)
-
-        # remove previous items
-        self.dlg.liLoginFilteredLayerFields.clear()
-        # populate the columns combo box
-        if layer:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.fields()
-                for field in fields:
-                    self.dlg.liLoginFilteredLayerFields.addItem(
-                        str(field.name()),
-                        str(field.name())
-                    )
-        else:
-            return None
-
     def update_time_manager_field_list_from_layer(self):
         """
             Fill the combobox with the list of fields
@@ -1133,7 +1112,7 @@ class Lizmap:
             table.setItem(row, 5, item)
 
     def add_layer_to_edition(self):
-        """Add a layer in the list of edition layers"""
+        """Add a layer in the list of edition layers."""
         layer = self.dlg.liEditionLayer.currentLayer()
         if not layer:
             return
@@ -1210,51 +1189,43 @@ class Lizmap:
             item = QTableWidgetItem(str(row))
             table.setItem(row, 7, item)
 
-    def addLayerToLoginFilteredLayer(self):
-        """Add a layer in the list of layers
-        for which to have the "login filtered layer" tool"""
-
-        # Get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liLoginFilteredLayerLayers)
+    def add_layer_to_login_filtered_layer(self):
+        """Add a layer in the list of 'login filtered' tool."""
+        layer = self.dlg.liLoginFilteredLayerLayers.currentLayer()
         if not layer:
-            return False
+            return
 
-        # Retrieve layer information
-        layerName = layer.name()
-        layerId = layer.id()
-        fieldCombobox = self.dlg.liLoginFilteredLayerFields
-        filterAttribute = fieldCombobox.currentText()
-        filterPrivate = str(self.dlg.cbLoginFilteredLayerPrivate.isChecked())
-        lblTableWidget = self.dlg.twLoginFilteredLayersList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount < self.dlg.liLoginFilteredLayerLayers.count() - 1:
+        layer_name = layer.name()
+        layer_id = layer.id()
+        filter_attribute = self.dlg.liLoginFilteredLayerFields.currentText()
+        filter_private = self.dlg.cbLoginFilteredLayerPrivate.isChecked()
+
+        table = self.dlg.twLoginFilteredLayersList
+        row = table.rowCount()
+
+        if row < self.dlg.liLoginFilteredLayerLayers.count() - 1:
             # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(5)
+            table.setRowCount(row + 1)
 
             # add layer name to the line
-            item = QTableWidgetItem(layerName)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 0, item)
-            # add filter attribute to the line
-            item = QTableWidgetItem(filterAttribute)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 1, item)
-            # add filterPrivate
-            item = QTableWidgetItem(filterPrivate)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 2, item)
-            # add layer id to the line
-            item = QTableWidgetItem(layerId)
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 3, item)
-            # add order
-            item = QTableWidgetItem(lblTableWidget.rowCount())
-            item.setFlags(Qt.ItemIsEnabled)
-            lblTableWidget.setItem(twRowCount, 4, item)
+            item = QTableWidgetItem(layer_name)
+            table.setItem(row, 0, item)
 
-        lblTableWidget.setColumnHidden(3, True)
-        lblTableWidget.setColumnHidden(4, True)
+            # add filter attribute to the line
+            item = QTableWidgetItem(filter_attribute)
+            table.setItem(row, 1, item)
+
+            # add filterPrivate
+            item = QTableWidgetItem(str(filter_private))
+            table.setItem(row, 2, item)
+
+            # add layer id to the line
+            item = QTableWidgetItem(layer_id)
+            table.setItem(row, 3, item)
+
+            # add order
+            item = QTableWidgetItem(str(row))
+            table.setItem(row, 4, item)
 
     def addLayerToLizmapBaselayers(self):
         """
@@ -2941,8 +2912,7 @@ class Lizmap:
             self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.dlg.liEditionLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            # TODO fix these providers
-            self.dlg.liEditionLayer.setExceptedLayerList(get_layers('vector', ['spatialite', 'postgres']))
+            self.dlg.liEditionLayer.setExcludedProviders(excluded_providers())
 
             # Fill the layers lists for the edition tool
             self.populate_layer_combobox(self.dlg.liEditionLayer, 'vector', )

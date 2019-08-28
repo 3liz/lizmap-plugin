@@ -292,7 +292,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2334,8 +2334,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>755</width>
+                <height>361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2620,8 +2620,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>480</width>
+                <height>416</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2844,8 +2844,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>736</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3058,8 +3058,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>421</width>
-                <height>393</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3150,7 +3150,7 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QComboBox" name="liTooltipLayer">
+                  <widget class="QgsMapLayerComboBox" name="liTooltipLayer">
                    <property name="styleSheet">
                     <string notr="true"/>
                    </property>
@@ -3262,8 +3262,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>326</width>
-                <height>301</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3326,10 +3326,10 @@ Only the selected feature will be visible on the map.</string>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_12">
                    <item>
-                    <widget class="QComboBox" name="liLoginFilteredLayerLayers"/>
+                    <widget class="QgsMapLayerComboBox" name="liLoginFilteredLayerLayers"/>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="liLoginFilteredLayerFields"/>
+                    <widget class="QgsFieldComboBox" name="liLoginFilteredLayerFields"/>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="cbLoginFilteredLayerPrivate">

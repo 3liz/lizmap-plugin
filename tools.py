@@ -46,7 +46,19 @@
 
 from qgis.PyQt.QtWidgets import QApplication
 
-from qgis.core import QgsMapLayer, QgsProject
+from qgis.core import QgsMapLayer, QgsProject, QgsProviderRegistry
+
+
+def excluded_providers():
+    """List of excluded providers for layer edition.
+
+    :return: List of providers.
+    :rtype: list
+    """
+    providers = QgsProviderRegistry.instance().providerList()
+    providers.remove('postgres')
+    providers.remove('spatialite')
+    return providers
 
 
 def get_layers(type_layer='all', provider_type=None):
