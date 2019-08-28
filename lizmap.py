@@ -436,17 +436,18 @@ class Lizmap:
         # Locate by layers
         self.dlg.twLocateByLayerList.setColumnHidden(6, True)
         self.dlg.twLocateByLayerList.setColumnHidden(7, True)
+        self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFields.setLayer)
         self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFilterFields.setLayer)
         self.dlg.liLocateByLayerFields.setLayer(self.dlg.liLocateByLayerLayers.currentLayer())
         self.dlg.liLocateByLayerFilterFields.setLayer(self.dlg.liLocateByLayerLayers.currentLayer())
-        self.dlg.liLocateByLayerFields.setAllowEmptyFieldName(False)
         self.dlg.liLocateByLayerFilterFields.setAllowEmptyFieldName(True)
         self.dlg.btLocateByLayerAdd.clicked.connect(self.add_layer_to_locate_by_layer)
 
         # Attribute layers
         self.dlg.twAttributeLayerList.setColumnHidden(6, True)
         self.dlg.twAttributeLayerList.setColumnHidden(7, True)
+        self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liAttributeLayer.layerChanged.connect(self.dlg.liAttributeLayerFields.setLayer)
         self.dlg.liAttributeLayerFields.setLayer(self.dlg.liAttributeLayer.currentLayer())
         self.dlg.btAttributeLayerAdd.clicked.connect(self.add_layer_to_attribute_layer)
@@ -454,29 +455,44 @@ class Lizmap:
         # Tooltip layers
         self.dlg.twTooltipLayerList.setColumnHidden(4, True)
         self.dlg.twTooltipLayerList.setColumnHidden(5, True)
+        self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.btTooltipLayerAdd.clicked.connect(self.add_layer_to_tooltip)
 
         # Edition layers
         self.dlg.twEditionLayerList.setColumnHidden(6, True)
         self.dlg.twEditionLayerList.setColumnHidden(7, True)
+        self.dlg.liEditionLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.dlg.liEditionLayer.setExcludedProviders(excluded_providers())
         self.dlg.btEditionLayerAdd.clicked.connect(self.add_layer_to_edition)
 
         # Login filtered layers
         self.dlg.twLoginFilteredLayersList.setColumnHidden(3, True)
         self.dlg.twLoginFilteredLayersList.setColumnHidden(4, True)
+        self.dlg.liLoginFilteredLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liLoginFilteredLayerLayers.layerChanged.connect(self.dlg.liLoginFilteredLayerFields.setLayer)
         self.dlg.liLoginFilteredLayerFields.setLayer(self.dlg.liLoginFilteredLayerLayers.currentLayer())
         self.dlg.btLoginFilteredLayerAdd.clicked.connect(self.add_layer_to_login_filtered_layer)
 
+        # Time manager layers
+        self.dlg.twTimemanager.setColumnHidden(5, True)
+        self.dlg.twTimemanager.setColumnHidden(6, True)
+        self.dlg.liTimemanagerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.dlg.liTimemanagerLabelAttribute.setAllowEmptyFieldName(True)
+        self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerStartAttribute.setLayer)
+        self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerLabelAttribute.setLayer)
+        self.dlg.liTimemanagerStartAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
+        self.dlg.liTimemanagerLabelAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
+        self.dlg.btTimemanagerLayerAdd.clicked.connect(self.add_layer_to_time_manager)
+
+        # Dataviz layers
+        self.dlg.liDatavizPlotLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+
+        # Atlas layers
+        self.dlg.atlasLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
-
-        # Timemanager layers
-        # add a layer to the lizmap timemanager layers
-        self.dlg.btTimemanagerLayerAdd.clicked.connect(self.addLayerToTimemanager)
-        # detect layer list has changed to refresh start attribute field list
-        self.dlg.liTimemanagerLayers.currentIndexChanged[str].connect(self.update_time_manager_field_list_from_layer)
 
         # Add a layer to the lizmap dataviz layers
         self.dlg.btDatavizAddLayer.clicked.connect(self.addLayerToDataviz)
@@ -794,44 +810,6 @@ class Lizmap:
                 return layer
         return None
 
-    @staticmethod
-    def get_qgis_layer_by_name_from_combo(combobox):
-        """Get a layer by its name"""
-        return_layer = None
-        unique_id = str(combobox.itemData(combobox.currentIndex()))
-        try:
-            my_instance = QgsProject.instance()
-            layer = my_instance.mapLayer(unique_id)
-            if layer:
-                if layer.isValid():
-                    return_layer = layer
-        except:
-            return_layer = None
-        return return_layer
-
-    def populate_layer_combobox(self, combobox, ltype='all', provider_type=None):
-        """Get the list of layers and add them to a combo box.
-
-        :param combobox: A Qt combobox widget or a QgsMapLayerComboBox.
-
-        :param ltype: all, vector, raster
-
-        :param provider_type: Can be : ['all'] or a list of provider keys
-            as ['spatialite', 'postgres'] or ['ogr', 'postgres'], etc.
-        :type provider_type: list
-        """
-        if provider_type is None:
-            provider_type = ['all']
-
-        # empty combobox
-        combobox.clear()
-        # add empty item
-        combobox.addItem('---', -1)
-        # loop though the layers
-        layers = get_layers(ltype, provider_type)
-        for layer in layers:
-            combobox.addItem(layer.name(), str(layer.id()))
-
     def set_initial_extent_from_project(self):
         """
         Get the project WMS advertised extent
@@ -867,40 +845,6 @@ class Lizmap:
             extent.yMaximum()
         )
         self.dlg.inInitialExtent.setText(initial_extent)
-
-    def update_time_manager_field_list_from_layer(self):
-        """
-            Fill the combobox with the list of fields
-            for the layer chosen with the timemanager combobox
-            !!! NEEDS REFACTORING !!!
-        """
-        # get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liTimemanagerLayers)
-
-        # populate the fields combo boxes
-        cbs = [
-            [False, self.dlg.liTimemanagerStartAttribute],
-            [True, self.dlg.liTimemanagerLabelAttribute]
-        ]
-        # remove previous items
-        for cb in cbs:
-            cb[1].clear()
-
-        if layer:
-            if layer.type() == QgsMapLayer.VectorLayer:
-                fields = layer.fields()
-                for cb in cbs:
-                    # Add empty item if allowed
-                    if cb[0]:
-                        cb[1].addItem('--', '')
-                    # Add fields to the combo
-                    for field in fields:
-                        cb[1].addItem(
-                            str(field.name()),
-                            str(field.name())
-                        )
-        else:
-            return None
 
     def remove_selected_layer_from_table(self, key):
         """
@@ -957,6 +901,9 @@ class Lizmap:
         if row > 2:
             return
 
+        if row >= self.dlg.liLocateByLayerLayers.count():
+            return
+
         layer = self.dlg.liLocateByLayerLayers.currentLayer()
         if not layer:
             return
@@ -969,49 +916,30 @@ class Lizmap:
         if not display_field:
             return
 
+        layer_name = layer.name()
+        layer_id = layer.id()
         filter_field = self.dlg.liLocateByLayerFilterFields.currentText()
         display_geom = self.dlg.cbLocateByLayerDisplayGeom.isChecked()
         min_length = self.dlg.inLocateByLayerMinLength.value()
         filter_on_locate = self.dlg.cbFilterOnLocate.isChecked()
 
-        if row < self.dlg.liLocateByLayerLayers.count() - 1:
-            # set new rowCount
-            table.setRowCount(row + 1)
+        content = [
+            layer_name, display_field, filter_field, str(display_geom),
+            str(min_length), str(filter_on_locate), layer_id, str(row)]
+        table.setRowCount(row + 1)
 
-            # add layer name to the line
-            item = QTableWidgetItem(layer.name())
-            table.setItem(row, 0, item)
-
-            # add field name to the line
-            item = QTableWidgetItem(display_field)
-            table.setItem(row, 1, item)
-
-            # add filter field name to the line
-            item = QTableWidgetItem(filter_field)
-            table.setItem(row, 2, item)
-
-            # add displayGeom option to the line
-            item = QTableWidgetItem(str(display_geom))
-            table.setItem(row, 3, item)
-
-            # add minLength to the line
-            item = QTableWidgetItem(str(min_length))
-            table.setItem(row, 4, item)
-
-            # add filterOnLocate to the line
-            item = QTableWidgetItem(str(filter_on_locate))
-            table.setItem(row, 5, item)
-
-            # add layer id to the line
-            item = QTableWidgetItem(layer.id())
-            table.setItem(row, 6, item)
-
-            # add order
-            item = QTableWidgetItem(str(row))
-            table.setItem(row, 7, item)
+        for i, val in enumerate(content):
+            item = QTableWidgetItem(val)
+            table.setItem(row, i, item)
 
     def add_layer_to_attribute_layer(self):
         """Add a layer in the 'attribute table' tool."""
+        table = self.dlg.twAttributeLayerList
+        row = table.rowCount()
+
+        if row >= self.dlg.liAttributeLayer.count():
+            return
+
         layer = self.dlg.liAttributeLayer.currentLayer()
         if not layer:
             return
@@ -1027,46 +955,23 @@ class Lizmap:
         hide_as_child = self.dlg.cbAttributeLayerHideAsChild.isChecked()
         hide_layer = self.dlg.cbAttributeLayerHideLayer.isChecked()
 
-        table = self.dlg.twAttributeLayerList
-        row = table.rowCount()
-        if row < self.dlg.liAttributeLayer.count() - 1:
-            # set new rowCount
-            table.setRowCount(row + 1)
+        content = [
+            name, primary_key, hidden_fields, str(pivot), str(hide_as_child), str(hide_layer), layer_id, str(row)]
 
-            # add layer name to the line
-            item = QTableWidgetItem(name)
-            table.setItem(row, 0, item)
+        table.setRowCount(row + 1)
 
-            # add primary key attribute to the line
-            item = QTableWidgetItem(primary_key)
-            table.setItem(row, 1, item)
-
-            # add "hiddenFields"
-            item = QTableWidgetItem(hidden_fields)
-            table.setItem(row, 2, item)
-
-            # add "pivot"
-            item = QTableWidgetItem(str(pivot))
-            table.setItem(row, 3, item)
-
-            # add "hideAsChild"
-            item = QTableWidgetItem(str(hide_as_child))
-            table.setItem(row, 4, item)
-
-            # add "hideLayer"
-            item = QTableWidgetItem(str(hide_layer))
-            table.setItem(row, 5, item)
-
-            # add layer id to the line
-            item = QTableWidgetItem(layer_id)
-            table.setItem(row, 6, item)
-
-            # add order
-            item = QTableWidgetItem(str(row))
-            table.setItem(row, 7, item)
+        for i, val in enumerate(content):
+            item = QTableWidgetItem(val)
+            table.setItem(row, i, item)
 
     def add_layer_to_tooltip(self):
         """Add a layer in the 'tooltip' tool."""
+        table = self.dlg.twTooltipLayerList
+        row = table.rowCount()
+
+        if row >= self.dlg.liTooltipLayer.count():
+            return
+
         layer = self.dlg.liTooltipLayer.currentLayer()
         if not layer:
             return
@@ -1080,39 +985,22 @@ class Lizmap:
         display_geom = self.dlg.cbTooltipLayerDisplayGeom.isChecked()
         color_geom = self.dlg.inTooltipLayerColorGeom.text().strip(' \t')
 
-        table = self.dlg.twTooltipLayerList
-        row = table.rowCount()
-        if row < self.dlg.liTooltipLayer.count() - 1:
+        content = [layer_name, fields, str(display_geom), str(color_geom), layer_id, str(row)]
 
-            # set new rowCount
-            table.setRowCount(row + 1)
+        table.setRowCount(row + 1)
 
-            # add layer name to the line
-            item = QTableWidgetItem(layer_name)
-            table.setItem(row, 0, item)
-
-            # add "fields"
-            item = QTableWidgetItem(fields)
-            table.setItem(row, 1, item)
-
-            # add "displayGeom"
-            item = QTableWidgetItem(str(display_geom))
-            table.setItem(row, 2, item)
-
-            # add "colorGeom"
-            item = QTableWidgetItem(str(color_geom))
-            table.setItem(row, 3, item)
-
-            # add layer id to the line
-            item = QTableWidgetItem(layer_id)
-            table.setItem(row, 4, item)
-
-            # add order
-            item = QTableWidgetItem(str(row))
-            table.setItem(row, 5, item)
+        for i, val in enumerate(content):
+            item = QTableWidgetItem(val)
+            table.setItem(row, i, item)
 
     def add_layer_to_edition(self):
         """Add a layer in the list of edition layers."""
+        table = self.dlg.twEditionLayerList
+        row = table.rowCount()
+
+        if row >= self.dlg.liEditionLayer.count():
+            return
+
         layer = self.dlg.liEditionLayer.currentLayer()
         if not layer:
             return
@@ -1127,13 +1015,10 @@ class Lizmap:
         modify_geometry = self.dlg.cbEditionLayerModifyGeometry.isChecked()
         delete_feature = self.dlg.cbEditionLayerDeleteFeature.isChecked()
         acl = self.dlg.inEditionLayerAcl.text().strip(' \t')
-        table = self.dlg.twEditionLayerList
 
         # check at least one checkbox is active
         if not create_feature and not modify_attribute and not modify_geometry and not delete_feature:
             return
-
-        row = table.rowCount()
 
         # check if layer already added
         for row in range(row):
@@ -1141,7 +1026,7 @@ class Lizmap:
             if layer_id == item_layer_id:
                 return
 
-        # Check Z or M values which be lost when editing
+        # Check Z or M values which will be lost when editing
         geometry_type = layer.wkbType()
         has_m_values = QgsWkbTypes.hasM(geometry_type)
         has_z_values = QgsWkbTypes.hasZ(geometry_type)
@@ -1152,45 +1037,23 @@ class Lizmap:
                 tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
             )
 
-        # Add layer
-        if row < self.dlg.liEditionLayer.count() - 1:
-            # set new rowCount
-            table.setRowCount(row + 1)
+        content = [
+            layer_name, str(create_feature), str(modify_attribute), str(modify_geometry), str(delete_feature), acl, layer_id, str(row)]
 
-            # add layer name to the line
-            item = QTableWidgetItem(layer_name)
-            table.setItem(row, 0, item)
+        table.setRowCount(row + 1)
 
-            # create feature
-            item = QTableWidgetItem(str(create_feature))
-            table.setItem(row, 1, item)
-
-            # modify attributes
-            item = QTableWidgetItem(str(modify_attribute))
-            table.setItem(row, 2, item)
-
-            # modify geometry
-            item = QTableWidgetItem(str(modify_geometry))
-            table.setItem(row, 3, item)
-
-            # delete feature
-            item = QTableWidgetItem(str(delete_feature))
-            table.setItem(row, 4, item)
-
-            # add acl to the line
-            item = QTableWidgetItem(acl)
-            table.setItem(row, 5, item)
-
-            # add layer id to the line
-            item = QTableWidgetItem(layer_id)
-            table.setItem(row, 6, item)
-
-            # add order
-            item = QTableWidgetItem(str(row))
-            table.setItem(row, 7, item)
+        for i, val in enumerate(content):
+            item = QTableWidgetItem(val)
+            table.setItem(row, i, item)
 
     def add_layer_to_login_filtered_layer(self):
         """Add a layer in the list of 'login filtered' tool."""
+        table = self.dlg.twLoginFilteredLayersList
+        row = table.rowCount()
+
+        if row >= self.dlg.liLoginFilteredLayerLayers.count():
+            return
+
         layer = self.dlg.liLoginFilteredLayerLayers.currentLayer()
         if not layer:
             return
@@ -1200,32 +1063,46 @@ class Lizmap:
         filter_attribute = self.dlg.liLoginFilteredLayerFields.currentText()
         filter_private = self.dlg.cbLoginFilteredLayerPrivate.isChecked()
 
-        table = self.dlg.twLoginFilteredLayersList
+        content = [layer_name, filter_attribute, str(filter_private), layer_id, str(row)]
+
+        table.setRowCount(row + 1)
+
+        for i, val in enumerate(content):
+            item = QTableWidgetItem(val)
+            table.setItem(row, i, item)
+
+    def add_layer_to_time_manager(self):
+        """Add a layer in the list of 'time manager' tool."""
+        table = self.dlg.twTimemanager
         row = table.rowCount()
 
-        if row < self.dlg.liLoginFilteredLayerLayers.count() - 1:
-            # set new rowCount
-            table.setRowCount(row + 1)
+        if row >= self.dlg.liTimemanagerLayers.count():
+            return
 
-            # add layer name to the line
-            item = QTableWidgetItem(layer_name)
-            table.setItem(row, 0, item)
+        layer = self.dlg.liTimemanagerLayers.currentLayer()
+        if not layer:
+            return
 
-            # add filter attribute to the line
-            item = QTableWidgetItem(filter_attribute)
-            table.setItem(row, 1, item)
+        if not self.check_wfs_is_checked(layer):
+            return
 
-            # add filterPrivate
-            item = QTableWidgetItem(str(filter_private))
-            table.setItem(row, 2, item)
+        if row >= self.dlg.liTimemanagerLayers.count():
+            return
 
-            # add layer id to the line
-            item = QTableWidgetItem(layer_id)
-            table.setItem(row, 3, item)
+        layer_name = layer.name()
+        layer_id = layer.id()
+        start_attribute = self.dlg.liTimemanagerStartAttribute.currentText()
+        label_attribute = self.dlg.liTimemanagerLabelAttribute.currentText()
+        group = self.dlg.inTimemanagerGroup.text().strip(' \t')
+        group_title = self.dlg.inTimemanagerGroupTitle.text().strip(' \t')
 
-            # add order
-            item = QTableWidgetItem(str(row))
-            table.setItem(row, 4, item)
+        content = [layer_name, start_attribute, label_attribute, group, group_title, layer_id, row]
+
+        table.setRowCount(row + 1)
+
+        for i, val in enumerate(content):
+            item = QTableWidgetItem(val)
+            table.setItem(row, i, item)
 
     def addLayerToLizmapBaselayers(self):
         """
@@ -1268,50 +1145,6 @@ class Lizmap:
                 item.setFlags(Qt.ItemIsEnabled)
                 lblTableWidget.setItem(twRowCount, i, item)
                 i += 1
-
-    def addLayerToTimemanager(self):
-        """
-        Add a layer in the list of
-        Timemanager layer
-        """
-
-        # Get the layer selected in the combo box
-        layer = self.get_qgis_layer_by_name_from_combo(self.dlg.liTimemanagerLayers)
-        if not layer:
-            return False
-
-        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
-        if not self.check_wfs_is_checked(layer):
-            return False
-
-        # Retrieve layer information
-        layerName = layer.name()
-        layerId = layer.id()
-        startAttribute = self.dlg.liTimemanagerStartAttribute.currentText()
-        labelAttribute = self.dlg.liTimemanagerLabelAttribute.currentText()
-        group = str(self.dlg.inTimemanagerGroup.text()).strip(' \t')
-        groupTitle = str(self.dlg.inTimemanagerGroupTitle.text()).strip(' \t')
-
-        content = [layerName, startAttribute, labelAttribute, group, groupTitle, layerId]
-
-        lblTableWidget = self.dlg.twTimemanager
-        twRowCount = lblTableWidget.rowCount()
-        content.append(twRowCount)  # store order
-        colCount = len(content)
-
-        if twRowCount < self.dlg.liTimemanagerLayers.count() - 1:
-            # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(colCount)
-
-            i = 0
-            for val in content:
-                item = QTableWidgetItem(val)
-                item.setFlags(Qt.ItemIsEnabled)
-                lblTableWidget.setItem(twRowCount, i, item)
-                i += 1
-        lblTableWidget.setColumnHidden(colCount - 1, True)
-        lblTableWidget.setColumnHidden(colCount - 2, True)
 
     def addLayerToDataviz(self):
         """
@@ -2907,23 +2740,6 @@ class Lizmap:
         # show the dialog only if checkGlobalProjectOptions is true
         if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
             self.dlg.show()
-
-            self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            self.dlg.liEditionLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            self.dlg.liEditionLayer.setExcludedProviders(excluded_providers())
-
-            # Fill the layers lists for the edition tool
-            self.populate_layer_combobox(self.dlg.liEditionLayer, 'vector', )
-            # Fill the layer list for the login filtered layers tool
-            self.populate_layer_combobox(self.dlg.liLoginFilteredLayerLayers, 'vector')
-            # Fill the layer list for the login filtered layers tool
-            self.populate_layer_combobox(self.dlg.liTimemanagerLayers, 'vector')
-            # Dataviz layer combo
-            self.dlg.liDatavizPlotLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            # Atlas layer combo
-            self.dlg.atlasLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
             # Filter Form layers
             self.dlg.liFormFilterLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)

@@ -292,7 +292,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>7</number>
+          <number>9</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3058,8 +3058,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>415</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3122,6 +3122,40 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="1" column="0">
+                  <widget class="QgsMapLayerComboBox" name="liTooltipLayer">
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLabel" name="label_6">
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="text">
+                    <string>Color (HTML)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QCheckBox" name="cbTooltipLayerDisplayGeom">
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="text">
+                    <string>Display geometry</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLineEdit" name="inTooltipLayerColorGeom">
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="label_4">
                    <property name="styleSheet">
@@ -3139,23 +3173,6 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="3">
-                  <widget class="QLabel" name="label_6">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Color (HTML)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QgsMapLayerComboBox" name="liTooltipLayer">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="2">
                   <widget class="QLabel" name="label_5">
                    <property name="styleSheet">
@@ -3163,36 +3180,6 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                    <property name="text">
                     <string>Display geometry</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="4">
-                  <spacer name="horizontalSpacer_13">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QCheckBox" name="cbTooltipLayerDisplayGeom">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Display geometry</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QLineEdit" name="inTooltipLayerColorGeom">
-                   <property name="styleSheet">
-                    <string notr="true"/>
                    </property>
                   </widget>
                  </item>
@@ -3262,8 +3249,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>769</width>
-                <height>921</height>
+                <width>320</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3337,19 +3324,6 @@ Only the selected feature will be visible on the map.</string>
                       <string>Filter by user</string>
                      </property>
                     </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_4">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
                    </item>
                   </layout>
                  </item>
@@ -3898,8 +3872,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>442</width>
-                <height>466</height>
+                <width>769</width>
+                <height>921</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4069,12 +4043,6 @@ Only the selected feature will be visible on the map.</string>
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_22">
-                 <item row="1" column="2">
-                  <widget class="QComboBox" name="liTimemanagerStartAttribute"/>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QComboBox" name="liTimemanagerLayers"/>
-                 </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="label_45">
                    <property name="text">
@@ -4085,26 +4053,45 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
-                  <widget class="QLineEdit" name="inTimemanagerGroup"/>
+                 <item row="1" column="1">
+                  <widget class="QgsMapLayerComboBox" name="liTimemanagerLayers"/>
                  </item>
-                 <item row="1" column="5">
-                  <widget class="QLineEdit" name="inTimemanagerGroupTitle"/>
+                 <item row="1" column="2">
+                  <widget class="QgsFieldComboBox" name="liTimemanagerStartAttribute"/>
                  </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_46">
+                 <item row="0" column="5">
+                  <widget class="QLabel" name="label_48">
                    <property name="text">
-                    <string>Start attribute</string>
+                    <string>Group title (optional)</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="5">
-                  <widget class="QLabel" name="label_48">
+                 <item row="1" column="5">
+                  <widget class="QLineEdit" name="inTimemanagerGroupTitle"/>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLineEdit" name="inTimemanagerGroup"/>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLabel" name="label_49">
                    <property name="text">
-                    <string>Group title (optional)</string>
+                    <string>Hover label</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QgsFieldComboBox" name="liTimemanagerLabelAttribute"/>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_46">
+                   <property name="text">
+                    <string>Start attribute</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -4120,32 +4107,6 @@ Only the selected feature will be visible on the map.</string>
                     <bool>true</bool>
                    </property>
                   </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QLabel" name="label_49">
-                   <property name="text">
-                    <string>Hover label</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QComboBox" name="liTimemanagerLabelAttribute"/>
-                 </item>
-                 <item row="1" column="6">
-                  <spacer name="horizontalSpacer_22">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                 </layout>
                </item>
