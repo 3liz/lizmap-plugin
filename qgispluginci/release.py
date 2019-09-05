@@ -188,7 +188,7 @@ def create_archive(
                 zf.writestr(fn, fl)
 
     print('-------')
-    print('files in ZIP archive:')
+    print('files in ZIP archive ({}):'.format(archive_name))
     with zipfile.ZipFile(file=archive_name, mode='r') as zf:
         for f in zf.namelist():
             print(f)
