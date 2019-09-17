@@ -77,7 +77,6 @@ from qgis.PyQt.QtGui import (
 from qgis.core import (
     Qgis,
     QgsProject,
-    QgsMapLayer,
     QgsMapLayerProxyModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
@@ -89,7 +88,7 @@ from qgis.core import (
 from . import resources
 from .lizmap_dialog import LizmapDialog
 from .lizmap_api.config import LizmapConfig
-from .tools import tr, get_layers, excluded_providers
+from .tools import tr, excluded_providers
 
 
 class Lizmap:
