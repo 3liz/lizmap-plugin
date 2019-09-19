@@ -47,12 +47,10 @@ Contributors
 Installation
 -----------
 
-from github repository:
+From GitHub repository:
 
-1. Clone the repo: `git clone git@github.com:3liz/lizmap-plugin.git`
-2. `cp lizmap-plugin ~/.qgis2/python/plugins`
-3. `cd ~/.qgis2/python/plugins`
-4. `mv lizmap-plugin lizmap`
+1. Clone the repo: `git clone --recursive git@github.com:3liz/lizmap-plugin.git Lizmap`
+2. `mv Lizmap ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins`
 
 or from QGIS application:
 
@@ -70,14 +68,20 @@ Translation
 -----------
 
 You can use the Makefile to update and compile the strings for translation.
+These files are stored in a Git submodule https://github.com/3liz/lizmap-locales
 
 ```bash
-# Update strings
-make transup
+# Prepare TS files
+make i18n_1_prepare
 
-# Compile
-make transcompile
+# Push to Transifex
+make i18n_2_push
 
+# Pull from Transifex
+make i18n_3_pull
+
+# Compile TS fiels to QM files.
+make i18n_4_compile
 ```
 
 License
