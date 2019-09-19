@@ -1,0 +1,3 @@
+[submodule "lizmap-locales"]
+	path = lizmap-locales
+	url = git@github.com:3liz/lizmap-locales.git
