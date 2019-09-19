@@ -50,8 +50,8 @@
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
-# LOCALES = af
-LOCALES = cs de el en es eu fi fr gl hu it nl no pl pt pt_BR ro ru sl sv
+LOCALES = fr de el en es eu fi gl it pl pt ru sv
+LOCALES_SUBMODULE = lizmap-locales/plugin
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
@@ -170,15 +170,15 @@ package: compile
 	# Create a zip package of the plugin named $(PLUGINNAME).zip.
 	# This requires use of git (your plugin development directory must be a
 	# git repository).
-	# To use, pass a valid commit or tag as follows:
-	#   make package VERSION=Version_0.3.2
 	@echo
 	@echo "------------------------------------"
 	@echo "Exporting plugin to zip package.	"
 	@echo "------------------------------------"
-	rm -f $(PLUGINNAME).zip
-	git archive --prefix=$(PLUGINNAME)/ -o $(PLUGINNAME).zip $(VERSION)
-	echo "Created package: $(PLUGINNAME).zip"
+	@rm -f $(PLUGINNAME).zip
+	# Not using the version anymore with git-archive-all
+	@git-archive-all --prefix=$(PLUGINNAME)/ $(PLUGINNAME).zip
+	@zip --delete $(PLUGINNAME) Lizmap/lizmap-locales/web-client/*
+	@echo "Created package: $(PLUGINNAME).zip"
 
 upload: zip
 	@echo
@@ -187,28 +187,21 @@ upload: zip
 	@echo "-------------------------------------"
 	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
 
-transup:
-	@echo
-	@echo "------------------------------------------------"
-	@echo "Updating translation files with any new strings."
-	@echo "------------------------------------------------"
-	@chmod +x scripts/update-strings.sh
-	@scripts/update-strings.sh $(LOCALES)
+i18n_1_prepare:
+	@echo Updating strings locally 1/4
+	@./update_strings.sh $(LOCALES)
 
-transcompile:
-	@echo
-	@echo "----------------------------------------"
-	@echo "Compiled translation files to .qm files."
-	@echo "----------------------------------------"
-	@chmod +x scripts/compile-strings.sh
-	@scripts/compile-strings.sh $(LRELEASE) "$(LOCALES)"
+i18n_2_push:
+	@echo Push strings to Transifex 2/4
+	@cd $(LOCALES_SUBMODULE) && tx push -s
 
-transclean:
-	@echo
-	@echo "------------------------------------"
-	@echo "Removing compiled translation files."
-	@echo "------------------------------------"
-	rm -f i18n/*.qm
+i18n_3_pull:
+	@echo Pull strings from Transifex 3/4
+	@cd $(LOCALES_SUBMODULE) && tx pull -a
+
+i18n_4_compile:
+	@echo Compile TS files to QM 4/4
+	@for f in $(LOCALES); do lrelease $(LOCALES_SUBMODULE)/i18n/lizmap_$${f}.ts -qm $(LOCALES_SUBMODULE)/i18n/lizmap_$${f}.qm; done
 
 clean:
 	@echo

@@ -1,13 +1,11 @@
-*test/ export-ignore
-/i18n/*.ts export-ignore
-/.github/ export-ignore
-/scripts/ export-ignore
+.github/ export-ignore
+scripts/ export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 Makefile export-ignore
 MANIFEST.in export-ignore
-lizmap.pro export-ignore
 resources.qrc export-ignore
 release.sh export-ignore
 setup.py export-ignore
+update_strings.sh export-ignore
 plugin_upload.py export-ignore

@@ -124,13 +124,13 @@ class Lizmap:
         self.locale = QSettings().value("locale/userLocale")[0:2]
 
         if QFileInfo(self.plugin_dir).exists():
-            locale_path = self.plugin_dir + "/i18n/lizmap_" + self.locale + ".qm"
+            locale_path = self.plugin_dir + "/lizmap-locales/plugin/i18n/lizmap_" + self.locale + ".qm"
 
         self.translator = QTranslator()
         if QFileInfo(locale_path).exists():
             self.translator.load(locale_path)
         else:
-            self.translator.load(self.plugin_dir + "/i18n/lizmap_en.qm")
+            self.translator.load(self.plugin_dir + "/lizmap-locales/plugin/i18n/lizmap_en.qm")
 
         QCoreApplication.installTranslator(self.translator)
 
