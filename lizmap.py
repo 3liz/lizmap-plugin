@@ -126,11 +126,23 @@ class Lizmap:
         if QFileInfo(self.plugin_dir).exists():
             locale_path = self.plugin_dir + "/lizmap-locales/plugin/i18n/lizmap_" + self.locale + ".qm"
 
+        english_path = self.plugin_dir + '/lizmap-locales/plugin/i18n/lizmap_en.qm'
         self.translator = QTranslator()
         if QFileInfo(locale_path).exists():
             self.translator.load(locale_path)
+        elif QFileInfo(english_path).exists():
+            self.translator.load(english_path)
         else:
-            self.translator.load(self.plugin_dir + "/lizmap-locales/plugin/i18n/lizmap_en.qm")
+            # It means the submodule is not here.
+            # Either lizmap has been downloaded from Github automatic ZIP
+            # Or git submodule has never been used
+            text = (
+                'The translation submodule has not been found. '
+                'You should do "git submodule init" and "git submodule update" or if you need a new '
+                'clone, do "git clone --recursive https://github.com/3liz/lizmap-plugin.git". '
+                'Finally, restart QGIS.')
+            QMessageBox.warning(
+                iface.mainWindow(), 'Lizmap Submodule not found', text, QMessageBox.Ok)
 
         QCoreApplication.installTranslator(self.translator)
 
