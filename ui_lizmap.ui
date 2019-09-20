@@ -3257,7 +3257,7 @@ Only the selected feature will be visible on the map.</string>
                <item>
                 <widget class="QLabel" name="label_22">
                  <property name="text">
-                  <string>tools.loginFilteredLayers.description</string>
+                  <string>Authenticated user will only see the data where the chosen attribute matches his lizmap user group, or only his user login if the option &quot;Filter by user&quot; is checked.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
