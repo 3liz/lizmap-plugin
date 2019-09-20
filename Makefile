@@ -50,7 +50,8 @@
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
-LOCALES = bg cs de el en es eu fi fr gl hu it lt nl no pl pt pt_BR ro ru sl sv tr zh
+# Empty in Transifex for now 20/09/2019 : bg_BG zh_CN lt_LT tr
+LOCALES = cs de el en es eu fi fr gl hu it nl no pl pt pt_BR ro ru sl sv
 LOCALES_SUBMODULE = lizmap-locales/plugin
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
