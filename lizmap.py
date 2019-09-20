@@ -82,8 +82,8 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsWkbTypes,
     QgsAttributeEditorField,
-    QgsAttributeEditorContainer
-)
+    QgsAttributeEditorContainer,
+    QgsMessageLog)
 
 from . import resources
 from .lizmap_dialog import LizmapDialog
@@ -130,8 +130,10 @@ class Lizmap:
         self.translator = QTranslator()
         if QFileInfo(locale_path).exists():
             self.translator.load(locale_path)
+            QgsMessageLog.logMessage('Translation is set to use: {}'.format(locale_path), 'Lizmap')
         elif QFileInfo(english_path).exists():
             self.translator.load(english_path)
+            QgsMessageLog.logMessage('Translation is set to use: default english', 'Lizmap')
         else:
             # It means the submodule is not here.
             # Either lizmap has been downloaded from Github automatic ZIP
@@ -141,8 +143,8 @@ class Lizmap:
                 'You should do "git submodule init" and "git submodule update" or if you need a new '
                 'clone, do "git clone --recursive https://github.com/3liz/lizmap-plugin.git". '
                 'Finally, restart QGIS.')
-            QMessageBox.warning(
-                iface.mainWindow(), 'Lizmap Submodule not found', text, QMessageBox.Ok)
+            self.iface.messageBar().pushMessage('Lizmap Submodule', text, Qgis.Warning)
+            QgsMessageLog.logMessage('Translation is not set, lacking of submodule', 'Lizmap', Qgis.Warning)
 
         QCoreApplication.installTranslator(self.translator)
 
