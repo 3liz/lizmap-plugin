@@ -50,7 +50,7 @@
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
-LOCALES = fr de el en es eu fi gl it pl pt ru sv
+LOCALES = bg cs de el en es eu fi fr gl hu it lt nl no pl pt pt_BR ro ru sl sv tr zh
 LOCALES_SUBMODULE = lizmap-locales/plugin
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
