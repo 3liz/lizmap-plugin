@@ -1,4 +1,6 @@
-## Install lizmap api as standadrd python package
+"""
+Install lizmap api as standard python package.
+"""
 
 from setuptools import setup
 
@@ -7,10 +9,11 @@ kwargs = {}
 # Read tag from metadata
 
 import configparser
+
 metadata = configparser.ConfigParser()
 metadata.read('metadata.txt')
 
-version_tag = metadata['general']['version'].replace("version","").strip()
+version_tag = metadata['general']['version'].replace("version", "").strip()
 
 with open('README.md') as f:
     kwargs['long_description'] = f.read()
@@ -42,4 +45,3 @@ setup(
     ],
     **kwargs
 )
-

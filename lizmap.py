@@ -1791,12 +1791,12 @@ class Lizmap:
                 )
 
             # fview = '''
-                # represent_value("{0}")
+            # represent_value("{0}")
             # '''.format(
-                # name
+            # name
             # )
 
-            a += '\n' + '  '*level
+            a += '\n' + '  ' * level
             a += '''
             [% CASE
                 WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
@@ -1820,7 +1820,7 @@ class Lizmap:
                 act = ''
                 if not headers:
                     act = 'active'
-                a += '\n' + '  '*l + '<div id="popup_dd_%s" class="tab-pane %s">' % (
+                a += '\n' + '  ' * l + '<div id="popup_dd_%s" class="tab-pane %s">' % (
                     regex.sub('_', node.name()),
                     act
                 )
@@ -1831,19 +1831,19 @@ class Lizmap:
                 )
                 headers.append(h)
             if l > 1:
-                a += '\n' + '  '*l + '<fieldset>'
-                a += '\n' + '  '*l + '<legend>%s</legend>' % node.name()
-                a += '\n' + '  '*l + '<div>'
+                a += '\n' + '  ' * l + '<fieldset>'
+                a += '\n' + '  ' * l + '<legend>%s</legend>' % node.name()
+                a += '\n' + '  ' * l + '<div>'
 
             level += 1
             for n in node.children():
                 a += self.createPopupNodeItemFromForm(layer, n, level, headers, html)
 
             if l == 1:
-                a += '\n' + '  '*l + '</div>'
+                a += '\n' + '  ' * l + '</div>'
             if l > 1:
-                a += '\n' + '  '*l + '</div>'
-                a += '\n' + '  '*l + '</fieldset>'
+                a += '\n' + '  ' * l + '</div>'
+                a += '\n' + '  ' * l + '</fieldset>'
 
         html += a
         return html
@@ -2433,7 +2433,7 @@ class Lizmap:
                 self.log(
                     tr('The layers paths must be relative to the project file. '
                        'Please copy the layers inside {} or in one folder above or aside {}.')
-                    .format(projectDir, layerSourcesBad),
+                        .format(projectDir, layerSourcesBad),
                     abort=True,
                     textarea=self.dlg.outLog)
                 errorMessage += layerPathError
