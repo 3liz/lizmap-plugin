@@ -1,20 +1,22 @@
-STYLESHEET = '''
-QGroupBox::title {
+STYLESHEET = (
+    '''
+QGroupBox::title {{
     background-color: transparent;
     subcontrol-origin: margin; 
     margin-left: 6px;
     subcontrol-position: top left;
-}
-QGroupBox {
-    background-color: rgba({}, {}, {}, {}"); % tuple(style)
+}}
+QGroupBox {{
+    background-color: rgba({}, {}, {}, {}");
     border: 1px solid rgba(0,0,0,20%);
     border-radius: 5px;
     font-weight: bold;
     margin-top: {}ex; 
-}
-'''
+}}
+''')
 
-CSS_TOOLTIP_FORM = '''
+CSS_TOOLTIP_FORM = (
+    '''
 <style>
     div.popup_lizmap_dd {
         margin: 2px;
@@ -53,4 +55,4 @@ CSS_TOOLTIP_FORM = '''
     }
 
 </style>
-'''
+''')

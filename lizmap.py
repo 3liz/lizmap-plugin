@@ -137,7 +137,8 @@ class Lizmap:
         else:
             style = ['225', '225', '225', '90%']
             margin = '2.5'
-        self.style_sheet = STYLESHEET.format(tuple(style), margin)
+        style = STYLESHEET.format(*style, margin)
+        self.style_sheet = style
         self.dlg.gb_tree.setStyleSheet(self.style_sheet)
         self.dlg.gb_layerSettings.setStyleSheet(self.style_sheet)
         self.dlg.gb_visibleTools.setStyleSheet(self.style_sheet)
