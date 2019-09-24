@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## Version 3.1.0
+
+
+* [FEATURE] Improve Lizmap API
+* [FEATURE] Add French Address database BAN
+* [FEATURE] Create HTML tooltip from drag&drop form
+* [Bugfix] Fix QGIS widgets paths
+* Improve the HTML tooltip form: get the represented value
+* Use QGIS native maplayer combobox in panels (except base layer)
+* Hide by default the external Lizmap project panel
+* Code refactoring
+* Update locales
+
 ## Version 3.0.3
 
 * [FEATURE] Add new tool to configure Form filtering based on db layers

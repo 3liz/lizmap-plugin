@@ -1,4 +1,4 @@
-[![logo](icons/icon.png "3Liz")][3liz]Lizmap 3.0.3
+[![logo](icons/icon.png "3Liz")][3liz]Lizmap 3.1.0
 ==============================================
 
 **WARNING** the master branch is compatible only with QGIS 3.x from August 23rd 2018. The branch *qgis2* targets QGIS 2.x compatibiliy.

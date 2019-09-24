@@ -1,35 +1,30 @@
 ; the next section is mandatory
 [general]
 name=Lizmap
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=3.0.4
+version=3.1.0
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
-  Version 3.0.4
-  * Improve API
-  * Use UI file compiled on the fly
+  Version 3.1.0
+  * Improve Lizmap API
+  * Add French Address database BAN
+  * Create HTML tooltip from drag&drop form
+  * Fix QGIS widgets paths
+  * Improve the HTML tooltip form: get the represented value
+  * Use QGIS native maplayer combobox in panels (except base layer)
+  * Hide by default the external Lizmap project panel
+  * Code refactoring
   * Update locales
-  * [FEATURE] Add new tool to configure Form filtering based on db layers
-  * automatic fix from PyCharm about PEP8
-  * review TAB order in QtDesigner
-  Version 3.0.3
-  * [FEATURE] Add new tool to configure Form filtering based on db layers
-  * automatic fix from PyCharm about PEP8
-  * review TAB order in QtDesigner
 
 ; tags are in comma separated value format, spaces are allowed
 tags=lizmap, server, web, publication, webmapping, WMS
 
-; these metadata can be empty
-; in a future version of the web application it will
-; be probably possible to create a project on redmine
-; if they are not filled
 homepage=https://github.com/3liz/lizmap-plugin
 tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin

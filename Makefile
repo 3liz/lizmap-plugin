@@ -67,7 +67,7 @@ SOURCES = \
 	lizmap.py \
 	lizmapdialog.py
 
-PLUGINNAME = Lizmap
+PLUGINNAME = lizmap
 
 PY_FILES = \
 	lizmap.py \
@@ -178,7 +178,8 @@ package: compile
 	@rm -f $(PLUGINNAME).zip
 	# Not using the version anymore with git-archive-all
 	@git-archive-all --prefix=$(PLUGINNAME)/ $(PLUGINNAME).zip
-	@zip --delete $(PLUGINNAME) Lizmap/lizmap-locales/web-client/*
+	@zip --delete $(PLUGINNAME) lizmap/lizmap-locales/web-client/*
+	@zip --delete $(PLUGINNAME) lizmap/.github/*
 	@echo "Created package: $(PLUGINNAME).zip"
 
 upload: zip
