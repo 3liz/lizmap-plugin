@@ -6,11 +6,18 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=3.0.3
+version=3.0.4
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.0.4
+  * Improve API
+  * Use UI file compiled on the fly
+  * Update locales
+  * [FEATURE] Add new tool to configure Form filtering based on db layers
+  * automatic fix from PyCharm about PEP8
+  * review TAB order in QtDesigner
   Version 3.0.3
   * [FEATURE] Add new tool to configure Form filtering based on db layers
   * automatic fix from PyCharm about PEP8

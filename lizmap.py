@@ -896,8 +896,8 @@ class Lizmap:
         if not has_wfs_option:
             QMessageBox.critical(
                 self.dlg,
-                tr("Lizmap Error"),
-                tr("ui.msg.warning.toolLayer.notInWfs"),
+                tr('Lizmap Error'),
+                tr('The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the QGIS Server tab in the "Project Properties" dialog.'),
                 QMessageBox.Ok)
             return False
         return True
@@ -1277,10 +1277,17 @@ class Lizmap:
     def refreshLayerTree(self):
         """Refresh the layer tree on user demand. Uses method populateLayerTree"""
         # Ask confirmation
+        message = tr(
+            'You can refresh the layer tree by pressing "Yes". '
+            'Be aware that you will lose all the changes made in this Layers tab '
+            '(group or layer metadata and options) since your last "Save". '
+            'If you have renamed one or more groups or layers, you will also lose '
+            'the associated information.\n'
+            'Refresh layer tree?')
         refresh_it = QMessageBox.question(
             self.dlg,
             tr('Lizmap - Refresh layer tree?'),
-            tr("ui.msg.question.refresh.content"),
+            message,
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No
         )
         if refresh_it == QMessageBox.Yes:
@@ -2441,7 +2448,10 @@ class Lizmap:
             # Check if Qgis/capitaliseLayerName is set
             s = QSettings()
             if s.value('Qgis/capitaliseLayerName') and s.value('Qgis/capitaliseLayerName', type=bool):
-                errorMessage += '* ' + tr("ui.msg.error.project.option.capitalizeLayerName") + '\n'
+                message = tr(
+                    'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
+                    'in the QGIS option dialog, as it could cause issues with Lizmap.')
+                errorMessage += '* {} \n'.format(message)
                 isok = False
 
         if isok:
@@ -2482,10 +2492,14 @@ class Lizmap:
                         layerPathError += '--> %s \n' % mc.layer(i).name()
 
             if len(layerSourcesBad) > 0:
-                errorMessage += '* ' + tr("ui.msg.error.project.layers.path.relative {}").format(projectDir) + '\n'
+                message = tr(
+                    'The layers paths must be relative to the project file. '
+                    'Please copy the layers inside {}.').format(projectDir)
+                errorMessage += '* {}\n'.format(message)
                 self.log(
-                    tr("ui.msg.error.project.layers.path.relative {}")
-                    .format(projectDir) + str(layerSourcesBad),
+                    tr('The layers paths must be relative to the project file. '
+                       'Please copy the layers inside {} or in one folder above or aside {}.')
+                    .format(projectDir, layerSourcesBad),
                     abort=True,
                     textarea=self.dlg.outLog)
                 errorMessage += layerPathError
@@ -2586,7 +2600,8 @@ class Lizmap:
                         good = False
                 if not good:
                     self.log(
-                        tr("ui.msg.warning.toolLayer.notInWfs"),
+                        tr('The layers you have chosen for this tool must be checked in the '
+                           '"WFS Capabilities" option of the QGIS tab in the "Project Properties" dialog.'),
                         abort=True,
                         textarea=self.dlg.outLog)
 
