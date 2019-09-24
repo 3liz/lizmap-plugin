@@ -86,32 +86,13 @@ from qgis.core import (
     QgsMessageLog)
 
 from . import resources
+from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_dialog import LizmapDialog
 from .lizmap_api.config import LizmapConfig
 from .tools import tr, excluded_providers
 
 
 class Lizmap:
-
-    if sys.platform.startswith('win'):
-        style = ['0', '0', '0', '5%']
-        margin = '4.0'
-    else:
-        style = ['225', '225', '225', '90%']
-        margin = '2.5'
-
-    STYLESHEET = "QGroupBox::title {background-color: transparent; \
-                                    subcontrol-origin: margin; \
-                                    margin-left: 6px; \
-                                    subcontrol-position: top left; \
-                                    }"
-    STYLESHEET += "QGroupBox {background-color: rgba(%s, %s, %s, %s" % tuple(style)
-    STYLESHEET += ");"
-    STYLESHEET += "border:1px solid rgba(0,0,0,20%);  \
-                   border-radius: 5px; \
-                   font-weight: bold;"
-    STYLESHEET += "margin-top: %s" % margin
-    STYLESHEET += "ex; }"
 
     def __init__(self, iface):
         """Constructor of the Lizmap plugin."""
@@ -147,16 +128,23 @@ class Lizmap:
         self.dlg = LizmapDialog()
 
         # Set stylesheet for QGroupBox
-        self.dlg.gb_tree.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_layerSettings.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_visibleTools.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_Scales.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_extent.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_externalLayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_lizmapExternalBaselayers.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_generalOptions.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_interface.setStyleSheet(self.STYLESHEET)
-        self.dlg.gb_baselayersOptions.setStyleSheet(self.STYLESHEET)
+        if sys.platform.startswith('win'):
+            style = ['0', '0', '0', '5%']
+            margin = '4.0'
+        else:
+            style = ['225', '225', '225', '90%']
+            margin = '2.5'
+        self.style_sheet = STYLESHEET.format(tuple(style), margin)
+        self.dlg.gb_tree.setStyleSheet(self.style_sheet)
+        self.dlg.gb_layerSettings.setStyleSheet(self.style_sheet)
+        self.dlg.gb_visibleTools.setStyleSheet(self.style_sheet)
+        self.dlg.gb_Scales.setStyleSheet(self.style_sheet)
+        self.dlg.gb_extent.setStyleSheet(self.style_sheet)
+        self.dlg.gb_externalLayers.setStyleSheet(self.style_sheet)
+        self.dlg.gb_lizmapExternalBaselayers.setStyleSheet(self.style_sheet)
+        self.dlg.gb_generalOptions.setStyleSheet(self.style_sheet)
+        self.dlg.gb_interface.setStyleSheet(self.style_sheet)
+        self.dlg.gb_baselayersOptions.setStyleSheet(self.style_sheet)
 
         # List of ui widget for data driven actions and checking
         self.globalOptions = LizmapConfig.globalOptionDefinitions
@@ -606,7 +594,6 @@ class Lizmap:
         map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
         map_scales.sort()
         if len(map_scales) < 2:
-            my_return = False
             QMessageBox.critical(
                 self.dlg,
                 tr("Lizmap Error"),
@@ -616,12 +603,9 @@ class Lizmap:
         else:
             min_scale = min(map_scales)
             max_scale = max(map_scales)
-            my_return = True
         self.dlg.inMinScale.setText(str(min_scale))
         self.dlg.inMaxScale.setText(str(max_scale))
         self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
-
-        return my_return
 
     def getConfig(self):
         """ Get the saved configuration from the projet.qgs.cfg config file.
@@ -725,8 +709,6 @@ class Lizmap:
         # Fill the table widgets
         for key, item in list(self.layersTable.items()):
             self.loadConfigIntoTableWidget(key)
-
-        return True
 
     def loadConfigIntoTableWidget(self, key):
         """Load data from lizmap config file into the widget.
@@ -1136,7 +1118,7 @@ class Lizmap:
                         "Please check that all input fields have been filled: repository, project, layer name and title"),
                     QMessageBox.Ok
                 )
-                return False
+                return
 
         lblTableWidget = self.dlg.twLizmapBaselayers
         twRowCount = lblTableWidget.rowCount()
@@ -1163,11 +1145,11 @@ class Lizmap:
         # Get the layer selected in the combo box
         layer = self.dlg.liDatavizPlotLayer.currentLayer()
         if not layer:
-            return False
+            return
 
         # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
-            return False
+            return
 
         layerName = layer.name()
         layerId = layer.id()
@@ -1227,11 +1209,11 @@ class Lizmap:
         # Get the layer selected in the combo box
         layer = self.dlg.liFormFilterLayer.currentLayer()
         if not layer:
-            return False
+            return
 
         # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
         if not self.check_wfs_is_checked(layer):
-            return False
+            return
 
         layerName = layer.name()
         layerId = layer.id()
@@ -1604,7 +1586,7 @@ class Lizmap:
         if item and item.text(1) in self.layerList:
             # do nothing if no popup configured for this layer/group
             if self.layerList[item.text(1)]['popup'] == 'False':
-                return False
+                return
 
             # Import the code for the dialog
             from .lizmap_popup_dialog import LizmapPopupDialog
@@ -1731,15 +1713,13 @@ class Lizmap:
             # Value relation
             if ftype == 'ValueRelation':
                 vlid = fconf['Layer']
-                fexp = '''
-                    "{0}" = attribute(@parent, '{1}')
-                '''.format(
+                fexp = '''"{0}" = attribute(@parent, '{1}')'''.format(
                     fconf['Key'],
                     name
                 )
                 filterExp = fconf['FilterExpression'].strip()
                 if filterExp:
-                    fexp+= ' AND %s' % filterExp
+                    fexp += ' AND %s' % filterExp
                 fview = '''
                     aggregate(
                         layer:='{0}',
@@ -1785,7 +1765,7 @@ class Lizmap:
                 m = []
                 # build hstore
                 for d in fmap:
-                    m.append( ['%s=>%s' % (v.replace("'", "’"), k.replace("'", "’")) for k,v in d.items()][0] )
+                    m.append(['%s=>%s' % (v.replace("'", "’"), k.replace("'", "’")) for k, v in d.items()][0])
                 hmap = ', '.join(m)
                 fview = '''
                     map_get(
@@ -1874,15 +1854,15 @@ class Lizmap:
             lid = item.text(1)
             layers = [a for a in QgsProject.instance().mapLayers().values() if a.id() == lid]
             if not layers:
-                return None
+                return
         else:
-            return None
+            return
         layer = layers[0]
 
         cfg = layer.editFormConfig()
         lay = cfg.layout()
         if lay != 1:
-            return None
+            return
 
         # Get root
         root = cfg.invisibleRootContainer()
@@ -1897,62 +1877,16 @@ class Lizmap:
             htmlcontent = '\n<div class="tab-content">' + htmlcontent + '\n</div>'
 
         # package css style, header and content
-        html = ''
-        style = self.getTooltipContentFromFormStyle()
-        html += style
+        html = CSS_TOOLTIP_FORM
         html += '\n<div class="container popup_lizmap_dd" style="width:100%;">'
         html += '\n' + htmlheader + '\n' + htmlcontent
         html += '\n' + '</div>'
 
         layer.setMapTipTemplate(html)
 
-        return True
-
-    def getTooltipContentFromFormStyle(self):
-
-        return '''
-    <style>
-        div.popup_lizmap_dd {
-            margin: 2px;
-        }
-        div.popup_lizmap_dd div {
-            padding: 5px;
-        }
-        div.popup_lizmap_dd div.tab-content{
-            border: 1px solid rgba(150,150,150,0.5);
-        }
-        div.popup_lizmap_dd ul.nav.nav-tabs li a {
-            border: 1px solid rgba(150,150,150,0.5);
-            border-bottom: none;
-            color: grey;
-        }
-        div.popup_lizmap_dd ul.nav.nav-tabs li.active a {
-            color: #333333;
-        }
-        div.popup_lizmap_dd div.tab-content div.tab-pane div {
-            border: 1px solid rgba(150,150,150,0.5);
-            border-radius: 5px;
-            background-color: rgba(150,150,150,0.5);
-        }
-        div.popup_lizmap_dd div.tab-content div.tab-pane div.field,
-        div.popup_lizmap_dd div.field,
-        div.popup_lizmap_dd div.tab-content div.field {
-            background-color: white;
-            border: 1px solid white;
-        }
-        div.popup_lizmap_dd div.tab-content legend {
-            font-weight: bold;
-            font-size: 1em !important;
-            color: #333333;
-            border-bottom: none;
-            margin-top: 15px !important;
-        }
-
-    </style>
-    '''
-
     def writeProjectConfigFile(self):
-        """Get general project options and user edited layers options from plugin gui. Save them into the project.qgs.cfg config file in the project.qgs folder (json format)"""
+        """Get general project options and user edited layers options from plugin gui.
+        Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
 
         # get information from Qgis api
         # r = QgsMapRenderer()
@@ -2635,24 +2569,6 @@ class Lizmap:
                     duration=3
                 )
 
-        return self.isok
-
-    def getProjectEmbeddedGroup(self):
-        """
-        Return a dictionary containing
-        properties of each embedded group
-        """
-        p = QgsProject.instance()
-        if not p.fileName():
-            return None
-
-        projectPath = os.path.abspath('%s' % p.fileName())
-        with open(projectPath, 'r') as f:
-            arbre = ET.parse(f)
-            lg = list(arbre.iter('legendgroup'))
-            lge = dict([(a.attrib['name'], a.attrib) for a in lg if 'embedded' in a.attrib])
-            return lge
-
     def onBaselayerCheckboxChange(self):
         """
         Add or remove a baselayer in cbStartupBaselayer combobox
@@ -2781,7 +2697,6 @@ class Lizmap:
             self.layerList = {}
 
             # Get embedded groups
-            # self.embeddedGroups = self.getProjectEmbeddedGroup()
             self.embeddedGroups = None
 
             # Fill the layer tree
