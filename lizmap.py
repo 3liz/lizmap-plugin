@@ -114,26 +114,23 @@ class Lizmap:
     STYLESHEET += "ex; }"
 
     def __init__(self, iface):
-        """Save reference to the QGIS interface"""
+        """Constructor of the Lizmap plugin."""
         self.iface = iface
 
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
-        locale_path = ""
         self.locale = QSettings().value("locale/userLocale")[0:2]
+        locale_path = os.path.join(
+            os.path.dirname(__file__),
+            'lizmap-locales',
+            'plugin',
+            'i18n',
+            'lizmap_{}.qm'.format(self.locale)
+        )
 
-        if QFileInfo(self.plugin_dir).exists():
-            locale_path = self.plugin_dir + "/lizmap-locales/plugin/i18n/lizmap_" + self.locale + ".qm"
-
-        english_path = self.plugin_dir + '/lizmap-locales/plugin/i18n/lizmap_en.qm'
-        self.translator = QTranslator()
         if QFileInfo(locale_path).exists():
-            self.translator.load(locale_path)
+            translator = QTranslator()
+            translator.load(locale_path)
+            QCoreApplication.installTranslator(translator)
             QgsMessageLog.logMessage('Translation is set to use: {}'.format(locale_path), 'Lizmap')
-        elif QFileInfo(english_path).exists():
-            self.translator.load(english_path)
-            QgsMessageLog.logMessage('Translation is set to use: default english', 'Lizmap')
         else:
             # It means the submodule is not here.
             # Either lizmap has been downloaded from Github automatic ZIP
@@ -145,8 +142,6 @@ class Lizmap:
                 'Finally, restart QGIS.')
             self.iface.messageBar().pushMessage('Lizmap Submodule', text, Qgis.Warning)
             QgsMessageLog.logMessage('Translation is not set, lacking of submodule', 'Lizmap', Qgis.Warning)
-
-        QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog and keep reference
         self.dlg = LizmapDialog()
