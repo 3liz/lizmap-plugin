@@ -46,8 +46,8 @@
 
 from os.path import join, dirname
 
-from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog
 
 FORM_CLASS, _ = uic.loadUiType(join(dirname(__file__), 'ui_lizmap_popup.ui'))
 

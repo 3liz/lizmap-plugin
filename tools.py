@@ -46,7 +46,7 @@
 
 from qgis.PyQt.QtWidgets import QApplication
 
-from qgis.core import QgsMapLayer, QgsProject, QgsProviderRegistry
+from qgis.core import QgsProviderRegistry
 
 
 def excluded_providers():

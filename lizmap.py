@@ -43,17 +43,15 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-import sys
-import os
-import time
-import re
-import urllib.parse
 import json
-
+import os
+import re
+import sys
+import time
+import urllib.parse
 from functools import partial
-from xml.etree import ElementTree as ET
-from shutil import copyfile
 from functools import reduce
+from shutil import copyfile
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -63,16 +61,16 @@ from qgis.PyQt.QtCore import (
     QFileInfo,
     Qt
 )
+from qgis.PyQt.QtGui import (
+    QDesktopServices,
+    QIcon
+)
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QTreeWidgetItem,
     QAction,
     QDialogButtonBox,
     QMessageBox
-)
-from qgis.PyQt.QtGui import (
-    QDesktopServices,
-    QIcon
 )
 from qgis.core import (
     Qgis,
@@ -85,10 +83,10 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsMessageLog)
 
-from . import resources
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
-from .lizmap_dialog import LizmapDialog
 from .lizmap_api.config import LizmapConfig
+from .lizmap_dialog import LizmapDialog
+from . import resources  # NOQA
 from .tools import tr, excluded_providers
 
 
