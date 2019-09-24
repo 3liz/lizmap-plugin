@@ -47,10 +47,8 @@ import json
 import os
 import re
 import sys
-import time
 import urllib.parse
 from functools import partial
-from functools import reduce
 from shutil import copyfile
 
 from qgis.PyQt.QtCore import (
@@ -377,7 +375,6 @@ class Lizmap:
         self.action = None
         self.action_help = None
         self.action_about = None
-        self.clock = None
         self.isok = None
 
     def initGui(self):
@@ -580,17 +577,6 @@ class Lizmap:
             textarea.append(msg)
         if abort:
             self.isok = 0
-
-    def logSpentTime(self, msg):
-        """
-        Log spent time
-        """
-        now = time.clock()
-        t = now - self.clock
-        self.clock = now
-        time_string = "%d:%02d:%02d.%03d" % (
-            reduce(lambda ll, b: divmod(ll[0], b) + ll[1:], [(t * 1000,), 1000, 60, 60]))
-        self.log('%s - %s' % (time_string, msg), False, textarea=self.dlg.outLog)
 
     def clearLog(self):
         """Clear the content of the textarea log"""
@@ -2745,8 +2731,6 @@ class Lizmap:
 
     def run(self):
         """Plugin run method : launch the gui and some tests"""
-        self.clock = time.clock()
-
         if self.dlg.isVisible():
             QMessageBox.warning(
                 self.dlg,
