@@ -106,13 +106,19 @@ class Lizmap:
             'i18n',
             'lizmap_{}.qm'.format(self.locale)
         )
+        english_path = os.path.join(
+            os.path.dirname(__file__),
+            'lizmap-locales',
+            'plugin',
+            'i18n',
+            'lizmap_en.qm')
 
         if QFileInfo(locale_path).exists():
             translator = QTranslator()
             translator.load(locale_path)
             QCoreApplication.installTranslator(translator)
             QgsMessageLog.logMessage('Translation is set to use: {}'.format(locale_path), 'Lizmap')
-        else:
+        elif not QFileInfo(english_path).exists():
             # It means the submodule is not here.
             # Either lizmap has been downloaded from Github automatic ZIP
             # Or git submodule has never been used
@@ -124,7 +130,6 @@ class Lizmap:
             self.iface.messageBar().pushMessage('Lizmap Submodule', text, Qgis.Warning)
             QgsMessageLog.logMessage('Translation is not set, lacking of submodule', 'Lizmap', Qgis.Warning)
 
-        # Create the dialog and keep reference
         self.dlg = LizmapDialog()
 
         # Set stylesheet for QGroupBox
