@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.1.1
+
+* Fix Python error #153
+
 ## Version 3.1.0
 
 
