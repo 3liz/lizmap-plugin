@@ -1596,8 +1596,8 @@ class Lizmap:
             from .lizmap_popup_dialog import LizmapPopupDialog
             self.lizmapPopupDialog = LizmapPopupDialog()
 
-            self.lizmapPopupDialog.groupBox.setStyleSheet(self.STYLESHEET)
-            self.lizmapPopupDialog.groupBox_2.setStyleSheet(self.STYLESHEET)
+            self.lizmapPopupDialog.groupBox.setStyleSheet(self.style_sheet)
+            self.lizmapPopupDialog.groupBox_2.setStyleSheet(self.style_sheet)
 
             # Connect popup dialog signals and slots
             # When the plain text template is modified
