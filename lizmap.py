@@ -76,12 +76,15 @@ from qgis.core import (
     Qgis,
     QgsProject,
     QgsMapLayerProxyModel,
+    QgsMapLayerModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsWkbTypes,
     QgsAttributeEditorField,
     QgsAttributeEditorContainer,
-    QgsMessageLog)
+    QgsMessageLog,
+    QgsApplication,
+)
 
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
@@ -1375,40 +1378,47 @@ class Lizmap:
 
     def processNode(self, node, parentNode, jsonLayers):
         """
-        Process a single node of the QGIS layer tree and adds it to Lizmap layer tree
+        Process a single node of the QGIS layer tree and adds it to Lizmap layer tree.
         """
         for child in node.children():
             if isinstance(child, QgsLayerTreeGroup):
-                myId = child.name()
-                mytype = 'group'
+                child_id = child.name()
+                child_type = 'group'
+                child_icon = QIcon(QgsApplication.iconPath('mActionAddGroup.svg'))
             elif isinstance(child, QgsLayerTreeLayer):
-                myId = child.layerId()
-                mytype = 'layer'
-
-            # Initialize values
-            item = None
+                child_id = child.layerId()
+                child_type = 'layer'
+                child_icon = QgsMapLayerModel.iconForLayer(child.layer())
+            else:
+                raise Exception('Unknown child type')
 
             # Select an existing item, select the header item or create the item
-            if myId in self.myDic:
+            if child_id in self.myDic:
                 # If the item already exists in self.myDic, select it
-                item = self.myDic[myId]['item']
-            elif myId == '':
+                item = self.myDic[child_id]['item']
+            elif child_id == '':
                 # If the id is empty string, this is a root layer, select the headerItem
                 item = self.dlg.layer_tree.headerItem()
             else:
                 # else create the item and add it to the header item
                 # add the item to the dictionary
-                self.myDic[myId] = {'id': myId}
-                if mytype == 'group':
+                self.myDic[child_id] = {'id': child_id}
+                if child_type == 'group':
                     # it is a group
-                    self.setTreeItemData('group', myId, jsonLayers)
+                    self.setTreeItemData('group', child_id, jsonLayers)
                 else:
                     # it is a layer
-                    self.setTreeItemData('layer', myId, jsonLayers)
+                    self.setTreeItemData('layer', child_id, jsonLayers)
 
-                item = QTreeWidgetItem(['%s' % str(self.myDic[myId]['name']), '%s' % str(self.myDic[myId]['id']),
-                                        '%s' % self.myDic[myId]['type']])
-                self.myDic[myId]['item'] = item
+                item = QTreeWidgetItem(
+                    [
+                        str(self.myDic[child_id]['name']),
+                        str(self.myDic[child_id]['id']),
+                        self.myDic[child_id]['type']
+                    ]
+                )
+                item.setIcon(0, child_icon)
+                self.myDic[child_id]['item'] = item
 
                 # Move group or layer to its parent node
                 if not parentNode:
@@ -1416,7 +1426,7 @@ class Lizmap:
                 else:
                     parentNode.addChild(item)
 
-            if mytype == 'group':
+            if child_type == 'group':
                 self.processNode(child, item, jsonLayers)
 
     def populateLayerTree(self):
