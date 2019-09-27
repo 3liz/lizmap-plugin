@@ -264,7 +264,7 @@ class Lizmap:
         self.dlg.gb_lizmapExternalBaselayers.setVisible(False)
 
         # Catch user interaction on layer tree and inputs
-        self.dlg.treeLayer.itemSelectionChanged.connect(self.setItemOptions)
+        self.dlg.layer_tree.itemSelectionChanged.connect(self.setItemOptions)
 
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.getMinMaxScales)
@@ -1394,7 +1394,7 @@ class Lizmap:
                 item = self.myDic[myId]['item']
             elif myId == '':
                 # If the id is empty string, this is a root layer, select the headerItem
-                item = self.dlg.treeLayer.headerItem()
+                item = self.dlg.layer_tree.headerItem()
             else:
                 # else create the item and add it to the header item
                 # add the item to the dictionary
@@ -1412,7 +1412,7 @@ class Lizmap:
 
                 # Move group or layer to its parent node
                 if not parentNode:
-                    self.dlg.treeLayer.addTopLevelItem(item)
+                    self.dlg.layer_tree.addTopLevelItem(item)
                 else:
                     parentNode.addChild(item)
 
@@ -1420,33 +1420,30 @@ class Lizmap:
                 self.processNode(child, item, jsonLayers)
 
     def populateLayerTree(self):
-        """Populate the layer tree of the Layers tab from Qgis legend interface
+        """Populate the layer tree of the Layers tab from Qgis legend interface.
+
         Needs to be refactored.
         """
-
-        # initialize the tree
-        myTree = self.dlg.treeLayer
-        myTree.clear()
-        myTree.headerItem().setText(0, tr("List of layers"))
+        self.dlg.layer_tree.clear()
+        self.dlg.layer_tree.headerItem().setText(0, tr('List of layers'))
         self.myDic = {}
 
         # Check if a json configuration file exists (myproject.qgs.cfg)
-        isok = 1
-        p = QgsProject.instance()
-        jsonFile = "%s.cfg" % p.fileName()
-        jsonLayers = {}
-        if os.path.exists(str(jsonFile)):
-            f = open(jsonFile, 'r')
-            jsonFileReader = f.read()
+        project = QgsProject.instance()
+        json_file = '{}.cfg'.format(project.fileName())
+        json_layers = {}
+        if os.path.exists(str(json_file)):
+            f = open(json_file, 'r')
+            json_file_reader = f.read()
             try:
-                sjson = json.loads(jsonFileReader)
-                jsonLayers = sjson['layers']
+                sjson = json.loads(json_file_reader)
+                json_layers = sjson['layers']
             except:
-                isok = 0
-                QMessageBox.critical(self.dlg, tr("Lizmap Error"), "", QMessageBox.Ok)
+                QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
                 self.log(
                     tr(
-                        "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely"),
+                        'Errors encountered while reading the last layer tree state. '
+                        'Please re-configure the options in the Layers tab completely'),
                     abort=True,
                     textarea=self.dlg.outLog)
             finally:
@@ -1456,8 +1453,8 @@ class Lizmap:
         root = QgsProject.instance().layerTreeRoot()
 
         # Recursively process layer tree nodes
-        self.processNode(root, None, jsonLayers)
-        myTree.expandAll()
+        self.processNode(root, None, json_layers)
+        self.dlg.layer_tree.expandAll()
 
         # Add the self.myDic to the global layerList dictionary
         self.layerList = self.myDic
@@ -1467,7 +1464,7 @@ class Lizmap:
     def setItemOptions(self):
         """Restore layer/group input values when selecting a layer tree item"""
         # get the selected item
-        item = self.dlg.treeLayer.currentItem()
+        item = self.dlg.layer_tree.currentItem()
         if item:
             self.enableCheckBox(True)
         else:
@@ -1540,7 +1537,7 @@ class Lizmap:
         """
         key = str(key)
         # get the selected item in the layer tree
-        item = self.dlg.treeLayer.currentItem()
+        item = self.dlg.layer_tree.currentItem()
         # get the definition for this property
         layerOption = self.layerOptionsList[key]
         # modify the property for the selected item
@@ -1586,7 +1583,7 @@ class Lizmap:
     def configurePopup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
         # get the selected item in the layer tree
-        item = self.dlg.treeLayer.currentItem()
+        item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             # do nothing if no popup configured for this layer/group
             if self.layerList[item.text(1)]['popup'] == 'False':
@@ -1629,7 +1626,7 @@ class Lizmap:
         self.lizmapPopupDialog.close()
 
         # Get the selected item in the layer tree
-        item = self.dlg.treeLayer.currentItem()
+        item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             # Write the content into the global object
             self.layerList[item.text(1)]['popupTemplate'] = content
@@ -1853,7 +1850,7 @@ class Lizmap:
         return html
 
     def setTooltipContentFromForm(self):
-        item = self.dlg.treeLayer.currentItem()
+        item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             lid = item.text(1)
             layers = [a for a in QgsProject.instance().mapLayers().values() if a.id() == lid]

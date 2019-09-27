@@ -922,7 +922,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </widget>
                   </item>
                   <item row="0" column="0">
-                   <widget class="QTreeWidget" name="treeLayer">
+                   <widget class="QTreeWidget" name="layer_tree">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
                       <horstretch>0</horstretch>
@@ -4820,7 +4820,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbHideNavbar</tabstop>
   <tabstop>liPopupContainer</tabstop>
   <tabstop>scrollArea_7</tabstop>
-  <tabstop>treeLayer</tabstop>
+  <tabstop>layer_tree</tabstop>
   <tabstop>scrollArea_10</tabstop>
   <tabstop>inLayerTitle</tabstop>
   <tabstop>teLayerAbstract</tabstop>
