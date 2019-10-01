@@ -791,7 +791,6 @@ class Lizmap:
                     new_item = QTableWidgetItem(k)
                     if icon:
                         new_item.setIcon(icon)
-                    new_item.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(tw_row_count, 0, new_item)
                     i += 1
                 # other information
@@ -801,7 +800,6 @@ class Lizmap:
                     else:
                         value = ''
                     new_item = QTableWidgetItem(str(value))
-                    new_item.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(tw_row_count, i, new_item)
                     i += 1
 
@@ -1189,7 +1187,6 @@ class Lizmap:
             i = 0
             for val in content:
                 item = QTableWidgetItem(val)
-                item.setFlags(Qt.ItemIsEnabled)
                 lblTableWidget.setItem(twRowCount, i, item)
                 i += 1
 
@@ -1253,7 +1250,6 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
-            item.setFlags(Qt.ItemIsEnabled)
             if i == 0:
                 item.setIcon(icon)
             lblTableWidget.setItem(twRowCount, i, item)
@@ -1302,7 +1298,6 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
-            item.setFlags(Qt.ItemIsEnabled)
             if i == 0:
                 item.setIcon(icon)
             lblTableWidget.setItem(twRowCount, i, item)
