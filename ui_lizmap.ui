@@ -2342,7 +2342,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_28">
                  <property name="text">
-                  <string>You can add up to 3 layers as a source of the locating tool</string>
+                  <string>You can add some layers as a source of the locating tool.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>

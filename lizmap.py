@@ -439,6 +439,7 @@ class Lizmap:
         # Locate by layers
         self.dlg.twLocateByLayerList.setColumnHidden(6, True)
         self.dlg.twLocateByLayerList.setColumnHidden(7, True)
+        self.dlg.twLocateByLayerList.horizontalHeader().setStretchLastSection(True)
         self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFields.setLayer)
         self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFilterFields.setLayer)
@@ -450,6 +451,7 @@ class Lizmap:
         # Attribute layers
         self.dlg.twAttributeLayerList.setColumnHidden(6, True)
         self.dlg.twAttributeLayerList.setColumnHidden(7, True)
+        self.dlg.twAttributeLayerList.horizontalHeader().setStretchLastSection(True)
         self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liAttributeLayer.layerChanged.connect(self.dlg.liAttributeLayerFields.setLayer)
         self.dlg.liAttributeLayerFields.setLayer(self.dlg.liAttributeLayer.currentLayer())
@@ -458,12 +460,14 @@ class Lizmap:
         # Tooltip layers
         self.dlg.twTooltipLayerList.setColumnHidden(4, True)
         self.dlg.twTooltipLayerList.setColumnHidden(5, True)
+        self.dlg.twTooltipLayerList.horizontalHeader().setStretchLastSection(True)
         self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.btTooltipLayerAdd.clicked.connect(self.add_layer_to_tooltip)
 
         # Edition layers
         self.dlg.twEditionLayerList.setColumnHidden(6, True)
         self.dlg.twEditionLayerList.setColumnHidden(7, True)
+        self.dlg.twEditionLayerList.horizontalHeader().setStretchLastSection(True)
         self.dlg.liEditionLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liEditionLayer.setExcludedProviders(excluded_providers())
         self.dlg.btEditionLayerAdd.clicked.connect(self.add_layer_to_edition)
@@ -471,6 +475,7 @@ class Lizmap:
         # Login filtered layers
         self.dlg.twLoginFilteredLayersList.setColumnHidden(3, True)
         self.dlg.twLoginFilteredLayersList.setColumnHidden(4, True)
+        self.dlg.twLoginFilteredLayersList.horizontalHeader().setStretchLastSection(True)
         self.dlg.liLoginFilteredLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liLoginFilteredLayerLayers.layerChanged.connect(self.dlg.liLoginFilteredLayerFields.setLayer)
         self.dlg.liLoginFilteredLayerFields.setLayer(self.dlg.liLoginFilteredLayerLayers.currentLayer())
@@ -479,6 +484,7 @@ class Lizmap:
         # Time manager layers
         self.dlg.twTimemanager.setColumnHidden(5, True)
         self.dlg.twTimemanager.setColumnHidden(6, True)
+        self.dlg.twTimemanager.horizontalHeader().setStretchLastSection(True)
         self.dlg.liTimemanagerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liTimemanagerLabelAttribute.setAllowEmptyFieldName(True)
         self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerStartAttribute.setLayer)
@@ -535,6 +541,9 @@ class Lizmap:
         self.iface.addPluginToWebMenu("&Lizmap", self.action_about)
         # and add button to the Web panel
         self.iface.addWebToolBarIcon(self.action)
+
+        # Let's fix the dialog to the first panel
+        self.dlg.mOptionsListWidget.setCurrentRow(0)
 
     def unload(self):
         """Remove the plugin menu item and icon"""
@@ -913,8 +922,6 @@ class Lizmap:
         """Add a layer in the 'locate by layer' tool."""
         table = self.dlg.twLocateByLayerList
         row = table.rowCount()
-        if row > 2:
-            return
 
         if row >= self.dlg.liLocateByLayerLayers.count():
             return
