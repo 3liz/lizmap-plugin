@@ -1039,8 +1039,8 @@ class Lizmap:
             return
 
         # check if layer already added
-        for row in range(row):
-            item_layer_id = str(table.item(row, 6).text())
+        for existing_row in range(row):
+            item_layer_id = str(table.item(existing_row, 6).text())
             if layer_id == item_layer_id:
                 return
 
