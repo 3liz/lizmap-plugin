@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.1.2
+
+* Fix adding more than one layer into the edition tool
+* Disable edit triggers in all tables
+
 ## Version 3.1.1
 
 * Fix Python error #153
