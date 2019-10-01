@@ -554,12 +554,14 @@ class Lizmap:
         else:
             local_help_url = 'http://translate.google.fr/translate?sl=fr&tl=%s&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com' % self.locale
         QDesktopServices.openUrl(QUrl(local_help_url))
+        QgsMessageLog.logMessage('Opening help panel', 'Lizmap', Qgis.Info)
 
     def showAbout(self):
         """Opens the about html content with default browser"""
         local_about = "https://github.com/3liz/lizmap-plugin/"
         self.log(local_about, abort=True, textarea=self.dlg.outLog)
         QDesktopServices.openUrl(QUrl(local_about))
+        QgsMessageLog.logMessage('Opening about panel', 'Lizmap', Qgis.Info)
 
     def log(self, msg, level=1, abort=False, textarea=False):
         """Log the actions and errors and optionaly show them in given textarea"""
@@ -595,6 +597,7 @@ class Lizmap:
 
     def getMinMaxScales(self):
         """ Get Min Max Scales from scales input field"""
+        QgsMessageLog.logMessage('Getting min/max scales', 'Lizmap', Qgis.Info)
         min_scale = 1
         max_scale = 1000000000
         in_map_scales = self.dlg.inMapScales.text()
@@ -623,6 +626,7 @@ class Lizmap:
         json_file = '{}.cfg'.format(p.fileName())
         json_options = {}
         if os.path.exists(json_file):
+            QgsMessageLog.logMessage('Reading the CFG file', 'Lizmap', Qgis.Info)
             f = open(json_file, 'r')
             json_file_reader = f.read()
             try:
@@ -647,6 +651,7 @@ class Lizmap:
                         "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
                     abort=True,
                     textarea=self.dlg.outLog)
+                QgsMessageLog.logMessage('Error while reading the CFG file', 'Lizmap', Qgis.Critical)
             finally:
                 f.close()
 
@@ -716,6 +721,8 @@ class Lizmap:
         # Fill the table widgets
         for key, item in list(self.layersTable.items()):
             self.loadConfigIntoTableWidget(key)
+
+        QgsMessageLog.logMessage('CFG file has been loaded', 'Lizmap', Qgis.Info)
 
     def loadConfigIntoTableWidget(self, key):
         """Load data from lizmap config file into the widget.
@@ -799,6 +806,8 @@ class Lizmap:
             if rows >= 1:
                 self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
 
+        QgsMessageLog.logMessage('Table "{}" has been loaded'.format(key), 'Lizmap', Qgis.Info)
+
     @staticmethod
     def get_qgis_layer_by_id(my_id):
         """Get a QgsLayer by its Id"""
@@ -827,6 +836,8 @@ class Lizmap:
             )
             self.dlg.inInitialExtent.setText(extent)
 
+        QgsMessageLog.logMessage('Setting extent from the project', 'Lizmap', Qgis.Info)
+
     def set_initial_extent_from_canvas(self):
         """
         Get the map canvas extent
@@ -842,6 +853,7 @@ class Lizmap:
             extent.yMaximum()
         )
         self.dlg.inInitialExtent.setText(initial_extent)
+        QgsMessageLog.logMessage('Setting extent from the canvas', 'Lizmap', Qgis.Info)
 
     def remove_selected_layer_from_table(self, key):
         """
@@ -850,6 +862,7 @@ class Lizmap:
         """
         tw = self.layersTable[key]['tableWidget']
         tw.removeRow(tw.currentRow())
+        QgsMessageLog.logMessage('Removing one row in table "{}"'.format(key), 'Lizmap', Qgis.Info)
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
@@ -874,6 +887,8 @@ class Lizmap:
                     item_layer_id = str(tw.item(row, idx).text())
                     if item_layer_id in layer_ids:
                         tw.removeRow(row)
+
+        QgsMessageLog.logMessage('Layer ID "{}" has been removed from the project'.format(layer_ids), 'Lizmap', Qgis.Info)
 
     def check_wfs_is_checked(self, layer):
         p = QgsProject.instance()
@@ -929,6 +944,8 @@ class Lizmap:
             item = QTableWidgetItem(val)
             table.setItem(row, i, item)
 
+        QgsMessageLog.logMessage('Layer "{}" has been added to locate by layer tool'.format(layer_id), 'Lizmap', Qgis.Info)
+
     def add_layer_to_attribute_layer(self):
         """Add a layer in the 'attribute table' tool."""
         table = self.dlg.twAttributeLayerList
@@ -961,6 +978,8 @@ class Lizmap:
             item = QTableWidgetItem(val)
             table.setItem(row, i, item)
 
+        QgsMessageLog.logMessage('Layer "{}" has been added to attribute table tool'.format(layer_id), 'Lizmap', Qgis.Info)
+
     def add_layer_to_tooltip(self):
         """Add a layer in the 'tooltip' tool."""
         table = self.dlg.twTooltipLayerList
@@ -989,6 +1008,8 @@ class Lizmap:
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
             table.setItem(row, i, item)
+
+        QgsMessageLog.logMessage('Layer "{}" has been added to the tooltip tool'.format(layer_id), 'Lizmap', Qgis.Info)
 
     def add_layer_to_edition(self):
         """Add a layer in the list of edition layers."""
@@ -1043,6 +1064,8 @@ class Lizmap:
             item = QTableWidgetItem(val)
             table.setItem(row, i, item)
 
+        QgsMessageLog.logMessage('Layer "{}" has been added to the edition tool'.format(layer_id), 'Lizmap', Qgis.Info)
+
     def add_layer_to_login_filtered_layer(self):
         """Add a layer in the list of 'login filtered' tool."""
         table = self.dlg.twLoginFilteredLayersList
@@ -1067,6 +1090,8 @@ class Lizmap:
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
             table.setItem(row, i, item)
+
+        QgsMessageLog.logMessage('Layer "{}" has been added to login filtered tool'.format(layer_id), 'Lizmap', Qgis.Info)
 
     def add_layer_to_time_manager(self):
         """Add a layer in the list of 'time manager' tool."""
@@ -1100,6 +1125,8 @@ class Lizmap:
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
             table.setItem(row, i, item)
+
+        QgsMessageLog.logMessage('Layer "{}" has been added to the time manager tool'.format(layer_id), 'Lizmap', Qgis.Info)
 
     def addLayerToLizmapBaselayers(self):
         """
@@ -1142,6 +1169,8 @@ class Lizmap:
                 item.setFlags(Qt.ItemIsEnabled)
                 lblTableWidget.setItem(twRowCount, i, item)
                 i += 1
+
+            QgsMessageLog.logMessage('Layer has been added to the base layer list', 'Lizmap', Qgis.Info)
 
     def addLayerToDataviz(self):
         """
@@ -1207,6 +1236,8 @@ class Lizmap:
         # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
 
+        QgsMessageLog.logMessage('Layer "{}" has been added to the dataviz tool'.format(layerId), 'Lizmap', Qgis.Info)
+
     def addLayerToFormFilter(self):
         """
         Add a layer in the list of
@@ -1254,6 +1285,8 @@ class Lizmap:
         # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
 
+        QgsMessageLog.logMessage('Layer "{}" has been added to the form filter tool'.format(layerId), 'Lizmap', Qgis.Info)
+
     def updateFormFilterVisibleFields(self):
         """Show/Hide fields depending of chosen type"""
         ftype = self.dlg.liFormFilterFieldType.itemData(self.dlg.liFormFilterFieldType.currentIndex())
@@ -1281,6 +1314,7 @@ class Lizmap:
         )
         if refresh_it == QMessageBox.Yes:
             self.populateLayerTree()
+            QgsMessageLog.logMessage('Layer tree has been refreshed', 'Lizmap', Qgis.Info)
 
     def setTreeItemData(self, itemType, itemKey, jsonLayers):
         """Define default data or data from previous configuration for one item (layer or group)
@@ -1624,6 +1658,8 @@ class Lizmap:
 
             # Show the popup configuration window
             self.lizmapPopupDialog.show()
+
+            QgsMessageLog.logMessage('Opening the popup configuration', 'Lizmap', Qgis.Info)
 
     def updatePopupHtml(self):
         """Update the html preview of the popup dialog from the plain text template text"""
@@ -2356,6 +2392,8 @@ class Lizmap:
                 level=Qgis.Warning,
                 duration=30
             )
+
+        QgsMessageLog.logMessage('The CFG file has been written to "{}"'.format(jsonFile), 'Lizmap', Qgis.Info)
 
     def getLayerWmsParameters(self, layer):
         """
