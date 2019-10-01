@@ -781,11 +781,16 @@ class Lizmap:
                 i = 0
                 if store_layer_id:
                     # add layer name column - get name from layer if possible (if user has renamed the layer)
+                    icon = None
                     if 'layerId' in list(v.keys()):
                         layer = lr.mapLayer(v['layerId'])
                         if layer:
                             k = layer.name()
+                            icon = QgsMapLayerModel.iconForLayer(layer)
+
                     new_item = QTableWidgetItem(k)
+                    if icon:
+                        new_item.setIcon(icon)
                     new_item.setFlags(Qt.ItemIsEnabled)
                     widget.setItem(tw_row_count, 0, new_item)
                     i += 1
@@ -934,6 +939,7 @@ class Lizmap:
         display_geom = self.dlg.cbLocateByLayerDisplayGeom.isChecked()
         min_length = self.dlg.inLocateByLayerMinLength.value()
         filter_on_locate = self.dlg.cbFilterOnLocate.isChecked()
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         content = [
             layer_name, display_field, filter_field, str(display_geom),
@@ -942,6 +948,8 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
+            if i == 0:
+                item.setIcon(icon)
             table.setItem(row, i, item)
 
         QgsMessageLog.logMessage('Layer "{}" has been added to locate by layer tool'.format(layer_id), 'Lizmap', Qgis.Info)
@@ -968,6 +976,7 @@ class Lizmap:
         pivot = self.dlg.cbAttributeLayerIsPivot.isChecked()
         hide_as_child = self.dlg.cbAttributeLayerHideAsChild.isChecked()
         hide_layer = self.dlg.cbAttributeLayerHideLayer.isChecked()
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         content = [
             name, primary_key, hidden_fields, str(pivot), str(hide_as_child), str(hide_layer), layer_id, str(row)]
@@ -976,6 +985,8 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
+            if i == 0:
+                item.setIcon(icon)
             table.setItem(row, i, item)
 
         QgsMessageLog.logMessage('Layer "{}" has been added to attribute table tool'.format(layer_id), 'Lizmap', Qgis.Info)
@@ -1000,6 +1011,7 @@ class Lizmap:
         fields = self.dlg.inTooltipLayerFields.text().strip(' \t')
         display_geom = self.dlg.cbTooltipLayerDisplayGeom.isChecked()
         color_geom = self.dlg.inTooltipLayerColorGeom.text().strip(' \t')
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         content = [layer_name, fields, str(display_geom), str(color_geom), layer_id, str(row)]
 
@@ -1007,6 +1019,8 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
+            if i == 0:
+                item.setIcon(icon)
             table.setItem(row, i, item)
 
         QgsMessageLog.logMessage('Layer "{}" has been added to the tooltip tool'.format(layer_id), 'Lizmap', Qgis.Info)
@@ -1033,6 +1047,7 @@ class Lizmap:
         modify_geometry = self.dlg.cbEditionLayerModifyGeometry.isChecked()
         delete_feature = self.dlg.cbEditionLayerDeleteFeature.isChecked()
         acl = self.dlg.inEditionLayerAcl.text().strip(' \t')
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         # check at least one checkbox is active
         if not create_feature and not modify_attribute and not modify_geometry and not delete_feature:
@@ -1062,6 +1077,8 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
+            if i == 0:
+                item.setIcon(icon)
             table.setItem(row, i, item)
 
         QgsMessageLog.logMessage('Layer "{}" has been added to the edition tool'.format(layer_id), 'Lizmap', Qgis.Info)
@@ -1082,6 +1099,7 @@ class Lizmap:
         layer_id = layer.id()
         filter_attribute = self.dlg.liLoginFilteredLayerFields.currentText()
         filter_private = self.dlg.cbLoginFilteredLayerPrivate.isChecked()
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         content = [layer_name, filter_attribute, str(filter_private), layer_id, str(row)]
 
@@ -1089,6 +1107,8 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
+            if i == 0:
+                item.setIcon(icon)
             table.setItem(row, i, item)
 
         QgsMessageLog.logMessage('Layer "{}" has been added to login filtered tool'.format(layer_id), 'Lizmap', Qgis.Info)
@@ -1117,6 +1137,7 @@ class Lizmap:
         label_attribute = self.dlg.liTimemanagerLabelAttribute.currentText()
         group = self.dlg.inTimemanagerGroup.text().strip(' \t')
         group_title = self.dlg.inTimemanagerGroupTitle.text().strip(' \t')
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         content = [layer_name, start_attribute, label_attribute, group, group_title, layer_id, row]
 
@@ -1124,6 +1145,8 @@ class Lizmap:
 
         for i, val in enumerate(content):
             item = QTableWidgetItem(val)
+            if i == 0:
+                item.setIcon(icon)
             table.setItem(row, i, item)
 
         QgsMessageLog.logMessage('Layer "{}" has been added to the time manager tool'.format(layer_id), 'Lizmap', Qgis.Info)
@@ -1189,6 +1212,7 @@ class Lizmap:
 
         layerName = layer.name()
         layerId = layer.id()
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         ptitle = str(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
         ptype = self.dlg.liDatavizPlotType.itemData(self.dlg.liDatavizPlotType.currentIndex())
@@ -1227,10 +1251,11 @@ class Lizmap:
         lblTableWidget.setRowCount(twRowCount + 1)
         lblTableWidget.setColumnCount(colCount)
 
-        i = 0
-        for val in content:
+        for i, val in enumerate(content):
             item = QTableWidgetItem(val)
             item.setFlags(Qt.ItemIsEnabled)
+            if i == 0:
+                item.setIcon(icon)
             lblTableWidget.setItem(twRowCount, i, item)
             i += 1
         # Hide layer Id
@@ -1256,6 +1281,7 @@ class Lizmap:
         layerName = layer.name()
         layerId = layer.id()
         fprovider = layer.providerType()
+        icon = QgsMapLayerModel.iconForLayer(layer)
 
         ftitle = str(self.dlg.inFormFilterFieldTitle.text()).strip(' \t')
         ftype = self.dlg.liFormFilterFieldType.itemData(self.dlg.liFormFilterFieldType.currentIndex())
@@ -1274,10 +1300,11 @@ class Lizmap:
         lblTableWidget.setRowCount(twRowCount + 1)
         lblTableWidget.setColumnCount(colCount)
 
-        i = 0
-        for val in content:
+        for i, val in enumerate(content):
             item = QTableWidgetItem(val)
             item.setFlags(Qt.ItemIsEnabled)
+            if i == 0:
+                item.setIcon(icon)
             lblTableWidget.setItem(twRowCount, i, item)
             i += 1
 
