@@ -1,7 +1,7 @@
 ---
 name: 🐞 Bug report
 about: Report problems about the QGIS plugin only.
-labels: 'Unconfirmed Bug'
+labels: 'Needs Triage'
 
 ---
 
