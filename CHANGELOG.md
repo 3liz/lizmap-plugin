@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.1.3
+
+* Remove limitation of two layers in the locate tool
+* Add icons for layers
+* Remove legacy code
+
 ## Version 3.1.2
 
 * Fix adding more than one layer into the edition tool
