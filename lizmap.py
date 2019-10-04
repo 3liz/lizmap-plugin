@@ -2507,7 +2507,7 @@ class Lizmap:
             if not p.readEntry('WMSServiceCapabilities', "/")[1]:
                 p.writeEntry('WMSServiceCapabilities', "/", "True")
             if p.readEntry('WMSServiceTitle', '')[0] == '':
-                p.writeEntry('WMSServiceTitle', '', '%s' % p.fileInfo().baseName())
+                p.writeEntry('WMSServiceTitle', '', '%s' % p.baseName())
 
             # check if a bbox has been given in the project QGIS Server tab configuration
             pWmsExtentLe = p.readListEntry('WMSExtent', '')
