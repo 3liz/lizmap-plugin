@@ -37,7 +37,7 @@ tags=lizmap, server, web, publication, webmapping, WMS
 homepage=https://github.com/3liz/lizmap-plugin
 tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
-icon=icons/icon.png
+icon=resources/icons/icon.png
 
 ; experimental flag
 experimental=False
