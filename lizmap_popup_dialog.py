@@ -44,15 +44,13 @@
  ***** END LICENSE BLOCK ***** */
 """
 
-from os.path import join, dirname
-
-from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog
 
-FORM_CLASS, _ = uic.loadUiType(join(dirname(__file__), 'ui_lizmap_popup.ui'))
+from .qgis_plugin_tools.resources import load_ui
+
+FORM_CLASS = load_ui('ui_lizmap_popup.ui')
 
 
-# create the dialog for zoom to point
 class LizmapPopupDialog(QDialog, FORM_CLASS):
     def __init__(self):
         QDialog.__init__(self)
