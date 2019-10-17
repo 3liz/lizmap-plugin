@@ -157,54 +157,6 @@ derase:
 	@echo "-------------------------"
 	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
-zip: deploy dclean
-	@echo
-	@echo "---------------------------"
-	@echo "Creating plugin zip bundle."
-	@echo "---------------------------"
-	# The zip target deploys the plugin and creates a zip file with the deployed
-	# content. You can then upload the zip file on http://plugins.qgis.org
-	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
-
-package: compile
-	# Create a zip package of the plugin named $(PLUGINNAME).zip.
-	# This requires use of git (your plugin development directory must be a
-	# git repository).
-	@echo
-	@echo "------------------------------------"
-	@echo "Exporting plugin to zip package.	"
-	@echo "------------------------------------"
-	@rm -f $(PLUGINNAME).zip
-	# Not using the version anymore with git-archive-all
-	@git-archive-all --prefix=$(PLUGINNAME)/ $(PLUGINNAME).zip
-	@zip --delete $(PLUGINNAME) lizmap/lizmap-locales/web-client/*
-	@zip --delete $(PLUGINNAME) lizmap/.github/*
-	@echo "Created package: $(PLUGINNAME).zip"
-
-upload: zip
-	@echo
-	@echo "-------------------------------------"
-	@echo "Uploading plugin to QGIS Plugin repo."
-	@echo "-------------------------------------"
-	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
-
-i18n_1_prepare:
-	@echo Updating strings locally 1/4
-	@./update_strings.sh $(LOCALES)
-
-i18n_2_push:
-	@echo Push strings to Transifex 2/4
-	@cd $(LOCALES_SUBMODULE) && tx push -s
-
-i18n_3_pull:
-	@echo Pull strings from Transifex 3/4
-	@cd $(LOCALES_SUBMODULE) && tx pull -a
-
-i18n_4_compile:
-	@echo Compile TS files to QM 4/4
-	@for f in $(LOCALES); do lrelease $(LOCALES_SUBMODULE)/i18n/lizmap_$${f}.ts -qm $(LOCALES_SUBMODULE)/i18n/lizmap_$${f}.qm; done
-
 clean:
 	@echo
 	@echo "------------------------------------"
@@ -249,3 +201,14 @@ pep8:
 dist-api:
 	python3 setup.py sdist --dist-dir=dist
 
+help:
+	$(MAKE) -C qgis_plugin_tools help
+
+docker_test:
+	$(MAKE) -C qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
+
+i18n_%:
+	$(MAKE) -C qgis_plugin_tools i18n_$* LOCALES=$(LOCALES)
+
+deploy_%:
+	$(MAKE) -C qgis_plugin_tools deploy_$* PLUGINNAME=$(PLUGINNAME)
