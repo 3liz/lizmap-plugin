@@ -2783,11 +2783,6 @@ class Lizmap:
             finally:
                 f.close()
 
-    def test(self):
-        """Debug method"""
-        self.log("test", abort=False, textarea=self.dlg.outLog)
-        QMessageBox.critical(self.dlg, "Lizmap debug", "test", QMessageBox.Ok)
-
     def reinitDefaultProperties(self):
         for key in list(self.layersTable.keys()):
             self.layersTable[key]['jsonConfig'] = {}
@@ -2807,7 +2802,7 @@ class Lizmap:
         self.dlg.close()
 
     def run(self):
-        """Plugin run method : launch the gui and some tests"""
+        """Plugin run method : launch the GUI."""
         if self.dlg.isVisible():
             QMessageBox.warning(
                 self.dlg,
