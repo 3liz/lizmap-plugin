@@ -57,7 +57,6 @@ from qgis.PyQt.QtCore import (
     QSettings,
     QUrl,
     QFileInfo,
-    Qt
 )
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -87,7 +86,7 @@ from qgis.core import (
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
-from . import resources  # NOQA
+from .qgis_plugin_tools.resources import resources_path, plugin_path
 from .tools import tr, excluded_providers
 
 
@@ -98,15 +97,13 @@ class Lizmap:
         self.iface = iface
 
         self.locale = QSettings().value("locale/userLocale")[0:2]
-        locale_path = os.path.join(
-            os.path.dirname(__file__),
+        locale_path = plugin_path(
             'lizmap-locales',
             'plugin',
             'i18n',
             'lizmap_{}.qm'.format(self.locale)
         )
-        english_path = os.path.join(
-            os.path.dirname(__file__),
+        english_path = plugin_path(
             'lizmap-locales',
             'plugin',
             'i18n',
@@ -130,6 +127,68 @@ class Lizmap:
             QgsMessageLog.logMessage('Translation is not set, lacking of submodule', 'Lizmap', Qgis.Warning)
 
         self.dlg = LizmapDialog()
+
+        icon = QIcon()
+
+        # Map options
+        icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(0).setIcon(icon)
+
+        # Layers
+        icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(1).setIcon(icon)
+
+        # Base layer
+        icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(2).setIcon(icon)
+
+        # Locate by layer
+        icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(3).setIcon(icon)
+
+        # Attribute table
+        icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(4).setIcon(icon)
+
+        # Layer editing
+        icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(5).setIcon(icon)
+
+        # Tooltip layer
+        icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(6).setIcon(icon)
+
+        # Filter layer by user
+        icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(7).setIcon(icon)
+
+        # Dataviz
+        icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(8).setIcon(icon)
+
+        # Time manager
+        icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(9).setIcon(icon)
+
+        # Atlas
+        icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(10).setIcon(icon)
+
+        # Filter data with form
+        icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Normal)
+        self.dlg.mOptionsListWidget.item(11).setIcon(icon)
 
         # Set stylesheet for QGroupBox
         if sys.platform.startswith('win'):
@@ -379,21 +438,26 @@ class Lizmap:
 
     def initGui(self):
         """Create action that will start plugin configuration"""
-        self.action = QAction(QIcon(":/plugins/lizmap/icons/icon.png"),
-                              "Lizmap", self.iface.mainWindow())
+        self.action = QAction(
+            QIcon(resources_path('icons', 'icon.png')),
+            'Lizmap', self.iface.mainWindow())
 
         # connect the action to the run method
         self.action.triggered.connect(self.run)
 
         # Create action for help dialog
-        self.action_help = QAction(QIcon(":/plugins/lizmap/icons/help.png"),
-                                   "&Help...", self.iface.mainWindow())
+        self.action_help = QAction(
+            QIcon(resources_path('icons', 'help.png')),
+            tr('&Help…'), self.iface.mainWindow())
+
         # connect help action to help dialog
         self.action_help.triggered.connect(self.showHelp)
 
         # Create action for about dialog
-        self.action_about = QAction(QIcon(":/plugins/lizmap/icons/help.png"),
-                                    "&About...", self.iface.mainWindow())
+        self.action_about = QAction(
+            QIcon(resources_path('icons', 'help.png')),
+            tr('&About…'), self.iface.mainWindow())
+
         # connect about action to about dialog
         self.action_about.triggered.connect(self.showAbout)
 

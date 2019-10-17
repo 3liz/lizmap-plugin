@@ -102,132 +102,60 @@ QListWidget::item::selected {
           <property name="text">
            <string>Map options</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/15-baselayer-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/15-baselayer-dark.png</selectedon>
-           </iconset>
-          </property>
          </item>
          <item>
           <property name="text">
            <string>Layers</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/02-switcher-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/02-switcher-dark.png</selectedon>
-           </iconset>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Baselayers</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/02-switcher-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/02-switcher-dark.png</selectedon>
-           </iconset>
-          </property>
          </item>
          <item>
           <property name="text">
            <string>Locate by layer</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/04-locate-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/04-locate-dark.png</selectedon>
-           </iconset>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Attribute table</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/11-attribute-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/11-attribute-dark.png</selectedon>
-           </iconset>
-          </property>
          </item>
          <item>
           <property name="text">
            <string>Layer editing</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/10-edition-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/10-edition-dark.png</selectedon>
-           </iconset>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Tooltip layers</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/16-tooltip-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/16-tooltip-dark.png</selectedon>
-           </iconset>
-          </property>
          </item>
          <item>
           <property name="text">
            <string>Filter layer by user</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/12-user-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/12-user-dark.png</selectedon>
-           </iconset>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Dataviz</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/dataviz-icon-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/dataviz-icon-dark.png</selectedon>
-           </iconset>
-          </property>
          </item>
          <item>
           <property name="text">
            <string>Time Manager</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/13-timemanager-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/13-timemanager-dark.png</selectedon>
-           </iconset>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Atlas</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/atlas-icon-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/atlas-icon-dark.png</selectedon>
-           </iconset>
-          </property>
          </item>
          <item>
           <property name="text">
            <string>Filter data with form</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normalon>:/plugins/lizmap/icons/filter-icon-white.png</normalon>
-            <selectedon>:/plugins/lizmap/icons/filter-icon-dark.png</selectedon>
-           </iconset>
           </property>
          </item>
          <item>

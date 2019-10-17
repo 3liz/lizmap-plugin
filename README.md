@@ -1,4 +1,4 @@
-[![logo](icons/icon.png "3Liz")][3liz]Lizmap 3.1.3
+[![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap 3.1.3
 ==============================================
 
 Download link: https://plugins.qgis.org/plugins/lizmap/version/3.1.3/download/
