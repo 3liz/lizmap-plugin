@@ -59,8 +59,3 @@ def excluded_providers():
     providers.remove('postgres')
     providers.remove('spatialite')
     return providers
-
-
-def tr(sentence):
-    """Return a translated string."""
-    return QApplication.translate('lizmap', sentence)

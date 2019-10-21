@@ -86,10 +86,12 @@ from qgis.core import (
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
+from .qgis_plugin_tools.custom_logging import setup_logger
+from .qgis_plugin_tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 
-from .tools import tr, excluded_providers
+from .tools import excluded_providers
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -100,25 +102,22 @@ class Lizmap:
         """Constructor of the Lizmap plugin."""
         self.iface = iface
 
-        self.locale = QSettings().value("locale/userLocale")[0:2]
-        locale_path = plugin_path(
-            'lizmap-locales',
-            'plugin',
-            'i18n',
-            'lizmap_{}.qm'.format(self.locale)
-        )
-        english_path = plugin_path(
-            'lizmap-locales',
-            'plugin',
-            'i18n',
-            'lizmap_en.qm')
+        setup_logger(plugin_name())
 
-        if QFileInfo(locale_path).exists():
+        locale, file_path = setup_translation(
+            'lizmap_{}.qm', plugin_path('lizmap-locales', 'plugin', 'i18n'))
+
+        if file_path:
             translator = QTranslator()
-            translator.load(locale_path)
+            translator.load(file_path)
             QCoreApplication.installTranslator(translator)
-            LOGGER.debug('Translation is set to use: {}'.format(locale_path))
-        elif not QFileInfo(english_path).exists():
+            # LOGGER.info('Translation is set to use: {}'.format(file_path))
+        else:
+            # LOGGER.info('Translation not found: {}'.format(locale))
+            pass
+
+        english_path = plugin_path('lizmap-locales', 'plugin', 'i18n', 'lizmap_en.qm')
+        if not file_path and not QFileInfo(english_path).exists():
             # It means the submodule is not here.
             # Either lizmap has been downloaded from Github automatic ZIP
             # Or git submodule has never been used
@@ -128,7 +127,7 @@ class Lizmap:
                 'clone, do "git clone --recursive https://github.com/3liz/lizmap-plugin.git". '
                 'Finally, restart QGIS.')
             self.iface.messageBar().pushMessage('Lizmap Submodule', text, Qgis.Warning)
-            LOGGER.warning('Translation is not set, lacking of submodule')
+            LOGGER.warning('Translation is not set, missing the submodule')
 
         self.dlg = LizmapDialog()
 
