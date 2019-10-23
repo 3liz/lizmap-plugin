@@ -46,7 +46,7 @@
 
 from qgis.PyQt.QtWidgets import QDialog
 
-from .qgis_plugin_tools.resources import load_ui
+from .qgis_plugin_tools.tools.resources import load_ui
 
 FORM_CLASS = load_ui('ui_lizmap_popup.ui')
 
