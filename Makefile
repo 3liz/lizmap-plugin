@@ -51,7 +51,7 @@
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # Empty in Transifex for now 20/09/2019 : bg_BG zh_CN lt_LT tr
-LOCALES = cs de el en es eu fi fr gl hu it nl no pl pt pt_BR ro ru sl sv
+LOCALES = "cs de el en es eu fi fr gl hu_HU it nl no pl_PL pt pt_BR ro ru sl sv_SE tr"
 LOCALES_SUBMODULE = lizmap-locales/plugin
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
@@ -207,8 +207,26 @@ help:
 docker_test:
 	$(MAKE) -C qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
 
-i18n_%:
-	$(MAKE) -C qgis_plugin_tools i18n_$* LOCALES=$(LOCALES)
+# i18n_%:
+    # Do not use qgis_plugin_tools, translation are shared with LWC
+	# $(MAKE) -C qgis_plugin_tools i18n_$* LOCALES=$(LOCALES)
 
 deploy_%:
 	$(MAKE) -C qgis_plugin_tools deploy_$* PLUGINNAME=$(PLUGINNAME)
+
+# Instead of using the qgis_plugin_tools makefile for translation:
+i18n_1_prepare:
+	@echo Updating strings locally 1/4
+	@./scripts/update_strings.sh $(LOCALES)
+
+i18n_2_push:
+	@echo Push strings to Transifex 2/4
+	@cd $(LOCALES_SUBMODULE) && tx push -s
+
+i18n_3_pull:
+	@echo Pull strings from Transifex 3/4
+	@cd $(LOCALES_SUBMODULE) && tx pull -a
+
+i18n_4_compile:
+	@echo Compile TS files to QM 4/4
+	@./scripts/update_compiled_strings.sh $(LOCALES)
