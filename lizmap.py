@@ -332,6 +332,8 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.getMinMaxScales)
 
+        self.layerOptionsList['popupSource']['widget'].currentIndexChanged.connect(self.enable_popup_source_button)
+
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in list(self.layerOptionsList.items()):
             if item['widget']:
@@ -619,6 +621,11 @@ class Lizmap:
         self.iface.removePluginWebMenu("&Lizmap", self.action_help)
         # Remove about menu entry
         self.iface.removePluginWebMenu("&Lizmap", self.action_about)
+
+    def enable_popup_source_button(self):
+        """Enable or not the "Configure" button according to the popup source."""
+        data = self.layerOptionsList['popupSource']['widget'].currentText()
+        self.dlg.btConfigurePopup.setEnabled(data not in ['auto', 'qgis'])
 
     def showHelp(self):
         """Opens the html help file content with default browser"""
@@ -1640,6 +1647,8 @@ class Lizmap:
                     elif val['wType'] == 'list':
                         listDic = {val['list'][i]: i for i in range(0, len(val['list']))}
                         val['widget'].setCurrentIndex(listDic[val['default']])
+
+        self.enable_popup_source_button()
 
     def getItemWmsCapability(self, selectedItem):
         """
