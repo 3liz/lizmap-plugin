@@ -271,7 +271,10 @@ class LizmapConfig:
             'wType': 'checkbox', 'type': 'boolean', 'default': True
         },
         'popup': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
+            'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'popupFrame'
+        },
+        'popupFrame': {
+            'wType': 'frame', 'type': None, 'default': None, 'parent': 'popup'
         },
         'popupSource': {
             'wType': 'list', 'type': 'string', 'default': 'auto',
@@ -299,14 +302,17 @@ class LizmapConfig:
             'wType': 'checkbox', 'type': 'boolean', 'default': True
         },
         'singleTile': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True,
+            'wType': 'checkbox', 'type': 'boolean', 'default': True, 'children': 'cached', 'exclusive': True
         },
         'imageFormat': {
             'wType': 'list', 'type': 'string', 'default': 'image/png',
             'list': ["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
         },
         'cached': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False,
+            'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'serverFrame', 'parent': 'singleTile'
+        },
+        'serverFrame': {
+            'wType': 'frame', 'type': None, 'default': None, 'parent': 'cached'
         },
         'cacheExpiration': {
             'wType': 'spinbox', 'type': 'integer', 'default': 0
