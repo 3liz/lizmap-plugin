@@ -284,7 +284,8 @@ class Lizmap:
         self.layerOptionsList['minScale']['widget'] = None
         self.layerOptionsList['maxScale']['widget'] = None
         self.layerOptionsList['toggled']['widget'] = self.dlg.cbToggled
-        self.layerOptionsList['popup']['widget'] = self.dlg.cbPopup
+        self.layerOptionsList['popup']['widget'] = self.dlg.checkbox_popup
+        self.layerOptionsList['popupFrame']['widget'] = self.dlg.popup_frame
         self.layerOptionsList['popupSource']['widget'] = self.dlg.liPopupSource
         self.layerOptionsList['popupTemplate']['widget'] = None
         self.layerOptionsList['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
@@ -295,7 +296,8 @@ class Lizmap:
         self.layerOptionsList['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
         self.layerOptionsList['singleTile']['widget'] = self.dlg.cbSingleTile
         self.layerOptionsList['imageFormat']['widget'] = self.dlg.liImageFormat
-        self.layerOptionsList['cached']['widget'] = self.dlg.cbCached
+        self.layerOptionsList['cached']['widget'] = self.dlg.checkbox_server_cache
+        self.layerOptionsList['serverFrame']['widget'] = self.dlg.server_cache_frame
         self.layerOptionsList['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
         self.layerOptionsList['metatileSize']['widget'] = self.dlg.inMetatileSize
         self.layerOptionsList['clientCacheExpiration']['widget'] = self.dlg.inClientCacheExpiration
@@ -1619,6 +1621,18 @@ class Lizmap:
                         val['widget'].setValue(int(selectedItem[key]))
                     elif val['wType'] == 'checkbox':
                         val['widget'].setChecked(selectedItem[key])
+                        children = val.get('children')
+                        if children:
+                            exclusive = val.get('exclusive', False)
+                            if exclusive:
+                                is_enabled = not selectedItem[key]
+                            else:
+                                is_enabled = selectedItem[key]
+                            self.layerOptionsList[children]['widget'].setEnabled(is_enabled)
+                            if self.layerOptionsList[children]['wType'] == 'checkbox' and not is_enabled:
+                                if self.layerOptionsList[children]['widget'].isChecked():
+                                    self.layerOptionsList[children]['widget'].setChecked(False)
+
                     elif val['wType'] == 'list':
                         listDic = {val['list'][i]: i for i in range(0, len(val['list']))}
                         val['widget'].setCurrentIndex(listDic[selectedItem[key]])
@@ -1686,7 +1700,19 @@ class Lizmap:
             elif layerOption['wType'] == 'spinbox':
                 self.layerList[item.text(1)][key] = layerOption['widget'].value()
             elif layerOption['wType'] == 'checkbox':
-                self.layerList[item.text(1)][key] = layerOption['widget'].isChecked()
+                checked = layerOption['widget'].isChecked()
+                self.layerList[item.text(1)][key] = checked
+                children = layerOption.get('children')
+                if children:
+                    exclusive = layerOption.get('exclusive', False)
+                    if exclusive:
+                        is_enabled = not checked
+                    else:
+                        is_enabled = checked
+                    self.layerOptionsList[children]['widget'].setEnabled(is_enabled)
+                    if self.layerOptionsList[children]['wType'] == 'checkbox' and not is_enabled:
+                        if self.layerOptionsList[children]['widget'].isChecked():
+                            self.layerOptionsList[children]['widget'].setChecked(False)
             elif layerOption['wType'] == 'list':
                 self.layerList[item.text(1)][key] = layerOption['list'][layerOption['widget'].currentIndex()]
 

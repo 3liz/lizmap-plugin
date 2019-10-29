@@ -863,11 +863,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <property name="columnCount">
                      <number>1</number>
                     </property>
-                    <attribute name="headerDefaultSectionSize">
-                     <number>57</number>
-                    </attribute>
                     <attribute name="headerMinimumSectionSize">
                      <number>50</number>
+                    </attribute>
+                    <attribute name="headerDefaultSectionSize">
+                     <number>57</number>
                     </attribute>
                     <attribute name="headerStretchLastSection">
                      <bool>true</bool>
@@ -1050,40 +1050,30 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mGroupBox_3">
-                        <property name="title">
+                       <widget class="QCheckBox" name="checkbox_popup">
+                        <property name="text">
                          <string>Popup</string>
                         </property>
-                        <layout class="QVBoxLayout" name="verticalLayout_24">
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="popup_frame">
+                        <property name="frameShape">
+                         <enum>QFrame::Box</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Sunken</enum>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_47">
                          <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_7">
-                           <item>
-                            <widget class="QCheckBox" name="cbPopup">
-                             <property name="text">
-                              <string>Activate popup</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_30">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>40</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
-                           </item>
                            <item>
                             <widget class="QLabel" name="label_67">
                              <property name="styleSheet">
                               <string notr="true"/>
                              </property>
                              <property name="text">
-                              <string>source</string>
+                              <string>Source</string>
                              </property>
                             </widget>
                            </item>
@@ -1145,18 +1135,14 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </widget>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_39">
-                           <item>
-                            <widget class="QPushButton" name="btQgisPopupFromForm">
-                             <property name="styleSheet">
-                              <string notr="true">background-color:rgb(170, 255, 255);</string>
-                             </property>
-                             <property name="text">
-                              <string>Copy the form drag &amp; drop template</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                          <widget class="QPushButton" name="btQgisPopupFromForm">
+                           <property name="styleSheet">
+                            <string notr="true">background-color:rgb(170, 255, 255);</string>
+                           </property>
+                           <property name="text">
+                            <string>Copy the form drag &amp; drop template</string>
+                           </property>
+                          </widget>
                          </item>
                          <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_37">
@@ -1379,20 +1365,23 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mGroupBox_5">
-                        <property name="title">
+                       <widget class="QCheckBox" name="checkbox_server_cache">
+                        <property name="text">
                          <string>Server tile cache</string>
                         </property>
-                        <layout class="QVBoxLayout" name="verticalLayout">
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="server_cache_frame">
+                        <property name="frameShape">
+                         <enum>QFrame::Box</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_24">
                          <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_2">
-                           <item>
-                            <widget class="QCheckBox" name="cbCached">
-                             <property name="text">
-                              <string>Server cache?</string>
-                             </property>
-                            </widget>
-                           </item>
                            <item>
                             <widget class="QLabel" name="label_12">
                              <property name="text">
@@ -1423,19 +1412,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <string>0,0;_</string>
                              </property>
                             </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_27">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>40</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
                            </item>
                           </layout>
                          </item>
@@ -4770,7 +4746,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbNoLegendImage</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
   <tabstop>cbLayerIsBaseLayer</tabstop>
-  <tabstop>cbPopup</tabstop>
   <tabstop>liPopupSource</tabstop>
   <tabstop>sbPopupMaxFeatures</tabstop>
   <tabstop>cbPopupDisplayChildren</tabstop>
@@ -4778,7 +4753,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
   <tabstop>cbSingleTile</tabstop>
-  <tabstop>cbCached</tabstop>
   <tabstop>inCacheExpiration</tabstop>
   <tabstop>inMetatileSize</tabstop>
   <tabstop>inSourceRepository</tabstop>
@@ -4923,9 +4897,7 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
   <tabstop>mGroupBox_2</tabstop>
-  <tabstop>mGroupBox_3</tabstop>
   <tabstop>mGroupBox_4</tabstop>
-  <tabstop>mGroupBox_5</tabstop>
  </tabstops>
  <resources/>
  <connections>
