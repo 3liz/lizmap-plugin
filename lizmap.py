@@ -106,6 +106,7 @@ class Lizmap:
 
         locale, file_path = setup_translation(
             'lizmap_{}.qm', plugin_path('lizmap-locales', 'plugin', 'i18n'))
+        self.locale = locale[0:2]  # For the online help
 
         if file_path:
             translator = QTranslator()
@@ -324,7 +325,7 @@ class Lizmap:
         }
 
         # Disable checkboxes on the layer tab
-        self.enableCheckBox(False)
+        self.enable_check_box(False)
 
         # Disable deprecated lizmap functions #121
         self.dlg.gb_lizmapExternalBaselayers.setVisible(False)
@@ -333,7 +334,7 @@ class Lizmap:
         self.dlg.layer_tree.itemSelectionChanged.connect(self.setItemOptions)
 
         # Catch user interaction on Map Scales input
-        self.dlg.inMapScales.editingFinished.connect(self.getMinMaxScales)
+        self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
         self.layer_options_list['popupSource']['widget'].currentIndexChanged.connect(self.enable_popup_source_button)
 
@@ -434,7 +435,9 @@ class Lizmap:
             'formFilterLayers': {
                 'tableWidget': self.dlg.twFormFilterLayers,
                 'removeButton': self.dlg.btFormFilterRemoveField,
-                'cols': ['title', 'type', 'field', 'min_date', 'max_date', 'format', 'splitter', 'provider', 'layerId', 'order'],
+                'cols': [
+                    'title', 'type', 'field', 'min_date', 'max_date', 'format', 'splitter', 'provider', 'layerId',
+                    'order'],
                 'jsonConfig': {}
             }
         }
@@ -460,7 +463,7 @@ class Lizmap:
             tr('&Help…'), self.iface.mainWindow())
 
         # connect help action to help dialog
-        self.action_help.triggered.connect(self.showHelp)
+        self.action_help.triggered.connect(self.show_help)
 
         # Create action for about dialog
         self.action_about = QAction(
@@ -468,7 +471,7 @@ class Lizmap:
             tr('&About…'), self.iface.mainWindow())
 
         # connect about action to about dialog
-        self.action_about.triggered.connect(self.showAbout)
+        self.action_about.triggered.connect(self.show_about)
 
         # connect Lizmap signals and functions
 
@@ -476,10 +479,10 @@ class Lizmap:
         self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.getMapOptions)
 
         # clear log button clicked
-        self.dlg.btClearlog.clicked.connect(self.clearLog)
+        self.dlg.btClearlog.clicked.connect(self.clear_log)
 
         # Show help
-        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.showHelp)
+        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
@@ -616,7 +619,7 @@ class Lizmap:
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
     def unload(self):
-        """Remove the plugin menu item and icon"""
+        """Remove the plugin menu item and icon."""
         # new menu used, remove submenus from main Web menu
         self.iface.removePluginWebMenu("&Lizmap", self.action)
         # also remove button from Web toolbar
@@ -631,45 +634,46 @@ class Lizmap:
         data = self.layer_options_list['popupSource']['widget'].currentText()
         self.dlg.btConfigurePopup.setEnabled(data not in ['auto', 'qgis'])
 
-    def showHelp(self):
-        """Opens the html help file content with default browser"""
+    def show_help(self):
+        """Opens the html help file content with default browser."""
         if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
             local_help_url = 'http://docs.3liz.com/{}/'.format(self.locale)
         else:
-            local_help_url = 'http://translate.google.fr/translate?sl=fr&tl={}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com'.format(self.locale)
+            local_help_url = (
+                'http://translate.google.fr/translate?'
+                'sl=fr&tl={}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com').format(self.locale)
         QDesktopServices.openUrl(QUrl(local_help_url))
         LOGGER.debug('Opening help panel')
 
-    def showAbout(self):
-        """Opens the about html content with default browser"""
+    def show_about(self):
+        """Opens the about html content with default browser."""
         local_about = "https://github.com/3liz/lizmap-plugin/"
         self.log(local_about, abort=True, textarea=self.dlg.outLog)
         QDesktopServices.openUrl(QUrl(local_about))
         LOGGER.debug('Opening about panel')
 
-    def log(self, msg, level=1, abort=False, textarea=False):
-        """Log the actions and errors and optionaly show them in given textarea"""
+    def log(self, msg, abort=None, textarea=None):
+        """Log the actions and errors and optionally show them in given text area."""
         if abort:
             sys.stdout = sys.stderr
+            self.isok = 0
         if textarea:
             textarea.append(msg)
-        if abort:
-            self.isok = 0
 
-    def clearLog(self):
-        """Clear the content of the textarea log"""
+    def clear_log(self):
+        """Clear the content of the text area log."""
         self.dlg.outLog.clear()
 
-    def enableCheckBox(self, value):
-        """Enable/Disable checkboxes and fields of the Layer tab"""
+    def enable_check_box(self, value):
+        """Enable/Disable checkboxes and fields of the Layer tab."""
         for key, item in list(self.layer_options_list.items()):
-            if item['widget'] and key not in ('sourceProject'):
+            if item['widget'] and key != 'sourceProject':
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
         self.dlg.btQgisPopupFromForm.setEnabled(value)
 
-    def getMinMaxScales(self):
-        """ Get Min Max Scales from scales input field"""
+    def get_min_max_scales(self):
+        """Get Min Max Scales from scales input field."""
         LOGGER.info('Getting min/max scales')
         min_scale = 1
         max_scale = 1000000000
@@ -679,9 +683,10 @@ class Lizmap:
         if len(map_scales) < 2:
             QMessageBox.critical(
                 self.dlg,
-                tr("Lizmap Error"),
+                tr('Lizmap Error'),
                 tr(
-                    "Map scales: Write down integer scales separated by comma. You must enter at least 2 min and max values."),
+                    'Map scales: Write down integer scales separated by comma. '
+                    'You must enter at least 2 min and max values.'),
                 QMessageBox.Ok)
         else:
             min_scale = min(map_scales)
@@ -690,18 +695,20 @@ class Lizmap:
         self.dlg.inMaxScale.setText(str(max_scale))
         self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
 
-    def getConfig(self):
-        """ Get the saved configuration from the projet.qgs.cfg config file.
-        Populate the gui fields accordingly"""
+    def get_config(self):
+        """Get the saved configuration from the projet.qgs.cfg config file.
 
+        Populate the gui fields accordingly
+        """
         # Get the project config file (projectname.qgs.cfg)
-        p = QgsProject.instance()
-        json_file = '{}.cfg'.format(p.fileName())
+        project = QgsProject.instance()
+        json_file = '{}.cfg'.format(project.fileName())
         json_options = {}
         if os.path.exists(json_file):
             LOGGER.info('Reading the CFG file')
-            f = open(json_file, 'r')
-            json_file_reader = f.read()
+            cfg_file = open(json_file, 'r')
+            json_file_reader = cfg_file.read()
+            # noinspection PyBroadException
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
@@ -710,23 +717,19 @@ class Lizmap:
                         self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
                         self.layers_table[key]['jsonConfig'] = {}
-            except:
+            except Exception:
                 isok = 0
-                copyfile(json_file, "%s.back" % json_file)
+                copyfile(json_file, '{}.back'.format(json_file))
+                message = tr(
+                    'Errors encountered while reading the last layer tree state. '
+                    'Please re-configure the options in the Layers tab completely. '
+                    'The previous .cfg has been saved as .cfg.back')
                 QMessageBox.critical(
-                    self.dlg,
-                    tr("Lizmap Error"),
-                    tr(
-                        "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
-                    QMessageBox.Ok)
-                self.log(
-                    tr(
-                        "Errors encountered while reading the last layer tree state. Please re-configure the options in the Layers tab completely. The previous .cfg has been saved as .cfg.back"),
-                    abort=True,
-                    textarea=self.dlg.outLog)
+                    self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
+                self.log(message, abort=True, textarea=self.dlg.outLog)
                 LOGGER.critical('Error while reading the CFG file')
             finally:
-                f.close()
+                cfg_file.close()
 
         # Set the global options (map, tools, etc.)
         for key, item in self.global_options.items():
@@ -793,11 +796,11 @@ class Lizmap:
 
         # Fill the table widgets
         for key, item in self.layers_table.items():
-            self.loadConfigIntoTableWidget(key)
+            self.load_config_into_table_widget(key)
 
         LOGGER.info('CFG file has been loaded')
 
-    def loadConfigIntoTableWidget(self, key):
+    def load_config_into_table_widget(self, key):
         """Load data from lizmap config file into the widget.
 
         :param key: The key section to load according to the table.
@@ -1596,16 +1599,16 @@ class Lizmap:
         # Add the self.myDic to the global layerList dictionary
         self.layerList = self.myDic
 
-        self.enableCheckBox(False)
+        self.enable_check_box(False)
 
     def setItemOptions(self):
         """Restore layer/group input values when selecting a layer tree item"""
         # get the selected item
         item = self.dlg.layer_tree.currentItem()
         if item:
-            self.enableCheckBox(True)
+            self.enable_check_box(True)
         else:
-            self.enableCheckBox(False)
+            self.enable_check_box(False)
 
         iKey = item.text(1)
         if iKey in self.layerList:
@@ -2609,8 +2612,8 @@ class Lizmap:
                 errorMessage += '* {}\n'.format(message)
                 self.log(
                     tr('The layers paths must be relative to the project file. '
-                       'Please copy the layers inside {} or in one folder above or aside {}.')
-                        .format(projectDir, layerSourcesBad),
+                       'Please copy the layers inside {} or in one folder above '
+                       'or aside {}.').format(projectDir, layerSourcesBad),
                     abort=True,
                     textarea=self.dlg.outLog)
                 errorMessage += layerPathError
@@ -2738,7 +2741,7 @@ class Lizmap:
 
             # Get and check map scales
             if self.isok:
-                self.getMinMaxScales()
+                self.get_min_max_scales()
                 self.iface.messageBar().pushMessage(
                     "Lizmap",
                     tr("Lizmap configuration file has been updated"),
@@ -2862,7 +2865,7 @@ class Lizmap:
             self.dlg.liFormFilterLayer.setExceptedLayerList(ffl)
 
             # Get config file data
-            self.getConfig()
+            self.get_config()
 
             self.layerList = {}
 
