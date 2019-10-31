@@ -478,7 +478,7 @@ class Lizmap:
         # connect Lizmap signals and functions
 
         # detect apply button clicked
-        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.getMapOptions)
+        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.get_map_options)
 
         # clear log button clicked
         self.dlg.btClearlog.clicked.connect(self.clear_log)
@@ -2512,174 +2512,173 @@ class Lizmap:
 
         return wmsParams
 
-    def checkGlobalProjectOptions(self):
-        """ Checks that the needed options are correctly set : relative path, project saved, etc."""
+    def check_global_project_options(self):
+        """Checks that the needed options are correctly set : relative path, project saved, etc.
 
-        isok = True
-        errorMessage = ''
+        :return: Flag if the project is valid and an error message.
+        :rtype: bool, basestring
+        """
+        is_valid = True
+        error_message = ''
         # Get the project data from api
-        p = QgsProject.instance()
-        if not p.fileName():
-            errorMessage += '* ' + tr("You need to open a qgis project before using Lizmap") + '\n'
-            isok = False
+        project = QgsProject.instance()
+        if not project.fileName():
+            error_message += '* ' + tr('You need to open a qgis project before using Lizmap') + '\n'
+            is_valid = False
 
-        if isok:
+        project_dir = None
+        if is_valid:
             # Get the project folder
-            projectDir, projectName = os.path.split(os.path.abspath('%s' % p.fileName()))
+            project_dir, project_name = os.path.split(os.path.abspath(project.fileName()))
 
-        if isok:
+        if is_valid:
             # Check if Qgis/capitaliseLayerName is set
-            s = QSettings()
-            if s.value('Qgis/capitaliseLayerName') and s.value('Qgis/capitaliseLayerName', type=bool):
+            settings = QSettings()
+            if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
                 message = tr(
                     'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
                     'in the QGIS option dialog, as it could cause issues with Lizmap.')
-                errorMessage += '* {} \n'.format(message)
-                isok = False
+                error_message += '* {} \n'.format(message)
+                is_valid = False
 
-        if isok:
+        if is_valid:
             # Check relative/absolute path
-            if p.readEntry('Paths', 'Absolute')[0] == 'true':
-                errorMessage += '* ' + tr(
-                    "The project layer paths must be set to relative. Please change this options in the project settings.") + '\n'
-                isok = False
+            if project.readEntry('Paths', 'Absolute')[0] == 'true':
+                error_message += '* ' + tr(
+                    'The project layer paths must be set to relative. '
+                    'Please change this options in the project settings.') + '\n'
+                is_valid = False
 
             # check active layers path layer by layer
-            layerSourcesOk = []
-            layerSourcesBad = []
-            mc = self.iface.mapCanvas()
-            layerPathError = ''
+            layer_sources_ok = []
+            layer_sources_bad = []
+            canvas = self.iface.mapCanvas()
+            layer_path_error = ''
 
-            for i in range(mc.layerCount()):
-                layerSource = '{}'.format(mc.layer(i).source())
-                if not hasattr(mc.layer(i), 'providerType'):
+            for i in range(canvas.layerCount()):
+                layer_source = '{}'.format(canvas.layer(i).source())
+                if not hasattr(canvas.layer(i), 'providerType'):
                     continue
-                layerProviderKey = mc.layer(i).providerType()
+                layer_provider_key = canvas.layer(i).providerType()
                 # Only for layers stored in disk
-                if layerProviderKey in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr') \
-                        and not layerSource.lower().startswith('mysql'):
+                if layer_provider_key in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr') \
+                        and not layer_source.lower().startswith('mysql'):
+                    # noinspection PyBroadException
                     try:
-                        relativePath = os.path.normpath(
-                            os.path.relpath(os.path.abspath(layerSource), projectDir)
+                        relative_path = os.path.normpath(
+                            os.path.relpath(os.path.abspath(layer_source), project_dir)
                         )
-                        if (not relativePath.startswith('../../../') and not relativePath.startswith('..\\..\\..\\')) \
-                                or (layerProviderKey == 'ogr' and layerSource.startswith('http')):
-                            layerSourcesOk.append(os.path.abspath(layerSource))
+                        if (not relative_path.startswith('../../../')
+                            and not relative_path.startswith('..\\..\\..\\')) \
+                                or (layer_provider_key == 'ogr' and layer_source.startswith('http')):
+                            layer_sources_ok.append(os.path.abspath(layer_source))
                         else:
-                            layerSourcesBad.append(layerSource)
-                            layerPathError += '--> %s \n' % relativePath
-                            isok = False
-                    except:
-                        isok = False
-                        layerSourcesBad.append(layerSource)
-                        layerPathError += '--> %s \n' % mc.layer(i).name()
+                            layer_sources_bad.append(layer_source)
+                            layer_path_error += '--> {} \n'.format(relative_path)
+                            is_valid = False
+                    except Exception:
+                        is_valid = False
+                        layer_sources_bad.append(layer_source)
+                        layer_path_error += '--> {} \n'.format(canvas.layer(i).name())
 
-            if len(layerSourcesBad) > 0:
+            if len(layer_sources_bad) > 0:
                 message = tr(
                     'The layers paths must be relative to the project file. '
-                    'Please copy the layers inside {}.').format(projectDir)
-                errorMessage += '* {}\n'.format(message)
+                    'Please copy the layers inside {}.').format(project_dir)
+                error_message += '* {}\n'.format(message)
                 self.log(
                     tr('The layers paths must be relative to the project file. '
                        'Please copy the layers inside {} or in one folder above '
-                       'or aside {}.').format(projectDir, layerSourcesBad),
+                       'or aside {}.').format(project_dir, layer_sources_bad),
                     abort=True,
                     textarea=self.dlg.outLog)
-                errorMessage += layerPathError
+                error_message += layer_path_error
 
             # check if a title has been given in the project QGIS Server tab configuration
             # first set the WMSServiceCapabilities to true
-            if not p.readEntry('WMSServiceCapabilities', "/")[1]:
-                p.writeEntry('WMSServiceCapabilities', "/", "True")
-            if p.readEntry('WMSServiceTitle', '')[0] == '':
-                p.writeEntry('WMSServiceTitle', '', '%s' % p.baseName())
+            if not project.readEntry('WMSServiceCapabilities', '/')[1]:
+                project.writeEntry('WMSServiceCapabilities', '/', 'True')
+            if project.readEntry('WMSServiceTitle', '')[0] == '':
+                project.writeEntry('WMSServiceTitle', '', project.baseName())
 
             # check if a bbox has been given in the project QGIS Server tab configuration
-            pWmsExtentLe = p.readListEntry('WMSExtent', '')
-            pWmsExtent = pWmsExtentLe[0]
-            fullExtent = self.iface.mapCanvas().extent()
-            if len(pWmsExtent) < 1:
-                pWmsExtent.append('%s' % fullExtent.xMinimum())
-                pWmsExtent.append('%s' % fullExtent.yMinimum())
-                pWmsExtent.append('%s' % fullExtent.xMaximum())
-                pWmsExtent.append('%s' % fullExtent.yMaximum())
-                p.writeEntry('WMSExtent', '', pWmsExtent)
+            project_wms_extent, _ = project.readListEntry('WMSExtent', '')
+            full_extent = self.iface.mapCanvas().extent()
+            if not project_wms_extent:
+                project_wms_extent.append('%s' % full_extent.xMinimum())
+                project_wms_extent.append('%s' % full_extent.yMinimum())
+                project_wms_extent.append('%s' % full_extent.xMaximum())
+                project_wms_extent.append('%s' % full_extent.yMaximum())
+                project.writeEntry('WMSExtent', '', project_wms_extent)
             else:
-                if not pWmsExtent[0] or not pWmsExtent[1] or not pWmsExtent[2] or not pWmsExtent[3]:
-                    pWmsExtent[0] = '%s' % fullExtent.xMinimum()
-                    pWmsExtent[1] = '%s' % fullExtent.yMinimum()
-                    pWmsExtent[2] = '%s' % fullExtent.xMaximum()
-                    pWmsExtent[3] = '%s' % fullExtent.yMaximum()
-                    p.writeEntry('WMSExtent', '', pWmsExtent)
+                if not project_wms_extent[0] or not project_wms_extent[1] or not \
+                        project_wms_extent[2] or not project_wms_extent[3]:
+                    project_wms_extent[0] = '%s' % full_extent.xMinimum()
+                    project_wms_extent[1] = '%s' % full_extent.yMinimum()
+                    project_wms_extent[2] = '%s' % full_extent.xMaximum()
+                    project_wms_extent[3] = '%s' % full_extent.yMaximum()
+                    project.writeEntry('WMSExtent', '', project_wms_extent)
 
-        if not isok and errorMessage:
-            QMessageBox.critical(
-                self.dlg,
-                tr("Lizmap Error"),
-                errorMessage,
-                QMessageBox.Ok)
+        return is_valid, error_message
 
-        return isok
-
-    def getMapOptions(self):
+    def get_map_options(self):
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
         # global project option checking
-        isok = self.checkGlobalProjectOptions()
+        is_valid, message = self.check_global_project_options()
+        if not is_valid:
+            QMessageBox.critical(
+                self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
 
-        if isok:
+        if is_valid:
             # Get configuration from input fields
 
             # Need to get theses values to check for Pseudo Mercator projection
-            in_osmMapnik = self.dlg.cbOsmMapnik.isChecked()
-            in_osmStamenToner = self.dlg.cbOsmStamenToner.isChecked()
-            in_googleStreets = self.dlg.cbGoogleStreets.isChecked()
-            in_googleSatellite = self.dlg.cbGoogleSatellite.isChecked()
-            in_googleHybrid = self.dlg.cbGoogleHybrid.isChecked()
-            in_googleTerrain = self.dlg.cbGoogleTerrain.isChecked()
-            in_bingStreets = self.dlg.cbBingStreets.isChecked()
-            in_bingSatellite = self.dlg.cbBingSatellite.isChecked()
-            in_bingHybrid = self.dlg.cbBingHybrid.isChecked()
-            in_ignStreets = self.dlg.cbIgnStreets.isChecked()
-            in_ignSatellite = self.dlg.cbIgnSatellite.isChecked()
-            in_ignTerrain = self.dlg.cbIgnTerrain.isChecked()
-            in_ignCadastral = self.dlg.cbIgnCadastral.isChecked()
+            mercator_layers = [
+                self.dlg.cbOsmMapnik.isChecked(),
+                self.dlg.cbOsmStamenToner.isChecked(),
+                self.dlg.cbGoogleStreets.isChecked(),
+                self.dlg.cbGoogleSatellite.isChecked(),
+                self.dlg.cbGoogleHybrid.isChecked(),
+                self.dlg.cbGoogleTerrain.isChecked(),
+                self.dlg.cbBingStreets.isChecked(),
+                self.dlg.cbBingSatellite.isChecked(),
+                self.dlg.cbBingHybrid.isChecked(),
+                self.dlg.cbIgnStreets.isChecked(),
+                self.dlg.cbIgnSatellite.isChecked(),
+                self.dlg.cbIgnTerrain.isChecked(),
+                self.dlg.cbIgnCadastral.isChecked(),
+            ]
 
-            isok = True
-
-            # log
             self.dlg.outLog.append('=' * 20)
-            self.dlg.outLog.append('<b>' + tr("Map - options") + '</b>')
+            self.dlg.outLog.append('<b>' + tr('Map - options') + '</b>')
             self.dlg.outLog.append('=' * 20)
 
             # Checking configuration data
             # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
-            p = QgsProject.instance()
+            project = QgsProject.instance()
 
-            # public baselayers: check that the 3857 projection is set in the "Coordinate System Restriction" section of the project WMS Server tab properties
-            if in_osmMapnik or in_osmStamenToner or in_googleStreets \
-                    or in_googleSatellite or in_googleHybrid or in_googleTerrain \
-                    or in_bingSatellite or in_bingStreets or in_bingHybrid \
-                    or in_ignSatellite or in_ignStreets or in_ignTerrain or in_ignCadastral:
-                crsList = p.readListEntry('WMSCrsList', '')
-                pmFound = False
-                for i in crsList[0]:
+            # public baselayers: check that the 3857 projection is set in the
+            # "Coordinate System Restriction" section of the project WMS Server tab properties
+            if True in mercator_layers:
+                crs_list = project.readListEntry('WMSCrsList', '')
+                mercator_found = False
+                for i in crs_list[0]:
                     if i == 'EPSG:3857':
-                        pmFound = True
-                if not pmFound:
-                    crsList[0].append('EPSG:3857')
-                    p.writeEntry('WMSCrsList', '', crsList[0])
+                        mercator_found = True
+                if not mercator_found:
+                    crs_list[0].append('EPSG:3857')
+                    project.writeEntry('WMSCrsList', '', crs_list[0])
 
             # list of layers for which to have the tool "locate by layer" set
-            lblTableWidget = self.dlg.twLocateByLayerList
-            twRowCount = lblTableWidget.rowCount()
-            wfsLayersList = p.readListEntry('WFSLayers', '')[0]
-            if twRowCount > 0:
+            row = self.dlg.twLocateByLayerList.rowCount()
+            wfs_layers = project.readListEntry('WFSLayers', '')[0]
+            if row > 0:
                 good = True
-                for row in range(twRowCount):
+                for row in range(row):
                     # check that the layer is checked in the WFS capabilities
-                    layerId = lblTableWidget.item(row, 6).text()
-                    if layerId not in wfsLayersList:
+                    layer_id = self.dlg.twLocateByLayerList.item(row, 6).text()
+                    if layer_id not in wfs_layers:
                         good = False
                 if not good:
                     self.log(
@@ -2692,28 +2691,26 @@ class Lizmap:
                 # write data in the lizmap json config file
                 self.writeProjectConfigFile()
                 self.log(
-                    tr("All the map parameters are correctly set"),
+                    tr('All the map parameters are correctly set'),
                     abort=False,
                     textarea=self.dlg.outLog)
                 self.log(
-                    '<b>' + tr("Lizmap configuration file has been updated") + '</b>',
+                    '<b>' + tr('Lizmap configuration file has been updated') + '</b>',
                     abort=False,
                     textarea=self.dlg.outLog)
-                a = True
             else:
-                a = False
                 QMessageBox.critical(
                     self.dlg,
-                    tr("Lizmap Error"),
-                    tr("Wrong or missing map parameters: please read the log and correct the printed errors."),
+                    tr('Lizmap Error'),
+                    tr('Wrong or missing map parameters: please read the log and correct the printed errors.'),
                     QMessageBox.Ok)
 
             # Get and check map scales
             if self.isok:
                 self.get_min_max_scales()
                 self.iface.messageBar().pushMessage(
-                    "Lizmap",
-                    tr("Lizmap configuration file has been updated"),
+                    'Lizmap',
+                    tr('Lizmap configuration file has been updated'),
                     level=Qgis.Success,
                     duration=3
                 )
@@ -2817,9 +2814,20 @@ class Lizmap:
                 tr("Lizmap - Warning"),
                 tr("A Lizmap window is already opened"),
                 QMessageBox.Ok)
+            return False
 
         # show the dialog only if checkGlobalProjectOptions is true
-        if not self.dlg.isVisible() and self.checkGlobalProjectOptions():
+        if not self.dlg.isVisible():
+            project_is_valid, message = self.check_global_project_options()
+
+            if not project_is_valid:
+                QMessageBox.critical(
+                    self.dlg,
+                    tr('Lizmap Error'),
+                    message,
+                    QMessageBox.Ok)
+                return False
+
             self.dlg.show()
 
             # Filter Form layers
@@ -2854,3 +2862,5 @@ class Lizmap:
             # See if OK was pressed
             if result == 1:
                 QMessageBox.warning(self.dlg, "Debug", "Quit !", QMessageBox.Ok)
+
+            return True
