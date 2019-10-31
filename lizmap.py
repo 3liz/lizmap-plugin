@@ -214,106 +214,107 @@ class Lizmap:
         self.dlg.gb_baselayersOptions.setStyleSheet(self.style_sheet)
 
         # List of ui widget for data driven actions and checking
-        self.globalOptions = LizmapConfig.globalOptionDefinitions
+        self.global_options = LizmapConfig.globalOptionDefinitions
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
-        self.globalOptions['mapScales']['widget'] = self.dlg.inMapScales
-        self.globalOptions['minScale']['widget'] = self.dlg.inMinScale
-        self.globalOptions['maxScale']['widget'] = self.dlg.inMaxScale
-        self.globalOptions['acl']['widget'] = self.dlg.inAcl
-        self.globalOptions['initialExtent']['widget'] = self.dlg.inInitialExtent
-        self.globalOptions['googleKey']['widget'] = self.dlg.inGoogleKey
-        self.globalOptions['googleHybrid']['widget'] = self.dlg.cbGoogleHybrid
-        self.globalOptions['googleSatellite']['widget'] = self.dlg.cbGoogleSatellite
-        self.globalOptions['googleTerrain']['widget'] = self.dlg.cbGoogleTerrain
-        self.globalOptions['googleStreets']['widget'] = self.dlg.cbGoogleStreets
-        self.globalOptions['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
-        self.globalOptions['osmStamenToner']['widget'] = self.dlg.cbOsmStamenToner
-        self.globalOptions['bingKey']['widget'] = self.dlg.inBingKey
-        self.globalOptions['bingStreets']['widget'] = self.dlg.cbBingStreets
-        self.globalOptions['bingSatellite']['widget'] = self.dlg.cbBingSatellite
-        self.globalOptions['bingHybrid']['widget'] = self.dlg.cbBingHybrid
-        self.globalOptions['ignKey']['widget'] = self.dlg.inIgnKey
-        self.globalOptions['ignStreets']['widget'] = self.dlg.cbIgnStreets
-        self.globalOptions['ignSatellite']['widget'] = self.dlg.cbIgnSatellite
-        self.globalOptions['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
-        self.globalOptions['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
-        self.globalOptions['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
-        self.globalOptions['popupLocation']['widget'] = self.dlg.liPopupContainer
-        self.globalOptions['print']['widget'] = self.dlg.cbActivatePrint
-        self.globalOptions['measure']['widget'] = self.dlg.cbActivateMeasure
-        self.globalOptions['externalSearch']['widget'] = self.dlg.liExternalSearch
-        self.globalOptions['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
-        self.globalOptions['geolocation']['widget'] = self.dlg.cbActivateGeolocation
-        self.globalOptions['pointTolerance']['widget'] = self.dlg.inPointTolerance
-        self.globalOptions['lineTolerance']['widget'] = self.dlg.inLineTolerance
-        self.globalOptions['polygonTolerance']['widget'] = self.dlg.inPolygonTolerance
-        self.globalOptions['hideHeader']['widget'] = self.dlg.cbHideHeader
-        self.globalOptions['hideMenu']['widget'] = self.dlg.cbHideMenu
-        self.globalOptions['hideLegend']['widget'] = self.dlg.cbHideLegend
-        self.globalOptions['hideOverview']['widget'] = self.dlg.cbHideOverview
-        self.globalOptions['hideNavbar']['widget'] = self.dlg.cbHideNavbar
-        self.globalOptions['hideProject']['widget'] = self.dlg.cbHideProject
-        self.globalOptions['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
-        self.globalOptions['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
-        self.globalOptions['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
-        self.globalOptions['emptyBaselayer']['widget'] = self.dlg.cbAddEmptyBaselayer
-        self.globalOptions['startupBaselayer']['widget'] = self.dlg.cbStartupBaselayer
-        self.globalOptions['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
-        self.globalOptions['datavizLocation']['widget'] = self.dlg.liDatavizContainer
-        self.globalOptions['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
-        self.globalOptions['atlasEnabled']['widget'] = self.dlg.atlasEnabled
-        self.globalOptions['atlasLayer']['widget'] = self.dlg.atlasLayer
-        self.globalOptions['atlasPrimaryKey']['widget'] = self.dlg.atlasPrimaryKey
-        self.globalOptions['atlasDisplayLayerDescription']['widget'] = self.dlg.atlasDisplayLayerDescription
-        self.globalOptions['atlasFeatureLabel']['widget'] = self.dlg.atlasFeatureLabel
-        self.globalOptions['atlasSortField']['widget'] = self.dlg.atlasSortField
-        self.globalOptions['atlasHighlightGeometry']['widget'] = self.dlg.atlasHighlightGeometry
-        self.globalOptions['atlasZoom']['widget'] = self.dlg.atlasZoom
-        self.globalOptions['atlasDisplayPopup']['widget'] = self.dlg.atlasDisplayPopup
-        self.globalOptions['atlasTriggerFilter']['widget'] = self.dlg.atlasTriggerFilter
-        self.globalOptions['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
-        self.globalOptions['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
-        self.globalOptions['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
-        self.globalOptions['atlasDuration']['widget'] = self.dlg.atlasDuration
+        self.global_options['mapScales']['widget'] = self.dlg.inMapScales
+        self.global_options['minScale']['widget'] = self.dlg.inMinScale
+        self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
+        self.global_options['acl']['widget'] = self.dlg.inAcl
+        self.global_options['initialExtent']['widget'] = self.dlg.inInitialExtent
+        self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
+        self.global_options['googleHybrid']['widget'] = self.dlg.cbGoogleHybrid
+        self.global_options['googleSatellite']['widget'] = self.dlg.cbGoogleSatellite
+        self.global_options['googleTerrain']['widget'] = self.dlg.cbGoogleTerrain
+        self.global_options['googleStreets']['widget'] = self.dlg.cbGoogleStreets
+        self.global_options['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
+        self.global_options['osmStamenToner']['widget'] = self.dlg.cbOsmStamenToner
+        self.global_options['bingKey']['widget'] = self.dlg.inBingKey
+        self.global_options['bingStreets']['widget'] = self.dlg.cbBingStreets
+        self.global_options['bingSatellite']['widget'] = self.dlg.cbBingSatellite
+        self.global_options['bingHybrid']['widget'] = self.dlg.cbBingHybrid
+        self.global_options['ignKey']['widget'] = self.dlg.inIgnKey
+        self.global_options['ignStreets']['widget'] = self.dlg.cbIgnStreets
+        self.global_options['ignSatellite']['widget'] = self.dlg.cbIgnSatellite
+        self.global_options['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
+        self.global_options['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
+        self.global_options['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
+        self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
+        self.global_options['print']['widget'] = self.dlg.cbActivatePrint
+        self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
+        self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
+        self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
+        self.global_options['geolocation']['widget'] = self.dlg.cbActivateGeolocation
+        self.global_options['pointTolerance']['widget'] = self.dlg.inPointTolerance
+        self.global_options['lineTolerance']['widget'] = self.dlg.inLineTolerance
+        self.global_options['polygonTolerance']['widget'] = self.dlg.inPolygonTolerance
+        self.global_options['hideHeader']['widget'] = self.dlg.cbHideHeader
+        self.global_options['hideMenu']['widget'] = self.dlg.cbHideMenu
+        self.global_options['hideLegend']['widget'] = self.dlg.cbHideLegend
+        self.global_options['hideOverview']['widget'] = self.dlg.cbHideOverview
+        self.global_options['hideNavbar']['widget'] = self.dlg.cbHideNavbar
+        self.global_options['hideProject']['widget'] = self.dlg.cbHideProject
+        self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
+        self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
+        self.global_options['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
+        self.global_options['emptyBaselayer']['widget'] = self.dlg.cbAddEmptyBaselayer
+        self.global_options['startupBaselayer']['widget'] = self.dlg.cbStartupBaselayer
+        self.global_options['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
+        self.global_options['datavizLocation']['widget'] = self.dlg.liDatavizContainer
+        self.global_options['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
+        self.global_options['atlasEnabled']['widget'] = self.dlg.atlasEnabled
+        self.global_options['atlasLayer']['widget'] = self.dlg.atlasLayer
+        self.global_options['atlasPrimaryKey']['widget'] = self.dlg.atlasPrimaryKey
+        self.global_options['atlasDisplayLayerDescription']['widget'] = self.dlg.atlasDisplayLayerDescription
+        self.global_options['atlasFeatureLabel']['widget'] = self.dlg.atlasFeatureLabel
+        self.global_options['atlasSortField']['widget'] = self.dlg.atlasSortField
+        self.global_options['atlasHighlightGeometry']['widget'] = self.dlg.atlasHighlightGeometry
+        self.global_options['atlasZoom']['widget'] = self.dlg.atlasZoom
+        self.global_options['atlasDisplayPopup']['widget'] = self.dlg.atlasDisplayPopup
+        self.global_options['atlasTriggerFilter']['widget'] = self.dlg.atlasTriggerFilter
+        self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
+        self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
+        self.global_options['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
+        self.global_options['atlasDuration']['widget'] = self.dlg.atlasDuration
 
-        self.layerOptionsList = LizmapConfig.layerOptionDefinitions
+        self.layer_options_list = LizmapConfig.layerOptionDefinitions
         # Add widget information
-        self.layerOptionsList['title']['widget'] = self.dlg.inLayerTitle
-        self.layerOptionsList['abstract']['widget'] = self.dlg.teLayerAbstract
-        self.layerOptionsList['link']['widget'] = self.dlg.inLayerLink
-        self.layerOptionsList['minScale']['widget'] = None
-        self.layerOptionsList['maxScale']['widget'] = None
-        self.layerOptionsList['toggled']['widget'] = self.dlg.cbToggled
-        self.layerOptionsList['popup']['widget'] = self.dlg.checkbox_popup
-        self.layerOptionsList['popupFrame']['widget'] = self.dlg.popup_frame
-        self.layerOptionsList['popupSource']['widget'] = self.dlg.liPopupSource
-        self.layerOptionsList['popupTemplate']['widget'] = None
-        self.layerOptionsList['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
-        self.layerOptionsList['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
-        self.layerOptionsList['noLegendImage']['widget'] = self.dlg.cbNoLegendImage
-        self.layerOptionsList['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
-        self.layerOptionsList['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
-        self.layerOptionsList['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
-        self.layerOptionsList['singleTile']['widget'] = self.dlg.cbSingleTile
-        self.layerOptionsList['imageFormat']['widget'] = self.dlg.liImageFormat
-        self.layerOptionsList['cached']['widget'] = self.dlg.checkbox_server_cache
-        self.layerOptionsList['serverFrame']['widget'] = self.dlg.server_cache_frame
-        self.layerOptionsList['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
-        self.layerOptionsList['metatileSize']['widget'] = self.dlg.inMetatileSize
-        self.layerOptionsList['clientCacheExpiration']['widget'] = self.dlg.inClientCacheExpiration
-        self.layerOptionsList['externalWmsToggle']['widget'] = self.dlg.cbExternalWms
-        self.layerOptionsList['sourceRepository']['widget'] = self.dlg.inSourceRepository
-        self.layerOptionsList['sourceProject']['widget'] = self.dlg.inSourceProject
+        self.layer_options_list['title']['widget'] = self.dlg.inLayerTitle
+        self.layer_options_list['abstract']['widget'] = self.dlg.teLayerAbstract
+        self.layer_options_list['link']['widget'] = self.dlg.inLayerLink
+        self.layer_options_list['minScale']['widget'] = None
+        self.layer_options_list['maxScale']['widget'] = None
+        self.layer_options_list['toggled']['widget'] = self.dlg.cbToggled
+        self.layer_options_list['popup']['widget'] = self.dlg.checkbox_popup
+        self.layer_options_list['popupFrame']['widget'] = self.dlg.popup_frame
+        self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
+        self.layer_options_list['popupTemplate']['widget'] = None
+        self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
+        self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
+        self.layer_options_list['noLegendImage']['widget'] = self.dlg.cbNoLegendImage
+        self.layer_options_list['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
+        self.layer_options_list['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
+        self.layer_options_list['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
+        self.layer_options_list['singleTile']['widget'] = self.dlg.cbSingleTile
+        self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
+        self.layer_options_list['cached']['widget'] = self.dlg.checkbox_server_cache
+        self.layer_options_list['serverFrame']['widget'] = self.dlg.server_cache_frame
+        self.layer_options_list['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
+        self.layer_options_list['metatileSize']['widget'] = self.dlg.inMetatileSize
+        self.layer_options_list['clientCacheExpiration']['widget'] = self.dlg.inClientCacheExpiration
+        self.layer_options_list['externalWmsToggle']['widget'] = self.dlg.cbExternalWms
+        self.layer_options_list['sourceRepository']['widget'] = self.dlg.inSourceRepository
+        self.layer_options_list['sourceProject']['widget'] = self.dlg.inSourceProject
 
-        self.datavizOptions = LizmapConfig.datavizOptionDefinitions
-        self.datavizOptions['plotType']['widget'] = self.dlg.liDatavizPlotType
-        self.datavizOptions['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
+        self.dataviz_options = LizmapConfig.datavizOptionDefinitions
+        self.dataviz_options['plotType']['widget'] = self.dlg.liDatavizPlotType
+        self.dataviz_options['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
 
-        self.formFilterOptions = LizmapConfig.formFilterOptionDefinitions
-        self.formFilterOptions['type']['widget'] = self.dlg.liFormFilterFieldType
-        self.formFilterOptions['uniqueValuesFormat']['widget'] = self.dlg.liFormFilterFormat
+        self.form_filter_options = LizmapConfig.formFilterOptionDefinitions
+        self.form_filter_options['type']['widget'] = self.dlg.liFormFilterFieldType
+        self.form_filter_options['uniqueValuesFormat']['widget'] = self.dlg.liFormFilterFormat
 
-        # map qgis geometry type
+        # map QGIS geometry type
+        # TODO lizmap 4, to remove
         self.mapQgisGeometryType = {
             0: 'point',
             1: 'line',
@@ -334,10 +335,10 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.getMinMaxScales)
 
-        self.layerOptionsList['popupSource']['widget'].currentIndexChanged.connect(self.enable_popup_source_button)
+        self.layer_options_list['popupSource']['widget'].currentIndexChanged.connect(self.enable_popup_source_button)
 
         # Connect widget signals to setLayerProperty method depending on widget type
-        for key, item in list(self.layerOptionsList.items()):
+        for key, item in self.layer_options_list.items():
             if item['widget']:
                 control = item['widget']
                 slot = partial(self.setLayerProperty, key)
@@ -355,7 +356,7 @@ class Lizmap:
                     control.fieldChanged.connect(slot)
 
         # Connect baselayer checkboxes
-        self.baselayerWidgetList = {
+        self.base_layer_widget_list = {
             'layer': self.dlg.cbLayerIsBaseLayer,
             'osm-mapnik': self.dlg.cbOsmMapnik,
             'osm-stamen-toner': self.dlg.cbOsmStamenToner,
@@ -372,12 +373,12 @@ class Lizmap:
             'ign-cadastral': self.dlg.cbIgnCadastral,
             'empty': self.dlg.cbAddEmptyBaselayer
         }
-        for key, item in list(self.baselayerWidgetList.items()):
+        for key, item in self.base_layer_widget_list.items():
             slot = self.onBaselayerCheckboxChange
             item.stateChanged.connect(slot)
 
         # tables of layers
-        self.layersTable = {
+        self.layers_table = {
             'locateByLayer': {
                 'tableWidget': self.dlg.twLocateByLayerList,
                 'removeButton': self.dlg.btLocateByLayerDel,
@@ -443,6 +444,7 @@ class Lizmap:
         self.action_about = None
         self.isok = None
 
+    # noinspection PyPep8Naming
     def initGui(self):
         """Create action that will start plugin configuration"""
         self.action = QAction(
@@ -495,7 +497,7 @@ class Lizmap:
         #########
 
         # Manage "delete line" button
-        for key, item in list(self.layersTable.items()):
+        for key, item in self.layers_table.items():
             control = item['removeButton']
             slot = partial(self.remove_selected_layer_from_table, key)
             control.clicked.connect(slot)
@@ -576,7 +578,7 @@ class Lizmap:
         self.dlg.liDatavizPlotType.currentText()
 
         # Set the dataviz options (type, etc.)
-        for key, item in self.datavizOptions.items():
+        for key, item in self.dataviz_options.items():
             if item['widget']:
                 if item['wType'] == 'list':
                     list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
@@ -585,7 +587,7 @@ class Lizmap:
 
         # Set the form filter options (type, etc.)
         self.dlg.btFormFilterAddField.clicked.connect(self.addLayerToFormFilter)
-        for key, item in self.formFilterOptions.items():
+        for key, item in self.form_filter_options.items():
             if item['widget']:
                 if item['wType'] == 'list':
                     list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
@@ -626,15 +628,15 @@ class Lizmap:
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
-        data = self.layerOptionsList['popupSource']['widget'].currentText()
+        data = self.layer_options_list['popupSource']['widget'].currentText()
         self.dlg.btConfigurePopup.setEnabled(data not in ['auto', 'qgis'])
 
     def showHelp(self):
         """Opens the html help file content with default browser"""
         if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
-            local_help_url = "http://docs.3liz.com/%s/" % self.locale
+            local_help_url = 'http://docs.3liz.com/{}/'.format(self.locale)
         else:
-            local_help_url = 'http://translate.google.fr/translate?sl=fr&tl=%s&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com' % self.locale
+            local_help_url = 'http://translate.google.fr/translate?sl=fr&tl={}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com'.format(self.locale)
         QDesktopServices.openUrl(QUrl(local_help_url))
         LOGGER.debug('Opening help panel')
 
@@ -660,7 +662,7 @@ class Lizmap:
 
     def enableCheckBox(self, value):
         """Enable/Disable checkboxes and fields of the Layer tab"""
-        for key, item in list(self.layerOptionsList.items()):
+        for key, item in list(self.layer_options_list.items()):
             if item['widget'] and key not in ('sourceProject'):
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
@@ -703,11 +705,11 @@ class Lizmap:
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
-                for key in list(self.layersTable.keys()):
+                for key in list(self.layers_table.keys()):
                     if key in sjson:
-                        self.layersTable[key]['jsonConfig'] = sjson[key]
+                        self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
-                        self.layersTable[key]['jsonConfig'] = {}
+                        self.layers_table[key]['jsonConfig'] = {}
             except:
                 isok = 0
                 copyfile(json_file, "%s.back" % json_file)
@@ -727,7 +729,7 @@ class Lizmap:
                 f.close()
 
         # Set the global options (map, tools, etc.)
-        for key, item in list(self.globalOptions.items()):
+        for key, item in self.global_options.items():
             if item['widget']:
                 if item['wType'] == 'checkbox':
                     item['widget'].setChecked(item['default'])
@@ -773,7 +775,7 @@ class Lizmap:
                             item['widget'].setCurrentIndex(list_dic[json_options[key]])
 
         # Set layer combobox
-        for key, item in list(self.globalOptions.items()):
+        for key, item in self.global_options.items():
             if item['widget']:
                 if item['wType'] == 'layers':
                     if key in json_options:
@@ -783,14 +785,14 @@ class Lizmap:
                                 break
 
         # Then set field combobox
-        for key, item in list(self.globalOptions.items()):
+        for key, item in self.global_options.items():
             if item['widget']:
                 if item['wType'] == 'fields':
                     if key in json_options:
                         item['widget'].setField(str(json_options[key]))
 
         # Fill the table widgets
-        for key, item in list(self.layersTable.items()):
+        for key, item in self.layers_table.items():
             self.loadConfigIntoTableWidget(key)
 
         LOGGER.info('CFG file has been loaded')
@@ -802,7 +804,7 @@ class Lizmap:
         :type key: basestring
         """
         # Get parameters for the widget
-        lt = self.layersTable[key]
+        lt = self.layers_table[key]
         widget = lt['tableWidget']
         attributes = lt['cols']
         json_config = lt['jsonConfig']
@@ -934,7 +936,7 @@ class Lizmap:
         Remove a layer from the list of layers
         for which to have the "locate by layer" tool
         """
-        tw = self.layersTable[key]['tableWidget']
+        tw = self.layers_table[key]['tableWidget']
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
@@ -942,8 +944,8 @@ class Lizmap:
         """
         Remove layers from tables when deleted from layer registry
         """
-        for key, item in list(self.layersTable.items()):
-            tw = self.layersTable[key]['tableWidget']
+        for key, item in list(self.layers_table.items()):
+            tw = self.layers_table[key]['tableWidget']
 
             # Count lines
             tw_row_count = tw.rowCount()
@@ -951,9 +953,9 @@ class Lizmap:
                 continue
 
             # Get index of layerId column
-            if 'layerId' not in self.layersTable[key]['cols']:
+            if 'layerId' not in self.layers_table[key]['cols']:
                 continue
-            idx = self.layersTable[key]['cols'].index('layerId') + 1
+            idx = self.layers_table[key]['cols'].index('layerId') + 1
 
             # Remove layer if layerId match
             for row in range(tw_row_count):
@@ -1416,7 +1418,7 @@ class Lizmap:
 
         # DEFAULT VALUES : generic default values for layers and group
         self.myDic[itemKey]['name'] = "%s" % itemKey
-        for key, item in list(self.layerOptionsList.items()):
+        for key, item in list(self.layer_options_list.items()):
             self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
 
@@ -1469,7 +1471,7 @@ class Lizmap:
         if '%s' % self.myDic[itemKey]['name'] in jsonLayers:
             jsonKey = '%s' % self.myDic[itemKey]['name']
             # loop through layer options to override
-            for key, item in list(self.layerOptionsList.items()):
+            for key, item in list(self.layer_options_list.items()):
                 # override only for ui widgets
                 if item['widget']:
                     if key in jsonLayers[jsonKey]:
@@ -1613,7 +1615,7 @@ class Lizmap:
             isLayer = selectedItem['type'] == 'layer'
 
             # set options
-            for key, val in list(self.layerOptionsList.items()):
+            for key, val in list(self.layer_options_list.items()):
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         val['widget'].setText(selectedItem[key])
@@ -1628,10 +1630,10 @@ class Lizmap:
                                 is_enabled = not selectedItem[key]
                             else:
                                 is_enabled = selectedItem[key]
-                            self.layerOptionsList[children]['widget'].setEnabled(is_enabled)
-                            if self.layerOptionsList[children]['wType'] == 'checkbox' and not is_enabled:
-                                if self.layerOptionsList[children]['widget'].isChecked():
-                                    self.layerOptionsList[children]['widget'].setChecked(False)
+                            self.layer_options_list[children]['widget'].setEnabled(is_enabled)
+                            if self.layer_options_list[children]['wType'] == 'checkbox' and not is_enabled:
+                                if self.layer_options_list[children]['widget'].isChecked():
+                                    self.layer_options_list[children]['widget'].setChecked(False)
 
                     elif val['wType'] == 'list':
                         listDic = {val['list'][i]: i for i in range(0, len(val['list']))}
@@ -1650,7 +1652,7 @@ class Lizmap:
 
         else:
             # set default values for this layer/group
-            for key, val in list(self.layerOptionsList.items()):
+            for key, val in list(self.layer_options_list.items()):
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         val['widget'].setText(val['default'])
@@ -1688,7 +1690,7 @@ class Lizmap:
         # get the selected item in the layer tree
         item = self.dlg.layer_tree.currentItem()
         # get the definition for this property
-        layerOption = self.layerOptionsList[key]
+        layerOption = self.layer_options_list[key]
         # modify the property for the selected item
         if item and item.text(1) in self.layerList:
             if layerOption['wType'] == 'text':
@@ -1709,10 +1711,10 @@ class Lizmap:
                         is_enabled = not checked
                     else:
                         is_enabled = checked
-                    self.layerOptionsList[children]['widget'].setEnabled(is_enabled)
-                    if self.layerOptionsList[children]['wType'] == 'checkbox' and not is_enabled:
-                        if self.layerOptionsList[children]['widget'].isChecked():
-                            self.layerOptionsList[children]['widget'].setChecked(False)
+                    self.layer_options_list[children]['widget'].setEnabled(is_enabled)
+                    if self.layer_options_list[children]['wType'] == 'checkbox' and not is_enabled:
+                        if self.layer_options_list[children]['widget'].isChecked():
+                            self.layer_options_list[children]['widget'].setChecked(False)
             elif layerOption['wType'] == 'list':
                 self.layerList[item.text(1)][key] = layerOption['list'][layerOption['widget'].currentIndex()]
 
@@ -1728,7 +1730,7 @@ class Lizmap:
     def setLayerMeta(self, item, key):
         """Set a the title/abstract/link Qgis metadata when corresponding item is changed
         Used in setLayerProperty"""
-        if 'isMetadata' in self.layerOptionsList[key]:
+        if 'isMetadata' in self.layer_options_list[key]:
             # modify the layer.title|abstract|link() if possible
             if self.layerList[item.text(1)]['type'] == 'layer':
                 layer = self.get_qgis_layer_by_id(item.text(1))
@@ -2057,7 +2059,7 @@ class Lizmap:
         # add all the layers to the renderer
         # r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
         # Get the project data
-        p = QgsProject.instance()
+        project = QgsProject.instance()
         # options
         liz2json = {}
         liz2json["options"] = {}
@@ -2069,10 +2071,10 @@ class Lizmap:
         pAuthid = pCrs.authid()
         pProj4 = pCrs.toProj4()
         liz2json["options"]["projection"] = {}
-        liz2json["options"]["projection"]["proj4"] = '%s' % pProj4
-        liz2json["options"]["projection"]["ref"] = '%s' % pAuthid
+        liz2json["options"]["projection"]["proj4"] = '{}'.format(pProj4)
+        liz2json["options"]["projection"]["ref"] = '{}'.format(pAuthid)
         # wms extent
-        pWmsExtent = p.readListEntry('WMSExtent', '')[0]
+        pWmsExtent = project.readListEntry('WMSExtent', '')[0]
         if len(pWmsExtent) > 1:
             bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3]))
         else:
@@ -2084,7 +2086,7 @@ class Lizmap:
             self.set_initial_extent_from_project()
 
         # gui user defined options
-        for key, item in list(self.globalOptions.items()):
+        for key, item in self.global_options.items():
             if item['widget']:
                 inputValue = None
                 # Get field value depending on widget type
@@ -2145,8 +2147,8 @@ class Lizmap:
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
-        p = QgsProject.instance()
-        wfsLayersList = p.readListEntry('WFSLayers', '')[0]
+        project = QgsProject.instance()
+        wfsLayersList = project.readListEntry('WFSLayers', '')[0]
         if twRowCount > 0:
             liz2json["locateByLayer"] = {}
             for row in range(twRowCount):
@@ -2429,7 +2431,7 @@ class Lizmap:
                     layerOptions['styles'] = ls
 
             # Loop through the layer options and set properties from the dictionary
-            for key, val in list(self.layerOptionsList.items()):
+            for key, val in self.layer_options_list.items():
                 propVal = v[key]
                 if val['type'] == 'string':
                     if val['wType'] in ('text', 'textarea'):
@@ -2447,7 +2449,7 @@ class Lizmap:
 
             # Cache Metatile: unset metatileSize if empty
             # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
-            p = re.compile('ab*')
+            project = re.compile('ab*')
             # unset metatileSize
             if not re.match('\d,\d', layerOptions['metatileSize']):
                 del layerOptions['metatileSize']
@@ -2488,29 +2490,29 @@ class Lizmap:
             liz2json["layers"]["{}".format(v['name'])] = layerOptions
 
         # Write json to the cfg file
-        jsonFileContent = json.dumps(
+        json_file_content = json.dumps(
             liz2json,
             sort_keys=False,
             indent=4
         )
 
         # Get the project data
-        p = QgsProject.instance()
-        jsonFile = "%s.cfg" % p.fileName()
-        f = open(jsonFile, 'w')
-        f.write(jsonFileContent)
-        f.close()
+        project = QgsProject.instance()
+        json_file = '{}.cfg'.format(project.fileName())
+        cfg_file = open(json_file, 'w')
+        cfg_file.write(json_file_content)
+        cfg_file.close()
 
         # Ask to save the project
-        if p.isDirty():
+        if project.isDirty():
             self.iface.messageBar().pushMessage(
-                "Lizmap",
-                tr("Please do not forget to save the QGIS project before publishing your map"),
+                'Lizmap',
+                tr('Please do not forget to save the QGIS project before publishing your map'),
                 level=Qgis.Warning,
                 duration=30
             )
 
-        LOGGER.info('The CFG file has been written to "{}"'.format(jsonFile))
+        LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
 
         layers = remove_all_ghost_layers()
         if layers:
@@ -2776,7 +2778,7 @@ class Lizmap:
             i += 1
 
         # 2/ External baselayers
-        for k, v in list(self.baselayerWidgetList.items()):
+        for k, v in list(self.base_layer_widget_list.items()):
             if k != 'layer':
                 if v.isChecked():
                     combo.addItem(k, k)
@@ -2789,7 +2791,7 @@ class Lizmap:
         combo.setCurrentIndex(idx)
 
         # Fill self.globalOptions
-        self.globalOptions['startupBaselayer']['list'] = blist
+        self.global_options['startupBaselayer']['list'] = blist
 
     def setStartupBaselayerFromConfig(self):
         """
@@ -2818,8 +2820,8 @@ class Lizmap:
                 f.close()
 
     def reinitDefaultProperties(self):
-        for key in list(self.layersTable.keys()):
-            self.layersTable[key]['jsonConfig'] = {}
+        for key in list(self.layers_table.keys()):
+            self.layers_table[key]['jsonConfig'] = {}
 
     def onProjectRead(self):
         """
