@@ -7,7 +7,7 @@ QGroupBox::title {{
     subcontrol-position: top left;
 }}
 QGroupBox {{
-    background-color: rgba({}, {}, {}, {}");
+    background-color: rgba({}, {}, {}, {});
     border: 1px solid rgba(0,0,0,20%);
     border-radius: 5px;
     font-weight: bold;
