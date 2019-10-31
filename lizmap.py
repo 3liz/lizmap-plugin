@@ -86,6 +86,7 @@ from qgis.core import (
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
+from .lizmap_popup_dialog import LizmapPopupDialog
 from .qgis_plugin_tools.tools.custom_logging import setup_logger
 from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
@@ -131,6 +132,7 @@ class Lizmap:
             LOGGER.warning('Translation is not set, missing the submodule')
 
         self.dlg = LizmapDialog()
+        self.popup_dialog = None
 
         icon = QIcon()
 
@@ -485,7 +487,7 @@ class Lizmap:
         self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
 
         # configure popup button
-        self.dlg.btConfigurePopup.clicked.connect(self.configurePopup)
+        self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
         self.dlg.btQgisPopupFromForm.clicked.connect(self.setTooltipContentFromForm)
 
         # detect project closed
@@ -577,7 +579,7 @@ class Lizmap:
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
 
         # Add a layer to the lizmap dataviz layers
-        self.dlg.btDatavizAddLayer.clicked.connect(self.addLayerToDataviz)
+        self.dlg.btDatavizAddLayer.clicked.connect(self.add_layer_to_dataviz)
         self.dlg.liDatavizPlotType.currentText()
 
         # Set the dataviz options (type, etc.)
@@ -598,8 +600,8 @@ class Lizmap:
                         item['widget'].setItemData(i, k)
         self.dlg.liFormFilterLayer.currentText()
         # Hide some form filter inputs depending on value
-        self.updateFormFilterVisibleFields()
-        self.dlg.liFormFilterFieldType.currentIndexChanged[str].connect(self.updateFormFilterVisibleFields)
+        self.update_form_filter_visible_fields()
+        self.dlg.liFormFilterFieldType.currentIndexChanged[str].connect(self.update_form_filter_visible_fields)
 
         # Add empty item in some field comboboxes
         # only in QGIS 3.0 TODO
@@ -1223,14 +1225,13 @@ class Lizmap:
 
         LOGGER.info('Layer "{}" has been added to the time manager tool'.format(layer_id))
 
+    # noinspection PyPep8Naming
     def addLayerToLizmapBaselayers(self):
-        """
-        Add a layer in the list of
-        Lizmap external baselayers
+        """Add a layer in the list of Lizmap external baselayers.
 
+        This is a deprecated feature in lizmap.
+        Users should use embedded layer instead.
         """
-
-        # Retrieve user options
         layerRepository = str(self.dlg.inLizmapBaselayerRepository.text()).strip(' \t')
         layerProject = str(self.dlg.inLizmapBaselayerProject.text()).strip(' \t')
         layerName = str(self.dlg.inLizmapBaselayerLayer.text()).strip(' \t')
@@ -1244,7 +1245,8 @@ class Lizmap:
                     self.dlg,
                     tr("Lizmap Error"),
                     tr(
-                        "Please check that all input fields have been filled: repository, project, layer name and title"),
+                        "Please check that all input fields have been filled: repository, project, "
+                        "layer name and title"),
                     QMessageBox.Ok
                 )
                 return
@@ -1266,12 +1268,8 @@ class Lizmap:
 
             LOGGER.info('Layer has been added to the base layer list')
 
-    def addLayerToDataviz(self):
-        """
-        Add a layer in the list of
-        Dataviz layer
-        """
-
+    def add_layer_to_dataviz(self):
+        """Add a layer in the list of Dataviz layer."""
         # Get the layer selected in the combo box
         layer = self.dlg.liDatavizPlotLayer.currentLayer()
         if not layer:
@@ -1281,8 +1279,8 @@ class Lizmap:
         if not self.check_wfs_is_checked(layer):
             return
 
-        layerName = layer.name()
-        layerId = layer.id()
+        layer_name = layer.name()
+        layer_id = layer.id()
         icon = QgsMapLayerModel.iconForLayer(layer)
 
         ptitle = str(self.dlg.inDatavizPlotTitle.text()).strip(' \t')
@@ -1314,8 +1312,8 @@ class Lizmap:
 
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields,
-                   pcolor2, colorfield2, popup_display_child_plot, only_show_child, layerId, twRowCount]
+        content = [layer_name, ptitle, ptype, pxfields, aggregation, pyfields, pcolor, colorfield, hasYField2, py2fields,
+                   pcolor2, colorfield2, popup_display_child_plot, only_show_child, layer_id, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -1331,7 +1329,7 @@ class Lizmap:
         # Hide layer Id
         lblTableWidget.setColumnHidden(colCount - 2, True)
 
-        LOGGER.info('Layer "{}" has been added to the dataviz tool'.format(layerId))
+        LOGGER.info('Layer "{}" has been added to the dataviz tool'.format(layer_id))
 
     def addLayerToFormFilter(self):
         """
@@ -1383,8 +1381,8 @@ class Lizmap:
 
         LOGGER.info('Layer "{}" has been added to the form filter tool'.format(layerId))
 
-    def updateFormFilterVisibleFields(self):
-        """Show/Hide fields depending of chosen type"""
+    def update_form_filter_visible_fields(self):
+        """Show/Hide fields depending of chosen type."""
         ftype = self.dlg.liFormFilterFieldType.itemData(self.dlg.liFormFilterFieldType.currentIndex())
         self.dlg.liFormFilterMinDate.setEnabled(ftype == 'date')
         self.dlg.liFormFilterMaxDate.setEnabled(ftype == 'date')
@@ -1392,8 +1390,8 @@ class Lizmap:
         self.dlg.liFormFilterFormat.setEnabled(ftype == 'uniquevalues')
         self.dlg.liFormFilterSplitter.setEnabled(ftype == 'uniquevalues')
 
-    def refreshLayerTree(self):
-        """Refresh the layer tree on user demand. Uses method populateLayerTree"""
+    def refresh_layer_tree(self):
+        """Refresh the layer tree on user demand. Uses method populateLayerTree."""
         # Ask confirmation
         message = tr(
             'You can refresh the layer tree by pressing "Yes". '
@@ -1506,7 +1504,7 @@ class Lizmap:
                     if key in jsonLayers[jsonKey]:
                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
 
-    def processNode(self, node, parentNode, jsonLayers):
+    def process_node(self, node, parent_node, json_layers):
         """
         Process a single node of the QGIS layer tree and adds it to Lizmap layer tree.
         """
@@ -1535,10 +1533,10 @@ class Lizmap:
                 self.myDic[child_id] = {'id': child_id}
                 if child_type == 'group':
                     # it is a group
-                    self.setTreeItemData('group', child_id, jsonLayers)
+                    self.setTreeItemData('group', child_id, json_layers)
                 else:
                     # it is a layer
-                    self.setTreeItemData('layer', child_id, jsonLayers)
+                    self.setTreeItemData('layer', child_id, json_layers)
 
                 item = QTreeWidgetItem(
                     [
@@ -1551,13 +1549,13 @@ class Lizmap:
                 self.myDic[child_id]['item'] = item
 
                 # Move group or layer to its parent node
-                if not parentNode:
+                if not parent_node:
                     self.dlg.layer_tree.addTopLevelItem(item)
                 else:
-                    parentNode.addChild(item)
+                    parent_node.addChild(item)
 
             if child_type == 'group':
-                self.processNode(child, item, jsonLayers)
+                self.process_node(child, item, json_layers)
 
     def populateLayerTree(self):
         """Populate the layer tree of the Layers tab from Qgis legend interface.
@@ -1593,7 +1591,7 @@ class Lizmap:
         root = QgsProject.instance().layerTreeRoot()
 
         # Recursively process layer tree nodes
-        self.processNode(root, None, json_layers)
+        self.process_node(root, None, json_layers)
         self.dlg.layer_tree.expandAll()
 
         # Add the self.myDic to the global layerList dictionary
@@ -1685,9 +1683,8 @@ class Lizmap:
         return wmsEnabled
 
     def setLayerProperty(self, key, *args):
-        """
-            Set a layer property in global self.layerList
-            when the corresponding ui widget has sent changed signal
+        """Set a layer property in global self.layerList
+        when the corresponding ui widget has sent changed signal.
         """
         key = str(key)
         # get the selected item in the layer tree
@@ -1698,10 +1695,10 @@ class Lizmap:
         if item and item.text(1) in self.layerList:
             if layerOption['wType'] == 'text':
                 self.layerList[item.text(1)][key] = layerOption['widget'].text()
-                self.setLayerMeta(item, key)
+                self.set_layer_metadata(item, key)
             elif layerOption['wType'] == 'textarea':
                 self.layerList[item.text(1)][key] = layerOption['widget'].toPlainText()
-                self.setLayerMeta(item, key)
+                self.set_layer_metadata(item, key)
             elif layerOption['wType'] == 'spinbox':
                 self.layerList[item.text(1)][key] = layerOption['widget'].value()
             elif layerOption['wType'] == 'checkbox':
@@ -1730,7 +1727,7 @@ class Lizmap:
                 layerOption['exclude']['widget'].setChecked(False)
                 self.layerList[item.text(1)][layerOption['exclude']['key']] = False
 
-    def setLayerMeta(self, item, key):
+    def set_layer_metadata(self, item, key):
         """Set a the title/abstract/link Qgis metadata when corresponding item is changed
         Used in setLayerProperty"""
         if 'isMetadata' in self.layer_options_list[key]:
@@ -1746,7 +1743,7 @@ class Lizmap:
                         if key == 'link':
                             layer.setAttributionUrl("%s" % self.layerList[item.text(1)][key])
 
-    def configurePopup(self):
+    def configure_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
         # get the selected item in the layer tree
         item = self.dlg.layer_tree.currentItem()
@@ -1755,53 +1752,25 @@ class Lizmap:
             if self.layerList[item.text(1)]['popup'] == 'False':
                 return
 
-            # Import the code for the dialog
-            from .lizmap_popup_dialog import LizmapPopupDialog
-            self.lizmapPopupDialog = LizmapPopupDialog()
-
-            self.lizmapPopupDialog.groupBox.setStyleSheet(self.style_sheet)
-            self.lizmapPopupDialog.groupBox_2.setStyleSheet(self.style_sheet)
-
-            # Connect popup dialog signals and slots
-            # When the plain text template is modified
-            self.lizmapPopupDialog.txtPopup.textChanged.connect(self.updatePopupHtml)
-            # When the ui is closed with the x
-            self.lizmapPopupDialog.rejected.connect(self.popupNotConfigured)
-            # When the ui is closed with the OK button
-            self.lizmapPopupDialog.bbConfigurePopup.accepted.connect(self.popupConfigured)
-            # When the ui is closed with the CANCEL button
-            self.lizmapPopupDialog.bbConfigurePopup.rejected.connect(self.popupNotConfigured)
-
             # Set the content of the QTextEdit if needed
             if 'popupTemplate' in self.layerList[item.text(1)]:
                 self.layerList[item.text(1)]['popup'] = True
-                self.lizmapPopupDialog.txtPopup.setText(self.layerList[item.text(1)]['popupTemplate'])
-                self.lizmapPopupDialog.htmlPopup.setHtml(self.layerList[item.text(1)]['popupTemplate'])
-
-            # Show the popup configuration window
-            self.lizmapPopupDialog.show()
-
+                text = self.layerList[item.text(1)]['popupTemplate']
+            else:
+                text = ''
+            self.popup_dialog = LizmapPopupDialog(self.style_sheet, text)
             LOGGER.info('Opening the popup configuration')
+            result = self.popup_dialog.exec_()
+            if not result:
+                return
 
-    def updatePopupHtml(self):
-        """Update the html preview of the popup dialog from the plain text template text"""
-        content = self.lizmapPopupDialog.txtPopup.text()
-        self.lizmapPopupDialog.htmlPopup.setHtml(content)
+            content = self.popup_dialog.txtPopup.text()
 
-    def popupConfigured(self):
-        """Save the content of the popup template"""
-        content = self.lizmapPopupDialog.txtPopup.text()
-        self.lizmapPopupDialog.close()
-
-        # Get the selected item in the layer tree
-        item = self.dlg.layer_tree.currentItem()
-        if item and item.text(1) in self.layerList:
-            # Write the content into the global object
-            self.layerList[item.text(1)]['popupTemplate'] = content
-
-    def popupNotConfigured(self):
-        """Popup configuration dialog has been close with cancel or x : do nothing"""
-        self.lizmapPopupDialog.close()
+            # Get the selected item in the layer tree
+            item = self.dlg.layer_tree.currentItem()
+            if item and item.text(1) in self.layerList:
+                # Write the content into the global object
+                self.layerList[item.text(1)]['popupTemplate'] = content
 
     def createPopupNodeItemFromForm(self, layer, node, level, headers, html):
         regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
@@ -2064,16 +2033,16 @@ class Lizmap:
         # Get the project data
         project = QgsProject.instance()
         # options
-        liz2json = {}
-        liz2json["options"] = {}
-        liz2json["layers"] = {}
+        liz2json = dict()
+        liz2json["options"] = dict()
+        liz2json["layers"] = dict()
         # projection
         # project projection
         mc = self.iface.mapCanvas().mapSettings()
         pCrs = mc.destinationCrs()
         pAuthid = pCrs.authid()
         pProj4 = pCrs.toProj4()
-        liz2json["options"]["projection"] = {}
+        liz2json["options"]["projection"] = dict()
         liz2json["options"]["projection"]["proj4"] = '{}'.format(pProj4)
         liz2json["options"]["projection"]["ref"] = '{}'.format(pAuthid)
         # wms extent
@@ -2141,7 +2110,7 @@ class Lizmap:
                     inputValue = str(inputValue)
 
                 # Add value to the option
-                if (inputValue and inputValue != "False"):
+                if inputValue and inputValue != "False":
                     liz2json["options"][key] = inputValue
                 else:
                     if 'alwaysExport' in item:
@@ -2153,7 +2122,7 @@ class Lizmap:
         project = QgsProject.instance()
         wfsLayersList = project.readListEntry('WFSLayers', '')[0]
         if twRowCount > 0:
-            liz2json["locateByLayer"] = {}
+            liz2json["locateByLayer"] = dict()
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerId = lblTableWidget.item(row, 6).text()
@@ -2165,7 +2134,7 @@ class Lizmap:
                     minLength = lblTableWidget.item(row, 4).text()
                     filterOnLocate = lblTableWidget.item(row, 5).text()
                     layerId = lblTableWidget.item(row, 6).text()
-                    liz2json["locateByLayer"][layerName] = {}
+                    liz2json["locateByLayer"][layerName] = dict()
                     liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
                     if filterFieldName and filterFieldName != '--':
                         liz2json["locateByLayer"][layerName]["filterFieldName"] = filterFieldName
@@ -2179,7 +2148,7 @@ class Lizmap:
         lblTableWidget = self.dlg.twAttributeLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["attributeLayers"] = {}
+            liz2json["attributeLayers"] = dict()
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = lblTableWidget.item(row, 0).text()
@@ -2190,7 +2159,7 @@ class Lizmap:
                 hideLayer = lblTableWidget.item(row, 5).text()
                 layerId = lblTableWidget.item(row, 6).text()
                 if layerId in wfsLayersList:
-                    liz2json["attributeLayers"][layerName] = {}
+                    liz2json["attributeLayers"][layerName] = dict()
                     liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
                     liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
                     liz2json["attributeLayers"][layerName]["pivot"] = pivot
@@ -2203,7 +2172,7 @@ class Lizmap:
         lblTableWidget = self.dlg.twTooltipLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["tooltipLayers"] = {}
+            liz2json["tooltipLayers"] = dict()
             for row in range(twRowCount):
                 layerName = lblTableWidget.item(row, 0).text()
                 fields = lblTableWidget.item(row, 1).text()
@@ -2211,7 +2180,7 @@ class Lizmap:
                 colorGeom = lblTableWidget.item(row, 3).text()
                 layerId = lblTableWidget.item(row, 4).text()
                 if layerId in wfsLayersList:
-                    liz2json["tooltipLayers"][layerName] = {}
+                    liz2json["tooltipLayers"][layerName] = dict()
                     liz2json["tooltipLayers"][layerName]["fields"] = fields
                     liz2json["tooltipLayers"][layerName]["displayGeom"] = displayGeom
                     liz2json["tooltipLayers"][layerName]["colorGeom"] = colorGeom
@@ -2222,7 +2191,7 @@ class Lizmap:
         lblTableWidget = self.dlg.twEditionLayerList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["editionLayers"] = {}
+            liz2json["editionLayers"] = dict()
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = lblTableWidget.item(row, 0).text()
@@ -2235,10 +2204,10 @@ class Lizmap:
                 layer = self.get_qgis_layer_by_id(layerId)
                 geometryType = self.mapQgisGeometryType[layer.geometryType()]
                 if layerId in wfsLayersList:
-                    liz2json["editionLayers"][layerName] = {}
+                    liz2json["editionLayers"][layerName] = dict()
                     liz2json["editionLayers"][layerName]["layerId"] = layerId
                     liz2json["editionLayers"][layerName]["geometryType"] = geometryType
-                    liz2json["editionLayers"][layerName]["capabilities"] = {}
+                    liz2json["editionLayers"][layerName]["capabilities"] = dict()
                     liz2json["editionLayers"][layerName]["capabilities"]["createFeature"] = createFeature
                     liz2json["editionLayers"][layerName]["capabilities"]["modifyAttribute"] = modifyAttribute
                     liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
@@ -2250,14 +2219,14 @@ class Lizmap:
         lblTableWidget = self.dlg.twLoginFilteredLayersList
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["loginFilteredLayers"] = {}
+            liz2json["loginFilteredLayers"] = dict()
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = lblTableWidget.item(row, 0).text()
                 filterAttribute = lblTableWidget.item(row, 1).text()
                 filterPrivate = lblTableWidget.item(row, 2).text()
                 layerId = lblTableWidget.item(row, 3).text()
-                liz2json["loginFilteredLayers"][layerName] = {}
+                liz2json["loginFilteredLayers"][layerName] = dict()
                 liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
                 liz2json["loginFilteredLayers"][layerName]["filterPrivate"] = filterPrivate
                 liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
@@ -2267,7 +2236,7 @@ class Lizmap:
         eblTableWidget = self.dlg.twLizmapBaselayers
         twRowCount = eblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["lizmapExternalBaselayers"] = {}
+            liz2json["lizmapExternalBaselayers"] = dict()
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 lRepository = eblTableWidget.item(row, 0).text()
@@ -2277,7 +2246,7 @@ class Lizmap:
                 lImageFormat = eblTableWidget.item(row, 4).text()
                 if lImageFormat not in ('png', 'png; mode=16bit', 'png; mode=8bit', 'jpg', 'jpeg'):
                     lImageFormat = 'png'
-                liz2json["lizmapExternalBaselayers"][lName] = {}
+                liz2json["lizmapExternalBaselayers"][lName] = dict()
                 liz2json["lizmapExternalBaselayers"][lName]["repository"] = lRepository
                 liz2json["lizmapExternalBaselayers"][lName]["project"] = lProject
                 liz2json["lizmapExternalBaselayers"][lName]["layerName"] = lName
@@ -2289,7 +2258,7 @@ class Lizmap:
         lblTableWidget = self.dlg.twTimemanager
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["timemanagerLayers"] = {}
+            liz2json["timemanagerLayers"] = dict()
             for row in range(twRowCount):
                 # check that the layer is checked in the WFS capabilities
                 layerName = lblTableWidget.item(row, 0).text()
@@ -2299,7 +2268,7 @@ class Lizmap:
                 tmGroupTitle = lblTableWidget.item(row, 4).text()
                 layerId = lblTableWidget.item(row, 5).text()
                 if layerId in wfsLayersList:
-                    liz2json["timemanagerLayers"][layerName] = {}
+                    liz2json["timemanagerLayers"][layerName] = dict()
                     liz2json["timemanagerLayers"][layerName]["startAttribute"] = startAttribute
                     if labelAttribute and labelAttribute != '--':
                         liz2json["timemanagerLayers"][layerName]["label"] = labelAttribute
@@ -2312,7 +2281,7 @@ class Lizmap:
         lblTableWidget = self.dlg.twDatavizLayers
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["datavizLayers"] = {}
+            liz2json["datavizLayers"] = dict()
             for row in range(twRowCount):
                 layerName = lblTableWidget.item(row, 0).text()
                 ptitle = lblTableWidget.item(row, 1).text()
@@ -2330,7 +2299,7 @@ class Lizmap:
                 only_show_child = lblTableWidget.item(row, 13).text()
                 layerId = lblTableWidget.item(row, 14).text()
                 if layerId in wfsLayersList:
-                    prow = {}
+                    prow = dict()
                     prow["title"] = ptitle
                     prow["type"] = ptype
                     prow["x_field"] = pxfields
@@ -2352,7 +2321,7 @@ class Lizmap:
         lblTableWidget = self.dlg.twFormFilterLayers
         twRowCount = lblTableWidget.rowCount()
         if twRowCount > 0:
-            liz2json["formFilterLayers"] = {}
+            liz2json["formFilterLayers"] = dict()
             for row in range(twRowCount):
                 layerName = lblTableWidget.item(row, 0).text()
                 ftitle = lblTableWidget.item(row, 1).text()
@@ -2369,7 +2338,7 @@ class Lizmap:
                 fprovider = lblTableWidget.item(row, 8).text()
                 layerId = lblTableWidget.item(row, 9).text()
                 if layerId in wfsLayersList:
-                    formFilterField = {}
+                    formFilterField = dict()
                     formFilterField["title"] = ftitle
                     formFilterField["type"] = ftype
                     formFilterField["field"] = ffield
@@ -2404,7 +2373,7 @@ class Lizmap:
 
             # ~ # add layerOption only for geo layers
             # ~ if geometryType != 4:
-            layerOptions = {}
+            layerOptions = dict()
             layerOptions["id"] = str(k)
             layerOptions["name"] = str(v['name'])
             layerOptions["type"] = ltype
@@ -2824,7 +2793,7 @@ class Lizmap:
 
     def reinitDefaultProperties(self):
         for key in list(self.layers_table.keys()):
-            self.layers_table[key]['jsonConfig'] = {}
+            self.layers_table[key]['jsonConfig'] = dict()
 
     def onProjectRead(self):
         """
@@ -2867,7 +2836,7 @@ class Lizmap:
             # Get config file data
             self.get_config()
 
-            self.layerList = {}
+            self.layerList = dict()
 
             # Get embedded groups
             self.embeddedGroups = None
