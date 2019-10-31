@@ -668,7 +668,7 @@ class Lizmap:
 
     def enable_check_box(self, value):
         """Enable/Disable checkboxes and fields of the Layer tab."""
-        for key, item in list(self.layer_options_list.items()):
+        for key, item in self.layer_options_list.items():
             if item['widget'] and key != 'sourceProject':
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
@@ -714,7 +714,7 @@ class Lizmap:
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
-                for key in list(self.layers_table.keys()):
+                for key in self.layers_table.keys():
                     if key in sjson:
                         self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
@@ -784,7 +784,7 @@ class Lizmap:
             if item['widget']:
                 if item['wType'] == 'layers':
                     if key in json_options:
-                        for lyr in list(QgsProject.instance().mapLayers().values()):
+                        for lyr in QgsProject.instance().mapLayers().values():
                             if lyr.id() == json_options[key]:
                                 item['widget'].setLayer(lyr)
                                 break
@@ -820,9 +820,9 @@ class Lizmap:
         # For edition layers, fill capabilities
         # Fill editionlayers capabilities
         if key == 'editionLayers' and json_config:
-            for k, v in list(json_config.items()):
+            for k, v in json_config.items():
                 if 'capabilities' in v:
-                    for x, y in list(v['capabilities'].items()):
+                    for x, y in v['capabilities'].items():
                         json_config[k][x] = y
 
         # empty previous content
@@ -949,7 +949,7 @@ class Lizmap:
         """
         Remove layers from tables when deleted from layer registry
         """
-        for key, item in list(self.layers_table.items()):
+        for key, item in self.layers_table.items():
             tw = self.layers_table[key]['tableWidget']
 
             # Count lines
@@ -1419,7 +1419,7 @@ class Lizmap:
 
         # DEFAULT VALUES : generic default values for layers and group
         self.myDic[itemKey]['name'] = "%s" % itemKey
-        for key, item in list(self.layer_options_list.items()):
+        for key, item in self.layer_options_list.items():
             self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
 
@@ -1472,7 +1472,7 @@ class Lizmap:
         if '%s' % self.myDic[itemKey]['name'] in jsonLayers:
             jsonKey = '%s' % self.myDic[itemKey]['name']
             # loop through layer options to override
-            for key, item in list(self.layer_options_list.items()):
+            for key, item in self.layer_options_list.items():
                 # override only for ui widgets
                 if item['widget']:
                     if key in jsonLayers[jsonKey]:
@@ -1616,7 +1616,7 @@ class Lizmap:
             isLayer = selectedItem['type'] == 'layer'
 
             # set options
-            for key, val in list(self.layer_options_list.items()):
+            for key, val in self.layer_options_list.items():
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         val['widget'].setText(selectedItem[key])
@@ -1653,7 +1653,7 @@ class Lizmap:
 
         else:
             # set default values for this layer/group
-            for key, val in list(self.layer_options_list.items()):
+            for key, val in self.layer_options_list.items():
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         val['widget'].setText(val['default'])
@@ -2352,7 +2352,7 @@ class Lizmap:
                     liz2json["formFilterLayers"][row] = formFilterField
 
         # gui user defined layers options
-        for k, v in list(self.layerList.items()):
+        for k, v in self.layerList.items():
             addToCfg = True
             ltype = v['type']
             gal = v['groupAsLayer']
@@ -2740,7 +2740,7 @@ class Lizmap:
 
         # Fill with checked baselayers
         # 1/ QGIS layers
-        for k, v in list(self.layerList.items()):
+        for k, v in self.layerList.items():
             if not v['baseLayer']:
                 continue
             combo.addItem(v['name'], v['name'])
@@ -2750,7 +2750,7 @@ class Lizmap:
             i += 1
 
         # 2/ External baselayers
-        for k, v in list(self.base_layer_widget_list.items()):
+        for k, v in self.base_layer_widget_list.items():
             if k != 'layer':
                 if v.isChecked():
                     combo.addItem(k, k)
@@ -2792,7 +2792,7 @@ class Lizmap:
                 f.close()
 
     def reinitDefaultProperties(self):
-        for key in list(self.layers_table.keys()):
+        for key in self.layers_table.keys():
             self.layers_table[key]['jsonConfig'] = dict()
 
     def onProjectRead(self):
