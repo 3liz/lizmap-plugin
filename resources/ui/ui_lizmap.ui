@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1018</width>
+    <width>1146</width>
     <height>698</height>
    </rect>
   </property>
@@ -176,7 +176,7 @@ QListWidget::item::selected {
           <string notr="true">background-color:rgb(170, 255, 255);</string>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.4&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -220,7 +220,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>10</number>
          </property>
          <widget class="QWidget" name="pageMapOptions">
           <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -249,7 +249,7 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>726</width>
+                <width>854</width>
                 <height>805</height>
                </rect>
               </property>
@@ -819,7 +819,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
+                <width>868</width>
                 <height>649</height>
                </rect>
               </property>
@@ -863,11 +863,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <property name="columnCount">
                      <number>1</number>
                     </property>
-                    <attribute name="headerMinimumSectionSize">
-                     <number>50</number>
-                    </attribute>
                     <attribute name="headerDefaultSectionSize">
                      <number>57</number>
+                    </attribute>
+                    <attribute name="headerMinimumSectionSize">
+                     <number>50</number>
                     </attribute>
                     <attribute name="headerStretchLastSection">
                      <bool>true</bool>
@@ -898,8 +898,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>462</width>
-                       <height>875</height>
+                       <width>560</width>
+                       <height>838</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1124,7 +1124,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <widget class="QLabel" name="label_108">
                            <property name="styleSheet">
-                            <string notr="true">background-color:rgb(170, 255, 255);</string>
+                            <string notr="true"/>
                            </property>
                            <property name="text">
                             <string>The qgis option uses the layer Tooltip HTML template. Use the button below to copy the form Drag&amp;Drop design to the Tooltip template</string>
@@ -1137,7 +1137,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <widget class="QPushButton" name="btQgisPopupFromForm">
                            <property name="styleSheet">
-                            <string notr="true">background-color:rgb(170, 255, 255);</string>
+                            <string notr="true"/>
                            </property>
                            <property name="text">
                             <string>Copy the form drag &amp; drop template</string>
@@ -1525,7 +1525,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>726</width>
+                <width>854</width>
                 <height>865</height>
                </rect>
               </property>
@@ -2238,8 +2238,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>635</height>
+                <width>868</width>
+                <height>649</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2524,7 +2524,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
+                <width>868</width>
                 <height>649</height>
                </rect>
               </property>
@@ -2748,7 +2748,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
+                <width>868</width>
                 <height>649</height>
                </rect>
               </property>
@@ -2965,7 +2965,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
+                <width>868</width>
                 <height>649</height>
                </rect>
               </property>
@@ -3159,7 +3159,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
+                <width>868</width>
                 <height>649</height>
                </rect>
               </property>
@@ -3294,8 +3294,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>708</width>
-                <height>885</height>
+                <width>836</width>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3356,401 +3356,446 @@ Only the selected feature will be visible on the map.</string>
                 </layout>
                </item>
                <item>
-                <widget class="QLabel" name="label_97">
-                 <property name="text">
-                  <string>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
+                <widget class="QTabWidget" name="tabWidget">
+                 <property name="currentIndex">
+                  <number>0</number>
                  </property>
+                 <widget class="QWidget" name="tab">
+                  <attribute name="title">
+                   <string>Setup</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_48">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QTableWidget" name="twDatavizLayers">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="editTriggers">
+                      <set>QAbstractItemView::NoEditTriggers</set>
+                     </property>
+                     <property name="alternatingRowColors">
+                      <bool>true</bool>
+                     </property>
+                     <property name="selectionMode">
+                      <enum>QAbstractItemView::SingleSelection</enum>
+                     </property>
+                     <property name="selectionBehavior">
+                      <enum>QAbstractItemView::SelectRows</enum>
+                     </property>
+                     <column>
+                      <property name="text">
+                       <string>Layer</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Title</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Type</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>X field</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Aggregation</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Y field</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Color</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Color field</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Second Y field ?</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Y Field 2</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Color 2</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Color field 2</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Popup for main layer</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Only show child</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Popup for children</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Id</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Plot Id</string>
+                      </property>
+                     </column>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QGridLayout" name="gridLayout_4">
+                     <item row="11" column="1">
+                      <widget class="QgsFieldComboBox" name="inDatavizColorField"/>
+                     </item>
+                     <item row="12" column="0">
+                      <widget class="QCheckBox" name="cbDatavizYField2">
+                       <property name="text">
+                        <string>2nd Y field</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="inDatavizPlotTitle"/>
+                     </item>
+                     <item row="5" column="0">
+                      <widget class="QLabel" name="label_76">
+                       <property name="text">
+                        <string>X field</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QComboBox" name="liDatavizPlotType">
+                       <item>
+                        <property name="text">
+                         <string>scatter</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>box</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>bar</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>histogram</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>pie</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>histogram2d</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>polar</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="label_77">
+                       <property name="text">
+                        <string>Y field</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_74">
+                       <property name="text">
+                        <string>Type</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer"/>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="label_58">
+                       <property name="text">
+                        <string>Layer</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="1">
+                      <widget class="QgsFieldComboBox" name="inDatavizPlotXfield"/>
+                     </item>
+                     <item row="8" column="1">
+                      <widget class="QgsFieldComboBox" name="inDatavizPlotYfield"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_71">
+                       <property name="text">
+                        <string>Title</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="12" column="1">
+                      <widget class="QgsFieldComboBox" name="inDatavizPlotYfield2">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="2">
+                      <widget class="QLabel" name="label_98">
+                       <property name="text">
+                        <string>Group ?</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="5" column="3">
+                      <widget class="QComboBox" name="liDatavizAggregation">
+                       <item>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>avg</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>sum</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>count</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>median</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>stddev</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>min</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>max</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>first</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>last</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="11" column="3">
+                      <widget class="QgsColorButton" name="inDatavizPlotColor">
+                       <property name="color" stdset="0">
+                        <color>
+                         <red>0</red>
+                         <green>170</green>
+                         <blue>255</blue>
+                        </color>
+                       </property>
+                       <property name="defaultColor" stdset="0">
+                        <color>
+                         <red>0</red>
+                         <green>170</green>
+                         <blue>255</blue>
+                        </color>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="2">
+                      <widget class="QLabel" name="label_75">
+                       <property name="text">
+                        <string>Color</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="13" column="1">
+                      <widget class="QgsFieldComboBox" name="inDatavizColorField2"/>
+                     </item>
+                     <item row="13" column="3">
+                      <widget class="QgsColorButton" name="inDatavizPlotColor2">
+                       <property name="color" stdset="0">
+                        <color>
+                         <red>255</red>
+                         <green>170</green>
+                         <blue>0</blue>
+                        </color>
+                       </property>
+                       <property name="defaultColor" stdset="0">
+                        <color>
+                         <red>255</red>
+                         <green>170</green>
+                         <blue>0</blue>
+                        </color>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="13" column="2">
+                      <widget class="QLabel" name="label_80">
+                       <property name="text">
+                        <string>Color</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="13" column="0">
+                      <widget class="QCheckBox" name="cbDatavizUseColorField2">
+                       <property name="text">
+                        <string>Color field 2 ?</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="11" column="0">
+                      <widget class="QCheckBox" name="cbDatavizUseColorField">
+                       <property name="text">
+                        <string>Color field ?</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
+                     <property name="text">
+                      <string>Display filtered plot in popups of parent layer</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="cbDatavizOnlyShowChild">
+                     <property name="text">
+                      <string>Only show in child popup</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_35">
+                     <item>
+                      <widget class="QPushButton" name="btDatavizAddLayer">
+                       <property name="text">
+                        <string>Add layer</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="btDatavizRemoveLayer">
+                       <property name="text">
+                        <string>Remove layer</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_36">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="tab_2">
+                  <attribute name="title">
+                   <string>Advanced</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_97">
+                     <property name="text">
+                      <string>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QgsCodeEditorHTML" name="inDatavizTemplate"/>
+                   </item>
+                  </layout>
+                 </widget>
                 </widget>
-               </item>
-               <item>
-                <widget class="QgsCodeEditorHTML" name="inDatavizTemplate"/>
-               </item>
-               <item>
-                <widget class="QTableWidget" name="twDatavizLayers">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Title</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Type</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>X field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Aggregation</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Y field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Color</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Color field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Second Y field ?</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Y Field 2</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Color 2</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Color field 2</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Popup for main layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Only show child</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Popup for children</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Plot Id</string>
-                  </property>
-                 </column>
-                </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="11" column="1">
-                  <widget class="QgsFieldComboBox" name="inDatavizColorField"/>
-                 </item>
-                 <item row="12" column="0">
-                  <widget class="QCheckBox" name="cbDatavizYField2">
-                   <property name="text">
-                    <string>2nd Y field</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="inDatavizPlotTitle"/>
-                 </item>
-                 <item row="5" column="0">
-                  <widget class="QLabel" name="label_76">
-                   <property name="text">
-                    <string>X field</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QComboBox" name="liDatavizPlotType">
-                   <item>
-                    <property name="text">
-                     <string>scatter</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>box</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>bar</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>histogram</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>pie</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>histogram2d</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>polar</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="8" column="0">
-                  <widget class="QLabel" name="label_77">
-                   <property name="text">
-                    <string>Y field</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_74">
-                   <property name="text">
-                    <string>Type</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer"/>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="label_58">
-                   <property name="text">
-                    <string>Layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="1">
-                  <widget class="QgsFieldComboBox" name="inDatavizPlotXfield"/>
-                 </item>
-                 <item row="8" column="1">
-                  <widget class="QgsFieldComboBox" name="inDatavizPlotYfield"/>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_71">
-                   <property name="text">
-                    <string>Title</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="12" column="1">
-                  <widget class="QgsFieldComboBox" name="inDatavizPlotYfield2">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="2">
-                  <widget class="QLabel" name="label_98">
-                   <property name="text">
-                    <string>Group ?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="3">
-                  <widget class="QComboBox" name="liDatavizAggregation">
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>avg</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>sum</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>count</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>median</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>stddev</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>min</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>max</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>first</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>last</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="11" column="3">
-                  <widget class="QgsColorButton" name="inDatavizPlotColor">
-                   <property name="color">
-                    <color>
-                     <red>0</red>
-                     <green>170</green>
-                     <blue>255</blue>
-                    </color>
-                   </property>
-                   <property name="defaultColor">
-                    <color>
-                     <red>0</red>
-                     <green>170</green>
-                     <blue>255</blue>
-                    </color>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="11" column="2">
-                  <widget class="QLabel" name="label_75">
-                   <property name="text">
-                    <string>Color</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="13" column="1">
-                  <widget class="QgsFieldComboBox" name="inDatavizColorField2"/>
-                 </item>
-                 <item row="13" column="3">
-                  <widget class="QgsColorButton" name="inDatavizPlotColor2">
-                   <property name="color">
-                    <color>
-                     <red>255</red>
-                     <green>170</green>
-                     <blue>0</blue>
-                    </color>
-                   </property>
-                   <property name="defaultColor">
-                    <color>
-                     <red>255</red>
-                     <green>170</green>
-                     <blue>0</blue>
-                    </color>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="13" column="2">
-                  <widget class="QLabel" name="label_80">
-                   <property name="text">
-                    <string>Color</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="13" column="0">
-                  <widget class="QCheckBox" name="cbDatavizUseColorField2">
-                   <property name="text">
-                    <string>Color field 2 ?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="11" column="0">
-                  <widget class="QCheckBox" name="cbDatavizUseColorField">
-                   <property name="text">
-                    <string>Color field ?</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
-                 <property name="text">
-                  <string>Display filtered plot in popups of parent layer</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="cbDatavizOnlyShowChild">
-                 <property name="text">
-                  <string>Only show in child popup</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_35">
-                 <item>
-                  <widget class="QPushButton" name="btDatavizAddLayer">
-                   <property name="text">
-                    <string>Add layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="btDatavizRemoveLayer">
-                   <property name="text">
-                    <string>Remove layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_36">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
                </item>
               </layout>
              </widget>
@@ -3785,7 +3830,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
+                <width>868</width>
                 <height>649</height>
                </rect>
               </property>
@@ -4079,8 +4124,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>629</height>
+                <width>844</width>
+                <height>841</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4102,69 +4147,146 @@ Only the selected feature will be visible on the map.</string>
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox">
+                <widget class="QLabel" name="label_91">
+                 <property name="styleSheet">
+                  <string notr="true">background-color:rgb(170, 255, 255);</string>
+                 </property>
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only one layer &lt;span style=&quot; font-weight:600;&quot;&gt;must&lt;/span&gt; be used with Lizmap Web Client 3.3. Many layers can be added with Lizmap Web Client 3.4 and above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="atlas_table">
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <column>
+                  <property name="text">
+                   <string>Layer</string>
+                  </property>
+                  <property name="toolTip">
+                   <string>The atlas layer</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Primary key</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Display description</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Label</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Sort</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Highlight</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Zoom</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Display popup</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Trigger</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_39">
+                 <item>
+                  <widget class="QPushButton" name="atlas_add_layer">
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="atlas_remove_layer">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="Line" name="line">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="atlas_form">
                  <property name="title">
                   <string>Layer options</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_42">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <layout class="QGridLayout" name="gridLayout">
-                    <item row="1" column="3">
-                     <widget class="QgsMapLayerComboBox" name="atlasLayer"/>
-                    </item>
-                    <item row="8" column="1">
-                     <widget class="QLabel" name="label_84">
-                      <property name="text">
-                       <string>Zoom to feature</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="10" column="1">
-                     <widget class="QLabel" name="label_86">
-                      <property name="text">
-                       <string>Trigger filter</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="9" column="3">
-                     <widget class="QCheckBox" name="atlasDisplayPopup">
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
+                    <item row="0" column="1">
                      <widget class="QLabel" name="label_82">
                       <property name="text">
                        <string>Atlas layer</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="1">
-                     <widget class="QLabel" name="label_83">
+                    <item row="2" column="1">
+                     <widget class="QLabel" name="label_88">
                       <property name="text">
-                       <string>Feature label</string>
+                       <string>Display layer description</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="9" column="1">
-                     <widget class="QLabel" name="label_85">
-                      <property name="text">
-                       <string>Display popup</string>
-                      </property>
-                     </widget>
+                    <item row="1" column="3">
+                     <widget class="QgsFieldComboBox" name="atlasPrimaryKey"/>
                     </item>
-                    <item row="10" column="3">
-                     <widget class="QCheckBox" name="atlasTriggerFilter">
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
+                    <item row="0" column="3">
+                     <widget class="QgsMapLayerComboBox" name="atlasLayer"/>
                     </item>
-                    <item row="3" column="3">
+                    <item row="2" column="3">
                      <widget class="QCheckBox" name="atlasDisplayLayerDescription">
                       <property name="text">
                        <string/>
@@ -4174,38 +4296,41 @@ Only the selected feature will be visible on the map.</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="1">
-                     <widget class="QLabel" name="label_88">
+                    <item row="1" column="1">
+                     <widget class="QLabel" name="label_96">
                       <property name="text">
-                       <string>Display layer description</string>
+                       <string>Layer primary key (must be integer for PostgreSQL)</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="3">
+                    <item row="3" column="1">
+                     <widget class="QLabel" name="label_83">
+                      <property name="text">
+                       <string>Feature label</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="3">
                      <widget class="QgsFieldComboBox" name="atlasFeatureLabel"/>
                     </item>
-                    <item row="0" column="3">
-                     <widget class="QCheckBox" name="atlasEnabled">
+                    <item row="4" column="1">
+                     <widget class="QLabel" name="label_93">
                       <property name="text">
-                       <string/>
+                       <string>Sort field</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QLabel" name="label_91">
-                      <property name="text">
-                       <string>Enable atlas for this project ?</string>
-                      </property>
-                     </widget>
+                    <item row="4" column="3">
+                     <widget class="QgsFieldComboBox" name="atlasSortField"/>
                     </item>
-                    <item row="7" column="1">
+                    <item row="5" column="1">
                      <widget class="QLabel" name="label_92">
                       <property name="text">
                        <string>Highlight geometry</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="7" column="3">
+                    <item row="5" column="3">
                      <widget class="QCheckBox" name="atlasHighlightGeometry">
                       <property name="text">
                        <string/>
@@ -4216,16 +4341,13 @@ Only the selected feature will be visible on the map.</string>
                      </widget>
                     </item>
                     <item row="6" column="1">
-                     <widget class="QLabel" name="label_93">
+                     <widget class="QLabel" name="label_84">
                       <property name="text">
-                       <string>Sort field</string>
+                       <string>Zoom to feature</string>
                       </property>
                      </widget>
                     </item>
                     <item row="6" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasSortField"/>
-                    </item>
-                    <item row="8" column="3">
                      <widget class="QComboBox" name="atlasZoom">
                       <item>
                        <property name="text">
@@ -4244,15 +4366,36 @@ Only the selected feature will be visible on the map.</string>
                       </item>
                      </widget>
                     </item>
-                    <item row="2" column="1">
-                     <widget class="QLabel" name="label_96">
+                    <item row="7" column="1">
+                     <widget class="QLabel" name="label_85">
                       <property name="text">
-                       <string>Layer primary key (must be integer for PostgreSQL)</string>
+                       <string>Display popup</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="2" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasPrimaryKey"/>
+                    <item row="7" column="3">
+                     <widget class="QCheckBox" name="atlasDisplayPopup">
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="1">
+                     <widget class="QLabel" name="label_86">
+                      <property name="text">
+                       <string>Trigger filter</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="3">
+                     <widget class="QCheckBox" name="atlasTriggerFilter">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -4374,7 +4517,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
+                <width>848</width>
                 <height>629</height>
                </rect>
               </property>
@@ -4382,7 +4525,7 @@ Only the selected feature will be visible on the map.</string>
                <item>
                 <widget class="QLabel" name="label_99">
                  <property name="styleSheet">
-                  <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="text">
                   <string>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</string>
@@ -4525,7 +4668,7 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="11" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMaxDate">
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4553,7 +4696,7 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="10" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4580,7 +4723,7 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="3" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterField">
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4835,8 +4978,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btLoginFilteredLayerDel</tabstop>
   <tabstop>scrollArea_11</tabstop>
   <tabstop>liDatavizContainer</tabstop>
-  <tabstop>inDatavizTemplate</tabstop>
-  <tabstop>twDatavizLayers</tabstop>
   <tabstop>liDatavizPlotType</tabstop>
   <tabstop>inDatavizPlotTitle</tabstop>
   <tabstop>liDatavizPlotLayer</tabstop>
@@ -4851,8 +4992,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>cbDatavizUseColorField2</tabstop>
   <tabstop>inDatavizColorField2</tabstop>
   <tabstop>inDatavizPlotColor2</tabstop>
-  <tabstop>cbDatavizDisplayChildPlot</tabstop>
-  <tabstop>cbDatavizOnlyShowChild</tabstop>
   <tabstop>btDatavizAddLayer</tabstop>
   <tabstop>btDatavizRemoveLayer</tabstop>
   <tabstop>scrollArea_9</tabstop>
@@ -4868,16 +5007,9 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
   <tabstop>scrollArea_12</tabstop>
-  <tabstop>atlasEnabled</tabstop>
   <tabstop>atlasLayer</tabstop>
   <tabstop>atlasPrimaryKey</tabstop>
   <tabstop>atlasDisplayLayerDescription</tabstop>
-  <tabstop>atlasFeatureLabel</tabstop>
-  <tabstop>atlasSortField</tabstop>
-  <tabstop>atlasHighlightGeometry</tabstop>
-  <tabstop>atlasZoom</tabstop>
-  <tabstop>atlasDisplayPopup</tabstop>
-  <tabstop>atlasTriggerFilter</tabstop>
   <tabstop>atlasShowAtStartup</tabstop>
   <tabstop>atlasMaxWidth</tabstop>
   <tabstop>atlasDuration</tabstop>

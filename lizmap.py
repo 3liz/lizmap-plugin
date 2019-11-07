@@ -58,6 +58,7 @@ from qgis.PyQt.QtCore import (
     QSettings,
     QUrl,
     QFileInfo,
+    Qt,
 )
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -69,6 +70,8 @@ from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
     QMessageBox,
+    QCheckBox,
+    QComboBox,
 )
 from qgis.core import (
     Qgis,
@@ -82,6 +85,7 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsApplication,
 )
+from qgis.gui import QgsMapLayerComboBox, QgsFieldComboBox
 
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
@@ -264,16 +268,6 @@ class Lizmap:
         self.global_options['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
         self.global_options['datavizLocation']['widget'] = self.dlg.liDatavizContainer
         self.global_options['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
-        self.global_options['atlasEnabled']['widget'] = self.dlg.atlasEnabled
-        self.global_options['atlasLayer']['widget'] = self.dlg.atlasLayer
-        self.global_options['atlasPrimaryKey']['widget'] = self.dlg.atlasPrimaryKey
-        self.global_options['atlasDisplayLayerDescription']['widget'] = self.dlg.atlasDisplayLayerDescription
-        self.global_options['atlasFeatureLabel']['widget'] = self.dlg.atlasFeatureLabel
-        self.global_options['atlasSortField']['widget'] = self.dlg.atlasSortField
-        self.global_options['atlasHighlightGeometry']['widget'] = self.dlg.atlasHighlightGeometry
-        self.global_options['atlasZoom']['widget'] = self.dlg.atlasZoom
-        self.global_options['atlasDisplayPopup']['widget'] = self.dlg.atlasDisplayPopup
-        self.global_options['atlasTriggerFilter']['widget'] = self.dlg.atlasTriggerFilter
         self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
         self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
         self.global_options['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
@@ -385,25 +379,48 @@ class Lizmap:
             'locateByLayer': {
                 'tableWidget': self.dlg.twLocateByLayerList,
                 'removeButton': self.dlg.btLocateByLayerDel,
+                'addButton': self.dlg.btLocateByLayerAdd,
                 'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'filterOnLocate', 'layerId',
                          'order'],
+                'jsonConfig': {}
+            },
+            'atlasLayers': {
+                'tableWidget': self.dlg.atlas_table,
+                'removeButton': self.dlg.atlas_remove_layer,
+                'addButton': self.dlg.atlas_add_layer,
+                'form': self.dlg.atlas_form,
+                'forms': [
+                    self.dlg.atlasLayer,
+                    self.dlg.atlasPrimaryKey,
+                    self.dlg.atlasDisplayLayerDescription,
+                    self.dlg.atlasFeatureLabel,
+                    self.dlg.atlasSortField,
+                    self.dlg.atlasHighlightGeometry,
+                    self.dlg.atlasZoom,
+                    self.dlg.atlasDisplayPopup,
+                    self.dlg.atlasTriggerFilter,
+                ],
+                'cols': ['layerId', 'primaryKey', 'displayDescription', 'featureLabel', 'sortField', 'highlightGeometry', 'zoomToFeature', 'displayPopup', 'triggerFilter'],
                 'jsonConfig': {}
             },
             'attributeLayers': {
                 'tableWidget': self.dlg.twAttributeLayerList,
                 'removeButton': self.dlg.btAttributeLayerDel,
+                'addButton': self.dlg.btAttributeLayerAdd,
                 'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'hideLayer', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'tooltipLayers': {
                 'tableWidget': self.dlg.twTooltipLayerList,
                 'removeButton': self.dlg.btTooltipLayerDel,
+                'addButton': self.dlg.btTooltipLayerAdd,
                 'cols': ['fields', 'displayGeom', 'colorGeom', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'editionLayers': {
                 'tableWidget': self.dlg.twEditionLayerList,
                 'removeButton': self.dlg.btEditionLayerDel,
+                'addButton': self.dlg.btEditionLayerAdd,
                 'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'acl', 'layerId',
                          'order'],
                 'jsonConfig': {}
@@ -411,24 +428,28 @@ class Lizmap:
             'loginFilteredLayers': {
                 'tableWidget': self.dlg.twLoginFilteredLayersList,
                 'removeButton': self.dlg.btLoginFilteredLayerDel,
+                'addButton': self.dlg.btLoginFilteredLayerAdd,
                 'cols': ['filterAttribute', 'filterPrivate', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'lizmapExternalBaselayers': {
                 'tableWidget': self.dlg.twLizmapBaselayers,
                 'removeButton': self.dlg.btLizmapBaselayerDel,
+                'addButton': self.dlg.btLizmapBaselayerAdd,
                 'cols': ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
                 'jsonConfig': {}
             },
             'timemanagerLayers': {
                 'tableWidget': self.dlg.twTimemanager,
                 'removeButton': self.dlg.btTimemanagerLayerDel,
+                'addButton': self.dlg.btTimemanagerLayerAdd,
                 'cols': ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton': self.dlg.btDatavizRemoveLayer,
+                'addButton': self.dlg.btDatavizAddLayer,
                 'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field',
                          'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'only_show_child', 'layerId',
                          'order'],
@@ -437,6 +458,7 @@ class Lizmap:
             'formFilterLayers': {
                 'tableWidget': self.dlg.twFormFilterLayers,
                 'removeButton': self.dlg.btFormFilterRemoveField,
+                'addButton': self.dlg.btFormFilterAddField,
                 'cols': [
                     'title', 'type', 'field', 'min_date', 'max_date', 'format', 'splitter', 'provider', 'layerId',
                     'order'],
@@ -504,8 +526,26 @@ class Lizmap:
         # Manage "delete line" button
         for key, item in self.layers_table.items():
             control = item['removeButton']
+            control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+            control.setText('')
             slot = partial(self.remove_selected_layer_from_table, key)
             control.clicked.connect(slot)
+            control.setToolTip(tr('Remove the selected layer from the list'))
+
+            control = item.get('addButton')
+            control.setText('')
+            control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+
+            if item.get('forms'):
+                # The new generation of Lizmap tables
+                slot = partial(self.add_new_layer_to_table, key)
+                control.clicked.connect(slot)
+                control.setToolTip(tr('Add a new layer to the list'))
+
+                table = item['tableWidget']
+                slot = partial(self.selection_changed_table, key)
+                table.itemSelectionChanged.connect(slot)
+                self.selection_changed_table(key)
 
         # Delete layers from table when deleted from registry
         lr = QgsProject.instance()
@@ -936,13 +976,169 @@ class Lizmap:
         self.dlg.inInitialExtent.setText(initial_extent)
         LOGGER.info('Setting extent from the canvas')
 
+    def selection_changed_table(self, key):
+        """When a row is selected, we activate or not the form.
+
+        :param key: The key of the panel.
+        :type key: basestring
+        """
+        table = self.layers_table[key]['tableWidget']
+        selection = table.selectedIndexes()
+        fields = self.layers_table[key]['forms']
+        for field in fields:
+            try:
+                # We disconnect everything
+                field.disconnect()
+            except TypeError:
+                pass
+        if len(selection) == 0:
+            self.layers_table[key]['form'].setEnabled(False)
+            self.disable_form(key)
+        else:
+            self.layers_table[key]['form'].setEnabled(True)
+            self.enable_form(key)
+
+    def disable_form(self, key):
+        fields = self.layers_table[key]['forms']
+        for field in fields:
+            if isinstance(field, QCheckBox):
+                pass
+            elif isinstance(field, QgsFieldComboBox):
+                field.setCurrentIndex(0)
+            elif isinstance(field, QgsMapLayerComboBox):
+                field.setCurrentIndex(0)
+            elif isinstance(field, QComboBox):
+                field.setCurrentIndex(0)
+            else:
+                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
+
+    def enable_form(self, key):
+        """We should connect all signals."""
+        table = self.layers_table[key]['tableWidget']
+        fields = self.layers_table[key]['forms']
+        row = table.selectedIndexes()[0].row()
+        item = table.item(row, 0)
+        is_new_row = item.data(100)
+        item.setData(100, False)
+
+        if is_new_row:
+            self.update_row_from_form(key, row)
+        else:
+            self.update_form_from_row(key, row)
+
+        self.fields_child_layer = []
+
+        slot = partial(self.update_row_from_form, key, row)
+        for i, field in enumerate(fields):
+            if isinstance(field, QCheckBox):
+                field.stateChanged.connect(slot)
+            elif isinstance(field, QgsFieldComboBox):
+                field.currentIndexChanged.connect(slot)
+                self.fields_child_layer.append(field)
+            elif isinstance(field, QgsMapLayerComboBox):
+                field.currentIndexChanged.connect(slot)
+                slot_layer = partial(self.update_fields_in_combo, key)
+                fields[0].currentIndexChanged.connect(slot_layer)
+            elif isinstance(field, QComboBox):
+                field.currentIndexChanged.connect(slot)
+            else:
+                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
+        self.update_fields_in_combo(key)
+
+    def update_fields_in_combo(self, key):
+        fields = self.layers_table[key]['forms']
+        LOGGER.debug('Update layer')
+        layer = fields[0].currentLayer()
+        if not layer:
+            return
+        for field in self.fields_child_layer:
+            field.setLayer(layer)
+
+    def update_form_from_row(self, key, row):
+        """When we enable the form from an existing row."""
+        table = self.layers_table[key]['tableWidget']
+        fields = self.layers_table[key]['forms']
+        for i, field in enumerate(fields):
+            data = table.item(row, i).data(Qt.UserRole)
+            if isinstance(field, QCheckBox):
+                field.setChecked(data)
+            elif isinstance(field, QgsMapLayerComboBox):
+                layer = QgsProject.instance().mapLayer(data)
+                field.setLayer(layer)
+            elif isinstance(field, QgsFieldComboBox):
+                field.setLayer(fields[0].currentLayer())
+                field.setField(data)
+            elif isinstance(field, QComboBox):
+                field.setCurrentText(data)
+            else:
+                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
+
+    def update_row_from_form(self, key, row):
+        """For new row, we setup the row from default values in the form."""
+        table = self.layers_table[key]['tableWidget']
+        fields = self.layers_table[key]['forms']
+        for i, field in enumerate(fields):
+            item = table.item(row, i)
+            if isinstance(field, QCheckBox):
+                if field.isChecked():
+                    item.setText('✓')
+                    item.setData(Qt.UserRole, True)
+                else:
+                    item.setText('')
+                    item.setData(Qt.UserRole, False)
+            elif isinstance(field, QgsMapLayerComboBox):
+                layer = field.currentLayer()
+                if layer:
+                    item.setText(layer.name())
+                    item.setData(Qt.UserRole, layer.id())
+                    item.setIcon(QgsMapLayerModel.iconForLayer(layer))
+            elif isinstance(field, QgsFieldComboBox):
+                data = field.currentField()
+                item.setData(Qt.UserRole, data)
+                item.setText(data)
+                if fields[0].currentLayer():
+                    # Empty combobox at the beginning of the project
+                    index = fields[0].currentLayer().fields().indexFromName(data)
+                    if index > 0:
+                        item.setIcon(fields[0].currentLayer().fields().iconForField(index))
+                    else:
+                        item.setIcon(QIcon())
+                else:
+                    item.setIcon(QIcon())
+            elif isinstance(field, QComboBox):
+                data = field.currentText()
+                item.setText(data)
+                item.setData(Qt.UserRole, data)
+            else:
+                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
+
+    def add_new_layer_to_table(self, key):
+        """Add a new row to the table.
+
+        :param key: The key of the panel.
+        :type key: basestring
+        """
+        table = self.layers_table[key]['tableWidget']
+        row = table.rowCount()
+        table.setRowCount(row + 1)
+        forms = self.layers_table[key]['forms']
+        for i, field in enumerate(forms):
+            item = QTableWidgetItem()
+            if i == 0:
+                item.setData(100, True)
+            table.setItem(row, i, item)
+        table.selectRow(row)
+        LOGGER.info('Adding one row in table "{}"'.format(key))
+
     def remove_selected_layer_from_table(self, key):
         """
         Remove a layer from the list of layers
         for which to have the "locate by layer" tool
         """
-        tw = self.layers_table[key]['tableWidget']
-        tw.removeRow(tw.currentRow())
+        table = self.layers_table[key]['tableWidget']
+        row = table.selectedIndexes()[0].row()
+        table.clearSelection()
+        table.removeRow(row)
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
