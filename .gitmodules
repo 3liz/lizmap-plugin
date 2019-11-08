@@ -1,6 +1,6 @@
 [submodule "lizmap-locales"]
 	path = lizmap-locales
-	url = git@github.com:3liz/lizmap-locales.git
+	url = https://github.com/3liz/lizmap-locales.git
 [submodule "qgis_plugin_tools"]
 	path = qgis_plugin_tools
 	url = https://github.com/3liz/qgis_plugin_tools.git
