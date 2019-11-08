@@ -94,6 +94,9 @@ def release(parameters: Parameters,
 
     if osgeo_username is not None:
         assert osgeo_password is not None
+        prerelease = is_prerelease(parameters, release_tag, github_token)
+        if prerelease:
+            raise Warning('Skipping deploy to OSGEO since this is a pre-release')
         upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
 
 
@@ -200,6 +203,17 @@ def create_archive(
         repo.git.reset('HEAD^')
     else:
         repo.git.checkout('--', '.')
+
+
+def is_prerelease(parameters: Parameters, release_tag: str, github_token: str):
+    slug = '{}/{}'.format(parameters.github_organization_slug, parameters.project_slug)
+    repo = Github(github_token).get_repo(slug)
+    try:
+        print('Getting release on {}/{}'.format(parameters.github_organization_slug, parameters.project_slug))
+        gh_release = repo.get_release(id=release_tag)
+        return gh_release.prerelease
+    except GithubException as e:
+        raise GithubReleaseNotFound('Release {} not found'.format(release_tag))
 
 
 def upload_asset_to_github_release(
