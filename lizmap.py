@@ -58,7 +58,6 @@ from qgis.PyQt.QtCore import (
     QSettings,
     QUrl,
     QFileInfo,
-    Qt,
 )
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -70,8 +69,6 @@ from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
     QMessageBox,
-    QCheckBox,
-    QComboBox,
     QMenu,
 )
 from qgis.core import (
@@ -86,7 +83,6 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsApplication,
 )
-from qgis.gui import QgsMapLayerComboBox, QgsFieldComboBox
 
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
@@ -97,6 +93,7 @@ from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 
+from .table_form import TableForm
 from .tools import excluded_providers
 
 LOGGER = logging.getLogger(plugin_name())
@@ -390,7 +387,7 @@ class Lizmap:
                 'removeButton': self.dlg.atlas_remove_layer,
                 'addButton': self.dlg.atlas_add_layer,
                 'form': self.dlg.atlas_form,
-                'forms': [
+                'fields': [
                     self.dlg.atlasLayer,
                     self.dlg.atlasPrimaryKey,
                     self.dlg.atlasDisplayLayerDescription,
@@ -473,6 +470,8 @@ class Lizmap:
         self.lizmap_menu = None
         self.web_menu = None
         self.isok = None
+        self.table_forms = dict()
+        self.table_forms['atlasLayers'] = TableForm('atlasLayers', self.layers_table['atlasLayers'])
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -539,16 +538,9 @@ class Lizmap:
             control.setText('')
             control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
 
-            if item.get('forms'):
-                # The new generation of Lizmap tables
-                slot = partial(self.add_new_layer_to_table, key)
-                control.clicked.connect(slot)
-                control.setToolTip(tr('Add a new layer to the list'))
-
-                table = item['tableWidget']
-                slot = partial(self.selection_changed_table, key)
-                table.itemSelectionChanged.connect(slot)
-                self.selection_changed_table(key)
+            table_form = self.table_forms.get(key)
+            if table_form:
+                table_form.set_connections()
 
         # Delete layers from table when deleted from registry
         lr = QgsProject.instance()
@@ -980,165 +972,16 @@ class Lizmap:
         self.dlg.inInitialExtent.setText(initial_extent)
         LOGGER.info('Setting extent from the canvas')
 
-    def selection_changed_table(self, key):
-        """When a row is selected, we activate or not the form.
-
-        :param key: The key of the panel.
-        :type key: basestring
-        """
-        table = self.layers_table[key]['tableWidget']
-        selection = table.selectedIndexes()
-        fields = self.layers_table[key]['forms']
-        for field in fields:
-            try:
-                # We disconnect everything
-                field.disconnect()
-            except TypeError:
-                pass
-        if len(selection) == 0:
-            self.layers_table[key]['form'].setEnabled(False)
-            self.disable_form(key)
-        else:
-            self.layers_table[key]['form'].setEnabled(True)
-            self.enable_form(key)
-
-    def disable_form(self, key):
-        fields = self.layers_table[key]['forms']
-        for field in fields:
-            if isinstance(field, QCheckBox):
-                pass
-            elif isinstance(field, QgsFieldComboBox):
-                field.setCurrentIndex(0)
-            elif isinstance(field, QgsMapLayerComboBox):
-                field.setCurrentIndex(0)
-            elif isinstance(field, QComboBox):
-                field.setCurrentIndex(0)
-            else:
-                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
-
-    def enable_form(self, key):
-        """We should connect all signals."""
-        table = self.layers_table[key]['tableWidget']
-        fields = self.layers_table[key]['forms']
-        row = table.selectedIndexes()[0].row()
-        item = table.item(row, 0)
-        is_new_row = item.data(100)
-        item.setData(100, False)
-
-        if is_new_row:
-            self.update_row_from_form(key, row)
-        else:
-            self.update_form_from_row(key, row)
-
-        self.fields_child_layer = []
-
-        slot = partial(self.update_row_from_form, key, row)
-        for i, field in enumerate(fields):
-            if isinstance(field, QCheckBox):
-                field.stateChanged.connect(slot)
-            elif isinstance(field, QgsFieldComboBox):
-                field.currentIndexChanged.connect(slot)
-                self.fields_child_layer.append(field)
-            elif isinstance(field, QgsMapLayerComboBox):
-                field.currentIndexChanged.connect(slot)
-                slot_layer = partial(self.update_fields_in_combo, key)
-                fields[0].currentIndexChanged.connect(slot_layer)
-            elif isinstance(field, QComboBox):
-                field.currentIndexChanged.connect(slot)
-            else:
-                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
-        self.update_fields_in_combo(key)
-
-    def update_fields_in_combo(self, key):
-        fields = self.layers_table[key]['forms']
-        LOGGER.debug('Update layer')
-        layer = fields[0].currentLayer()
-        if not layer:
-            return
-        for field in self.fields_child_layer:
-            field.setLayer(layer)
-
-    def update_form_from_row(self, key, row):
-        """When we enable the form from an existing row."""
-        table = self.layers_table[key]['tableWidget']
-        fields = self.layers_table[key]['forms']
-        for i, field in enumerate(fields):
-            data = table.item(row, i).data(Qt.UserRole)
-            if isinstance(field, QCheckBox):
-                field.setChecked(data)
-            elif isinstance(field, QgsMapLayerComboBox):
-                layer = QgsProject.instance().mapLayer(data)
-                field.setLayer(layer)
-            elif isinstance(field, QgsFieldComboBox):
-                field.setLayer(fields[0].currentLayer())
-                field.setField(data)
-            elif isinstance(field, QComboBox):
-                field.setCurrentText(data)
-            else:
-                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
-
-    def update_row_from_form(self, key, row):
-        """For new row, we setup the row from default values in the form."""
-        table = self.layers_table[key]['tableWidget']
-        fields = self.layers_table[key]['forms']
-        for i, field in enumerate(fields):
-            item = table.item(row, i)
-            if isinstance(field, QCheckBox):
-                if field.isChecked():
-                    item.setText('✓')
-                    item.setData(Qt.UserRole, True)
-                else:
-                    item.setText('')
-                    item.setData(Qt.UserRole, False)
-            elif isinstance(field, QgsMapLayerComboBox):
-                layer = field.currentLayer()
-                if layer:
-                    item.setText(layer.name())
-                    item.setData(Qt.UserRole, layer.id())
-                    item.setIcon(QgsMapLayerModel.iconForLayer(layer))
-            elif isinstance(field, QgsFieldComboBox):
-                data = field.currentField()
-                item.setData(Qt.UserRole, data)
-                item.setText(data)
-                if fields[0].currentLayer():
-                    # Empty combobox at the beginning of the project
-                    index = fields[0].currentLayer().fields().indexFromName(data)
-                    if index > 0:
-                        item.setIcon(fields[0].currentLayer().fields().iconForField(index))
-                    else:
-                        item.setIcon(QIcon())
-                else:
-                    item.setIcon(QIcon())
-            elif isinstance(field, QComboBox):
-                data = field.currentText()
-                item.setText(data)
-                item.setData(Qt.UserRole, data)
-            else:
-                LOGGER.critical('Field is not supported: "{}"'.format(type(field).__name__))
-
-    def add_new_layer_to_table(self, key):
-        """Add a new row to the table.
-
-        :param key: The key of the panel.
-        :type key: basestring
-        """
-        table = self.layers_table[key]['tableWidget']
-        row = table.rowCount()
-        table.setRowCount(row + 1)
-        forms = self.layers_table[key]['forms']
-        for i, field in enumerate(forms):
-            item = QTableWidgetItem()
-            if i == 0:
-                item.setData(100, True)
-            table.setItem(row, i, item)
-        table.selectRow(row)
-        LOGGER.info('Adding one row in table "{}"'.format(key))
-
     def remove_selected_layer_from_table(self, key):
         """
         Remove a layer from the list of layers
         for which to have the "locate by layer" tool
         """
+        table_form = self.table_forms.get(key)
+        if table_form:
+            table_form.remove_selection()
+            return
+
         table = self.layers_table[key]['tableWidget']
         row = table.selectedIndexes()[0].row()
         table.clearSelection()

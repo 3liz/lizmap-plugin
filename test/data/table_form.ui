@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>666</width>
+    <height>516</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QTableWidget" name="table_widget">
+     <column>
+      <property name="text">
+       <string>layer</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>enabled</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>option</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="button_add">
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_remove">
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="form_group">
+     <property name="title">
+      <string>GroupBox</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsMapLayerComboBox" name="combo_layer"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="check_box">
+        <property name="text">
+         <string>CheckBox</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="combo_box"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
