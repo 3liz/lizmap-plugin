@@ -1,0 +1,32 @@
+services:
+  - docker
+
+sudo: false
+
+env:
+  global:
+    - IMAGE=qgis/qgis
+
+  matrix:
+    - QGIS_VERSION_TAG=release-3_4
+    # - QGIS_VERSION_TAG=release-3_10
+    # - QGIS_VERSION_TAG=latest
+
+branches:
+  only:
+    - master
+
+before_install:
+  - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
+
+install:
+  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/lizmap -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+  - sleep 10
+  - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
+
+script:
+  - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
+
+notifications:
+  email:
+    - etrimaille@3liz.com
