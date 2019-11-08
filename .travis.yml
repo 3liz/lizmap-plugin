@@ -15,6 +15,7 @@ env:
 branches:
   only:
     - master
+    - dev
 
 before_install:
   - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
