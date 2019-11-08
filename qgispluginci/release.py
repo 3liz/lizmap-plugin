@@ -97,7 +97,8 @@ def release(parameters: Parameters,
         prerelease = is_prerelease(parameters, release_tag, github_token)
         if prerelease:
             raise Warning('Skipping deploy to OSGEO since this is a pre-release')
-        upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
+        else:
+            upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
 
 
 def create_archive(
