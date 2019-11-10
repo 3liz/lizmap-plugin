@@ -72,8 +72,9 @@ def release(parameters: Parameters,
         allow_uncommitted_changes=allow_uncommitted_changes
     )
 
+    is_prerelease = False
     if github_token is not None:
-        upload_asset_to_github_release(
+        is_prerelease = upload_asset_to_github_release(
             parameters, asset_path=archive_name, release_tag=release_version, github_token=github_token
         )
         if upload_plugin_repo_github:
@@ -94,8 +95,7 @@ def release(parameters: Parameters,
 
     if osgeo_username is not None:
         assert osgeo_password is not None
-        prerelease = is_prerelease(parameters, release_tag, github_token)
-        if prerelease:
+        if is_prerelease:
             raise Warning('Skipping deploy to OSGEO since this is a pre-release')
         else:
             upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
@@ -206,24 +206,13 @@ def create_archive(
         repo.git.checkout('--', '.')
 
 
-def is_prerelease(parameters: Parameters, release_tag: str, github_token: str):
-    slug = '{}/{}'.format(parameters.github_organization_slug, parameters.project_slug)
-    repo = Github(github_token).get_repo(slug)
-    try:
-        print('Getting release on {}/{}'.format(parameters.github_organization_slug, parameters.project_slug))
-        gh_release = repo.get_release(id=release_tag)
-        return gh_release.prerelease
-    except GithubException as e:
-        raise GithubReleaseNotFound('Release {} not found'.format(release_tag))
-
-
 def upload_asset_to_github_release(
         parameters: Parameters,
         asset_path: str,
         release_tag: str,
         github_token: str,
         asset_name: str = None
-):
+) -> bool:
 
     slug = '{}/{}'.format(parameters.github_organization_slug, parameters.project_slug)
     repo = Github(github_token).get_repo(slug)
@@ -245,6 +234,7 @@ def upload_asset_to_github_release(
     except GithubException as e:
         print(e)
         raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
+    return gh_release.prerelease
 
 
 def create_plugin_repo(
