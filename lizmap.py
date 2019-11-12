@@ -462,7 +462,7 @@ class Lizmap:
         # Create action for help dialog
         self.action_help = QAction(
             QIcon(resources_path('icons', 'help.png')),
-            tr('&Help…'), self.iface.mainWindow())
+            '&{}…'.format(tr('Help')), self.iface.mainWindow())
 
         # connect help action to help dialog
         self.action_help.triggered.connect(self.show_help)
@@ -470,7 +470,7 @@ class Lizmap:
         # Create action for about dialog
         self.action_about = QAction(
             QIcon(resources_path('icons', 'help.png')),
-            tr('&About…'), self.iface.mainWindow())
+            '&{}…'.format(tr('About')), self.iface.mainWindow())
 
         # connect about action to about dialog
         self.action_about.triggered.connect(self.show_about)
