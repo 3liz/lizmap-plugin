@@ -30,7 +30,7 @@ class TestUiLizmapDialog(unittest.TestCase):
 
         flag, message = lizmap.check_global_project_options()
         self.assertFalse(flag, message)
-        self.assertEqual(message, '* You need to open a qgis project before using Lizmap\n')
+        self.assertEqual(message, 'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
 
         project.write(plugin_test_data_path('unittest.qgs'))
         flag, message = lizmap.check_global_project_options()

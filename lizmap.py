@@ -2522,8 +2522,9 @@ class Lizmap:
         error_message = ''
         # Get the project data from api
         project = QgsProject.instance()
-        if not project.fileName():
-            error_message += '* ' + tr('You need to open a qgis project before using Lizmap') + '\n'
+        if not project.fileName() or not project.fileName().lower().endswith('qgs'):
+            error_message += tr(
+                'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
             is_valid = False
 
         project_dir = None
