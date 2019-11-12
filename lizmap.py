@@ -69,6 +69,7 @@ from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
     QMessageBox,
+    QMenu,
 )
 from qgis.core import (
     Qgis,
@@ -447,6 +448,8 @@ class Lizmap:
         self.action = None
         self.action_help = None
         self.action_about = None
+        self.lizmap_menu = None
+        self.web_menu = None
         self.isok = None
 
     # noinspection PyPep8Naming
@@ -609,11 +612,18 @@ class Lizmap:
         # self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
 
         # add plugin to the web plugin menu
-        self.iface.addPluginToWebMenu("&Lizmap", self.action)
-        # add plugin help to the plugin menu
+        self.lizmap_menu = QMenu('Lizmap')
+        self.lizmap_menu.setIcon(
+            QIcon(resources_path('icons', 'icon.png')))
+        self.lizmap_menu.addAction(self.action)
+        self.lizmap_menu.addAction(self.action_help)
+        self.lizmap_menu.addAction(self.action_about)
+        self.web_menu = self.iface.webMenu()
+        self.web_menu.addMenu(self.lizmap_menu)
+
+        # Hack to make the web bar displayed.
         self.iface.addPluginToWebMenu("&Lizmap", self.action_help)
-        # add plugin about to the plugin menu
-        self.iface.addPluginToWebMenu("&Lizmap", self.action_about)
+
         # and add button to the Web panel
         self.iface.addWebToolBarIcon(self.action)
 
@@ -622,14 +632,10 @@ class Lizmap:
 
     def unload(self):
         """Remove the plugin menu item and icon."""
-        # new menu used, remove submenus from main Web menu
         self.iface.removePluginWebMenu("&Lizmap", self.action)
-        # also remove button from Web toolbar
-        self.iface.removeWebToolBarIcon(self.action)
-        # Remove help menu entry
         self.iface.removePluginWebMenu("&Lizmap", self.action_help)
-        # Remove about menu entry
         self.iface.removePluginWebMenu("&Lizmap", self.action_about)
+        self.iface.removeWebToolBarIcon(self.action)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
