@@ -382,7 +382,7 @@ class Lizmap:
                          'order'],
                 'jsonConfig': {}
             },
-            'atlasLayers': {
+            'atlas': {
                 'tableWidget': self.dlg.atlas_table,
                 'removeButton': self.dlg.atlas_remove_layer,
                 'addButton': self.dlg.atlas_add_layer,
@@ -398,8 +398,18 @@ class Lizmap:
                     self.dlg.atlasDisplayPopup,
                     self.dlg.atlasTriggerFilter,
                 ],
-                'cols': ['layerId', 'primaryKey', 'displayDescription', 'featureLabel', 'sortField', 'highlightGeometry', 'zoomToFeature', 'displayPopup', 'triggerFilter'],
-                'jsonConfig': {}
+                'useSingleRowIfPossible': True,
+                'cols': [
+                    'layer',
+                    'primaryKey',
+                    'displayLayerDescription',
+                    'featureLabel',
+                    'sortField',
+                    'highlightGeometry',
+                    'zoom',
+                    'displayPopup',
+                    'triggerFilter'
+                ],
             },
             'attributeLayers': {
                 'tableWidget': self.dlg.twAttributeLayerList,
@@ -471,7 +481,7 @@ class Lizmap:
         self.web_menu = None
         self.isok = None
         self.table_forms = dict()
-        self.table_forms['atlasLayers'] = TableForm('atlasLayers', self.layers_table['atlasLayers'])
+        self.table_forms['atlas'] = TableForm('atlas', self.layers_table['atlas'])
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -755,7 +765,18 @@ class Lizmap:
                         self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
                         self.layers_table[key]['jsonConfig'] = {}
-            except Exception:
+
+                for key, table in self.table_forms.items():
+                    if key in sjson:
+                        table.truncate()
+                        table.add_rows(sjson[key])
+                    else:
+                        # get a subset of the data to give to the table form
+                        data = {k: json_options[k] for k in json_options if k.startswith(table.name)}
+                        table.truncate()
+                        table.add_single_row(data)
+            except Exception as e:
+                LOGGER.info(e)
                 isok = 0
                 copyfile(json_file, '{}.back'.format(json_file))
                 message = tr(
@@ -834,6 +855,8 @@ class Lizmap:
 
         # Fill the table widgets
         for key, item in self.layers_table.items():
+            if key in self.table_forms.keys():
+                continue
             self.load_config_into_table_widget(key)
 
         LOGGER.info('CFG file has been loaded')
@@ -2177,6 +2200,13 @@ class Lizmap:
                 else:
                     if 'alwaysExport' in item:
                         liz2json["options"][key] = item['default']
+
+        for key, table_form in self.table_forms.items():
+            data = table_form.to_dict()
+            if table_form.use_single_row_if_possible and table_form.table.rowCount() == 1:
+                liz2json['options'].update(data)
+            else:
+                liz2json[key] = data
 
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.twLocateByLayerList

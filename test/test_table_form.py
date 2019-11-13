@@ -47,10 +47,12 @@ class TestTableForm(unittest.TestCase):
         table_form = TableForm('test', json_config)
         table_form.set_connections()
 
+        # We have 0 row for now.
         self.assertEqual(0, dialog.table_widget.rowCount())
         self.assertListEqual(table_form.to_dict(), list())
         self.assertFalse(dialog.form_group.isEnabled())
 
+        # First row
         table_form.add_button.click()
 
         self.assertEqual(1, dialog.table_widget.rowCount())
@@ -62,6 +64,7 @@ class TestTableForm(unittest.TestCase):
         expected = [{'checkbox': True, 'combo': '', 'layer': None}]
         self.assertListEqual(table_form.to_dict(), expected)
 
+        # Second row
         table_form.add_button.click()
 
         dialog.check_box.setChecked(False)
@@ -74,21 +77,66 @@ class TestTableForm(unittest.TestCase):
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         QgsProject.instance().addMapLayer(layer)
 
-        def assert_with_layer(result, expected_result):
+        def assert_with_layer(results, expected_results):
             """Helper to check layer ID."""
-            for r, e in zip(result, expected_result):
-                for i in r.keys():
-                    if i != 'layer':
-                        self.assertEqual(r[i], e[i])
+            for result, expected_result in zip(results, expected_results):
+                for row in result.keys():
+                    if row != 'layer':
+                        self.assertEqual(result[row], expected_result[row])
                     else:
-                        if e[i] is None:
-                            self.assertIsNone(r[i])
+                        if expected_result[row] is None:
+                            self.assertIsNone(result[row])
                         else:
-                            self.assertIsInstance(r[i], str)
-                            self.assertTrue(r[i].startswith(e[i]))
+                            self.assertIsInstance(result[row], str)
+                            self.assertTrue(result[row].startswith(expected_result[row]))
 
         expected = [
             {'checkbox': True, 'combo': '', 'layer': None},
             {'checkbox': False, 'combo': '', 'layer': 'lines'}
         ]
         assert_with_layer(table_form.to_dict(), expected)
+
+        table_form.remove_button.click()
+
+        expected = [
+            {'checkbox': True, 'combo': '', 'layer': None},
+        ]
+        assert_with_layer(table_form.to_dict(), expected)
+
+        del table_form
+        del dialog
+        QgsProject.instance().removeAllMapLayers()
+
+        dialog = TableFormDialog()
+        json_config = {
+            'tableWidget': dialog.table_widget,
+            'removeButton': dialog.button_remove,
+            'addButton': dialog.button_add,
+            'form': dialog.form_group,
+            'fields': [
+                dialog.combo_layer,
+                dialog.check_box,
+                dialog.combo_box,
+            ],
+            'cols': ['layer', 'checkbox', 'combo'],
+            'useSingleRowIfPossible': True,
+            'jsonConfig': {}
+        }
+        table_form = TableForm('test', json_config)
+        table_form.set_connections()
+        table_form.add_button.click()
+
+        self.assertEqual(1, dialog.table_widget.rowCount())
+        self.assertTrue(dialog.form_group.isEnabled())
+        expected = {
+            'testEnabled': 'True',
+            'testCheckbox': 'False',
+            'testCombo': '',
+            'testLayer': None
+        }
+        # noinspection PyTypeChecker
+        self.assertDictEqual(table_form.to_dict(), expected)
+
+        row_count = table_form.table.rowCount()
+        table_form.add_single_row(expected)
+        self.assertEqual(table_form.table.rowCount(), row_count + 1)
