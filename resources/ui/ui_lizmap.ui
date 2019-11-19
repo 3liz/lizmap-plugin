@@ -249,7 +249,7 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>854</width>
+                <width>720</width>
                 <height>805</height>
                </rect>
               </property>
@@ -819,8 +819,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>443</width>
+                <height>143</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -898,8 +898,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>560</width>
-                       <height>838</height>
+                       <width>430</width>
+                       <height>905</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1525,8 +1525,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>854</width>
-                <height>865</height>
+                <width>561</width>
+                <height>882</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2238,8 +2238,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>755</width>
+                <height>361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2524,8 +2524,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>480</width>
+                <height>416</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2748,8 +2748,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>736</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2965,8 +2965,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>415</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3159,8 +3159,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>320</width>
+                <height>352</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3294,8 +3294,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>836</width>
-                <height>674</height>
+                <width>600</width>
+                <height>691</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3830,8 +3830,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>868</width>
-                <height>649</height>
+                <width>436</width>
+                <height>466</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4152,21 +4152,12 @@ Only the selected feature will be visible on the map.</string>
                   <string notr="true">background-color:rgb(170, 255, 255);</string>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only one layer &lt;span style=&quot; font-weight:600;&quot;&gt;must&lt;/span&gt; be used with Lizmap Web Client 3.3. Many layers can be added with Lizmap Web Client 3.4 and above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only one layer &lt;span style=&quot; font-weight:600;&quot;&gt;must&lt;/span&gt; be used with Lizmap Web Client 3.3. Several layers can be added with Lizmap Web Client 3.4 and above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QTableWidget" name="atlas_table">
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
                  <column>
                   <property name="text">
                    <string>Layer</string>
@@ -4517,8 +4508,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>629</height>
+                <width>274</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">

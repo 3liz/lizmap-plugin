@@ -4,7 +4,7 @@ import logging
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QCheckBox, QComboBox, QAbstractButton
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QCheckBox, QComboBox, QAbstractButton, QAbstractItemView
 from qgis.core import QgsProject, QgsMapLayerModel
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 
@@ -49,11 +49,11 @@ class TableForm:
 
     @property
     def add_button(self) -> QAbstractButton:
-        return self.config.get('addButton')
+        return self.config['addButton']
 
     @property
     def remove_button(self) -> QAbstractButton:
-        return self.config.get('removeButton')
+        return self.config['removeButton']
 
     @property
     def fields(self):
@@ -72,7 +72,7 @@ class TableForm:
         return self.config['cols']
 
     def disconnect_all_signals(self):
-        """Disconnect all signlas which are in the form."""
+        """Disconnect all signals which are in the form."""
         for field in self.fields:
             try:
                 # We disconnect everything
@@ -206,6 +206,9 @@ class TableForm:
         self.add_button.clicked.connect(self.add_new_layer_to_table)
         self.add_button.setToolTip(tr('Add a new layer to the list'))
         self.table.itemSelectionChanged.connect(self.selection_changed_table)
+        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.selection_changed_table()
 
     def add_new_layer_to_table(self):
@@ -297,9 +300,14 @@ class TableForm:
                     item.setData(Qt.UserRole, False)
             elif isinstance(form_item, QgsMapLayerComboBox):
                 layer = QgsProject.instance().mapLayer(val)
-                item.setText(layer.name())
-                item.setData(Qt.UserRole, layer.id())
-                item.setIcon(QgsMapLayerModel.iconForLayer(layer))
+                if layer:
+                    item.setText(layer.name())
+                    item.setData(Qt.UserRole, layer.id())
+                    item.setIcon(QgsMapLayerModel.iconForLayer(layer))
+                else:
+                    LOGGER.info('Layer {} not found.'.format(val))
+                    item.setText(val)
+                    item.setData(Qt.UserRole, val)
             elif isinstance(form_item, QgsFieldComboBox):
                 item.setData(Qt.UserRole, val)
                 item.setText(val)
