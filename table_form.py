@@ -247,7 +247,7 @@ class TableForm:
                 if not item:
                     continue
                 cell = item.data(Qt.UserRole)
-                key = '{}{}'.format(self.name, name.capitalize())
+                key = '{}{}{}'.format(self.name, name[:1].upper(), name[1:])
                 if cell is None:
                     data[key] = cell
                 elif isinstance(cell, bool):

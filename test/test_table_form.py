@@ -44,7 +44,7 @@ class TestTableForm(unittest.TestCase):
                 dialog.check_box,
                 dialog.combo_box,
             ],
-            'cols': ['layer', 'checkbox', 'combo'],
+            'cols': ['layerTest', 'checkbox', 'comboBox'],
             'useSingleRowIfPossible': True,
         }
         table_form = TableForm('test', json_config)
@@ -62,13 +62,13 @@ class TestTableForm(unittest.TestCase):
         self.assertEqual(1, dialog.table_widget.rowCount())
         self.assertTrue(dialog.form_group.isEnabled())
         expected_1_layer = {
-            'testEnabled': 'True', 'testCheckbox': 'False', 'testCombo': '', 'testLayer': layer.id()}
+            'testEnabled': 'True', 'testCheckbox': 'False', 'testComboBox': '', 'testLayerTest': layer.id()}
         # noinspection PyTypeChecker
         self.assertDictEqual(table_form.to_dict(), expected_1_layer)
 
         dialog.check_box.setChecked(True)
         expected = {
-            'testEnabled': 'True', 'testCheckbox': 'True', 'testCombo': '', 'testLayer': layer.id()
+            'testEnabled': 'True', 'testCheckbox': 'True', 'testComboBox': '', 'testLayerTest': layer.id()
         }
         # noinspection PyTypeChecker
         self.assertDictEqual(table_form.to_dict(), expected)
@@ -78,8 +78,8 @@ class TestTableForm(unittest.TestCase):
         self.assertEqual(2, dialog.table_widget.rowCount())
         dialog.check_box.setChecked(False)
         expected_2_layers = [
-            {'checkbox': True, 'combo': '', 'layer': layer.id()},
-            {'checkbox': False, 'combo': '', 'layer': layer.id()}
+            {'checkbox': True, 'comboBox': '', 'layerTest': layer.id()},
+            {'checkbox': False, 'comboBox': '', 'layerTest': layer.id()}
         ]
         self.assertListEqual(table_form.to_dict(), expected_2_layers)
 
