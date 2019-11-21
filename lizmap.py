@@ -1006,14 +1006,14 @@ class Lizmap:
         if not self.check_wfs_is_checked(layer):
             return
 
-        display_field = self.dlg.liLocateByLayerFields.currentText()
+        display_field = self.dlg.liLocateByLayerFields.currentField()
 
         if not display_field:
             return
 
         layer_name = layer.name()
         layer_id = layer.id()
-        filter_field = self.dlg.liLocateByLayerFilterFields.currentText()
+        filter_field = self.dlg.liLocateByLayerFilterFields.currentField()
         display_geom = self.dlg.cbLocateByLayerDisplayGeom.isChecked()
         min_length = self.dlg.inLocateByLayerMinLength.value()
         filter_on_locate = self.dlg.cbFilterOnLocate.isChecked()
@@ -1049,7 +1049,7 @@ class Lizmap:
 
         name = layer.name()
         layer_id = layer.id()
-        primary_key = self.dlg.liAttributeLayerFields.currentText()
+        primary_key = self.dlg.liAttributeLayerFields.currentField()
         hidden_fields = self.dlg.inAttributeLayerHiddenFields.text().strip(' \t')
         pivot = self.dlg.cbAttributeLayerIsPivot.isChecked()
         hide_as_child = self.dlg.cbAttributeLayerHideAsChild.isChecked()
@@ -1175,7 +1175,7 @@ class Lizmap:
 
         layer_name = layer.name()
         layer_id = layer.id()
-        filter_attribute = self.dlg.liLoginFilteredLayerFields.currentText()
+        filter_attribute = self.dlg.liLoginFilteredLayerFields.currentField()
         filter_private = self.dlg.cbLoginFilteredLayerPrivate.isChecked()
         icon = QgsMapLayerModel.iconForLayer(layer)
 
@@ -1211,8 +1211,8 @@ class Lizmap:
 
         layer_name = layer.name()
         layer_id = layer.id()
-        start_attribute = self.dlg.liTimemanagerStartAttribute.currentText()
-        label_attribute = self.dlg.liTimemanagerLabelAttribute.currentText()
+        start_attribute = self.dlg.liTimemanagerStartAttribute.currentField()
+        label_attribute = self.dlg.liTimemanagerLabelAttribute.currentField()
         group = self.dlg.inTimemanagerGroup.text().strip(' \t')
         group_title = self.dlg.inTimemanagerGroupTitle.text().strip(' \t')
         icon = QgsMapLayerModel.iconForLayer(layer)
