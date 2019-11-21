@@ -1979,13 +1979,38 @@ class Lizmap:
                 a += '\n' + '  ' * l + '<legend>%s</legend>' % node.name()
                 a += '\n' + '  ' * l + '<div>'
 
+            # In cas of root children
+            before_tabs = []
+            content_tabs = []
+            after_tabs = []
+
             level += 1
             for n in node.children():
-                a += self.createPopupNodeItemFromForm(layer, n, level, headers, html)
+                h = self.createPopupNodeItemFromForm(layer, n, level, headers, html)
+                # If it is not root children, add html
+                if l > 0:
+                    a += h
+                    continue
+                # If it is root children, store html in the right list
+                if isinstance(n, QgsAttributeEditorField):
+                    if not headers:
+                        before_tabs.append(h)
+                    else:
+                        after_tabs.append(h)
+                else:
+                    content_tabs.append(h)
 
-            if l == 1:
+            if l == 0:
+                if before_tabs:
+                    a += '\n<div class="before-tabs">' + '\n'.join(before_tabs) + '\n</div>'
+                if headers:
+                    a += '<ul class="nav nav-tabs">\n' + '\n'.join(headers) + '\n</ul>'
+                    a += '\n<div class="tab-content">' + '\n'.join(content_tabs) + '\n</div>'
+                if after_tabs:
+                    a += '\n<div class="after-tabs">' + '\n'.join(after_tabs) + '\n</div>'
+            elif l == 1:
                 a += '\n' + '  ' * l + '</div>'
-            if l > 1:
+            elif l > 1:
                 a += '\n' + '  ' * l + '</div>'
                 a += '\n' + '  ' * l + '</fieldset>'
 
@@ -2011,19 +2036,13 @@ class Lizmap:
         # Get root
         root = cfg.invisibleRootContainer()
 
-        # Build HTML headers and body content by using recursive method
-        htmlheaders = []
-        htmlheader = ''
-        htmlcontent = ''
-        htmlcontent += self.createPopupNodeItemFromForm(layer, root, 0, htmlheaders, htmlcontent)
-        if htmlheaders:
-            htmlheader = '<ul class="nav nav-tabs">\n' + '\n'.join(htmlheaders) + '\n</ul>'
-            htmlcontent = '\n<div class="tab-content">' + htmlcontent + '\n</div>'
+        # Build HTML content by using recursive method
+        htmlcontent = self.createPopupNodeItemFromForm(layer, root, 0, [], '')
 
         # package css style, header and content
         html = CSS_TOOLTIP_FORM
         html += '\n<div class="container popup_lizmap_dd" style="width:100%;">'
-        html += '\n' + htmlheader + '\n' + htmlcontent
+        html += '\n' + htmlcontent
         html += '\n' + '</div>'
 
         layer.setMapTipTemplate(html)
