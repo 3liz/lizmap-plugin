@@ -208,13 +208,12 @@ help:
 docker_test:
 	$(MAKE) -C qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
 
-# i18n_%:
-    # Do not use qgis_plugin_tools, translation are shared with LWC
-	# $(MAKE) -C qgis_plugin_tools i18n_$* LOCALES=$(LOCALES)
-
 release_%:
 	$(MAKE) -C qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME) VERSION=$(VERSION)
 
+# i18n_%:
+    # Do not use qgis_plugin_tools, translation are shared with LWC
+	# $(MAKE) -C qgis_plugin_tools i18n_$* LOCALES=$(LOCALES)
 # Instead of using the qgis_plugin_tools makefile for translation:
 i18n_1_prepare:
 	@echo Updating strings locally 1/4
