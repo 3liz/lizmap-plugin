@@ -583,7 +583,6 @@ class Lizmap:
 
         # Add a layer to the lizmap dataviz layers
         self.dlg.btDatavizAddLayer.clicked.connect(self.add_layer_to_dataviz)
-        self.dlg.liDatavizPlotType.currentText()
 
         # Set the dataviz options (type, etc.)
         for key, item in self.dataviz_options.items():
@@ -601,7 +600,6 @@ class Lizmap:
                     list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
                     for k, i in list_dic.items():
                         item['widget'].setItemData(i, k)
-        self.dlg.liFormFilterLayer.currentText()
         # Hide some form filter inputs depending on value
         self.update_form_filter_visible_fields()
         self.dlg.liFormFilterFieldType.currentIndexChanged[str].connect(self.update_form_filter_visible_fields)
