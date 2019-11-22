@@ -6,11 +6,24 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=3.1.3
+version=3.1.4
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.1.4
+  * [Bugfix] In build tooltip from Drag and Drop form, outside fields are not outside tabs
+  * [Bugfix] With QgsFieldComboBox use currentField instead of currentText
+  * Add icon to Lizmap menu
+  * Fix unicode in TS files
+  * check QGZ files when we open lizmap (#171)
+  * Add travis
+  * Some code refactoring
+  * Move Popup code to its own file
+  * Fix wrong stylesheet
+  * Improve UX for the user about popup and server cache
+  * Remove ghost layer
+  * Remove Qt resource file
   Version 3.1.3
   * Remove limitation of two layers in the locate tool
   * Add icons for layers
@@ -32,7 +45,7 @@ changelog=
   * Update locales
 
 ; tags are in comma separated value format, spaces are allowed
-tags=lizmap, server, web, publication, webmapping, WMS
+tags=lizmap, server, web, publication, webmapping, WMS, internet
 
 homepage=https://github.com/3liz/lizmap-plugin
 tracker=https://github.com/3liz/lizmap-plugin/issues

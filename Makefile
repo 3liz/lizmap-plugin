@@ -47,6 +47,7 @@
 # Edit the following to match your sources lists
 #################################################
 
+VERSION = "3.1.4"
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
@@ -211,8 +212,8 @@ docker_test:
     # Do not use qgis_plugin_tools, translation are shared with LWC
 	# $(MAKE) -C qgis_plugin_tools i18n_$* LOCALES=$(LOCALES)
 
-deploy_%:
-	$(MAKE) -C qgis_plugin_tools deploy_$* PLUGINNAME=$(PLUGINNAME)
+release_%:
+	$(MAKE) -C qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME) VERSION=$(VERSION)
 
 # Instead of using the qgis_plugin_tools makefile for translation:
 i18n_1_prepare:
