@@ -49,6 +49,20 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="button_up">
+       <property name="text">
+        <string>Up</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button_down">
+       <property name="text">
+        <string>Down</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

@@ -32,12 +32,15 @@ class TestTableForm(unittest.TestCase):
         """Test for the UI and save/restore from JSON."""
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         QgsProject.instance().addMapLayer(layer)
+        # self.assertTrue(layer.isValid())
 
         dialog = TableFormDialog()
         json_config = {
             'tableWidget': dialog.table_widget,
             'removeButton': dialog.button_remove,
             'addButton': dialog.button_add,
+            'upButton': dialog.button_up,
+            'downButton': dialog.button_down,
             'form': dialog.form_group,
             'fields': [
                 dialog.combo_layer,
@@ -77,15 +80,15 @@ class TestTableForm(unittest.TestCase):
         table_form.add_button.click()
         self.assertEqual(2, dialog.table_widget.rowCount())
         dialog.check_box.setChecked(False)
+
         expected_2_layers = [
-            {'checkbox': True, 'comboBox': '', 'layerTest': layer.id()},
-            {'checkbox': False, 'comboBox': '', 'layerTest': layer.id()}
+            {'checkbox': 'True', 'comboBox': '', 'layerTest': layer.id()},
+            {'checkbox': 'False', 'comboBox': '', 'layerTest': layer.id()}
         ]
         self.assertListEqual(table_form.to_dict(), expected_2_layers)
 
-        # Nothing is selected
         table_form.remove_button.click()
-        self.assertEqual(2, dialog.table_widget.rowCount())
+        self.assertEqual(1, dialog.table_widget.rowCount())
 
         table_form.table.selectRow(0)
         table_form.remove_button.click()

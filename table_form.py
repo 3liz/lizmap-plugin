@@ -5,7 +5,7 @@ import logging
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QCheckBox, QComboBox, QAbstractButton, QAbstractItemView
-from qgis.core import QgsProject, QgsMapLayerModel
+from qgis.core import QgsProject, QgsMapLayerModel, QgsApplication
 from qgis.gui import QgsFieldComboBox, QgsMapLayerComboBox
 
 from .qgis_plugin_tools.tools.i18n import tr
@@ -54,6 +54,14 @@ class TableForm:
     @property
     def remove_button(self) -> QAbstractButton:
         return self.config['removeButton']
+
+    @property
+    def up_button(self) -> QAbstractButton:
+        return self.config.get('upButton')
+
+    @property
+    def down_button(self) -> QAbstractButton:
+        return self.config.get('downButton')
 
     @property
     def fields(self):
@@ -204,7 +212,25 @@ class TableForm:
     def set_connections(self):
         """Set signals between add/remove buttons."""
         self.add_button.clicked.connect(self.add_new_layer_to_table)
+        self.add_button.setText('')
         self.add_button.setToolTip(tr('Add a new layer to the list'))
+        self.add_button.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+
+        self.remove_button.clicked.connect(self.remove_selection)
+        self.remove_button.setText('')
+        self.remove_button.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+        self.remove_button.setToolTip(tr('Remove the layer from the list'))
+
+        if self.up_button and self.down_button:
+            self.up_button.clicked.connect(self.move_layer_up)
+            self.up_button.setText('')
+            self.up_button.setToolTip(tr('Move the layer up in the table'))
+            self.up_button.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
+            self.down_button.clicked.connect(self.move_layer_down)
+            self.down_button.setText('')
+            self.down_button.setToolTip(tr('Move the layer down in the table'))
+            self.down_button.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
+
         self.table.itemSelectionChanged.connect(self.selection_changed_table)
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -222,6 +248,30 @@ class TableForm:
             self.table.setItem(row, i, item)
         self.table.selectRow(row)
         LOGGER.info('Adding one row in table "{}"'.format(self.name))
+
+    def move_layer_up(self):
+        """Move the selected layer up."""
+        row = self.table.currentRow()
+        if row == 0:
+            return
+        column = self.table.currentColumn()
+        self.table.insertRow(row - 1)
+        for i in range(self.table.columnCount()):
+            self.table.setItem(row - 1, i, self.table.takeItem(row + 1, i))
+            self.table.setCurrentCell(row - 1, column)
+        self.table.removeRow(row + 1)
+
+    def move_layer_down(self):
+        """Move the selected layer down."""
+        row = self.table.currentRow()
+        if row == self.table.rowCount() - 1:
+            return
+        column = self.table.currentColumn()
+        self.table.insertRow(row + 2)
+        for i in range(self.table.columnCount()):
+            self.table.setItem(row + 2, i, self.table.takeItem(row, i))
+            self.table.setCurrentCell(row + 2, column)
+        self.table.removeRow(row)
 
     def remove_selection(self):
         """Remove the selected row from the table."""
@@ -267,6 +317,9 @@ class TableForm:
                 cell = item.data(Qt.UserRole)
                 if cell is None:
                     row_data[name] = cell
+                elif isinstance(cell, bool):
+                    # Lizmap 4 #176
+                    row_data[name] = str(cell)
                 else:
                     row_data[name] = cell
             data.append(row_data)

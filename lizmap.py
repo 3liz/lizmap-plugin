@@ -386,6 +386,8 @@ class Lizmap:
                 'tableWidget': self.dlg.atlas_table,
                 'removeButton': self.dlg.atlas_remove_layer,
                 'addButton': self.dlg.atlas_add_layer,
+                'upButton': self.dlg.atlas_move_up,
+                'downButton': self.dlg.atlas_move_down,
                 'form': self.dlg.atlas_form,
                 'fields': [
                     self.dlg.atlasLayer,
@@ -537,6 +539,11 @@ class Lizmap:
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():
+            table_form = self.table_forms.get(key)
+            if table_form:
+                table_form.set_connections()
+                continue
+
             control = item['removeButton']
             control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
             control.setText('')
@@ -547,10 +554,6 @@ class Lizmap:
             control = item.get('addButton')
             control.setText('')
             control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-
-            table_form = self.table_forms.get(key)
-            if table_form:
-                table_form.set_connections()
 
         # Delete layers from table when deleted from registry
         lr = QgsProject.instance()

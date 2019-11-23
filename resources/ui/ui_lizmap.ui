@@ -4152,7 +4152,7 @@ Only the selected feature will be visible on the map.</string>
                   <string notr="true">background-color:rgb(170, 255, 255);</string>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only one layer &lt;span style=&quot; font-weight:600;&quot;&gt;must&lt;/span&gt; be used with Lizmap Web Client 3.3. Several layers can be added with Lizmap Web Client 3.4 and above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Only one layer &lt;span style=&quot; font-weight:600;&quot;&gt;must&lt;/span&gt; be used with Lizmap Web Client 3.3. Several layers can be added with Lizmap Web Client 3.4 and above.&lt;/p&gt;&lt;p&gt;The auto-play checkbox is used only on the first layer in the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -4221,6 +4221,20 @@ Only the selected feature will be visible on the map.</string>
                   <widget class="QPushButton" name="atlas_remove_layer">
                    <property name="text">
                     <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="atlas_move_up">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="atlas_move_down">
+                   <property name="text">
+                    <string notr="true">down</string>
                    </property>
                   </widget>
                  </item>
