@@ -98,7 +98,7 @@ def release(parameters: Parameters,
     if osgeo_username is not None:
         assert osgeo_password is not None
         if is_prerelease:
-            warnings.warn(('Skipping deploy to OSGEO since this is a pre-release')
+            warnings.warn('Skipping deploy to OSGEO since this is a pre-release')
         else:
             upload_plugin_to_osgeo(username=osgeo_username, password=osgeo_password, archive=archive_name)
 
