@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## Version 3.1.4
+
+* [Bugfix] In build tooltip from Drag and Drop form, outside fields are not outside tabs
+* [Bugfix] With QgsFieldComboBox use currentField instead of currentText
+* Add icon to Lizmap menu
+* Fix unicode in TS files
+* check QGZ files when we open lizmap (#171)
+* Add travis
+* Some code refactoring
+* Move Popup code to its own file
+* Fix wrong stylesheet
+* Improve UX for the user about popup and server cache
+* Remove ghost layer
+* Remove Qt resource file
+
 ## Version 3.1.3
 
 * Remove limitation of two layers in the locate tool
