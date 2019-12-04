@@ -1389,12 +1389,48 @@ class Lizmap:
 
     def update_form_filter_visible_fields(self):
         """Show/Hide fields depending of chosen type."""
-        ftype = self.dlg.liFormFilterFieldType.itemData(self.dlg.liFormFilterFieldType.currentIndex())
-        self.dlg.liFormFilterMinDate.setEnabled(ftype == 'date')
-        self.dlg.liFormFilterMaxDate.setEnabled(ftype == 'date')
-        self.dlg.liFormFilterField.setEnabled(ftype != 'date')
-        self.dlg.liFormFilterFormat.setEnabled(ftype == 'uniquevalues')
-        self.dlg.liFormFilterSplitter.setEnabled(ftype == 'uniquevalues')
+        index = self.dlg.liFormFilterFieldType.currentIndex()
+        ftype = self.dlg.liFormFilterFieldType.itemData(index)
+        self.dlg.liFormFilterField.setLayer(self.dlg.liFormFilterLayer.currentLayer())
+        self.dlg.liFormFilterMinDate.setLayer(self.dlg.liFormFilterLayer.currentLayer())
+        self.dlg.liFormFilterMaxDate.setLayer(self.dlg.liFormFilterLayer.currentLayer())
+
+        if ftype == 'date':
+            self.dlg.liFormFilterMinDate.setVisible(True)
+            self.dlg.liFormFilterMinDate.setAllowEmptyFieldName(False)
+            self.dlg.liFormFilterMaxDate.setVisible(True)
+            self.dlg.label_min_date_filter.setVisible(True)
+            self.dlg.label_max_date_filter.setVisible(True)
+        else:
+            self.dlg.liFormFilterMinDate.setVisible(False)
+            self.dlg.liFormFilterMinDate.setAllowEmptyFieldName(True)
+            self.dlg.liFormFilterMinDate.setField('')
+            self.dlg.liFormFilterMaxDate.setVisible(False)
+            self.dlg.liFormFilterMaxDate.setField('')
+            self.dlg.label_min_date_filter.setVisible(False)
+            self.dlg.label_max_date_filter.setVisible(False)
+
+        if ftype == 'uniquevalues':
+            self.dlg.liFormFilterFormat.setVisible(True)
+            self.dlg.liFormFilterSplitter.setVisible(True)
+            self.dlg.label_format_filter.setVisible(True)
+            self.dlg.label_splitter_filter.setVisible(True)
+        else:
+            self.dlg.liFormFilterSplitter.setText('')
+            self.dlg.liFormFilterFormat.setVisible(False)
+            self.dlg.liFormFilterSplitter.setVisible(False)
+            self.dlg.label_format_filter.setVisible(False)
+            self.dlg.label_splitter_filter.setVisible(False)
+
+        if ftype in ['text', 'uniquevalues', 'numeric']:
+            self.dlg.liFormFilterField.setVisible(True)
+            self.dlg.label_field_filter.setVisible(True)
+            self.dlg.liFormFilterField.setAllowEmptyFieldName(False)
+        else:
+            self.dlg.liFormFilterField.setVisible(False)
+            self.dlg.label_field_filter.setVisible(False)
+            self.dlg.liFormFilterField.setAllowEmptyFieldName(True)
+            self.dlg.liFormFilterField.setField('')
 
     def refresh_layer_tree(self):
         """Refresh the layer tree on user demand. Uses method populateLayerTree."""
@@ -2858,14 +2894,14 @@ class Lizmap:
 
             # Filter Form layers
             self.dlg.liFormFilterLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            ffl = []
-            for f in QgsProject.instance().mapLayers().values():
-                if f.providerType() not in ('ogr', 'postgres', 'spatialite'):
-                    ffl.append(f)
-                if f.providerType() == 'ogr':
-                    if not '|layername=' in f.dataProvider().dataSourceUri():
-                        ffl.append(f)
-            self.dlg.liFormFilterLayer.setExceptedLayerList(ffl)
+            black_list = []
+            for layer in QgsProject.instance().mapLayers().values():
+                if layer.providerType() not in ('ogr', 'postgres', 'spatialite'):
+                    black_list.append(layer)
+                if layer.providerType() == 'ogr':
+                    if '|layername=' not in layer.dataProvider().dataSourceUri():
+                        black_list.append(layer)
+            self.dlg.liFormFilterLayer.setExceptedLayerList(black_list)
 
             # Get config file data
             self.get_config()
