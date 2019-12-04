@@ -6,11 +6,13 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=3.1.4
+version=3.1.5
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.1.5
+  * Improve UX when editing layer with a form filter
   Version 3.1.4
   * [Bugfix] In build tooltip from Drag and Drop form, outside fields are not outside tabs
   * [Bugfix] With QgsFieldComboBox use currentField instead of currentText

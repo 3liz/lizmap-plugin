@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.1.5
+
+* Improve UX when editing layer with a form filter
+
 ## Version 3.1.4
 
 * [Bugfix] In build tooltip from Drag and Drop form, outside fields are not outside tabs

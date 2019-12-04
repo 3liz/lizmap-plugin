@@ -1,6 +1,6 @@
-## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap 3.1.4
+## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap 3.1.5
 
-Download link: https://plugins.qgis.org/plugins/lizmap/version/3.1.4/download/
+Download link: https://plugins.qgis.org/plugins/lizmap/version/3.1.5/download/
 
 * The default branch is [dev](https://github.com/3liz/lizmap-plugin/tree/dev) for the next release. 
 * The released branch is [master](https://github.com/3liz/lizmap-plugin/tree/master) for the actual released version on [qgis.org](https://plugins.qgis.org). 
