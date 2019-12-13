@@ -135,67 +135,81 @@ class Lizmap:
         self.dlg = LizmapDialog()
         self.popup_dialog = None
 
-        icon = QIcon()
-
         # Map options
+        icon = QIcon()
         icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(0).setIcon(icon)
 
         # Layers
+        icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(1).setIcon(icon)
 
         # Base layer
+        icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(2).setIcon(icon)
 
         # Locate by layer
+        icon = QIcon()
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(3).setIcon(icon)
 
         # Attribute table
+        icon = QIcon()
         icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(4).setIcon(icon)
 
         # Layer editing
+        icon = QIcon()
         icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(5).setIcon(icon)
 
         # Tooltip layer
+        icon = QIcon()
         icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(6).setIcon(icon)
 
         # Filter layer by user
+        icon = QIcon()
         icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(7).setIcon(icon)
 
         # Dataviz
+        icon = QIcon()
         icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(8).setIcon(icon)
 
         # Time manager
+        icon = QIcon()
         icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(9).setIcon(icon)
 
         # Atlas
+        icon = QIcon()
         icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(10).setIcon(icon)
 
         # Filter data with form
+        icon = QIcon()
         icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(11).setIcon(icon)
+
+        # Log
+        icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
+        self.dlg.mOptionsListWidget.item(12).setIcon(icon)
 
         # Set stylesheet for QGroupBox
         if sys.platform.startswith('win'):
