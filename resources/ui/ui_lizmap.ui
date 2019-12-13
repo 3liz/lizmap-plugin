@@ -3495,43 +3495,7 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QComboBox" name="liDatavizPlotType">
-                   <item>
-                    <property name="text">
-                     <string>scatter</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>box</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>bar</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>histogram</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>pie</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>histogram2d</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>polar</string>
-                    </property>
-                   </item>
-                  </widget>
+                   <widget class="QComboBox" name="liDatavizPlotType"/>
                  </item>
                  <item row="8" column="0">
                   <widget class="QLabel" name="label_77">

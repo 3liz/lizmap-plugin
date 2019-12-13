@@ -311,6 +311,16 @@ class Lizmap:
 
         self.dataviz_options = LizmapConfig.datavizOptionDefinitions
         self.dataviz_options['plotType']['widget'] = self.dlg.liDatavizPlotType
+
+        # Add text and icons
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'scatterplot.svg')), 'scatter')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'boxplot.svg')), 'box')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'barplot.svg')), 'bar')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'histogram.svg')), 'histogram')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'pie.svg')), 'pie')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', '2dhistogram.svg')), 'histogram2d')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'polar.svg')), 'polar')
+
         self.dataviz_options['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
 
         self.form_filter_options = LizmapConfig.formFilterOptionDefinitions
