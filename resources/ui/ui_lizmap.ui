@@ -3514,13 +3514,20 @@ Only the selected feature will be visible on the map.</string>
                      </item>
                      <item row="12" column="0">
                       <widget class="QCheckBox" name="cbDatavizYField2">
+                       <property name="toolTip">
+                        <string>You can add a second Y field, it does not work for every type of graph, it’s only working for histogram2d.</string>
+                       </property>
                        <property name="text">
                         <string>2nd Y field</string>
                        </property>
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QLineEdit" name="inDatavizPlotTitle"/>
+                      <widget class="QLineEdit" name="inDatavizPlotTitle">
+                       <property name="toolTip">
+                        <string>The title of the graph</string>
+                       </property>
+                      </widget>
                      </item>
                      <item row="5" column="0">
                       <widget class="QLabel" name="label_76">
@@ -3551,7 +3558,11 @@ Only the selected feature will be visible on the map.</string>
                       </widget>
                      </item>
                      <item row="3" column="1">
-                      <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer"/>
+                      <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer">
+                       <property name="toolTip">
+                        <string>Layer to work on</string>
+                       </property>
+                      </widget>
                      </item>
                      <item row="3" column="0">
                       <widget class="QLabel" name="label_58">
@@ -3561,10 +3572,18 @@ Only the selected feature will be visible on the map.</string>
                       </widget>
                      </item>
                      <item row="5" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizPlotXfield"/>
+                      <widget class="QgsFieldComboBox" name="inDatavizPlotXfield">
+                       <property name="toolTip">
+                        <string>X field of your graph</string>
+                       </property>
+                      </widget>
                      </item>
                      <item row="8" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizPlotYfield"/>
+                      <widget class="QgsFieldComboBox" name="inDatavizPlotYfield">
+                       <property name="toolTip">
+                        <string>The Y field of your graph.</string>
+                       </property>
+                      </widget>
                      </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="label_71">
@@ -3589,6 +3608,9 @@ Only the selected feature will be visible on the map.</string>
                      </item>
                      <item row="5" column="3">
                       <widget class="QComboBox" name="liDatavizAggregation">
+                       <property name="toolTip">
+                        <string>For a few types of charts like ‘bar’ or ‘pie’, you can chose to aggregate the data in the graph. There are a few aggregate functions available - average(avg), sum, count, median, stddev, min, max, first, last</string>
+                       </property>
                        <item>
                         <property name="text">
                          <string/>
@@ -3696,6 +3718,9 @@ Only the selected feature will be visible on the map.</string>
                      </item>
                      <item row="13" column="0">
                       <widget class="QCheckBox" name="cbDatavizUseColorField2">
+                       <property name="toolTip">
+                        <string>You can chose the color of the second Y field the same way you chose the one for his first Y field.</string>
+                       </property>
                        <property name="text">
                         <string>Color field 2 ?</string>
                        </property>
@@ -3703,6 +3728,9 @@ Only the selected feature will be visible on the map.</string>
                      </item>
                      <item row="11" column="0">
                       <widget class="QCheckBox" name="cbDatavizUseColorField">
+                       <property name="toolTip">
+                        <string>You can choose or not a color field to customize the color of each category of your chart. If you want to do it, you need to check the checkbox, then chose the field of your layer which contains the colors you want to use. The color can be written like ‘red’ or ‘blue’ but it can be an HTML color code like ‘#01DFD7’ for example.</string>
+                       </property>
                        <property name="text">
                         <string>Color field ?</string>
                        </property>
@@ -3712,6 +3740,9 @@ Only the selected feature will be visible on the map.</string>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
+                     <property name="toolTip">
+                      <string>If you check this checkbox, the children of your layer will get the same graph as the parent plot but filtered only for them. It’s useful if you want to see the statistics of one entity instead of all.</string>
+                     </property>
                      <property name="text">
                       <string>Display filtered plot in popups of parent layer</string>
                      </property>
@@ -3719,6 +3750,9 @@ Only the selected feature will be visible on the map.</string>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="cbDatavizOnlyShowChild">
+                     <property name="toolTip">
+                      <string>The main graph will not be shown in the main container and only the filtered graph of the relation of the layer will be displayed in the popup when you select the element.</string>
+                     </property>
                      <property name="text">
                       <string>Only show in child popup</string>
                      </property>
@@ -3994,10 +4028,18 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QgsMapLayerComboBox" name="liTimemanagerLayers"/>
+                  <widget class="QgsMapLayerComboBox" name="liTimemanagerLayers">
+                   <property name="toolTip">
+                    <string>Layer with the date/time</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QgsFieldComboBox" name="liTimemanagerStartAttribute"/>
+                  <widget class="QgsFieldComboBox" name="liTimemanagerStartAttribute">
+                   <property name="toolTip">
+                    <string>Column with the date/time</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="0" column="5">
                   <widget class="QLabel" name="label_48">
@@ -4010,10 +4052,18 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="5">
-                  <widget class="QLineEdit" name="inTimemanagerGroupTitle"/>
+                  <widget class="QLineEdit" name="inTimemanagerGroupTitle">
+                   <property name="toolTip">
+                    <string>Optional, an ID and a title for groups of objects.</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="1" column="4">
-                  <widget class="QLineEdit" name="inTimemanagerGroup"/>
+                  <widget class="QLineEdit" name="inTimemanagerGroup">
+                   <property name="toolTip">
+                    <string>Optional, an ID and a title for groups of objects.</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="0" column="3">
                   <widget class="QLabel" name="label_49">
@@ -4026,7 +4076,11 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QgsFieldComboBox" name="liTimemanagerLabelAttribute"/>
+                  <widget class="QgsFieldComboBox" name="liTimemanagerLabelAttribute">
+                   <property name="toolTip">
+                    <string>A field to display as a label when hovering with the mouse over the object</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="0" column="2">
                   <widget class="QLabel" name="label_46">
@@ -4134,7 +4188,11 @@ Only the selected feature will be visible on the map.</string>
                   <item>
                    <layout class="QGridLayout" name="gridLayout">
                     <item row="1" column="3">
-                     <widget class="QgsMapLayerComboBox" name="atlasLayer"/>
+                     <widget class="QgsMapLayerComboBox" name="atlasLayer">
+                      <property name="toolTip">
+                       <string>The layer you want your atlas on</string>
+                      </property>
+                     </widget>
                     </item>
                     <item row="8" column="1">
                      <widget class="QLabel" name="label_84">
@@ -4152,6 +4210,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="9" column="3">
                      <widget class="QCheckBox" name="atlasDisplayPopup">
+                      <property name="toolTip">
+                       <string>You can chose to display the popup in the feature in the atlas container or not</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4183,6 +4244,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="10" column="3">
                      <widget class="QCheckBox" name="atlasTriggerFilter">
+                      <property name="toolTip">
+                       <string>Check if you want to activate filter on the feature selected by the atlas, it will hide all other features of the layer and only show the one selected</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4190,6 +4254,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="3" column="3">
                      <widget class="QCheckBox" name="atlasDisplayLayerDescription">
+                      <property name="toolTip">
+                       <string>Check if you want to display the layer description in the dock of your atlas</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4206,10 +4273,17 @@ Only the selected feature will be visible on the map.</string>
                      </widget>
                     </item>
                     <item row="5" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasFeatureLabel"/>
+                     <widget class="QgsFieldComboBox" name="atlasFeatureLabel">
+                      <property name="toolTip">
+                       <string>Choose the field who contains the name of your features, it will be shown instead of the primary key in the list of features</string>
+                      </property>
+                     </widget>
                     </item>
                     <item row="0" column="3">
                      <widget class="QCheckBox" name="atlasEnabled">
+                      <property name="toolTip">
+                       <string>if the atlas is enabled or not in your project</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4231,6 +4305,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="7" column="3">
                      <widget class="QCheckBox" name="atlasHighlightGeometry">
+                      <property name="toolTip">
+                       <string>You can chose to highlight the feature selected by the atlas, it will change every time it’s switching to a new feature</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4247,10 +4324,17 @@ Only the selected feature will be visible on the map.</string>
                      </widget>
                     </item>
                     <item row="6" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasSortField"/>
+                     <widget class="QgsFieldComboBox" name="atlasSortField">
+                      <property name="toolTip">
+                       <string>Your atlas will be sorted according to this field</string>
+                      </property>
+                     </widget>
                     </item>
                     <item row="8" column="3">
                      <widget class="QComboBox" name="atlasZoom">
+                      <property name="toolTip">
+                       <string>Choose between a zoom on the feature or to make it the center of your map</string>
+                      </property>
                       <item>
                        <property name="text">
                         <string/>
@@ -4276,7 +4360,11 @@ Only the selected feature will be visible on the map.</string>
                      </widget>
                     </item>
                     <item row="2" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasPrimaryKey"/>
+                     <widget class="QgsFieldComboBox" name="atlasPrimaryKey">
+                      <property name="toolTip">
+                       <string>The primary key field, it must be an integer</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -4307,6 +4395,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="0" column="1">
                      <widget class="QCheckBox" name="atlasShowAtStartup">
+                      <property name="toolTip">
+                       <string>Check if you want to open the atlas tool when you open your project</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4314,6 +4405,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="3" column="1">
                      <widget class="QSpinBox" name="atlasDuration">
+                      <property name="toolTip">
+                       <string>You can select the duration between each step when your atlas is in auto-play mode</string>
+                      </property>
                       <property name="minimum">
                        <number>2</number>
                       </property>
@@ -4334,6 +4428,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="4" column="1">
                      <widget class="QCheckBox" name="atlasAutoPlay">
+                      <property name="toolTip">
+                       <string>Check if you want to launch the auto-play mode when you open your project</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4348,6 +4445,9 @@ Only the selected feature will be visible on the map.</string>
                     </item>
                     <item row="1" column="1">
                      <widget class="QSpinBox" name="atlasMaxWidth">
+                      <property name="toolTip">
+                       <string>You can chose the size of the atlas dock (20%-50%)</string>
+                      </property>
                       <property name="minimum">
                        <number>20</number>
                       </property>
@@ -4497,13 +4597,20 @@ Only the selected feature will be visible on the map.</string>
                 <layout class="QGridLayout" name="gridLayout_6">
                  <item row="13" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMaxDate">
+                   <property name="toolTip">
+                    <string>The field containing the end date of your data. If you have 2 fields containing dates, one for the start date and another for the end date, you can differentiate them. If not, you need to use the same field name for Min date and Max date.</string>
+                   </property>
                    <property name="allowEmptyFieldName">
                     <bool>true</bool>
                    </property>
                   </widget>
                  </item>
                  <item row="11" column="2">
-                  <widget class="QLineEdit" name="liFormFilterSplitter"/>
+                  <widget class="QLineEdit" name="liFormFilterSplitter">
+                   <property name="toolTip">
+                    <string>Use if you want to split the field values by a separator. Ex: ‘culture, environment’ can be split into ‘culture’ and ‘environment’ with the splitter ‘, ‘</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="13" column="0">
                   <widget class="QLabel" name="label_max_date_filter">
@@ -4514,6 +4621,9 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="5" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterField">
+                   <property name="toolTip">
+                    <string>The field name (in the database table). Only for the Text, Unique Values and Numeric types</string>
+                   </property>
                    <property name="allowEmptyFieldName">
                     <bool>true</bool>
                    </property>
@@ -4528,6 +4638,9 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="12" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
+                   <property name="toolTip">
+                    <string>The field containing the start date of your object (ex: “start_date” of an event)</string>
+                   </property>
                    <property name="allowEmptyFieldName">
                     <bool>true</bool>
                    </property>
@@ -4556,6 +4669,9 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="10" column="2">
                   <widget class="QComboBox" name="liFormFilterFormat">
+                   <property name="toolTip">
+                    <string>It can be select, which will show a combo box, or checkboxes which will show one checkbox for each distinct value. The distinct values are dynamically queried by Lizmap Web Client.</string>
+                   </property>
                    <item>
                     <property name="text">
                      <string>Checkboxes</string>
@@ -4577,6 +4693,9 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="4" column="2">
                   <widget class="QComboBox" name="liFormFilterFieldType">
+                   <property name="toolTip">
+                    <string>The type of the form input</string>
+                   </property>
                    <item>
                     <property name="text">
                      <string>Text</string>
@@ -4600,7 +4719,11 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="2" column="2">
-                  <widget class="QgsMapLayerComboBox" name="liFormFilterLayer"/>
+                  <widget class="QgsMapLayerComboBox" name="liFormFilterLayer">
+                   <property name="toolTip">
+                    <string>The source layer</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="3" column="0">
                   <widget class="QLabel" name="label_104">
@@ -4610,7 +4733,11 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="3" column="2">
-                  <widget class="QLineEdit" name="inFormFilterFieldTitle"/>
+                  <widget class="QLineEdit" name="inFormFilterFieldTitle">
+                   <property name="toolTip">
+                    <string>The title to give to the input, which will be displayed above the form input. For example “Choose a category” for a layer field called “category”</string>
+                   </property>
+                  </widget>
                  </item>
                  <item row="5" column="0">
                   <widget class="QLabel" name="label_field_filter">
