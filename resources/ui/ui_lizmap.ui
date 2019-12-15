@@ -1018,7 +1018,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <widget class="QCheckBox" name="cbNoLegendImage">
                            <property name="toolTip">
-                            <string>If we want to hide the graphical display of the layer in the legend</string>
+                            <string>If we want to hide the legend content of the layer in the legend panel</string>
                            </property>
                            <property name="text">
                             <string>Hide legend image?</string>
@@ -2260,6 +2260,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <property name="wordWrap">
                   <bool>true</bool>
                  </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -2465,7 +2468,7 @@ Only the selected feature will be visible on the map.</string>
                         </size>
                        </property>
                        <property name="toolTip">
-                        <string>A field describing the upper level level to regroup these features. This will display another combobox on top to make some filtering.</string>
+                        <string>A field describing the upper level to regroup these features. This will display another combobox on top to make some filtering.</string>
                        </property>
                       </widget>
                      </item>
@@ -3515,7 +3518,7 @@ Only the selected feature will be visible on the map.</string>
                      <item row="12" column="0">
                       <widget class="QCheckBox" name="cbDatavizYField2">
                        <property name="toolTip">
-                        <string>You can add a second Y field, it does not work for every type of graph, it’s only working for histogram2d.</string>
+                        <string>You can add a second Y field, only for histogram2d.</string>
                        </property>
                        <property name="text">
                         <string>2nd Y field</string>
@@ -3609,7 +3612,7 @@ Only the selected feature will be visible on the map.</string>
                      <item row="5" column="3">
                       <widget class="QComboBox" name="liDatavizAggregation">
                        <property name="toolTip">
-                        <string>For a few types of charts like ‘bar’ or ‘pie’, you can chose to aggregate the data in the graph. There are a few aggregate functions available - average(avg), sum, count, median, stddev, min, max, first, last</string>
+                        <string>For a few types of charts like ‘bar’ or ‘pie’, you can choose to aggregate the data in the graph. There are a few aggregate functions available - average(avg), sum, count, median, stddev, min, max, first, last</string>
                        </property>
                        <item>
                         <property name="text">
@@ -3719,7 +3722,7 @@ Only the selected feature will be visible on the map.</string>
                      <item row="13" column="0">
                       <widget class="QCheckBox" name="cbDatavizUseColorField2">
                        <property name="toolTip">
-                        <string>You can chose the color of the second Y field the same way you chose the one for his first Y field.</string>
+                        <string>You can choose the color of the second Y field the same way you choose the one for his first Y field.</string>
                        </property>
                        <property name="text">
                         <string>Color field 2 ?</string>
@@ -3729,7 +3732,7 @@ Only the selected feature will be visible on the map.</string>
                      <item row="11" column="0">
                       <widget class="QCheckBox" name="cbDatavizUseColorField">
                        <property name="toolTip">
-                        <string>You can choose or not a color field to customize the color of each category of your chart. If you want to do it, you need to check the checkbox, then chose the field of your layer which contains the colors you want to use. The color can be written like ‘red’ or ‘blue’ but it can be an HTML color code like ‘#01DFD7’ for example.</string>
+                        <string>You can choose or not a color field to customize the color of each category of your chart. If you want to do it, you need to check the checkbox, then choose the field of your layer which contains the colors you want to use. The color can be written like ‘red’ or ‘blue’ but it can be an HTML color code like ‘#01DFD7’ for example.</string>
                        </property>
                        <property name="text">
                         <string>Color field ?</string>
@@ -4190,7 +4193,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="1" column="3">
                      <widget class="QgsMapLayerComboBox" name="atlasLayer">
                       <property name="toolTip">
-                       <string>The layer you want your atlas on</string>
+                       <string>The vector layer for the atlas</string>
                       </property>
                      </widget>
                     </item>
@@ -4211,7 +4214,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="9" column="3">
                      <widget class="QCheckBox" name="atlasDisplayPopup">
                       <property name="toolTip">
-                       <string>You can chose to display the popup in the feature in the atlas container or not</string>
+                       <string>You can choose to display the popup in the feature in the atlas container or not</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -4245,7 +4248,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="10" column="3">
                      <widget class="QCheckBox" name="atlasTriggerFilter">
                       <property name="toolTip">
-                       <string>Check if you want to activate filter on the feature selected by the atlas, it will hide all other features of the layer and only show the one selected</string>
+                       <string>If you want to activate filter on the feature selected by the atlas, it will hide all other features of the layer and only show the one selected</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -4255,7 +4258,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="3" column="3">
                      <widget class="QCheckBox" name="atlasDisplayLayerDescription">
                       <property name="toolTip">
-                       <string>Check if you want to display the layer description in the dock of your atlas</string>
+                       <string>If you want to display the layer description in the dock of your atlas</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -4306,7 +4309,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="7" column="3">
                      <widget class="QCheckBox" name="atlasHighlightGeometry">
                       <property name="toolTip">
-                       <string>You can chose to highlight the feature selected by the atlas, it will change every time it’s switching to a new feature</string>
+                       <string>You can choose to highlight the feature selected by the atlas, it will change every time it’s switching to a new feature</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -4396,7 +4399,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="0" column="1">
                      <widget class="QCheckBox" name="atlasShowAtStartup">
                       <property name="toolTip">
-                       <string>Check if you want to open the atlas tool when you open your project</string>
+                       <string>If you want to open the atlas tool when you open your project</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -4429,7 +4432,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="4" column="1">
                      <widget class="QCheckBox" name="atlasAutoPlay">
                       <property name="toolTip">
-                       <string>Check if you want to launch the auto-play mode when you open your project</string>
+                       <string>If you want to launch the auto-play mode when you open your project</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -4446,7 +4449,7 @@ Only the selected feature will be visible on the map.</string>
                     <item row="1" column="1">
                      <widget class="QSpinBox" name="atlasMaxWidth">
                       <property name="toolTip">
-                       <string>You can chose the size of the atlas dock (20%-50%)</string>
+                       <string>You can choose the size of the atlas dock (20%-50%)</string>
                       </property>
                       <property name="minimum">
                        <number>20</number>
@@ -4639,7 +4642,7 @@ Only the selected feature will be visible on the map.</string>
                  <item row="12" column="2">
                   <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
                    <property name="toolTip">
-                    <string>The field containing the start date of your object (ex: “start_date” of an event)</string>
+                    <string>The field containing the start date of your feature (ex: “start_date” of an event)</string>
                    </property>
                    <property name="allowEmptyFieldName">
                     <bool>true</bool>
