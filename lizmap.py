@@ -647,6 +647,7 @@ class Lizmap:
 
         # Hack to make the web bar displayed.
         self.iface.addPluginToWebMenu("&Lizmap", self.action_help)
+        # self.iface.removePluginWebMenu("&Lizmap", self.action_help)
 
         # and add button to the Web panel
         self.iface.addWebToolBarIcon(self.action)
