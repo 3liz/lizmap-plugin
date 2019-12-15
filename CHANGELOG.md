@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.1.6
+
+* Add a lot of tooltips in forms
+* Fix icon in the menu about logs and form filtering
+* Add icons to plots in combobox
+
 ## Version 3.1.5
 
 * Improve UX when editing layer with a form filter

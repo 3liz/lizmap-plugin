@@ -6,11 +6,15 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=3.1.5
+version=3.1.6
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.1.6
+  * Add a lot of tooltips in forms
+  * Fix icon in the menu about logs and form filtering
+  * Add icons to plots in combobox
   Version 3.1.5
   * Improve UX when editing layer with a form filter
   Version 3.1.4
