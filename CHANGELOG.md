@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.1.7
+
+* Fix some tooltips
+* Fix allow empty field X in dataviz
+
 ## Version 3.1.6
 
 * Add a lot of tooltips in forms
