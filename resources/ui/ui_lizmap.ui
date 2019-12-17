@@ -567,10 +567,7 @@ QListWidget::item::selected {
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_17">
                     <property name="text">
-                     <string>Write down integer scales separated by coma.
-You must enter at least 2 min and max values.
-Ex: 1000, 250000
-If the map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used.</string>
+                     <string>&lt;p&gt;Write down integer scales separated by coma. You must enter at least 2 min and max values.&lt;br /&gt;Ex: 1000, 250000&lt;br /&gt;If the map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map.&lt;br /&gt;These scales are used for printing too, regardless of the projection.&lt;/p&gt;</string>
                     </property>
                    </widget>
                   </item>
@@ -3518,7 +3515,7 @@ Only the selected feature will be visible on the map.</string>
                      <item row="12" column="0">
                       <widget class="QCheckBox" name="cbDatavizYField2">
                        <property name="toolTip">
-                        <string>You can add a second Y field, only for histogram2d.</string>
+                        <string>You can add a second Y field, if the graph can accept it.</string>
                        </property>
                        <property name="text">
                         <string>2nd Y field</string>
@@ -3577,7 +3574,7 @@ Only the selected feature will be visible on the map.</string>
                      <item row="5" column="1">
                       <widget class="QgsFieldComboBox" name="inDatavizPlotXfield">
                        <property name="toolTip">
-                        <string>X field of your graph</string>
+                        <string>X field of your graph, it might be empty according to the kind of graph (box)</string>
                        </property>
                       </widget>
                      </item>

@@ -634,6 +634,7 @@ class Lizmap:
         # only in QGIS 3.0 TODO
         # self.dlg.inDatavizColorField.setAllowEmptyFieldName(True)
         # self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
+        self.dlg.inDatavizPlotXfield.setAllowEmptyFieldName(True)
 
         # add plugin to the web plugin menu
         self.lizmap_menu = QMenu('Lizmap')
