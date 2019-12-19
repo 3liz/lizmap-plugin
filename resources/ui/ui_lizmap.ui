@@ -871,11 +871,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <property name="columnCount">
                      <number>1</number>
                     </property>
-                    <attribute name="headerMinimumSectionSize">
-                     <number>50</number>
-                    </attribute>
                     <attribute name="headerDefaultSectionSize">
                      <number>57</number>
+                    </attribute>
+                    <attribute name="headerMinimumSectionSize">
+                     <number>50</number>
                     </attribute>
                     <attribute name="headerStretchLastSection">
                      <bool>true</bool>
@@ -3874,8 +3874,14 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="1" column="2">
                   <widget class="QSpinBox" name="inAnimationFrameLength">
+                   <property name="toolTip">
+                    <string>Duration in milliseconds of a given time frame step before the next frame is activated (used when the play button is activated)</string>
+                   </property>
                    <property name="maximum">
                     <number>10000</number>
+                   </property>
+                   <property name="value">
+                    <number>3000</number>
                    </property>
                   </widget>
                  </item>
@@ -3918,19 +3924,6 @@ Only the selected feature will be visible on the map.</string>
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="3">
-                  <spacer name="horizontalSpacer_23">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                 </layout>
                </item>
                <item>
@@ -3965,17 +3958,12 @@ Only the selected feature will be visible on the map.</string>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Hover label</string>
+                   <string>End attribute (optional)</string>
                   </property>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Group id (optional)</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Group title (optional)</string>
+                   <string>Attribute resolution</string>
                   </property>
                  </column>
                  <column>
@@ -4012,38 +4000,14 @@ Only the selected feature will be visible on the map.</string>
                  <item row="1" column="2">
                   <widget class="QgsFieldComboBox" name="liTimemanagerStartAttribute">
                    <property name="toolTip">
-                    <string>Column with the date/time</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="5">
-                  <widget class="QLabel" name="label_48">
-                   <property name="text">
-                    <string>Group title (optional)</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="5">
-                  <widget class="QLineEdit" name="inTimemanagerGroupTitle">
-                   <property name="toolTip">
-                    <string>Optional, an ID and a title for groups of objects.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="4">
-                  <widget class="QLineEdit" name="inTimemanagerGroup">
-                   <property name="toolTip">
-                    <string>Optional, an ID and a title for groups of objects.</string>
+                    <string>Field with the start date/time</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="3">
                   <widget class="QLabel" name="label_49">
                    <property name="text">
-                    <string>Hover label</string>
+                    <string>End attribute (optional)</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -4051,9 +4015,9 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QgsFieldComboBox" name="liTimemanagerLabelAttribute">
+                  <widget class="QgsFieldComboBox" name="liTimemanagerEndAttribute">
                    <property name="toolTip">
-                    <string>A field to display as a label when hovering with the mouse over the object</string>
+                    <string>Field with the end date/time (optional)</string>
                    </property>
                   </widget>
                  </item>
@@ -4070,11 +4034,48 @@ Only the selected feature will be visible on the map.</string>
                  <item row="0" column="4">
                   <widget class="QLabel" name="label_47">
                    <property name="text">
-                    <string>Group id (optional)</string>
+                    <string>Attribute(s) time resolution</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QComboBox" name="liTimemanagerAttributeResolution">
+                   <property name="toolTip">
+                    <string>Date/time resolution of the chosen attribute(s)</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>seconds</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>minutes</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>hours</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>days</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>weeks</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>years</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
@@ -4984,9 +4985,8 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>twTimemanager</tabstop>
   <tabstop>liTimemanagerLayers</tabstop>
   <tabstop>liTimemanagerStartAttribute</tabstop>
-  <tabstop>liTimemanagerLabelAttribute</tabstop>
-  <tabstop>inTimemanagerGroup</tabstop>
-  <tabstop>inTimemanagerGroupTitle</tabstop>
+  <tabstop>liTimemanagerEndAttribute</tabstop>
+  <tabstop>liTimemanagerAttributeResolution</tabstop>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
   <tabstop>scrollArea_12</tabstop>
@@ -5020,6 +5020,15 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btClearlog</tabstop>
   <tabstop>mGroupBox_2</tabstop>
   <tabstop>mGroupBox_4</tabstop>
+  <tabstop>checkbox_popup</tabstop>
+  <tabstop>btConfigurePopup</tabstop>
+  <tabstop>btQgisPopupFromForm</tabstop>
+  <tabstop>checkbox_server_cache</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>twDatavizLayers</tabstop>
+  <tabstop>cbDatavizDisplayChildPlot</tabstop>
+  <tabstop>cbDatavizOnlyShowChild</tabstop>
+  <tabstop>inDatavizTemplate</tabstop>
  </tabstops>
  <resources/>
  <connections/>
