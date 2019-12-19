@@ -323,6 +323,9 @@ class Lizmap:
         self.layer_options_list['sourceRepository']['widget'] = self.dlg.inSourceRepository
         self.layer_options_list['sourceProject']['widget'] = self.dlg.inSourceProject
 
+        self.timemanager_options = LizmapConfig.timemanagerOptionDefinitions
+        self.timemanager_options['attributeResolution']['widget'] = self.dlg.liTimemanagerAttributeResolution
+
         self.dataviz_options = LizmapConfig.datavizOptionDefinitions
         self.dataviz_options['plotType']['widget'] = self.dlg.liDatavizPlotType
 
@@ -448,7 +451,7 @@ class Lizmap:
             'timemanagerLayers': {
                 'tableWidget': self.dlg.twTimemanager,
                 'removeButton': self.dlg.btTimemanagerLayerDel,
-                'cols': ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
+                'cols': ['startAttribute', 'endAttribute', 'attributeResolution', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'datavizLayers': {
@@ -584,15 +587,15 @@ class Lizmap:
         self.dlg.btLoginFilteredLayerAdd.clicked.connect(self.add_layer_to_login_filtered_layer)
 
         # Time manager layers
+        self.dlg.twTimemanager.setColumnHidden(4, True)
         self.dlg.twTimemanager.setColumnHidden(5, True)
-        self.dlg.twTimemanager.setColumnHidden(6, True)
         self.dlg.twTimemanager.horizontalHeader().setStretchLastSection(True)
         self.dlg.liTimemanagerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liTimemanagerLabelAttribute.setAllowEmptyFieldName(True)
+        self.dlg.liTimemanagerEndAttribute.setAllowEmptyFieldName(True)
         self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerStartAttribute.setLayer)
-        self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerLabelAttribute.setLayer)
+        self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerEndAttribute.setLayer)
         self.dlg.liTimemanagerStartAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
-        self.dlg.liTimemanagerLabelAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
+        self.dlg.liTimemanagerEndAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
         self.dlg.btTimemanagerLayerAdd.clicked.connect(self.add_layer_to_time_manager)
 
         # Dataviz layers
@@ -608,6 +611,14 @@ class Lizmap:
         # Add a layer to the lizmap dataviz layers
         self.dlg.btDatavizAddLayer.clicked.connect(self.add_layer_to_dataviz)
         self.dlg.liDatavizPlotType.currentText()
+
+        # Set the time manager options (attributeResolution)
+        for key, item in self.timemanager_options.items():
+            if item['widget']:
+                if item['wType'] == 'list':
+                    list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
+                    for k, i in list_dic.items():
+                        item['widget'].setItemData(i, k)
 
         # Set the dataviz options (type, etc.)
         for key, item in self.dataviz_options.items():
@@ -1240,12 +1251,13 @@ class Lizmap:
         layer_name = layer.name()
         layer_id = layer.id()
         start_attribute = self.dlg.liTimemanagerStartAttribute.currentField()
-        label_attribute = self.dlg.liTimemanagerLabelAttribute.currentField()
-        group = self.dlg.inTimemanagerGroup.text().strip(' \t')
-        group_title = self.dlg.inTimemanagerGroupTitle.text().strip(' \t')
+        end_attribute = self.dlg.liTimemanagerEndAttribute.currentField()
+        attribute_resolution = self.dlg.liTimemanagerAttributeResolution.itemData(
+            self.dlg.liTimemanagerAttributeResolution.currentIndex()
+        )
         icon = QgsMapLayerModel.iconForLayer(layer)
 
-        content = [layer_name, start_attribute, label_attribute, group, group_title, layer_id, row]
+        content = [layer_name, start_attribute, end_attribute, attribute_resolution, layer_id, row]
 
         table.setRowCount(row + 1)
 
@@ -2350,17 +2362,14 @@ class Lizmap:
                 # check that the layer is checked in the WFS capabilities
                 layerName = lblTableWidget.item(row, 0).text()
                 startAttribute = lblTableWidget.item(row, 1).text()
-                labelAttribute = lblTableWidget.item(row, 2).text()
-                tmGroup = lblTableWidget.item(row, 3).text()
-                tmGroupTitle = lblTableWidget.item(row, 4).text()
-                layerId = lblTableWidget.item(row, 5).text()
+                endAttribute = lblTableWidget.item(row, 2).text()
+                attributeResolution = lblTableWidget.item(row, 3).text()
+                layerId = lblTableWidget.item(row, 4).text()
                 if layerId in wfsLayersList:
                     liz2json["timemanagerLayers"][layerName] = dict()
                     liz2json["timemanagerLayers"][layerName]["startAttribute"] = startAttribute
-                    if labelAttribute and labelAttribute != '--':
-                        liz2json["timemanagerLayers"][layerName]["label"] = labelAttribute
-                    liz2json["timemanagerLayers"][layerName]["group"] = tmGroup
-                    liz2json["timemanagerLayers"][layerName]["groupTitle"] = tmGroupTitle
+                    liz2json["timemanagerLayers"][layerName]["endAttribute"] = endAttribute
+                    liz2json["timemanagerLayers"][layerName]["attributeResolution"] = attributeResolution
                     liz2json["timemanagerLayers"][layerName]["layerId"] = layerId
                     liz2json["timemanagerLayers"][layerName]["order"] = row
 

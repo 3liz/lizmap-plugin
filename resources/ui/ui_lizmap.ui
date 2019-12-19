@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1018</width>
-    <height>698</height>
+    <width>984</width>
+    <height>709</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -249,8 +249,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>726</width>
-                <height>805</height>
+                <width>789</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -817,8 +817,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
-                <height>649</height>
+                <width>443</width>
+                <height>143</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -861,11 +861,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <property name="columnCount">
                      <number>1</number>
                     </property>
-                    <attribute name="headerMinimumSectionSize">
-                     <number>50</number>
-                    </attribute>
                     <attribute name="headerDefaultSectionSize">
                      <number>57</number>
+                    </attribute>
+                    <attribute name="headerMinimumSectionSize">
+                     <number>50</number>
                     </attribute>
                     <attribute name="headerStretchLastSection">
                      <bool>true</bool>
@@ -896,8 +896,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>462</width>
-                       <height>875</height>
+                       <width>430</width>
+                       <height>922</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1544,8 +1544,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>726</width>
-                <height>865</height>
+                <width>561</width>
+                <height>879</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2244,8 +2244,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>755</width>
-                <height>635</height>
+                <width>753</width>
+                <height>395</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2539,8 +2539,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
-                <height>649</height>
+                <width>480</width>
+                <height>416</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2772,8 +2772,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
-                <height>649</height>
+                <width>736</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2989,8 +2989,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
-                <height>649</height>
+                <width>415</width>
+                <height>390</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3183,8 +3183,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
-                <height>649</height>
+                <width>320</width>
+                <height>352</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3329,8 +3329,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>708</width>
-                <height>885</height>
+                <width>618</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3843,8 +3843,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>740</width>
-                <height>649</height>
+                <width>706</width>
+                <height>660</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3899,8 +3899,14 @@ Only the selected feature will be visible on the map.</string>
                  </item>
                  <item row="1" column="2">
                   <widget class="QSpinBox" name="inAnimationFrameLength">
+                   <property name="toolTip">
+                    <string>Duration in milliseconds of a given time frame step before the next frame is activated (used when the play button is activated)</string>
+                   </property>
                    <property name="maximum">
                     <number>10000</number>
+                   </property>
+                   <property name="value">
+                    <number>3000</number>
                    </property>
                   </widget>
                  </item>
@@ -3943,19 +3949,6 @@ Only the selected feature will be visible on the map.</string>
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="3">
-                  <spacer name="horizontalSpacer_23">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                 </layout>
                </item>
                <item>
@@ -3990,17 +3983,12 @@ Only the selected feature will be visible on the map.</string>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Hover label</string>
+                   <string>End attribute (optional)</string>
                   </property>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Group id (optional)</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Group title (optional)</string>
+                   <string>Attribute resolution</string>
                   </property>
                  </column>
                  <column>
@@ -4037,38 +4025,14 @@ Only the selected feature will be visible on the map.</string>
                  <item row="1" column="2">
                   <widget class="QgsFieldComboBox" name="liTimemanagerStartAttribute">
                    <property name="toolTip">
-                    <string>Column with the date/time</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="5">
-                  <widget class="QLabel" name="label_48">
-                   <property name="text">
-                    <string>Group title (optional)</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="5">
-                  <widget class="QLineEdit" name="inTimemanagerGroupTitle">
-                   <property name="toolTip">
-                    <string>Optional, an ID and a title for groups of objects.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="4">
-                  <widget class="QLineEdit" name="inTimemanagerGroup">
-                   <property name="toolTip">
-                    <string>Optional, an ID and a title for groups of objects.</string>
+                    <string>Field with the start date/time</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="3">
                   <widget class="QLabel" name="label_49">
                    <property name="text">
-                    <string>Hover label</string>
+                    <string>End attribute (optional)</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -4076,9 +4040,9 @@ Only the selected feature will be visible on the map.</string>
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QgsFieldComboBox" name="liTimemanagerLabelAttribute">
+                  <widget class="QgsFieldComboBox" name="liTimemanagerEndAttribute">
                    <property name="toolTip">
-                    <string>A field to display as a label when hovering with the mouse over the object</string>
+                    <string>Field with the end date/time (optional)</string>
                    </property>
                   </widget>
                  </item>
@@ -4095,11 +4059,48 @@ Only the selected feature will be visible on the map.</string>
                  <item row="0" column="4">
                   <widget class="QLabel" name="label_47">
                    <property name="text">
-                    <string>Group id (optional)</string>
+                    <string>Attribute(s) time resolution</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QComboBox" name="liTimemanagerAttributeResolution">
+                   <property name="toolTip">
+                    <string>Date/time resolution of the chosen attribute(s)</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>seconds</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>minutes</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>hours</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>days</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>weeks</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>years</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
@@ -4157,8 +4158,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>629</height>
+                <width>686</width>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4498,8 +4499,8 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>629</height>
+                <width>686</width>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -4837,23 +4838,23 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgis.gui</header>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
@@ -5009,9 +5010,8 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>twTimemanager</tabstop>
   <tabstop>liTimemanagerLayers</tabstop>
   <tabstop>liTimemanagerStartAttribute</tabstop>
-  <tabstop>liTimemanagerLabelAttribute</tabstop>
-  <tabstop>inTimemanagerGroup</tabstop>
-  <tabstop>inTimemanagerGroupTitle</tabstop>
+  <tabstop>liTimemanagerEndAttribute</tabstop>
+  <tabstop>liTimemanagerAttributeResolution</tabstop>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
   <tabstop>scrollArea_12</tabstop>
@@ -5045,6 +5045,15 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btClearlog</tabstop>
   <tabstop>mGroupBox_2</tabstop>
   <tabstop>mGroupBox_4</tabstop>
+  <tabstop>checkbox_popup</tabstop>
+  <tabstop>btConfigurePopup</tabstop>
+  <tabstop>btQgisPopupFromForm</tabstop>
+  <tabstop>checkbox_server_cache</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>twDatavizLayers</tabstop>
+  <tabstop>cbDatavizDisplayChildPlot</tabstop>
+  <tabstop>cbDatavizOnlyShowChild</tabstop>
+  <tabstop>inDatavizTemplate</tabstop>
  </tabstops>
  <resources/>
  <connections>
