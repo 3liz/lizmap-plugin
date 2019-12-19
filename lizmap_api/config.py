@@ -344,6 +344,14 @@ class LizmapConfig:
         }
     }
 
+
+    timemanagerOptionDefinitions = {
+        'attributeResolution': {
+            'wType': 'list', 'type': 'string', 'default': 'years',
+            'list': ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'year']
+        }
+    }
+
     datavizOptionDefinitions = {
         'plotType': {
             'wType': 'list', 'type': 'string', 'default': 'scatter',
