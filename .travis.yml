@@ -6,6 +6,7 @@ python:
 
 env:
   global:
+  - LD_LIBRARY_PATH=/home/travis/virtualenv/python3.7.5/lib/python3.7/site-packages/PyQt5/Qt/lib:$LD_LIBRARY_PATH
   # transifex_token
   - secure: "EeI+rinfLXlfWuDzVUIksnRLTlrOY5kVpuK0JL+4UHkjRcetmOxGC+zmTYf2Gk1/PqybyxNdWygdgMeSnnDbNLiZIBfWvQfz6bzii38b/019hO+ue7aa+Y2uNOiT5y0Xo0LSRavBR+6U78eCn00m9zJJCn0VdrPcQ31oUWeMAFB5EMGtS3aek84z/5HaK7yz0YtHwxMR7TaYDzH6yd4UuU/8Bgq0REnsvxy0YAZb1+4MJW/sFrqoNTbtrQSGO06iTmTDvrnjBDMsNO/Sp1O+0KdKmftzTq15qDwErRUEpu/59/pjNtXYHThuS3x0hLArCi50QaZJS2/p+ekUXMn+WdHlHxJIdWQHQZbGQFM9RV1p/gsJTZcK5ofZk3LbGceh2jV7YIKhs1+6c4suXPdDmunEr8On21aZq6izfvmytW1Mr6uDZbVKhQeysQwZtzFXWNO93BlNKb40qzaNC7wZbRBRp3TmRV8yoo5XlugjlYfNkSa3yYv1J90EJtFEq0YL46QzxSR2Eu69EA7C5X6jqF/LNWBB0KVt6axnOdROJoEqY2iPEHStMJ44OHficHbGf50/rAGFrS4JZqRz9MMj0wWdvb1TwcYwtRf0tNsKaXWCoHSXi3pBaG7yDmde/rkQI1HYdi3qViqMXdnAlBkaW52ip20Ybkk3yDcPXGiCFtU="
   # github_token
