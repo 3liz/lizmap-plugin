@@ -119,7 +119,8 @@ def create_archive(
     diff = repo.index.diff(None)
     if diff:
         print("Uncommitted changes:")
-        print(diff)
+        for diff in diff:
+            print(diff)
         if not allow_uncommitted_changes:
             raise UncommitedChanges('You have uncommitted changes. Stash or commit them.')
         else:
