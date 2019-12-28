@@ -116,7 +116,10 @@ def create_archive(
 
     # keep track of current state
     initial_stash = None
-    if repo.index.diff(None):
+    diff = repo.index.diff(None)
+    if diff:
+        print("Uncommitted changes:")
+        print(diff)
         if not allow_uncommitted_changes:
             raise UncommitedChanges('You have uncommitted changes. Stash or commit them.')
         else:
