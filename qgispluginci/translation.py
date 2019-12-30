@@ -119,7 +119,11 @@ class Translation():
         if len(resources) == 0:
             raise TransifexNoResource("project '{}' has no resource on Transifex".format(self.parameters.project_slug))
         if len(resources) > 1:
-            raise TransifexManyResources("project '{p}' has several resources on Transifex. Will use first one ({r})"
-                                         .format(p=self.parameters.project_slug,
-                                                 r=resources[0]['slug']))
+            for resource in resources:
+                if resource.name == self.parameters.transifex_resource:
+                    return resource
+            raise TransifexManyResources("project '{p}' has several resources on Transifex "
+                                         "and none is named as the project slug."
+                                         "Specify one in the parameters with transifex_resource"
+                                         .format(p=self.parameters.project_slug))
         return resources[0]

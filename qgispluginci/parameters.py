@@ -31,6 +31,10 @@ class Parameters:
         The organization name in Transifex
         Defaults to: `organization`
 
+    transifex_resource: str
+        The resource name in transifex
+        Defaults to: the project slug
+
     translation_source_language:
         The source language for translations.
         Defaults to: 'en'
@@ -61,6 +65,7 @@ class Parameters:
         self.transifex_organization = definition.get('transifex_organization', self.github_organization_slug)
         self.translation_source_language = definition.get('translation_source_language', 'en')
         self.translation_languages = definition.get('translation_languages', {})
+        self.transifex_resource = definition.get('transifex_resource', self.project_slug)
         self.create_date = datetime.datetime.strptime(str(definition.get('create_date', datetime.date.today())), '%Y-%m-%d')
         self.lrelease_path = definition.get('lrelease_path', 'lrelease')
         self.pylupdate5_path = definition.get('pylupdate5_path', 'pylupdate5')
