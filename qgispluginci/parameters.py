@@ -4,6 +4,7 @@ import os
 import re
 from slugify import slugify
 import datetime
+import warnings
 
 
 class Parameters:
@@ -79,7 +80,10 @@ class Parameters:
         self.experimental = self.__get_from_metadata('experimental', False)
         self.deprecated = self.__get_from_metadata('deprecated', False)
         self.issue_tracker = self.__get_from_metadata('tracker')
-        self.homepage = self.__get_from_metadata('homepage')
+        self.homepage = self.__get_from_metadata('homepage', "")
+        if self.homepage == "":
+            warnings.warn('Homepage is not given in the metadata. '
+                          'It is a requirement to publish the plugin on the repository')
         self.repository_url = self.__get_from_metadata('repository')
 
     def archive_name(self, release_version: str) -> str:
