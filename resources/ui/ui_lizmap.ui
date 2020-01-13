@@ -577,7 +577,7 @@ QListWidget::item::selected {
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_17">
                     <property name="text">
-                     <string>&lt;p&gt;Write down integer scales separated by coma. You must enter at least 2 min and max values.&lt;br /&gt;Ex: 1000, 250000&lt;br /&gt;If the map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map.&lt;br /&gt;These scales are used for printing too, regardless of the projection.&lt;/p&gt;</string>
+                     <string>&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br /&gt;Ex: 1000, 250000&lt;br /&gt;If the map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map.&lt;br /&gt;These scales are used for printing too, regardless of the projection.&lt;/p&gt;</string>
                     </property>
                    </widget>
                   </item>
