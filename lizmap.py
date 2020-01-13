@@ -593,7 +593,7 @@ class Lizmap:
         self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.btTooltipLayerAdd.clicked.connect(self.add_layer_to_tooltip)
         self.tooltip_fields_checkable = CheckableFieldComboBox(self.dlg.inTooltipLayerFields)
-        self.dlg.inTooltipLayerFields.layerChanged.connect(self.tooltip_fields_checkable.set_layer)
+        self.dlg.liTooltipLayer.layerChanged.connect(self.tooltip_fields_checkable.set_layer)
         self.tooltip_fields_checkable.set_layer(self.dlg.liTooltipLayer.currentLayer())
 
         # Edition layers
