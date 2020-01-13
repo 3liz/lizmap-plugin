@@ -871,11 +871,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <property name="columnCount">
                      <number>1</number>
                     </property>
-                    <attribute name="headerDefaultSectionSize">
-                     <number>57</number>
-                    </attribute>
                     <attribute name="headerMinimumSectionSize">
                      <number>50</number>
+                    </attribute>
+                    <attribute name="headerDefaultSectionSize">
+                     <number>57</number>
                     </attribute>
                     <attribute name="headerStretchLastSection">
                      <bool>true</bool>
@@ -1408,108 +1408,80 @@ This is different to the map maximum extent (defined in QGIS project properties,
                         <property name="frameShadow">
                          <enum>QFrame::Raised</enum>
                         </property>
-                        <layout class="QVBoxLayout" name="verticalLayout_24">
+                        <layout class="QHBoxLayout" name="horizontalLayout_2">
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_2">
-                           <item>
-                            <widget class="QLabel" name="label_12">
-                             <property name="text">
-                              <string>Expiration (seconds)</string>
-                             </property>
-                             <property name="wordWrap">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QSpinBox" name="inCacheExpiration">
-                             <property name="maximum">
-                              <number>2592000</number>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLabel" name="label_16">
-                             <property name="text">
-                              <string>Metatile</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="inMetatileSize">
-                             <property name="inputMask">
-                              <string>0,0;_</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                          <widget class="QLabel" name="label_12">
+                           <property name="text">
+                            <string>Expiration (seconds)</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_23">
-                           <item>
-                            <widget class="QLabel" name="label_55">
-                             <property name="font">
-                              <font>
-                               <weight>50</weight>
-                               <bold>false</bold>
-                              </font>
-                             </property>
-                             <property name="text">
-                              <string>Embedded layers and groups</string>
-                             </property>
-                             <property name="wordWrap">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLabel" name="label_51">
-                             <property name="text">
-                              <string>Source repository</string>
-                             </property>
-                             <property name="wordWrap">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="inSourceRepository">
-                             <property name="enabled">
-                              <bool>false</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLabel" name="label_50">
-                             <property name="text">
-                              <string>Source project</string>
-                             </property>
-                             <property name="wordWrap">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="inSourceProject">
-                             <property name="enabled">
-                              <bool>false</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <spacer name="horizontalSpacer_26">
-                             <property name="orientation">
-                              <enum>Qt::Horizontal</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>40</width>
-                               <height>20</height>
-                              </size>
-                             </property>
-                            </spacer>
-                           </item>
-                          </layout>
+                          <widget class="QSpinBox" name="inCacheExpiration">
+                           <property name="maximum">
+                            <number>2592000</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_16">
+                           <property name="text">
+                            <string>Metatile</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="inMetatileSize">
+                           <property name="inputMask">
+                            <string>0,0;_</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QGroupBox" name="groupBox_3">
+                        <property name="title">
+                         <string>Embedded layers and groups</string>
+                        </property>
+                        <layout class="QHBoxLayout" name="horizontalLayout_39">
+                         <item>
+                          <widget class="QLabel" name="label_51">
+                           <property name="text">
+                            <string>Source repository</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="inSourceRepository">
+                           <property name="enabled">
+                            <bool>false</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_50">
+                           <property name="text">
+                            <string>Source project</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="inSourceProject">
+                           <property name="enabled">
+                            <bool>false</bool>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </widget>
