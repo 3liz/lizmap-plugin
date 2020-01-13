@@ -2650,16 +2650,6 @@ Only the selected feature will be visible on the map.</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="2">
-                    <widget class="QLineEdit" name="inAttributeLayerHiddenFields">
-                     <property name="toolTip">
-                      <string>A list of fields to hide in the attribute table, separated by a comma.</string>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="6" column="1">
                     <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
                      <property name="toolTip">
@@ -2683,6 +2673,13 @@ Only the selected feature will be visible on the map.</string>
                      </property>
                      <property name="text">
                       <string>Hide layer in the list</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QComboBox" name="inAttributeLayerHiddenFields">
+                     <property name="toolTip">
+                      <string>List of fields to hide in the attribute table</string>
                      </property>
                     </widget>
                    </item>
@@ -2982,7 +2979,7 @@ Only the selected feature will be visible on the map.</string>
                   <string notr="true"/>
                  </property>
                  <property name="text">
-                  <string>You can let the user activate map tooltips when hovering features. Choose a layer, add a coma separated list of field names to display in the tooltip, and optionaly choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
+                  <string>You can let the user activate map tooltips when hovering features. Choose a layer, select some fields to display in the tooltip and optionally choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -3082,13 +3079,6 @@ Only the selected feature will be visible on the map.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="inTooltipLayerFields">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="2">
                   <widget class="QLabel" name="label_5">
                    <property name="styleSheet">
@@ -3098,6 +3088,9 @@ Only the selected feature will be visible on the map.</string>
                     <string>Display geometry</string>
                    </property>
                   </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="inTooltipLayerFields"/>
                  </item>
                 </layout>
                </item>

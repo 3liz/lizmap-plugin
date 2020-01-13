@@ -92,6 +92,7 @@ from .qgis_plugin_tools.tools.custom_logging import setup_logger
 from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
+from .qgis_plugin_tools.widgets.selectable_combobox import CheckableFieldComboBox
 
 from .tools import excluded_providers
 
@@ -480,6 +481,8 @@ class Lizmap:
                 'jsonConfig': {}
             }
         }
+        self.attribute_fields_checkable = None
+        self.tooltip_fields_checkable = None
         self.layerList = None
         self.action = None
         self.action_help = None
@@ -579,6 +582,9 @@ class Lizmap:
         self.dlg.liAttributeLayer.layerChanged.connect(self.dlg.liAttributeLayerFields.setLayer)
         self.dlg.liAttributeLayerFields.setLayer(self.dlg.liAttributeLayer.currentLayer())
         self.dlg.btAttributeLayerAdd.clicked.connect(self.add_layer_to_attribute_layer)
+        self.attribute_fields_checkable = CheckableFieldComboBox(self.dlg.inAttributeLayerHiddenFields)
+        self.dlg.liAttributeLayer.layerChanged.connect(self.attribute_fields_checkable.set_layer)
+        self.attribute_fields_checkable.set_layer(self.dlg.liAttributeLayer.currentLayer())
 
         # Tooltip layers
         self.dlg.twTooltipLayerList.setColumnHidden(4, True)
@@ -586,6 +592,9 @@ class Lizmap:
         self.dlg.twTooltipLayerList.horizontalHeader().setStretchLastSection(True)
         self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.btTooltipLayerAdd.clicked.connect(self.add_layer_to_tooltip)
+        self.tooltip_fields_checkable = CheckableFieldComboBox(self.dlg.inTooltipLayerFields)
+        self.dlg.inTooltipLayerFields.layerChanged.connect(self.tooltip_fields_checkable.set_layer)
+        self.tooltip_fields_checkable.set_layer(self.dlg.liTooltipLayer.currentLayer())
 
         # Edition layers
         self.dlg.twEditionLayerList.setColumnHidden(6, True)
@@ -1107,7 +1116,7 @@ class Lizmap:
         name = layer.name()
         layer_id = layer.id()
         primary_key = self.dlg.liAttributeLayerFields.currentField()
-        hidden_fields = self.dlg.inAttributeLayerHiddenFields.text().strip(' \t')
+        hidden_fields = ','.join(self.attribute_fields_checkable.selected_items())
         pivot = self.dlg.cbAttributeLayerIsPivot.isChecked()
         hide_as_child = self.dlg.cbAttributeLayerHideAsChild.isChecked()
         hide_layer = self.dlg.cbAttributeLayerHideLayer.isChecked()
@@ -1143,7 +1152,7 @@ class Lizmap:
 
         layer_name = layer.name()
         layer_id = layer.id()
-        fields = self.dlg.inTooltipLayerFields.text().strip(' \t')
+        fields = ','.join(self.tooltip_fields_checkable.selected_items())
         display_geom = self.dlg.cbTooltipLayerDisplayGeom.isChecked()
         color_geom = self.dlg.inTooltipLayerColorGeom.text().strip(' \t')
         icon = QgsMapLayerModel.iconForLayer(layer)
