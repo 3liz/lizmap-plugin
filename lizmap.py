@@ -413,6 +413,7 @@ class Lizmap:
             'locateByLayer': {
                 'tableWidget': self.dlg.twLocateByLayerList,
                 'removeButton': self.dlg.btLocateByLayerDel,
+                'addButton': self.dlg.btLocateByLayerAdd,
                 'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'filterOnLocate', 'layerId',
                          'order'],
                 'jsonConfig': {}
@@ -420,18 +421,21 @@ class Lizmap:
             'attributeLayers': {
                 'tableWidget': self.dlg.twAttributeLayerList,
                 'removeButton': self.dlg.btAttributeLayerDel,
+                'addButton': self.dlg.btAttributeLayerAdd,
                 'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'hideLayer', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'tooltipLayers': {
                 'tableWidget': self.dlg.twTooltipLayerList,
                 'removeButton': self.dlg.btTooltipLayerDel,
+                'addButton': self.dlg.btTooltipLayerAdd,
                 'cols': ['fields', 'displayGeom', 'colorGeom', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'editionLayers': {
                 'tableWidget': self.dlg.twEditionLayerList,
                 'removeButton': self.dlg.btEditionLayerDel,
+                'addButton': self.dlg.btEditionLayerAdd,
                 'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'acl', 'layerId',
                          'order'],
                 'jsonConfig': {}
@@ -439,24 +443,28 @@ class Lizmap:
             'loginFilteredLayers': {
                 'tableWidget': self.dlg.twLoginFilteredLayersList,
                 'removeButton': self.dlg.btLoginFilteredLayerDel,
+                'addButton': self.dlg.btLoginFilteredLayerAdd,
                 'cols': ['filterAttribute', 'filterPrivate', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'lizmapExternalBaselayers': {
                 'tableWidget': self.dlg.twLizmapBaselayers,
                 'removeButton': self.dlg.btLizmapBaselayerDel,
+                'addButton': self.dlg.btLizmapBaselayerAdd,
                 'cols': ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
                 'jsonConfig': {}
             },
             'timemanagerLayers': {
                 'tableWidget': self.dlg.twTimemanager,
                 'removeButton': self.dlg.btTimemanagerLayerDel,
+                'addButton': self.dlg.btTimemanagerLayerAdd,
                 'cols': ['startAttribute', 'endAttribute', 'attributeResolution', 'layerId', 'order'],
                 'jsonConfig': {}
             },
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
                 'removeButton': self.dlg.btDatavizRemoveLayer,
+                'addButton': self.dlg.btDatavizAddLayer,
                 'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field',
                          'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'only_show_child', 'layerId',
                          'order'],
@@ -465,6 +473,7 @@ class Lizmap:
             'formFilterLayers': {
                 'tableWidget': self.dlg.twFormFilterLayers,
                 'removeButton': self.dlg.btFormFilterRemoveField,
+                'addButton': self.dlg.btFormFilterAddField,
                 'cols': [
                     'title', 'type', 'field', 'min_date', 'max_date', 'format', 'splitter', 'provider', 'layerId',
                     'order'],
@@ -537,6 +546,14 @@ class Lizmap:
             control = item['removeButton']
             slot = partial(self.remove_selected_layer_from_table, key)
             control.clicked.connect(slot)
+            control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+            control.setText('')
+            control.setToolTip(tr('Remove the selected layer from the list'))
+
+            control = item.get('addButton')
+            control.setText('')
+            control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+            control.setToolTip(tr('Add a new layer in the list'))
 
         # Delete layers from table when deleted from registry
         lr = QgsProject.instance()
