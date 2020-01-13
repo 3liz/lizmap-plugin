@@ -509,6 +509,7 @@ class Lizmap:
 
         # detect apply button clicked
         self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.get_map_options)
+        self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
 
         # clear log button clicked
         self.dlg.btClearlog.clicked.connect(self.clear_log)
@@ -2571,15 +2572,6 @@ class Lizmap:
         cfg_file.write(json_file_content)
         cfg_file.close()
 
-        # Ask to save the project
-        if project.isDirty():
-            self.iface.messageBar().pushMessage(
-                'Lizmap',
-                tr('Please do not forget to save the QGIS project before publishing your map'),
-                level=Qgis.Warning,
-                duration=30
-            )
-
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
 
         layers = remove_all_ghost_layers()
@@ -2718,6 +2710,11 @@ class Lizmap:
 
         return is_valid, error_message
 
+    def ok_button_clicked(self):
+        """When the OK button is press, we 'apply' and close the dialog."""
+        self.get_map_options()
+        self.dlg.close()
+
     def get_map_options(self):
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
@@ -2811,6 +2808,20 @@ class Lizmap:
                     level=Qgis.Success,
                     duration=3
                 )
+
+                # Ask to save the project
+                auto_save = self.dlg.checkbox_save_project.isChecked()
+                QSettings().setValue('lizmap/auto_save_project', auto_save)
+                if project.isDirty():
+                    if auto_save:
+                        project.write()
+                    else:
+                        self.iface.messageBar().pushMessage(
+                            'Lizmap',
+                            tr('Please do not forget to save the QGIS project before publishing your map'),
+                            level=Qgis.Warning,
+                            duration=30
+                        )
 
     def onBaselayerCheckboxChange(self):
         """
@@ -2952,6 +2963,9 @@ class Lizmap:
             # Fill baselayer startup
             self.onBaselayerCheckboxChange()
             self.setStartupBaselayerFromConfig()
+
+            auto_save = QSettings().value('lizmap/auto_save_project', False, bool)
+            self.dlg.checkbox_save_project.setChecked(auto_save)
 
             self.isok = 1
 
