@@ -104,6 +104,8 @@ class Lizmap:
     def __init__(self, iface):
         """Constructor of the Lizmap plugin."""
         self.iface = iface
+        # noinspection PyArgumentList
+        self.project = QgsProject.instance()
 
         setup_logger(plugin_name())
 
@@ -209,6 +211,7 @@ class Lizmap:
         self.dlg.mOptionsListWidget.item(11).setIcon(icon)
 
         # Log
+        # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
         self.dlg.mOptionsListWidget.item(12).setIcon(icon)
 
@@ -499,6 +502,7 @@ class Lizmap:
             'Lizmap', self.iface.mainWindow())
 
         # connect the action to the run method
+        # noinspection PyUnresolvedReferences
         self.action.triggered.connect(self.run)
 
         # Create action for help dialog
@@ -507,6 +511,7 @@ class Lizmap:
             '&{}…'.format(tr('Help')), self.iface.mainWindow())
 
         # connect help action to help dialog
+        # noinspection PyUnresolvedReferences
         self.action_help.triggered.connect(self.show_help)
 
         # Create action for about dialog
@@ -515,6 +520,7 @@ class Lizmap:
             '&{}…'.format(tr('About')), self.iface.mainWindow())
 
         # connect about action to about dialog
+        # noinspection PyUnresolvedReferences
         self.action_about.triggered.connect(self.show_about)
 
         # connect Lizmap signals and functions
@@ -549,18 +555,19 @@ class Lizmap:
             control = item['removeButton']
             slot = partial(self.remove_selected_layer_from_table, key)
             control.clicked.connect(slot)
+            # noinspection PyCallByClass,PyArgumentList
             control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
             control.setText('')
             control.setToolTip(tr('Remove the selected layer from the list'))
 
             control = item.get('addButton')
             control.setText('')
+            # noinspection PyCallByClass,PyArgumentList
             control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
             control.setToolTip(tr('Add a new layer in the list'))
 
         # Delete layers from table when deleted from registry
-        lr = QgsProject.instance()
-        lr.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
+        self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
         # Locate by layers
         self.dlg.twLocateByLayerList.setColumnHidden(6, True)
@@ -773,8 +780,7 @@ class Lizmap:
         Populate the gui fields accordingly
         """
         # Get the project config file (projectname.qgs.cfg)
-        project = QgsProject.instance()
-        json_file = '{}.cfg'.format(project.fileName())
+        json_file = '{}.cfg'.format(self.project.fileName())
         json_options = {}
         if os.path.exists(json_file):
             LOGGER.info('Reading the CFG file')
@@ -854,7 +860,7 @@ class Lizmap:
             if item['widget']:
                 if item['wType'] == 'layers':
                     if key in json_options:
-                        for lyr in QgsProject.instance().mapLayers().values():
+                        for lyr in self.project.mapLayers().values():
                             if lyr.id() == json_options[key]:
                                 item['widget'].setLayer(lyr)
                                 break
@@ -915,8 +921,7 @@ class Lizmap:
                 data = list(json_config.items())
 
             # load content from json file
-            lr = QgsProject.instance()
-            project_layers_ids = list(lr.mapLayers().keys())
+            project_layers_ids = list(self.project.mapLayers().keys())
             for k, v in data:
                 # check if the layer still exists in the QGIS project
                 if 'layerId' in list(v.keys()):
@@ -931,7 +936,7 @@ class Lizmap:
                     # add layer name column - get name from layer if possible (if user has renamed the layer)
                     icon = None
                     if 'layerId' in list(v.keys()):
-                        layer = lr.mapLayer(v['layerId'])
+                        layer = self.project.mapLayer(v['layerId'])
                         if layer:
                             k = layer.name()
                             icon = QgsMapLayerModel.iconForLayer(layer)
@@ -959,10 +964,9 @@ class Lizmap:
 
         LOGGER.info('Table "{}" has been loaded'.format(key))
 
-    @staticmethod
-    def get_qgis_layer_by_id(my_id):
+    def get_qgis_layer_by_id(self, my_id):
         """Get a QgsLayer by its Id"""
-        for layer in QgsProject.instance().mapLayers().values():
+        for layer in self.project.mapLayers().values():
             if my_id == layer.id():
                 return layer
         return None
@@ -973,11 +977,7 @@ class Lizmap:
         and set the initial xmin, ymin, xmax, ymax
         in the map options tab
         """
-        # Get project instance
-        p = QgsProject.instance()
-
-        # Get WMS extent
-        p_wms_extent = p.readListEntry('WMSExtent', '')[0]
+        p_wms_extent = self.project.readListEntry('WMSExtent', '')[0]
         if len(p_wms_extent) > 1:
             extent = '%s, %s, %s, %s' % (
                 p_wms_extent[0],
@@ -1042,8 +1042,7 @@ class Lizmap:
         LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
 
     def check_wfs_is_checked(self, layer):
-        p = QgsProject.instance()
-        wfs_layers_list = p.readListEntry('WFSLayers', '')[0]
+        wfs_layers_list = self.project.readListEntry('WFSLayers', '')[0]
         has_wfs_option = False
         for l in wfs_layers_list:
             if layer.id() == l:
@@ -1530,7 +1529,6 @@ class Lizmap:
             self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
 
-        p = QgsProject.instance()
         embeddedGroups = self.embeddedGroups
         if itemType == 'group':
             # embedded group ?
@@ -1570,7 +1568,7 @@ class Lizmap:
             # group as layer : always False obviously because it is already a layer
             self.myDic[itemKey]['groupAsLayer'] = False
             # embedded layer ?
-            fromProject = p.layerIsEmbedded(itemKey)
+            fromProject = self.project.layerIsEmbedded(itemKey)
             if os.path.exists(fromProject):
                 pName = os.path.splitext(os.path.basename(fromProject))[0]
                 self.myDic[itemKey]['sourceProject'] = pName
@@ -1674,8 +1672,7 @@ class Lizmap:
         self.myDic = {}
 
         # Check if a json configuration file exists (myproject.qgs.cfg)
-        project = QgsProject.instance()
-        json_file = '{}.cfg'.format(project.fileName())
+        json_file = '{}.cfg'.format(self.project.fileName())
         json_layers = {}
         if os.path.exists(str(json_file)):
             f = open(json_file, 'r')
@@ -1695,7 +1692,7 @@ class Lizmap:
                 f.close()
 
         # Get layer tree root
-        root = QgsProject.instance().layerTreeRoot()
+        root = self.project.layerTreeRoot()
 
         # Recursively process layer tree nodes
         self.process_node(root, None, json_layers)
@@ -1980,7 +1977,7 @@ class Lizmap:
 
             # Value relation
             if ftype == 'RelationReference':
-                rem = QgsProject.instance().relationManager()
+                rem = self.project.relationManager()
                 rel = rem.relation(fconf['Relation'])
                 vlay = rel.referencedLayer()
                 vlid = rel.referencedLayerId()
@@ -2122,7 +2119,7 @@ class Lizmap:
         item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             lid = item.text(1)
-            layers = [a for a in QgsProject.instance().mapLayers().values() if a.id() == lid]
+            layers = [a for a in self.project.mapLayers().values() if a.id() == lid]
             if not layers:
                 return
         else:
@@ -2156,8 +2153,6 @@ class Lizmap:
         # r = QgsMapRenderer()
         # add all the layers to the renderer
         # r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
-        # Get the project data
-        project = QgsProject.instance()
         # options
         liz2json = dict()
         liz2json["options"] = dict()
@@ -2172,7 +2167,7 @@ class Lizmap:
         liz2json["options"]["projection"]["proj4"] = '{}'.format(pProj4)
         liz2json["options"]["projection"]["ref"] = '{}'.format(pAuthid)
         # wms extent
-        pWmsExtent = project.readListEntry('WMSExtent', '')[0]
+        pWmsExtent = self.project.readListEntry('WMSExtent', '')[0]
         if len(pWmsExtent) > 1:
             bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3]))
         else:
@@ -2245,8 +2240,7 @@ class Lizmap:
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.twLocateByLayerList
         twRowCount = lblTableWidget.rowCount()
-        project = QgsProject.instance()
-        wfsLayersList = project.readListEntry('WFSLayers', '')[0]
+        wfsLayersList = self.project.readListEntry('WFSLayers', '')[0]
         if twRowCount > 0:
             liz2json["locateByLayer"] = dict()
             for row in range(twRowCount):
@@ -2592,8 +2586,7 @@ class Lizmap:
         )
 
         # Get the project data
-        project = QgsProject.instance()
-        json_file = '{}.cfg'.format(project.fileName())
+        json_file = '{}.cfg'.format(self.project.fileName())
         cfg_file = open(json_file, 'w')
         cfg_file.write(json_file_content)
         cfg_file.close()
@@ -2635,8 +2628,7 @@ class Lizmap:
         is_valid = True
         error_message = ''
         # Get the project data from api
-        project = QgsProject.instance()
-        if not project.fileName() or not project.fileName().lower().endswith('qgs'):
+        if not self.project.fileName() or not self.project.fileName().lower().endswith('qgs'):
             error_message += tr(
                 'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
             is_valid = False
@@ -2644,7 +2636,7 @@ class Lizmap:
         project_dir = None
         if is_valid:
             # Get the project folder
-            project_dir, project_name = os.path.split(os.path.abspath(project.fileName()))
+            project_dir, project_name = os.path.split(os.path.abspath(self.project.fileName()))
 
         if is_valid:
             # Check if Qgis/capitaliseLayerName is set
@@ -2658,7 +2650,7 @@ class Lizmap:
 
         if is_valid:
             # Check relative/absolute path
-            if project.readEntry('Paths', 'Absolute')[0] == 'true':
+            if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
                 error_message += '* ' + tr(
                     'The project layer paths must be set to relative. '
                     'Please change this options in the project settings.') + '\n'
@@ -2711,20 +2703,20 @@ class Lizmap:
 
             # check if a title has been given in the project QGIS Server tab configuration
             # first set the WMSServiceCapabilities to true
-            if not project.readEntry('WMSServiceCapabilities', '/')[1]:
-                project.writeEntry('WMSServiceCapabilities', '/', 'True')
-            if project.readEntry('WMSServiceTitle', '')[0] == '':
-                project.writeEntry('WMSServiceTitle', '', project.baseName())
+            if not self.project.readEntry('WMSServiceCapabilities', '/')[1]:
+                self.project.writeEntry('WMSServiceCapabilities', '/', 'True')
+            if self.project.readEntry('WMSServiceTitle', '')[0] == '':
+                self.project.writeEntry('WMSServiceTitle', '', self.project.baseName())
 
             # check if a bbox has been given in the project QGIS Server tab configuration
-            project_wms_extent, _ = project.readListEntry('WMSExtent', '')
+            project_wms_extent, _ = self.project.readListEntry('WMSExtent', '')
             full_extent = self.iface.mapCanvas().extent()
             if not project_wms_extent:
                 project_wms_extent.append('%s' % full_extent.xMinimum())
                 project_wms_extent.append('%s' % full_extent.yMinimum())
                 project_wms_extent.append('%s' % full_extent.xMaximum())
                 project_wms_extent.append('%s' % full_extent.yMaximum())
-                project.writeEntry('WMSExtent', '', project_wms_extent)
+                self.project.writeEntry('WMSExtent', '', project_wms_extent)
             else:
                 if not project_wms_extent[0] or not project_wms_extent[1] or not \
                         project_wms_extent[2] or not project_wms_extent[3]:
@@ -2732,7 +2724,7 @@ class Lizmap:
                     project_wms_extent[1] = '%s' % full_extent.yMinimum()
                     project_wms_extent[2] = '%s' % full_extent.xMaximum()
                     project_wms_extent[3] = '%s' % full_extent.yMaximum()
-                    project.writeEntry('WMSExtent', '', project_wms_extent)
+                    self.project.writeEntry('WMSExtent', '', project_wms_extent)
 
         return is_valid, error_message
 
@@ -2776,23 +2768,22 @@ class Lizmap:
 
             # Checking configuration data
             # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
-            project = QgsProject.instance()
 
             # public baselayers: check that the 3857 projection is set in the
             # "Coordinate System Restriction" section of the project WMS Server tab properties
             if True in mercator_layers:
-                crs_list = project.readListEntry('WMSCrsList', '')
+                crs_list = self.project.readListEntry('WMSCrsList', '')
                 mercator_found = False
                 for i in crs_list[0]:
                     if i == 'EPSG:3857':
                         mercator_found = True
                 if not mercator_found:
                     crs_list[0].append('EPSG:3857')
-                    project.writeEntry('WMSCrsList', '', crs_list[0])
+                    self.project.writeEntry('WMSCrsList', '', crs_list[0])
 
             # list of layers for which to have the tool "locate by layer" set
             row = self.dlg.twLocateByLayerList.rowCount()
-            wfs_layers = project.readListEntry('WFSLayers', '')[0]
+            wfs_layers = self.project.readListEntry('WFSLayers', '')[0]
             if row > 0:
                 good = True
                 for row in range(row):
@@ -2838,9 +2829,9 @@ class Lizmap:
                 # Ask to save the project
                 auto_save = self.dlg.checkbox_save_project.isChecked()
                 QSettings().setValue('lizmap/auto_save_project', auto_save)
-                if project.isDirty():
+                if self.project.isDirty():
                     if auto_save:
-                        project.write()
+                        self.project.write()
                     else:
                         self.iface.messageBar().pushMessage(
                             'Lizmap',
@@ -2901,10 +2892,8 @@ class Lizmap:
         Read lizmap current cfg configuration
         and set the startup baselayer if found
         """
-
         # Get the project config file (projectname.qgs.cfg)
-        p = QgsProject.instance()
-        json_file = '{}.cfg'.format(p.fileName())
+        json_file = '{}.cfg'.format(self.project.fileName())
         if os.path.exists(json_file):
             f = open(json_file, 'r')
             json_file_reader = f.read()
@@ -2967,7 +2956,7 @@ class Lizmap:
             # Filter Form layers
             self.dlg.liFormFilterLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
             black_list = []
-            for layer in QgsProject.instance().mapLayers().values():
+            for layer in self.project.mapLayers().values():
                 if layer.providerType() not in ('ogr', 'postgres', 'spatialite'):
                     black_list.append(layer)
                 if layer.providerType() == 'ogr':
