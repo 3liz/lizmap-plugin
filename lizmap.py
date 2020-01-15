@@ -1053,7 +1053,8 @@ class Lizmap:
             QMessageBox.critical(
                 self.dlg,
                 tr('Lizmap Error'),
-                tr('The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the QGIS Server tab in the "Project Properties" dialog.'),
+                tr('The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
+                   'QGIS Server tab in the "Project Properties" dialog.'),
                 QMessageBox.Ok)
             return False
         return True
@@ -1222,7 +1223,8 @@ class Lizmap:
             )
 
         content = [
-            layer_name, str(create_feature), str(modify_attribute), str(modify_geometry), str(delete_feature), acl, layer_id, str(row)]
+            layer_name, str(create_feature), str(modify_attribute), str(modify_geometry), str(delete_feature), acl,
+            layer_id, str(row)]
 
         table.setRowCount(row + 1)
 
@@ -1446,7 +1448,8 @@ class Lizmap:
 
         lblTableWidget = self.dlg.twFormFilterLayers
         twRowCount = lblTableWidget.rowCount()
-        content = [layerName, ftitle, ftype, ffield, fmindate, fmaxdate, fformat, fsplitter, fprovider, layerId, twRowCount]
+        content = [
+            layerName, ftitle, ftype, ffield, fmindate, fmaxdate, fformat, fsplitter, fprovider, layerId, twRowCount]
         colCount = len(content)
 
         # set new rowCount and col count
@@ -2551,8 +2554,8 @@ class Lizmap:
                 layerOptions[key] = propVal
 
             # Cache Metatile: unset metatileSize if empty
-            # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize (2.2.0 does not handle it)
-            project = re.compile('ab*')
+            # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize
+            # (2.2.0 does not handle it)
             # unset metatileSize
             if not re.match('\d,\d', layerOptions['metatileSize']):
                 del layerOptions['metatileSize']
