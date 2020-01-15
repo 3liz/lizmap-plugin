@@ -2845,7 +2845,9 @@ class Lizmap:
                 QSettings().setValue('lizmap/auto_save_project', auto_save)
                 if self.project.isDirty():
                     if auto_save:
-                        self.project.write()
+                        # Do not use QgsProject.write() as it will trigger file
+                        # modified warning in QGIS Desktop later
+                        self.iface.actionSaveProject().trigger()
                     else:
                         self.iface.messageBar().pushMessage(
                             'Lizmap',
