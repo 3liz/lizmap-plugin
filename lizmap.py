@@ -84,6 +84,9 @@ from qgis.core import (
     QgsApplication,
 )
 
+from .definitions.atlas import AtlasDefinitions
+from .forms.atlas_edition import AtlasEditionDialog
+from .forms.table_manager import TableManager
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
@@ -283,20 +286,8 @@ class Lizmap:
         self.global_options['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
         self.global_options['datavizLocation']['widget'] = self.dlg.liDatavizContainer
         self.global_options['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
-        self.global_options['atlasEnabled']['widget'] = self.dlg.atlasEnabled
-        self.global_options['atlasLayer']['widget'] = self.dlg.atlasLayer
-        self.global_options['atlasPrimaryKey']['widget'] = self.dlg.atlasPrimaryKey
-        self.global_options['atlasDisplayLayerDescription']['widget'] = self.dlg.atlasDisplayLayerDescription
-        self.global_options['atlasFeatureLabel']['widget'] = self.dlg.atlasFeatureLabel
-        self.global_options['atlasSortField']['widget'] = self.dlg.atlasSortField
-        self.global_options['atlasHighlightGeometry']['widget'] = self.dlg.atlasHighlightGeometry
-        self.global_options['atlasZoom']['widget'] = self.dlg.atlasZoom
-        self.global_options['atlasDisplayPopup']['widget'] = self.dlg.atlasDisplayPopup
-        self.global_options['atlasTriggerFilter']['widget'] = self.dlg.atlasTriggerFilter
         self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
         self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
-        self.global_options['atlasMaxWidth']['widget'] = self.dlg.atlasMaxWidth
-        self.global_options['atlasDuration']['widget'] = self.dlg.atlasDuration
 
         self.layer_options_list = LizmapConfig.layerOptionDefinitions
         # Add widget information
@@ -415,6 +406,15 @@ class Lizmap:
 
         # tables of layers
         self.layers_table = {
+            'atlas': {
+                'tableWidget': self.dlg.table_atlas,
+                'removeButton': self.dlg.button_atlas_remove,
+                'addButton': self.dlg.button_atlas_add,
+                'editButton': self.dlg.button_atlas_edit,
+                'upButton': self.dlg.button_atlas_up,
+                'downButton': self.dlg.button_atlas_down,
+                'manager': None,
+            },
             'locateByLayer': {
                 'tableWidget': self.dlg.twLocateByLayerList,
                 'removeButton': self.dlg.btLocateByLayerDel,
@@ -568,6 +568,45 @@ class Lizmap:
             control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
             control.setToolTip(tr('Add a new layer in the list'))
 
+            control = item.get('editButton')
+            if control:
+                # If there is an edit button, it's the new generation of form
+                slot = partial(self.edit_layer, key)
+                control.clicked.connect(slot)
+                control.setText('')
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('symbologyEdit.svg')))
+                control.setToolTip(tr('Edit the current layer configuration'))
+
+                slot = partial(self.add_new_layer, key)
+                item.get('addButton').clicked.connect(slot)
+                item['manager'] = TableManager(
+                    self.dlg,
+                    AtlasDefinitions(),
+                    AtlasEditionDialog,
+                    item['tableWidget'],
+                    item['removeButton'],
+                    item['editButton'],
+                    item['upButton'],
+                    item['downButton']
+                )
+
+                control = item.get('upButton')
+                slot = partial(self.move_layer_up, key)
+                control.clicked.connect(slot)
+                control.setText('')
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
+                control.setToolTip(tr('Move the layer up in the table'))
+
+                control = item.get('downButton')
+                slot = partial(self.move_layer_down, key)
+                control.clicked.connect(slot)
+                control.setText('')
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
+                control.setToolTip(tr('Move the layer down in the table'))
+
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
@@ -653,15 +692,6 @@ class Lizmap:
         self.dlg.inDatavizColorField.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
         self.dlg.inDatavizColorField2.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
 
-        # Atlas layers
-        self.dlg.atlasLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasFeatureLabel.setLayer)
-        self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasSortField.setLayer)
-        self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasPrimaryKey.setLayer)
-        self.dlg.atlasFeatureLabel.setLayer(self.dlg.atlasLayer.currentLayer())
-        self.dlg.atlasSortField.setLayer(self.dlg.atlasLayer.currentLayer())
-        self.dlg.atlasPrimaryKey.setLayer(self.dlg.atlasLayer.currentLayer())
-
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
@@ -724,6 +754,18 @@ class Lizmap:
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
+
+    def add_new_layer(self, key):
+        self.layers_table[key]['manager'].add_new_row()
+
+    def move_layer_up(self, key):
+        self.layers_table[key]['manager'].move_layer_up()
+
+    def move_layer_down(self, key):
+        self.layers_table[key]['manager'].move_layer_down()
+
+    def edit_layer(self, key):
+        self.layers_table[key]['manager'].edit_existing_row()
 
     def unload(self):
         """Remove the plugin menu item and icon."""
@@ -819,7 +861,20 @@ class Lizmap:
                         self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
                         self.layers_table[key]['jsonConfig'] = {}
-            except Exception:
+
+                    manager = self.layers_table[key].get('manager')
+                    if manager:
+                        if key in sjson:
+                            manager.truncate()
+                            manager.from_json(sjson[key])
+                        else:
+                            # get a subset of the data to give to the table form
+                            data = {k: json_options[k] for k in json_options if k.startswith(manager.definitions.key())}
+                            manager.truncate()
+                            manager.from_json(data)
+
+            except Exception as e:
+                LOGGER.critical(e)
                 copyfile(json_file, '{}.back'.format(json_file))
                 message = tr(
                     'Errors encountered while reading the last layer tree state. '
@@ -909,6 +964,11 @@ class Lizmap:
         """
         # Get parameters for the widget
         lt = self.layers_table[key]
+
+        if lt.get('manager'):
+            # Note, new generation form/manager do not use this function
+            return
+
         widget = lt['tableWidget']
         attributes = lt['cols']
         json_config = lt['jsonConfig']
@@ -1043,7 +1103,17 @@ class Lizmap:
         """
         Remove layers from tables when deleted from layer registry
         """
+        json_file = '{}.cfg'.format(self.project.fileName())
+        if not os.path.exists(json_file):
+            return
+
         for key, item in self.layers_table.items():
+
+            manager = self.layers_table[key].get('manager')
+            if manager:
+                manager.layers_has_been_deleted(layer_ids)
+                continue
+
             tw = self.layers_table[key]['tableWidget']
 
             # Count lines
@@ -2318,6 +2388,15 @@ class Lizmap:
                 else:
                     if 'alwaysExport' in item:
                         liz2json["options"][key] = item['default']
+
+        for key in self.layers_table.keys():
+            manager = self.layers_table[key].get('manager')
+            if manager:
+                data = manager.to_json()
+                if manager.use_single_row and manager.table.rowCount() == 1:
+                    liz2json['options'].update(data)
+                else:
+                    liz2json[key] = data
 
         # list of layers for which to have the tool "locate by layer"
         lblTableWidget = self.dlg.twLocateByLayerList
