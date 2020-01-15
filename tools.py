@@ -44,8 +44,6 @@
  ***** END LICENSE BLOCK ***** */
 """
 
-from qgis.PyQt.QtWidgets import QApplication
-
 from qgis.core import QgsProviderRegistry
 
 

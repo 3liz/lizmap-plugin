@@ -2547,7 +2547,7 @@ class Lizmap:
                 elif val['type'] == 'integer':
                     try:
                         propVal = int(propVal)
-                    except:
+                    except Exception:
                         propVal = 1
                 elif val['type'] == 'boolean':
                     propVal = str(propVal)
@@ -2557,7 +2557,7 @@ class Lizmap:
             # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize
             # (2.2.0 does not handle it)
             # unset metatileSize
-            if not re.match('\d,\d', layerOptions['metatileSize']):
+            if not re.match(r'\d,\d', layerOptions['metatileSize']):
                 del layerOptions['metatileSize']
             # unset cacheExpiration if False
             if layerOptions['cached'].lower() == 'false':
@@ -2583,7 +2583,7 @@ class Lizmap:
                     and layerOptions['externalWmsToggle'].lower() == 'true':
                 layerProviderKey = layer.providerType()
                 # Only for layers stored in disk
-                if layerProviderKey in ('wms'):
+                if layerProviderKey in ['wms']:
                     wmsParams = self.getLayerWmsParameters(layer)
                     if wmsParams:
                         layerOptions['externalAccess'] = wmsParams

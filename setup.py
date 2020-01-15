@@ -2,14 +2,13 @@
 Install lizmap api as standard python package.
 """
 
+import configparser
+
 from setuptools import setup
 
 kwargs = {}
 
 # Read tag from metadata
-
-import configparser
-
 metadata = configparser.ConfigParser()
 metadata.read('metadata.txt')
 

@@ -43,13 +43,15 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-from qgis.core import (QgsProject,
-                       QgsMapLayer)
 
-# import other needed tool
 import os
 import json
 import collections
+
+from qgis.core import (
+    QgsProject,
+    QgsMapLayer,
+)
 
 
 class LizmapConfigError(Exception):

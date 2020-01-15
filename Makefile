@@ -55,6 +55,8 @@ VERSION = "3.1.7"
 LOCALES = "cs de el en es eu fi fr gl hu_HU id it nl no pl_PL pt pt_BR ro ru sl sv_SE tr"
 LOCALES_SUBMODULE = lizmap-locales/plugin
 
+EXCLUDED_FILES = "../lizmap_api/commands.py ../lizmap_api/config.py"
+
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
 # lrelease
@@ -204,6 +206,9 @@ dist-api:
 
 help:
 	$(MAKE) -C qgis_plugin_tools help
+
+pylint:
+	$(MAKE) -C qgis_plugin_tools pylint
 
 docker_test:
 	$(MAKE) -C qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)

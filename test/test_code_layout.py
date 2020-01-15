@@ -15,7 +15,7 @@ class TestCodeLayout(unittest.TestCase):
     def test_qgis_widgets(self):
         """Test imports are correct in UI file."""
         list_files = []
-        for root, directories, files in os.walk('../'):
+        for root, _, files in os.walk('../'):
             for file in files:
                 if file.lower().endswith('.ui'):
                     file_path = os.path.join(root, file)
