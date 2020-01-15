@@ -217,48 +217,12 @@ class LizmapConfig:
         'datavizTemplate': {
             'wType': 'html', 'type': 'string', 'default': ''
         },
-        'atlasEnabled': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'atlasLayer': {
-            'wType': 'layers', 'type': 'layer', 'default': '', 'list': []
-        },
-        'atlasPrimaryKey': {
-            'wType': 'fields', 'type': 'field', 'default': ''
-        },
-        'atlasDisplayLayerDescription': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True
-        },
-        'atlasFeatureLabel': {
-            'wType': 'fields', 'type': 'field', 'default': ''
-        },
-        'atlasSortField': {
-            'wType': 'fields', 'type': 'field', 'default': ''
-        },
-        'atlasHighlightGeometry': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True
-        },
-        'atlasZoom': {
-            'wType': 'list', 'type': 'string', 'default': 'zoom', 'list': ['', 'zoom', 'center']
-        },
-        'atlasDisplayPopup': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True
-        },
-        'atlasTriggerFilter': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
         'atlasShowAtStartup': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
         'atlasAutoPlay': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
-        'atlasMaxWidth': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 25
-        },
-        'atlasDuration': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 5
-        }
     }
 
     layerOptionDefinitions = {
