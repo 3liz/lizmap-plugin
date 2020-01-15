@@ -3640,14 +3640,14 @@ Only the selected feature will be visible on the map.</string>
                      </item>
                      <item row="11" column="3">
                       <widget class="QgsColorButton" name="inDatavizPlotColor">
-                       <property name="color">
+                       <property name="color" stdset="0">
                         <color>
                          <red>0</red>
                          <green>170</green>
                          <blue>255</blue>
                         </color>
                        </property>
-                       <property name="defaultColor">
+                       <property name="defaultColor" stdset="0">
                         <color>
                          <red>0</red>
                          <green>170</green>
@@ -3668,14 +3668,14 @@ Only the selected feature will be visible on the map.</string>
                      </item>
                      <item row="13" column="3">
                       <widget class="QgsColorButton" name="inDatavizPlotColor2">
-                       <property name="color">
+                       <property name="color" stdset="0">
                         <color>
                          <red>255</red>
                          <green>170</green>
                          <blue>0</blue>
                         </color>
                        </property>
-                       <property name="defaultColor">
+                       <property name="defaultColor" stdset="0">
                         <color>
                          <red>255</red>
                          <green>170</green>
@@ -4132,7 +4132,7 @@ Only the selected feature will be visible on the map.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>686</width>
+                <width>684</width>
                 <height>640</height>
                </rect>
               </property>
@@ -4150,201 +4150,78 @@ Only the selected feature will be visible on the map.</string>
                <item>
                 <widget class="QLabel" name="label_90">
                  <property name="text">
-                  <string>Please use a vector layer with reasonable number of features !</string>
+                  <string>Please use a vector layer with reasonable number of features.</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox">
-                 <property name="title">
-                  <string>Layer options</string>
+                <widget class="QLabel" name="label_48">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Several layers can be added with Lizmap Web Client 3.4 and above. The auto-play checkbox is used only on the first layer in the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_42">
-                  <item>
-                   <layout class="QGridLayout" name="gridLayout">
-                    <item row="1" column="3">
-                     <widget class="QgsMapLayerComboBox" name="atlasLayer">
-                      <property name="toolTip">
-                       <string>The vector layer for the atlas</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="8" column="1">
-                     <widget class="QLabel" name="label_84">
-                      <property name="text">
-                       <string>Zoom to feature</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="10" column="1">
-                     <widget class="QLabel" name="label_86">
-                      <property name="text">
-                       <string>Trigger filter</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="9" column="3">
-                     <widget class="QCheckBox" name="atlasDisplayPopup">
-                      <property name="toolTip">
-                       <string>You can choose to display the popup in the feature in the atlas container or not</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QLabel" name="label_82">
-                      <property name="text">
-                       <string>Atlas layer</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="5" column="1">
-                     <widget class="QLabel" name="label_83">
-                      <property name="text">
-                       <string>Feature label</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="9" column="1">
-                     <widget class="QLabel" name="label_85">
-                      <property name="text">
-                       <string>Display popup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="10" column="3">
-                     <widget class="QCheckBox" name="atlasTriggerFilter">
-                      <property name="toolTip">
-                       <string>If you want to activate filter on the feature selected by the atlas, it will hide all other features of the layer and only show the one selected</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="3">
-                     <widget class="QCheckBox" name="atlasDisplayLayerDescription">
-                      <property name="toolTip">
-                       <string>If you want to display the layer description in the dock of your atlas</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="1">
-                     <widget class="QLabel" name="label_88">
-                      <property name="text">
-                       <string>Display layer description</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="5" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasFeatureLabel">
-                      <property name="toolTip">
-                       <string>Choose the field who contains the name of your features, it will be shown instead of the primary key in the list of features</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="3">
-                     <widget class="QCheckBox" name="atlasEnabled">
-                      <property name="toolTip">
-                       <string>if the atlas is enabled or not in your project</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QLabel" name="label_91">
-                      <property name="text">
-                       <string>Enable atlas for this project ?</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="7" column="1">
-                     <widget class="QLabel" name="label_92">
-                      <property name="text">
-                       <string>Highlight geometry</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="7" column="3">
-                     <widget class="QCheckBox" name="atlasHighlightGeometry">
-                      <property name="toolTip">
-                       <string>You can choose to highlight the feature selected by the atlas, it will change every time it’s switching to a new feature</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="1">
-                     <widget class="QLabel" name="label_93">
-                      <property name="text">
-                       <string>Sort field</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasSortField">
-                      <property name="toolTip">
-                       <string>Your atlas will be sorted according to this field</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="8" column="3">
-                     <widget class="QComboBox" name="atlasZoom">
-                      <property name="toolTip">
-                       <string>Choose between a zoom on the feature or to make it the center of your map</string>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>zoom</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>center</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <widget class="QLabel" name="label_96">
-                      <property name="text">
-                       <string>Layer primary key (must be integer for PostgreSQL)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="3">
-                     <widget class="QgsFieldComboBox" name="atlasPrimaryKey">
-                      <property name="toolTip">
-                       <string>The primary key field, it must be an integer</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
                 </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="table_atlas">
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectColumns</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_23">
+                 <item>
+                  <widget class="QPushButton" name="button_atlas_add">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_atlas_remove">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_atlas_edit">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_atlas_up">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_atlas_down">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_2">
@@ -4353,91 +4230,24 @@ Only the selected feature will be visible on the map.</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_44">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_5">
-                    <item row="3" column="0">
-                     <widget class="QLabel" name="label_94">
-                      <property name="text">
-                       <string>Step duration (seconds)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="label_95">
-                      <property name="text">
-                       <string>Show atlas tool on startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QCheckBox" name="atlasShowAtStartup">
-                      <property name="toolTip">
-                       <string>If you want to open the atlas tool when you open your project</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="1">
-                     <widget class="QSpinBox" name="atlasDuration">
-                      <property name="toolTip">
-                       <string>You can select the duration between each step when your atlas is in auto-play mode</string>
-                      </property>
-                      <property name="minimum">
-                       <number>2</number>
-                      </property>
-                      <property name="maximum">
-                       <number>60</number>
-                      </property>
-                      <property name="value">
-                       <number>5</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="0">
-                     <widget class="QLabel" name="label_89">
-                      <property name="text">
-                       <string>Auto-play on startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="1">
-                     <widget class="QCheckBox" name="atlasAutoPlay">
-                      <property name="toolTip">
-                       <string>If you want to launch the auto-play mode when you open your project</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label_87">
-                      <property name="text">
-                       <string>Right dock max-width (%)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QSpinBox" name="atlasMaxWidth">
-                      <property name="toolTip">
-                       <string>You can choose the size of the atlas dock (20%-50%)</string>
-                      </property>
-                      <property name="minimum">
-                       <number>20</number>
-                      </property>
-                      <property name="maximum">
-                       <number>50</number>
-                      </property>
-                      <property name="singleStep">
-                       <number>5</number>
-                      </property>
-                      <property name="value">
-                       <number>25</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                   <widget class="QCheckBox" name="atlasShowAtStartup">
+                    <property name="toolTip">
+                     <string>If you want to open the atlas tool when you open your project</string>
+                    </property>
+                    <property name="text">
+                     <string>Show atlas tool on startup</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="atlasAutoPlay">
+                    <property name="toolTip">
+                     <string>If you want to launch the auto-play mode when you open your project</string>
+                    </property>
+                    <property name="text">
+                     <string>Auto-play on startup</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -4575,7 +4385,7 @@ Only the selected feature will be visible on the map.</string>
                    <property name="toolTip">
                     <string>The field containing the end date of your data. If you have 2 fields containing dates, one for the start date and another for the end date, you can differentiate them. If not, you need to use the same field name for Min date and Max date.</string>
                    </property>
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4599,7 +4409,7 @@ Only the selected feature will be visible on the map.</string>
                    <property name="toolTip">
                     <string>The field name (in the database table). Only for the Text, Unique Values and Numeric types</string>
                    </property>
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4616,7 +4426,7 @@ Only the selected feature will be visible on the map.</string>
                    <property name="toolTip">
                     <string>The field containing the start date of your feature (ex: “start_date” of an event)</string>
                    </property>
-                   <property name="allowEmptyFieldName">
+                   <property name="allowEmptyFieldName" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -4810,6 +4620,16 @@ Only the selected feature will be visible on the map.</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
@@ -4818,16 +4638,6 @@ Only the selected feature will be visible on the map.</string>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
@@ -4990,20 +4800,6 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btTimemanagerLayerAdd</tabstop>
   <tabstop>btTimemanagerLayerDel</tabstop>
   <tabstop>scrollArea_12</tabstop>
-  <tabstop>atlasEnabled</tabstop>
-  <tabstop>atlasLayer</tabstop>
-  <tabstop>atlasPrimaryKey</tabstop>
-  <tabstop>atlasDisplayLayerDescription</tabstop>
-  <tabstop>atlasFeatureLabel</tabstop>
-  <tabstop>atlasSortField</tabstop>
-  <tabstop>atlasHighlightGeometry</tabstop>
-  <tabstop>atlasZoom</tabstop>
-  <tabstop>atlasDisplayPopup</tabstop>
-  <tabstop>atlasTriggerFilter</tabstop>
-  <tabstop>atlasShowAtStartup</tabstop>
-  <tabstop>atlasMaxWidth</tabstop>
-  <tabstop>atlasDuration</tabstop>
-  <tabstop>atlasAutoPlay</tabstop>
   <tabstop>scrollArea_13</tabstop>
   <tabstop>twFormFilterLayers</tabstop>
   <tabstop>liFormFilterLayer</tabstop>
