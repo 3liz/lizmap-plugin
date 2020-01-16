@@ -2188,7 +2188,7 @@ class Lizmap:
         # wms extent
         pWmsExtent = self.project.readListEntry('WMSExtent', '')[0]
         if len(pWmsExtent) > 1:
-            bbox = eval('[%s, %s, %s, %s]' % (pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3]))
+            bbox = [pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3]]
         else:
             bbox = []
         liz2json["options"]["bbox"] = bbox
@@ -2518,15 +2518,9 @@ class Lizmap:
 
             # extent
             if layer:
-                lExtent = layer.extent()
-                layerOptions["extent"] = eval(
-                    '[%s, %s, %s, %s]' % (
-                        lExtent.xMinimum(),
-                        lExtent.yMinimum(),
-                        lExtent.xMaximum(),
-                        lExtent.yMaximum()
-                    )
-                )
+                extent = layer.extent()
+                layerOptions['extent'] = [
+                    extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum()]
                 layerOptions['crs'] = layer.crs().authid()
 
             # styles
