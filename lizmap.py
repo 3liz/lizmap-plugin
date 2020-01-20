@@ -341,6 +341,7 @@ class Lizmap:
         self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'pie.svg')), 'pie')
         self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', '2dhistogram.svg')), 'histogram2d')
         self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'polar.svg')), 'polar')
+        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'sunburst.svg')), 'sunburst')
 
         self.dataviz_options['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
 

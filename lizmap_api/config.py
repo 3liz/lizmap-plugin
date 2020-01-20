@@ -355,7 +355,7 @@ class LizmapConfig:
     datavizOptionDefinitions = {
         'plotType': {
             'wType': 'list', 'type': 'string', 'default': 'scatter',
-            'list': ['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar']
+            'list': ['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar', 'sunburst']
         },
         'plotAggregation': {
             'wType': 'list', 'type': 'string', 'default': '',
