@@ -6,11 +6,21 @@ qgisMaximumVersion=3.99
 description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
-version=3.1.7
+version=3.1.8
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.1.8:
+  * Review button box
+  * Add apply and close button
+  * Move back embedded layer and group from another project
+  * Add icon for add/remove button
+  * Add checkable fields input in forms
+  * Add autosave project option
+  * Fix add new layer without fields
+  * Fix typo
+  * Some code cleanup
   Version 3.1.7:
   * Fix some tooltips
   * Fix allow empty field X in dataviz

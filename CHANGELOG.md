@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Version 3.1.8
+
+* Review button box
+* Add apply and close button
+* Move back embedded layer and group from another project
+* Add icon for add/remove button
+* Add checkable fields input in forms
+* Add autosave project option
+* Fix add new layer without fields
+* Fix typo
+* Some code cleanup
+
 ## Version 3.1.7
 
 * Fix some tooltips
