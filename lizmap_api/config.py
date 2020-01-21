@@ -53,6 +53,8 @@ from qgis.core import (
     QgsMapLayer,
 )
 
+from ..qgis_plugin_tools.tools.resources import metadata_config
+
 
 class LizmapConfigError(Exception):
     pass
@@ -70,7 +72,12 @@ class LizmapConfig:
         4: 'none'
     }
 
+    lizmap_version = metadata_config()['general']['version']
+
     globalOptionDefinitions = {
+        'lizmap_plugin_version': {
+            'wType': 'spinbox', 'type': 'integer', 'default': int(''.join([format(int(i), '02d') for i in lizmap_version.split('.')])),
+        },
         'mapScales': {
             'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
         },
