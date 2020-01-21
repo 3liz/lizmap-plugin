@@ -1050,14 +1050,18 @@ class Lizmap:
             if layer.id() == wfs_layer:
                 has_wfs_option = True
         if not has_wfs_option:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Lizmap Error'),
+            self.display_error(
                 tr('The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
-                   'QGIS Server tab in the "Project Properties" dialog.'),
-                QMessageBox.Ok)
+               'QGIS Server tab in the "Project Properties" dialog.'))
             return False
         return True
+
+    def display_error(self, message):
+        QMessageBox.critical(
+            self.dlg,
+            tr('Lizmap Error'),
+            message,
+            QMessageBox.Ok)
 
     def add_layer_to_locate_by_layer(self):
         """Add a layer in the 'locate by layer' tool."""
@@ -1065,18 +1069,20 @@ class Lizmap:
         row = table.rowCount()
 
         if row >= self.dlg.liLocateByLayerLayers.count():
+            self.display_error('Not possible to add again this layer.')
             return
 
         layer = self.dlg.liLocateByLayerLayers.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory.')
             return
 
         if not self.check_wfs_is_checked(layer):
             return
 
         display_field = self.dlg.liLocateByLayerFields.currentField()
-
         if not display_field:
+            self.display_error('Display field is compulsory.')
             return
 
         layer_name = layer.name()
@@ -1107,18 +1113,24 @@ class Lizmap:
         row = table.rowCount()
 
         if row >= self.dlg.liAttributeLayer.count():
+            self.display_error('Not possible to add again this layer.')
             return
 
         layer = self.dlg.liAttributeLayer.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory.')
             return
 
         if not self.check_wfs_is_checked(layer):
             return
 
+        primary_key = self.dlg.liAttributeLayerFields.currentField()
+        if not primary_key:
+            self.display_error('Primary key is compulsory.')
+            return
+
         name = layer.name()
         layer_id = layer.id()
-        primary_key = self.dlg.liAttributeLayerFields.currentField()
         hidden_fields = ','.join(self.attribute_fields_checkable.selected_items())
         pivot = self.dlg.cbAttributeLayerIsPivot.isChecked()
         hide_as_child = self.dlg.cbAttributeLayerHideAsChild.isChecked()
@@ -1145,18 +1157,25 @@ class Lizmap:
         row = table.rowCount()
 
         if row >= self.dlg.liTooltipLayer.count():
+            self.display_error('Not possible to add again this layer.')
             return
 
         layer = self.dlg.liTooltipLayer.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory.')
             return
 
         if not self.check_wfs_is_checked(layer):
             return
 
+        fields = self.tooltip_fields_checkable.selected_items()
+        if not fields:
+            self.display_error('At least one field is compulsory.')
+            return
+
         layer_name = layer.name()
         layer_id = layer.id()
-        fields = ','.join(self.tooltip_fields_checkable.selected_items())
+        fields = ','.join(fields)
         display_geom = self.dlg.cbTooltipLayerDisplayGeom.isChecked()
         color_geom = self.dlg.inTooltipLayerColorGeom.text().strip(' \t')
         # noinspection PyArgumentList
@@ -1180,10 +1199,12 @@ class Lizmap:
         row = table.rowCount()
 
         if row >= self.dlg.liEditionLayer.count():
+            self.display_error('Not possible to add again this layer.')
             return
 
         layer = self.dlg.liEditionLayer.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory.')
             return
 
         if not self.check_wfs_is_checked(layer):
@@ -1201,12 +1222,14 @@ class Lizmap:
 
         # check at least one checkbox is active
         if not create_feature and not modify_attribute and not modify_geometry and not delete_feature:
+            self.display_error('At least one action is compulsory.')
             return
 
         # check if layer already added
         for existing_row in range(row):
             item_layer_id = str(table.item(existing_row, 6).text())
             if layer_id == item_layer_id:
+                self.display_error('Not possible to add again this layer.')
                 return
 
         # Check Z or M values which will be lost when editing
@@ -1242,15 +1265,22 @@ class Lizmap:
         row = table.rowCount()
 
         if row >= self.dlg.liLoginFilteredLayerLayers.count():
+            self.display_error('Not possible to add again this layer.')
             return
 
         layer = self.dlg.liLoginFilteredLayerLayers.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory.')
+            return
+
+        filter_attribute = self.dlg.liLoginFilteredLayerFields.currentField()
+        if not filter_attribute:
+            self.display_error('Filter attribute is compulsory.')
             return
 
         layer_name = layer.name()
         layer_id = layer.id()
-        filter_attribute = self.dlg.liLoginFilteredLayerFields.currentField()
+
         filter_private = self.dlg.cbLoginFilteredLayerPrivate.isChecked()
         # noinspection PyArgumentList
         icon = QgsMapLayerModel.iconForLayer(layer)
@@ -1273,21 +1303,24 @@ class Lizmap:
         row = table.rowCount()
 
         if row >= self.dlg.liTimemanagerLayers.count():
+            self.display_error('Not possible to add again this layer.')
             return
 
         layer = self.dlg.liTimemanagerLayers.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory.')
             return
 
         if not self.check_wfs_is_checked(layer):
             return
 
-        if row >= self.dlg.liTimemanagerLayers.count():
+        start_attribute = self.dlg.liTimemanagerStartAttribute.currentField()
+        if not start_attribute:
+            self.display_error('Start attribute is compulsory.')
             return
 
         layer_name = layer.name()
         layer_id = layer.id()
-        start_attribute = self.dlg.liTimemanagerStartAttribute.currentField()
         end_attribute = self.dlg.liTimemanagerEndAttribute.currentField()
         attribute_resolution = self.dlg.liTimemanagerAttributeResolution.itemData(
             self.dlg.liTimemanagerAttributeResolution.currentIndex()
@@ -1356,9 +1389,15 @@ class Lizmap:
         """Add a layer in the list of Dataviz layer."""
         layer = self.dlg.liDatavizPlotLayer.currentLayer()
         if not layer:
+            self.display_error('Not possible to add again this layer.')
             return
 
         if not self.check_wfs_is_checked(layer):
+            return
+
+        graph_y_field = self.dlg.inDatavizPlotYfield.currentField()
+        if not graph_y_field:
+            self.display_error('Field Y is compulsory.')
             return
 
         layer_name = layer.name()
@@ -1426,6 +1465,7 @@ class Lizmap:
         # Get the layer selected in the combo box
         layer = self.dlg.liFormFilterLayer.currentLayer()
         if not layer:
+            self.display_error('Layer is compulsory')
             return
 
         # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
