@@ -801,7 +801,7 @@ class Lizmap:
 
         # Set the global options (map, tools, etc.)
         for key, item in self.global_options.items():
-            if item['widget']:
+            if item.get('widget'):
                 if item['wType'] == 'checkbox':
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
@@ -847,7 +847,7 @@ class Lizmap:
 
         # Set layer combobox
         for key, item in self.global_options.items():
-            if item['widget']:
+            if item.get('widget'):
                 if item['wType'] == 'layers':
                     if key in json_options:
                         for lyr in self.project.mapLayers().values():
@@ -857,7 +857,7 @@ class Lizmap:
 
         # Then set field combobox
         for key, item in self.global_options.items():
-            if item['widget']:
+            if item.get('widget'):
                 if item['wType'] == 'fields':
                     if key in json_options:
                         item['widget'].setField(str(json_options[key]))
@@ -2197,12 +2197,12 @@ class Lizmap:
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
 
-        # get information from Qgis api
-        # r = QgsMapRenderer()
-        # add all the layers to the renderer
-        # r.setLayerSet([a.id() for a in self.iface.legendInterface().layers()])
-        # options
+        metadata = {
+            'lizmap_plugin_version': self.global_options['lizmap_plugin_version']['default'],
+        }
+
         liz2json = dict()
+        liz2json['metadata'] = metadata
         liz2json["options"] = dict()
         liz2json["layers"] = dict()
         # projection
@@ -2228,7 +2228,7 @@ class Lizmap:
 
         # gui user defined options
         for key, item in self.global_options.items():
-            if item['widget']:
+            if item.get('widget'):
                 inputValue = None
                 # Get field value depending on widget type
                 if item['wType'] in ['text', 'html']:
