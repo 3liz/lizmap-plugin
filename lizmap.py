@@ -1697,6 +1697,7 @@ class Lizmap:
                         self.myDic[child_id]['type']
                     ]
                 )
+                item.setToolTip(0, self.myDic[child_id]['name'])
                 item.setIcon(0, child_icon)
                 self.myDic[child_id]['item'] = item
 
