@@ -523,16 +523,15 @@ class Lizmap:
         self.action_about.triggered.connect(self.show_about)
 
         # connect Lizmap signals and functions
-
-        # detect apply button clicked
+        self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
         self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.get_map_options)
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
+        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
+
+        self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
 
         # clear log button clicked
         self.dlg.btClearlog.clicked.connect(self.clear_log)
-
-        # Show help
-        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
@@ -633,9 +632,23 @@ class Lizmap:
 
         # Dataviz layers
         self.dlg.liDatavizPlotLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizPlotXfield.setLayer)
+        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizPlotYfield.setLayer)
+        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizPlotYfield2.setLayer)
+        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizColorField.setLayer)
+        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizColorField2.setLayer)
+        self.dlg.cbDatavizYField2.toggled.connect(self.dlg.inDatavizPlotYfield2.setEnabled)
+        self.dlg.cbDatavizYField2.toggled.connect(self.dlg.inDatavizPlotColor2.setEnabled)
+        self.dlg.cbDatavizUseColorField.toggled.connect(self.dlg.inDatavizColorField.setEnabled)
+        self.dlg.cbDatavizUseColorField.toggled.connect(self.dlg.inDatavizPlotColor.setDisabled)
+        self.dlg.cbDatavizUseColorField2.toggled.connect(self.dlg.inDatavizColorField2.setEnabled)
+        self.dlg.cbDatavizUseColorField2.toggled.connect(self.dlg.inDatavizPlotColor2.setDisabled)
 
         # Atlas layers
         self.dlg.atlasLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasFeatureLabel.setLayer)
+        self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasSortField.setLayer)
+        self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasPrimaryKey.setLayer)
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
@@ -3009,6 +3022,9 @@ class Lizmap:
                     if '|layername=' not in layer.dataProvider().dataSourceUri():
                         black_list.append(layer)
             self.dlg.liFormFilterLayer.setExceptedLayerList(black_list)
+            self.dlg.liFormFilterLayer.layerChanged.connect(self.dlg.liFormFilterField.setLayer)
+            self.dlg.liFormFilterLayer.layerChanged.connect(self.dlg.liFormFilterMinDate.setLayer)
+            self.dlg.liFormFilterLayer.layerChanged.connect(self.dlg.liFormFilterMaxDate.setLayer)
 
             # Get config file data
             self.get_config()
