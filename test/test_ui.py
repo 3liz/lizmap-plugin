@@ -1,5 +1,7 @@
 """Test Lizmap dialog UI."""
 
+import os
+
 from qgis.core import QgsVectorLayer, QgsProject
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
@@ -17,6 +19,9 @@ __revision__ = '$Format:%H$'
 
 
 class TestUiLizmapDialog(unittest.TestCase):
+
+    def tearDown(self) -> None:
+        os.remove(plugin_test_data_path('unittest.qgs'))
 
     def test_ui(self):
         project = QgsProject.instance()
