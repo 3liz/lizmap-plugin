@@ -7,7 +7,7 @@ description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 # set -beta for dev version
-version=3.1.8
+version=3.1.9-beta
 ; end of mandatory metadata
 
 ; start of optional metadata
