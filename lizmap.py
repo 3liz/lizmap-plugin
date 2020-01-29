@@ -643,12 +643,20 @@ class Lizmap:
         self.dlg.cbDatavizUseColorField.toggled.connect(self.dlg.inDatavizPlotColor.setDisabled)
         self.dlg.cbDatavizUseColorField2.toggled.connect(self.dlg.inDatavizColorField2.setEnabled)
         self.dlg.cbDatavizUseColorField2.toggled.connect(self.dlg.inDatavizPlotColor2.setDisabled)
+        self.dlg.inDatavizPlotXfield.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
+        self.dlg.inDatavizPlotYfield.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
+        self.dlg.inDatavizPlotYfield2.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
+        self.dlg.inDatavizColorField.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
+        self.dlg.inDatavizColorField2.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
 
         # Atlas layers
         self.dlg.atlasLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasFeatureLabel.setLayer)
         self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasSortField.setLayer)
         self.dlg.atlasLayer.layerChanged.connect(self.dlg.atlasPrimaryKey.setLayer)
+        self.dlg.atlasFeatureLabel.setLayer(self.dlg.atlasLayer.currentLayer())
+        self.dlg.atlasSortField.setLayer(self.dlg.atlasLayer.currentLayer())
+        self.dlg.atlasPrimaryKey.setLayer(self.dlg.atlasLayer.currentLayer())
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
