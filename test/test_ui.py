@@ -2,7 +2,7 @@
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsVectorLayer, QgsProject, Qgis
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
 
@@ -23,6 +23,7 @@ class TestUiLizmapDialog(unittest.TestCase):
     def tearDown(self) -> None:
         os.remove(plugin_test_data_path('unittest.qgs'))
 
+    @unittest.skipIf(Qgis.QGIS_VERSION_INT >= 31000, 'Segfault')
     def test_ui(self):
         project = QgsProject.instance()
         lizmap = Lizmap(get_iface())
