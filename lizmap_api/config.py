@@ -73,6 +73,7 @@ class LizmapConfig:
     }
 
     lizmap_version = metadata_config()['general']['version']
+    lizmap_version = lizmap_version.replace('-beta', '')
 
     globalOptionDefinitions = {
         'lizmap_plugin_version': {
