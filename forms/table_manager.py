@@ -237,6 +237,9 @@ class TableManager:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
 
             if export_legacy_single_row:
+                if self.definitions.key() == 'atlas':
+                    layer_data['atlasEnabled'] = 'True'
+                    layer_data['atlasMaxWidth'] = 25
                 return layer_data
 
             data['layers'].append(layer_data)
