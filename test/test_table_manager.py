@@ -229,6 +229,8 @@ class TestTableManager(unittest.TestCase):
         data = table_manager.to_json()
 
         expected = {
+            'atlasEnabled': 'True',  # Hard coded for Lizmap 3.3
+            'atlasMaxWidth': 25,  # will not be used
             'atlasLayer': "{}".format(layer.id()),
             'atlasPrimaryKey': 'id',
             'atlasDisplayLayerDescription': 'True',
