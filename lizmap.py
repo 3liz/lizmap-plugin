@@ -95,6 +95,7 @@ from .qgis_plugin_tools.tools.custom_logging import setup_logger
 from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
+from .qgis_plugin_tools.tools.version import is_dev_version, version
 from .qgis_plugin_tools.widgets.selectable_combobox import CheckableFieldComboBox
 
 from .tools import excluded_providers
@@ -139,6 +140,8 @@ class Lizmap:
             LOGGER.warning('Translation is not set, missing the submodule')
 
         self.dlg = LizmapDialog()
+        if is_dev_version():
+            self.dlg.setWindowTitle('DEV Lizmap {}'.format(version()))
         self.popup_dialog = None
 
         # Map options
@@ -722,6 +725,9 @@ class Lizmap:
         # self.dlg.inDatavizColorField.setAllowEmptyFieldName(True)
         # self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
         self.dlg.inDatavizPlotXfield.setAllowEmptyFieldName(True)
+
+        # Atlas
+        self.dlg.label_atlas_34.setVisible(is_dev_version())
 
         # add plugin to the web plugin menu
         self.lizmap_menu = QMenu('Lizmap')
