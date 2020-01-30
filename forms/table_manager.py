@@ -6,10 +6,17 @@ from typing import Type
 
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QDialog, QAbstractItemView
+from qgis.PyQt.QtWidgets import (
+    QTableWidgetItem,
+    QDialog,
+    QAbstractItemView,
+    QMessageBox,
+)
 
 from ..definitions.base import BaseDefinitions, InputType
+from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import plugin_name
+from ..qgis_plugin_tools.tools.version import is_dev_version
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -47,6 +54,12 @@ class TableManager:
 
     def add_new_row(self):
         # noinspection PyCallingNonCallable
+        row = self.table.rowCount()
+        if row >= 1 and self.definitions.key() == 'atlas' and not is_dev_version():
+            message = tr('This feature is coming soon in Lizmap 3.4.')
+            QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
+            return
+
         dialog = self.edition()
         result = dialog.exec_()
         if result == QDialog.Accepted:
