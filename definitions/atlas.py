@@ -24,7 +24,7 @@ class AtlasDefinitions(BaseDefinitions):
             'type': InputType.Field,
             'header': tr('Primary key'),
             'default': None,
-            'tooltip': tr('Layer primary key (must be integer for PostgreSQL).)')
+            'tooltip': tr('Layer primary key (must be integer for PostgreSQL).')
         }
         self._layer_config['displayLayerDescription'] = {
             'type': InputType.CheckBox,
@@ -52,7 +52,7 @@ class AtlasDefinitions(BaseDefinitions):
             'default': False,
             'tooltip': tr(
                 'You can choose to highlight the feature selected by the atlas, '
-                'it will change every time it’s switching to a new feature.')
+                'it will change every time it\'s switching to a new feature.')
         }
         self._layer_config['zoom'] = {
             'type': InputType.List,
