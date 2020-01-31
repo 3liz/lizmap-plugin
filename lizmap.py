@@ -121,10 +121,6 @@ class Lizmap:
             translator = QTranslator()
             translator.load(file_path)
             QCoreApplication.installTranslator(translator)
-            # LOGGER.info('Translation is set to use: {}'.format(file_path))
-        else:
-            # LOGGER.info('Translation not found: {}'.format(locale))
-            pass
 
         english_path = plugin_path('lizmap-locales', 'plugin', 'i18n', 'lizmap_en.qm')
         if not file_path and not QFileInfo(english_path).exists():
@@ -488,9 +484,6 @@ class Lizmap:
         self.tooltip_fields_checkable = None
         self.layerList = None
         self.action = None
-        self.action_help = None
-        self.action_about = None
-        self.lizmap_menu = None
         self.web_menu = None
         self.isok = None
         self.embeddedGroups = None
@@ -506,24 +499,6 @@ class Lizmap:
         # connect the action to the run method
         # noinspection PyUnresolvedReferences
         self.action.triggered.connect(self.run)
-
-        # Create action for help dialog
-        self.action_help = QAction(
-            QIcon(resources_path('icons', 'help.png')),
-            '&{}…'.format(tr('Help')), self.iface.mainWindow())
-
-        # connect help action to help dialog
-        # noinspection PyUnresolvedReferences
-        self.action_help.triggered.connect(self.show_help)
-
-        # Create action for about dialog
-        self.action_about = QAction(
-            QIcon(resources_path('icons', 'help.png')),
-            '&{}…'.format(tr('About')), self.iface.mainWindow())
-
-        # connect about action to about dialog
-        # noinspection PyUnresolvedReferences
-        self.action_about.triggered.connect(self.show_about)
 
         # connect Lizmap signals and functions
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
@@ -729,21 +704,7 @@ class Lizmap:
         # Atlas
         self.dlg.label_atlas_34.setVisible(is_dev_version())
 
-        # add plugin to the web plugin menu
-        self.lizmap_menu = QMenu('Lizmap')
-        self.lizmap_menu.setIcon(
-            QIcon(resources_path('icons', 'icon.png')))
-        self.lizmap_menu.addAction(self.action)
-        self.lizmap_menu.addAction(self.action_help)
-        self.lizmap_menu.addAction(self.action_about)
-        self.web_menu = self.iface.webMenu()
-        self.web_menu.addMenu(self.lizmap_menu)
-
-        # Hack to make the web bar displayed.
-        self.iface.addPluginToWebMenu("&Lizmap", self.action_help)
-        # self.iface.removePluginWebMenu("&Lizmap", self.action_help)
-
-        # and add button to the Web panel
+        self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
 
         # Let's fix the dialog to the first panel
@@ -763,9 +724,7 @@ class Lizmap:
 
     def unload(self):
         """Remove the plugin menu item and icon."""
-        self.iface.removePluginWebMenu("&Lizmap", self.action)
-        self.iface.removePluginWebMenu("&Lizmap", self.action_help)
-        self.iface.removePluginWebMenu("&Lizmap", self.action_about)
+        self.iface.databaseMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
 
     def enable_popup_source_button(self):
@@ -782,14 +741,6 @@ class Lizmap:
                 'http://translate.google.fr/translate?'
                 'sl=fr&tl={}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com').format(self.locale)
         QDesktopServices.openUrl(QUrl(local_help_url))
-        LOGGER.debug('Opening help panel')
-
-    def show_about(self):
-        """Opens the about html content with default browser."""
-        local_about = "https://github.com/3liz/lizmap-plugin/"
-        self.log(local_about, abort=True, textarea=self.dlg.outLog)
-        QDesktopServices.openUrl(QUrl(local_about))
-        LOGGER.debug('Opening about panel')
 
     def log(self, msg, abort=None, textarea=None):
         """Log the actions and errors and optionally show them in given text area."""
