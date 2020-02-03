@@ -244,6 +244,21 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
+        if self.definitions.key() == 'locateByLayer':
+            result = {}
+            for i, layer in enumerate(data['layers']):
+                layer_id = layer.get('layerId')
+                vector_layer = QgsProject.instance().mapLayer(layer_id)
+                layer_name = vector_layer.name()
+                if result.get(layer_name):
+                    LOGGER.warning(
+                        'Skipping "{}" while saving "{}" JSON configuration. Duplicated entry.'.format(
+                            layer_name, self.definitions.key()))
+                result[layer_name] = layer
+                result[layer_name]['order'] = i
+
+            return result
+
         return data
 
     def _from_json_legacy(self, data) -> list:
@@ -260,8 +275,32 @@ class TableManager:
 
         return [layer]
 
+    @staticmethod
+    def _from_json_legacy_order(data):
+        new_data = dict()
+        new_data['layers'] = []
+
+        def layer_from_order(layers, row):
+            for l in layers.values():
+                if l['order'] == row:
+                    return l
+
+        order = []
+        for layer in data.values():
+            order.append(layer.get('order'))
+
+        order.sort()
+
+        for i in order:
+            new_data['layers'].append(layer_from_order(data, i))
+
+        return new_data
+
     def from_json(self, data):
         """Load JSON into the table."""
+        if self.definitions.key() == 'locateByLayer':
+            data = self._from_json_legacy_order(data)
+
         layers = data.get('layers')
 
         if not layers:

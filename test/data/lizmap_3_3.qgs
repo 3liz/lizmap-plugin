@@ -1,7 +1,7 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="" version="3.4.15-Madeira">
+<qgis projectname="Lizmap test 3.3" version="3.4.15-Madeira">
   <homePath path=""/>
-  <title></title>
+  <title>Lizmap test 3.3</title>
   <autotransaction active="0"/>
   <evaluateDefaultValues active="0"/>
   <trust active="0"/>
@@ -19,10 +19,10 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer expanded="1" source="./lines.geojson" checked="Qt::Checked" name="lines" providerKey="ogr" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3">
+    <layer-tree-layer providerKey="ogr" checked="Qt::Checked" source="./lines.geojson" name="lines" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3" expanded="1">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" source="./points.geojson" checked="Qt::Checked" name="points" providerKey="ogr" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa">
+    <layer-tree-layer providerKey="ogr" checked="Qt::Checked" source="./points.geojson" name="points" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa" expanded="1">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -30,10 +30,10 @@
       <item>lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings type="1" tolerance="12" mode="2" unit="1" enabled="0" intersection-snapping="0">
+  <snapping-settings mode="2" tolerance="12" intersection-snapping="0" type="1" enabled="0" unit="1">
     <individual-layer-settings>
-      <layer-setting units="1" type="1" tolerance="12" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3" enabled="0"/>
-      <layer-setting units="1" type="1" tolerance="12" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa" enabled="0"/>
+      <layer-setting tolerance="12" units="1" type="1" enabled="0" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa"/>
+      <layer-setting tolerance="12" units="1" type="1" enabled="0" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
@@ -62,12 +62,12 @@
   </mapcanvas>
   <projectModels/>
   <legend updateDrawingOrder="true">
-    <legendlayer checked="Qt::Checked" drawingOrder="-1" open="true" name="lines" showFeatureCount="0">
+    <legendlayer checked="Qt::Checked" name="lines" showFeatureCount="0" open="true" drawingOrder="-1">
       <filegroup hidden="false" open="true">
         <legendlayerfile isInOverview="0" visible="1" layerid="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3"/>
       </filegroup>
     </legendlayer>
-    <legendlayer checked="Qt::Checked" drawingOrder="-1" open="true" name="points" showFeatureCount="0">
+    <legendlayer checked="Qt::Checked" name="points" showFeatureCount="0" open="true" drawingOrder="-1">
       <filegroup hidden="false" open="true">
         <legendlayerfile isInOverview="0" visible="1" layerid="points_70389da6_da2c_42e2_bddc_b46963fb9afa"/>
       </filegroup>
@@ -75,7 +75,7 @@
   </legend>
   <mapViewDocks/>
   <projectlayers>
-    <maplayer refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" autoRefreshEnabled="0" simplifyLocal="1" readOnly="0" maxScale="0" autoRefreshTime="0" type="vector" geometry="Line" hasScaleBasedVisibilityFlag="0" labelsEnabled="0" simplifyMaxScale="1" simplifyDrawingHints="1" refreshOnNotifyMessage="" simplifyDrawingTol="1" minScale="1e+08" simplifyAlgorithm="0">
+    <maplayer maxScale="0" styleCategories="AllStyleCategories" simplifyAlgorithm="0" refreshOnNotifyMessage="" minScale="1e+08" autoRefreshTime="0" simplifyDrawingHints="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" type="vector" readOnly="0" geometry="Line" labelsEnabled="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" simplifyDrawingTol="1" simplifyLocal="1">
       <extent>
         <xmin>3.85429999999999984</xmin>
         <ymin>43.57860000000000156</ymin>
@@ -139,10 +139,10 @@
         <Removable>1</Removable>
         <Searchable>1</Searchable>
       </flags>
-      <renderer-v2 symbollevels="0" type="singleSymbol" forceraster="0" enableorderby="0">
+      <renderer-v2 forceraster="0" enableorderby="0" type="singleSymbol" symbollevels="0">
         <symbols>
-          <symbol type="line" alpha="1" clip_to_extent="1" force_rhr="0" name="0">
-            <layer locked="0" pass="0" class="SimpleLine" enabled="1">
+          <symbol alpha="1" name="0" type="line" clip_to_extent="1" force_rhr="0">
+            <layer pass="0" locked="0" enabled="1" class="SimpleLine">
               <prop k="capstyle" v="square"/>
               <prop k="customdash" v="5;2"/>
               <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -161,9 +161,9 @@
               <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option type="QString" value="" name="name"/>
+                  <Option value="" name="name" type="QString"/>
                   <Option name="properties"/>
-                  <Option type="QString" value="collection" name="type"/>
+                  <Option value="collection" name="type" type="QString"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -176,9 +176,9 @@
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
-      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
         <activeChecks type="StringList">
-          <Option type="QString" value=""/>
+          <Option value="" type="QString"/>
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
@@ -209,12 +209,12 @@
         <default expression="" applyOnUpdate="0" field="name"/>
       </defaults>
       <constraints>
-        <constraint unique_strength="0" constraints="0" field="id" exp_strength="0" notnull_strength="0"/>
-        <constraint unique_strength="0" constraints="0" field="name" exp_strength="0" notnull_strength="0"/>
+        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="id"/>
+        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="name"/>
       </constraints>
       <constraintExpressions>
-        <constraint desc="" exp="" field="id"/>
-        <constraint desc="" exp="" field="name"/>
+        <constraint desc="" field="id" exp=""/>
+        <constraint desc="" field="name" exp=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
@@ -240,7 +240,7 @@
       <previewExpression></previewExpression>
       <mapTip></mapTip>
     </maplayer>
-    <maplayer refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" autoRefreshEnabled="0" simplifyLocal="1" readOnly="0" maxScale="0" autoRefreshTime="0" type="vector" geometry="Point" hasScaleBasedVisibilityFlag="0" labelsEnabled="0" simplifyMaxScale="1" simplifyDrawingHints="1" refreshOnNotifyMessage="" simplifyDrawingTol="1" minScale="1e+08" simplifyAlgorithm="0">
+    <maplayer maxScale="0" styleCategories="AllStyleCategories" simplifyAlgorithm="0" refreshOnNotifyMessage="" minScale="1e+08" autoRefreshTime="0" simplifyDrawingHints="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" type="vector" readOnly="0" geometry="Point" labelsEnabled="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" simplifyDrawingTol="1" simplifyLocal="1">
       <extent>
         <xmin>3.85400000000000009</xmin>
         <ymin>43.62199999999999989</ymin>
@@ -304,10 +304,10 @@
         <Removable>1</Removable>
         <Searchable>1</Searchable>
       </flags>
-      <renderer-v2 symbollevels="0" type="singleSymbol" forceraster="0" enableorderby="0">
+      <renderer-v2 forceraster="0" enableorderby="0" type="singleSymbol" symbollevels="0">
         <symbols>
-          <symbol type="marker" alpha="1" clip_to_extent="1" force_rhr="0" name="0">
-            <layer locked="0" pass="0" class="SimpleMarker" enabled="1">
+          <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+            <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
               <prop k="angle" v="0"/>
               <prop k="color" v="164,113,88,255"/>
               <prop k="horizontal_anchor_point" v="1"/>
@@ -328,9 +328,9 @@
               <prop k="vertical_anchor_point" v="1"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option type="QString" value="" name="name"/>
+                  <Option value="" name="name" type="QString"/>
                   <Option name="properties"/>
-                  <Option type="QString" value="collection" name="type"/>
+                  <Option value="collection" name="type" type="QString"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -343,9 +343,9 @@
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
-      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
         <activeChecks type="StringList">
-          <Option type="QString" value=""/>
+          <Option value="" type="QString"/>
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
@@ -376,12 +376,12 @@
         <default expression="" applyOnUpdate="0" field="name"/>
       </defaults>
       <constraints>
-        <constraint unique_strength="0" constraints="0" field="id" exp_strength="0" notnull_strength="0"/>
-        <constraint unique_strength="0" constraints="0" field="name" exp_strength="0" notnull_strength="0"/>
+        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="id"/>
+        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="name"/>
       </constraints>
       <constraintExpressions>
-        <constraint desc="" exp="" field="id"/>
-        <constraint desc="" exp="" field="name"/>
+        <constraint desc="" field="id" exp=""/>
+        <constraint desc="" field="name" exp=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
@@ -413,53 +413,120 @@
     <layer id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3"/>
   </layerorder>
   <properties>
-    <Paths>
-      <Absolute type="bool">false</Absolute>
-    </Paths>
-    <Measurement>
-      <DistanceUnits type="QString">meters</DistanceUnits>
-      <AreaUnits type="QString">m2</AreaUnits>
-    </Measurement>
-    <Legend>
-      <filterByMap type="bool">false</filterByMap>
-    </Legend>
-    <Gui>
-      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
-      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
-      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
-      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
-      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
-      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
-      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
-    </Gui>
-    <Measure>
-      <Ellipsoid type="QString">WGS84</Ellipsoid>
-    </Measure>
     <PositionPrecision>
       <DecimalPlaces type="int">2</DecimalPlaces>
       <Automatic type="bool">true</Automatic>
+      <DegreeFormat type="QString">MU</DegreeFormat>
     </PositionPrecision>
-    <SpatialRefSys>
-      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
-    </SpatialRefSys>
+    <WMSOnlineResource type="QString"></WMSOnlineResource>
+    <WMTSMinScale type="int">5000</WMTSMinScale>
+    <WCSLayers type="QStringList"/>
+    <WMTSPngLayers>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+    </WMTSPngLayers>
+    <WMSContactOrganization type="QString"></WMSContactOrganization>
+    <WMTSLayers>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+    </WMTSLayers>
     <PAL>
-      <CandidatesLine type="int">50</CandidatesLine>
-      <ShowingAllLabels type="bool">false</ShowingAllLabels>
-      <DrawRectOnly type="bool">false</DrawRectOnly>
-      <CandidatesPoint type="int">16</CandidatesPoint>
-      <SearchMethod type="int">0</SearchMethod>
       <TextFormat type="int">0</TextFormat>
       <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
       <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <SearchMethod type="int">0</SearchMethod>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
       <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <CandidatesPoint type="int">16</CandidatesPoint>
     </PAL>
-    <WMSServiceTitle type="QString">lizmap_3_3_atlas</WMSServiceTitle>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <DefaultStyles>
+      <ColorRamp type="QString"></ColorRamp>
+      <Fill type="QString"></Fill>
+      <RandomColors type="bool">true</RandomColors>
+      <Marker type="QString"></Marker>
+      <Opacity type="double">1</Opacity>
+      <Line type="QString"></Line>
+    </DefaultStyles>
+    <WFSTLayers>
+      <Insert type="QStringList"/>
+      <Update type="QStringList"/>
+      <Delete type="QStringList"/>
+    </WFSTLayers>
+    <WCSUrl type="QString"></WCSUrl>
+    <WFSLayers type="QStringList">
+      <value>lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3</value>
+    </WFSLayers>
+    <WMSRestrictedLayers type="QStringList"/>
+    <WMSDefaultMapUnitsPerMm type="double">1</WMSDefaultMapUnitsPerMm>
+    <WMSRestrictedComposers type="QStringList"/>
+    <WMSContactPerson type="QString"></WMSContactPerson>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <WMTSJpegLayers>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+    </WMTSJpegLayers>
+    <WMSContactPosition type="QString"></WMSContactPosition>
+    <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
+    <WFSLayersPrecision>
+      <lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3 type="int">8</lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3>
+    </WFSLayersPrecision>
+    <WMTSUrl type="QString"></WMTSUrl>
     <WMSExtent type="QStringList">
       <value>3.8331346980485472</value>
       <value>43.5561629722011</value>
       <value>3.920928392916381</value>
       <value>43.645371064914904</value>
     </WMSExtent>
+    <WMSServiceAbstract type="QString"></WMSServiceAbstract>
+    <WMSRootName type="QString"></WMSRootName>
+    <WMSImageQuality type="int">90</WMSImageQuality>
+    <WMSContactPhone type="QString"></WMSContactPhone>
+    <WFSUrl type="QString"></WFSUrl>
+    <WMSServiceTitle type="QString">lizmap_3_3_atlas</WMSServiceTitle>
+    <Measurement>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+      <AreaUnits type="QString">m2</AreaUnits>
+    </Measurement>
+    <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
+    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
+    <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
+    <Gui>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+    </Gui>
+    <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
+    <WMSUrl type="QString"></WMSUrl>
+    <WMSKeywordList type="QStringList">
+      <value></value>
+    </WMSKeywordList>
+    <Macros>
+      <pythonCode type="QString"></pythonCode>
+    </Macros>
+    <WMSContactMail type="QString"></WMSContactMail>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
+    <WMSPrecision type="QString">8</WMSPrecision>
+    <WMSFees type="QString">conditions unknown</WMSFees>
   </properties>
   <visibility-presets/>
   <transformContext/>
@@ -468,8 +535,17 @@
     <parentidentifier></parentidentifier>
     <language></language>
     <type></type>
-    <title></title>
+    <title>Lizmap test 3.3</title>
     <abstract></abstract>
+    <contact>
+      <name></name>
+      <organization></organization>
+      <position></position>
+      <voice></voice>
+      <fax></fax>
+      <email></email>
+      <role></role>
+    </contact>
     <links/>
     <author>Etienne Trimaille</author>
     <creation>2020-01-28T16:05:41</creation>
