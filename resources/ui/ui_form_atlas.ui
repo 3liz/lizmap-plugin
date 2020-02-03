@@ -24,17 +24,10 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QgsMapLayerComboBox" name="layer">
-       <property name="toolTip">
-        <string>The vector layer for the atlas</string>
-       </property>
-      </widget>
+      <widget class="QgsMapLayerComboBox" name="layer"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_primary_key">
-       <property name="toolTip">
-        <string>Must be a primary key for PostgreSQL</string>
-       </property>
        <property name="text">
         <string>Primary key</string>
        </property>
@@ -44,11 +37,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsFieldComboBox" name="primary_key">
-       <property name="toolTip">
-        <string>The primary key field, it must be an integer</string>
-       </property>
-      </widget>
+      <widget class="QgsFieldComboBox" name="primary_key"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_layer_description">
@@ -59,9 +48,6 @@
      </item>
      <item row="2" column="1">
       <widget class="QCheckBox" name="display_layer_description">
-       <property name="toolTip">
-        <string>If you want to display the layer description in the dock of your atlas</string>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -78,11 +64,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QgsFieldComboBox" name="feature_label">
-       <property name="toolTip">
-        <string>Choose the field who contains the name of your features, it will be shown instead of the primary key in the list of features</string>
-       </property>
-      </widget>
+      <widget class="QgsFieldComboBox" name="feature_label"/>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_sort_field">
@@ -92,11 +74,7 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QgsFieldComboBox" name="sort_field">
-       <property name="toolTip">
-        <string>Your atlas will be sorted according to this field</string>
-       </property>
-      </widget>
+      <widget class="QgsFieldComboBox" name="sort_field"/>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_highlight">
@@ -107,9 +85,6 @@
      </item>
      <item row="5" column="1">
       <widget class="QCheckBox" name="highlight_geometry">
-       <property name="toolTip">
-        <string>You can choose to highlight the feature selected by the atlas, it will change every time it’s switching to a new feature</string>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -126,11 +101,7 @@
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QComboBox" name="zoom">
-       <property name="toolTip">
-        <string>Choose between a zoom on the feature or to make it the center of your map</string>
-       </property>
-      </widget>
+      <widget class="QComboBox" name="zoom"/>
      </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_popup">
@@ -141,9 +112,6 @@
      </item>
      <item row="7" column="1">
       <widget class="QCheckBox" name="display_popup">
-       <property name="toolTip">
-        <string>You can choose to display the popup in the feature in the atlas container or not</string>
-       </property>
        <property name="text">
         <string/>
        </property>
