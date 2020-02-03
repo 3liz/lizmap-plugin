@@ -91,5 +91,9 @@ class AtlasDefinitions(BaseDefinitions):
             'default': False,
         }
 
+    @staticmethod
+    def unicity() -> tuple:
+        return 'layer',
+
     def key(self) -> str:
         return 'atlas'

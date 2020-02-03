@@ -6,6 +6,7 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
 
 from ..definitions.base import InputType, BaseDefinitions
+from ..qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -15,9 +16,10 @@ __revision__ = '$Format:%H$'
 
 class BaseEditionDialog(QDialog):
 
-    def __init__(self,):
+    def __init__(self, unicity=None):
         super().__init__()
         self.config: BaseDefinitions
+        self.unicity = unicity
 
     def setup_ui(self):
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
@@ -35,7 +37,20 @@ class BaseEditionDialog(QDialog):
                     widget.setToolTip(tooltip)
 
     def validate(self):
-        raise NotImplementedError
+        if self.unicity:
+            for key in self.unicity:
+                for k, layer_config in self.config.layer_config.items():
+                    if key == k:
+                        if layer_config['type'] == InputType.Layer:
+                            if layer_config['widget'].currentLayer().id() in self.unicity[key]:
+                                msg = tr(
+                                    'A duplicated "{}"="{}" is already in the table.'.format(
+                                        key, layer_config['widget'].currentLayer().name()))
+                                return msg
+                        else:
+                            raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
+
+        return None
 
     def accept(self):
         message = self.validate()

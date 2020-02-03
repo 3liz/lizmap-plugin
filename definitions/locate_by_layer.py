@@ -57,5 +57,9 @@ class LocateByLayerDefinitions(BaseDefinitions):
                 'Only the selected feature will be visible on the map.')
         }
 
+    @staticmethod
+    def unicity() -> tuple:
+        return 'layerId',
+
     def key(self) -> str:
         return 'locateByLayer'

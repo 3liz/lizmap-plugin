@@ -18,8 +18,8 @@ CLASS = load_ui('ui_form_locate_layer.ui')
 
 class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, unicity=None):
+        super().__init__(unicity)
         self.setupUi(self)
         self.config = LocateByLayerDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
@@ -49,6 +49,10 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
 
     def validate(self) -> str:
+        upstream = super().validate()
+        if upstream:
+            return upstream
+
         layer = self.layer.currentLayer()
         wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
         for wfs_layer in wfs_layers_list:

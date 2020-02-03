@@ -18,8 +18,8 @@ CLASS = load_ui('ui_form_atlas.ui')
 
 class AtlasEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, unicity=None):
+        super().__init__(unicity)
         self.setupUi(self)
         self.config = AtlasDefinitions()
         self.config.add_layer_widget('layer', self.layer)
@@ -63,6 +63,10 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
 
     def validate(self) -> str:
+        upstream = super().validate()
+        if upstream:
+            return upstream
+
         if not self.primary_key.currentField():
             return tr('Primary key field is compulsory.')
 

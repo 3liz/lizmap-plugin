@@ -185,6 +185,12 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 2)
 
+        # noinspection PyProtectedMember
+        self.assertDictEqual(
+            table_manager._unicity(),
+            {'layer': [layer.id(), layer.id()]}
+        )
+
         data = table_manager.to_json()
         self.assertDictEqual(data, {'layers': [layer_1, layer_2]})
 
