@@ -85,7 +85,9 @@ from qgis.core import (
 )
 
 from .definitions.atlas import AtlasDefinitions
+from .definitions.locate_by_layer import LocateByLayerDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
+from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
@@ -411,12 +413,13 @@ class Lizmap:
                 'manager': None,
             },
             'locateByLayer': {
-                'tableWidget': self.dlg.twLocateByLayerList,
-                'removeButton': self.dlg.btLocateByLayerDel,
-                'addButton': self.dlg.btLocateByLayerAdd,
-                'cols': ['fieldName', 'filterFieldName', 'displayGeom', 'minLength', 'filterOnLocate', 'layerId',
-                         'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.table_locate_by_layer,
+                'removeButton': self.dlg.remove_locate_layer_button,
+                'addButton': self.dlg.add_locate_layer_button,
+                'editButton': self.dlg.edit_locate_layer_button,
+                'upButton': self.dlg.up_locate_layer_button,
+                'downButton': self.dlg.down_locate_layer_button,
+                'manager': None,
             },
             'attributeLayers': {
                 'tableWidget': self.dlg.twAttributeLayerList,
@@ -554,10 +557,21 @@ class Lizmap:
 
                 slot = partial(self.add_new_layer, key)
                 item.get('addButton').clicked.connect(slot)
+                if key == 'atlas':
+                    definition = AtlasDefinitions()
+                    dialog = AtlasEditionDialog
+                elif key == 'locateByLayer':
+                    definition = LocateByLayerDefinitions()
+                    dialog = LocateLayerEditionDialog
+                else:
+                    raise Exception('Unknown panel.')
+
+                item['tableWidget'].horizontalHeader().setStretchLastSection(True)
+
                 item['manager'] = TableManager(
                     self.dlg,
-                    AtlasDefinitions(),
-                    AtlasEditionDialog,
+                    definition,
+                    dialog,
                     item['tableWidget'],
                     item['removeButton'],
                     item['editButton'],
@@ -583,18 +597,6 @@ class Lizmap:
 
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
-
-        # Locate by layers
-        self.dlg.twLocateByLayerList.setColumnHidden(6, True)
-        self.dlg.twLocateByLayerList.setColumnHidden(7, True)
-        self.dlg.twLocateByLayerList.horizontalHeader().setStretchLastSection(True)
-        self.dlg.liLocateByLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFields.setLayer)
-        self.dlg.liLocateByLayerLayers.layerChanged.connect(self.dlg.liLocateByLayerFilterFields.setLayer)
-        self.dlg.liLocateByLayerFields.setLayer(self.dlg.liLocateByLayerLayers.currentLayer())
-        self.dlg.liLocateByLayerFilterFields.setLayer(self.dlg.liLocateByLayerLayers.currentLayer())
-        self.dlg.liLocateByLayerFilterFields.setAllowEmptyFieldName(True)
-        self.dlg.btLocateByLayerAdd.clicked.connect(self.add_layer_to_locate_by_layer)
 
         # Attribute layers
         self.dlg.twAttributeLayerList.setColumnHidden(6, True)
@@ -1099,50 +1101,6 @@ class Lizmap:
             tr('Lizmap Error'),
             message,
             QMessageBox.Ok)
-
-    def add_layer_to_locate_by_layer(self):
-        """Add a layer in the 'locate by layer' tool."""
-        table = self.dlg.twLocateByLayerList
-        row = table.rowCount()
-
-        if row >= self.dlg.liLocateByLayerLayers.count():
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        layer = self.dlg.liLocateByLayerLayers.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory.')
-            return
-
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        display_field = self.dlg.liLocateByLayerFields.currentField()
-        if not display_field:
-            self.display_error('Display field is compulsory.')
-            return
-
-        layer_name = layer.name()
-        layer_id = layer.id()
-        filter_field = self.dlg.liLocateByLayerFilterFields.currentField()
-        display_geom = self.dlg.cbLocateByLayerDisplayGeom.isChecked()
-        min_length = self.dlg.inLocateByLayerMinLength.value()
-        filter_on_locate = self.dlg.cbFilterOnLocate.isChecked()
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        content = [
-            layer_name, display_field, filter_field, str(display_geom),
-            str(min_length), str(filter_on_locate), layer_id, str(row)]
-        table.setRowCount(row + 1)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-
-        LOGGER.info('Layer "{}" has been added to locate by layer tool'.format(layer_id))
 
     def add_layer_to_attribute_layer(self):
         """Add a layer in the 'attribute table' tool."""
@@ -2337,37 +2295,12 @@ class Lizmap:
             manager = self.layers_table[key].get('manager')
             if manager:
                 data = manager.to_json()
-                if manager.use_single_row and manager.table.rowCount() == 1:
+                if manager.use_single_row() and manager.table.rowCount() == 1:
                     liz2json['options'].update(data)
                 else:
                     liz2json[key] = data
 
-        # list of layers for which to have the tool "locate by layer"
-        lblTableWidget = self.dlg.twLocateByLayerList
-        twRowCount = lblTableWidget.rowCount()
         wfsLayersList = self.project.readListEntry('WFSLayers', '')[0]
-        if twRowCount > 0:
-            liz2json["locateByLayer"] = dict()
-            for row in range(twRowCount):
-                # check that the layer is checked in the WFS capabilities
-                layerId = lblTableWidget.item(row, 6).text()
-                if layerId in wfsLayersList:
-                    layerName = lblTableWidget.item(row, 0).text()
-                    fieldName = lblTableWidget.item(row, 1).text()
-                    filterFieldName = lblTableWidget.item(row, 2).text()
-                    displayGeom = lblTableWidget.item(row, 3).text()
-                    minLength = lblTableWidget.item(row, 4).text()
-                    filterOnLocate = lblTableWidget.item(row, 5).text()
-                    layerId = lblTableWidget.item(row, 6).text()
-                    liz2json["locateByLayer"][layerName] = dict()
-                    liz2json["locateByLayer"][layerName]["fieldName"] = fieldName
-                    if filterFieldName and filterFieldName != '--':
-                        liz2json["locateByLayer"][layerName]["filterFieldName"] = filterFieldName
-                    liz2json["locateByLayer"][layerName]["displayGeom"] = displayGeom
-                    liz2json["locateByLayer"][layerName]["minLength"] = minLength and int(minLength) or 0
-                    liz2json["locateByLayer"][layerName]["filterOnLocate"] = filterOnLocate
-                    liz2json["locateByLayer"][layerName]["layerId"] = layerId
-                    liz2json["locateByLayer"][layerName]["order"] = row
 
         # list of layers to display attribute table
         lblTableWidget = self.dlg.twAttributeLayerList
@@ -2880,23 +2813,6 @@ class Lizmap:
                 if not mercator_found:
                     crs_list[0].append('EPSG:3857')
                     self.project.writeEntry('WMSCrsList', '', crs_list[0])
-
-            # list of layers for which to have the tool "locate by layer" set
-            row = self.dlg.twLocateByLayerList.rowCount()
-            wfs_layers = self.project.readListEntry('WFSLayers', '')[0]
-            if row > 0:
-                good = True
-                for row in range(row):
-                    # check that the layer is checked in the WFS capabilities
-                    layer_id = self.dlg.twLocateByLayerList.item(row, 6).text()
-                    if layer_id not in wfs_layers:
-                        good = False
-                if not good:
-                    self.log(
-                        tr('The layers you have chosen for this tool must be checked in the '
-                           '"WFS Capabilities" option of the QGIS tab in the "Project Properties" dialog.'),
-                        abort=True,
-                        textarea=self.dlg.outLog)
 
             if self.isok:
                 # write data in the lizmap json config file
