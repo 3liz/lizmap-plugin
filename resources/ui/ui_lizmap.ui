@@ -2245,229 +2245,44 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="twLocateByLayerList">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <attribute name="horizontalHeaderCascadingSectionResizes">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="horizontalHeaderMinimumSectionSize">
-                  <number>50</number>
-                 </attribute>
-                 <attribute name="horizontalHeaderStretchLastSection">
-                  <bool>false</bool>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Group field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Display the geometry</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Autocompletion after</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Filter layer on zoom</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Layer id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
-                </widget>
+                <widget class="QTableWidget" name="table_locate_by_layer"/>
                </item>
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_7">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <item>
-                    <layout class="QGridLayout" name="gridLayout_23">
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="label_26">
-                       <property name="text">
-                        <string>Display field</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_25">
-                       <property name="text">
-                        <string>Layer</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="2">
-                      <widget class="QLabel" name="label_27">
-                       <property name="text">
-                        <string>Optional group by field</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="3">
-                      <widget class="QCheckBox" name="cbLocateByLayerDisplayGeom">
-                       <property name="toolTip">
-                        <string>If Lizmap must highlight the geometry after one result is selected.</string>
-                       </property>
-                       <property name="text">
-                        <string>Display the geometry</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="5">
-                      <widget class="QLabel" name="label_66">
-                       <property name="text">
-                        <string>Filter layer on zoom</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QgsMapLayerComboBox" name="liLocateByLayerLayers">
-                       <property name="maximumSize">
-                        <size>
-                         <width>150</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="4">
-                      <widget class="QSpinBox" name="inLocateByLayerMinLength">
-                       <property name="toolTip">
-                        <string>If you set a value above 0, autocompletion will be used after this amount of characters while the user types. The classical combobox will be replaced by a editable text input</string>
-                       </property>
-                       <property name="statusTip">
-                        <string/>
-                       </property>
-                       <property name="whatsThis">
-                        <string/>
-                       </property>
-                       <property name="maximum">
-                        <number>5</number>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QgsFieldComboBox" name="liLocateByLayerFields">
-                       <property name="maximumSize">
-                        <size>
-                         <width>150</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="5">
-                      <widget class="QCheckBox" name="cbFilterOnLocate">
-                       <property name="toolTip">
-                        <string>If the layer is published via the attribute layers tool below, and this checkbox is checked,
-zooming on a feature with the locate tool will trigger the filter of the layer for the selected feature.
-Only the selected feature will be visible on the map.</string>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true"/>
-                       </property>
-                       <property name="text">
-                        <string>Filter layer on zoom</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="4">
-                      <widget class="QLabel" name="label_53">
-                       <property name="text">
-                        <string>Number of characters before autocompletion</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="2">
-                      <widget class="QgsFieldComboBox" name="liLocateByLayerFilterFields">
-                       <property name="maximumSize">
-                        <size>
-                         <width>150</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="toolTip">
-                        <string>A field describing the upper level to regroup these features. This will display another combobox on top to make some filtering.</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_16">
                    <item>
-                    <widget class="QPushButton" name="btLocateByLayerAdd">
+                    <widget class="QPushButton" name="add_locate_layer_button">
                      <property name="text">
-                      <string>Add layer</string>
+                      <string notr="true">+</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="btLocateByLayerDel">
+                    <widget class="QPushButton" name="remove_locate_layer_button">
                      <property name="text">
-                      <string>Remove layer</string>
+                      <string notr="true">-</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="edit_locate_layer_button">
+                     <property name="text">
+                      <string notr="true">edit</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="up_locate_layer_button">
+                     <property name="text">
+                      <string notr="true">up</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="down_locate_layer_button">
+                     <property name="text">
+                      <string notr="true">down</string>
                      </property>
                     </widget>
                    </item>
@@ -4725,15 +4540,8 @@ Only the selected feature will be visible on the map.</string>
   <tabstop>btLizmapBaselayerAdd</tabstop>
   <tabstop>btLizmapBaselayerDel</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>twLocateByLayerList</tabstop>
-  <tabstop>liLocateByLayerLayers</tabstop>
-  <tabstop>liLocateByLayerFields</tabstop>
-  <tabstop>liLocateByLayerFilterFields</tabstop>
-  <tabstop>cbLocateByLayerDisplayGeom</tabstop>
-  <tabstop>inLocateByLayerMinLength</tabstop>
-  <tabstop>cbFilterOnLocate</tabstop>
-  <tabstop>btLocateByLayerAdd</tabstop>
-  <tabstop>btLocateByLayerDel</tabstop>
+  <tabstop>add_locate_layer_button</tabstop>
+  <tabstop>remove_locate_layer_button</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>cbLimitDataToBbox</tabstop>
   <tabstop>twAttributeLayerList</tabstop>

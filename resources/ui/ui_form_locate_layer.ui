@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>426</width>
-    <height>347</height>
+    <width>433</width>
+    <height>239</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Atlas layer</string>
+   <string>Locate by layer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -27,9 +27,9 @@
       <widget class="QgsMapLayerComboBox" name="layer"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_primary_key">
+      <widget class="QLabel" name="label_display_field">
        <property name="text">
-        <string>Primary key</string>
+        <string>Display field</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -37,120 +37,62 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsFieldComboBox" name="primary_key"/>
+      <widget class="QgsFieldComboBox" name="display_field"/>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_layer_description">
+      <widget class="QLabel" name="label_group_by">
        <property name="text">
-        <string>Display layer description</string>
+        <string>Optional group by</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QCheckBox" name="display_layer_description">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <widget class="QgsFieldComboBox" name="field_group_by"/>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_feature_label">
+      <widget class="QLabel" name="label_display_geom">
        <property name="text">
-        <string>Feature label</string>
+        <string>Display geometry</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QgsFieldComboBox" name="feature_label"/>
+      <widget class="QCheckBox" name="display_geometry">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="label_sort_field">
+      <widget class="QLabel" name="label_autocomplete">
        <property name="text">
-        <string>Sort field</string>
+        <string>Number of characters before autocompletion</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QgsFieldComboBox" name="sort_field"/>
+      <widget class="QSpinBox" name="autocomplete"/>
      </item>
      <item row="5" column="0">
-      <widget class="QLabel" name="label_highlight">
+      <widget class="QLabel" name="label_filter_layer">
        <property name="text">
-        <string>Highlight geometry</string>
+        <string>Filter layer on zoom</string>
        </property>
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QCheckBox" name="highlight_geometry">
+      <widget class="QCheckBox" name="filter_layer">
        <property name="text">
         <string/>
        </property>
        <property name="checked">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_zoom">
-       <property name="text">
-        <string>Zoom to feature</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QComboBox" name="zoom"/>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_popup">
-       <property name="text">
-        <string>Display popup</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QCheckBox" name="display_popup">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_trigger">
-       <property name="text">
-        <string>Trigger filter</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QCheckBox" name="trigger_filter">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QSpinBox" name="duration">
-       <property name="suffix">
-        <string> secondes</string>
-       </property>
-       <property name="prefix">
-        <string/>
-       </property>
-       <property name="value">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_duration">
-       <property name="text">
-        <string>Step duration</string>
        </property>
       </widget>
      </item>

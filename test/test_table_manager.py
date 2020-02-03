@@ -9,6 +9,7 @@ from qgis.testing import unittest, start_app
 
 start_app()
 
+from ..definitions.locate_by_layer import LocateByLayerDefinitions
 from ..definitions.atlas import AtlasDefinitions
 from ..forms.table_manager import TableManager
 from ..forms.atlas_edition import AtlasEditionDialog
@@ -26,6 +27,96 @@ class TestTableManager(unittest.TestCase):
 
     def setUp(self) -> None:
         self.maxDiff = None
+
+    def test_locate_by_layer(self):
+        """Test table manager with locate by layer."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        layer_2 = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines_2', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer_2)
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer_2.isValid())
+
+        table = QTableWidget()
+        definitions = LocateByLayerDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            'lines': {
+                'fieldName': 'name',
+                'filterFieldName': 'id',
+                'displayGeom': 'True',
+                'minLength': 0,
+                'filterOnLocate': 'False',
+                'layerId': '{}'.format(layer.id()),
+                'order': 1
+            },
+            'lines_2': {
+                'fieldName': 'name',
+                # 'filterFieldName': 'id', DISABLED on purpore. This field is not compulsory.
+                'displayGeom': 'False',
+                'minLength': 0,
+                'filterOnLocate': 'True',
+                'layerId': '{}'.format(layer_2.id()),
+                'order': 0
+            }
+        }
+
+        # noinspection PyProtectedMember
+        data = table_manager._from_json_legacy_order(json)
+        expected = {
+            'layers': [
+                {
+                    'fieldName': 'name',
+                    # 'filterFieldName': '', DISABLED
+                    'displayGeom': 'False',
+                    'minLength': 0,
+                    'filterOnLocate': 'True',
+                    'layerId': '{}'.format(layer_2.id()),
+                    'order': 0
+                },
+                {
+                    'fieldName': 'name',
+                    'filterFieldName': 'id',
+                    'displayGeom': 'True',
+                    'minLength': 0,
+                    'filterOnLocate': 'False',
+                    'layerId': '{}'.format(layer.id()),
+                    'order': 1
+                },
+            ]
+        }
+        self.assertDictEqual(data, expected)
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 2)
+        data = table_manager.to_json()
+
+        expected = {
+            'lines_2': {
+                'fieldName': 'name',
+                'filterFieldName': '',
+                'displayGeom': 'False',
+                'minLength': 0,
+                'filterOnLocate': 'True',
+                'layerId': '{}'.format(layer_2.id()),
+                'order': 0
+            },
+            'lines': {
+                'fieldName': 'name',
+                'filterFieldName': 'id',
+                'displayGeom': 'True',
+                'minLength': 0,
+                'filterOnLocate': 'False',
+                'layerId': '{}'.format(layer.id()),
+                'order': 1
+            },
+        }
+        self.assertDictEqual(data, expected)
 
     def test_table_manager(self):
         """Test about the table manager.
@@ -93,6 +184,12 @@ class TestTableManager(unittest.TestCase):
         }
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 2)
+
+        # noinspection PyProtectedMember
+        self.assertDictEqual(
+            table_manager._unicity(),
+            {'layer': [layer.id(), layer.id()]}
+        )
 
         data = table_manager.to_json()
         self.assertDictEqual(data, {'layers': [layer_1, layer_2]})

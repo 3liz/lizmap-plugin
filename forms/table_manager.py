@@ -52,6 +52,29 @@ class TableManager:
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
+    def _unicity(self) -> dict:
+        unicity_dict = dict()
+        rows = self.table.rowCount()
+
+        for key in self.definitions.unicity():
+            unicity_dict[key] = list()
+            for i, item in enumerate(self.definitions.layer_config.keys()):
+                if item == key:
+                    for row in range(rows):
+                        item = self.table.item(row, i)
+                        if item is None:
+                            # Do not put if not item, it might be False
+                            raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+
+                        cell = item.data(Qt.UserRole)
+                        if cell is None:
+                            # Do not put if not cell, it might be False
+                            raise Exception('Cell has no data ({}, {})'.format(row, i))
+
+                        unicity_dict[key].append(cell)
+
+        return unicity_dict
+
     def add_new_row(self):
         # noinspection PyCallingNonCallable
         row = self.table.rowCount()
@@ -60,7 +83,7 @@ class TableManager:
             QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
             return
 
-        dialog = self.edition()
+        dialog = self.edition(self._unicity())
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
@@ -244,6 +267,21 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
+        if self.definitions.key() == 'locateByLayer':
+            result = {}
+            for i, layer in enumerate(data['layers']):
+                layer_id = layer.get('layerId')
+                vector_layer = QgsProject.instance().mapLayer(layer_id)
+                layer_name = vector_layer.name()
+                if result.get(layer_name):
+                    LOGGER.warning(
+                        'Skipping "{}" while saving "{}" JSON configuration. Duplicated entry.'.format(
+                            layer_name, self.definitions.key()))
+                result[layer_name] = layer
+                result[layer_name]['order'] = i
+
+            return result
+
         return data
 
     def _from_json_legacy(self, data) -> list:
@@ -260,8 +298,32 @@ class TableManager:
 
         return [layer]
 
+    @staticmethod
+    def _from_json_legacy_order(data):
+        new_data = dict()
+        new_data['layers'] = []
+
+        def layer_from_order(layers, row):
+            for l in layers.values():
+                if l['order'] == row:
+                    return l
+
+        order = []
+        for layer in data.values():
+            order.append(layer.get('order'))
+
+        order.sort()
+
+        for i in order:
+            new_data['layers'].append(layer_from_order(data, i))
+
+        return new_data
+
     def from_json(self, data):
         """Load JSON into the table."""
+        if self.definitions.key() == 'locateByLayer':
+            data = self._from_json_legacy_order(data)
+
         layers = data.get('layers')
 
         if not layers:

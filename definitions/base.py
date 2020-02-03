@@ -40,6 +40,10 @@ class BaseDefinitions:
     def general_config(self) -> OrderedDict:
         return self._general_config
 
+    @staticmethod
+    def unicity() -> tuple:
+        return tuple()
+
     def add_layer_widget(self, key, widget):
         if key not in self._layer_config:
             raise Exception('Key does not exist in layer config')
