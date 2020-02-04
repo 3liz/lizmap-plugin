@@ -83,7 +83,7 @@ class TableManager:
             QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
             return
 
-        dialog = self.edition(self._unicity())
+        dialog = self.edition(self.parent, self._unicity())
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
@@ -267,7 +267,7 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() == 'locateByLayer':
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
@@ -321,7 +321,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() == 'locateByLayer':
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
             data = self._from_json_legacy_order(data)
 
         layers = data.get('layers')
