@@ -154,6 +154,38 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+    def test_fake_layer_id_table_manager(self):
+        """Test we can skip a wrong layer id."""
+        table = QTableWidget()
+        definitions = AtlasDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, AtlasEditionDialog, table, None, None, None, None)
+
+        self.assertEqual(table.columnCount(), len(definitions.layer_config.keys()))
+
+        # JSON from LWC 3.4 and above
+        layer_1 = {
+            "layer": "ID_WHICH_DOES_NOT_EXIST",
+            "primaryKey": "id",
+            "displayLayerDescription": "False",
+            "featureLabel": "name",
+            "sortField": "name",
+            "highlightGeometry": "True",
+            "zoom": "center",
+            "duration": 5,
+            "displayPopup": "True",
+            "triggerFilter": "True"
+        }
+        json = {
+            'layers': [
+                layer_1
+            ]
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 0)
+
     def test_table_manager(self):
         """Test about the table manager.
 

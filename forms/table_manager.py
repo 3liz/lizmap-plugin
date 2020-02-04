@@ -336,6 +336,13 @@ class TableManager:
                 value = layer.get(key)
                 if value:
                     if definition['type'] == InputType.Layer:
+                        vector_layer = QgsProject.instance().mapLayer(value)
+                        if not vector_layer or not vector_layer.isValid():
+                            LOGGER.warning(
+                                'In CFG file, section "{}", the layer with ID "{}" is invalid or does not exist.'
+                                ' Skipping that layer.'.format(
+                                    self.definitions.key(), value))
+                            valid_layer = False
                         layer_data[key] = value
                     elif definition['type'] == InputType.Field:
                         layer_data[key] = value
