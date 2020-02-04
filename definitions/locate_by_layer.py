@@ -58,7 +58,7 @@ class LocateByLayerDefinitions(BaseDefinitions):
         }
 
     @staticmethod
-    def unicity() -> tuple:
+    def primary_keys() -> tuple:
         return 'layerId',
 
     def key(self) -> str:

@@ -52,11 +52,11 @@ class TableManager:
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
-    def _unicity(self) -> dict:
+    def _primary_keys(self) -> dict:
         unicity_dict = dict()
         rows = self.table.rowCount()
 
-        for key in self.definitions.unicity():
+        for key in self.definitions.primary_keys():
             unicity_dict[key] = list()
             for i, item in enumerate(self.definitions.layer_config.keys()):
                 if item == key:
@@ -79,11 +79,11 @@ class TableManager:
         # noinspection PyCallingNonCallable
         row = self.table.rowCount()
         if row >= 1 and self.definitions.key() == 'atlas' and not is_dev_version():
-            message = tr('This feature is coming soon in Lizmap 3.4.')
+            message = tr('The multi-atlas is coming soon in Lizmap 3.4.')
             QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
             return
 
-        dialog = self.edition(self._unicity())
+        dialog = self.edition(self.parent, self._primary_keys())
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
@@ -267,7 +267,7 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() == 'locateByLayer':
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
@@ -321,7 +321,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() == 'locateByLayer':
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
             data = self._from_json_legacy_order(data)
 
         layers = data.get('layers')
@@ -336,6 +336,13 @@ class TableManager:
                 value = layer.get(key)
                 if value:
                     if definition['type'] == InputType.Layer:
+                        vector_layer = QgsProject.instance().mapLayer(value)
+                        if not vector_layer or not vector_layer.isValid():
+                            LOGGER.warning(
+                                'In CFG file, section "{}", the layer with ID "{}" is invalid or does not exist.'
+                                ' Skipping that layer.'.format(
+                                    self.definitions.key(), value))
+                            valid_layer = False
                         layer_data[key] = value
                     elif definition['type'] == InputType.Field:
                         layer_data[key] = value

@@ -92,7 +92,7 @@ class AtlasDefinitions(BaseDefinitions):
         }
 
     @staticmethod
-    def unicity() -> tuple:
+    def primary_keys() -> tuple:
         return 'layer',
 
     def key(self) -> str:

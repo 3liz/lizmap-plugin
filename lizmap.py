@@ -51,6 +51,7 @@ import sys
 import urllib.parse
 from functools import partial
 from shutil import copyfile
+from typing import Optional
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -85,8 +86,10 @@ from qgis.core import (
 )
 
 from .definitions.atlas import AtlasDefinitions
+from .definitions.filter_by_login import FilterByLoginDefinitions
 from .definitions.locate_by_layer import LocateByLayerDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
+from .forms.filter_by_login import FilterByLoginEditionDialog
 from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
@@ -448,11 +451,10 @@ class Lizmap:
                 'jsonConfig': {}
             },
             'loginFilteredLayers': {
-                'tableWidget': self.dlg.twLoginFilteredLayersList,
-                'removeButton': self.dlg.btLoginFilteredLayerDel,
-                'addButton': self.dlg.btLoginFilteredLayerAdd,
-                'cols': ['filterAttribute', 'filterPrivate', 'layerId', 'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.table_login_filter,
+                'removeButton': self.dlg.remove_filter_login_layer_button,
+                'addButton': self.dlg.add_filter_login_layer_button,
+                'editButton': self.dlg.edit_filter_login_layer_button,
             },
             'lizmapExternalBaselayers': {
                 'tableWidget': self.dlg.twLizmapBaselayers,
@@ -567,6 +569,9 @@ class Lizmap:
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
+                elif key == 'loginFilteredLayers':
+                    definition = FilterByLoginDefinitions()
+                    dialog = FilterByLoginEditionDialog
                 else:
                     raise Exception('Unknown panel.')
 
@@ -579,25 +584,27 @@ class Lizmap:
                     item['tableWidget'],
                     item['removeButton'],
                     item['editButton'],
-                    item['upButton'],
-                    item['downButton']
+                    item.get('upButton'),
+                    item.get('downButton')
                 )
 
                 control = item.get('upButton')
-                slot = partial(self.move_layer_up, key)
-                control.clicked.connect(slot)
-                control.setText('')
-                # noinspection PyCallByClass,PyArgumentList
-                control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
-                control.setToolTip(tr('Move the layer up in the table'))
+                if control:
+                    slot = partial(self.move_layer_up, key)
+                    control.clicked.connect(slot)
+                    control.setText('')
+                    # noinspection PyCallByClass,PyArgumentList
+                    control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
+                    control.setToolTip(tr('Move the layer up in the table'))
 
                 control = item.get('downButton')
-                slot = partial(self.move_layer_down, key)
-                control.clicked.connect(slot)
-                control.setText('')
-                # noinspection PyCallByClass,PyArgumentList
-                control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
-                control.setToolTip(tr('Move the layer down in the table'))
+                if control:
+                    slot = partial(self.move_layer_down, key)
+                    control.clicked.connect(slot)
+                    control.setText('')
+                    # noinspection PyCallByClass,PyArgumentList
+                    control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
+                    control.setToolTip(tr('Move the layer down in the table'))
 
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
@@ -631,15 +638,6 @@ class Lizmap:
         self.dlg.liEditionLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.dlg.liEditionLayer.setExcludedProviders(excluded_providers())
         self.dlg.btEditionLayerAdd.clicked.connect(self.add_layer_to_edition)
-
-        # Login filtered layers
-        self.dlg.twLoginFilteredLayersList.setColumnHidden(3, True)
-        self.dlg.twLoginFilteredLayersList.setColumnHidden(4, True)
-        self.dlg.twLoginFilteredLayersList.horizontalHeader().setStretchLastSection(True)
-        self.dlg.liLoginFilteredLayerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liLoginFilteredLayerLayers.layerChanged.connect(self.dlg.liLoginFilteredLayerFields.setLayer)
-        self.dlg.liLoginFilteredLayerFields.setLayer(self.dlg.liLoginFilteredLayerLayers.currentLayer())
-        self.dlg.btLoginFilteredLayerAdd.clicked.connect(self.add_layer_to_login_filtered_layer)
 
         # Time manager layers
         self.dlg.twTimemanager.setColumnHidden(4, True)
@@ -833,6 +831,8 @@ class Lizmap:
                             manager.from_json(data)
 
             except Exception as e:
+                if is_dev_version():
+                    raise
                 LOGGER.critical(e)
                 copyfile(json_file, '{}.back'.format(json_file))
                 message = tr(
@@ -1265,44 +1265,6 @@ class Lizmap:
             table.setItem(row, i, item)
 
         LOGGER.info('Layer "{}" has been added to the edition tool'.format(layer_id))
-
-    def add_layer_to_login_filtered_layer(self):
-        """Add a layer in the list of 'login filtered' tool."""
-        table = self.dlg.twLoginFilteredLayersList
-        row = table.rowCount()
-
-        if row >= self.dlg.liLoginFilteredLayerLayers.count():
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        layer = self.dlg.liLoginFilteredLayerLayers.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory.')
-            return
-
-        filter_attribute = self.dlg.liLoginFilteredLayerFields.currentField()
-        if not filter_attribute:
-            self.display_error('Filter attribute is compulsory.')
-            return
-
-        layer_name = layer.name()
-        layer_id = layer.id()
-
-        filter_private = self.dlg.cbLoginFilteredLayerPrivate.isChecked()
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        content = [layer_name, filter_attribute, str(filter_private), layer_id, str(row)]
-
-        table.setRowCount(row + 1)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-
-        LOGGER.info('Layer "{}" has been added to login filtered tool'.format(layer_id))
 
     def add_layer_to_time_manager(self):
         """Add a layer in the list of 'time manager' tool."""
@@ -1749,6 +1711,8 @@ class Lizmap:
                 sjson = json.loads(json_file_reader)
                 json_layers = sjson['layers']
             except Exception:
+                if is_dev_version():
+                    raise
                 QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
                 self.log(
                     tr(
@@ -1815,9 +1779,10 @@ class Lizmap:
                     # deactivate wms checkbox if not needed
                     if key == 'externalWmsToggle':
                         wms_enabled = self.get_item_wms_capability(selectedItem)
-                        self.dlg.cbExternalWms.setEnabled(wms_enabled)
-                        if not wms_enabled:
-                            self.dlg.cbExternalWms.setChecked(False)
+                        if wms_enabled is not None:
+                            self.dlg.cbExternalWms.setEnabled(wms_enabled)
+                            if not wms_enabled:
+                                self.dlg.cbExternalWms.setChecked(False)
 
             # deactivate popup configuration for groups
             self.dlg.btConfigurePopup.setEnabled(isLayer)
@@ -1839,7 +1804,7 @@ class Lizmap:
 
         self.enable_popup_source_button()
 
-    def get_item_wms_capability(self, selectedItem):
+    def get_item_wms_capability(self, selectedItem) -> Optional[bool]:
         """
         Check if an item in the tree is a layer
         and if it is a WMS layer
@@ -1848,6 +1813,8 @@ class Lizmap:
         is_layer = selectedItem['type'] == 'layer'
         if is_layer:
             layer = self.get_qgis_layer_by_id(selectedItem['id'])
+            if not layer:
+                return
             if layer.providerType() in ['wms']:
                 if self.getLayerWmsParameters(layer):
                     wms_enabled = True
@@ -2385,23 +2352,6 @@ class Lizmap:
                     liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
                     liz2json["editionLayers"][layerName]["acl"] = acl
                     liz2json["editionLayers"][layerName]["order"] = row
-
-        # list of layers for which to have the tool "login filtered layer"
-        lblTableWidget = self.dlg.twLoginFilteredLayersList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["loginFilteredLayers"] = dict()
-            for row in range(twRowCount):
-                # check that the layer is checked in the WFS capabilities
-                layerName = lblTableWidget.item(row, 0).text()
-                filterAttribute = lblTableWidget.item(row, 1).text()
-                filterPrivate = lblTableWidget.item(row, 2).text()
-                layerId = lblTableWidget.item(row, 3).text()
-                liz2json["loginFilteredLayers"][layerName] = dict()
-                liz2json["loginFilteredLayers"][layerName]["filterAttribute"] = filterAttribute
-                liz2json["loginFilteredLayers"][layerName]["filterPrivate"] = filterPrivate
-                liz2json["loginFilteredLayers"][layerName]["layerId"] = layerId
-                liz2json["loginFilteredLayers"][layerName]["order"] = row
 
         # list of Lizmap external baselayers
         eblTableWidget = self.dlg.twLizmapBaselayers

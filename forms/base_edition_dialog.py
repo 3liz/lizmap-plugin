@@ -16,8 +16,8 @@ __revision__ = '$Format:%H$'
 
 class BaseEditionDialog(QDialog):
 
-    def __init__(self, unicity=None):
-        super().__init__()
+    def __init__(self, parent=None, unicity=None):
+        super().__init__(parent)
         self.config: BaseDefinitions
         self.unicity = unicity
 
@@ -35,6 +35,10 @@ class BaseEditionDialog(QDialog):
                 widget = layer_config.get('widget')
                 if widget:
                     widget.setToolTip(tooltip)
+            if layer_config['type'] == InputType.CheckBox:
+                widget = layer_config.get('widget')
+                if widget:
+                    widget.setChecked(layer_config['default'])
 
     def validate(self):
         if self.unicity:

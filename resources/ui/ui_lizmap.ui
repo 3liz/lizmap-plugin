@@ -2989,112 +2989,43 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="twLoginFilteredLayersList">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Filter by user</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
-                </widget>
+                <widget class="QTableWidget" name="table_login_filter"/>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_10">
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_12">
-                   <item>
-                    <widget class="QgsMapLayerComboBox" name="liLoginFilteredLayerLayers">
-                     <property name="statusTip">
-                      <string>The layer to filter</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QgsFieldComboBox" name="liLoginFilteredLayerFields">
-                     <property name="statusTip">
-                      <string>The field containing the group or the username.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbLoginFilteredLayerPrivate">
-                     <property name="statusTip">
-                      <string>If Lizmap should use the group or the username for filtering data.</string>
-                     </property>
-                     <property name="text">
-                      <string>Filter by user</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                  <widget class="QPushButton" name="add_filter_login_layer_button">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_3">
-                   <item>
-                    <widget class="QPushButton" name="btLoginFilteredLayerAdd">
-                     <property name="text">
-                      <string>Add layer</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="btLoginFilteredLayerDel">
-                     <property name="text">
-                      <string>Remove layer</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_3">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
+                  <widget class="QPushButton" name="remove_filter_login_layer_button">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_filter_login_layer_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_3">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -4572,12 +4503,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>btTooltipLayerAdd</tabstop>
   <tabstop>btTooltipLayerDel</tabstop>
   <tabstop>scrollArea_5</tabstop>
-  <tabstop>twLoginFilteredLayersList</tabstop>
-  <tabstop>liLoginFilteredLayerLayers</tabstop>
-  <tabstop>liLoginFilteredLayerFields</tabstop>
-  <tabstop>cbLoginFilteredLayerPrivate</tabstop>
-  <tabstop>btLoginFilteredLayerAdd</tabstop>
-  <tabstop>btLoginFilteredLayerDel</tabstop>
   <tabstop>scrollArea_11</tabstop>
   <tabstop>liDatavizContainer</tabstop>
   <tabstop>liDatavizPlotType</tabstop>

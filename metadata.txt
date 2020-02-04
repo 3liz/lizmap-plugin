@@ -7,12 +7,18 @@ description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 # set -beta for dev version
-version=3.2.1-beta
+version=3.2.2-beta
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.2.1:
+  * Remove experimental from 3.2.0
+  * Refactor Locate by layer to be editable
+  * Refactor Filter by login to be editable
+  * Remove Lizmap submenu for help and about
   Version 3.2.0:
+  * Version experimental
   * Add tooltip about the layer name
   * Add support for editing existing rows in atlas panel
   * Some code cleanup about UI connections
@@ -26,7 +32,7 @@ repository=https://github.com/3liz/lizmap-plugin
 icon=resources/icons/icon.png
 
 ; experimental flag
-experimental=True
+experimental=False
 
 ; deprecated flag (applies to the whole plugin and not only to the uploaded version)
 deprecated=False

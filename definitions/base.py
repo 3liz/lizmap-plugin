@@ -41,7 +41,7 @@ class BaseDefinitions:
         return self._general_config
 
     @staticmethod
-    def unicity() -> tuple:
+    def primary_keys() -> tuple:
         return tuple()
 
     def add_layer_widget(self, key, widget):

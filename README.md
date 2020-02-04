@@ -1,6 +1,6 @@
-## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin 3.1.8
+## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin 3.2.1
 
-Download link: https://plugins.qgis.org/plugins/lizmap/version/3.1.8/download/
+Download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.1/download/
 
 * The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/). 
 * The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/). 
@@ -142,6 +142,12 @@ if lv:
 QgsApplication.exitQgis()
 app.exit()
 ```
+
+# Debug
+
+The `dev` branch is automatically on debug mode. Python exceptions will be re-raised when they occurred. 
+On the `master` branch, you can switch to debug mode by adding `-beta` to the version number in the `metadata.txt`.
+You can notice if you are on debug mode by checking the Lizmap dialog title (if you can read `DEV Lizmap version number`).
 
 # Attributions
 
