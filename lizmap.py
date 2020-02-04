@@ -51,6 +51,7 @@ import sys
 import urllib.parse
 from functools import partial
 from shutil import copyfile
+from typing import Optional
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -1765,9 +1766,10 @@ class Lizmap:
                     # deactivate wms checkbox if not needed
                     if key == 'externalWmsToggle':
                         wms_enabled = self.get_item_wms_capability(selectedItem)
-                        self.dlg.cbExternalWms.setEnabled(wms_enabled)
-                        if not wms_enabled:
-                            self.dlg.cbExternalWms.setChecked(False)
+                        if wms_enabled is not None:
+                            self.dlg.cbExternalWms.setEnabled(wms_enabled)
+                            if not wms_enabled:
+                                self.dlg.cbExternalWms.setChecked(False)
 
             # deactivate popup configuration for groups
             self.dlg.btConfigurePopup.setEnabled(isLayer)
@@ -1789,7 +1791,7 @@ class Lizmap:
 
         self.enable_popup_source_button()
 
-    def get_item_wms_capability(self, selectedItem):
+    def get_item_wms_capability(self, selectedItem) -> Optional[bool]:
         """
         Check if an item in the tree is a layer
         and if it is a WMS layer
@@ -1798,6 +1800,8 @@ class Lizmap:
         is_layer = selectedItem['type'] == 'layer'
         if is_layer:
             layer = self.get_qgis_layer_by_id(selectedItem['id'])
+            if not layer:
+                return
             if layer.providerType() in ['wms']:
                 if self.getLayerWmsParameters(layer):
                     wms_enabled = True
