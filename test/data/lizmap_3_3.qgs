@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="Lizmap test 3.3" version="3.4.15-Madeira">
+<qgis version="3.11.0-Master" saveUser="etienne" saveUserFull="Etienne Trimaille" projectname="Lizmap test 3.3">
   <homePath path=""/>
   <title>Lizmap test 3.3</title>
   <autotransaction active="0"/>
@@ -7,6 +7,7 @@
   <trust active="0"/>
   <projectCrs>
     <spatialrefsys>
+      <wkt>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</wkt>
       <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
       <srsid>3452</srsid>
       <srid>4326</srid>
@@ -19,10 +20,10 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer providerKey="ogr" checked="Qt::Checked" source="./lines.geojson" name="lines" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3" expanded="1">
+    <layer-tree-layer providerKey="ogr" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3" source="./lines.geojson" expanded="1" checked="Qt::Checked" name="lines">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer providerKey="ogr" checked="Qt::Checked" source="./points.geojson" name="points" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa" expanded="1">
+    <layer-tree-layer providerKey="ogr" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa" source="./points.geojson" expanded="1" checked="Qt::Checked" name="points">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -30,14 +31,14 @@
       <item>lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings mode="2" tolerance="12" intersection-snapping="0" type="1" enabled="0" unit="1">
+  <snapping-settings mode="2" intersection-snapping="0" tolerance="12" type="1" enabled="0" unit="1">
     <individual-layer-settings>
-      <layer-setting tolerance="12" units="1" type="1" enabled="0" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa"/>
-      <layer-setting tolerance="12" units="1" type="1" enabled="0" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3"/>
+      <layer-setting units="1" id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3" tolerance="12" type="1" enabled="0"/>
+      <layer-setting units="1" id="points_70389da6_da2c_42e2_bddc_b46963fb9afa" tolerance="12" type="1" enabled="0"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
-  <mapcanvas name="theMapCanvas" annotationsVisible="1">
+  <mapcanvas annotationsVisible="1" name="theMapCanvas">
     <units>degrees</units>
     <extent>
       <xmin>3.83313469804854723</xmin>
@@ -48,6 +49,7 @@
     <rotation>0</rotation>
     <destinationsrs>
       <spatialrefsys>
+        <wkt>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
         <srsid>3452</srsid>
         <srid>4326</srid>
@@ -59,23 +61,25 @@
       </spatialrefsys>
     </destinationsrs>
     <rendermaptile>0</rendermaptile>
+    <expressionContextScope/>
   </mapcanvas>
   <projectModels/>
   <legend updateDrawingOrder="true">
-    <legendlayer checked="Qt::Checked" name="lines" showFeatureCount="0" open="true" drawingOrder="-1">
+    <legendlayer drawingOrder="-1" open="true" showFeatureCount="0" checked="Qt::Checked" name="lines">
       <filegroup hidden="false" open="true">
-        <legendlayerfile isInOverview="0" visible="1" layerid="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3"/>
+        <legendlayerfile visible="1" layerid="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3" isInOverview="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer checked="Qt::Checked" name="points" showFeatureCount="0" open="true" drawingOrder="-1">
+    <legendlayer drawingOrder="-1" open="true" showFeatureCount="0" checked="Qt::Checked" name="points">
       <filegroup hidden="false" open="true">
-        <legendlayerfile isInOverview="0" visible="1" layerid="points_70389da6_da2c_42e2_bddc_b46963fb9afa"/>
+        <legendlayerfile visible="1" layerid="points_70389da6_da2c_42e2_bddc_b46963fb9afa" isInOverview="0"/>
       </filegroup>
     </legendlayer>
   </legend>
   <mapViewDocks/>
+  <mapViewDocks3D/>
   <projectlayers>
-    <maplayer maxScale="0" styleCategories="AllStyleCategories" simplifyAlgorithm="0" refreshOnNotifyMessage="" minScale="1e+08" autoRefreshTime="0" simplifyDrawingHints="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" type="vector" readOnly="0" geometry="Line" labelsEnabled="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" simplifyDrawingTol="1" simplifyLocal="1">
+    <maplayer refreshOnNotifyMessage="" labelsEnabled="0" minScale="100000000" wkbType="LineString" geometry="Line" simplifyDrawingTol="1" readOnly="0" simplifyLocal="1" autoRefreshTime="0" maxScale="0" simplifyDrawingHints="1" refreshOnNotifyEnabled="0" type="vector" simplifyMaxScale="1" autoRefreshEnabled="0" simplifyAlgorithm="0" styleCategories="AllStyleCategories" hasScaleBasedVisibilityFlag="0">
       <extent>
         <xmin>3.85429999999999984</xmin>
         <ymin>43.57860000000000156</ymin>
@@ -90,6 +94,7 @@
       <layername>lines</layername>
       <srs>
         <spatialrefsys>
+          <wkt>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</wkt>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
           <srsid>3452</srsid>
           <srid>4326</srid>
@@ -112,6 +117,7 @@
         <encoding></encoding>
         <crs>
           <spatialrefsys>
+            <wkt></wkt>
             <proj4></proj4>
             <srsid>0</srsid>
             <srid>0</srid>
@@ -119,7 +125,7 @@
             <description></description>
             <projectionacronym></projectionacronym>
             <ellipsoidacronym></ellipsoidacronym>
-            <geographicflag>false</geographicflag>
+            <geographicflag>true</geographicflag>
           </spatialrefsys>
         </crs>
         <extent/>
@@ -139,10 +145,10 @@
         <Removable>1</Removable>
         <Searchable>1</Searchable>
       </flags>
-      <renderer-v2 forceraster="0" enableorderby="0" type="singleSymbol" symbollevels="0">
+      <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
-          <symbol alpha="1" name="0" type="line" clip_to_extent="1" force_rhr="0">
-            <layer pass="0" locked="0" enabled="1" class="SimpleLine">
+          <symbol clip_to_extent="1" alpha="1" force_rhr="0" type="line" name="0">
+            <layer class="SimpleLine" locked="0" pass="0" enabled="1">
               <prop k="capstyle" v="square"/>
               <prop k="customdash" v="5;2"/>
               <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -161,9 +167,9 @@
               <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
+                  <Option type="QString" value="" name="name"/>
                   <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
+                  <Option type="QString" value="collection" name="type"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -178,10 +184,12 @@
       <layerOpacity>1</layerOpacity>
       <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
         <activeChecks type="StringList">
-          <Option value="" type="QString"/>
+          <Option type="QString" value=""/>
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
+      <referencedLayers/>
+      <referencingLayers/>
       <fieldConfiguration>
         <field name="id">
           <editWidget type="">
@@ -199,34 +207,35 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias index="0" name="" field="id"/>
-        <alias index="1" name="" field="name"/>
+        <alias field="id" index="0" name=""/>
+        <alias field="name" index="1" name=""/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <defaults>
-        <default expression="" applyOnUpdate="0" field="id"/>
-        <default expression="" applyOnUpdate="0" field="name"/>
+        <default field="id" applyOnUpdate="0" expression=""/>
+        <default field="name" applyOnUpdate="0" expression=""/>
       </defaults>
       <constraints>
-        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="id"/>
-        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="name"/>
+        <constraint unique_strength="0" notnull_strength="0" field="id" exp_strength="0" constraints="0"/>
+        <constraint unique_strength="0" notnull_strength="0" field="name" exp_strength="0" constraints="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint desc="" field="id" exp=""/>
-        <constraint desc="" field="name" exp=""/>
+        <constraint exp="" field="id" desc=""/>
+        <constraint exp="" field="name" desc=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
       </attributeactions>
-      <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
         <columns/>
       </attributetableconfig>
       <conditionalstyles>
         <rowstyles/>
         <fieldstyles/>
       </conditionalstyles>
+      <storedexpressions/>
       <editform tolerant="1"></editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
@@ -240,7 +249,7 @@
       <previewExpression></previewExpression>
       <mapTip></mapTip>
     </maplayer>
-    <maplayer maxScale="0" styleCategories="AllStyleCategories" simplifyAlgorithm="0" refreshOnNotifyMessage="" minScale="1e+08" autoRefreshTime="0" simplifyDrawingHints="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" type="vector" readOnly="0" geometry="Point" labelsEnabled="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" simplifyDrawingTol="1" simplifyLocal="1">
+    <maplayer refreshOnNotifyMessage="" labelsEnabled="0" minScale="100000000" wkbType="Point" geometry="Point" simplifyDrawingTol="1" readOnly="0" simplifyLocal="1" autoRefreshTime="0" maxScale="0" simplifyDrawingHints="1" refreshOnNotifyEnabled="0" type="vector" simplifyMaxScale="1" autoRefreshEnabled="0" simplifyAlgorithm="0" styleCategories="AllStyleCategories" hasScaleBasedVisibilityFlag="0">
       <extent>
         <xmin>3.85400000000000009</xmin>
         <ymin>43.62199999999999989</ymin>
@@ -255,6 +264,7 @@
       <layername>points</layername>
       <srs>
         <spatialrefsys>
+          <wkt>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]</wkt>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
           <srsid>3452</srsid>
           <srid>4326</srid>
@@ -277,6 +287,7 @@
         <encoding></encoding>
         <crs>
           <spatialrefsys>
+            <wkt></wkt>
             <proj4></proj4>
             <srsid>0</srsid>
             <srid>0</srid>
@@ -284,7 +295,7 @@
             <description></description>
             <projectionacronym></projectionacronym>
             <ellipsoidacronym></ellipsoidacronym>
-            <geographicflag>false</geographicflag>
+            <geographicflag>true</geographicflag>
           </spatialrefsys>
         </crs>
         <extent/>
@@ -304,10 +315,10 @@
         <Removable>1</Removable>
         <Searchable>1</Searchable>
       </flags>
-      <renderer-v2 forceraster="0" enableorderby="0" type="singleSymbol" symbollevels="0">
+      <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
-          <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
-            <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
+          <symbol clip_to_extent="1" alpha="1" force_rhr="0" type="marker" name="0">
+            <layer class="SimpleMarker" locked="0" pass="0" enabled="1">
               <prop k="angle" v="0"/>
               <prop k="color" v="164,113,88,255"/>
               <prop k="horizontal_anchor_point" v="1"/>
@@ -328,9 +339,9 @@
               <prop k="vertical_anchor_point" v="1"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
+                  <Option type="QString" value="" name="name"/>
                   <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
+                  <Option type="QString" value="collection" name="type"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -345,10 +356,12 @@
       <layerOpacity>1</layerOpacity>
       <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
         <activeChecks type="StringList">
-          <Option value="" type="QString"/>
+          <Option type="QString" value=""/>
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
+      <referencedLayers/>
+      <referencingLayers/>
       <fieldConfiguration>
         <field name="id">
           <editWidget type="">
@@ -366,34 +379,35 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias index="0" name="" field="id"/>
-        <alias index="1" name="" field="name"/>
+        <alias field="id" index="0" name=""/>
+        <alias field="name" index="1" name=""/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <defaults>
-        <default expression="" applyOnUpdate="0" field="id"/>
-        <default expression="" applyOnUpdate="0" field="name"/>
+        <default field="id" applyOnUpdate="0" expression=""/>
+        <default field="name" applyOnUpdate="0" expression=""/>
       </defaults>
       <constraints>
-        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="id"/>
-        <constraint exp_strength="0" unique_strength="0" notnull_strength="0" constraints="0" field="name"/>
+        <constraint unique_strength="0" notnull_strength="0" field="id" exp_strength="0" constraints="0"/>
+        <constraint unique_strength="0" notnull_strength="0" field="name" exp_strength="0" constraints="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint desc="" field="id" exp=""/>
-        <constraint desc="" field="name" exp=""/>
+        <constraint exp="" field="id" desc=""/>
+        <constraint exp="" field="name" desc=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
       </attributeactions>
-      <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
         <columns/>
       </attributetableconfig>
       <conditionalstyles>
         <rowstyles/>
         <fieldstyles/>
       </conditionalstyles>
+      <storedexpressions/>
       <editform tolerant="1"></editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
@@ -413,120 +427,125 @@
     <layer id="lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3"/>
   </layerorder>
   <properties>
-    <PositionPrecision>
-      <DecimalPlaces type="int">2</DecimalPlaces>
-      <Automatic type="bool">true</Automatic>
-      <DegreeFormat type="QString">MU</DegreeFormat>
-    </PositionPrecision>
-    <WMSOnlineResource type="QString"></WMSOnlineResource>
-    <WMTSMinScale type="int">5000</WMTSMinScale>
-    <WCSLayers type="QStringList"/>
-    <WMTSPngLayers>
-      <Layer type="QStringList"/>
-      <Project type="bool">false</Project>
-      <Group type="QStringList"/>
-    </WMTSPngLayers>
-    <WMSContactOrganization type="QString"></WMSContactOrganization>
-    <WMTSLayers>
-      <Layer type="QStringList"/>
-      <Project type="bool">false</Project>
-      <Group type="QStringList"/>
-    </WMTSLayers>
-    <PAL>
-      <TextFormat type="int">0</TextFormat>
-      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
-      <CandidatesPolygon type="int">30</CandidatesPolygon>
-      <CandidatesLine type="int">50</CandidatesLine>
-      <SearchMethod type="int">0</SearchMethod>
-      <DrawRectOnly type="bool">false</DrawRectOnly>
-      <ShowingCandidates type="bool">false</ShowingCandidates>
-      <ShowingAllLabels type="bool">false</ShowingAllLabels>
-      <CandidatesPoint type="int">16</CandidatesPoint>
-    </PAL>
-    <Legend>
-      <filterByMap type="bool">false</filterByMap>
-    </Legend>
     <DefaultStyles>
       <ColorRamp type="QString"></ColorRamp>
       <Fill type="QString"></Fill>
-      <RandomColors type="bool">true</RandomColors>
+      <Line type="QString"></Line>
       <Marker type="QString"></Marker>
       <Opacity type="double">1</Opacity>
-      <Line type="QString"></Line>
+      <RandomColors type="bool">true</RandomColors>
     </DefaultStyles>
-    <WFSTLayers>
-      <Insert type="QStringList"/>
-      <Update type="QStringList"/>
-      <Delete type="QStringList"/>
-    </WFSTLayers>
+    <Gui>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+    </Gui>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <Macros>
+      <pythonCode type="QString"></pythonCode>
+    </Macros>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
+    <PAL>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <CandidatesLinePerCM type="double">5</CandidatesLinePerCM>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <CandidatesPolygonPerCM type="double">2.5</CandidatesPolygonPerCM>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <DrawUnplaced type="bool">false</DrawUnplaced>
+      <PlacementEngineVersion type="int">0</PlacementEngineVersion>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <TextFormat type="int">0</TextFormat>
+      <UnplacedColor type="QString">255,0,0,255</UnplacedColor>
+    </PAL>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <PositionPrecision>
+      <Automatic type="bool">true</Automatic>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+      <DegreeFormat type="QString">MU</DegreeFormat>
+    </PositionPrecision>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <WCSLayers type="QStringList"/>
     <WCSUrl type="QString"></WCSUrl>
     <WFSLayers type="QStringList">
       <value>lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3</value>
     </WFSLayers>
-    <WMSRestrictedLayers type="QStringList"/>
-    <WMSDefaultMapUnitsPerMm type="double">1</WMSDefaultMapUnitsPerMm>
-    <WMSRestrictedComposers type="QStringList"/>
-    <WMSContactPerson type="QString"></WMSContactPerson>
-    <SpatialRefSys>
-      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
-    </SpatialRefSys>
-    <WMTSJpegLayers>
-      <Layer type="QStringList"/>
-      <Project type="bool">false</Project>
-      <Group type="QStringList"/>
-    </WMTSJpegLayers>
-    <WMSContactPosition type="QString"></WMSContactPosition>
-    <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
     <WFSLayersPrecision>
       <lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3 type="int">8</lines_7ddd81b1_8307_4aa2_8b7a_a0b7983f33e3>
     </WFSLayersPrecision>
-    <WMTSUrl type="QString"></WMTSUrl>
+    <WFSTLayers>
+      <Delete type="QStringList"/>
+      <Insert type="QStringList"/>
+      <Update type="QStringList"/>
+    </WFSTLayers>
+    <WFSUrl type="QString"></WFSUrl>
+    <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
+    <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
+    <WMSContactMail type="QString"></WMSContactMail>
+    <WMSContactOrganization type="QString"></WMSContactOrganization>
+    <WMSContactPerson type="QString"></WMSContactPerson>
+    <WMSContactPhone type="QString"></WMSContactPhone>
+    <WMSContactPosition type="QString"></WMSContactPosition>
+    <WMSDefaultMapUnitsPerMm type="double">1</WMSDefaultMapUnitsPerMm>
     <WMSExtent type="QStringList">
       <value>3.8331346980485472</value>
       <value>43.5561629722011</value>
       <value>3.920928392916381</value>
       <value>43.645371064914904</value>
     </WMSExtent>
-    <WMSServiceAbstract type="QString"></WMSServiceAbstract>
-    <WMSRootName type="QString"></WMSRootName>
+    <WMSFees type="QString">conditions unknown</WMSFees>
     <WMSImageQuality type="int">90</WMSImageQuality>
-    <WMSContactPhone type="QString"></WMSContactPhone>
-    <WFSUrl type="QString"></WFSUrl>
-    <WMSServiceTitle type="QString">lizmap_3_3_atlas</WMSServiceTitle>
-    <Measurement>
-      <DistanceUnits type="QString">meters</DistanceUnits>
-      <AreaUnits type="QString">m2</AreaUnits>
-    </Measurement>
-    <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
-    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
-    <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
-    <Gui>
-      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
-      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
-      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
-      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
-      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
-      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
-      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
-    </Gui>
-    <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
-    <WMSUrl type="QString"></WMSUrl>
     <WMSKeywordList type="QStringList">
       <value></value>
     </WMSKeywordList>
-    <Macros>
-      <pythonCode type="QString"></pythonCode>
-    </Macros>
-    <WMSContactMail type="QString"></WMSContactMail>
-    <Measure>
-      <Ellipsoid type="QString">WGS84</Ellipsoid>
-    </Measure>
-    <Paths>
-      <Absolute type="bool">false</Absolute>
-    </Paths>
-    <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
+    <WMSOnlineResource type="QString"></WMSOnlineResource>
     <WMSPrecision type="QString">8</WMSPrecision>
-    <WMSFees type="QString">conditions unknown</WMSFees>
+    <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
+    <WMSRestrictedComposers type="QStringList"/>
+    <WMSRestrictedLayers type="QStringList"/>
+    <WMSRootName type="QString"></WMSRootName>
+    <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
+    <WMSServiceAbstract type="QString"></WMSServiceAbstract>
+    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
+    <WMSServiceTitle type="QString">lizmap_3_3_atlas</WMSServiceTitle>
+    <WMSUrl type="QString"></WMSUrl>
+    <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
+    <WMTSJpegLayers>
+      <Group type="QStringList"/>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+    </WMTSJpegLayers>
+    <WMTSLayers>
+      <Group type="QStringList"/>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+    </WMTSLayers>
+    <WMTSMinScale type="int">5000</WMTSMinScale>
+    <WMTSPngLayers>
+      <Group type="QStringList"/>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+    </WMTSPngLayers>
+    <WMTSUrl type="QString"></WMTSUrl>
   </properties>
   <visibility-presets/>
   <transformContext/>
@@ -552,4 +571,22 @@
   </projectMetadata>
   <Annotations/>
   <Layouts/>
+  <Bookmarks/>
+  <ProjectViewSettings UseProjectScales="0">
+    <Scales/>
+  </ProjectViewSettings>
+  <ProjectDisplaySettings>
+    <BearingFormat id="bearing">
+      <Option type="Map">
+        <Option type="QChar" value=" " name="decimal_separator"/>
+        <Option type="int" value="6" name="decimals"/>
+        <Option type="int" value="0" name="direction_format"/>
+        <Option type="int" value="0" name="rounding_type"/>
+        <Option type="bool" value="false" name="show_plus"/>
+        <Option type="bool" value="true" name="show_thousand_separator"/>
+        <Option type="bool" value="false" name="show_trailing_zeros"/>
+        <Option type="QChar" value=" " name="thousand_separator"/>
+      </Option>
+    </BearingFormat>
+  </ProjectDisplaySettings>
 </qgis>

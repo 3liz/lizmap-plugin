@@ -16,8 +16,8 @@ __revision__ = '$Format:%H$'
 
 class BaseEditionDialog(QDialog):
 
-    def __init__(self, unicity=None):
-        super().__init__()
+    def __init__(self, parent=None, unicity=None):
+        super().__init__(parent)
         self.config: BaseDefinitions
         self.unicity = unicity
 
