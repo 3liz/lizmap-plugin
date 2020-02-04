@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## Version 3.2.1
+
+* Remove experimental from 3.2.0
+* Refactor Locate by layer to be editable
+* Refactor Filter by login to be editable
+* Remove Lizmap submenu for help and about
+
+## Version 3.2.0
+
+* Version experimental
+* Add tooltip about the layer name
+* Add support for editing existing rows in atlas panel
+* Some code cleanup about UI connections
+
 ## Version 3.1.8
 
 * Review button box

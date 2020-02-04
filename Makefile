@@ -47,7 +47,7 @@
 # Edit the following to match your sources lists
 #################################################
 
-VERSION = "3.1.8"
+VERSION = "3.2.1"
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
@@ -230,7 +230,7 @@ i18n_2_push:
 
 i18n_3_pull:
 	@echo Pull strings from Transifex 3/4
-	@cd $(LOCALES_SUBMODULE) && tx pull -a
+	@cd $(LOCALES_SUBMODULE) && tx pull -a -f
 
 i18n_4_compile:
 	@echo Compile TS files to QM 4/4
