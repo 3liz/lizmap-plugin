@@ -223,7 +223,7 @@ class TestTableManager(unittest.TestCase):
 
         # noinspection PyProtectedMember
         self.assertDictEqual(
-            table_manager._unicity(),
+            table_manager._primary_keys(),
             {'layer': [layer.id(), layer.id()]}
         )
 

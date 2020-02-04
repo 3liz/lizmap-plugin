@@ -52,11 +52,11 @@ class TableManager:
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
-    def _unicity(self) -> dict:
+    def _primary_keys(self) -> dict:
         unicity_dict = dict()
         rows = self.table.rowCount()
 
-        for key in self.definitions.unicity():
+        for key in self.definitions.primary_keys():
             unicity_dict[key] = list()
             for i, item in enumerate(self.definitions.layer_config.keys()):
                 if item == key:
@@ -83,7 +83,7 @@ class TableManager:
             QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
             return
 
-        dialog = self.edition(self.parent, self._unicity())
+        dialog = self.edition(self.parent, self._primary_keys())
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
