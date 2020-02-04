@@ -35,6 +35,10 @@ class BaseEditionDialog(QDialog):
                 widget = layer_config.get('widget')
                 if widget:
                     widget.setToolTip(tooltip)
+            if layer_config['type'] == InputType.CheckBox:
+                widget = layer_config.get('widget')
+                if widget:
+                    widget.setChecked(layer_config['default'])
 
     def validate(self):
         if self.unicity:

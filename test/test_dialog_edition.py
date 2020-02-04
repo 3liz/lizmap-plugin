@@ -47,9 +47,9 @@ class TestEditionDialog(unittest.TestCase):
             elif key in ['primaryKey', 'featureLabel', 'sortField']:
                 pass
                 # self.assertEqual(value, first_field)
-            elif key in ['atlasDisplayLayerDescription', 'highlightGeometry', 'displayPopup']:
+            elif key in ['atlasDisplayLayerDescription']:
                 self.assertTrue(value)
-            elif key == 'triggerFilter':
+            elif key in ['highlightGeometry', 'displayPopup', 'triggerFilter']:
                 self.assertFalse(value)
             elif key == 'duration':
                 self.assertEqual(value, 5)
