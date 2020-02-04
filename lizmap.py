@@ -818,6 +818,8 @@ class Lizmap:
                             manager.from_json(data)
 
             except Exception as e:
+                if is_dev_version():
+                    raise
                 LOGGER.critical(e)
                 copyfile(json_file, '{}.back'.format(json_file))
                 message = tr(
@@ -1695,6 +1697,8 @@ class Lizmap:
                 sjson = json.loads(json_file_reader)
                 json_layers = sjson['layers']
             except Exception:
+                if is_dev_version():
+                    raise
                 QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
                 self.log(
                     tr(
