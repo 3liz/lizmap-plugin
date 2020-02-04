@@ -17,7 +17,7 @@ class FilterByLoginDefinitions(BaseDefinitions):
             'type': InputType.Layer,
             'header': tr('Layer'),
             'default': None,
-            'tooltip': tr('The vector layer for the login by filter.')
+            'tooltip': tr('The vector layer for filtering by login.')
         }
         self._layer_config['filterAttribute'] = {
             'type': InputType.Field,

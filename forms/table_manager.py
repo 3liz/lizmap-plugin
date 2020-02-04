@@ -79,7 +79,7 @@ class TableManager:
         # noinspection PyCallingNonCallable
         row = self.table.rowCount()
         if row >= 1 and self.definitions.key() == 'atlas' and not is_dev_version():
-            message = tr('This feature is coming soon in Lizmap 3.4.')
+            message = tr('The multi-atlas is coming soon in Lizmap 3.4.')
             QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
             return
 
