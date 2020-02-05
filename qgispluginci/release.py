@@ -239,7 +239,10 @@ def upload_asset_to_github_release(
         print('OK')
     except GithubException as e:
         print(e)
-        raise GithubReleaseCouldNotUploadAsset('Could not upload asset for release {}.'.format(release_tag))
+        raise GithubReleaseCouldNotUploadAsset(
+            'Could not upload asset for release {}. '
+            'Are you sure the user for the given token can upload asset to this repo?'.format(release_tag)
+        )
     return gh_release.prerelease
 
 
