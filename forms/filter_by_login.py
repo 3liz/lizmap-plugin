@@ -4,6 +4,7 @@ from qgis.core import QgsMapLayerProxyModel
 
 from .base_edition_dialog import BaseEditionDialog
 from ..definitions.filter_by_login import FilterByLoginDefinitions
+from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -36,3 +37,11 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
         self.field.setLayer(self.layer.currentLayer())
 
         self.setup_ui()
+
+    def validate(self) -> str:
+        upstream = super().validate()
+        if upstream:
+            return upstream
+
+        if not self.field.currentField():
+            return tr('Field is compulsory.')
