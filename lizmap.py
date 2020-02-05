@@ -2178,22 +2178,15 @@ class Lizmap:
         liz2json['metadata'] = metadata
         liz2json["options"] = dict()
         liz2json["layers"] = dict()
+
         # projection
-        # project projection
-        mc = self.iface.mapCanvas().mapSettings()
-        pCrs = mc.destinationCrs()
-        pAuthid = pCrs.authid()
-        pProj4 = pCrs.toProj4()
-        liz2json["options"]["projection"] = dict()
-        liz2json["options"]["projection"]["proj4"] = '{}'.format(pProj4)
-        liz2json["options"]["projection"]["ref"] = '{}'.format(pAuthid)
+        projection = self.iface.mapCanvas().mapSettings().destinationCrs()
+        liz2json['options']['projection'] = dict()
+        liz2json['options']['projection']['proj4'] = projection.toProj4()
+        liz2json['options']['projection']['ref'] = projection.authid()
+
         # wms extent
-        pWmsExtent = self.project.readListEntry('WMSExtent', '')[0]
-        if len(pWmsExtent) > 1:
-            bbox = [pWmsExtent[0], pWmsExtent[1], pWmsExtent[2], pWmsExtent[3]]
-        else:
-            bbox = []
-        liz2json["options"]["bbox"] = bbox
+        liz2json['options']['bbox'] = self.project.readListEntry('WMSExtent', '')[0]
 
         # set initialExtent values if not defined
         if not self.dlg.inInitialExtent.text():
