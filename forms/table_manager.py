@@ -279,7 +279,7 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers']:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
@@ -333,7 +333,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers']:
             data = self._from_json_legacy_order(data)
 
         layers = data.get('layers')
