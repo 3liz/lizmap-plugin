@@ -78,7 +78,6 @@ from qgis.core import (
     QgsMapLayerModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
-    QgsWkbTypes,
     QgsAttributeEditorField,
     QgsAttributeEditorContainer,
     QgsApplication,
@@ -86,11 +85,13 @@ from qgis.core import (
 
 from .definitions.atlas import AtlasDefinitions
 from .definitions.attribute_table import AttributeTableDefinitions
+from .definitions.edition import EditionDefinitions
 from .definitions.filter_by_login import FilterByLoginDefinitions
 from .definitions.locate_by_layer import LocateByLayerDefinitions
 from .definitions.tooltip import ToolTipDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
 from .forms.attribute_table_edition import AttributeTableEditionDialog
+from .forms.edition_edition import EditionLayerDialog
 from .forms.filter_by_login import FilterByLoginEditionDialog
 from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
@@ -105,7 +106,6 @@ from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plug
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from .qgis_plugin_tools.tools.version import is_dev_version, version
 
-from .tools import excluded_providers
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -443,12 +443,13 @@ class Lizmap:
                 'manager': None,
             },
             'editionLayers': {
-                'tableWidget': self.dlg.twEditionLayerList,
-                'removeButton': self.dlg.btEditionLayerDel,
-                'addButton': self.dlg.btEditionLayerAdd,
-                'cols': ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature', 'acl', 'layerId',
-                         'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.edition_table,
+                'removeButton': self.dlg.remove_edition_layer,
+                'addButton': self.dlg.add_edition_layer,
+                'editButton': self.dlg.edit_edition_layer,
+                'upButton': self.dlg.up_edition_layer,
+                'downButton': self.dlg.down_edition_layer,
+                'manager': None,
             },
             'loginFilteredLayers': {
                 'tableWidget': self.dlg.table_login_filter,
@@ -569,6 +570,9 @@ class Lizmap:
                 elif key == 'attributeLayers':
                     definition = AttributeTableDefinitions()
                     dialog = AttributeTableEditionDialog
+                elif key == 'editionLayers':
+                    definition = EditionDefinitions()
+                    dialog = EditionLayerDialog
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
@@ -614,14 +618,6 @@ class Lizmap:
 
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
-
-        # Edition layers
-        self.dlg.twEditionLayerList.setColumnHidden(6, True)
-        self.dlg.twEditionLayerList.setColumnHidden(7, True)
-        self.dlg.twEditionLayerList.horizontalHeader().setStretchLastSection(True)
-        self.dlg.liEditionLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liEditionLayer.setExcludedProviders(excluded_providers())
-        self.dlg.btEditionLayerAdd.clicked.connect(self.add_layer_to_edition)
 
         # Time manager layers
         self.dlg.twTimemanager.setColumnHidden(5, True)
@@ -1089,72 +1085,6 @@ class Lizmap:
             tr('Lizmap Error'),
             message,
             QMessageBox.Ok)
-
-    def add_layer_to_edition(self):
-        """Add a layer in the list of edition layers."""
-        table = self.dlg.twEditionLayerList
-        row = table.rowCount()
-
-        if row >= self.dlg.liEditionLayer.count():
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        layer = self.dlg.liEditionLayer.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory.')
-            return
-
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        layer_name = layer.name()
-        layer_id = layer.id()
-        create_feature = self.dlg.cbEditionLayerCreate.isChecked()
-        modify_attribute = self.dlg.cbEditionLayerModifyAttribute.isChecked()
-        modify_geometry = self.dlg.cbEditionLayerModifyGeometry.isChecked()
-        delete_feature = self.dlg.cbEditionLayerDeleteFeature.isChecked()
-        acl = self.dlg.inEditionLayerAcl.text().strip(' \t')
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        # check at least one checkbox is active
-        if not create_feature and not modify_attribute and not modify_geometry and not delete_feature:
-            self.display_error('At least one action is compulsory.')
-            return
-
-        # check if layer already added
-        for existing_row in range(row):
-            item_layer_id = str(table.item(existing_row, 6).text())
-            if layer_id == item_layer_id:
-                self.display_error('Not possible to add again this layer.')
-                return
-
-        # Check Z or M values which will be lost when editing
-        geometry_type = layer.wkbType()
-        # noinspection PyArgumentList
-        has_m_values = QgsWkbTypes.hasM(geometry_type)
-        # noinspection PyArgumentList
-        has_z_values = QgsWkbTypes.hasZ(geometry_type)
-        if has_z_values or has_m_values:
-            QMessageBox.warning(
-                self.dlg,
-                tr('Editing Z/M Values'),
-                tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
-            )
-
-        content = [
-            layer_name, str(create_feature), str(modify_attribute), str(modify_geometry), str(delete_feature), acl,
-            layer_id, str(row)]
-
-        table.setRowCount(row + 1)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-
-        LOGGER.info('Layer "{}" has been added to the edition tool'.format(layer_id))
 
     def add_layer_to_time_manager(self):
         """Add a layer in the list of 'time manager' tool."""
@@ -2163,34 +2093,6 @@ class Lizmap:
                     liz2json[key] = data
 
         wfsLayersList = self.project.readListEntry('WFSLayers', '')[0]
-
-        # layer(s) for the edition tool
-        lblTableWidget = self.dlg.twEditionLayerList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["editionLayers"] = dict()
-            for row in range(twRowCount):
-                # check that the layer is checked in the WFS capabilities
-                layerName = lblTableWidget.item(row, 0).text()
-                createFeature = lblTableWidget.item(row, 1).text()
-                modifyAttribute = lblTableWidget.item(row, 2).text()
-                modifyGeometry = lblTableWidget.item(row, 3).text()
-                deleteFeature = lblTableWidget.item(row, 4).text()
-                acl = lblTableWidget.item(row, 5).text()
-                layerId = lblTableWidget.item(row, 6).text()
-                layer = self.get_qgis_layer_by_id(layerId)
-                geometryType = self.mapQgisGeometryType[layer.geometryType()]
-                if layerId in wfsLayersList:
-                    liz2json["editionLayers"][layerName] = dict()
-                    liz2json["editionLayers"][layerName]["layerId"] = layerId
-                    liz2json["editionLayers"][layerName]["geometryType"] = geometryType
-                    liz2json["editionLayers"][layerName]["capabilities"] = dict()
-                    liz2json["editionLayers"][layerName]["capabilities"]["createFeature"] = createFeature
-                    liz2json["editionLayers"][layerName]["capabilities"]["modifyAttribute"] = modifyAttribute
-                    liz2json["editionLayers"][layerName]["capabilities"]["modifyGeometry"] = modifyGeometry
-                    liz2json["editionLayers"][layerName]["capabilities"]["deleteFeature"] = deleteFeature
-                    liz2json["editionLayers"][layerName]["acl"] = acl
-                    liz2json["editionLayers"][layerName]["order"] = row
 
         # list of Lizmap external baselayers
         eblTableWidget = self.dlg.twLizmapBaselayers

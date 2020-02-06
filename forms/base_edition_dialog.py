@@ -97,6 +97,8 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setCurrentIndex(index)
             elif definition['type'] == InputType.SpinBox:
                 definition['widget'].setValue(value)
+            elif definition['type'] == InputType.Text:
+                definition['widget'].setText(value)
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
@@ -127,6 +129,8 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].currentData()
             elif definition['type'] == InputType.SpinBox:
                 value = definition['widget'].value()
+            elif definition['type'] == InputType.Text:
+                value = definition['widget'].text()
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
