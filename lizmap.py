@@ -85,10 +85,12 @@ from qgis.core import (
 )
 
 from .definitions.atlas import AtlasDefinitions
+from .definitions.attribute_table import AttributeTableDefinitions
 from .definitions.filter_by_login import FilterByLoginDefinitions
 from .definitions.locate_by_layer import LocateByLayerDefinitions
 from .definitions.tooltip import ToolTipDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
+from .forms.attribute_table_edition import AttributeTableEditionDialog
 from .forms.filter_by_login import FilterByLoginEditionDialog
 from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
@@ -102,7 +104,6 @@ from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from .qgis_plugin_tools.tools.version import is_dev_version, version
-from .qgis_plugin_tools.widgets.selectable_combobox import CheckableFieldComboBox
 
 from .tools import excluded_providers
 
@@ -426,11 +427,13 @@ class Lizmap:
                 'manager': None,
             },
             'attributeLayers': {
-                'tableWidget': self.dlg.twAttributeLayerList,
-                'removeButton': self.dlg.btAttributeLayerDel,
-                'addButton': self.dlg.btAttributeLayerAdd,
-                'cols': ['primaryKey', 'hiddenFields', 'pivot', 'hideAsChild', 'hideLayer', 'layerId', 'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.table_attribute_table,
+                'removeButton': self.dlg.remove_attribute_table_button,
+                'addButton': self.dlg.add_attribute_table_button,
+                'editButton': self.dlg.edit_attribute_table_button,
+                'upButton': self.dlg.up_attribute_table_button,
+                'downButton': self.dlg.down_attribute_table_button,
+                'manager': None,
             },
             'tooltipLayers': {
                 'tableWidget': self.dlg.table_tooltip,
@@ -563,6 +566,9 @@ class Lizmap:
                 if key == 'atlas':
                     definition = AtlasDefinitions()
                     dialog = AtlasEditionDialog
+                elif key == 'attributeLayers':
+                    definition = AttributeTableDefinitions()
+                    dialog = AttributeTableEditionDialog
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
@@ -608,18 +614,6 @@ class Lizmap:
 
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
-
-        # Attribute layers
-        self.dlg.twAttributeLayerList.setColumnHidden(6, True)
-        self.dlg.twAttributeLayerList.setColumnHidden(7, True)
-        self.dlg.twAttributeLayerList.horizontalHeader().setStretchLastSection(True)
-        self.dlg.liAttributeLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liAttributeLayer.layerChanged.connect(self.dlg.liAttributeLayerFields.setLayer)
-        self.dlg.liAttributeLayerFields.setLayer(self.dlg.liAttributeLayer.currentLayer())
-        self.dlg.btAttributeLayerAdd.clicked.connect(self.add_layer_to_attribute_layer)
-        self.attribute_fields_checkable = CheckableFieldComboBox(self.dlg.inAttributeLayerHiddenFields)
-        self.dlg.liAttributeLayer.layerChanged.connect(self.attribute_fields_checkable.set_layer)
-        self.attribute_fields_checkable.set_layer(self.dlg.liAttributeLayer.currentLayer())
 
         # Edition layers
         self.dlg.twEditionLayerList.setColumnHidden(6, True)
@@ -1095,50 +1089,6 @@ class Lizmap:
             tr('Lizmap Error'),
             message,
             QMessageBox.Ok)
-
-    def add_layer_to_attribute_layer(self):
-        """Add a layer in the 'attribute table' tool."""
-        table = self.dlg.twAttributeLayerList
-        row = table.rowCount()
-
-        if row >= self.dlg.liAttributeLayer.count():
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        layer = self.dlg.liAttributeLayer.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory.')
-            return
-
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        primary_key = self.dlg.liAttributeLayerFields.currentField()
-        if not primary_key:
-            self.display_error('Primary key is compulsory.')
-            return
-
-        name = layer.name()
-        layer_id = layer.id()
-        hidden_fields = ','.join(self.attribute_fields_checkable.selected_items())
-        pivot = self.dlg.cbAttributeLayerIsPivot.isChecked()
-        hide_as_child = self.dlg.cbAttributeLayerHideAsChild.isChecked()
-        hide_layer = self.dlg.cbAttributeLayerHideLayer.isChecked()
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        content = [
-            name, primary_key, hidden_fields, str(pivot), str(hide_as_child), str(hide_layer), layer_id, str(row)]
-
-        table.setRowCount(row + 1)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-
-        LOGGER.info('Layer "{}" has been added to attribute table tool'.format(layer_id))
 
     def add_layer_to_edition(self):
         """Add a layer in the list of edition layers."""
@@ -2213,30 +2163,6 @@ class Lizmap:
                     liz2json[key] = data
 
         wfsLayersList = self.project.readListEntry('WFSLayers', '')[0]
-
-        # list of layers to display attribute table
-        lblTableWidget = self.dlg.twAttributeLayerList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["attributeLayers"] = dict()
-            for row in range(twRowCount):
-                # check that the layer is checked in the WFS capabilities
-                layerName = lblTableWidget.item(row, 0).text()
-                primaryKey = lblTableWidget.item(row, 1).text()
-                hiddenFields = lblTableWidget.item(row, 2).text()
-                pivot = lblTableWidget.item(row, 3).text()
-                hideAsChild = lblTableWidget.item(row, 4).text()
-                hideLayer = lblTableWidget.item(row, 5).text()
-                layerId = lblTableWidget.item(row, 6).text()
-                if layerId in wfsLayersList:
-                    liz2json["attributeLayers"][layerName] = dict()
-                    liz2json["attributeLayers"][layerName]["primaryKey"] = primaryKey
-                    liz2json["attributeLayers"][layerName]["hiddenFields"] = hiddenFields
-                    liz2json["attributeLayers"][layerName]["pivot"] = pivot
-                    liz2json["attributeLayers"][layerName]["hideAsChild"] = hideAsChild
-                    liz2json["attributeLayers"][layerName]["hideLayer"] = hideLayer
-                    liz2json["attributeLayers"][layerName]["layerId"] = layerId
-                    liz2json["attributeLayers"][layerName]["order"] = row
 
         # layer(s) for the edition tool
         lblTableWidget = self.dlg.twEditionLayerList
