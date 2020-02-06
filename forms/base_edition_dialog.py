@@ -2,6 +2,8 @@
 
 from collections import OrderedDict
 
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
 
@@ -39,6 +41,12 @@ class BaseEditionDialog(QDialog):
                 widget = layer_config.get('widget')
                 if widget:
                     widget.setChecked(layer_config['default'])
+            if layer_config['type'] == InputType.Color:
+                widget = layer_config.get('widget')
+                if widget:
+                    if layer_config['default'] == '':
+                        widget.setShowNull(True)
+                        widget.setToNull()
 
     def validate(self):
         if self.unicity:
@@ -74,8 +82,16 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setLayer(layer)
             elif definition['type'] == InputType.Field:
                 definition['widget'].setField(value)
+            elif definition['type'] == InputType.Fields:
+                self.load_fields(key, value)
             elif definition['type'] == InputType.CheckBox:
                 definition['widget'].setChecked(value)
+            elif definition['type'] == InputType.Color:
+                color = QColor(value)
+                if color.isValid():
+                    definition['widget'].setColor(color)
+                else:
+                    definition['widget'].setToNull()
             elif definition['type'] == InputType.List:
                 index = definition['widget'].findData(value)
                 definition['widget'].setCurrentIndex(index)
@@ -92,6 +108,19 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].currentLayer().id()
             elif definition['type'] == InputType.Field:
                 value = definition['widget'].currentField()
+            elif definition['type'] == InputType.Fields:
+                model = definition['widget'].model()
+                checked_items = []
+                for item in model.findItems('*', Qt.MatchWildcard):
+                    if item.checkState() == Qt.Checked:
+                        checked_items.append(item.data())
+                value = ','.join(checked_items)
+            elif definition['type'] == InputType.Color:
+                widget = definition['widget']
+                if widget.isNull():
+                    value = ''
+                else:
+                    value = widget.color().name()
             elif definition['type'] == InputType.CheckBox:
                 value = definition['widget'].isChecked()
             elif definition['type'] == InputType.List:

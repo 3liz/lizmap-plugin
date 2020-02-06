@@ -70,7 +70,6 @@ from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
     QMessageBox,
-    QMenu,
 )
 from qgis.core import (
     Qgis,
@@ -88,10 +87,12 @@ from qgis.core import (
 from .definitions.atlas import AtlasDefinitions
 from .definitions.filter_by_login import FilterByLoginDefinitions
 from .definitions.locate_by_layer import LocateByLayerDefinitions
+from .definitions.tooltip import ToolTipDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
 from .forms.filter_by_login import FilterByLoginEditionDialog
 from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
+from .forms.tooltip_edition import ToolTipEditionDialog
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
@@ -432,11 +433,11 @@ class Lizmap:
                 'jsonConfig': {}
             },
             'tooltipLayers': {
-                'tableWidget': self.dlg.twTooltipLayerList,
-                'removeButton': self.dlg.btTooltipLayerDel,
-                'addButton': self.dlg.btTooltipLayerAdd,
-                'cols': ['fields', 'displayGeom', 'colorGeom', 'layerId', 'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.table_tooltip,
+                'removeButton': self.dlg.remove_tooltip_button,
+                'addButton': self.dlg.add_tooltip_button,
+                'editButton': self.dlg.edit_tooltip_button,
+                'manager': None,
             },
             'editionLayers': {
                 'tableWidget': self.dlg.twEditionLayerList,
@@ -568,6 +569,9 @@ class Lizmap:
                 elif key == 'loginFilteredLayers':
                     definition = FilterByLoginDefinitions()
                     dialog = FilterByLoginEditionDialog
+                elif key == 'tooltipLayers':
+                    definition = ToolTipDefinitions()
+                    dialog = ToolTipEditionDialog
                 else:
                     raise Exception('Unknown panel.')
 
@@ -616,16 +620,6 @@ class Lizmap:
         self.attribute_fields_checkable = CheckableFieldComboBox(self.dlg.inAttributeLayerHiddenFields)
         self.dlg.liAttributeLayer.layerChanged.connect(self.attribute_fields_checkable.set_layer)
         self.attribute_fields_checkable.set_layer(self.dlg.liAttributeLayer.currentLayer())
-
-        # Tooltip layers
-        self.dlg.twTooltipLayerList.setColumnHidden(4, True)
-        self.dlg.twTooltipLayerList.setColumnHidden(5, True)
-        self.dlg.twTooltipLayerList.horizontalHeader().setStretchLastSection(True)
-        self.dlg.liTooltipLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.btTooltipLayerAdd.clicked.connect(self.add_layer_to_tooltip)
-        self.tooltip_fields_checkable = CheckableFieldComboBox(self.dlg.inTooltipLayerFields)
-        self.dlg.liTooltipLayer.layerChanged.connect(self.tooltip_fields_checkable.set_layer)
-        self.tooltip_fields_checkable.set_layer(self.dlg.liTooltipLayer.currentLayer())
 
         # Edition layers
         self.dlg.twEditionLayerList.setColumnHidden(6, True)
@@ -1145,48 +1139,6 @@ class Lizmap:
             table.setItem(row, i, item)
 
         LOGGER.info('Layer "{}" has been added to attribute table tool'.format(layer_id))
-
-    def add_layer_to_tooltip(self):
-        """Add a layer in the 'tooltip' tool."""
-        table = self.dlg.twTooltipLayerList
-        row = table.rowCount()
-
-        if row >= self.dlg.liTooltipLayer.count():
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        layer = self.dlg.liTooltipLayer.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory.')
-            return
-
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        fields = self.tooltip_fields_checkable.selected_items()
-        if not fields:
-            self.display_error('At least one field is compulsory.')
-            return
-
-        layer_name = layer.name()
-        layer_id = layer.id()
-        fields = ','.join(fields)
-        display_geom = self.dlg.cbTooltipLayerDisplayGeom.isChecked()
-        color_geom = self.dlg.inTooltipLayerColorGeom.text().strip(' \t')
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        content = [layer_name, fields, str(display_geom), str(color_geom), layer_id, str(row)]
-
-        table.setRowCount(row + 1)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-
-        LOGGER.info('Layer "{}" has been added to the tooltip tool'.format(layer_id))
 
     def add_layer_to_edition(self):
         """Add a layer in the list of edition layers."""
@@ -2285,25 +2237,6 @@ class Lizmap:
                     liz2json["attributeLayers"][layerName]["hideLayer"] = hideLayer
                     liz2json["attributeLayers"][layerName]["layerId"] = layerId
                     liz2json["attributeLayers"][layerName]["order"] = row
-
-        # list of layers to display tooltip
-        lblTableWidget = self.dlg.twTooltipLayerList
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["tooltipLayers"] = dict()
-            for row in range(twRowCount):
-                layerName = lblTableWidget.item(row, 0).text()
-                fields = lblTableWidget.item(row, 1).text()
-                displayGeom = lblTableWidget.item(row, 2).text()
-                colorGeom = lblTableWidget.item(row, 3).text()
-                layerId = lblTableWidget.item(row, 4).text()
-                if layerId in wfsLayersList:
-                    liz2json["tooltipLayers"][layerName] = dict()
-                    liz2json["tooltipLayers"][layerName]["fields"] = fields
-                    liz2json["tooltipLayers"][layerName]["displayGeom"] = displayGeom
-                    liz2json["tooltipLayers"][layerName]["colorGeom"] = colorGeom
-                    liz2json["tooltipLayers"][layerName]["layerId"] = layerId
-                    liz2json["tooltipLayers"][layerName]["order"] = row
 
         # layer(s) for the edition tool
         lblTableWidget = self.dlg.twEditionLayerList
