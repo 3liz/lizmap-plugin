@@ -18,6 +18,7 @@ class InputType(Enum):
     Layer = 'Layer'
     List = 'List'
     SpinBox = 'SpinBox'
+    Text = 'Text'
 
 
 class BaseDefinitions:
