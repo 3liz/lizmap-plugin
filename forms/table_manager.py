@@ -142,6 +142,14 @@ class TableManager:
                     if index >= 0:
                         cell.setIcon(layer.fields().iconForField(index))
 
+            elif input_type == InputType.Fields:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+
+            elif input_type == InputType.Color:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+
             elif input_type == InputType.CheckBox:
                 if value:
                     cell.setText('✓')
@@ -247,7 +255,11 @@ class TableManager:
 
                 if input_type == InputType.Layer:
                     layer_data[key] = cell
+                elif input_type == InputType.Color:
+                    layer_data[key] = cell
                 elif input_type == InputType.Field:
+                    layer_data[key] = cell
+                elif input_type == InputType.Fields:
                     layer_data[key] = cell
                 elif input_type == InputType.CheckBox:
                     # Lizmap 4 #176
@@ -267,7 +279,7 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers']:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
@@ -321,7 +333,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers']:
             data = self._from_json_legacy_order(data)
 
         layers = data.get('layers')
@@ -345,6 +357,10 @@ class TableManager:
                             valid_layer = False
                         layer_data[key] = value
                     elif definition['type'] == InputType.Field:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Fields:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Color:
                         layer_data[key] = value
                     elif definition['type'] == InputType.CheckBox:
                         layer_data[key] = True if value in ['true', 'True'] else False

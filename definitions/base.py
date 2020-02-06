@@ -11,11 +11,13 @@ __revision__ = '$Format:%H$'
 
 @unique
 class InputType(Enum):
-    Layer = 'Layer'
-    Field = 'Field'
+    Color = 'Color'
     CheckBox = 'CheckBox'
-    SpinBox = 'SpinBox'
+    Field = 'Field'
+    Fields = 'Fields'
+    Layer = 'Layer'
     List = 'List'
+    SpinBox = 'SpinBox'
 
 
 class BaseDefinitions:
