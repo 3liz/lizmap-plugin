@@ -1,7 +1,8 @@
 ## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
 
-Download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.1/download/
-Do not use the link provided by GitHub by default. All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
+* Latest download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.1/download/
+* All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
+* Do not use the link provided by GitHub by default.
 
 * The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/). 
 * The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/). 
