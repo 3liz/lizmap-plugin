@@ -5,7 +5,6 @@
 *.swp
 *.pyc
 *.DS_Store
-.idea
 
 lizmap.cfg
 
@@ -18,3 +17,5 @@ dist/
 
 lizmap.zip
 unittest.qgs
+test/data/points_lines.gpkg-shm
+test/data/points_lines.gpkg-wal
