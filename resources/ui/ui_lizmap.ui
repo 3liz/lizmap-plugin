@@ -2549,7 +2549,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    <item>
                     <widget class="QPushButton" name="down_edition_layer">
                      <property name="text">
-                      <string>down</string>
+                      <string notr="true">down</string>
                      </property>
                     </widget>
                    </item>

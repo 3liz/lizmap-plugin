@@ -5,9 +5,8 @@ set -e
 METADATA=$(cat metadata.txt | grep "version=" |  cut -d '=' -f2)
 
 echo "Releasing version ${METADATA}"
-cd ..
 
-make docker_test
+# make docker_test
 
 git commit -am "release of ${METADATA}"
 git tag "${METADATA}"
