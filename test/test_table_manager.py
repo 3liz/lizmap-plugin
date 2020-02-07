@@ -92,6 +92,7 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
         data = table_manager.to_json()
+        json['lines'].pop('colorGeom')
         self.assertDictEqual(data, json)
 
     def test_attribute_table(self):
@@ -152,7 +153,7 @@ class TestTableManager(unittest.TestCase):
             },
             'lines_2': {
                 'fieldName': 'name',
-                # 'filterFieldName': 'id', DISABLED on purpore. This field is not compulsory.
+                # 'filterFieldName': 'id', DISABLED on purpose. This field is not compulsory.
                 'displayGeom': 'False',
                 'minLength': 0,
                 'filterOnLocate': 'True',
@@ -195,7 +196,6 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'lines_2': {
                 'fieldName': 'name',
-                'filterFieldName': '',
                 'displayGeom': 'False',
                 'minLength': 0,
                 'filterOnLocate': 'True',

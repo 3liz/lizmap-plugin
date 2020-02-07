@@ -271,6 +271,9 @@ class TableManager:
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
 
+                if layer_data[key] == '':
+                    layer_data.pop(key)
+
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
                     layer_data['atlasEnabled'] = 'True'
