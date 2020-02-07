@@ -61,14 +61,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QgsColorButton" name="color">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="color"/>
      </item>
     </layout>
    </item>
@@ -98,11 +91,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgis.gui</header>
-  </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
