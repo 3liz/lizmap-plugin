@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.2.3
+
+* Fix crash about color button
+
 ## Version 3.2.2:
 
 * Fix bug about the new form with locate by layer #210
