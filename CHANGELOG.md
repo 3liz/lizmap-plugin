@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Version 3.2.2:
+
+* Fix bug about the new form with locate by layer #210
+* Refactor Edition panel to be editable
+* Refactor Attribute Table panel to be editable
+* Refactor Tooltip panel to be editable
+* Fix compulsory field in Filter by login
+
 ## Version 3.2.1
 
 * Remove experimental from 3.2.0

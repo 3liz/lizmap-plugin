@@ -2352,20 +2352,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="cbLimitDataToBbox">
-                 <property name="toolTip">
-                  <string>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</string>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="text">
-                  <string>Limit fetched data to the current map extent and layer visibility</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QTableWidget" name="twAttributeLayerList">
+                <widget class="QTableWidget" name="table_attribute_table">
                  <property name="editTriggers">
                   <set>QAbstractItemView::NoEditTriggers</set>
                  </property>
@@ -2378,143 +2365,42 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <property name="selectionBehavior">
                   <enum>QAbstractItemView::SelectRows</enum>
                  </property>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Primary key</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Fields to hide</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Pivot table</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Hide in children</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Hide layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Attribute layer id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
                 </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_27">
-                 <item>
-                  <layout class="QGridLayout" name="gridLayout_25">
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_61">
-                     <property name="text">
-                      <string>Layer</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QgsFieldComboBox" name="liAttributeLayerFields">
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QLabel" name="label_62">
-                     <property name="text">
-                      <string>Primary key</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QLabel" name="label_64">
-                     <property name="text">
-                      <string>Fields to hide</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="6" column="0">
-                    <widget class="QCheckBox" name="cbAttributeLayerIsPivot">
-                     <property name="toolTip">
-                      <string>If the table is a pivot, used in a many-to-many relationship.</string>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="text">
-                      <string>Pivot table?</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="6" column="1">
-                    <widget class="QCheckBox" name="cbAttributeLayerHideAsChild">
-                     <property name="toolTip">
-                      <string>Do not display the layer in a relation when the layer is a child.</string>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="text">
-                      <string>Hide in child subpanels</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QgsMapLayerComboBox" name="liAttributeLayer"/>
-                   </item>
-                   <item row="6" column="2">
-                    <widget class="QCheckBox" name="cbAttributeLayerHideLayer">
-                     <property name="toolTip">
-                      <string>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</string>
-                     </property>
-                     <property name="text">
-                      <string>Hide layer in the list</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="2">
-                    <widget class="QComboBox" name="inAttributeLayerHiddenFields">
-                     <property name="toolTip">
-                      <string>List of fields to hide in the attribute table</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_26">
                  <item>
-                  <widget class="QPushButton" name="btAttributeLayerAdd">
+                  <widget class="QPushButton" name="add_attribute_table_button">
                    <property name="text">
-                    <string>Add layer</string>
+                    <string notr="true">+</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btAttributeLayerDel">
+                  <widget class="QPushButton" name="remove_attribute_table_button">
                    <property name="text">
-                    <string>Remove layer</string>
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_attribute_table_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_attribute_table_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_attribute_table_button">
+                   <property name="text">
+                    <string notr="true">down</string>
                    </property>
                   </widget>
                  </item>
@@ -2532,6 +2418,28 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </spacer>
                  </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox">
+                 <property name="title">
+                  <string>Attribute table options</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <item>
+                   <widget class="QCheckBox" name="cbLimitDataToBbox">
+                    <property name="toolTip">
+                     <string>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</string>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>Limit fetched data to the current map extent and layer visibility</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -2582,7 +2490,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="twEditionLayerList">
+                <widget class="QTableWidget" name="edition_table">
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
@@ -2604,132 +2512,44 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <attribute name="horizontalHeaderStretchLastSection">
                   <bool>false</bool>
                  </attribute>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Create</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Modify attributes</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Modify geometry</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Delete</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Allowed groups</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Layer id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
                 </widget>
                </item>
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_8">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_10">
-                   <item>
-                    <widget class="QgsMapLayerComboBox" name="liEditionLayer">
-                     <property name="minimumSize">
-                      <size>
-                       <width>78</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbEditionLayerCreate">
-                     <property name="text">
-                      <string>Create</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbEditionLayerModifyAttribute">
-                     <property name="text">
-                      <string>Modify attributes</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbEditionLayerModifyGeometry">
-                     <property name="text">
-                      <string>Modify geometry</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbEditionLayerDeleteFeature">
-                     <property name="text">
-                      <string>Delete</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_57">
-                     <property name="text">
-                      <string>Allowed groups</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="inEditionLayerAcl">
-                     <property name="toolTip">
-                      <string>Use a comma separated list of Lizmap groups ids to restrict access to this layer editing.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_16">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_17">
                    <item>
-                    <widget class="QPushButton" name="btEditionLayerAdd">
+                    <widget class="QPushButton" name="add_edition_layer">
                      <property name="text">
-                      <string>Add layer</string>
+                      <string notr="true">+</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="btEditionLayerDel">
+                    <widget class="QPushButton" name="remove_edition_layer">
                      <property name="text">
-                      <string>Remove layer</string>
+                      <string notr="true">-</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="edit_edition_layer">
+                     <property name="text">
+                      <string notr="true">edit</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="up_edition_layer">
+                     <property name="text">
+                      <string notr="true">up</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="down_edition_layer">
+                     <property name="text">
+                      <string notr="true">down</string>
                      </property>
                     </widget>
                    </item>
@@ -2802,126 +2622,28 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="twTooltipLayerList">
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Fields</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Display geometry</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Geometry color</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Layer id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
-                </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_7">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_3">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QgsMapLayerComboBox" name="liTooltipLayer">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QLabel" name="label_6">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Color (HTML)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QCheckBox" name="cbTooltipLayerDisplayGeom">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Display geometry</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QLineEdit" name="inTooltipLayerColorGeom">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="label_4">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Fields</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_5">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Display geometry</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QComboBox" name="inTooltipLayerFields"/>
-                 </item>
-                </layout>
+                <widget class="QTableWidget" name="table_tooltip"/>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
-                  <widget class="QPushButton" name="btTooltipLayerAdd">
+                  <widget class="QPushButton" name="add_tooltip_button">
                    <property name="text">
-                    <string>Add layer</string>
+                    <string notr="true">+</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btTooltipLayerDel">
+                  <widget class="QPushButton" name="remove_tooltip_button">
                    <property name="text">
-                    <string>Remove layer</string>
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_tooltip_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
                    </property>
                   </widget>
                  </item>
@@ -3999,19 +3721,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </layout>
                 </widget>
                </item>
-               <item>
-                <spacer name="verticalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
               </layout>
              </widget>
             </widget>
@@ -4474,34 +4183,15 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>add_locate_layer_button</tabstop>
   <tabstop>remove_locate_layer_button</tabstop>
   <tabstop>scrollArea_6</tabstop>
-  <tabstop>cbLimitDataToBbox</tabstop>
-  <tabstop>twAttributeLayerList</tabstop>
-  <tabstop>liAttributeLayer</tabstop>
-  <tabstop>liAttributeLayerFields</tabstop>
-  <tabstop>inAttributeLayerHiddenFields</tabstop>
-  <tabstop>cbAttributeLayerIsPivot</tabstop>
-  <tabstop>cbAttributeLayerHideAsChild</tabstop>
-  <tabstop>cbAttributeLayerHideLayer</tabstop>
-  <tabstop>btAttributeLayerAdd</tabstop>
-  <tabstop>btAttributeLayerDel</tabstop>
+  <tabstop>table_attribute_table</tabstop>
+  <tabstop>add_attribute_table_button</tabstop>
+  <tabstop>remove_attribute_table_button</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>twEditionLayerList</tabstop>
-  <tabstop>liEditionLayer</tabstop>
-  <tabstop>cbEditionLayerCreate</tabstop>
-  <tabstop>cbEditionLayerModifyAttribute</tabstop>
-  <tabstop>cbEditionLayerModifyGeometry</tabstop>
-  <tabstop>cbEditionLayerDeleteFeature</tabstop>
-  <tabstop>inEditionLayerAcl</tabstop>
-  <tabstop>btEditionLayerAdd</tabstop>
-  <tabstop>btEditionLayerDel</tabstop>
+  <tabstop>edition_table</tabstop>
+  <tabstop>add_edition_layer</tabstop>
+  <tabstop>remove_edition_layer</tabstop>
   <tabstop>scrollArea_8</tabstop>
-  <tabstop>twTooltipLayerList</tabstop>
-  <tabstop>liTooltipLayer</tabstop>
-  <tabstop>inTooltipLayerFields</tabstop>
-  <tabstop>cbTooltipLayerDisplayGeom</tabstop>
-  <tabstop>inTooltipLayerColorGeom</tabstop>
-  <tabstop>btTooltipLayerAdd</tabstop>
-  <tabstop>btTooltipLayerDel</tabstop>
+  <tabstop>add_tooltip_button</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>scrollArea_11</tabstop>
   <tabstop>liDatavizContainer</tabstop>

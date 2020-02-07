@@ -7,11 +7,17 @@ description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 # set -beta for dev version
-version=3.2.2-beta
+version=3.2.3-beta
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.2.2:
+  * Fix bug about the new form with locate by layer #210
+  * Refactor Edition panel to be editable
+  * Refactor Attribute Table panel to be editable
+  * Refactor Tooltip panel to be editable
+  * Fix compulsory field in Filter by login
   Version 3.2.1:
   * Remove experimental from 3.2.0
   * Refactor Locate by layer to be editable

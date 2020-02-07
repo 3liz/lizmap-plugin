@@ -9,9 +9,12 @@ from qgis.testing import unittest, start_app
 
 start_app()
 
+from ..definitions.atlas import AtlasDefinitions
+from ..definitions.attribute_table import AttributeTableDefinitions
+from ..definitions.edition import EditionDefinitions
 from ..definitions.filter_by_login import FilterByLoginDefinitions
 from ..definitions.locate_by_layer import LocateByLayerDefinitions
-from ..definitions.atlas import AtlasDefinitions
+from ..definitions.tooltip import ToolTipDefinitions
 from ..forms.table_manager import TableManager
 from ..forms.atlas_edition import AtlasEditionDialog
 from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
@@ -42,11 +45,11 @@ class TestTableManager(unittest.TestCase):
             None, definitions, None, table, None, None, None, None)
 
         json = {
-            "lines": {
-                "filterAttribute": "name",
-                "filterPrivate": "False",
-                "layerId": "{}".format(layer.id()),
-                "order": 0
+            'lines': {
+                'filterAttribute': 'name',
+                'filterPrivate': 'False',
+                'layerId': layer.id(),
+                'order': 0
             }
         }
         self.assertEqual(table_manager.table.rowCount(), 0)
@@ -56,13 +59,121 @@ class TestTableManager(unittest.TestCase):
 
         expected = {
             'lines': {
-                "filterAttribute": "name",
-                "filterPrivate": "False",
-                'layerId': '{}'.format(layer.id()),
+                'filterAttribute': 'name',
+                'filterPrivate': 'False',
+                'layerId': layer.id(),
                 'order': 0
             }
         }
         self.assertDictEqual(data, expected)
+
+    def test_tool_tip(self):
+        """Test table manager with tooltip layer."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = ToolTipDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            'lines': {
+                'fields': 'id,name',
+                'displayGeom': 'False',
+                'colorGeom': '',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+        json['lines'].pop('colorGeom')
+        self.assertDictEqual(data, json)
+
+    def test_attribute_table(self):
+        """Test table manager with attribute table."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = AttributeTableDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            'lines': {
+                'primaryKey': 'id',
+                'hiddenFields': 'id,name',
+                'pivot': 'False',
+                'hideAsChild': 'False',
+                'hideLayer': 'False',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+        self.assertDictEqual(data, json)
+
+    def test_edition_layer(self):
+        """Test table manager with edition layer."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = EditionDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            'lines': {
+                'layerId': layer.id(),
+                'geometryType': 'line',
+                'capabilities': {
+                    'createFeature': 'True',
+                    'modifyAttribute': 'True',
+                    'modifyGeometry': 'True',
+                    'deleteFeature': 'True'
+                },
+                'acl': 'edition_group',
+                'order': 0
+            }
+        }
+        json_legacy = table_manager._from_json_legacy_order(copy.deepcopy(json))
+        json_legacy = table_manager._from_json_legacy_capabilities(json_legacy)
+        expected = {
+            'layers': [
+                {
+                    'layerId': layer.id(),
+                    'createFeature': 'True',
+                    'modifyAttribute': 'True',
+                    'modifyGeometry': 'True',
+                    'deleteFeature': 'True',
+                    'acl': 'edition_group',
+                    'order': 0
+                },
+            ]
+        }
+        self.assertDictEqual(json_legacy, expected)
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(copy.deepcopy(json))
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+        self.assertDictEqual(data, json)
 
     def test_locate_by_layer(self):
         """Test table manager with locate by layer."""
@@ -87,16 +198,16 @@ class TestTableManager(unittest.TestCase):
                 'displayGeom': 'True',
                 'minLength': 0,
                 'filterOnLocate': 'False',
-                'layerId': '{}'.format(layer.id()),
+                'layerId': layer.id(),
                 'order': 1
             },
             'lines_2': {
                 'fieldName': 'name',
-                # 'filterFieldName': 'id', DISABLED on purpore. This field is not compulsory.
+                # 'filterFieldName': 'id', DISABLED on purpose. This field is not compulsory.
                 'displayGeom': 'False',
                 'minLength': 0,
                 'filterOnLocate': 'True',
-                'layerId': '{}'.format(layer_2.id()),
+                'layerId': layer_2.id(),
                 'order': 0
             }
         }
@@ -111,7 +222,7 @@ class TestTableManager(unittest.TestCase):
                     'displayGeom': 'False',
                     'minLength': 0,
                     'filterOnLocate': 'True',
-                    'layerId': '{}'.format(layer_2.id()),
+                    'layerId': layer_2.id(),
                     'order': 0
                 },
                 {
@@ -120,7 +231,7 @@ class TestTableManager(unittest.TestCase):
                     'displayGeom': 'True',
                     'minLength': 0,
                     'filterOnLocate': 'False',
-                    'layerId': '{}'.format(layer.id()),
+                    'layerId': layer.id(),
                     'order': 1
                 },
             ]
@@ -135,11 +246,10 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'lines_2': {
                 'fieldName': 'name',
-                'filterFieldName': '',
                 'displayGeom': 'False',
                 'minLength': 0,
                 'filterOnLocate': 'True',
-                'layerId': '{}'.format(layer_2.id()),
+                'layerId': layer_2.id(),
                 'order': 0
             },
             'lines': {
@@ -148,7 +258,7 @@ class TestTableManager(unittest.TestCase):
                 'displayGeom': 'True',
                 'minLength': 0,
                 'filterOnLocate': 'False',
-                'layerId': '{}'.format(layer.id()),
+                'layerId': layer.id(),
                 'order': 1
             },
         }
@@ -209,16 +319,16 @@ class TestTableManager(unittest.TestCase):
 
         # JSON from LWC 3.4 and above
         layer_1 = {
-            "layer": "{}".format(layer.id()),
-            "primaryKey": "{}".format(field),
-            "displayLayerDescription": "False",
-            "featureLabel": "name",
-            "sortField": "name",
-            "highlightGeometry": "True",
-            "zoom": "center",
-            "duration": 5,
-            "displayPopup": "True",
-            "triggerFilter": "True"
+            'layer': layer.id(),
+            'primaryKey': field,
+            'displayLayerDescription': 'False',
+            'featureLabel': 'name',
+            'sortField': 'name',
+            'highlightGeometry': 'True',
+            'zoom': 'center',
+            'duration': 5,
+            'displayPopup': 'True',
+            'triggerFilter': 'True'
         }
         json = {
             'layers': [
@@ -309,16 +419,16 @@ class TestTableManager(unittest.TestCase):
         json = {
             'layers': [
                 {
-                    "layer": "{}".format(layer.id()),
-                    "primaryKey": "id",
-                    "displayLayerDescription": "False",
-                    "featureLabel": "name",
-                    "sortField": "name",
-                    "highlightGeometry": "True",
-                    "zoom": "center",
-                    "duration": 5,
-                    "displayPopup": "True",
-                    "triggerFilter": "True"
+                    'layer': layer.id(),
+                    'primaryKey': 'id',
+                    'displayLayerDescription': 'False',
+                    'featureLabel': 'name',
+                    'sortField': 'name',
+                    'highlightGeometry': 'True',
+                    'zoom': 'center',
+                    'duration': 5,
+                    'displayPopup': 'True',
+                    'triggerFilter': 'True'
                 }
             ]
         }
@@ -352,16 +462,16 @@ class TestTableManager(unittest.TestCase):
         definitions._use_single_row = False
 
         json = {
-            "atlasEnabled": "True",  # Will not be used
-            "atlasLayer": "{}".format(layer.id()),
-            "atlasPrimaryKey": "{}".format(field),
-            "atlasDisplayLayerDescription": "True",
-            "atlasFeatureLabel": "inf3_o_t",
-            "atlasSortField": "inf3_o_t",
-            "atlasZoom": "zoom",
-            "atlasShowAtStartup": "True",  # will not be used
-            "atlasMaxWidth": 25,  # will not be used
-            "atlasDuration": 5
+            'atlasEnabled': 'True',  # Will not be used
+            'atlasLayer': layer.id(),
+            'atlasPrimaryKey': field,
+            'atlasDisplayLayerDescription': 'True',
+            'atlasFeatureLabel': 'inf3_o_t',
+            'atlasSortField': 'inf3_o_t',
+            'atlasZoom': 'zoom',
+            'atlasShowAtStartup': 'True',  # will not be used
+            'atlasMaxWidth': 25,  # will not be used
+            'atlasDuration': 5
         }
 
         table_manager = TableManager(
@@ -375,16 +485,16 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'layers': [
                 {
-                    "layer": "{}".format(layer.id()),
-                    "primaryKey": "{}".format(field),
-                    "displayLayerDescription": "True",
-                    "featureLabel": "inf3_o_t",
-                    "sortField": "inf3_o_t",
-                    "zoom": "zoom",
-                    "duration": 5,
-                    "displayPopup": "False",  # auto added by the tool
-                    "highlightGeometry": "False",  # auto added by the tool
-                    "triggerFilter": "False",  # auto added by the tool
+                    'layer': layer.id(),
+                    'primaryKey': field,
+                    'displayLayerDescription': 'True',
+                    'featureLabel': 'inf3_o_t',
+                    'sortField': 'inf3_o_t',
+                    'zoom': 'zoom',
+                    'duration': 5,
+                    'displayPopup': 'False',  # auto added by the tool
+                    'highlightGeometry': 'False',  # auto added by the tool
+                    'triggerFilter': 'False',  # auto added by the tool
                 }
             ]
         }
@@ -396,7 +506,7 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'atlasEnabled': 'True',  # Hard coded for Lizmap 3.3
             'atlasMaxWidth': 25,  # will not be used
-            'atlasLayer': "{}".format(layer.id()),
+            'atlasLayer': layer.id(),
             'atlasPrimaryKey': 'id',
             'atlasDisplayLayerDescription': 'True',
             'atlasFeatureLabel': 'inf3_o_t',

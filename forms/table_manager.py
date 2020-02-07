@@ -142,6 +142,14 @@ class TableManager:
                     if index >= 0:
                         cell.setIcon(layer.fields().iconForField(index))
 
+            elif input_type == InputType.Fields:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+
+            elif input_type == InputType.Color:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+
             elif input_type == InputType.CheckBox:
                 if value:
                     cell.setText('✓')
@@ -156,6 +164,10 @@ class TableManager:
 
             elif input_type == InputType.SpinBox:
                 cell.setText(str(value))
+                cell.setData(Qt.UserRole, value)
+
+            elif input_type == InputType.Text:
+                cell.setText(value)
                 cell.setData(Qt.UserRole, value)
 
             else:
@@ -247,7 +259,11 @@ class TableManager:
 
                 if input_type == InputType.Layer:
                     layer_data[key] = cell
+                elif input_type == InputType.Color:
+                    layer_data[key] = cell
                 elif input_type == InputType.Field:
+                    layer_data[key] = cell
+                elif input_type == InputType.Fields:
                     layer_data[key] = cell
                 elif input_type == InputType.CheckBox:
                     # Lizmap 4 #176
@@ -256,8 +272,29 @@ class TableManager:
                     layer_data[key] = cell
                 elif input_type == InputType.List:
                     layer_data[key] = cell
+                elif input_type == InputType.Text:
+                    layer_data[key] = cell
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
+
+                if layer_data[key] == '':
+                    layer_data.pop(key)
+
+            if self.definitions.key() == 'editionLayers':
+                capabilities_keys = ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature']
+                layer_data['capabilities'] = {key: layer_data[key] for key in capabilities_keys}
+                for key in capabilities_keys:
+                    layer_data.pop(key)
+
+                geometry_type = {
+                    0: 'point',
+                    1: 'line',
+                    2: 'polygon',
+                    3: 'unknown',
+                    4: 'none'
+                }
+                vector_layer = QgsProject.instance().mapLayer(layer_data['layerId'])
+                layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
@@ -267,7 +304,7 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers']:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
@@ -319,10 +356,22 @@ class TableManager:
 
         return new_data
 
+    @staticmethod
+    def _from_json_legacy_capabilities(data):
+        for layer in data.get('layers'):
+            capabilities = layer.get('capabilities')
+            layer.update(capabilities)
+            layer.pop('capabilities')
+            layer.pop('geometryType')
+        return data
+
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers']:
             data = self._from_json_legacy_order(data)
+
+        if self.definitions.key() == 'editionLayers':
+            data = self._from_json_legacy_capabilities(data)
 
         layers = data.get('layers')
 
@@ -346,11 +395,17 @@ class TableManager:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Field:
                         layer_data[key] = value
+                    elif definition['type'] == InputType.Fields:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Color:
+                        layer_data[key] = value
                     elif definition['type'] == InputType.CheckBox:
                         layer_data[key] = True if value in ['true', 'True'] else False
                     elif definition['type'] == InputType.List:
                         layer_data[key] = value
                     elif definition['type'] == InputType.SpinBox:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Text:
                         layer_data[key] = value
                     else:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))
