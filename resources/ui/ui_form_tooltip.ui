@@ -36,9 +36,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QgsFieldComboBox" name="fields"/>
-     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_display_geometry">
        <property name="text">
@@ -62,6 +59,9 @@
      </item>
      <item row="3" column="1">
       <widget class="QLineEdit" name="color"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="ListFieldsSelection" name="fields"/>
      </item>
     </layout>
    </item>
@@ -92,14 +92,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldComboBox</class>
+   <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <class>ListFieldsSelection</class>
+   <extends>QListWidget</extends>
+   <header>lizmap.qgis_plugin_tools.widgets.list_fields_selection</header>
   </customwidget>
  </customwidgets>
  <resources/>

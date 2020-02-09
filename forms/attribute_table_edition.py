@@ -6,7 +6,6 @@ from .base_edition_dialog import BaseEditionDialog
 from ..definitions.attribute_table import AttributeTableDefinitions
 from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import load_ui
-from ..qgis_plugin_tools.widgets.selectable_combobox import CheckableFieldComboBox
 
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -41,15 +40,10 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.field_primary_key.setLayer)
         self.field_primary_key.setLayer(self.layer.currentLayer())
-        self.fields_checkable = CheckableFieldComboBox(self.fields_to_hide)
-        self.layer.layerChanged.connect(self.fields_checkable.set_layer)
-        self.fields_checkable.set_layer(self.layer.currentLayer())
+        self.layer.layerChanged.connect(self.fields_to_hide.set_layer)
+        self.fields_to_hide.set_layer(self.layer.currentLayer())
 
         self.setup_ui()
-
-    def load_fields(self, key, values):
-        _ = key
-        self.fields_checkable.set_selected_items(values)
 
     def validate(self) -> str:
         upstream = super().validate()

@@ -83,7 +83,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Field:
                 definition['widget'].setField(value)
             elif definition['type'] == InputType.Fields:
-                self.load_fields(key, value)
+                definition['widget'].set_selection(value.split(','))
             elif definition['type'] == InputType.CheckBox:
                 definition['widget'].setChecked(value)
             elif definition['type'] == InputType.Color:
@@ -111,12 +111,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Field:
                 value = definition['widget'].currentField()
             elif definition['type'] == InputType.Fields:
-                model = definition['widget'].model()
-                checked_items = []
-                for item in model.findItems('*', Qt.MatchWildcard):
-                    if item.checkState() == Qt.Checked:
-                        checked_items.append(item.data())
-                value = ','.join(checked_items)
+                value = ','.join(definition['widget'].selection())
             elif definition['type'] == InputType.Color:
                 widget = definition['widget']
                 if widget.isNull():
