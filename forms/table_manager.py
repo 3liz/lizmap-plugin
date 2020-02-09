@@ -6,6 +6,7 @@ from typing import Type
 
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QDialog,
@@ -149,6 +150,8 @@ class TableManager:
             elif input_type == InputType.Color:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
+                if value:
+                    cell.setData(Qt.DecorationRole, QColor(value))
 
             elif input_type == InputType.CheckBox:
                 if value:
@@ -174,7 +177,7 @@ class TableManager:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
 
             self.table.setItem(row, i, cell)
-        self.table.selectRow(row)
+        self.table.clearSelection()
 
     def move_layer_up(self):
         """Move the selected layer up."""
