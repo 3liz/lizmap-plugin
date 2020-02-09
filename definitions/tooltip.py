@@ -32,7 +32,7 @@ class ToolTipDefinitions(BaseDefinitions):
             'tooltip': tr('If you want to display geometry with the tooltip.')
         }
         self._layer_config['colorGeom'] = {
-            'type': InputType.Text,
+            'type': InputType.Color,
             'header': tr('Color'),
             'default': '',
             'tooltip': tr('The color to use for displaying the geometry.')
