@@ -25,23 +25,17 @@ class TimeManagerDefinitions(BaseDefinitions):
             'default': None,
             'tooltip': tr('Column with the date/time.')
         }
-        self._layer_config['label'] = {
+        self._layer_config['endAttribute'] = {
             'type': InputType.Field,
-            'header': tr('Hover label'),
+            'header': tr('End'),
             'default': '',
-            'tooltip': tr('A field to display as a label when hovering with the mouse over the object')
+            'tooltip': tr('Field with the end date/time.')
         }
-        self._layer_config['group'] = {
-            'type': InputType.Text,
-            'header': tr('Group ID'),
-            'default': '',
-            'tooltip': tr('Optional, an ID and a title for groups of objects.')
-        }
-        self._layer_config['groupTitle'] = {
-            'type': InputType.Text,
-            'header': tr('Group title'),
-            'default': '',
-            'tooltip': tr('Optional, an ID and a title for groups of objects.')
+        self._layer_config['attributeResolution'] = {
+            'type': InputType.List,
+            'header': tr('Attribute resolution'),
+            'default': 'years',
+            'tooltip': tr('Date/time resolution of the chosen attribute(s).')
         }
         self._general_config['inTimeFrameSize'] = {
             'type': InputType.SpinBox,
