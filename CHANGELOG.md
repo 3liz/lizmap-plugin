@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 3.2.4
+
+* Display color in table
+* Re-enable color button
+* Switch to a list to select fields
+
 ## Version 3.2.3
 
 * Fix crash about color button

@@ -1,6 +1,6 @@
 ## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
 
-* Latest download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.3/download/
+* Latest download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.4/download/
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
 * Do not use the link provided by GitHub by default.
 
