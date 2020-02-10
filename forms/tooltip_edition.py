@@ -6,7 +6,6 @@ from .base_edition_dialog import BaseEditionDialog
 from ..definitions.tooltip import ToolTipDefinitions
 from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import load_ui
-from ..qgis_plugin_tools.widgets.selectable_combobox import CheckableFieldComboBox
 
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -35,15 +34,10 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('colorGeom', self.label_color)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.fields_checkable = CheckableFieldComboBox(self.fields)
-        self.layer.layerChanged.connect(self.fields_checkable.set_layer)
-        self.fields_checkable.set_layer(self.layer.currentLayer())
+        self.layer.layerChanged.connect(self.fields.set_layer)
+        self.fields.set_layer(self.layer.currentLayer())
 
         self.setup_ui()
-
-    def load_fields(self, key, values):
-        _ = key
-        self.fields_checkable.set_selected_items(values)
 
     def validate(self) -> str:
         upstream = super().validate()
@@ -61,5 +55,5 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
                 ' option of the QGIS Server tab in the "Project Properties" dialog.')
             return msg
 
-        if not self.fields_checkable.selected_items():
+        if not self.fields.selection():
             return tr('At least one field is compulsory.')

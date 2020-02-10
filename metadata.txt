@@ -7,11 +7,17 @@ description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 # set -beta for dev version
-version=3.2.3-beta
+version=3.3.0-beta
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.2.4:
+  * Display color in table
+  * Re-enable color button
+  * Switch to a list to select fields
+  Version 3.2.3:
+  * Fix crash about color button
   Version 3.2.2:
   * Fix bug about the new form with locate by layer #210
   * Refactor Edition panel to be editable
