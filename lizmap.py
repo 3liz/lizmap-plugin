@@ -88,6 +88,7 @@ from .definitions.attribute_table import AttributeTableDefinitions
 from .definitions.edition import EditionDefinitions
 from .definitions.filter_by_login import FilterByLoginDefinitions
 from .definitions.locate_by_layer import LocateByLayerDefinitions
+from .definitions.time_manager import TimeManagerDefinitions
 from .definitions.tooltip import ToolTipDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
 from .forms.attribute_table_edition import AttributeTableEditionDialog
@@ -95,6 +96,7 @@ from .forms.edition_edition import EditionLayerDialog
 from .forms.filter_by_login import FilterByLoginEditionDialog
 from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
+from .forms.time_manager_edition import TimeManagerEditionDialog
 from .forms.tooltip_edition import ToolTipEditionDialog
 from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
 from .lizmap_api.config import LizmapConfig
@@ -465,11 +467,13 @@ class Lizmap:
                 'jsonConfig': {}
             },
             'timemanagerLayers': {
-                'tableWidget': self.dlg.twTimemanager,
-                'removeButton': self.dlg.btTimemanagerLayerDel,
-                'addButton': self.dlg.btTimemanagerLayerAdd,
-                'cols': ['startAttribute', 'label', 'group', 'groupTitle', 'layerId', 'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.time_manager_table,
+                'removeButton': self.dlg.remove_time_manager_layer,
+                'addButton': self.dlg.add_time_manager_layer,
+                'editButton': self.dlg.edit_time_manager_layer,
+                'upButton': self.dlg.up_time_manager_layer,
+                'downButton': self.dlg.down_time_manager_layer,
+                'manager': None,
             },
             'datavizLayers': {
                 'tableWidget': self.dlg.twDatavizLayers,
@@ -579,6 +583,9 @@ class Lizmap:
                 elif key == 'loginFilteredLayers':
                     definition = FilterByLoginDefinitions()
                     dialog = FilterByLoginEditionDialog
+                elif key == 'timemanagerLayers':
+                    definition = TimeManagerDefinitions()
+                    dialog = TimeManagerEditionDialog
                 elif key == 'tooltipLayers':
                     definition = ToolTipDefinitions()
                     dialog = ToolTipEditionDialog
@@ -618,18 +625,6 @@ class Lizmap:
 
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
-
-        # Time manager layers
-        self.dlg.twTimemanager.setColumnHidden(5, True)
-        self.dlg.twTimemanager.setColumnHidden(6, True)
-        self.dlg.twTimemanager.horizontalHeader().setStretchLastSection(True)
-        self.dlg.liTimemanagerLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liTimemanagerLabelAttribute.setAllowEmptyFieldName(True)
-        self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerStartAttribute.setLayer)
-        self.dlg.liTimemanagerLayers.layerChanged.connect(self.dlg.liTimemanagerLabelAttribute.setLayer)
-        self.dlg.liTimemanagerStartAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
-        self.dlg.liTimemanagerLabelAttribute.setLayer(self.dlg.liTimemanagerLayers.currentLayer())
-        self.dlg.btTimemanagerLayerAdd.clicked.connect(self.add_layer_to_time_manager)
 
         # Dataviz layers
         self.dlg.liDatavizPlotLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
@@ -1085,48 +1080,6 @@ class Lizmap:
             tr('Lizmap Error'),
             message,
             QMessageBox.Ok)
-
-    def add_layer_to_time_manager(self):
-        """Add a layer in the list of 'time manager' tool."""
-        table = self.dlg.twTimemanager
-        row = table.rowCount()
-
-        if row >= self.dlg.liTimemanagerLayers.count():
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        layer = self.dlg.liTimemanagerLayers.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory.')
-            return
-
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        start_attribute = self.dlg.liTimemanagerStartAttribute.currentField()
-        if not start_attribute:
-            self.display_error('Start attribute is compulsory.')
-            return
-
-        layer_name = layer.name()
-        layer_id = layer.id()
-        start_attribute = self.dlg.liTimemanagerStartAttribute.currentField()
-        label_attribute = self.dlg.liTimemanagerLabelAttribute.currentField()
-        group = self.dlg.inTimemanagerGroup.text().strip(' \t')
-        group_title = self.dlg.inTimemanagerGroupTitle.text().strip(' \t')
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        content = [layer_name, start_attribute, label_attribute, group, group_title, layer_id, row]
-
-        table.setRowCount(row + 1)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-
-        LOGGER.info('Layer "{}" has been added to the time manager tool'.format(layer_id))
 
     # noinspection PyPep8Naming
     def addLayerToLizmapBaselayers(self):
@@ -2115,29 +2068,6 @@ class Lizmap:
                 liz2json["lizmapExternalBaselayers"][lName]["layerTitle"] = lTitle
                 liz2json["lizmapExternalBaselayers"][lName]["layerImageFormat"] = lImageFormat
                 liz2json["lizmapExternalBaselayers"][lName]["order"] = row
-
-        # list of timemanager layers
-        lblTableWidget = self.dlg.twTimemanager
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["timemanagerLayers"] = dict()
-            for row in range(twRowCount):
-                # check that the layer is checked in the WFS capabilities
-                layerName = lblTableWidget.item(row, 0).text()
-                startAttribute = lblTableWidget.item(row, 1).text()
-                labelAttribute = lblTableWidget.item(row, 2).text()
-                tmGroup = lblTableWidget.item(row, 3).text()
-                tmGroupTitle = lblTableWidget.item(row, 4).text()
-                layerId = lblTableWidget.item(row, 5).text()
-                if layerId in wfsLayersList:
-                    liz2json["timemanagerLayers"][layerName] = dict()
-                    liz2json["timemanagerLayers"][layerName]["startAttribute"] = startAttribute
-                    if labelAttribute and labelAttribute != '--':
-                        liz2json["timemanagerLayers"][layerName]["label"] = labelAttribute
-                    liz2json["timemanagerLayers"][layerName]["group"] = tmGroup
-                    liz2json["timemanagerLayers"][layerName]["groupTitle"] = tmGroupTitle
-                    liz2json["timemanagerLayers"][layerName]["layerId"] = layerId
-                    liz2json["timemanagerLayers"][layerName]["order"] = row
 
         # list of dataviz layers
         lblTableWidget = self.dlg.twDatavizLayers

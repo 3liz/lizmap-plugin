@@ -2248,58 +2248,54 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <widget class="QTableWidget" name="table_locate_by_layer"/>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_7">
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_16">
-                   <item>
-                    <widget class="QPushButton" name="add_locate_layer_button">
-                     <property name="text">
-                      <string notr="true">+</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="remove_locate_layer_button">
-                     <property name="text">
-                      <string notr="true">-</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="edit_locate_layer_button">
-                     <property name="text">
-                      <string notr="true">edit</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="up_locate_layer_button">
-                     <property name="text">
-                      <string notr="true">up</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="down_locate_layer_button">
-                     <property name="text">
-                      <string notr="true">down</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_12">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
+                  <widget class="QPushButton" name="add_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_12">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -2515,58 +2511,54 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <layout class="QHBoxLayout" name="horizontalLayout_17">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_17">
-                   <item>
-                    <widget class="QPushButton" name="add_edition_layer">
-                     <property name="text">
-                      <string notr="true">+</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="remove_edition_layer">
-                     <property name="text">
-                      <string notr="true">-</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="edit_edition_layer">
-                     <property name="text">
-                      <string notr="true">edit</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="up_edition_layer">
-                     <property name="text">
-                      <string notr="true">up</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="down_edition_layer">
-                     <property name="text">
-                      <string notr="true">down</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_15">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
+                  <widget class="QPushButton" name="add_edition_layer">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_edition_layer">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_edition_layer">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_edition_layer">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_edition_layer">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_15">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -3302,92 +3294,47 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <layout class="QGridLayout" name="gridLayout_13">
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="label_43">
+                <widget class="QTableWidget" name="time_manager_table"/>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_24">
+                 <item>
+                  <widget class="QPushButton" name="add_time_manager_layer">
                    <property name="text">
-                    <string>Frame type</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
+                    <string notr="true">+</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_42">
+                 <item>
+                  <widget class="QPushButton" name="remove_time_manager_layer">
                    <property name="text">
-                    <string>Time frame size</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
+                    <string notr="true">-</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QSpinBox" name="inTimeFrameSize">
-                   <property name="maximum">
-                    <number>10000</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_44">
+                 <item>
+                  <widget class="QPushButton" name="edit_time_manager_layer">
                    <property name="text">
-                    <string>Animation frame length (milliseconds)</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
+                    <string notr="true">edit</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
-                  <widget class="QSpinBox" name="inAnimationFrameLength">
-                   <property name="maximum">
-                    <number>10000</number>
+                 <item>
+                  <widget class="QPushButton" name="up_time_manager_layer">
+                   <property name="text">
+                    <string notr="true">up</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QComboBox" name="liTimeFrameType">
-                   <item>
-                    <property name="text">
-                     <string>seconds</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>minutes</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>hours</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>days</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>weeks</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>months</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>years</string>
-                    </property>
-                   </item>
+                 <item>
+                  <widget class="QPushButton" name="down_time_manager_layer">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
                   </widget>
                  </item>
-                 <item row="1" column="3">
-                  <spacer name="horizontalSpacer_23">
+                 <item>
+                  <spacer name="horizontalSpacer_21">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -3402,185 +3349,99 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </layout>
                </item>
                <item>
-                <widget class="QTableWidget" name="twTimemanager">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
+                <widget class="QGroupBox" name="groupBox_4">
+                 <property name="title">
+                  <string>Time manager options</string>
                  </property>
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Start attribute</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Hover label</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Group id (optional)</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Group title (optional)</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>LayerId</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
+                 <layout class="QGridLayout" name="gridLayout">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_42">
+                    <property name="text">
+                     <string>Time frame size</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QSpinBox" name="inTimeFrameSize">
+                    <property name="maximum">
+                     <number>10000</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_43">
+                    <property name="text">
+                     <string>Frame type</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QComboBox" name="liTimeFrameType">
+                    <item>
+                     <property name="text">
+                      <string>seconds</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>minutes</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>hours</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>days</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>weeks</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>months</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>years</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_44">
+                    <property name="text">
+                     <string>Animation frame length</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QSpinBox" name="inAnimationFrameLength">
+                    <property name="suffix">
+                     <string>ms</string>
+                    </property>
+                    <property name="maximum">
+                     <number>10000</number>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_22">
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="label_45">
-                   <property name="text">
-                    <string>Layer</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QgsMapLayerComboBox" name="liTimemanagerLayers">
-                   <property name="toolTip">
-                    <string>Layer with the date/time</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QgsFieldComboBox" name="liTimemanagerStartAttribute">
-                   <property name="toolTip">
-                    <string>Column with the date/time</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="5">
-                  <widget class="QLabel" name="label_48">
-                   <property name="text">
-                    <string>Group title (optional)</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="5">
-                  <widget class="QLineEdit" name="inTimemanagerGroupTitle">
-                   <property name="toolTip">
-                    <string>Optional, an ID and a title for groups of objects.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="4">
-                  <widget class="QLineEdit" name="inTimemanagerGroup">
-                   <property name="toolTip">
-                    <string>Optional, an ID and a title for groups of objects.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QLabel" name="label_49">
-                   <property name="text">
-                    <string>Hover label</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QgsFieldComboBox" name="liTimemanagerLabelAttribute">
-                   <property name="toolTip">
-                    <string>A field to display as a label when hovering with the mouse over the object</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_46">
-                   <property name="text">
-                    <string>Start attribute</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="4">
-                  <widget class="QLabel" name="label_47">
-                   <property name="text">
-                    <string>Group id (optional)</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_17">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_24">
-                   <item>
-                    <widget class="QPushButton" name="btTimemanagerLayerAdd">
-                     <property name="text">
-                      <string>Add layer</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="btTimemanagerLayerDel">
-                     <property name="text">
-                      <string>Remove layer</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_21">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
                </item>
               </layout>
              </widget>
@@ -4211,17 +4072,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>btDatavizAddLayer</tabstop>
   <tabstop>btDatavizRemoveLayer</tabstop>
   <tabstop>scrollArea_9</tabstop>
-  <tabstop>inTimeFrameSize</tabstop>
-  <tabstop>liTimeFrameType</tabstop>
-  <tabstop>inAnimationFrameLength</tabstop>
-  <tabstop>twTimemanager</tabstop>
-  <tabstop>liTimemanagerLayers</tabstop>
-  <tabstop>liTimemanagerStartAttribute</tabstop>
-  <tabstop>liTimemanagerLabelAttribute</tabstop>
-  <tabstop>inTimemanagerGroup</tabstop>
-  <tabstop>inTimemanagerGroupTitle</tabstop>
-  <tabstop>btTimemanagerLayerAdd</tabstop>
-  <tabstop>btTimemanagerLayerDel</tabstop>
+  <tabstop>add_time_manager_layer</tabstop>
+  <tabstop>remove_time_manager_layer</tabstop>
   <tabstop>scrollArea_12</tabstop>
   <tabstop>scrollArea_13</tabstop>
   <tabstop>twFormFilterLayers</tabstop>
