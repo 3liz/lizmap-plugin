@@ -11,14 +11,14 @@ __revision__ = '$Format:%H$'
 
 @unique
 class InputType(Enum):
-    Color = 'Color'
-    CheckBox = 'CheckBox'
-    Field = 'Field'
-    Fields = 'Fields'
-    Layer = 'Layer'
-    List = 'List'
-    SpinBox = 'SpinBox'
-    Text = 'Text'
+    Color = 'Color'  # QgsColorButton
+    CheckBox = 'CheckBox'  # QCheckbox
+    Field = 'Field'  # QgsFieldMapLayerComboBox
+    Fields = 'Fields'  # QListWidget
+    Layer = 'Layer'  # QgsMapLayerComboBox
+    List = 'List'  # QComboBox
+    SpinBox = 'SpinBox'  # QSpinbox
+    Text = 'Text'  # QLineEdit
 
 
 class BaseDefinitions:

@@ -12,6 +12,7 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QAbstractItemView,
     QMessageBox,
+    QHeaderView,
 )
 
 from ..definitions.base import BaseDefinitions, InputType
@@ -52,6 +53,10 @@ class TableManager:
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
 
     def _primary_keys(self) -> dict:
         unicity_dict = dict()
@@ -128,11 +133,13 @@ class TableManager:
                 layer = QgsProject.instance().mapLayer(value)
                 cell.setText(layer.name())
                 cell.setData(Qt.UserRole, layer.id())
+                cell.setData(Qt.ToolTipRole, '{} ({})'.format(layer.name(), layer.crs().authid()))
                 cell.setIcon(QgsMapLayerModel.iconForLayer(layer))
 
             elif input_type == InputType.Field:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
 
                 # Get the icon for the field
                 layer_cell = self.table.item(row, 0)
@@ -146,10 +153,12 @@ class TableManager:
             elif input_type == InputType.Fields:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
 
             elif input_type == InputType.Color:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
                 if value:
                     cell.setData(Qt.DecorationRole, QColor(value))
 
@@ -157,21 +166,27 @@ class TableManager:
                 if value:
                     cell.setText('✓')
                     cell.setData(Qt.UserRole, True)
+                    cell.setData(Qt.ToolTipRole, tr('True'))
                 else:
                     cell.setText('')
                     cell.setData(Qt.UserRole, False)
+                    cell.setData(Qt.ToolTipRole, tr('False'))
+                cell.setTextAlignment(Qt.AlignCenter)
 
             elif input_type == InputType.List:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
 
             elif input_type == InputType.SpinBox:
                 cell.setText(str(value))
                 cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
 
             elif input_type == InputType.Text:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
 
             else:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
@@ -307,7 +322,7 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers', 'timemanagerLayers']:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
@@ -370,7 +385,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers']:
+        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers', 'timemanagerLayers']:
             data = self._from_json_legacy_order(data)
 
         if self.definitions.key() == 'editionLayers':

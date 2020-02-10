@@ -15,6 +15,7 @@ from ..definitions.edition import EditionDefinitions
 from ..definitions.filter_by_login import FilterByLoginDefinitions
 from ..definitions.locate_by_layer import LocateByLayerDefinitions
 from ..definitions.tooltip import ToolTipDefinitions
+from ..definitions.time_manager import TimeManagerDefinitions
 from ..forms.table_manager import TableManager
 from ..forms.atlas_edition import AtlasEditionDialog
 from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
@@ -116,6 +117,51 @@ class TestTableManager(unittest.TestCase):
                 'pivot': 'False',
                 'hideAsChild': 'False',
                 'hideLayer': 'False',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+        self.assertDictEqual(data, json)
+
+    def test_time_manager_table(self):
+        """Test table manager with time manager."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = TimeManagerDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            'lines': {
+                'startAttribute': 'id',
+                'label': 'name',
+                'group': 'fake',
+                'groupTitle': 'fake',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+        self.assertDictEqual(data, json)
+
+        table_manager.truncate()
+
+        # Minimum fields
+        json = {
+            'lines': {
+                'startAttribute': 'id',
                 'layerId': layer.id(),
                 'order': 0
             }

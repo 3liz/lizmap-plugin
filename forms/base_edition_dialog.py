@@ -125,7 +125,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.SpinBox:
                 value = definition['widget'].value()
             elif definition['type'] == InputType.Text:
-                value = definition['widget'].text()
+                value = definition['widget'].text().strip(' \t')
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
