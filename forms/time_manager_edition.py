@@ -24,26 +24,31 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.config = TimeManagerDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
         self.config.add_layer_widget('startAttribute', self.start_field)
-        self.config.add_layer_widget('label', self.feature_label)
-        self.config.add_layer_widget('group', self.group_id)
-        self.config.add_layer_widget('groupTitle', self.group_title)
+        self.config.add_layer_widget('endAttribute', self.end_field)
+        self.config.add_layer_widget('attributeResolution', self.resolution)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('startAttribute', self.label_start_attribute)
-        self.config.add_layer_label('label', self.label_feature_label)
-        self.config.add_layer_label('group', self.label_group_id)
-        self.config.add_layer_label('groupTitle', self.label_group_title)
+        self.config.add_layer_label('endAttribute', self.label_end_attribute)
+        self.config.add_layer_label('attributeResolution', self.label_resolution)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
         self.start_field.setAllowEmptyFieldName(False)
-        self.feature_label.setAllowEmptyFieldName(True)
+        self.end_field.setAllowEmptyFieldName(True)
 
         self.layer.layerChanged.connect(self.start_field.setLayer)
-        self.layer.layerChanged.connect(self.feature_label.setLayer)
+        self.layer.layerChanged.connect(self.end_field.setLayer)
 
         self.start_field.setLayer(self.layer.currentLayer())
-        self.feature_label.setLayer(self.layer.currentLayer())
+        self.end_field.setLayer(self.layer.currentLayer())
+
+        self.resolution.addItem('seconds', 'seconds')
+        self.resolution.addItem('minutes', 'minutes')
+        self.resolution.addItem('hours', 'hours')
+        self.resolution.addItem('days', 'days')
+        self.resolution.addItem('weeks', 'weeks')
+        self.resolution.addItem('years', 'years')
 
         self.setup_ui()
 

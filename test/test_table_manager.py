@@ -207,6 +207,7 @@ class TestTableManager(unittest.TestCase):
         table_manager = TableManager(
             None, definitions, None, table, None, None, None, None)
 
+        # JSON from 3.3 with all fields
         json = {
             'lines': {
                 'startAttribute': 'id',
@@ -221,14 +222,40 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
         data = table_manager.to_json()
-        self.assertDictEqual(data, json)
+        expected = {
+            'lines': {
+                'startAttribute': 'id',
+                'attributeResolution': 'years',  # missing from the input, default value in definitions
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertDictEqual(data, expected)
 
         table_manager.truncate()
 
-        # Minimum fields
+        # Minimum fields from 3.3
         json = {
             'lines': {
                 'startAttribute': 'id',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+        self.assertDictEqual(data, expected)
+
+        table_manager.truncate()
+
+        # JSON from 3.4
+        json = {
+            'lines': {
+                'startAttribute': 'id',
+                'endAttribute': 'id',
+                'attributeResolution': 'minutes',
                 'layerId': layer.id(),
                 'order': 0
             }
