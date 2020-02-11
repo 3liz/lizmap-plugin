@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.2.5
+
+* Fix Python syntax
+* Refactor Time Manager panel to be editable
+
 ## Version 3.2.4
 
 * Display color in table

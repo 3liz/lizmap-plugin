@@ -7,11 +7,14 @@ description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 # set -beta for dev version
-version=3.2.4
+version=3.2.5
 ; end of mandatory metadata
 
 ; start of optional metadata
 changelog=
+  Version 3.2.5:
+  * Fix Python syntax
+  * Refactor Time Manager panel to be editable
   Version 3.2.4:
   * Display color in table
   * Re-enable color button
