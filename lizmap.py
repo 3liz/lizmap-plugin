@@ -494,11 +494,8 @@ class Lizmap:
                 'jsonConfig': {}
             }
         }
-        self.attribute_fields_checkable = None
-        self.tooltip_fields_checkable = None
         self.layerList = None
         self.action = None
-        self.web_menu = None
         self.isok = None
         self.embeddedGroups = None
         self.myDic = None
@@ -531,7 +528,7 @@ class Lizmap:
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
-        self.iface.newProjectCreated.connect(self.onNewProjectCreated)
+        self.iface.newProjectCreated.connect(self.onProjectRead)
 
         # initial extent
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
@@ -1068,9 +1065,9 @@ class Lizmap:
             if layer.id() == wfs_layer:
                 has_wfs_option = True
         if not has_wfs_option:
-            self.display_error(
-                tr('The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
-               'QGIS Server tab in the "Project Properties" dialog.'))
+            self.display_error(tr(
+                'The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
+                'QGIS Server tab in the "Project Properties" dialog.'))
             return False
         return True
 
@@ -1294,26 +1291,6 @@ class Lizmap:
             self.dlg.label_field_filter.setVisible(False)
             self.dlg.liFormFilterField.setAllowEmptyFieldName(True)
             self.dlg.liFormFilterField.setField('')
-
-    def refresh_layer_tree(self):
-        """Refresh the layer tree on user demand. Uses method populateLayerTree."""
-        # Ask confirmation
-        message = tr(
-            'You can refresh the layer tree by pressing "Yes". '
-            'Be aware that you will lose all the changes made in this Layers tab '
-            '(group or layer metadata and options) since your last "Save". '
-            'If you have renamed one or more groups or layers, you will also lose '
-            'the associated information.\n'
-            'Refresh layer tree?')
-        refresh_it = QMessageBox.question(
-            self.dlg,
-            tr('Lizmap - Refresh layer tree?'),
-            message,
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-        )
-        if refresh_it == QMessageBox.Yes:
-            self.populateLayerTree()
-            LOGGER.info('Layer tree has been refreshed')
 
     def setTreeItemData(self, itemType, itemKey, jsonLayers):
         """Define default data or data from previous configuration for one item (layer or group)
@@ -2571,13 +2548,6 @@ class Lizmap:
     def onProjectRead(self):
         """
         Close Lizmap plugin when project is opened
-        """
-        self.reinitDefaultProperties()
-        self.dlg.close()
-
-    def onNewProjectCreated(self):
-        """
-        When the user opens a new project
         """
         self.reinitDefaultProperties()
         self.dlg.close()
