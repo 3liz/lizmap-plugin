@@ -7,7 +7,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
 
-from ..definitions.base import InputType, BaseDefinitions
+from ..definitions.base import InputType
 from ..qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -20,7 +20,7 @@ class BaseEditionDialog(QDialog):
 
     def __init__(self, parent=None, unicity=None):
         super().__init__(parent)
-        self.config: BaseDefinitions
+        self.config = None
         self.unicity = unicity
 
     def setup_ui(self):
