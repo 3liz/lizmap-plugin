@@ -3618,7 +3618,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="twFormFilterLayers">
+                <widget class="QTableWidget" name="table_form_filter">
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
@@ -3637,231 +3637,42 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <property name="selectionBehavior">
                   <enum>QAbstractItemView::SelectRows</enum>
                  </property>
-                 <column>
-                  <property name="text">
-                   <string>Layer</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Title</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Type</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Min date</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Max date</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Format</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Splitter</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Provider</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Layer id</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>order</string>
-                  </property>
-                 </column>
                 </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <item row="13" column="2">
-                  <widget class="QgsFieldComboBox" name="liFormFilterMaxDate">
-                   <property name="toolTip">
-                    <string>The field containing the end date of your data. If you have 2 fields containing dates, one for the start date and another for the end date, you can differentiate them. If not, you need to use the same field name for Min date and Max date.</string>
-                   </property>
-                   <property name="allowEmptyFieldName" stdset="0">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="11" column="2">
-                  <widget class="QLineEdit" name="liFormFilterSplitter">
-                   <property name="toolTip">
-                    <string>Use if you want to split the field values by a separator. Ex: ‘culture, environment’ can be split into ‘culture’ and ‘environment’ with the splitter ‘, ‘</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="13" column="0">
-                  <widget class="QLabel" name="label_max_date_filter">
-                   <property name="text">
-                    <string>Max date</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="2">
-                  <widget class="QgsFieldComboBox" name="liFormFilterField">
-                   <property name="toolTip">
-                    <string>The field name (in the database table). Only for the Text, Unique Values and Numeric types</string>
-                   </property>
-                   <property name="allowEmptyFieldName" stdset="0">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="0">
-                  <widget class="QLabel" name="label_format_filter">
-                   <property name="text">
-                    <string>Format</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="12" column="2">
-                  <widget class="QgsFieldComboBox" name="liFormFilterMinDate">
-                   <property name="toolTip">
-                    <string>The field containing the start date of your feature (ex: “start_date” of an event)</string>
-                   </property>
-                   <property name="allowEmptyFieldName" stdset="0">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="11" column="0">
-                  <widget class="QLabel" name="label_splitter_filter">
-                   <property name="text">
-                    <string>Splitter</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
-                  <widget class="QLabel" name="label_102">
-                   <property name="text">
-                    <string>Type</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="12" column="0">
-                  <widget class="QLabel" name="label_min_date_filter">
-                   <property name="text">
-                    <string>Min date</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="2">
-                  <widget class="QComboBox" name="liFormFilterFormat">
-                   <property name="toolTip">
-                    <string>It can be select, which will show a combo box, or checkboxes which will show one checkbox for each distinct value. The distinct values are dynamically queried by Lizmap Web Client.</string>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Checkboxes</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Combo box</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_103">
-                   <property name="text">
-                    <string>Layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="2">
-                  <widget class="QComboBox" name="liFormFilterFieldType">
-                   <property name="toolTip">
-                    <string>The type of the form input</string>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Text</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Unique values</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Numeric</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Date</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="2" column="2">
-                  <widget class="QgsMapLayerComboBox" name="liFormFilterLayer">
-                   <property name="toolTip">
-                    <string>The source layer</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="label_104">
-                   <property name="text">
-                    <string>Title</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QLineEdit" name="inFormFilterFieldTitle">
-                   <property name="toolTip">
-                    <string>The title to give to the input, which will be displayed above the form input. For example “Choose a category” for a layer field called “category”</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="0">
-                  <widget class="QLabel" name="label_field_filter">
-                   <property name="text">
-                    <string>Field</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_38">
                  <item>
-                  <widget class="QPushButton" name="btFormFilterAddField">
+                  <widget class="QPushButton" name="add_filter_form_button">
                    <property name="text">
-                    <string>Add layer field</string>
+                    <string notr="true">+</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btFormFilterRemoveField">
+                  <widget class="QPushButton" name="remove_filter_form_button">
                    <property name="text">
-                    <string>Remove layer field</string>
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_filter_form_button">
+                   <property name="text">
+                    <string>edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_filter_form_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_filter_form_button">
+                   <property name="text">
+                    <string notr="true">down</string>
                    </property>
                   </widget>
                  </item>
@@ -4076,17 +3887,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>remove_time_manager_layer</tabstop>
   <tabstop>scrollArea_12</tabstop>
   <tabstop>scrollArea_13</tabstop>
-  <tabstop>twFormFilterLayers</tabstop>
-  <tabstop>liFormFilterLayer</tabstop>
-  <tabstop>inFormFilterFieldTitle</tabstop>
-  <tabstop>liFormFilterFieldType</tabstop>
-  <tabstop>liFormFilterField</tabstop>
-  <tabstop>liFormFilterFormat</tabstop>
-  <tabstop>liFormFilterSplitter</tabstop>
-  <tabstop>liFormFilterMinDate</tabstop>
-  <tabstop>liFormFilterMaxDate</tabstop>
-  <tabstop>btFormFilterAddField</tabstop>
-  <tabstop>btFormFilterRemoveField</tabstop>
+  <tabstop>table_form_filter</tabstop>
+  <tabstop>add_filter_form_button</tabstop>
+  <tabstop>remove_filter_form_button</tabstop>
   <tabstop>outLog</tabstop>
   <tabstop>btClearlog</tabstop>
   <tabstop>mGroupBox_2</tabstop>
