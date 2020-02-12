@@ -322,18 +322,32 @@ class TableManager:
 
             data['layers'].append(layer_data)
 
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers', 'timemanagerLayers']:
+        if self.definitions.key() in [
+            'locateByLayer',
+            'loginFilteredLayers',
+            'tooltipLayers',
+            'attributeLayers',
+            'editionLayers',
+            'timemanagerLayers',
+            'formFilterLayers',
+        ]:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
                 vector_layer = QgsProject.instance().mapLayer(layer_id)
                 layer_name = vector_layer.name()
+                if self.definitions.key() == 'formFilterLayers':
+                    key = str(i)
+                else:
+                    key = layer_name
                 if result.get(layer_name):
                     LOGGER.warning(
                         'Skipping "{}" while saving "{}" JSON configuration. Duplicated entry.'.format(
                             layer_name, self.definitions.key()))
-                result[layer_name] = layer
-                result[layer_name]['order'] = i
+                result[key] = layer
+                result[key]['order'] = i
+                if self.definitions.key() == 'formFilterLayers':
+                    result[key]['provider'] = vector_layer.providerType()
 
             return result
 
@@ -385,7 +399,15 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in ['locateByLayer', 'loginFilteredLayers', 'tooltipLayers', 'attributeLayers', 'editionLayers', 'timemanagerLayers']:
+        if self.definitions.key() in [
+            'locateByLayer',
+            'loginFilteredLayers',
+            'tooltipLayers',
+            'attributeLayers',
+            'editionLayers',
+            'timemanagerLayers',
+            'formFilterLayers',
+        ]:
             data = self._from_json_legacy_order(data)
 
         if self.definitions.key() == 'editionLayers':
