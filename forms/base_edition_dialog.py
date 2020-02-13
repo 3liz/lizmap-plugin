@@ -58,6 +58,9 @@ class BaseEditionDialog(QDialog):
                     if layer_config['default'] == '':
                         widget.setShowNull(True)
                         widget.setToNull()
+                    else:
+                        widget.setDefaultColor(QColor(layer_config['default']))
+                        widget.setToDefaultColor()
 
     def validate(self):
         if self.unicity:
