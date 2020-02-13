@@ -340,13 +340,14 @@ class TableManager:
             'editionLayers',
             'timemanagerLayers',
             'formFilterLayers',
+            'datavizLayers',
         ]:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
                 vector_layer = QgsProject.instance().mapLayer(layer_id)
                 layer_name = vector_layer.name()
-                if self.definitions.key() == 'formFilterLayers':
+                if self.definitions.key() in ['formFilterLayers', 'datavizLayers']:
                     key = str(i)
                 else:
                     key = layer_name
@@ -417,6 +418,7 @@ class TableManager:
             'editionLayers',
             'timemanagerLayers',
             'formFilterLayers',
+            'datavizLayers',
         ]:
             data = self._from_json_legacy_order(data)
 
