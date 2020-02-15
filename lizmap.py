@@ -773,14 +773,14 @@ class Lizmap:
 
                     manager = self.layers_table[key].get('manager')
                     if manager:
+                        manager.truncate()
                         if key in sjson:
-                            manager.truncate()
                             manager.from_json(sjson[key])
                         else:
                             # get a subset of the data to give to the table form
                             data = {k: json_options[k] for k in json_options if k.startswith(manager.definitions.key())}
-                            manager.truncate()
-                            manager.from_json(data)
+                            if data:
+                                manager.from_json(data)
 
             except Exception as e:
                 if is_dev_version():
@@ -797,6 +797,13 @@ class Lizmap:
                 LOGGER.critical('Error while reading the CFG file')
             finally:
                 cfg_file.close()
+
+        else:
+            LOGGER.info('Lizmap CFG does not exist for this project.')
+            for key in self.layers_table.keys():
+                manager = self.layers_table[key].get('manager')
+                if manager:
+                    manager.truncate()
 
         # Set the global options (map, tools, etc.)
         for key, item in self.global_options.items():
@@ -910,6 +917,7 @@ class Lizmap:
         if json_config:
             # reorder data if needed
             if 'order' in list(json_config.items())[0][1]:
+                # FIXME shadow error with key
                 data = [(k, json_config[k]) for k in sorted(json_config, key=lambda key: json_config[key]['order'])]
             else:
                 data = list(json_config.items())
@@ -956,8 +964,9 @@ class Lizmap:
             rows = widget.rowCount()
             if rows >= 1:
                 self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
-
-        LOGGER.info('Table "{}" has been loaded'.format(key))
+                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated'.format(key))
+        else:
+            LOGGER.info('Table "{}" has been loaded'.format(key))
 
     def get_qgis_layer_by_id(self, my_id):
         """Get a QgsLayer by its Id"""

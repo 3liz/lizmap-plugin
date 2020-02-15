@@ -55,8 +55,8 @@ class TableManager:
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         header = self.table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        # header.setSectionResizeMode(QHeaderView.ResizeToContents)
+        # header.setSectionResizeMode(0, QHeaderView.Stretch)
 
     def _primary_keys(self) -> dict:
         unicity_dict = dict()
