@@ -1,6 +1,7 @@
 """Dialog for tooltip edition."""
 
 from qgis.core import QgsMapLayerProxyModel, QgsProject
+from qgis.PyQt.QtGui import QColor
 
 from .base_edition_dialog import BaseEditionDialog
 from ..definitions.tooltip import ToolTipDefinitions
@@ -37,7 +38,18 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.layer.layerChanged.connect(self.fields.set_layer)
         self.fields.set_layer(self.layer.currentLayer())
 
+        self.display_geometry.toggled.connect(self.enable_color)
+        self.enable_color()
+
         self.setup_ui()
+
+    def enable_color(self):
+        if self.display_geometry.isChecked():
+            self.color.setEnabled(True)
+            self.color.setColor(QColor('blue'))
+        else:
+            self.color.setEnabled(False)
+            self.color.setToNull()
 
     def validate(self) -> str:
         upstream = super().validate()
