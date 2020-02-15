@@ -3658,7 +3658,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <item>
                   <widget class="QPushButton" name="edit_filter_form_button">
                    <property name="text">
-                    <string>edit</string>
+                    <string notr="true">edit</string>
                    </property>
                   </widget>
                  </item>

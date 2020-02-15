@@ -129,9 +129,9 @@ class Lizmap:
         self.locale = locale[0:2]  # For the online help
 
         if file_path:
-            translator = QTranslator()
-            translator.load(file_path)
-            QCoreApplication.installTranslator(translator)
+            self.translator = QTranslator()
+            self.translator.load(file_path)
+            QCoreApplication.installTranslator(self.translator)
 
         english_path = plugin_path('lizmap-locales', 'plugin', 'i18n', 'lizmap_en.qm')
         if not file_path and not QFileInfo(english_path).exists():
