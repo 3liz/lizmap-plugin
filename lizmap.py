@@ -86,6 +86,7 @@ from qgis.core import (
 from .definitions.atlas import AtlasDefinitions
 from .definitions.attribute_table import AttributeTableDefinitions
 from .definitions.edition import EditionDefinitions
+from .definitions.filter_by_form import FilterByFormDefinitions
 from .definitions.filter_by_login import FilterByLoginDefinitions
 from .definitions.locate_by_layer import LocateByLayerDefinitions
 from .definitions.time_manager import TimeManagerDefinitions
@@ -93,6 +94,7 @@ from .definitions.tooltip import ToolTipDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
 from .forms.attribute_table_edition import AttributeTableEditionDialog
 from .forms.edition_edition import EditionLayerDialog
+from .forms.filter_by_form_edition import FilterByFormEditionDialog
 from .forms.filter_by_login import FilterByLoginEditionDialog
 from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
@@ -127,9 +129,9 @@ class Lizmap:
         self.locale = locale[0:2]  # For the online help
 
         if file_path:
-            translator = QTranslator()
-            translator.load(file_path)
-            QCoreApplication.installTranslator(translator)
+            self.translator = QTranslator()
+            self.translator.load(file_path)
+            QCoreApplication.installTranslator(self.translator)
 
         english_path = plugin_path('lizmap-locales', 'plugin', 'i18n', 'lizmap_en.qm')
         if not file_path and not QFileInfo(english_path).exists():
@@ -340,10 +342,6 @@ class Lizmap:
 
         self.dataviz_options['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
 
-        self.form_filter_options = LizmapConfig.formFilterOptionDefinitions
-        self.form_filter_options['type']['widget'] = self.dlg.liFormFilterFieldType
-        self.form_filter_options['uniqueValuesFormat']['widget'] = self.dlg.liFormFilterFormat
-
         # map QGIS geometry type
         # TODO lizmap 4, to remove
         self.mapQgisGeometryType = {
@@ -485,20 +483,17 @@ class Lizmap:
                 'jsonConfig': {}
             },
             'formFilterLayers': {
-                'tableWidget': self.dlg.twFormFilterLayers,
-                'removeButton': self.dlg.btFormFilterRemoveField,
-                'addButton': self.dlg.btFormFilterAddField,
-                'cols': [
-                    'title', 'type', 'field', 'min_date', 'max_date', 'format', 'splitter', 'provider', 'layerId',
-                    'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.table_form_filter,
+                'removeButton': self.dlg.remove_filter_form_button,
+                'addButton': self.dlg.add_filter_form_button,
+                'editButton': self.dlg.edit_filter_form_button,
+                'upButton': self.dlg.up_filter_form_button,
+                'downButton': self.dlg.down_filter_form_button,
+                'manager': None,
             }
         }
-        self.attribute_fields_checkable = None
-        self.tooltip_fields_checkable = None
         self.layerList = None
         self.action = None
-        self.web_menu = None
         self.isok = None
         self.embeddedGroups = None
         self.myDic = None
@@ -531,7 +526,7 @@ class Lizmap:
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
-        self.iface.newProjectCreated.connect(self.onNewProjectCreated)
+        self.iface.newProjectCreated.connect(self.onProjectRead)
 
         # initial extent
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
@@ -589,6 +584,9 @@ class Lizmap:
                 elif key == 'tooltipLayers':
                     definition = ToolTipDefinitions()
                     dialog = ToolTipEditionDialog
+                elif key == 'formFilterLayers':
+                    definition = FilterByFormDefinitions()
+                    dialog = FilterByFormEditionDialog
                 else:
                     raise Exception('Unknown panel.')
 
@@ -660,19 +658,6 @@ class Lizmap:
                     list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
                     for k, i in list_dic.items():
                         item['widget'].setItemData(i, k)
-
-        # Set the form filter options (type, etc.)
-        self.dlg.btFormFilterAddField.clicked.connect(self.addLayerToFormFilter)
-        for key, item in self.form_filter_options.items():
-            if item['widget']:
-                if item['wType'] == 'list':
-                    list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
-                    for k, i in list_dic.items():
-                        item['widget'].setItemData(i, k)
-        self.dlg.liFormFilterLayer.currentText()
-        # Hide some form filter inputs depending on value
-        self.update_form_filter_visible_fields()
-        self.dlg.liFormFilterFieldType.currentIndexChanged[str].connect(self.update_form_filter_visible_fields)
 
         # Add empty item in some field comboboxes
         # only in QGIS 3.0 TODO
@@ -788,14 +773,14 @@ class Lizmap:
 
                     manager = self.layers_table[key].get('manager')
                     if manager:
+                        manager.truncate()
                         if key in sjson:
-                            manager.truncate()
                             manager.from_json(sjson[key])
                         else:
                             # get a subset of the data to give to the table form
                             data = {k: json_options[k] for k in json_options if k.startswith(manager.definitions.key())}
-                            manager.truncate()
-                            manager.from_json(data)
+                            if data:
+                                manager.from_json(data)
 
             except Exception as e:
                 if is_dev_version():
@@ -812,6 +797,13 @@ class Lizmap:
                 LOGGER.critical('Error while reading the CFG file')
             finally:
                 cfg_file.close()
+
+        else:
+            LOGGER.info('Lizmap CFG does not exist for this project.')
+            for key in self.layers_table.keys():
+                manager = self.layers_table[key].get('manager')
+                if manager:
+                    manager.truncate()
 
         # Set the global options (map, tools, etc.)
         for key, item in self.global_options.items():
@@ -925,6 +917,7 @@ class Lizmap:
         if json_config:
             # reorder data if needed
             if 'order' in list(json_config.items())[0][1]:
+                # FIXME shadow error with key
                 data = [(k, json_config[k]) for k in sorted(json_config, key=lambda key: json_config[key]['order'])]
             else:
                 data = list(json_config.items())
@@ -971,8 +964,9 @@ class Lizmap:
             rows = widget.rowCount()
             if rows >= 1:
                 self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
-
-        LOGGER.info('Table "{}" has been loaded'.format(key))
+                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated'.format(key))
+        else:
+            LOGGER.info('Table "{}" has been loaded'.format(key))
 
     def get_qgis_layer_by_id(self, my_id):
         """Get a QgsLayer by its Id"""
@@ -1068,9 +1062,9 @@ class Lizmap:
             if layer.id() == wfs_layer:
                 has_wfs_option = True
         if not has_wfs_option:
-            self.display_error(
-                tr('The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
-               'QGIS Server tab in the "Project Properties" dialog.'))
+            self.display_error(tr(
+                'The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
+                'QGIS Server tab in the "Project Properties" dialog.'))
             return False
         return True
 
@@ -1196,124 +1190,6 @@ class Lizmap:
         table.setColumnHidden(colCount - 2, True)
 
         LOGGER.info('Layer "{}" has been added to the dataviz tool'.format(layer_id))
-
-    def addLayerToFormFilter(self):
-        """
-        Add a layer in the list of
-        Form filter layer
-        """
-
-        # Get the layer selected in the combo box
-        layer = self.dlg.liFormFilterLayer.currentLayer()
-        if not layer:
-            self.display_error('Layer is compulsory')
-            return
-
-        # Check that the chosen layer is checked in the WFS Capabilities (QGIS Server tab)
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        layerName = layer.name()
-        layerId = layer.id()
-        fprovider = layer.providerType()
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        ftitle = str(self.dlg.inFormFilterFieldTitle.text()).strip(' \t')
-        ftype = self.dlg.liFormFilterFieldType.itemData(self.dlg.liFormFilterFieldType.currentIndex())
-        ffield = str(self.dlg.liFormFilterField.currentField())
-        fmindate = str(self.dlg.liFormFilterMinDate.currentField())
-        fmaxdate = str(self.dlg.liFormFilterMaxDate.currentField())
-        fformat = self.dlg.liFormFilterFormat.itemData(self.dlg.liFormFilterFormat.currentIndex())
-        fsplitter = str(self.dlg.liFormFilterSplitter.text()).strip('\t')
-
-        lblTableWidget = self.dlg.twFormFilterLayers
-        twRowCount = lblTableWidget.rowCount()
-        content = [
-            layerName, ftitle, ftype, ffield, fmindate, fmaxdate, fformat, fsplitter, fprovider, layerId, twRowCount]
-        colCount = len(content)
-
-        # set new rowCount and col count
-        lblTableWidget.setRowCount(twRowCount + 1)
-        lblTableWidget.setColumnCount(colCount)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            lblTableWidget.setItem(twRowCount, i, item)
-            i += 1
-
-        lblTableWidget.setColumnHidden(colCount - 2, True)
-        # Hide layer Id
-        lblTableWidget.setColumnHidden(colCount - 2, True)
-
-        LOGGER.info('Layer "{}" has been added to the form filter tool'.format(layerId))
-
-    def update_form_filter_visible_fields(self):
-        """Show/Hide fields depending of chosen type."""
-        index = self.dlg.liFormFilterFieldType.currentIndex()
-        ftype = self.dlg.liFormFilterFieldType.itemData(index)
-        self.dlg.liFormFilterField.setLayer(self.dlg.liFormFilterLayer.currentLayer())
-        self.dlg.liFormFilterMinDate.setLayer(self.dlg.liFormFilterLayer.currentLayer())
-        self.dlg.liFormFilterMaxDate.setLayer(self.dlg.liFormFilterLayer.currentLayer())
-
-        if ftype == 'date':
-            self.dlg.liFormFilterMinDate.setVisible(True)
-            self.dlg.liFormFilterMinDate.setAllowEmptyFieldName(False)
-            self.dlg.liFormFilterMaxDate.setVisible(True)
-            self.dlg.label_min_date_filter.setVisible(True)
-            self.dlg.label_max_date_filter.setVisible(True)
-        else:
-            self.dlg.liFormFilterMinDate.setVisible(False)
-            self.dlg.liFormFilterMinDate.setAllowEmptyFieldName(True)
-            self.dlg.liFormFilterMinDate.setField('')
-            self.dlg.liFormFilterMaxDate.setVisible(False)
-            self.dlg.liFormFilterMaxDate.setField('')
-            self.dlg.label_min_date_filter.setVisible(False)
-            self.dlg.label_max_date_filter.setVisible(False)
-
-        if ftype == 'uniquevalues':
-            self.dlg.liFormFilterFormat.setVisible(True)
-            self.dlg.liFormFilterSplitter.setVisible(True)
-            self.dlg.label_format_filter.setVisible(True)
-            self.dlg.label_splitter_filter.setVisible(True)
-        else:
-            self.dlg.liFormFilterSplitter.setText('')
-            self.dlg.liFormFilterFormat.setVisible(False)
-            self.dlg.liFormFilterSplitter.setVisible(False)
-            self.dlg.label_format_filter.setVisible(False)
-            self.dlg.label_splitter_filter.setVisible(False)
-
-        if ftype in ['text', 'uniquevalues', 'numeric']:
-            self.dlg.liFormFilterField.setVisible(True)
-            self.dlg.label_field_filter.setVisible(True)
-            self.dlg.liFormFilterField.setAllowEmptyFieldName(False)
-        else:
-            self.dlg.liFormFilterField.setVisible(False)
-            self.dlg.label_field_filter.setVisible(False)
-            self.dlg.liFormFilterField.setAllowEmptyFieldName(True)
-            self.dlg.liFormFilterField.setField('')
-
-    def refresh_layer_tree(self):
-        """Refresh the layer tree on user demand. Uses method populateLayerTree."""
-        # Ask confirmation
-        message = tr(
-            'You can refresh the layer tree by pressing "Yes". '
-            'Be aware that you will lose all the changes made in this Layers tab '
-            '(group or layer metadata and options) since your last "Save". '
-            'If you have renamed one or more groups or layers, you will also lose '
-            'the associated information.\n'
-            'Refresh layer tree?')
-        refresh_it = QMessageBox.question(
-            self.dlg,
-            tr('Lizmap - Refresh layer tree?'),
-            message,
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-        )
-        if refresh_it == QMessageBox.Yes:
-            self.populateLayerTree()
-            LOGGER.info('Layer tree has been refreshed')
 
     def setTreeItemData(self, itemType, itemKey, jsonLayers):
         """Define default data or data from previous configuration for one item (layer or group)
@@ -2108,39 +1984,6 @@ class Lizmap:
                     prow["order"] = row
                     liz2json["datavizLayers"][row] = prow
 
-        # list of form filter layers
-        lblTableWidget = self.dlg.twFormFilterLayers
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["formFilterLayers"] = dict()
-            for row in range(twRowCount):
-                ftitle = lblTableWidget.item(row, 1).text()
-                ftype = lblTableWidget.item(row, 2).text()
-                ffield = lblTableWidget.item(row, 3).text()
-                if not ftitle.strip():
-                    ftitle = ffield
-                fmindate = lblTableWidget.item(row, 4).text()
-                fmaxdate = lblTableWidget.item(row, 5).text()
-                if not fmaxdate.strip():
-                    fmaxdate = fmindate
-                fformat = lblTableWidget.item(row, 6).text()
-                fsplitter = lblTableWidget.item(row, 7).text()
-                fprovider = lblTableWidget.item(row, 8).text()
-                layerId = lblTableWidget.item(row, 9).text()
-                if layerId in wfsLayersList:
-                    formFilterField = dict()
-                    formFilterField["title"] = ftitle
-                    formFilterField["type"] = ftype
-                    formFilterField["field"] = ffield
-                    formFilterField["min_date"] = fmindate
-                    formFilterField["max_date"] = fmaxdate
-                    formFilterField["format"] = fformat
-                    formFilterField["splitter"] = fsplitter
-                    formFilterField["provider"] = fprovider
-                    formFilterField["layerId"] = layerId
-                    formFilterField["order"] = row
-                    liz2json["formFilterLayers"][row] = formFilterField
-
         # gui user defined layers options
         for k, v in self.layerList.items():
             addToCfg = True
@@ -2575,13 +2418,6 @@ class Lizmap:
         self.reinitDefaultProperties()
         self.dlg.close()
 
-    def onNewProjectCreated(self):
-        """
-        When the user opens a new project
-        """
-        self.reinitDefaultProperties()
-        self.dlg.close()
-
     def run(self):
         """Plugin run method : launch the GUI."""
         if self.dlg.isVisible():
@@ -2605,20 +2441,6 @@ class Lizmap:
                 return False
 
             self.dlg.show()
-
-            # Filter Form layers
-            self.dlg.liFormFilterLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-            black_list = []
-            for layer in self.project.mapLayers().values():
-                if layer.providerType() not in ('ogr', 'postgres', 'spatialite'):
-                    black_list.append(layer)
-                if layer.providerType() == 'ogr':
-                    if '|layername=' not in layer.dataProvider().dataSourceUri():
-                        black_list.append(layer)
-            self.dlg.liFormFilterLayer.setExceptedLayerList(black_list)
-            self.dlg.liFormFilterLayer.layerChanged.connect(self.dlg.liFormFilterField.setLayer)
-            self.dlg.liFormFilterLayer.layerChanged.connect(self.dlg.liFormFilterMinDate.setLayer)
-            self.dlg.liFormFilterLayer.layerChanged.connect(self.dlg.liFormFilterMaxDate.setLayer)
 
             # Get config file data
             self.get_config()

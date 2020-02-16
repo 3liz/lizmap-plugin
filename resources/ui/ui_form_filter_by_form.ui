@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
-    <height>303</height>
+    <width>426</width>
+    <height>347</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Attribute table layer</string>
+   <string>Filter by form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -27,69 +27,114 @@
       <widget class="QgsMapLayerComboBox" name="layer"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_primary_key">
+      <widget class="QLabel" name="label_title">
        <property name="text">
-        <string>Primary key</string>
+        <string>Title</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsFieldComboBox" name="field_primary_key"/>
+      <widget class="QLineEdit" name="title">
+       <property name="toolTip">
+        <string/>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_fields_to_hide">
+      <widget class="QLabel" name="label_type">
        <property name="text">
-        <string>Fields to hide</string>
+        <string>Type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="type">
+       <property name="toolTip">
+        <string/>
        </property>
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_pivot_table">
+      <widget class="QLabel" name="label_field">
        <property name="text">
-        <string>Pivot table</string>
+        <string>Field</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QCheckBox" name="pivot_table">
-       <property name="text">
+      <widget class="QgsFieldComboBox" name="field">
+       <property name="toolTip">
         <string/>
+       </property>
+       <property name="allowEmptyFieldName">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="label_hide_subpanels">
+      <widget class="QLabel" name="label_format">
        <property name="text">
-        <string>Hide in child subpanels</string>
+        <string>Format</string>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QCheckBox" name="hide_subpanels">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="hide_layer">
+      <widget class="QComboBox" name="filter_format">
        <property name="toolTip">
-        <string>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</string>
-       </property>
-       <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="5" column="0">
-      <widget class="QLabel" name="label_hide_layer">
+      <widget class="QLabel" name="label_splitter">
        <property name="text">
-        <string>Hide layer in the list</string>
+        <string>Splitter</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="ListFieldsSelection" name="fields_to_hide"/>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="splitter">
+       <property name="toolTip">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_min_date">
+       <property name="text">
+        <string>Min date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QgsFieldComboBox" name="min_date">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="allowEmptyFieldName">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_max_date">
+       <property name="text">
+        <string>Max date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QgsFieldComboBox" name="max_date">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="allowEmptyFieldName">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -128,11 +173,6 @@
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
-   <class>ListFieldsSelection</class>
-   <extends>QListWidget</extends>
-   <header>lizmap.qgis_plugin_tools.widgets.list_fields_selection</header>
   </customwidget>
  </customwidgets>
  <resources/>

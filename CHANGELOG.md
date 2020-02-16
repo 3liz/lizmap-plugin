@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## Version 3.2.6
+
+* Refactor form filter to be editable
+* Some UX issues with table headers
+* Fix missing translations
+* Display field alias when possible
+* Disable color in tooltip if disabled
+
+## Version 3.2.5
+
+* Fix Python syntax
+* Refactor Time Manager panel to be editable
+
 ## Version 3.2.4
 
 * Display color in table

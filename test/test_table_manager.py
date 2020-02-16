@@ -12,6 +12,7 @@ start_app()
 from ..definitions.atlas import AtlasDefinitions
 from ..definitions.attribute_table import AttributeTableDefinitions
 from ..definitions.edition import EditionDefinitions
+from ..definitions.filter_by_form import FilterByFormDefinitions
 from ..definitions.filter_by_login import FilterByLoginDefinitions
 from ..definitions.locate_by_layer import LocateByLayerDefinitions
 from ..definitions.tooltip import ToolTipDefinitions
@@ -32,6 +33,72 @@ class TestTableManager(unittest.TestCase):
 
     def setUp(self) -> None:
         self.maxDiff = None
+
+    def test_form_filter(self):
+        """Test table manager with filter by form."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = FilterByFormDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            '0': {
+                'title': 'Line filtering',
+                'type': 'text',
+                'field': 'name',
+                'min_date': '',
+                'max_date': '',
+                'format': 'checkboxes',
+                'splitter': '',
+                'provider': 'ogr',
+                'layerId': layer.id(),
+                'order': 0
+            },
+            '1': {
+                'title': 'Line filtering',
+                'type': 'numeric',
+                'field': 'id',
+                'min_date': '',
+                'max_date': '',
+                'format': 'checkboxes',
+                'splitter': '',
+                'provider': 'ogr',
+                'layerId': layer.id(),
+                'order': 1
+            }
+        }
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 2)
+        data = table_manager.to_json()
+
+        expected = {
+            '0': {
+                'layerId': layer.id(),
+                'provider': 'ogr',  # Added automatically on the fly
+                'title': 'Line filtering',
+                'type': 'text',
+                'field': 'name',
+                'format': 'checkboxes',
+                'order': 0
+            },
+            '1': {
+                'layerId': layer.id(),
+                'provider': 'ogr',  # Added automatically on the fly
+                'title': 'Line filtering',
+                'type': 'numeric',
+                'field': 'id',
+                'format': 'checkboxes',
+                'order': 1
+            }
+        }
+        self.assertDictEqual(data, expected)
 
     def test_filter_by_login(self):
         """Test table manager with filter by login."""
