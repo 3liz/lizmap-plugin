@@ -1825,7 +1825,23 @@ class Lizmap:
         html += '\n' + htmlcontent
         html += '\n' + '</div>'
 
+        if layer.mapTipTemplate() != '':
+            box = QMessageBox(self.dlg)
+            box.setIcon(QMessageBox.Question)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
+            box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
+            box.setText(tr(
+                'A maptip already exists for this layer. This is going to override it. '
+                'Are you sure you want to continue ?'))
+            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            box.setDefaultButton(QMessageBox.No)
+            result = box.exec_()
+            if result == QMessageBox.No:
+                return
+
         layer.setMapTipTemplate(html)
+        QMessageBox.information(
+            self.dlg, tr('Maptip'), tr('The maptip has been set in the layer.'), QMessageBox.Ok)
 
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui.
