@@ -1,3 +1,5 @@
+NEW_FEATURE = 'background-color:rgb(170, 255, 255);'
+
 STYLESHEET = (
     '''
 QGroupBox::title {{
