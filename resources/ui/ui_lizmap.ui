@@ -166,22 +166,32 @@ QListWidget::item::selected {
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_63">
+        <widget class="QLabel" name="label_lwc_version">
          <property name="font">
           <font>
            <italic>true</italic>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color:rgb(170, 255, 255);</string>
+          <string notr="true"/>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options in blue background are only usable with Lizmap Web Client &lt;span style=&quot; font-weight:600;&quot;&gt;3.3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>Options in blue background are only usable with higher version of Lizmap Web Client.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Version of Lizmap Web Client:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="combo_lwc_version"/>
        </item>
        <item>
         <widget class="QCheckBox" name="checkbox_save_project">
@@ -1148,10 +1158,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
-                          <widget class="QLabel" name="label_108">
-                           <property name="styleSheet">
-                            <string notr="true">background-color:rgb(170, 255, 255);</string>
-                           </property>
+                          <widget class="QLabel" name="label_drag_drop_form">
                            <property name="text">
                             <string>Only if using &quot;qgis&quot; above. Use the button below to copy the form Drag&amp;Drop design to the HTML maptip template. Be careful, any maptip template will be replaced.</string>
                            </property>
@@ -1162,9 +1169,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </item>
                          <item>
                           <widget class="QPushButton" name="btQgisPopupFromForm">
-                           <property name="styleSheet">
-                            <string notr="true">background-color:rgb(170, 255, 255);</string>
-                           </property>
                            <property name="text">
                             <string>Copy the form drag &amp; drop template</string>
                            </property>
@@ -1173,7 +1177,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_37">
                            <item>
-                            <widget class="QLabel" name="label_81">
+                            <widget class="QLabel" name="label_max_feature_popup">
                              <property name="text">
                               <string>Max features in popup</string>
                              </property>
@@ -1229,7 +1233,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLabel" name="label">
+                            <widget class="QLabel" name="label_display_popup_children">
                              <property name="text">
                               <string>Display related children under each object (use relations)</string>
                              </property>
@@ -2770,7 +2774,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
                <item>
-                <widget class="QLabel" name="label_78">
+                <widget class="QLabel" name="label_dataviz">
                  <property name="text">
                   <string>Lizmap can use data from project layers to draw and display charts, such as bar charts, pie charts or scatter plots. You can add a layer in the following table and choose the type of chart and which data field must be used. We recommand to use PostGIS views or virtual layers to prepare the data, and to keep data small.</string>
                  </property>
@@ -3467,7 +3471,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
                <item>
-                <widget class="QLabel" name="label_81">
+                <widget class="QLabel" name="label_atlas">
                  <property name="text">
                   <string>Choose a vector layer containing a set of atlas features. Lizmap will propose a menu to let the user activate one feature at a time. Several actions can be triggered: display the feature popup, filter the layer and its children, zoom to the feature, etc.</string>
                  </property>
@@ -3605,9 +3609,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
                <item>
-                <widget class="QLabel" name="label_99">
+                <widget class="QLabel" name="label_form_filter">
                  <property name="styleSheet">
-                  <string notr="true">background-color:rgb(170, 255, 255);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="text">
                   <string>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</string>

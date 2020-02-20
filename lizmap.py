@@ -49,6 +49,8 @@ import os
 import re
 import sys
 import urllib.parse
+
+from collections import OrderedDict
 from functools import partial
 from shutil import copyfile
 from typing import Optional
@@ -83,8 +85,10 @@ from qgis.core import (
     QgsApplication,
 )
 
+from . import DEFAULT_LWC_VERSION
 from .definitions.atlas import AtlasDefinitions
 from .definitions.attribute_table import AttributeTableDefinitions
+from .definitions.definitions import LwcVersions
 from .definitions.edition import EditionDefinitions
 from .definitions.filter_by_form import FilterByFormDefinitions
 from .definitions.filter_by_login import FilterByLoginDefinitions
@@ -100,7 +104,7 @@ from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
 from .forms.time_manager_edition import TimeManagerEditionDialog
 from .forms.tooltip_edition import ToolTipEditionDialog
-from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM
+from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM, NEW_FEATURE
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
 from .lizmap_popup_dialog import LizmapPopupDialog
@@ -150,6 +154,38 @@ class Lizmap:
         if is_dev_version():
             self.dlg.setWindowTitle('DEV Lizmap {}'.format(version()))
         self.popup_dialog = None
+
+        # Manage LWC versions combo
+        self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE)
+        self.lwc_versions = OrderedDict()
+        self.lwc_versions[LwcVersions.Lizmap_3_1] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_2] = [
+            self.dlg.label_max_feature_popup,
+            self.dlg.label_display_popup_children,
+            self.dlg.label_dataviz,
+            self.dlg.label_atlas,
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_3] = [
+            self.dlg.label_form_filter,
+            self.dlg.label_drag_drop_form,
+            self.dlg.btQgisPopupFromForm,
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_4] = [
+            self.dlg.label_atlas_34
+        ]
+        next_release = False
+        for lwc_version in LwcVersions:
+            if not next_release:
+                self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
+                if lwc_version == DEFAULT_LWC_VERSION:
+                    next_release = True if not is_dev_version() else False
+
+        lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        lwc_version = LwcVersions(lwc_version)
+        index = self.dlg.combo_lwc_version.findData(lwc_version)
+        self.dlg.combo_lwc_version.setCurrentIndex(index)
+        self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
+        self.lwc_version_changed()
 
         # Map options
         icon = QIcon()
@@ -497,6 +533,22 @@ class Lizmap:
         self.isok = None
         self.embeddedGroups = None
         self.myDic = None
+
+    def lwc_version_changed(self):
+        current_version = self.dlg.combo_lwc_version.currentData()
+        found = False
+        for lwc_version, items in self.lwc_versions.items():
+            if found:
+                for item in items:
+                    item.setStyleSheet(NEW_FEATURE)
+            else:
+                for item in items:
+                    item.setStyleSheet('')
+
+            if lwc_version == current_version:
+                found = True
+
+        QSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -1846,9 +1898,10 @@ class Lizmap:
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
-
+        # lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         metadata = {
-            'lizmap_plugin_version': self.global_options['lizmap_plugin_version']['default'],
+            'lizmap_plugin_version': self.global_options['metadata']['lizmap_plugin_version']['default'],
+            'lizmap_web_client_target_version': self.global_options['metadata']['lizmap_web_client_target_version']['default'],
         }
 
         liz2json = dict()

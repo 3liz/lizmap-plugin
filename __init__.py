@@ -46,6 +46,10 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
+from .definitions.definitions import LwcVersions
+
+DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_3
+
 
 def classFactory(iface):
     from .lizmap import Lizmap
