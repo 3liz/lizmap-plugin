@@ -6,13 +6,12 @@ from typing import Type
 
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QDialog,
     QAbstractItemView,
     QMessageBox,
-    QHeaderView,
 )
 
 from ..definitions.base import BaseDefinitions, InputType
@@ -181,10 +180,13 @@ class TableManager:
                     for item_enum in items:
                         if item_enum.value['data'] == value:
                             text = item_enum.value['label']
+                            icon = item_enum.value.get('icon')
                             break
                     else:
                         raise Exception('Error with list')
                     cell.setText(text)
+                    if icon:
+                        cell.setIcon(QIcon(icon))
                 else:
                     cell.setText(value)
 
