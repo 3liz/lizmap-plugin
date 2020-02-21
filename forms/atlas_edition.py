@@ -57,9 +57,6 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.feature_label.setLayer(self.layer.currentLayer())
         self.sort_field.setLayer(self.layer.currentLayer())
 
-        self.zoom.addItem('', '')
-        self.zoom.addItem('zoom', 'zoom')
-        self.zoom.addItem('center', 'center')
         self.setup_ui()
 
     def validate(self) -> str:

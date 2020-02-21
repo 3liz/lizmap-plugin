@@ -28,21 +28,33 @@ class BaseEditionDialog(QDialog):
         self.error.setVisible(False)
 
         for layer_config in self.config.layer_config.values():
+            widget = layer_config.get('widget')
+
             tooltip = layer_config.get('tooltip')
             if tooltip:
                 label = layer_config.get('label')
                 if label:
                     label.setToolTip(tooltip)
-                widget = layer_config.get('widget')
                 if widget:
                     widget.setToolTip(tooltip)
+
+            if layer_config['type'] == InputType.List:
+                if widget is not None:
+                    items = layer_config.get('items')
+                    if items:
+                        for item in items:
+                            widget.addItem(item.value['label'], item.value['data'])
+                        default = layer_config.get('default')
+                        if default:
+                            index = widget.findData(default.value['data'])
+                            widget.setCurrentIndex(index)
+
             if layer_config['type'] == InputType.CheckBox:
-                widget = layer_config.get('widget')
-                if widget:
+                if widget is not None:
                     widget.setChecked(layer_config['default'])
+
             if layer_config['type'] == InputType.Color:
-                widget = layer_config.get('widget')
-                if widget:
+                if widget is not None:
                     if layer_config['default'] == '':
                         widget.setShowNull(True)
                         widget.setToNull()

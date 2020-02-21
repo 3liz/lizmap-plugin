@@ -174,9 +174,19 @@ class TableManager:
                 cell.setTextAlignment(Qt.AlignCenter)
 
             elif input_type == InputType.List:
-                cell.setText(value)
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
+                items = self.definitions.layer_config[key].get('items')
+                if items:
+                    for item_enum in items:
+                        if item_enum.value['data'] == value:
+                            text = item_enum.value['label']
+                            break
+                    else:
+                        raise Exception('Error with list')
+                    cell.setText(text)
+                else:
+                    cell.setText(value)
 
             elif input_type == InputType.SpinBox:
                 cell.setText(str(value))

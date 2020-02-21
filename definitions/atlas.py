@@ -1,5 +1,7 @@
 """Definitions for atlas."""
 
+from enum import Enum, unique
+
 from .base import BaseDefinitions, InputType
 from ..qgis_plugin_tools.tools.i18n import tr
 
@@ -7,6 +9,22 @@ __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
+
+
+@unique
+class ZoomItems(Enum):
+    Nothing = {
+        'data': '',
+        'label': '',
+    }
+    Center = {
+        'data': 'center',
+        'label': tr('Center'),
+    }
+    Zoom = {
+        'data': 'zoom',
+        'label': tr('Zoom'),
+    }
 
 
 class AtlasDefinitions(BaseDefinitions):
@@ -57,7 +75,8 @@ class AtlasDefinitions(BaseDefinitions):
         self._layer_config['zoom'] = {
             'type': InputType.List,
             'header': tr('Zoom'),
-            'default': None,
+            'items': ZoomItems,
+            'default': ZoomItems.Nothing,
             'tooltip': tr('Choose between a zoom on the feature or to make it the center of your map.')
         }
         self._layer_config['displayPopup'] = {
