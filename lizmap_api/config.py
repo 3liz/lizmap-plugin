@@ -53,6 +53,7 @@ from qgis.core import (
     QgsMapLayer,
 )
 
+from .. import DEFAULT_LWC_VERSION
 from ..qgis_plugin_tools.tools.resources import metadata_config
 
 
@@ -75,10 +76,16 @@ class LizmapConfig:
     lizmap_version = metadata_config()['general']['version']
     lizmap_version = lizmap_version.replace('-beta', '')
 
+    metadata = dict()
+    metadata['lizmap_plugin_version'] = {
+        'wType': 'spinbox', 'type': 'integer', 'default': int(''.join([format(int(i), '02d') for i in lizmap_version.split('.')])),
+    }
+    metadata['lizmap_web_client_target_version'] = {
+        'wType': 'spinbox', 'type': 'integer', 'default': DEFAULT_LWC_VERSION.value,
+    }
+
     globalOptionDefinitions = {
-        'lizmap_plugin_version': {
-            'wType': 'spinbox', 'type': 'integer', 'default': int(''.join([format(int(i), '02d') for i in lizmap_version.split('.')])),
-        },
+        'metadata': metadata,
         'mapScales': {
             'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
         },
