@@ -48,6 +48,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.resolution.addItem('hours', 'hours')
         self.resolution.addItem('days', 'days')
         self.resolution.addItem('weeks', 'weeks')
+        self.resolution.addItem('months', 'months')
         self.resolution.addItem('years', 'years')
 
         self.setup_ui()
