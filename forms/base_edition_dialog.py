@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
 
@@ -43,7 +43,11 @@ class BaseEditionDialog(QDialog):
                     items = layer_config.get('items')
                     if items:
                         for item in items:
-                            widget.addItem(item.value['label'], item.value['data'])
+                            icon = item.value.get('icon')
+                            if icon:
+                                widget.addItem(QIcon(icon), item.value['label'], item.value['data'])
+                            else:
+                                widget.addItem(item.value['label'], item.value['data'])
                         default = layer_config.get('default')
                         if default:
                             index = widget.findData(default.value['data'])

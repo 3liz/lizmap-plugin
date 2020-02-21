@@ -1,12 +1,11 @@
 """Dialog for dataviz edition."""
 from qgis.core import QgsMapLayerProxyModel, QgsProject
-from qgis.PyQt.QtGui import QIcon
 
 from .base_edition_dialog import BaseEditionDialog
 from ..definitions.base import InputType
-from ..definitions.dataviz import DatavizDefinitions, GraphType, AggregationType
+from ..definitions.dataviz import DatavizDefinitions, GraphType
 from ..qgis_plugin_tools.tools.i18n import tr
-from ..qgis_plugin_tools.tools.resources import load_ui, resources_path
+from ..qgis_plugin_tools.tools.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -47,17 +46,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('y2_field', self.label_y_field_2)
         self.config.add_layer_label('colorfield2', self.label_y_color_2)
 
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', 'scatterplot.svg')), GraphType.Scatter.value, GraphType.Scatter.value)
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', 'boxplot.svg')), GraphType.Box.value, GraphType.Box.value)
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', 'barplot.svg')), GraphType.Bar.value, GraphType.Bar.value)
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', 'histogram.svg')), GraphType.Histogram.value, GraphType.Histogram.value)
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', 'pie.svg')), GraphType.Pie.value, GraphType.Pie.value)
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', '2dhistogram.svg')), GraphType.Histogram2D.value, GraphType.Histogram2D.value)
-        self.type_graph.addItem(QIcon(resources_path('icons', 'plots', 'polar.svg')), GraphType.Polar.value, GraphType.Polar.value)
-
-        for aggregation_type in AggregationType:
-            self.aggregation.addItem(aggregation_type.value, aggregation_type.value)
-
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.x_field.setLayer)
         self.layer.layerChanged.connect(self.y_field.setLayer)
@@ -89,7 +77,12 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def check_form_graph_type(self):
         graph = self.type_graph.currentData()
-        graph = GraphType(graph)
+        for item_enum in GraphType:
+            if item_enum.value['data'] == graph:
+                graph = item_enum
+                break
+        else:
+            raise Exception('Error with list')
         if graph in [GraphType.Scatter, GraphType.Bar, GraphType.Histogram, GraphType.Histogram2D, GraphType.Polar, GraphType.Pie]:
             self.x_field.setAllowEmptyFieldName(False)
         elif graph in [GraphType.Box]:

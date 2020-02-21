@@ -4,6 +4,7 @@ from enum import Enum, unique
 
 from .base import BaseDefinitions, InputType
 from ..qgis_plugin_tools.tools.i18n import tr
+from ..qgis_plugin_tools.tools.resources import resources_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -13,26 +14,81 @@ __revision__ = '$Format:%H$'
 
 @unique
 class GraphType(Enum):
-    Scatter = 'scatter'
-    Box = 'box'
-    Bar = 'bar'
-    Histogram = 'histogram'
-    Pie = 'pie'
-    Histogram2D = 'histogram2d'
-    Polar = 'polar'
+    Scatter = {
+        'data': 'scatter',
+        'label': tr('Scatter'),
+        'icon': resources_path('icons', 'plots', 'scatterplot.svg'),
+    }
+    Box = {
+        'data': 'box',
+        'label': 'Box',
+        'icon': resources_path('icons', 'plots', 'boxplot.svg'),
+    }
+    Bar = {
+        'data': 'bar',
+        'label': tr('Bar'),
+        'icon': resources_path('icons', 'plots', 'barplot.svg'),
+    }
+    Histogram = {
+        'data': 'histogram',
+        'label': tr('Histogram'),
+        'icon': resources_path('icons', 'plots', 'histogram.svg'),
+    }
+    Pie = {
+        'data': 'pie',
+        'label': tr('Pie'),
+        'icon': resources_path('icons', 'plots', 'pie.svg'),
+    }
+    Histogram2D = {
+        'data': 'histogram2d',
+        'label': tr('Histogram 2D'),
+        'icon': resources_path('icons', 'plots', '2dhistogram.svg'),
+    }
+    Polar = {
+        'data': 'polar',
+        'label': tr('Polar'),
+        'icon': resources_path('icons', 'plots', 'polar.svg'),
+    }
 
 
 @unique
 class AggregationType(Enum):
-    Sum = 'sum'
-    Count = 'count'
-    Avg = 'avg'
-    Median = 'median'
-    Stddev = 'stddev'
-    Min = 'min'
-    Max = 'max'
-    First = 'first'
-    Last = 'last'
+    Sum = {
+        'data': 'sum',
+        'label': tr('Sum'),
+    }
+    Count = {
+        'data': 'count',
+        'label': tr('Count'),
+    }
+    Avg = {
+        'data': 'avg',
+        'label': tr('Average'),
+    }
+    Median = {
+        'data': 'median',
+        'label': tr('Median'),
+    }
+    Stddev = {
+        'data': 'stddev',
+        'label': tr('Standard deviation'),
+    }
+    Min = {
+        'data': 'min',
+        'label': tr('Min'),
+    }
+    Max = {
+        'data': 'max',
+        'label': tr('Max'),
+    }
+    First = {
+        'data': 'first',
+        'label': tr('First'),
+    }
+    Last = {
+        'data': 'last',
+        'label': tr('Last'),
+    }
 
 
 class DatavizDefinitions(BaseDefinitions):
@@ -42,7 +98,8 @@ class DatavizDefinitions(BaseDefinitions):
         self._layer_config['type'] = {
             'type': InputType.List,
             'header': tr('Type'),
-            'default': None,
+            'items': GraphType,
+            'default': GraphType.Scatter,
             'tooltip': tr('Type of chart to add')
         }
         self._layer_config['title'] = {
@@ -66,7 +123,8 @@ class DatavizDefinitions(BaseDefinitions):
         self._layer_config['aggregation'] = {
             'type': InputType.List,
             'header': tr('Aggregation'),
-            'default': AggregationType.Sum.value,
+            'items': AggregationType,
+            'default': AggregationType.Sum,
             'tooltip': tr('For a few types of charts like ‘bar’ or ‘pie’, you can choose to aggregate the data in the graph.')
         }
         self._layer_config['y_field'] = {
