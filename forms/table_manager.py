@@ -456,7 +456,7 @@ class TableManager:
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
-                            'In CFG file, section "{}", one layer is missing the key "{}" which is compulsory. Skipping that layer.'.format(
+                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. Skipping that layer.'.format(
                                 self.definitions.key(), key))
                         valid_layer = False
                         continue

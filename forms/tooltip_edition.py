@@ -68,4 +68,4 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
             return msg
 
         if not self.fields.selection():
-            return tr('At least one field is compulsory.')
+            return tr('At least one field is mandatory.')

@@ -316,7 +316,7 @@ class TestTableManager(unittest.TestCase):
             },
             'lines_2': {
                 'fieldName': 'name',
-                # 'filterFieldName': 'id', DISABLED on purpose. This field is not compulsory.
+                # 'filterFieldName': 'id', DISABLED on purpose. This field is not mandatory.
                 'displayGeom': 'False',
                 'minLength': 0,
                 'filterOnLocate': 'True',
@@ -553,7 +553,7 @@ class TestTableManager(unittest.TestCase):
         new_json = copy.deepcopy(json)
         del new_json['layers'][0]['layer']
         table_manager.from_json(new_json)
-        # Layer is compulsory
+        # Layer is mandatory
         self.assertEqual(table_manager.table.rowCount(), 0)
 
         new_json = copy.deepcopy(json)

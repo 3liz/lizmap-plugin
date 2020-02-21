@@ -1184,7 +1184,7 @@ class Lizmap:
 
         graph_y_field = self.dlg.inDatavizPlotYfield.currentField()
         if not graph_y_field:
-            self.display_error('Field Y is compulsory.')
+            self.display_error('Field Y is mandatory.')
             return
 
         layer_name = layer.name()
