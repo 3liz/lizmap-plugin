@@ -419,6 +419,8 @@ class TableManager:
             layers = self._from_json_legacy(data)
 
         for layer in layers:
+            if not layer:
+                continue
             layer_data = {}
             valid_layer = True
             for key, definition in self.definitions.layer_config.items():
