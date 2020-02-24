@@ -6,13 +6,12 @@ from typing import Type
 
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QDialog,
     QAbstractItemView,
     QMessageBox,
-    QHeaderView,
 )
 
 from ..definitions.base import BaseDefinitions, InputType
@@ -174,9 +173,22 @@ class TableManager:
                 cell.setTextAlignment(Qt.AlignCenter)
 
             elif input_type == InputType.List:
-                cell.setText(value)
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
+                items = self.definitions.layer_config[key].get('items')
+                if items:
+                    for item_enum in items:
+                        if item_enum.value['data'] == value:
+                            text = item_enum.value['label']
+                            icon = item_enum.value.get('icon')
+                            break
+                    else:
+                        raise Exception('Error with list value="{}"'.format(value))
+                    cell.setText(text)
+                    if icon:
+                        cell.setIcon(QIcon(icon))
+                else:
+                    cell.setText(value)
 
             elif input_type == InputType.SpinBox:
                 cell.setText(str(value))
@@ -197,7 +209,7 @@ class TableManager:
     def move_layer_up(self):
         """Move the selected layer up."""
         row = self.table.currentRow()
-        if row == 0:
+        if row <= 0:
             return
         column = self.table.currentColumn()
         self.table.insertRow(row - 1)
@@ -209,7 +221,7 @@ class TableManager:
     def move_layer_down(self):
         """Move the selected layer down."""
         row = self.table.currentRow()
-        if row == self.table.rowCount() - 1:
+        if row == self.table.rowCount() - 1 or row < 0:
             return
         column = self.table.currentColumn()
         self.table.insertRow(row + 2)
@@ -330,13 +342,14 @@ class TableManager:
             'editionLayers',
             'timemanagerLayers',
             'formFilterLayers',
+            'datavizLayers',
         ]:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
                 vector_layer = QgsProject.instance().mapLayer(layer_id)
                 layer_name = vector_layer.name()
-                if self.definitions.key() == 'formFilterLayers':
+                if self.definitions.key() in ['formFilterLayers', 'datavizLayers']:
                     key = str(i)
                 else:
                     key = layer_name
@@ -407,6 +420,7 @@ class TableManager:
             'editionLayers',
             'timemanagerLayers',
             'formFilterLayers',
+            'datavizLayers',
         ]:
             data = self._from_json_legacy_order(data)
 
@@ -419,6 +433,8 @@ class TableManager:
             layers = self._from_json_legacy(data)
 
         for layer in layers:
+            if not layer:
+                continue
             layer_data = {}
             valid_layer = True
             for key, definition in self.definitions.layer_config.items():
@@ -452,11 +468,14 @@ class TableManager:
                 else:
                     default_value = definition.get('default')
                     if default_value is not None:
-                        layer_data[key] = default_value
+                        if definition['type'] == InputType.List and default_value != '':
+                            layer_data[key] = default_value.value['data']
+                        else:
+                            layer_data[key] = default_value
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
-                            'In CFG file, section "{}", one layer is missing the key "{}" which is compulsory. Skipping that layer.'.format(
+                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. Skipping that layer.'.format(
                                 self.definitions.key(), key))
                         valid_layer = False
                         continue

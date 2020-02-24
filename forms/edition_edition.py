@@ -47,7 +47,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
     def validate(self) -> str:
         layer = self.layer.currentLayer()
         if not layer:
-            return tr('A layer is compulsory.')
+            return tr('A layer is mandatory.')
 
         upstream = super().validate()
         if upstream:
@@ -68,7 +68,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         modify_geometry = self.edit_geometry.isChecked()
         delete_feature = self.delete_feature.isChecked()
         if not create_feature and not modify_attribute and not modify_geometry and not delete_feature:
-            return tr('At least one action is compulsory.')
+            return tr('At least one action is mandatory.')
 
         # Check Z or M values which will be lost when editing
         geometry_type = layer.wkbType()

@@ -11,6 +11,7 @@ start_app()
 
 from ..definitions.atlas import AtlasDefinitions
 from ..definitions.attribute_table import AttributeTableDefinitions
+from ..definitions.dataviz import DatavizDefinitions
 from ..definitions.edition import EditionDefinitions
 from ..definitions.filter_by_form import FilterByFormDefinitions
 from ..definitions.filter_by_login import FilterByLoginDefinitions
@@ -133,6 +134,63 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             }
         }
+        self.assertDictEqual(data, expected)
+
+    def test_dataviz(self):
+        """Test table manager with dataviz."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = DatavizDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'x_field': 'id',
+                'aggregation': '',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'colorfield': '',
+                'has_y2_field': 'True',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'colorfield2': '',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+
+        expected = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'x_field': 'id',
+                'aggregation': 'sum',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+
         self.assertDictEqual(data, expected)
 
     def test_tool_tip(self):
@@ -343,7 +401,7 @@ class TestTableManager(unittest.TestCase):
             },
             'lines_2': {
                 'fieldName': 'name',
-                # 'filterFieldName': 'id', DISABLED on purpose. This field is not compulsory.
+                # 'filterFieldName': 'id', DISABLED on purpose. This field is not mandatory.
                 'displayGeom': 'False',
                 'minLength': 0,
                 'filterOnLocate': 'True',
@@ -580,7 +638,7 @@ class TestTableManager(unittest.TestCase):
         new_json = copy.deepcopy(json)
         del new_json['layers'][0]['layer']
         table_manager.from_json(new_json)
-        # Layer is compulsory
+        # Layer is mandatory
         self.assertEqual(table_manager.table.rowCount(), 0)
 
         new_json = copy.deepcopy(json)

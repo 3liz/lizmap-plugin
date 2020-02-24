@@ -143,9 +143,9 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
         if data == 'date':
             if not self.min_date.currentField():
-                return tr('Field min date is compulsory.')
+                return tr('Field min date is mandatory.')
         elif data in ['text', 'uniquevalues', 'numeric']:
             if not self.field.currentField():
-                return tr('Field is compulsory.')
+                return tr('Field is mandatory.')
         else:
             raise Exception('Unknown option')

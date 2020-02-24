@@ -65,4 +65,4 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
             return msg
 
         if not self.display_field.currentField():
-            return tr('Display field is compulsory.')
+            return tr('Display field is mandatory.')

@@ -62,4 +62,4 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
             return msg
 
         if not self.field_primary_key.currentField():
-            return tr('Primary key field is compulsory.')
+            return tr('Primary key field is mandatory.')

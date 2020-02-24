@@ -2784,52 +2784,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_34">
-                 <item>
-                  <widget class="QLabel" name="label_79">
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Dataviz container</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="liDatavizContainer">
-                   <item>
-                    <property name="text">
-                     <string>dock</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>bottomdock</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>right-dock</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_29">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item>
                 <widget class="QTabWidget" name="tabWidget">
                  <property name="currentIndex">
                   <number>0</number>
@@ -2840,7 +2794,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout_48">
                    <item>
-                    <widget class="QTableWidget" name="twDatavizLayers">
+                    <widget class="QTableWidget" name="table_dataviz">
                      <property name="maximumSize">
                       <size>
                        <width>16777215</width>
@@ -2859,357 +2813,42 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <property name="selectionBehavior">
                       <enum>QAbstractItemView::SelectRows</enum>
                      </property>
-                     <column>
-                      <property name="text">
-                       <string>Layer</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Title</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Type</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>X field</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Aggregation</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Y field</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Color</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Color field</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Second Y field ?</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Y Field 2</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Color 2</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Color field 2</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Popup for main layer</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Only show child</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Popup for children</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Id</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Plot Id</string>
-                      </property>
-                     </column>
-                    </widget>
-                   </item>
-                   <item>
-                    <layout class="QGridLayout" name="gridLayout_4">
-                     <item row="11" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizColorField"/>
-                     </item>
-                     <item row="12" column="0">
-                      <widget class="QCheckBox" name="cbDatavizYField2">
-                       <property name="toolTip">
-                        <string>You can add a second Y field, if the graph can accept it.</string>
-                       </property>
-                       <property name="text">
-                        <string>2nd Y field</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="inDatavizPlotTitle">
-                       <property name="toolTip">
-                        <string>The title of the graph</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="0">
-                      <widget class="QLabel" name="label_76">
-                       <property name="text">
-                        <string>X field</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QComboBox" name="liDatavizPlotType">
-                       <property name="statusTip">
-                        <string>Type of chart to add</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="8" column="0">
-                      <widget class="QLabel" name="label_77">
-                       <property name="text">
-                        <string>Y field</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_74">
-                       <property name="text">
-                        <string>Type</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1">
-                      <widget class="QgsMapLayerComboBox" name="liDatavizPlotLayer">
-                       <property name="toolTip">
-                        <string>Layer to work on</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="label_58">
-                       <property name="text">
-                        <string>Layer</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizPlotXfield">
-                       <property name="toolTip">
-                        <string>X field of your graph, it might be empty according to the kind of graph (box)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="8" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizPlotYfield">
-                       <property name="toolTip">
-                        <string>The Y field of your graph.</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_71">
-                       <property name="text">
-                        <string>Title</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="12" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizPlotYfield2">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="2">
-                      <widget class="QLabel" name="label_98">
-                       <property name="text">
-                        <string>Group ?</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="5" column="3">
-                      <widget class="QComboBox" name="liDatavizAggregation">
-                       <property name="toolTip">
-                        <string>For a few types of charts like ‘bar’ or ‘pie’, you can choose to aggregate the data in the graph. There are a few aggregate functions available - average(avg), sum, count, median, stddev, min, max, first, last</string>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string/>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>avg</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>sum</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>count</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>median</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>stddev</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>min</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>max</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>first</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>last</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item row="11" column="3">
-                      <widget class="QgsColorButton" name="inDatavizPlotColor">
-                       <property name="color" stdset="0">
-                        <color>
-                         <red>0</red>
-                         <green>170</green>
-                         <blue>255</blue>
-                        </color>
-                       </property>
-                       <property name="defaultColor" stdset="0">
-                        <color>
-                         <red>0</red>
-                         <green>170</green>
-                         <blue>255</blue>
-                        </color>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="11" column="2">
-                      <widget class="QLabel" name="label_75">
-                       <property name="text">
-                        <string>Color</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="13" column="1">
-                      <widget class="QgsFieldComboBox" name="inDatavizColorField2"/>
-                     </item>
-                     <item row="13" column="3">
-                      <widget class="QgsColorButton" name="inDatavizPlotColor2">
-                       <property name="color" stdset="0">
-                        <color>
-                         <red>255</red>
-                         <green>170</green>
-                         <blue>0</blue>
-                        </color>
-                       </property>
-                       <property name="defaultColor" stdset="0">
-                        <color>
-                         <red>255</red>
-                         <green>170</green>
-                         <blue>0</blue>
-                        </color>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="13" column="2">
-                      <widget class="QLabel" name="label_80">
-                       <property name="text">
-                        <string>Color</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="13" column="0">
-                      <widget class="QCheckBox" name="cbDatavizUseColorField2">
-                       <property name="toolTip">
-                        <string>You can choose the color of the second Y field the same way you choose the one for his first Y field.</string>
-                       </property>
-                       <property name="text">
-                        <string>Color field 2 ?</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="11" column="0">
-                      <widget class="QCheckBox" name="cbDatavizUseColorField">
-                       <property name="toolTip">
-                        <string>You can choose or not a color field to customize the color of each category of your chart. If you want to do it, you need to check the checkbox, then choose the field of your layer which contains the colors you want to use. The color can be written like ‘red’ or ‘blue’ but it can be an HTML color code like ‘#01DFD7’ for example.</string>
-                       </property>
-                       <property name="text">
-                        <string>Color field ?</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbDatavizDisplayChildPlot">
-                     <property name="toolTip">
-                      <string>If you check this checkbox, the children of your layer will get the same graph as the parent plot but filtered only for them. It’s useful if you want to see the statistics of one entity instead of all.</string>
-                     </property>
-                     <property name="text">
-                      <string>Display filtered plot in popups of parent layer</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="cbDatavizOnlyShowChild">
-                     <property name="toolTip">
-                      <string>The main graph will not be shown in the main container and only the filtered graph of the relation of the layer will be displayed in the popup when you select the element.</string>
-                     </property>
-                     <property name="text">
-                      <string>Only show in child popup</string>
-                     </property>
                     </widget>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_35">
                      <item>
-                      <widget class="QPushButton" name="btDatavizAddLayer">
+                      <widget class="QPushButton" name="add_dataviz_layer">
                        <property name="text">
-                        <string>Add layer</string>
+                        <string notr="true">+</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="btDatavizRemoveLayer">
+                      <widget class="QPushButton" name="remove_dataviz_layer">
                        <property name="text">
-                        <string>Remove layer</string>
+                        <string notr="true">-</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="edit_dataviz_layer">
+                       <property name="text">
+                        <string notr="true">edit</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="up_dataviz_layer">
+                       <property name="text">
+                        <string notr="true">up</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="down_dataviz_layer">
+                       <property name="text">
+                        <string notr="true">down</string>
                        </property>
                       </widget>
                      </item>
@@ -3227,6 +2866,44 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </spacer>
                      </item>
                     </layout>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_5">
+                     <property name="title">
+                      <string>Dataviz options</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_5">
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_79">
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="text">
+                         <string>Dataviz container</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QComboBox" name="liDatavizContainer">
+                        <item>
+                         <property name="text">
+                          <string>dock</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>bottomdock</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>right-dock</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -3751,25 +3428,10 @@ This is different to the map maximum extent (defined in QGIS project properties,
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgis.gui</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
@@ -3869,23 +3531,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>add_tooltip_button</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>scrollArea_11</tabstop>
-  <tabstop>liDatavizContainer</tabstop>
-  <tabstop>liDatavizPlotType</tabstop>
-  <tabstop>inDatavizPlotTitle</tabstop>
-  <tabstop>liDatavizPlotLayer</tabstop>
-  <tabstop>inDatavizPlotXfield</tabstop>
-  <tabstop>liDatavizAggregation</tabstop>
-  <tabstop>inDatavizPlotYfield</tabstop>
-  <tabstop>cbDatavizUseColorField</tabstop>
-  <tabstop>inDatavizColorField</tabstop>
-  <tabstop>inDatavizPlotColor</tabstop>
-  <tabstop>cbDatavizYField2</tabstop>
-  <tabstop>inDatavizPlotYfield2</tabstop>
-  <tabstop>cbDatavizUseColorField2</tabstop>
-  <tabstop>inDatavizColorField2</tabstop>
-  <tabstop>inDatavizPlotColor2</tabstop>
-  <tabstop>btDatavizAddLayer</tabstop>
-  <tabstop>btDatavizRemoveLayer</tabstop>
+  <tabstop>add_dataviz_layer</tabstop>
+  <tabstop>remove_dataviz_layer</tabstop>
   <tabstop>scrollArea_9</tabstop>
   <tabstop>add_time_manager_layer</tabstop>
   <tabstop>remove_time_manager_layer</tabstop>

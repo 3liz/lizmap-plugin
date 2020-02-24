@@ -44,4 +44,4 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
             return upstream
 
         if not self.field.currentField():
-            return tr('Field is compulsory.')
+            return tr('Field is mandatory.')

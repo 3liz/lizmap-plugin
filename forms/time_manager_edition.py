@@ -70,4 +70,4 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
             return msg
 
         if not self.start_field.currentField():
-            return tr('Start attribute is compulsory.')
+            return tr('Start attribute is mandatory.')

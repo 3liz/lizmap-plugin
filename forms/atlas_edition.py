@@ -57,9 +57,6 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.feature_label.setLayer(self.layer.currentLayer())
         self.sort_field.setLayer(self.layer.currentLayer())
 
-        self.zoom.addItem('', '')
-        self.zoom.addItem('zoom', 'zoom')
-        self.zoom.addItem('center', 'center')
         self.setup_ui()
 
     def validate(self) -> str:
@@ -68,10 +65,10 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
             return upstream
 
         if not self.primary_key.currentField():
-            return tr('Primary key field is compulsory.')
+            return tr('Primary key field is mandatory.')
 
         if not self.feature_label.currentField():
-            return tr('Label field is compulsory.')
+            return tr('Label field is mandatory.')
 
         if not self.sort_field.currentField():
-            return tr('Sort field is compulsory.')
+            return tr('Sort field is mandatory.')

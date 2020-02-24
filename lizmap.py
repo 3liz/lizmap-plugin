@@ -76,7 +76,6 @@ from qgis.PyQt.QtWidgets import (
 from qgis.core import (
     Qgis,
     QgsProject,
-    QgsMapLayerProxyModel,
     QgsMapLayerModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
@@ -88,6 +87,7 @@ from qgis.core import (
 from . import DEFAULT_LWC_VERSION
 from .definitions.atlas import AtlasDefinitions
 from .definitions.attribute_table import AttributeTableDefinitions
+from .definitions.dataviz import DatavizDefinitions
 from .definitions.definitions import LwcVersions
 from .definitions.edition import EditionDefinitions
 from .definitions.filter_by_form import FilterByFormDefinitions
@@ -97,6 +97,7 @@ from .definitions.time_manager import TimeManagerDefinitions
 from .definitions.tooltip import ToolTipDefinitions
 from .forms.atlas_edition import AtlasEditionDialog
 from .forms.attribute_table_edition import AttributeTableEditionDialog
+from .forms.dataviz_edition import DatavizEditionDialog
 from .forms.edition_edition import EditionLayerDialog
 from .forms.filter_by_form_edition import FilterByFormEditionDialog
 from .forms.filter_by_login import FilterByLoginEditionDialog
@@ -364,20 +365,6 @@ class Lizmap:
         self.layer_options_list['sourceRepository']['widget'] = self.dlg.inSourceRepository
         self.layer_options_list['sourceProject']['widget'] = self.dlg.inSourceProject
 
-        self.dataviz_options = LizmapConfig.datavizOptionDefinitions
-        self.dataviz_options['plotType']['widget'] = self.dlg.liDatavizPlotType
-
-        # Add text and icons
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'scatterplot.svg')), 'scatter')
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'boxplot.svg')), 'box')
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'barplot.svg')), 'bar')
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'histogram.svg')), 'histogram')
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'pie.svg')), 'pie')
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', '2dhistogram.svg')), 'histogram2d')
-        self.dlg.liDatavizPlotType.addItem(QIcon(resources_path('icons', 'plots', 'polar.svg')), 'polar')
-
-        self.dataviz_options['plotAggregation']['widget'] = self.dlg.liDatavizAggregation
-
         # map QGIS geometry type
         # TODO lizmap 4, to remove
         self.mapQgisGeometryType = {
@@ -492,6 +479,7 @@ class Lizmap:
                 'removeButton': self.dlg.remove_filter_login_layer_button,
                 'addButton': self.dlg.add_filter_login_layer_button,
                 'editButton': self.dlg.edit_filter_login_layer_button,
+                'manager': None,
             },
             'lizmapExternalBaselayers': {
                 'tableWidget': self.dlg.twLizmapBaselayers,
@@ -510,13 +498,13 @@ class Lizmap:
                 'manager': None,
             },
             'datavizLayers': {
-                'tableWidget': self.dlg.twDatavizLayers,
-                'removeButton': self.dlg.btDatavizRemoveLayer,
-                'addButton': self.dlg.btDatavizAddLayer,
-                'cols': ['title', 'type', 'x_field', 'aggregation', 'y_field', 'color', 'colorfield', 'has_y2_field',
-                         'y2_field', 'color2', 'colorfield2', 'popup_display_child_plot', 'only_show_child', 'layerId',
-                         'order'],
-                'jsonConfig': {}
+                'tableWidget': self.dlg.table_dataviz,
+                'removeButton': self.dlg.remove_dataviz_layer,
+                'addButton': self.dlg.add_dataviz_layer,
+                'editButton': self.dlg.edit_dataviz_layer,
+                'upButton': self.dlg.up_dataviz_layer,
+                'downButton': self.dlg.down_dataviz_layer,
+                'manager': None,
             },
             'formFilterLayers': {
                 'tableWidget': self.dlg.table_form_filter,
@@ -624,6 +612,9 @@ class Lizmap:
                 elif key == 'editionLayers':
                     definition = EditionDefinitions()
                     dialog = EditionLayerDialog
+                elif key == 'datavizLayers':
+                    definition = DatavizDefinitions()
+                    dialog = DatavizEditionDialog
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
@@ -676,46 +667,9 @@ class Lizmap:
         # Delete layers from table when deleted from registry
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
-        # Dataviz layers
-        self.dlg.liDatavizPlotLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizPlotXfield.setLayer)
-        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizPlotYfield.setLayer)
-        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizPlotYfield2.setLayer)
-        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizColorField.setLayer)
-        self.dlg.liDatavizPlotLayer.layerChanged.connect(self.dlg.inDatavizColorField2.setLayer)
-        self.dlg.cbDatavizYField2.toggled.connect(self.dlg.inDatavizPlotYfield2.setEnabled)
-        self.dlg.cbDatavizYField2.toggled.connect(self.dlg.inDatavizPlotColor2.setEnabled)
-        self.dlg.cbDatavizUseColorField.toggled.connect(self.dlg.inDatavizColorField.setEnabled)
-        self.dlg.cbDatavizUseColorField.toggled.connect(self.dlg.inDatavizPlotColor.setDisabled)
-        self.dlg.cbDatavizUseColorField2.toggled.connect(self.dlg.inDatavizColorField2.setEnabled)
-        self.dlg.cbDatavizUseColorField2.toggled.connect(self.dlg.inDatavizPlotColor2.setDisabled)
-        self.dlg.inDatavizPlotXfield.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
-        self.dlg.inDatavizPlotYfield.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
-        self.dlg.inDatavizPlotYfield2.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
-        self.dlg.inDatavizColorField.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
-        self.dlg.inDatavizColorField2.setLayer(self.dlg.liDatavizPlotLayer.currentLayer())
-
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
-
-        # Add a layer to the lizmap dataviz layers
-        self.dlg.btDatavizAddLayer.clicked.connect(self.add_layer_to_dataviz)
-        self.dlg.liDatavizPlotType.currentText()
-
-        # Set the dataviz options (type, etc.)
-        for key, item in self.dataviz_options.items():
-            if item['widget']:
-                if item['wType'] == 'list':
-                    list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
-                    for k, i in list_dic.items():
-                        item['widget'].setItemData(i, k)
-
-        # Add empty item in some field comboboxes
-        # only in QGIS 3.0 TODO
-        # self.dlg.inDatavizColorField.setAllowEmptyFieldName(True)
-        # self.dlg.inDatavizColorField2.setAllowEmptyFieldName(True)
-        self.dlg.inDatavizPlotXfield.setAllowEmptyFieldName(True)
 
         # Atlas
         self.dlg.label_atlas_34.setVisible(is_dev_version())
@@ -1171,77 +1125,6 @@ class Lizmap:
                 i += 1
 
             LOGGER.info('Layer has been added to the base layer list')
-
-    def add_layer_to_dataviz(self):
-        """Add a layer in the list of Dataviz layer."""
-        layer = self.dlg.liDatavizPlotLayer.currentLayer()
-        if not layer:
-            self.display_error('Not possible to add again this layer.')
-            return
-
-        if not self.check_wfs_is_checked(layer):
-            return
-
-        graph_y_field = self.dlg.inDatavizPlotYfield.currentField()
-        if not graph_y_field:
-            self.display_error('Field Y is compulsory.')
-            return
-
-        layer_name = layer.name()
-        layer_id = layer.id()
-        # noinspection PyArgumentList
-        icon = QgsMapLayerModel.iconForLayer(layer)
-
-        graph_title = self.dlg.inDatavizPlotTitle.text().strip(' \t')
-        graph_type = self.dlg.liDatavizPlotType.itemData(self.dlg.liDatavizPlotType.currentIndex())
-        graph_x_field = self.dlg.inDatavizPlotXfield.currentField()
-        graph_y_field = self.dlg.inDatavizPlotYfield.currentField()
-        aggregation = self.dlg.liDatavizAggregation.itemData(self.dlg.liDatavizAggregation.currentIndex())
-
-        color = self.dlg.inDatavizPlotColor.color()
-        colorfield = ''
-        if self.dlg.cbDatavizUseColorField.isChecked():
-            colorfield = str(self.dlg.inDatavizColorField.currentField())
-        pcolor = "%s" % color.name()
-
-        py2fields = ''
-        pcolor2 = ''
-        colorfield2 = ''
-        hasYField2 = str(self.dlg.cbDatavizYField2.isChecked())
-        if self.dlg.cbDatavizYField2.isChecked():
-            py2fields = str(self.dlg.inDatavizPlotYfield2.currentField()).strip(' \t')
-            color2 = self.dlg.inDatavizPlotColor2.color()
-            colorfield2 = ''
-            if self.dlg.cbDatavizUseColorField2.isChecked():
-                colorfield2 = str(self.dlg.inDatavizColorField2.currentField())
-            pcolor2 = "%s" % color2.name()
-
-        popup_display_child_plot = str(self.dlg.cbDatavizDisplayChildPlot.isChecked())
-        only_show_child = str(self.dlg.cbDatavizOnlyShowChild.isChecked())
-
-        table = self.dlg.twDatavizLayers
-        row = table.rowCount()
-        content = [
-            layer_name, graph_title, graph_type, graph_x_field, aggregation, graph_y_field, pcolor,
-            colorfield, hasYField2, py2fields, pcolor2, colorfield2, popup_display_child_plot,
-            only_show_child, layer_id, row
-        ]
-        colCount = len(content)
-
-        # set new rowCount and col count
-        table.setRowCount(row + 1)
-        table.setColumnCount(colCount)
-
-        for i, val in enumerate(content):
-            item = QTableWidgetItem(val)
-            if i == 0:
-                item.setIcon(icon)
-            table.setItem(row, i, item)
-            i += 1
-        # Hide layer Id
-        table.setColumnHidden(colCount - 2, True)
-
-        LOGGER.info('Layer "{}" has been added to the dataviz tool'.format(layer_id))
 
     def setTreeItemData(self, itemType, itemKey, jsonLayers):
         """Define default data or data from previous configuration for one item (layer or group)
@@ -2013,45 +1896,6 @@ class Lizmap:
                 liz2json["lizmapExternalBaselayers"][lName]["layerTitle"] = lTitle
                 liz2json["lizmapExternalBaselayers"][lName]["layerImageFormat"] = lImageFormat
                 liz2json["lizmapExternalBaselayers"][lName]["order"] = row
-
-        # list of dataviz layers
-        lblTableWidget = self.dlg.twDatavizLayers
-        twRowCount = lblTableWidget.rowCount()
-        if twRowCount > 0:
-            liz2json["datavizLayers"] = dict()
-            for row in range(twRowCount):
-                ptitle = lblTableWidget.item(row, 1).text()
-                ptype = lblTableWidget.item(row, 2).text()
-                pxfields = lblTableWidget.item(row, 3).text()
-                paggregation = lblTableWidget.item(row, 4).text()
-                pyfields = lblTableWidget.item(row, 5).text()
-                pcolor = lblTableWidget.item(row, 6).text()
-                colorfield = lblTableWidget.item(row, 7).text()
-                hasy2fields = lblTableWidget.item(row, 8).text()
-                py2fields = lblTableWidget.item(row, 9).text()
-                pcolor2 = lblTableWidget.item(row, 10).text()
-                colorfield2 = lblTableWidget.item(row, 11).text()
-                popup_display_child_plot = lblTableWidget.item(row, 12).text()
-                only_show_child = lblTableWidget.item(row, 13).text()
-                layerId = lblTableWidget.item(row, 14).text()
-                if layerId in wfsLayersList:
-                    prow = dict()
-                    prow["title"] = ptitle
-                    prow["type"] = ptype
-                    prow["x_field"] = pxfields
-                    prow["aggregation"] = paggregation
-                    prow["y_field"] = pyfields
-                    prow["color"] = pcolor
-                    prow["colorfield"] = colorfield
-                    prow["has_y2_field"] = hasy2fields
-                    prow["y2_field"] = py2fields
-                    prow["color2"] = pcolor2
-                    prow["colorfield2"] = colorfield2
-                    prow["popup_display_child_plot"] = popup_display_child_plot
-                    prow["only_show_child"] = only_show_child
-                    prow["layerId"] = layerId
-                    prow["order"] = row
-                    liz2json["datavizLayers"][row] = prow
 
         # gui user defined layers options
         for k, v in self.layerList.items():
