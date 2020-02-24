@@ -200,6 +200,11 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
+            elif input_type == InputType.MultiLine:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
+
             else:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
 
@@ -303,6 +308,8 @@ class TableManager:
                 elif input_type == InputType.List:
                     layer_data[key] = cell
                 elif input_type == InputType.Text:
+                    layer_data[key] = cell
+                elif input_type == InputType.MultiLine:
                     layer_data[key] = cell
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
@@ -462,6 +469,8 @@ class TableManager:
                     elif definition['type'] == InputType.SpinBox:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Text:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.MultiLine:
                         layer_data[key] = value
                     else:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))

@@ -3,6 +3,7 @@
 from enum import Enum, unique
 
 from .base import BaseDefinitions, InputType
+from .definitions import LwcVersions
 from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import resources_path
 
@@ -113,6 +114,13 @@ class DatavizDefinitions(BaseDefinitions):
             'default': '',
             'tooltip': tr('The title of the graph')
         }
+        self._layer_config['description'] = {
+            'type': InputType.MultiLine,
+            'header': tr('Description'),
+            'default': '',
+            'tooltip': tr('The description of the graph. HTML is supported.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
             'header': tr('Layer'),
@@ -184,6 +192,13 @@ class DatavizDefinitions(BaseDefinitions):
             'header': tr('Only show child'),
             'default': False,
             'tooltip': tr('The main graph will not be shown in the main container and only the filtered graph of the relation of the layer will be displayed in the popup when you select the element.')
+        }
+        self._layer_config['display_legend'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Display legend'),
+            'default': True,
+            'tooltip': tr('If the legend must be displayed with the graph.'),
+            'version': LwcVersions.Lizmap_3_4,
         }
 
         self._general_config['datavizLocation'] = {
