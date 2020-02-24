@@ -2,10 +2,14 @@
 
 from collections import OrderedDict
 
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
 
+from .. import DEFAULT_LWC_VERSION
+from ..html_and_expressions import NEW_FEATURE
+from ..definitions.definitions import LwcVersions
 from ..definitions.base import InputType
 from ..qgis_plugin_tools.tools.i18n import tr
 
@@ -21,6 +25,11 @@ class BaseEditionDialog(QDialog):
         super().__init__(parent)
         self.config = None
         self.unicity = unicity
+        self.lwc_versions = OrderedDict()
+        self.lwc_versions[LwcVersions.Lizmap_3_1] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_2] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_3] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_4] = []
 
     def setup_ui(self):
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
@@ -65,6 +74,41 @@ class BaseEditionDialog(QDialog):
                     else:
                         widget.setDefaultColor(QColor(layer_config['default']))
                         widget.setToDefaultColor()
+
+        self.version_lwc()
+
+    def version_lwc(self):
+        current_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        current_version = LwcVersions(current_version)
+        found = False
+
+        for lwc_version, items in self.lwc_versions.items():
+            if found:
+                for item in items:
+                    item.setStyleSheet(NEW_FEATURE)
+
+            else:
+                for item in items:
+                    item.setStyleSheet('')
+
+            if lwc_version == current_version:
+                found = True
+
+        found = False
+        for lwc_version in self.lwc_versions.keys():
+            if found:
+                for layer_config in self.config.layer_config.values():
+                    version = layer_config.get('version')
+                    if version == lwc_version:
+                        layer_config.get('label').setStyleSheet(NEW_FEATURE)
+            else:
+                for layer_config in self.config.layer_config.values():
+                    version = layer_config.get('version')
+                    if version == lwc_version:
+                        layer_config.get('label').setStyleSheet('')
+
+            if lwc_version == current_version:
+                found = True
 
     def validate(self):
         if self.unicity:

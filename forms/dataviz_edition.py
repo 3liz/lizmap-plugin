@@ -4,6 +4,7 @@ from qgis.core import QgsMapLayerProxyModel, QgsProject
 from .base_edition_dialog import BaseEditionDialog
 from ..definitions.base import InputType
 from ..definitions.dataviz import DatavizDefinitions, GraphType
+from ..definitions.definitions import LwcVersions
 from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import load_ui
 
@@ -69,6 +70,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.y_field_2.currentTextChanged.connect(self.check_y_2_field)
         self.color_field.currentTextChanged.connect(self.check_y_color_field)
         self.color_field_2.currentTextChanged.connect(self.check_y_2_color_field)
+
+        self.lwc_versions[LwcVersions.Lizmap_3_4] = [
+            self.label_graph_34
+        ]
 
         self.setup_ui()
         self.check_form_graph_type()

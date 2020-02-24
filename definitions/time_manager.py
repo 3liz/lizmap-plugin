@@ -3,6 +3,7 @@
 from enum import Enum, unique
 
 from .base import BaseDefinitions, InputType
+from .definitions import LwcVersions
 from ..qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -63,14 +64,16 @@ class TimeManagerDefinitions(BaseDefinitions):
             'type': InputType.Field,
             'header': tr('End'),
             'default': '',
-            'tooltip': tr('Field with the end date/time.')
+            'tooltip': tr('Field with the end date/time.'),
+            'version': LwcVersions.Lizmap_3_4,
         }
         self._layer_config['attributeResolution'] = {
             'type': InputType.List,
             'header': tr('Attribute resolution'),
             'items': TimeUnits,
             'default': TimeUnits.Years,
-            'tooltip': tr('Date/time resolution of the chosen attribute(s).')
+            'tooltip': tr('Date/time resolution of the chosen attribute(s).'),
+            'version': LwcVersions.Lizmap_3_4,
         }
         self._general_config['inTimeFrameSize'] = {
             'type': InputType.SpinBox,
