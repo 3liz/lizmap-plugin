@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Version 3.2.7
+
+* Refactor dataviz to be editable
+* Warn the user if there is an existing tooltip when using drap/drop layout
+* Add a Lizmap Web Client version combobox
+* Use icons in enums when possible
+
 ## Version 3.2.6
 
 * Refactor form filter to be editable
