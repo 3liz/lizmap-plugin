@@ -209,7 +209,7 @@ class TableManager:
     def move_layer_up(self):
         """Move the selected layer up."""
         row = self.table.currentRow()
-        if row == 0:
+        if row <= 0:
             return
         column = self.table.currentColumn()
         self.table.insertRow(row - 1)
@@ -221,7 +221,7 @@ class TableManager:
     def move_layer_down(self):
         """Move the selected layer down."""
         row = self.table.currentRow()
-        if row == self.table.rowCount() - 1:
+        if row == self.table.rowCount() - 1 or row < 0:
             return
         column = self.table.currentColumn()
         self.table.insertRow(row + 2)
@@ -468,7 +468,7 @@ class TableManager:
                 else:
                     default_value = definition.get('default')
                     if default_value is not None:
-                        if definition['type'] == InputType.List:
+                        if definition['type'] == InputType.List and default_value != '':
                             layer_data[key] = default_value.value['data']
                         else:
                             layer_data[key] = default_value
