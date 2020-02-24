@@ -183,7 +183,7 @@ class TableManager:
                             icon = item_enum.value.get('icon')
                             break
                     else:
-                        raise Exception('Error with list')
+                        raise Exception('Error with list value="{}"'.format(value))
                     cell.setText(text)
                     if icon:
                         cell.setIcon(QIcon(icon))
@@ -468,7 +468,10 @@ class TableManager:
                 else:
                     default_value = definition.get('default')
                     if default_value is not None:
-                        layer_data[key] = default_value
+                        if definition['type'] == InputType.List:
+                            layer_data[key] = default_value.value['data']
+                        else:
+                            layer_data[key] = default_value
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
