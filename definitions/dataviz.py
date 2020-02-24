@@ -21,7 +21,7 @@ class GraphType(Enum):
     }
     Box = {
         'data': 'box',
-        'label': 'Box',
+        'label': tr('Box'),
         'icon': resources_path('icons', 'plots', 'boxplot.svg'),
     }
     Bar = {
@@ -125,7 +125,7 @@ class DatavizDefinitions(BaseDefinitions):
             'header': tr('Aggregation'),
             'items': AggregationType,
             'default': AggregationType.Sum,
-            'tooltip': tr('For a few types of charts like ‘bar’ or ‘pie’, you can choose to aggregate the data in the graph.')
+            'tooltip': tr('For a few types of charts like "bar" or "pie", you can choose to aggregate the data in the graph.')
         }
         self._layer_config['y_field'] = {
             'type': InputType.Field,
@@ -145,7 +145,7 @@ class DatavizDefinitions(BaseDefinitions):
             'default': '',
             'tooltip': tr(
                 'You can choose or not a color field to customize the color of each category of your chart. '
-                'If you want to do it, you need to check the checkbox, then choose the field of your layer which contains the colors you want to use. The color can be written like ‘red’ or ‘blue’ but it can be an HTML color code like ‘#01DFD7’ for example.')
+                'Choose the field of your layer which contains the colors you want to use. The color can be written like "red" or "blue" but it can be an HTML color code like "#01DFD7" for example.')
         }
         self._layer_config['y2_field'] = {
             'type': InputType.Field,
