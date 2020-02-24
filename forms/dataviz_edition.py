@@ -83,7 +83,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 break
         else:
             raise Exception('Error with list')
-        if graph in [GraphType.Scatter, GraphType.Bar, GraphType.Histogram, GraphType.Histogram2D, GraphType.Polar, GraphType.Pie]:
+        if graph in [
+                GraphType.Scatter, GraphType.Bar, GraphType.Histogram,
+                GraphType.Histogram2D, GraphType.Polar, GraphType.Pie,
+                GraphType.Sunburst]:
             self.x_field.setAllowEmptyFieldName(False)
         elif graph in [GraphType.Box]:
             self.x_field.setAllowEmptyFieldName(True)

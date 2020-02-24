@@ -49,6 +49,11 @@ class GraphType(Enum):
         'label': tr('Polar'),
         'icon': resources_path('icons', 'plots', 'polar.svg'),
     }
+    Sunburst = {
+        'data': 'sunburst',
+        'label': tr('Sunburst'),
+        'icon': resources_path('icons', 'plots', 'sunburst.svg'),
+    }
 
 
 @unique
