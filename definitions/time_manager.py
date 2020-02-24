@@ -1,5 +1,7 @@
 """Definitions for time manager."""
 
+from enum import Enum, unique
+
 from .base import BaseDefinitions, InputType
 from ..qgis_plugin_tools.tools.i18n import tr
 
@@ -7,6 +9,38 @@ __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
+
+
+@unique
+class TimeUnits(Enum):
+    Seconds = {
+        'data': 'seconds',
+        'label': tr('Seconds'),
+    }
+    Minutes = {
+        'data': 'minutes',
+        'label': tr('Minutes'),
+    }
+    Hours = {
+        'data': 'hours',
+        'label': tr('Hours'),
+    }
+    Days = {
+        'data': 'days',
+        'label': tr('Days'),
+    }
+    Weeks = {
+        'data': 'weeks',
+        'label': tr('Weeks'),
+    }
+    Months = {
+        'data': 'months',
+        'label': tr('Months'),
+    }
+    Years = {
+        'data': 'years',
+        'label': tr('Years'),
+    }
 
 
 class TimeManagerDefinitions(BaseDefinitions):
@@ -34,7 +68,8 @@ class TimeManagerDefinitions(BaseDefinitions):
         self._layer_config['attributeResolution'] = {
             'type': InputType.List,
             'header': tr('Attribute resolution'),
-            'default': 'years',
+            'items': TimeUnits,
+            'default': TimeUnits.Years,
             'tooltip': tr('Date/time resolution of the chosen attribute(s).')
         }
         self._general_config['inTimeFrameSize'] = {
@@ -43,7 +78,8 @@ class TimeManagerDefinitions(BaseDefinitions):
         }
         self._general_config['tmTimeFrameType'] = {
             'type': InputType.List,
-            'default': 'seconds',
+            'items': TimeUnits,
+            'default': TimeUnits.Seconds,
         }
         self._general_config['tmAnimationFrameLength'] = {
             'type': InputType.SpinBox,

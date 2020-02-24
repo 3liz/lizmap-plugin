@@ -43,14 +43,6 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.start_field.setLayer(self.layer.currentLayer())
         self.end_field.setLayer(self.layer.currentLayer())
 
-        self.resolution.addItem('seconds', 'seconds')
-        self.resolution.addItem('minutes', 'minutes')
-        self.resolution.addItem('hours', 'hours')
-        self.resolution.addItem('days', 'days')
-        self.resolution.addItem('weeks', 'weeks')
-        self.resolution.addItem('months', 'months')
-        self.resolution.addItem('years', 'years')
-
         self.setup_ui()
 
     def validate(self) -> str:

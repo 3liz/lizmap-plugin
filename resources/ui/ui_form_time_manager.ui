@@ -40,7 +40,7 @@
       <widget class="QgsFieldComboBox" name="start_field"/>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_feature_label">
+      <widget class="QLabel" name="label_end_attribute">
        <property name="text">
         <string>End attribute</string>
        </property>
