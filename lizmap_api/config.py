@@ -234,13 +234,13 @@ class LizmapConfig:
 
     layerOptionDefinitions = {
         'title': {
-            'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
+            'wType': 'text', 'type': 'string', 'default': ''
         },
         'abstract': {
-            'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata': True
+            'wType': 'textarea', 'type': 'string', 'default': ''
         },
         'link': {
-            'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
+            'wType': 'text', 'type': 'string', 'default': ''
         },
         'minScale': {
             'wType': 'text', 'type': 'integer', 'default': 1

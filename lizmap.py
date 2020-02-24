@@ -1157,10 +1157,8 @@ class Lizmap:
             self.myDic[itemKey]['title'] = layer.name()
             if layer.title():
                 self.myDic[itemKey]['title'] = layer.title()
-                keepMetadata = True
             if layer.abstract():
                 self.myDic[itemKey]['abstract'] = layer.abstract()
-                keepMetadata = True
 
             # hide non geo layers (csv, etc.)
             # if layer.type() == 0:
@@ -1203,11 +1201,7 @@ class Lizmap:
                         # text inputs
                         elif item['wType'] in ('text', 'textarea'):
                             if jsonLayers[jsonKey][key] != '':
-                                if 'isMetadata' in item:  # title and abstract and link
-                                    if not keepMetadata:
-                                        self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
-                                else:
-                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                         # lists
                         elif item['wType'] == 'list':
                             if jsonLayers[jsonKey][key] in item['list']:
@@ -1416,10 +1410,8 @@ class Lizmap:
         if item and item.text(1) in self.layerList:
             if layer_option['wType'] == 'text':
                 self.layerList[item.text(1)][key] = layer_option['widget'].text()
-                self.set_layer_metadata(item, key)
             elif layer_option['wType'] == 'textarea':
                 self.layerList[item.text(1)][key] = layer_option['widget'].toPlainText()
-                self.set_layer_metadata(item, key)
             elif layer_option['wType'] == 'spinbox':
                 self.layerList[item.text(1)][key] = layer_option['widget'].value()
             elif layer_option['wType'] == 'checkbox':
@@ -1447,22 +1439,6 @@ class Lizmap:
             ):
                 layer_option['exclude']['widget'].setChecked(False)
                 self.layerList[item.text(1)][layer_option['exclude']['key']] = False
-
-    def set_layer_metadata(self, item, key):
-        """Set a the title/abstract/link Qgis metadata when corresponding item is changed
-        Used in setLayerProperty"""
-        if 'isMetadata' in self.layer_options_list[key]:
-            # modify the layer.title|abstract|link() if possible
-            if self.layerList[item.text(1)]['type'] == 'layer':
-                layer = self.get_qgis_layer_by_id(item.text(1))
-                if layer:
-                    if hasattr(layer, key):
-                        if key == 'title':
-                            layer.setTitle("%s" % self.layerList[item.text(1)][key])
-                        if key == 'abstract':
-                            layer.setAbstract("%s" % self.layerList[item.text(1)][key])
-                        if key == 'link':
-                            layer.setAttributionUrl("%s" % self.layerList[item.text(1)][key])
 
     def configure_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
