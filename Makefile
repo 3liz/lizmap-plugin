@@ -47,7 +47,7 @@
 # Edit the following to match your sources lists
 #################################################
 
-VERSION = "3.2.6"
+VERSION = "3.2.7"
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
