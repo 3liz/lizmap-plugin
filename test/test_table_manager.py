@@ -149,6 +149,7 @@ class TestTableManager(unittest.TestCase):
         table_manager = TableManager(
             None, definitions, None, table, None, None, None, None)
 
+        # Lizmap 3.3
         json = {
             '0': {
                 'title': 'My graph',
@@ -180,6 +181,56 @@ class TestTableManager(unittest.TestCase):
                 'type': 'scatter',
                 'x_field': 'id',
                 'aggregation': 'sum',
+                'display_legend': 'True',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+
+        self.assertDictEqual(data, expected)
+
+        # Lizmap 3.4
+        json = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'description': '<b>Hello</b>',
+                'x_field': 'id',
+                'aggregation': '',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'colorfield': '',
+                'has_y2_field': 'True',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'colorfield2': '',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+
+        table_manager.truncate()
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+
+        expected = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'x_field': 'id',
+                'description': '<b>Hello</b>',
+                'aggregation': 'sum',
+                'display_legend': 'True',
                 'y_field': 'name',
                 'color': '#00aaff',
                 'y2_field': 'name',

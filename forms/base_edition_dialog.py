@@ -100,12 +100,20 @@ class BaseEditionDialog(QDialog):
                 for layer_config in self.config.layer_config.values():
                     version = layer_config.get('version')
                     if version == lwc_version:
-                        layer_config.get('label').setStyleSheet(NEW_FEATURE)
+                        label = layer_config.get('label')
+                        if label:
+                            label.setStyleSheet(NEW_FEATURE)
+                        if layer_config['type'] == InputType.CheckBox:
+                            layer_config.get('widget').setStyleSheet(NEW_FEATURE)
             else:
                 for layer_config in self.config.layer_config.values():
                     version = layer_config.get('version')
                     if version == lwc_version:
-                        layer_config.get('label').setStyleSheet('')
+                        label = layer_config.get('label')
+                        if label:
+                            label.setStyleSheet('')
+                        if layer_config['type'] == InputType.CheckBox:
+                            layer_config.get('widget').setStyleSheet('')
 
             if lwc_version == current_version:
                 found = True
@@ -161,6 +169,8 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setValue(value)
             elif definition['type'] == InputType.Text:
                 definition['widget'].setText(value)
+            elif definition['type'] == InputType.MultiLine:
+                definition['widget'].setPlainText(value)
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
@@ -188,6 +198,8 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].value()
             elif definition['type'] == InputType.Text:
                 value = definition['widget'].text().strip(' \t')
+            elif definition['type'] == InputType.MultiLine:
+                value = definition['widget'].toPlainText().strip(' \t')
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 

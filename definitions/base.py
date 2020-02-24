@@ -19,6 +19,7 @@ class InputType(Enum):
     List = 'List'  # QComboBox
     SpinBox = 'SpinBox'  # QSpinbox
     Text = 'Text'  # QLineEdit
+    MultiLine = 'MultiLine'  # QTextEdit
 
 
 class BaseDefinitions:
