@@ -34,17 +34,20 @@ class TestToolTip(unittest.TestCase):
             'map': [
                 {
                     'a': 'A',
+                }, {
                     'b': 'B',
+                }, {
+                    '<NULL>': '{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}',
                 }
             ]
         }
         result = Tooltip._generate_value_map(widget_config, 'field_a')
         expected = '''
-map_get(
-    hstore_to_map('"a"=>"A","b"=>"B"'),
-    "field_a"
-)'''
-        self.assertEqual(result, expected)
+                    map_get(
+                        hstore_to_map('"a"=>"A","b"=>"B"'),
+                        "field_a"
+                    )'''
+        self.assertEqual(expected, result)
 
         feature = QgsFeature()
         feature.setAttributes(['a'])
@@ -65,11 +68,10 @@ map_get(
         }
         result = Tooltip._generate_date(widget_config, 'field_a')
         expected = '''
-format_date(
-    "field_a",
-    'yyyy'
-)'''
-
+                    format_date(
+                        "field_a",
+                        'yyyy'
+                    )'''
         self.assertEqual(result, expected)
 
         feature = QgsFeature()
@@ -91,18 +93,18 @@ format_date(
         }
         result = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
         expected = '''
-concat(
-   '<a href="',
-   "field_a",
-   '" target="_blank">
-   ',
-   '
-   <iframe src="',
-   "field_a",
-   '" width="100%" height="300" title="fname"/>',
-   '
-   </a>'
-)'''
+                    concat(
+                       '<a href="',
+                       "field_a",
+                       '" target="_blank">
+                       ',
+                       '
+                       <iframe src="',
+                       "field_a",
+                       '" width="100%" height="300" title="fname"/>',
+                       '
+                       </a>'
+                    )'''
         self.assertEqual(result, expected)
 
         feature = QgsFeature()
@@ -115,7 +117,10 @@ concat(
         expression.prepare(self.context)
         self.context.setFeature(next(self.layer.getFeatures()))
         self.assertFalse(expression.hasEvalError())
-        expected = '<a href="test.pdf" target="_blank">      <iframe src="test.pdf" width="100%" height="300" title="fname"/>   </a>'
+        expected = (
+            '<a href="test.pdf" target="_blank">                                              '
+            '<iframe src="test.pdf" width="100%" height="300" title="fname"/>                       '
+            '</a>')
         result = expression.evaluate(self.context)
         result = result.replace('\n', '').replace('\r', '')
         self.assertEqual(expected, result)
@@ -127,17 +132,17 @@ concat(
         }
         result = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
         expected = '''
-concat(
-   '<a href="',
-   "field_a",
-   '" target="_blank">',
-   '
-   <img src="',
-   "field_a",
-   '" width="100%" title="fname">',
-   '
-   </a>'
-)'''
+                    concat(
+                       '<a href="',
+                       "field_a",
+                       '" target="_blank">',
+                       '
+                       <img src="',
+                       "field_a",
+                       '" width="100%" title="fname">',
+                       '
+                       </a>'
+                    )'''
         self.assertEqual(result, expected)
 
         feature = QgsFeature()
@@ -150,7 +155,10 @@ concat(
         expression.prepare(self.context)
         self.context.setFeature(next(self.layer.getFeatures()))
         self.assertFalse(expression.hasEvalError())
-        expected = '<a href="test.png" target="_blank">   <img src="test.png" width="100%" title="fname">   </a>'
+        expected = (
+            '<a href="test.png" target="_blank">                       '
+            '<img src="test.png" width="100%" title="fname">                       '
+            '</a>')
         result = expression.evaluate(self.context)
         result = result.replace('\n', '').replace('\r', '')
         self.assertEqual(expected, result)
@@ -162,12 +170,12 @@ concat(
         }
         result = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
         expected = '''
-concat(
-   '<a href="',
-   "field_a",
-   '" target="_blank">fname</a>'
-)'''
-        self.assertEqual(result, expected)
+                    concat(
+                        '<a href="',
+                        "field_a",
+                        '" target="_blank">fname</a>'
+                    )'''
+        self.assertEqual(expected, result)
 
         feature = QgsFeature()
         feature.setAttributes(['test.png'])
@@ -194,28 +202,26 @@ concat(
         }
         result = Tooltip._generate_value_relation(widget_config, 'foo')
         expected = '''
-aggregate(
-    layer:='layer_id',
-    aggregate:='concatenate',
-    expression:="value",
-    filter:="key" = attribute(@parent, 'foo') AND filter_expression
-)
-        '''
-        self.assertEqual(result, expected)
+                    aggregate(
+                        layer:='layer_id',
+                        aggregate:='concatenate',
+                        expression:="value",
+                        filter:="key" = attribute(@parent, 'foo') AND filter_expression
+                    )'''
+        self.assertEqual(expected, result)
         expression = QgsExpression(result)
         self.assertFalse(expression.hasParserError())
 
         widget_config['FilterExpression'] = ''
         result = Tooltip._generate_value_relation(widget_config, 'foo')
         expected = '''
-aggregate(
-    layer:='layer_id',
-    aggregate:='concatenate',
-    expression:="value",
-    filter:="key" = attribute(@parent, 'foo')
-)
-        '''
-        self.assertEqual(result, expected)
+                    aggregate(
+                        layer:='layer_id',
+                        aggregate:='concatenate',
+                        expression:="value",
+                        filter:="key" = attribute(@parent, 'foo')
+                    )'''
+        self.assertEqual(expected, result)
         expression = QgsExpression(result)
         self.assertFalse(expression.hasParserError())
 
@@ -226,7 +232,7 @@ aggregate(
         self.assertTrue(layer.isValid())
 
         config = layer.editFormConfig()
-        self.assertEqual(config.layout(), QgsEditFormConfig.TabLayout)
+        self.assertEqual(QgsEditFormConfig.TabLayout, config.layout())
 
         root = config.invisibleRootContainer()
         html_content = Tooltip.create_popup_node_item_from_form(
@@ -248,40 +254,10 @@ aggregate(
                 THEN concat(
                     '<p>', '<b>name</b>',
                     '<div class="field">', 
-map_get(
-    hstore_to_map('"A"=>"a"'),
-    "name"
-), '</div>',
-                    '</p>'
-                )
-                ELSE ''
-            END %]
-            
-    
-            [% CASE
-                WHEN "name" IS NOT NULL OR trim("name") != ''
-                THEN concat(
-                    '<p>', '<b>name</b>',
-                    '<div class="field">', 
-map_get(
-    hstore_to_map('"A"=>"a"'),
-    "name"
-), '</div>',
-                    '</p>'
-                )
-                ELSE ''
-            END %]
-            
-    
-            [% CASE
-                WHEN "name" IS NOT NULL OR trim("name") != ''
-                THEN concat(
-                    '<p>', '<b>name</b>',
-                    '<div class="field">', 
-map_get(
-    hstore_to_map('"A"=>"a"'),
-    "name"
-), '</div>',
+                    map_get(
+                        hstore_to_map('"A"=>"a","B"=>"b","C"=>"c"'),
+                        "name"
+                    ), '</div>',
                     '</p>'
                 )
                 ELSE ''
@@ -290,21 +266,6 @@ map_get(
   </div>
 
   <div id="popup_dd_tab2" class="tab-pane ">
-    
-            [% CASE
-                WHEN "name" IS NOT NULL OR trim("name") != ''
-                THEN concat(
-                    '<p>', '<b>name</b>',
-                    '<div class="field">', 
-map_get(
-    hstore_to_map('"A"=>"a"'),
-    "name"
-), '</div>',
-                    '</p>'
-                )
-                ELSE ''
-            END %]
-            
   </div>
 </div>
 '''.strip()

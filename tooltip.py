@@ -8,7 +8,8 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsVectorLayer,
     QgsAttributeEditorElement,
-    QgsHstoreUtils)
+    QgsHstoreUtils,
+)
 
 from .html_and_expressions import HTML_POPUP_BASE
 
@@ -31,6 +32,9 @@ class Tooltip:
         a = ''
         h = ''
         if isinstance(node, QgsAttributeEditorField):
+            if node.idx() < 0:
+                return html
+
             field = layer.fields()[node.idx()]
 
             # display field name or alias if filled
@@ -90,12 +94,6 @@ class Tooltip:
             if widget_type == 'DateTime':
                 field_view = Tooltip._generate_date(widget_config, name)
 
-            # field_view = '''
-            # represent_value("{0}")
-            # '''.format(
-            # name
-            # )
-
             a += '\n' + '  ' * level
             a += '''
             [% CASE
@@ -135,7 +133,7 @@ class Tooltip:
                 a += '\n' + '  ' * l + '<legend>%s</legend>' % node.name()
                 a += '\n' + '  ' * l + '<div>'
 
-            # In cas of root children
+            # In case of root children
             before_tabs = []
             content_tabs = []
             after_tabs = []
@@ -175,53 +173,57 @@ class Tooltip:
 
     @staticmethod
     def _generate_value_map(widget_config, name):
-        hstore = QgsHstoreUtils.build(widget_config['map'][0])
+        values = dict()
+        for row in widget_config['map']:
+            if '<NULL>' not in list(row.keys()):
+                values.update(row)
+        hstore = QgsHstoreUtils.build(values)
         field_view = '''
-map_get(
-    hstore_to_map('{}'),
-    "{}"
-)'''.format(hstore, name)
+                    map_get(
+                        hstore_to_map('{}'),
+                        "{}"
+                    )'''.format(hstore, name)
         return field_view
 
     @staticmethod
     def _generate_external_resource(widget_config, name, fname):
         dview = widget_config['DocumentViewer']
         field_view = '''
-concat(
-   '<a href="',
-   "{}",
-   '" target="_blank">{}</a>'
-)'''.format(name, fname)
+                    concat(
+                        '<a href="',
+                        "{}",
+                        '" target="_blank">{}</a>'
+                    )'''.format(name, fname)
 
         if dview == QgsExternalResourceWidget.Image:
             field_view = '''
-concat(
-   '<a href="',
-   "{0}",
-   '" target="_blank">',
-   '
-   <img src="',
-   "{0}",
-   '" width="100%" title="{1}">',
-   '
-   </a>'
-)'''.format(name, fname)
+                    concat(
+                       '<a href="',
+                       "{0}",
+                       '" target="_blank">',
+                       '
+                       <img src="',
+                       "{0}",
+                       '" width="100%" title="{1}">',
+                       '
+                       </a>'
+                    )'''.format(name, fname)
 
         if dview == QgsExternalResourceWidget.Web:
             # web view
             field_view = '''
-concat(
-   '<a href="',
-   "{0}",
-   '" target="_blank">
-   ',
-   '
-   <iframe src="',
-   "{0}",
-   '" width="100%" height="300" title="{1}"/>',
-   '
-   </a>'
-)'''.format(name, fname)
+                    concat(
+                       '<a href="',
+                       "{0}",
+                       '" target="_blank">
+                       ',
+                       '
+                       <iframe src="',
+                       "{0}",
+                       '" width="100%" height="300" title="{1}"/>',
+                       '
+                       </a>'
+                    )'''.format(name, fname)
 
         return field_view
 
@@ -229,10 +231,10 @@ concat(
     def _generate_date(widget_config, name):
         dfor = widget_config['display_format']
         field_view = '''
-format_date(
-    "{}",
-    '{}'
-)'''.format(name, dfor)
+                    format_date(
+                        "{}",
+                        '{}'
+                    )'''.format(name, dfor)
         return field_view
 
     @staticmethod
@@ -249,15 +251,14 @@ format_date(
             fexp += ' AND %s' % filter_exp
 
         field_view = '''
-aggregate(
-    layer:='{0}',
-    aggregate:='concatenate',
-    expression:="{1}",
-    filter:={2}
-)
-        '''.format(
-            vlid,
-            widget_config['Value'],
-            fexp
-        )
+                    aggregate(
+                        layer:='{0}',
+                        aggregate:='concatenate',
+                        expression:="{1}",
+                        filter:={2}
+                    )'''.format(
+                                vlid,
+                                widget_config['Value'],
+                                fexp
+                            )
         return field_view
