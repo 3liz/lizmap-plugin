@@ -75,12 +75,13 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.core import (
     Qgis,
+    QgsEditFormConfig,
     QgsProject,
     QgsMapLayerModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsApplication,
-    QgsEditFormConfig)
+)
 
 from . import DEFAULT_LWC_VERSION
 from .definitions.atlas import AtlasDefinitions
