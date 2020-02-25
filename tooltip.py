@@ -9,9 +9,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsAttributeEditorElement,
     QgsHstoreUtils,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
 )
-
-from .html_and_expressions import HTML_POPUP_BASE
 
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -24,15 +24,22 @@ class Tooltip:
 
     @staticmethod
     def create_popup(html):
-        return HTML_POPUP_BASE.format(html)
+        template = '''
+        <div class="container popup_lizmap_dd" style="width:100%;">'
+        {}
+        </div>
+        '''
+        return template.format(html)
 
     @staticmethod
-    def create_popup_node_item_from_form(layer: QgsVectorLayer, node: QgsAttributeEditorElement, level, headers, html, relation_manager):
+    def create_popup_node_item_from_form(
+            layer: QgsVectorLayer, node: QgsAttributeEditorElement, level, headers, html, relation_manager):
         regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
         a = ''
         h = ''
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
+                # The form might have been imported from QML with some not existing fields
                 return html
 
             field = layer.fields()[node.idx()]
@@ -53,84 +60,52 @@ class Tooltip:
             if widget_type == 'Hidden':
                 return html
 
-            # External ressource: file, url, photo, iframe
+            # External resource: file, url, photo, iframe
             if widget_type == 'ExternalResource':
                 field_view = Tooltip._generate_external_resource(widget_config, name, fname)
 
-            # Value relation
             if widget_type == 'ValueRelation':
                 field_view = Tooltip._generate_value_relation(widget_config, name)
 
-            # Value relation
             if widget_type == 'RelationReference':
-                rel = relation_manager.relation(widget_config['Relation'])
-                vlay = rel.referencedLayer()
-                vlid = rel.referencedLayerId()
-                parent_pk = rel.resolveReferencedField(name)
-                fexp = '''
-                    "{0}" = attribute(@parent, '{1}')
-                '''.format(
-                    parent_pk,
-                    name
-                )
-                field_view = '''
-                    aggregate(
-                        layer:='{0}',
-                        aggregate:='concatenate',
-                        expression:={1},
-                        filter:={2}
-                    )
-                '''.format(
-                    vlid,
-                    vlay.displayExpression(),
-                    fexp
-                )
+                relation = relation_manager.relation(widget_config['Relation'])
+                display = relation.referencedLayer().displayExpression()
+                layer_id = relation.referencedLayerId()
+                parent_pk = relation.resolveReferencedField(name)
+                field_view = Tooltip._generate_relation_reference(name, parent_pk, layer_id, display)
 
-            # Value map
             if widget_type == 'ValueMap':
                 field_view = Tooltip._generate_value_map(widget_config, name)
 
-            # Date
             if widget_type == 'DateTime':
                 field_view = Tooltip._generate_date(widget_config, name)
 
             a += '\n' + '  ' * level
-            a += '''
-            [% CASE
-                WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
-                THEN concat(
-                    '<p>', '<b>{1}</b>',
-                    '<div class="field">', {2}, '</div>',
-                    '</p>'
-                )
-                ELSE ''
-            END %]
-            '''.format(
-                name,
-                fname,
-                field_view
-            )
+            a += Tooltip._generate_field_name(name, fname, field_view)
 
         if isinstance(node, QgsAttributeEditorContainer):
+
+            if node.visibilityExpression().enabled():
+                context = QgsExpressionContext()
+                context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+                # context.setFeature(feature)
+
             l = level
             # create div container
             if l == 1:
                 act = ''
                 if not headers:
                     act = 'active'
-                a += '\n' + '  ' * l + '<div id="popup_dd_%s" class="tab-pane %s">' % (
-                    regex.sub('_', node.name()),
-                    act
-                )
-                h += '\n    ' + '<li class="%s"><a href="#popup_dd_%s" data-toggle="tab">%s</a></li>' % (
-                    act,
-                    regex.sub('_', node.name()),
-                    node.name()
-                )
+                a += '\n' + '  ' * l + '<div id="popup_dd_{}" class="tab-pane {}">'.format(
+                    regex.sub('_', node.name()), act)
+
+                h += '\n    ' + '<li class="{}"><a href="#popup_dd_{}" data-toggle="tab">{}</a></li>'.format(
+                    act, regex.sub('_', node.name()), node.name())
                 headers.append(h)
+
             if l > 1:
                 a += '\n' + '  ' * l + '<fieldset>'
-                a += '\n' + '  ' * l + '<legend>%s</legend>' % node.name()
+                a += '\n' + '  ' * l + '<legend>{}</legend>'.format(node.name())
                 a += '\n' + '  ' * l + '<div>'
 
             # In case of root children
@@ -172,11 +147,49 @@ class Tooltip:
         return html
 
     @staticmethod
+    def _generate_relation_reference(name, parent_pk, layer_id, display_expression):
+        expression = '''
+                    "{}" = attribute(@parent, '{}')
+                '''.format(parent_pk, name)
+
+        field_view = '''
+                    aggregate(
+                        layer:='{0}',
+                        aggregate:='concatenate',
+                        expression:={1},
+                        filter:={2}
+                    )'''.format(
+            layer_id,
+            display_expression,
+            expression
+        )
+        return field_view
+
+    @staticmethod
+    def _generate_field_name(name, fname, expression):
+        text = '''
+                    [% CASE
+                        WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
+                        THEN concat(
+                            '<p>', '<b>{1}</b>',
+                            '<div class="field">', {2}, '</div>',
+                            '</p>'
+                        )
+                        ELSE ''
+                    END %]'''.format(
+            name,
+            fname,
+            expression
+        )
+        return text
+
+    @staticmethod
     def _generate_value_map(widget_config, name):
         values = dict()
         for row in widget_config['map']:
             if '<NULL>' not in list(row.keys()):
                 values.update(row)
+        # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
         field_view = '''
                     map_get(
@@ -188,12 +201,6 @@ class Tooltip:
     @staticmethod
     def _generate_external_resource(widget_config, name, fname):
         dview = widget_config['DocumentViewer']
-        field_view = '''
-                    concat(
-                        '<a href="',
-                        "{}",
-                        '" target="_blank">{}</a>'
-                    )'''.format(name, fname)
 
         if dview == QgsExternalResourceWidget.Image:
             field_view = '''
@@ -209,7 +216,7 @@ class Tooltip:
                        </a>'
                     )'''.format(name, fname)
 
-        if dview == QgsExternalResourceWidget.Web:
+        elif dview == QgsExternalResourceWidget.Web:
             # web view
             field_view = '''
                     concat(
@@ -224,6 +231,17 @@ class Tooltip:
                        '
                        </a>'
                     )'''.format(name, fname)
+
+        elif dview == QgsExternalResourceWidget.NoContent:
+            field_view = '''
+                    concat(
+                        '<a href="',
+                        "{}",
+                        '" target="_blank">{}</a>'
+                    )'''.format(name, fname)
+
+        else:
+            raise Exception('Unknown external resource widget')
 
         return field_view
 
@@ -241,14 +259,14 @@ class Tooltip:
     def _generate_value_relation(widget_config, name):
         vlid = widget_config['Layer']
 
-        fexp = '''"{}" = attribute(@parent, '{}')'''.format(
+        expression = '''"{}" = attribute(@parent, '{}')'''.format(
             widget_config['Key'],
             name
         )
 
         filter_exp = widget_config['FilterExpression'].strip()
         if filter_exp:
-            fexp += ' AND %s' % filter_exp
+            expression += ' AND {}'.format(filter_exp)
 
         field_view = '''
                     aggregate(
@@ -259,6 +277,6 @@ class Tooltip:
                     )'''.format(
                                 vlid,
                                 widget_config['Value'],
-                                fexp
+                                expression
                             )
         return field_view
