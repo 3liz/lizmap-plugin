@@ -8,9 +8,9 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsVectorLayer,
     QgsAttributeEditorElement,
-)
+    QgsHstoreUtils)
 
-from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM, NEW_FEATURE, HTML_POPUP_BASE
+from .html_and_expressions import HTML_POPUP_BASE
 
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -31,9 +31,7 @@ class Tooltip:
         a = ''
         h = ''
         if isinstance(node, QgsAttributeEditorField):
-            fidx = node.idx()
-            fields = layer.fields()
-            field = fields[fidx]
+            field = layer.fields()[node.idx()]
 
             # display field name or alias if filled
             alias = field.alias()
@@ -53,76 +51,11 @@ class Tooltip:
 
             # External ressource: file, url, photo, iframe
             if widget_type == 'ExternalResource':
-                dview = widget_config['DocumentViewer']
-                field_view = '''
-                    concat(
-                        '<a href="',
-                        "{0}",
-                        '" target="_blank">{1}</a>'
-                    )
-                '''.format(
-                    name,
-                    fname
-                )
-                if dview == QgsExternalResourceWidget.Image:
-                    field_view = '''
-                        concat(
-                            '<a href="',
-                            "{0}",
-                            '" target="_blank">',
-                            '
-                            <img src="',
-                            "{0}",
-                            '" width="100%" title="{1}">',
-                            '
-                            </a>'
-                        )
-                    '''.format(
-                        name,
-                        fname
-                    )
-                if dview == QgsExternalResourceWidget.Web:
-                    # web view
-                    field_view = '''
-                        concat(
-                            '<a href="',
-                            "{0}",
-                            '" target="_blank">
-                            ',
-                            '
-                            <iframe src="',
-                            "{0}",
-                            '" width="100%" height="300" title="{1}"/>',
-                            '
-                            </a>'
-                        )
-                    '''.format(
-                        name,
-                        fname
-                    )
+                field_view = Tooltip._generate_external_resource(widget_config, name, fname)
 
             # Value relation
             if widget_type == 'ValueRelation':
-                vlid = widget_config['Layer']
-                fexp = '''"{0}" = attribute(@parent, '{1}')'''.format(
-                    widget_config['Key'],
-                    name
-                )
-                filter_exp = widget_config['FilterExpression'].strip()
-                if filter_exp:
-                    fexp += ' AND %s' % filter_exp
-                field_view = '''
-                    aggregate(
-                        layer:='{0}',
-                        aggregate:='concatenate',
-                        expression:="{1}",
-                        filter:={2}
-                    )
-                '''.format(
-                    vlid,
-                    widget_config['Value'],
-                    fexp
-                )
+                field_view = Tooltip._generate_value_relation(widget_config, name)
 
             # Value relation
             if widget_type == 'RelationReference':
@@ -151,34 +84,11 @@ class Tooltip:
 
             # Value map
             if widget_type == 'ValueMap':
-                fmap = widget_config['map']
-                m = []
-                # build hstore
-                for d in fmap:
-                    m.append(['%s=>%s' % (v.replace("'", "’"), k.replace("'", "’")) for k, v in d.items()][0])
-                hmap = ', '.join(m)
-                field_view = '''
-                    map_get(
-                        hstore_to_map('{0}'),
-                        "{1}"
-                    )
-                '''.format(
-                    hmap,
-                    name
-                )
+                field_view = Tooltip._generate_value_map(widget_config, name)
 
             # Date
             if widget_type == 'DateTime':
-                dfor = widget_config['display_format']
-                field_view = '''
-                    format_date(
-                        "{0}",
-                        '{1}'
-                    )
-                '''.format(
-                    name,
-                    dfor
-                )
+                field_view = Tooltip._generate_date(widget_config, name)
 
             # field_view = '''
             # represent_value("{0}")
@@ -262,3 +172,92 @@ class Tooltip:
 
         html += a
         return html
+
+    @staticmethod
+    def _generate_value_map(widget_config, name):
+        hstore = QgsHstoreUtils.build(widget_config['map'][0])
+        field_view = '''
+map_get(
+    hstore_to_map('{}'),
+    "{}"
+)'''.format(hstore, name)
+        return field_view
+
+    @staticmethod
+    def _generate_external_resource(widget_config, name, fname):
+        dview = widget_config['DocumentViewer']
+        field_view = '''
+concat(
+   '<a href="',
+   "{}",
+   '" target="_blank">{}</a>'
+)'''.format(name, fname)
+
+        if dview == QgsExternalResourceWidget.Image:
+            field_view = '''
+concat(
+   '<a href="',
+   "{0}",
+   '" target="_blank">',
+   '
+   <img src="',
+   "{0}",
+   '" width="100%" title="{1}">',
+   '
+   </a>'
+)'''.format(name, fname)
+
+        if dview == QgsExternalResourceWidget.Web:
+            # web view
+            field_view = '''
+concat(
+   '<a href="',
+   "{0}",
+   '" target="_blank">
+   ',
+   '
+   <iframe src="',
+   "{0}",
+   '" width="100%" height="300" title="{1}"/>',
+   '
+   </a>'
+)'''.format(name, fname)
+
+        return field_view
+
+    @staticmethod
+    def _generate_date(widget_config, name):
+        dfor = widget_config['display_format']
+        field_view = '''
+format_date(
+    "{}",
+    '{}'
+)'''.format(name, dfor)
+        return field_view
+
+    @staticmethod
+    def _generate_value_relation(widget_config, name):
+        vlid = widget_config['Layer']
+
+        fexp = '''"{}" = attribute(@parent, '{}')'''.format(
+            widget_config['Key'],
+            name
+        )
+
+        filter_exp = widget_config['FilterExpression'].strip()
+        if filter_exp:
+            fexp += ' AND %s' % filter_exp
+
+        field_view = '''
+aggregate(
+    layer:='{0}',
+    aggregate:='concatenate',
+    expression:="{1}",
+    filter:={2}
+)
+        '''.format(
+            vlid,
+            widget_config['Value'],
+            fexp
+        )
+        return field_view
