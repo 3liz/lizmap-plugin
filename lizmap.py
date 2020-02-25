@@ -79,10 +79,8 @@ from qgis.core import (
     QgsMapLayerModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
-    QgsAttributeEditorField,
-    QgsAttributeEditorContainer,
     QgsApplication,
-)
+    QgsEditFormConfig)
 
 from . import DEFAULT_LWC_VERSION
 from .definitions.atlas import AtlasDefinitions
@@ -114,6 +112,7 @@ from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from .qgis_plugin_tools.tools.version import is_dev_version, version
+from .tooltip import Tooltip
 
 
 LOGGER = logging.getLogger(plugin_name())
@@ -1493,266 +1492,29 @@ class Lizmap:
                 # Write the content into the global object
                 self.layerList[item.text(1)]['popupTemplate'] = content
 
-    def createPopupNodeItemFromForm(self, layer, node, level, headers, html):
-        regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
-        a = ''
-        h = ''
-        if isinstance(node, QgsAttributeEditorField):
-            fidx = node.idx()
-            fields = layer.fields()
-            field = fields[fidx]
-
-            # display field name or alias if filled
-            alias = field.alias()
-            name = field.name()
-            fname = alias if alias else name
-            fname = fname.replace("'", "’")
-
-            # adapt the view depending on the field type
-            fset = field.editorWidgetSetup()
-            ftype = fset.type()
-            fconf = fset.config()
-            fview = '"%s"' % name
-
-            # If hidden field, do nothing
-            if ftype == 'Hidden':
-                return html
-
-            # External ressource: file, url, photo, iframe
-            if ftype == 'ExternalResource':
-                dview = fconf['DocumentViewer']
-                fview = '''
-                    concat(
-                        '<a href="',
-                        "{0}",
-                        '" target="_blank">{1}</a>'
-                    )
-                '''.format(
-                    name,
-                    fname
-                )
-                if dview == 1:
-                    # image
-                    fview = '''
-                        concat(
-                            '<a href="',
-                            "{0}",
-                            '" target="_blank">',
-                            '
-                            <img src="',
-                            "{0}",
-                            '" width="100%" title="{1}">',
-                            '
-                            </a>'
-                        )
-                    '''.format(
-                        name,
-                        fname
-                    )
-                if dview == 2:
-                    # web view
-                    fview = '''
-                        concat(
-                            '<a href="',
-                            "{0}",
-                            '" target="_blank">
-                            ',
-                            '
-                            <iframe src="',
-                            "{0}",
-                            '" width="100%" height="300" title="{1}"/>',
-                            '
-                            </a>'
-                        )
-                    '''.format(
-                        name,
-                        fname
-                    )
-
-            # Value relation
-            if ftype == 'ValueRelation':
-                vlid = fconf['Layer']
-                fexp = '''"{0}" = attribute(@parent, '{1}')'''.format(
-                    fconf['Key'],
-                    name
-                )
-                filter_exp = fconf['FilterExpression'].strip()
-                if filter_exp:
-                    fexp += ' AND %s' % filter_exp
-                fview = '''
-                    aggregate(
-                        layer:='{0}',
-                        aggregate:='concatenate',
-                        expression:="{1}",
-                        filter:={2}
-                    )
-                '''.format(
-                    vlid,
-                    fconf['Value'],
-                    fexp
-                )
-
-            # Value relation
-            if ftype == 'RelationReference':
-                rem = self.project.relationManager()
-                rel = rem.relation(fconf['Relation'])
-                vlay = rel.referencedLayer()
-                vlid = rel.referencedLayerId()
-                parent_pk = rel.resolveReferencedField(name)
-                fexp = '''
-                    "{0}" = attribute(@parent, '{1}')
-                '''.format(
-                    parent_pk,
-                    name
-                )
-                fview = '''
-                    aggregate(
-                        layer:='{0}',
-                        aggregate:='concatenate',
-                        expression:={1},
-                        filter:={2}
-                    )
-                '''.format(
-                    vlid,
-                    vlay.displayExpression(),
-                    fexp
-                )
-
-            # Value map
-            if ftype == 'ValueMap':
-                fmap = fconf['map']
-                m = []
-                # build hstore
-                for d in fmap:
-                    m.append(['%s=>%s' % (v.replace("'", "’"), k.replace("'", "’")) for k, v in d.items()][0])
-                hmap = ', '.join(m)
-                fview = '''
-                    map_get(
-                        hstore_to_map('{0}'),
-                        "{1}"
-                    )
-                '''.format(
-                    hmap,
-                    name
-                )
-
-            # Date
-            if ftype == 'DateTime':
-                dfor = fconf['display_format']
-                fview = '''
-                    format_date(
-                        "{0}",
-                        '{1}'
-                    )
-                '''.format(
-                    name,
-                    dfor
-                )
-
-            # fview = '''
-            # represent_value("{0}")
-            # '''.format(
-            # name
-            # )
-
-            a += '\n' + '  ' * level
-            a += '''
-            [% CASE
-                WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
-                THEN concat(
-                    '<p>', '<b>{1}</b>',
-                    '<div class="field">', {2}, '</div>',
-                    '</p>'
-                )
-                ELSE ''
-            END %]
-            '''.format(
-                name,
-                fname,
-                fview
-            )
-
-        if isinstance(node, QgsAttributeEditorContainer):
-            l = level
-            # create div container
-            if l == 1:
-                act = ''
-                if not headers:
-                    act = 'active'
-                a += '\n' + '  ' * l + '<div id="popup_dd_%s" class="tab-pane %s">' % (
-                    regex.sub('_', node.name()),
-                    act
-                )
-                h += '\n    ' + '<li class="%s"><a href="#popup_dd_%s" data-toggle="tab">%s</a></li>' % (
-                    act,
-                    regex.sub('_', node.name()),
-                    node.name()
-                )
-                headers.append(h)
-            if l > 1:
-                a += '\n' + '  ' * l + '<fieldset>'
-                a += '\n' + '  ' * l + '<legend>%s</legend>' % node.name()
-                a += '\n' + '  ' * l + '<div>'
-
-            # In cas of root children
-            before_tabs = []
-            content_tabs = []
-            after_tabs = []
-
-            level += 1
-            for n in node.children():
-                h = self.createPopupNodeItemFromForm(layer, n, level, headers, html)
-                # If it is not root children, add html
-                if l > 0:
-                    a += h
-                    continue
-                # If it is root children, store html in the right list
-                if isinstance(n, QgsAttributeEditorField):
-                    if not headers:
-                        before_tabs.append(h)
-                    else:
-                        after_tabs.append(h)
-                else:
-                    content_tabs.append(h)
-
-            if l == 0:
-                if before_tabs:
-                    a += '\n<div class="before-tabs">' + '\n'.join(before_tabs) + '\n</div>'
-                if headers:
-                    a += '<ul class="nav nav-tabs">\n' + '\n'.join(headers) + '\n</ul>'
-                    a += '\n<div class="tab-content">' + '\n'.join(content_tabs) + '\n</div>'
-                if after_tabs:
-                    a += '\n<div class="after-tabs">' + '\n'.join(after_tabs) + '\n</div>'
-            elif l == 1:
-                a += '\n' + '  ' * l + '</div>'
-            elif l > 1:
-                a += '\n' + '  ' * l + '</div>'
-                a += '\n' + '  ' * l + '</fieldset>'
-
-        html += a
-        return html
-
     def setTooltipContentFromForm(self):
         item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             lid = item.text(1)
             layers = [a for a in self.project.mapLayers().values() if a.id() == lid]
             if not layers:
+                LOGGER.warning('Maptip : layers not found.')
                 return
         else:
+            LOGGER.warning('Maptip : no item.')
             return
         layer = layers[0]
 
-        cfg = layer.editFormConfig()
-        lay = cfg.layout()
-        if lay != 1:
+        config = layer.editFormConfig()
+        if config.layout() != QgsEditFormConfig.TabLayout:
+            LOGGER.warning('Maptip : the layer is not using a drag and drop form.')
             return
 
         # Get root
-        root = cfg.invisibleRootContainer()
-
+        root = config.invisibleRootContainer()
+        relation_manager = self.project.relationManager()
         # Build HTML content by using recursive method
-        htmlcontent = self.createPopupNodeItemFromForm(layer, root, 0, [], '')
+        htmlcontent = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
 
         # package css style, header and content
         html = CSS_TOOLTIP_FORM
