@@ -17,6 +17,13 @@ QGroupBox {{
 }}
 ''')
 
+HTML_POPUP_BASE = (
+    '''
+<div class="container popup_lizmap_dd" style="width:100%;">'
+{}
+</div>
+''')
+
 CSS_TOOLTIP_FORM = (
     '''
 <style>

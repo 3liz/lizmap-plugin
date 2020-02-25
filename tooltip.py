@@ -2,13 +2,16 @@
 
 import re
 
-from qgis._gui import QgsExternalResourceWidget
+from qgis.gui import QgsExternalResourceWidget
 from qgis.core import (
     QgsAttributeEditorField,
     QgsAttributeEditorContainer,
     QgsVectorLayer,
     QgsAttributeEditorElement,
 )
+
+from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM, NEW_FEATURE, HTML_POPUP_BASE
+
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -17,6 +20,10 @@ __revision__ = '$Format:%H$'
 
 
 class Tooltip:
+
+    @staticmethod
+    def create_popup(html):
+        return HTML_POPUP_BASE.format(html)
 
     @staticmethod
     def create_popup_node_item_from_form(layer: QgsVectorLayer, node: QgsAttributeEditorElement, level, headers, html, relation_manager):

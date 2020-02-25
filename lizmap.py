@@ -103,7 +103,7 @@ from .forms.locate_layer_edition import LocateLayerEditionDialog
 from .forms.table_manager import TableManager
 from .forms.time_manager_edition import TimeManagerEditionDialog
 from .forms.tooltip_edition import ToolTipEditionDialog
-from .html_and_expressions import STYLESHEET, CSS_TOOLTIP_FORM, NEW_FEATURE
+from .html_and_expressions import STYLESHEET, NEW_FEATURE
 from .lizmap_api.config import LizmapConfig
 from .lizmap_dialog import LizmapDialog
 from .lizmap_popup_dialog import LizmapPopupDialog
@@ -561,7 +561,7 @@ class Lizmap:
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
-        self.dlg.btQgisPopupFromForm.clicked.connect(self.setTooltipContentFromForm)
+        self.dlg.btQgisPopupFromForm.clicked.connect(self.tooltip_content_from_form)
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
@@ -1492,7 +1492,7 @@ class Lizmap:
                 # Write the content into the global object
                 self.layerList[item.text(1)]['popupTemplate'] = content
 
-    def setTooltipContentFromForm(self):
+    def tooltip_content_from_form(self):
         item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             lid = item.text(1)
@@ -1508,19 +1508,17 @@ class Lizmap:
         config = layer.editFormConfig()
         if config.layout() != QgsEditFormConfig.TabLayout:
             LOGGER.warning('Maptip : the layer is not using a drag and drop form.')
+            QMessageBox.warning(
+                self.dlg,
+                tr('Lizmap - Warning'),
+                tr('The form for this layer is not a drag and drop layout.'),
+                QMessageBox.Ok)
             return
 
-        # Get root
         root = config.invisibleRootContainer()
         relation_manager = self.project.relationManager()
-        # Build HTML content by using recursive method
-        htmlcontent = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
-
-        # package css style, header and content
-        html = CSS_TOOLTIP_FORM
-        html += '\n<div class="container popup_lizmap_dd" style="width:100%;">'
-        html += '\n' + htmlcontent
-        html += '\n' + '</div>'
+        html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
+        html_content = Tooltip.create_popup(html_content)
 
         if layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
@@ -1536,7 +1534,7 @@ class Lizmap:
             if result == QMessageBox.No:
                 return
 
-        layer.setMapTipTemplate(html)
+        layer.setMapTipTemplate(html_content)
         QMessageBox.information(
             self.dlg, tr('Maptip'), tr('The maptip has been set in the layer.'), QMessageBox.Ok)
 
