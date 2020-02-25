@@ -4,7 +4,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProject,
     QgsEditFormConfig,
-    QgsEditorWidgetSetup)
+)
 from qgis.testing import unittest, start_app
 
 
