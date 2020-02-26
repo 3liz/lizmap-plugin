@@ -463,6 +463,8 @@ class Lizmap:
                 'removeButton': self.dlg.remove_tooltip_button,
                 'addButton': self.dlg.add_tooltip_button,
                 'editButton': self.dlg.edit_tooltip_button,
+                'upButton': self.dlg.up_tooltip_button,
+                'downButton': self.dlg.down_tooltip_button,
                 'manager': None,
             },
             'editionLayers': {
