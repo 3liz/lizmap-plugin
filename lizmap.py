@@ -81,6 +81,7 @@ from qgis.core import (
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsApplication,
+    QgsMapLayer,
 )
 
 from . import DEFAULT_LWC_VERSION
@@ -1677,7 +1678,7 @@ class Lizmap:
             if ltype == 'layer':
                 layer = self.get_qgis_layer_by_id(k)
                 if layer:
-                    if layer.type() == 0:  # if it is a vector layer
+                    if layer.type() == QgsMapLayer.VectorLayer:  # if it is a vector layer
                         geometryType = layer.geometryType()
 
             # ~ # add layerOption only for geo layers
