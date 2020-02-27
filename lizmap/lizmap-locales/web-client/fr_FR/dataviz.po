@@ -1,0 +1,26 @@
+# Translators:
+# rldhont <rldhont@gmail.com>, 2018
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap Web Client dataviz 3.4pre.190808\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2018-07-14 15:19+0000\n"
+"Last-Translator: rldhont <rldhont@gmail.com>, 2018\n"
+"Language-Team: French (https://www.transifex.com/3liz-1/teams/62012/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: dataviz~dataviz.dock.title
+msgctxt "dataviz~dataviz.dock.title"
+msgid "Dataviz"
+msgstr "Statistiques"
+
+#: dataviz~dataviz.dock.subtitle
+msgctxt "dataviz~dataviz.dock.subtitle"
+msgid "Dataviz"
+msgstr "Statistiques sur les données"

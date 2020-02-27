@@ -1,0 +1,1732 @@
+# 
+# Translators:
+# xanvieiro <gallaecia6@gmail.com>, 2016-2019
+# rldhont <rldhont@gmail.com>, 2016
+# rldhont <rldhont@gmail.com>, 2016
+# xanvieiro <gallaecia6@gmail.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-06-14 21:25+0000\n"
+"Last-Translator: xanvieiro <gallaecia6@gmail.com>\n"
+"Language-Team: Galician (http://www.transifex.com/3liz-1/lizmap-locales/language/gl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: gl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: view~user.form.firstname.label
+msgctxt "view~user.form.firstname.label"
+msgid "First name"
+msgstr "Nome"
+
+#: view~user.form.lastname.label
+msgctxt "view~user.form.lastname.label"
+msgid "Last name"
+msgstr "Apelido"
+
+#: view~user.form.organization.label
+msgctxt "view~user.form.organization.label"
+msgid "Organization"
+msgstr "Organización"
+
+#: view~user.form.phonenumber.label
+msgctxt "view~user.form.phonenumber.label"
+msgid "Phone number"
+msgstr "Número de teléfono"
+
+#: view~user.form.street.label
+msgctxt "view~user.form.street.label"
+msgid "Street"
+msgstr "Rúa"
+
+#: view~user.form.postcode.label
+msgctxt "view~user.form.postcode.label"
+msgid "Postcode"
+msgstr "Código postal"
+
+#: view~user.form.city.label
+msgctxt "view~user.form.city.label"
+msgid "City"
+msgstr "Cidade"
+
+#: view~user.form.country.label
+msgctxt "view~user.form.country.label"
+msgid "Country"
+msgstr "País"
+
+#: view~user.form.comment.label
+msgctxt "view~user.form.comment.label"
+msgid "Why do you request an account?"
+msgstr "Por que solicita unha conta?"
+
+#: view~user.form.comment.help
+msgctxt "view~user.form.comment.help"
+msgid ""
+"Please write a small text to explain why you would like to have an access to"
+" the maps."
+msgstr "Escriba un texto breve para explicar por que querería ter acceso ós mapas."
+
+#: view~dictionnary.tree.button.checkbox
+msgctxt "view~dictionnary.tree.button.checkbox"
+msgid "Display/Hide"
+msgstr "Amosar/Agochar"
+
+#: view~dictionnary.tree.button.link
+msgctxt "view~dictionnary.tree.button.link"
+msgid "Open documentation"
+msgstr "Abrir documentación"
+
+#: view~dictionnary.tree.button.removeCache
+msgctxt "view~dictionnary.tree.button.removeCache"
+msgid "Remove cache server for this layer"
+msgstr "Eliminar a caché do servidor desta capa"
+
+#: view~dictionnary.tree.button.expand
+msgctxt "view~dictionnary.tree.button.expand"
+msgid "Expand"
+msgstr "Expandir"
+
+#: view~dictionnary.tree.button.collapse
+msgctxt "view~dictionnary.tree.button.collapse"
+msgid "Collapse"
+msgstr "Contraer"
+
+#: view~dictionnary.print.activate
+msgctxt "view~dictionnary.print.activate"
+msgid "Place the rectangle for printing"
+msgstr "Sitúe o rectángulo para imprimir"
+
+#: view~dictionnary.measure.activate.length
+msgctxt "view~dictionnary.measure.activate.length"
+msgid "Click on the map to start measuring a length."
+msgstr "Faga clic no mapa para comezar a medir unha lonxitude."
+
+#: view~dictionnary.measure.activate.area
+msgctxt "view~dictionnary.measure.activate.area"
+msgid "Click on the map to start measuring an area."
+msgstr "Faga clic no mapa para comezar a medir unha área."
+
+#: view~dictionnary.measure.activate.perimeter
+msgctxt "view~dictionnary.measure.activate.perimeter"
+msgid "Click on the map to start measuring a perimeter."
+msgstr "Faga clic no mapa para comezar a medir un perímetro."
+
+#: view~dictionnary.measure.handle
+msgctxt "view~dictionnary.measure.handle"
+msgid "Measure:"
+msgstr "Medir:"
+
+#: view~dictionnary.geolocation.failed
+msgctxt "view~dictionnary.geolocation.failed"
+msgid "Location detection failed"
+msgstr "Erro na detección da localización"
+
+#: view~dictionnary.edition.title
+msgctxt "view~dictionnary.edition.title"
+msgid "Edition"
+msgstr "Edición"
+
+#: view~dictionnary.edition.draw.activate
+msgctxt "view~dictionnary.edition.draw.activate"
+msgid "Draw the feature you want to create on the map."
+msgstr "Debuxe a entidade que queira crear no mapa."
+
+#: view~dictionnary.edition.select.activate
+msgctxt "view~dictionnary.edition.select.activate"
+msgid "Click on one of the layer's features to select it."
+msgstr "Faga clic nunha das entidades de capa para seleccionala."
+
+#: view~dictionnary.edition.select.modify.activate
+msgctxt "view~dictionnary.edition.select.modify.activate"
+msgid "You can modify the feature you have selected, then submit."
+msgstr "Pode modificar a entidade que ten seleccionada para enviar."
+
+#: view~dictionnary.edition.datepicker.open
+msgctxt "view~dictionnary.edition.datepicker.open"
+msgid "Open the calendar"
+msgstr "Abrir o calendario"
+
+#: view~dictionnary.edition.datepicker.reset
+msgctxt "view~dictionnary.edition.datepicker.reset"
+msgid "Reset the date"
+msgstr "Restablecer a data"
+
+#: view~dictionnary.edition.confirm.delete
+msgctxt "view~dictionnary.edition.confirm.delete"
+msgid "Are you sure you want to delete the selected feature?"
+msgstr "Está seguro de querer eliminar a entidade seleccionada?"
+
+#: view~dictionnary.edition.confirm.cancel
+msgctxt "view~dictionnary.edition.confirm.cancel"
+msgid ""
+"Are you sure you want to cancel edition? You will lose any modifications "
+"made on the currently edited object."
+msgstr "Está seguro de querer cancelar a edición? Perderá calquera modificación feita no obxecto editado actualmente."
+
+#: view~dictionnary.edition.message.error.no.geometry
+msgctxt "view~dictionnary.edition.message.error.no.geometry"
+msgid ""
+"You cannot save this object without a geomtetry. Please draw the geometry on"
+" the map."
+msgstr "Non pode gardar este obxecto sen unha xeometría. Debuxe a xeometría no mapa."
+
+#: view~dictionnary.edition.point.coord.crs.layer
+msgctxt "view~dictionnary.edition.point.coord.crs.layer"
+msgid "Layer"
+msgstr "Capa"
+
+#: view~dictionnary.edition.point.coord.crs.map
+msgctxt "view~dictionnary.edition.point.coord.crs.map"
+msgid "Map"
+msgstr "Mapa"
+
+#: view~dictionnary.externalsearch.search
+msgctxt "view~dictionnary.externalsearch.search"
+msgid "Searching"
+msgstr "Busca"
+
+#: view~dictionnary.externalsearch.notfound
+msgctxt "view~dictionnary.externalsearch.notfound"
+msgid "No results"
+msgstr "Sen resultados"
+
+#: view~dictionnary.externalsearch.mapdata
+msgctxt "view~dictionnary.externalsearch.mapdata"
+msgid "Map data"
+msgstr "Datos do mapa"
+
+#: view~dictionnary.timemanager.toolbar.play
+msgctxt "view~dictionnary.timemanager.toolbar.play"
+msgid "Play"
+msgstr "Prender"
+
+#: view~dictionnary.timemanager.toolbar.pause
+msgctxt "view~dictionnary.timemanager.toolbar.pause"
+msgid "Pause"
+msgstr "Pausa"
+
+#: view~dictionnary.baselayer.empty.title
+msgctxt "view~dictionnary.baselayer.empty.title"
+msgid "No base map"
+msgstr "Sen mapa base"
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.activate.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.activate.title"
+msgid "Pin"
+msgstr "Fixar"
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.deactivate.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.deactivate.title"
+msgid "Unpin"
+msgstr "Liberar"
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.glued.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.glued.title"
+msgid "Pinned"
+msgstr "Fixado"
+
+#: view~dictionnary.bottomdock.toolbar.btn.size.maximize.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.size.maximize.title"
+msgid "Maximize"
+msgstr "Maximizar"
+
+#: view~dictionnary.bottomdock.toolbar.btn.size.minimize.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.size.minimize.title"
+msgid "Minimize"
+msgstr "Minimizar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.detail
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.detail"
+msgid "Detail"
+msgstr "Detalle"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.refresh.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.refresh.title"
+msgid "Get data"
+msgstr "Datos"
+
+#: view~dictionnary.attributeLayers.toolbar.cb.data.detail.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.cb.data.detail.title"
+msgid "Display info"
+msgstr "Amosar información"
+
+#: view~dictionnary.attributeLayers.toolbar.input.search.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.input.search.title"
+msgid "Search"
+msgstr "Buscar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.select.searched.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.select.searched.title"
+msgid "Select searched line"
+msgstr "Seleccionar a liña buscada"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.unselect.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.unselect.title"
+msgid "Unselect all"
+msgstr "Deseleccionar todo"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.moveselectedtotop.title
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.moveselectedtotop.title"
+msgid "Move selected to top"
+msgstr "Mover o seleccionado para arriba"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.filter.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.filter.title"
+msgid "Filter"
+msgstr "Filtrar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.export.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.export.title"
+msgid "Export"
+msgstr "Exportar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createFeature.title
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.createFeature.title"
+msgid "Create feature"
+msgstr "Crear entidade"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.title
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.title"
+msgid "Create a child"
+msgstr "Crear unha filla"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.no.actived
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.no.actived"
+msgid "Activated line needed."
+msgstr "Necesaria unha liña activada."
+
+#: view~dictionnary.attributeLayers.toolbar.btn.toggle.children.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.toggle.children.title"
+msgid "Toggle children tables"
+msgstr "Alternar entre táboas fillas"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.linkFeatures.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.linkFeatures.title"
+msgid "Link selected features"
+msgstr "Enlazar entidades seleccionadas"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.hide.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.hide.title"
+msgid "Hide"
+msgstr "Agochar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.show.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.show.title"
+msgid "Show"
+msgstr "Amosar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.title"
+msgid "Refresh"
+msgstr "Recargar"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip"
+msgid "Refresh the table data."
+msgstr "Recargar os datos da táboa."
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip.changed
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip.changed"
+msgid "The map extent has changed since the last time data were fetched."
+msgstr "Cambiou a extensión do mapa dende a última vez que se actualizaron os datos."
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.lines
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.lines"
+msgid "lines returned"
+msgstr "liñas devolvidas"
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.nodata
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.nodata"
+msgid "No result for this layer"
+msgstr "Sen resultados nesta capa"
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.extent
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.extent"
+msgid "in the current extent"
+msgstr "na extensión actual"
+
+#: view~dictionnary.attributeLayers.btn.info.title
+msgctxt "view~dictionnary.attributeLayers.btn.info.title"
+msgid "Info"
+msgstr "Info"
+
+#: view~dictionnary.attributeLayers.btn.edit.title
+msgctxt "view~dictionnary.attributeLayers.btn.edit.title"
+msgid "Edit"
+msgstr "Editar"
+
+#: view~dictionnary.attributeLayers.btn.delete.title
+msgctxt "view~dictionnary.attributeLayers.btn.delete.title"
+msgid "Delete"
+msgstr "Eliminar"
+
+#: view~dictionnary.attributeLayers.btn.remove.link.title
+msgctxt "view~dictionnary.attributeLayers.btn.remove.link.title"
+msgid "Unlink child"
+msgstr "Desligar filla"
+
+#: view~dictionnary.attributeLayers.btn.select.title
+msgctxt "view~dictionnary.attributeLayers.btn.select.title"
+msgid "Select"
+msgstr "Seleccionar"
+
+#: view~dictionnary.attributeLayers.btn.unselect.title
+msgctxt "view~dictionnary.attributeLayers.btn.unselect.title"
+msgid "Unselect"
+msgstr "Desligar"
+
+#: view~dictionnary.attributeLayers.btn.zoom.title
+msgctxt "view~dictionnary.attributeLayers.btn.zoom.title"
+msgid "Zoom"
+msgstr "Achegar"
+
+#: view~dictionnary.attributeLayers.btn.center.title
+msgctxt "view~dictionnary.attributeLayers.btn.center.title"
+msgid "Center"
+msgstr "Centrar"
+
+#: view~dictionnary.attributeLayers.msg.layer.not.visible
+msgctxt "view~dictionnary.attributeLayers.msg.layer.not.visible"
+msgid ""
+"The layer is not visible. Please zoom at a scale in which the features are "
+"visible."
+msgstr "A capa non é visible. Faga zoom ata a escala na que as entidades sexan visibles."
+
+#: view~dictionnary.selectiontool.results.none
+msgctxt "view~dictionnary.selectiontool.results.none"
+msgid "No object selected"
+msgstr "Non se seleccionou ningún obxecto"
+
+#: view~dictionnary.selectiontool.results.one
+msgctxt "view~dictionnary.selectiontool.results.one"
+msgid "1 selected object"
+msgstr "1 obxecto seleccionado"
+
+#: view~dictionnary.selectiontool.results.more
+msgctxt "view~dictionnary.selectiontool.results.more"
+msgid "%s selected objects"
+msgstr "%s obxectos seleccionados"
+
+#: view~dictionnary.layer.metadata.title
+msgctxt "view~dictionnary.layer.metadata.title"
+msgid "Information"
+msgstr "Información"
+
+#: view~dictionnary.layer.metadata.layer.name
+msgctxt "view~dictionnary.layer.metadata.layer.name"
+msgid "Name"
+msgstr "Nome"
+
+#: view~dictionnary.layer.metadata.layer.type
+msgctxt "view~dictionnary.layer.metadata.layer.type"
+msgid "Type"
+msgstr "Tipo"
+
+#: view~dictionnary.layer.metadata.layer.type.group
+msgctxt "view~dictionnary.layer.metadata.layer.type.group"
+msgid "Group"
+msgstr "Agrupar"
+
+#: view~dictionnary.layer.metadata.layer.type.layer
+msgctxt "view~dictionnary.layer.metadata.layer.type.layer"
+msgid "Layer"
+msgstr "Capa"
+
+#: view~dictionnary.layer.metadata.layer.abstract
+msgctxt "view~dictionnary.layer.metadata.layer.abstract"
+msgid "Description"
+msgstr "Descrición"
+
+#: view~dictionnary.layer.metadata.layer.link
+msgctxt "view~dictionnary.layer.metadata.layer.link"
+msgid "Information"
+msgstr "Información"
+
+#: view~dictionnary.layer.metadata.layer.info.see
+msgctxt "view~dictionnary.layer.metadata.layer.info.see"
+msgid "Documentation"
+msgstr "Documentación"
+
+#: view~dictionnary.layer.metadata.zoomToExtent.title
+msgctxt "view~dictionnary.layer.metadata.zoomToExtent.title"
+msgid "Zoom to layer extent"
+msgstr "Zoom á extensión da capa"
+
+#: view~dictionnary.layer.metadata.style.title
+msgctxt "view~dictionnary.layer.metadata.style.title"
+msgid "Change layer style"
+msgstr "Cambiar estilo da capa"
+
+#: view~dictionnary.layer.metadata.export.title
+msgctxt "view~dictionnary.layer.metadata.export.title"
+msgid "Export"
+msgstr "Exportar"
+
+#: view~dictionnary.layer.metadata.opacity.title
+msgctxt "view~dictionnary.layer.metadata.opacity.title"
+msgid "Opacity"
+msgstr "Opacidade"
+
+#: view~dictionnary.layer.export.right.required
+msgctxt "view~dictionnary.layer.export.right.required"
+msgid "Right is required to export layer."
+msgstr "Requírese permiso para exportar a capa."
+
+#: view~dictionnary.geobookmark.name.required
+msgctxt "view~dictionnary.geobookmark.name.required"
+msgid "A name is required to create a bookmark."
+msgstr "Requírese un nome para crear un marcador."
+
+#: view~dictionnary.geobookmark.confirm.delete
+msgctxt "view~dictionnary.geobookmark.confirm.delete"
+msgid "Are you sure you want to delete this bookmark?"
+msgstr "Está seguro de querer eliminar este marcador?"
+
+#: view~dictionnary.popup.msg.start
+msgctxt "view~dictionnary.popup.msg.start"
+msgid "Click to the map to get informations."
+msgstr "Faga clic no mapa para obter informacións."
+
+#: view~dictionnary.popup.msg.no.result
+msgctxt "view~dictionnary.popup.msg.no.result"
+msgid "No object has been found at this location."
+msgstr "Non se atopou ningún obxecto nesta localización"
+
+#: view~dictionnary.generic.btn.close.title
+msgctxt "view~dictionnary.generic.btn.close.title"
+msgid "Close"
+msgstr "Pechar"
+
+#: view~dictionnary.atlas.toolbar.title
+msgctxt "view~dictionnary.atlas.toolbar.title"
+msgid "Atlas"
+msgstr "Atlas"
+
+#: view~dictionnary.atlas.navbar.title
+msgctxt "view~dictionnary.atlas.navbar.title"
+msgid "Atlas"
+msgstr "Atlas"
+
+#: view~dictionnary.atlas.toolbar.play
+msgctxt "view~dictionnary.atlas.toolbar.play"
+msgid "Play"
+msgstr "Reproducir"
+
+#: view~dictionnary.atlas.toolbar.stop
+msgctxt "view~dictionnary.atlas.toolbar.stop"
+msgid "Stop"
+msgstr "Parar"
+
+#: view~dictionnary.atlas.toolbar.pause
+msgctxt "view~dictionnary.atlas.toolbar.pause"
+msgid "Pause"
+msgstr "Pausa"
+
+#: view~dictionnary.atlas.toolbar.next
+msgctxt "view~dictionnary.atlas.toolbar.next"
+msgid "Next"
+msgstr "Seguinte"
+
+#: view~dictionnary.atlas.toolbar.prev
+msgctxt "view~dictionnary.atlas.toolbar.prev"
+msgid "Previous"
+msgstr "Previo"
+
+#: view~dictionnary.embed.open.map
+msgctxt "view~dictionnary.embed.open.map"
+msgid "Open the map in full screen"
+msgstr "Abrir o mapa a pantalla completa"
+
+#: view~dictionnary.filter.btn.zoom.label
+msgctxt "view~dictionnary.filter.btn.zoom.label"
+msgid "Zoom"
+msgstr "Achegar"
+
+#: view~dictionnary.filter.btn.zoom.title
+msgctxt "view~dictionnary.filter.btn.zoom.title"
+msgid "Zoom to filtered features"
+msgstr "Zum ás entidades filtradas"
+
+#: view~dictionnary.filter.btn.export.label
+msgctxt "view~dictionnary.filter.btn.export.label"
+msgid "Export"
+msgstr "Exportar"
+
+#: view~dictionnary.filter.btn.export.title
+msgctxt "view~dictionnary.filter.btn.export.title"
+msgid "Export filtered features"
+msgstr "Exportar entidades filtradas"
+
+#: view~dictionnary.filter.btn.reset.label
+msgctxt "view~dictionnary.filter.btn.reset.label"
+msgid "Reset"
+msgstr "Restablecer"
+
+#: view~dictionnary.filter.btn.reset.title
+msgctxt "view~dictionnary.filter.btn.reset.title"
+msgid "Reset the filter"
+msgstr "Restablecer o filtro"
+
+#: view~dictionnary.filter.input.text.title
+msgctxt "view~dictionnary.filter.input.text.title"
+msgid "Type some text to search inside this field"
+msgstr "Teclear algún texto para buscar dentro deste campo"
+
+#: view~dictionnary.filter.input.text.placeholder
+msgctxt "view~dictionnary.filter.input.text.placeholder"
+msgid "Search inside this field"
+msgstr "Buscar dentro deste campo"
+
+#: view~dictionnary.filter.label.features
+msgctxt "view~dictionnary.filter.label.features"
+msgid "features"
+msgstr "entidades"
+
+#: view~edition.access.denied
+msgctxt "view~edition.access.denied"
+msgid "You have not the right to use the edition tools."
+msgstr "Non ten permiso para utilizar as ferramentas de edición."
+
+#: view~edition.form.action.future.label
+msgctxt "view~edition.form.action.future.label"
+msgid "After saved"
+msgstr "Despois de gardados"
+
+#: view~edition.form.action.future.close
+msgctxt "view~edition.form.action.future.close"
+msgid "Close form"
+msgstr "Pechar formulario"
+
+#: view~edition.form.action.future.create
+msgctxt "view~edition.form.action.future.create"
+msgid "Create new feature"
+msgstr "Crear unha nova entidade"
+
+#: view~edition.form.action.future.edit
+msgctxt "view~edition.form.action.future.edit"
+msgid "Reopen form"
+msgstr "Abrir de novo o formulario"
+
+#: view~edition.form.submit.label
+msgctxt "view~edition.form.submit.label"
+msgid "Save"
+msgstr "Gardar"
+
+#: view~edition.form.data.saved
+msgctxt "view~edition.form.data.saved"
+msgid "Data has been saved."
+msgstr "Gardáronse os datos."
+
+#: view~edition.form.cancel.label
+msgctxt "view~edition.form.cancel.label"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: view~edition.form.reset.label
+msgctxt "view~edition.form.reset.label"
+msgid "Reset"
+msgstr "Restablecer"
+
+#: view~edition.form.btn.clear.title
+msgctxt "view~edition.form.btn.clear.title"
+msgid "Close"
+msgstr "Pechar"
+
+#: view~edition.form.cancel.confirm.message
+msgctxt "view~edition.form.cancel.confirm.message"
+msgid "Cancel edition?"
+msgstr "Cancelar edición?"
+
+#: view~edition.navbar.title
+msgctxt "view~edition.navbar.title"
+msgid "Edition"
+msgstr "Edición"
+
+#: view~edition.toolbar.title
+msgctxt "view~edition.toolbar.title"
+msgid "Edition"
+msgstr "Edición"
+
+#: view~edition.toolbar.draw.title
+msgctxt "view~edition.toolbar.draw.title"
+msgid "Add"
+msgstr "Engadir"
+
+#: view~edition.toolbar.draw.clear.title
+msgctxt "view~edition.toolbar.draw.clear.title"
+msgid "Clear"
+msgstr "Limpar"
+
+#: view~edition.toolbar.draw.save.title
+msgctxt "view~edition.toolbar.draw.save.title"
+msgid "Save"
+msgstr "Gardar"
+
+#: view~edition.toolbar.select.title
+msgctxt "view~edition.toolbar.select.title"
+msgid "Select"
+msgstr "Seleccionar"
+
+#: view~edition.toolbar.select.unselect.title
+msgctxt "view~edition.toolbar.select.unselect.title"
+msgid "Unsel."
+msgstr "Deseleccionar"
+
+#: view~edition.toolbar.select.attr.title
+msgctxt "view~edition.toolbar.select.attr.title"
+msgid "Modify"
+msgstr "Modificar"
+
+#: view~edition.toolbar.select.undo.title
+msgctxt "view~edition.toolbar.select.undo.title"
+msgid "Undo"
+msgstr "Desfacer"
+
+#: view~edition.toolbar.select.delete.title
+msgctxt "view~edition.toolbar.select.delete.title"
+msgid "Del"
+msgstr "Eliminar"
+
+#: view~edition.toolbar.delete.title
+msgctxt "view~edition.toolbar.delete.title"
+msgid "Delete"
+msgstr "Eliminar"
+
+#: view~edition.toolbar.cancel.title
+msgctxt "view~edition.toolbar.cancel.title"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: view~edition.geomtool.nodetool.title
+msgctxt "view~edition.geomtool.nodetool.title"
+msgid "Node tool"
+msgstr "Ferramenta de nodos"
+
+#: view~edition.geomtool.drag.title
+msgctxt "view~edition.geomtool.drag.title"
+msgid "Drag"
+msgstr "Arrastrar"
+
+#: view~edition.geomtool.rotate.title
+msgctxt "view~edition.geomtool.rotate.title"
+msgid "Rotate"
+msgstr "Rotar"
+
+#: view~edition.geomtool.reshape.title
+msgctxt "view~edition.geomtool.reshape.title"
+msgid "Reshape"
+msgstr "Cambiar forma"
+
+#: view~edition.point.coord.title
+msgctxt "view~edition.point.coord.title"
+msgid "Manage point/vertex coordinates"
+msgstr "Administrar coordenadas do punto/vértice"
+
+#: view~edition.point.coord.crs.label
+msgctxt "view~edition.point.coord.crs.label"
+msgid "CRS:"
+msgstr "SRC:"
+
+#: view~edition.point.coord.x.label
+msgctxt "view~edition.point.coord.x.label"
+msgid "X:"
+msgstr "X:"
+
+#: view~edition.point.coord.y.label
+msgctxt "view~edition.point.coord.y.label"
+msgid "Y:"
+msgstr "Y:"
+
+#: view~edition.point.coord.geolocation.label
+msgctxt "view~edition.point.coord.geolocation.label"
+msgid "linked to geolocation"
+msgstr "enlazado á xeolocalización"
+
+#: view~edition.point.coord.add.label
+msgctxt "view~edition.point.coord.add.label"
+msgid "Add"
+msgstr "Engadir"
+
+#: view~edition.point.coord.finalize.label
+msgctxt "view~edition.point.coord.finalize.label"
+msgid "Finalize"
+msgstr "Finalizar"
+
+#: view~edition.geolocate.toolbar.title
+msgctxt "view~edition.geolocate.toolbar.title"
+msgid "Edition:"
+msgstr "Edición:"
+
+#: view~edition.toolbar.draw.tooltip
+msgctxt "view~edition.toolbar.draw.tooltip"
+msgid "Activate the tool for creating new objects."
+msgstr "Activar a ferramenta para crear novos obxectos."
+
+#: view~edition.toolbar.draw.clear.tooltip
+msgctxt "view~edition.toolbar.draw.clear.tooltip"
+msgid "Cancel the current drawing."
+msgstr "Cancelar o debuxo actual."
+
+#: view~edition.toolbar.draw.save.tooltip
+msgctxt "view~edition.toolbar.draw.save.tooltip"
+msgid "Finalize the current drawing."
+msgstr "Rematar o debuxo actual."
+
+#: view~edition.toolbar.select.tooltip
+msgctxt "view~edition.toolbar.select.tooltip"
+msgid "Activate the selection tool."
+msgstr "Activar a ferramenta de selección."
+
+#: view~edition.toolbar.select.unselect.tooltip
+msgctxt "view~edition.toolbar.select.unselect.tooltip"
+msgid "Unselect the selected object."
+msgstr "Deseleccionar o obxecto seleccionado."
+
+#: view~edition.toolbar.select.attr.tooltip
+msgctxt "view~edition.toolbar.select.attr.tooltip"
+msgid "Validate the geometry and/or open the attribute form."
+msgstr "Validar a xeometría e/ou abrir a táboa de atributos."
+
+#: view~edition.toolbar.select.undo.tooltip
+msgctxt "view~edition.toolbar.select.undo.tooltip"
+msgid "Revert into initial geometry state."
+msgstr "Reverter ó estado inicial da xeometría."
+
+#: view~edition.toolbar.select.delete.tooltip
+msgctxt "view~edition.toolbar.select.delete.tooltip"
+msgid "Delete the selected object."
+msgstr "Borrar o obxecto seleccionado."
+
+#: view~edition.toolbar.cancel.tooltip
+msgctxt "view~edition.toolbar.cancel.tooltip"
+msgid "Cancel current edition."
+msgstr "Cancelar a edición actual."
+
+#: view~edition.modal.title.default
+msgctxt "view~edition.modal.title.default"
+msgid "Edition"
+msgstr "Edición"
+
+#: view~edition.modal.message.no.feature.found
+msgctxt "view~edition.modal.message.no.feature.found"
+msgid "No feature has been found here."
+msgstr "Non se atopou ningunha entidade aquí."
+
+#: view~edition.message.error.parameter.project
+msgctxt "view~edition.message.error.parameter.project"
+msgid "The 'project' parameter is mandatory."
+msgstr "É obrigatorio o parámetro 'proxecto'."
+
+#: view~edition.message.error.parameter.featureId
+msgctxt "view~edition.message.error.parameter.featureId"
+msgid "The 'featureId' parameter is mandatory."
+msgstr "É obrigatorio o parámetro 'featureId'."
+
+#: view~edition.message.error.layer.editable
+msgctxt "view~edition.message.error.layer.editable"
+msgid "The layer is not editable."
+msgstr "Non se pode editar a capa."
+
+#: view~edition.message.error.layer.editable.create
+msgctxt "view~edition.message.error.layer.editable.create"
+msgid "Create feature for the layer is not available."
+msgstr "Non está dispoñible a creación de entidades para a capa."
+
+#: view~edition.message.error.layer.editable.delete
+msgctxt "view~edition.message.error.layer.editable.delete"
+msgid "Delete feature for the layer is not available."
+msgstr "Non está dispoñible a eliminación de entidades para a capa."
+
+#: view~edition.message.error.primary.keys
+msgctxt "view~edition.message.error.primary.keys"
+msgid ""
+"Lizmap cannot find the \"%s\" layer's primary keys. The edition tool needs a"
+" defined primary key on the table."
+msgstr "Lizmap non pode atopar as claves primarias da capa \"%s\". A ferramenta de edición precisa unha clave primaria definida na táboa."
+
+#: view~edition.message.error.feature.get
+msgctxt "view~edition.message.error.feature.get"
+msgid "Lizmap cannot get the feature data with WFS"
+msgstr "Lizmap non pode obter os datos da entidade con WFS"
+
+#: view~edition.message.error.form.get
+msgctxt "view~edition.message.error.form.get"
+msgid "An error has been raised when getting the form"
+msgstr "Produciuse un erro ó obter o formulario"
+
+#: view~edition.message.error.bbox
+msgctxt "view~edition.message.error.bbox"
+msgid "The bbox has to be 4 floats separated by ','."
+msgstr "A caixa delimitadora ten que ter 4 decimais separados por ','."
+
+#: view~edition.message.error.crs
+msgctxt "view~edition.message.error.crs"
+msgid "crs is mandatory and has to be an integer or EPSG:*."
+msgstr "o src é obrigatorio e ten que ser un número enteiro ou EPSG:*."
+
+#: view~edition.message.error.save
+msgctxt "view~edition.message.error.save"
+msgid "An error has been raised when saving the form."
+msgstr "Produciuse un erro ó gardar o formulario."
+
+#: view~edition.message.error.save.fields
+msgctxt "view~edition.message.error.save.fields"
+msgid "No fields available for saving the form."
+msgstr "Non hai campos dispoñibles para gardar o formulario."
+
+#: view~edition.message.error.delete
+msgctxt "view~edition.message.error.delete"
+msgid "The deletion has failed."
+msgstr "Fallou a eliminación."
+
+#: view~edition.message.success.delete
+msgctxt "view~edition.message.success.delete"
+msgid "The feature has been deleted."
+msgstr "A entidade foi eliminada."
+
+#: view~edition.message.error.create
+msgctxt "view~edition.message.error.create"
+msgid "An error occured while creating the object."
+msgstr "Ocorreu un erro na creación do obxecto."
+
+#: view~edition.message.success.create
+msgctxt "view~edition.message.success.create"
+msgid "Object successfully created."
+msgstr "Obxecto creado satisfactoriamente."
+
+#: view~edition.message.error.no.geometry
+msgctxt "view~edition.message.error.no.geometry"
+msgid ""
+"You cannot save this object without a geomtetry. Please draw the geometry on"
+" the map."
+msgstr "Non pode gardar este obxecto sen unha xeometría. Debuxe a xeometría no mapa."
+
+#: view~edition.message.error.upload.layer
+msgctxt "view~edition.message.error.upload.layer"
+msgid "The layer \"%s\" directory for uploading media is not writable."
+msgstr "Non se pode escribir no directorio da capa \"%s\" para subir ficheiros."
+
+#: view~edition.message.error.upload.layer.field
+msgctxt "view~edition.message.error.upload.layer.field"
+msgid ""
+"The field \"%s\" directory of the layer \"%s\" for uploading media is not "
+"writable."
+msgstr "Non se pode escribir no directorio do campo \"%s\" da capa \"%s\" para subir ficheiros."
+
+#: view~edition.upload.choice.keep
+msgctxt "view~edition.upload.choice.keep"
+msgid "Keep"
+msgstr "Manter"
+
+#: view~edition.upload.choice.update
+msgctxt "view~edition.upload.choice.update"
+msgid "Update"
+msgstr "Actualizar"
+
+#: view~edition.upload.choice.delete
+msgctxt "view~edition.upload.choice.delete"
+msgid "Delete"
+msgstr "Eliminar"
+
+#: view~edition.link.error.missing.parameter
+msgctxt "view~edition.link.error.missing.parameter"
+msgid "The pivot, features1 and features2 parameters are mandatory."
+msgstr "O eixo, parámetros entidade-1 e entidade-2 son obrigatorios."
+
+#: view~edition.link.error.wrong.layer
+msgctxt "view~edition.link.error.wrong.layer"
+msgid "The layer does not exists."
+msgstr "A capa non existe."
+
+#: view~edition.link.error.multiple.ids
+msgctxt "view~edition.link.error.multiple.ids"
+msgid ""
+"You cannot link multiple objects for both layers. Please select only one "
+"object for one of the layers and retry."
+msgstr "Non pode enlazar múltiples obxectos para ámbalas capas. Seleccione só un obxecto para unha das capas e ténteo de novo."
+
+#: view~edition.link.error.missing.id
+msgctxt "view~edition.link.error.missing.id"
+msgid ""
+"There must be at least one object selected for each layer to create the "
+"link."
+msgstr "Debe haber polo menos un obxecto seleccionado para cada capa para crear o enlace."
+
+#: view~edition.link.error.not.attribute.layer
+msgctxt "view~edition.link.error.not.attribute.layer"
+msgid "The layers have not be configured to have an attribute table."
+msgstr "As capas non se poden configurar para ter unha táboa de atributos."
+
+#: view~edition.link.error.no.create.feature
+msgctxt "view~edition.link.error.no.create.feature"
+msgid "Create feature for the layer \"%s\" is not available."
+msgstr "Non está dispoñible a creación de entidades para a capa \"%s\"."
+
+#: view~edition.link.error.no.modify.attributes
+msgctxt "view~edition.link.error.no.modify.attributes"
+msgid "Modify attributes for the layer \"%s\" is not available."
+msgstr "Non está dispoñible a modificación de atributos para a capa \"%s\"."
+
+#: view~edition.link.error.no.given.fields
+msgctxt "view~edition.link.error.no.given.fields"
+msgid "Given fields do not exists."
+msgstr "Os campos indicados non existen."
+
+#: view~edition.link.error.sql
+msgctxt "view~edition.link.error.sql"
+msgid "An error occured while adding linked data."
+msgstr "Ocorreu un erro na adición dos datos enlazados."
+
+#: view~edition.link.success
+msgctxt "view~edition.link.success"
+msgid "Selected features have been correctly linked."
+msgstr "As entidades seleccionadas enlazáronse correctamente."
+
+#: view~edition.unlink.success
+msgctxt "view~edition.unlink.success"
+msgid "The child feature has correctly been unlinked."
+msgstr "A entidade filla desligouse correctamente."
+
+#: view~edition.unlink.error.sql
+msgctxt "view~edition.unlink.error.sql"
+msgid "An error occured while removing link."
+msgstr "Ocorreu un erro eliminando o enlace."
+
+#: view~default.repository.access.denied
+msgctxt "view~default.repository.access.denied"
+msgid "You cannot access this repository."
+msgstr "Non pode acceder a este repositorio."
+
+#: view~default.repository.list.title
+msgctxt "view~default.repository.list.title"
+msgid "Projects"
+msgstr "Proxectos"
+
+#: view~default.home.title
+msgctxt "view~default.home.title"
+msgid "Home"
+msgstr "Inicio"
+
+#: view~default.project.access.denied
+msgctxt "view~default.project.access.denied"
+msgid "Access denied for this project."
+msgstr "Acceso denegado a este proxecto."
+
+#: view~default.project.title.label
+msgctxt "view~default.project.title.label"
+msgid "Title"
+msgstr "Título"
+
+#: view~default.project.abstract.label
+msgctxt "view~default.project.abstract.label"
+msgid "Abstract"
+msgstr "Resumo"
+
+#: view~default.project.projection.label
+msgctxt "view~default.project.projection.label"
+msgid "Projection"
+msgstr "Proxección"
+
+#: view~default.project.bbox.label
+msgctxt "view~default.project.bbox.label"
+msgid "Bounding Box"
+msgstr "Caixa Delimitadora"
+
+#: view~default.project.open.map
+msgctxt "view~default.project.open.map"
+msgid "Load the map"
+msgstr "Cargar o mapa"
+
+#: view~default.project.open.map.metadata
+msgctxt "view~default.project.open.map.metadata"
+msgid "View metadata"
+msgstr "Ver os metadatos"
+
+#: view~default.project.close.map.metadata
+msgctxt "view~default.project.close.map.metadata"
+msgid "Close"
+msgstr "Pechar"
+
+#: view~default.header.connect
+msgctxt "view~default.header.connect"
+msgid "Connect"
+msgstr "Conectar"
+
+#: view~default.header.disconnect
+msgctxt "view~default.header.disconnect"
+msgid "Disconnect"
+msgstr "Desconectar"
+
+#: view~default.header.createAccount
+msgctxt "view~default.header.createAccount"
+msgid "Register"
+msgstr "Rexistrar"
+
+#: view~default.header.menuitem.admin.label
+msgctxt "view~default.header.menuitem.admin.label"
+msgid "Administration"
+msgstr "Administración"
+
+#: view~map.title.h1
+msgctxt "view~map.title.h1"
+msgid "Lizmap Web Client"
+msgstr "Cliente Web Lizmap"
+
+#: view~map.title.h2
+msgctxt "view~map.title.h2"
+msgid "Qgis Server Demo"
+msgstr "Demo de QGIS Server"
+
+#: view~map.map
+msgctxt "view~map.map"
+msgid "Map"
+msgstr "Mapa"
+
+#: view~map.layers
+msgctxt "view~map.layers"
+msgid "Layers"
+msgstr "Capas"
+
+#: view~map.legend
+msgctxt "view~map.legend"
+msgid "Legend"
+msgstr "Lenda"
+
+#: view~map.map.only
+msgctxt "view~map.map.only"
+msgid "Map only"
+msgstr "Só o mapa"
+
+#: view~map.legend.map
+msgctxt "view~map.legend.map"
+msgid "Legend/Map"
+msgstr "Lenda/Mapa"
+
+#: view~map.search.nominatim.placeholder
+msgctxt "view~map.search.nominatim.placeholder"
+msgid "Search"
+msgstr "Buscar"
+
+#: view~map.search.nominatim.button
+msgctxt "view~map.search.nominatim.button"
+msgid "Searching"
+msgstr "Busca"
+
+#: view~map.print.navbar.title
+msgctxt "view~map.print.navbar.title"
+msgid "Print"
+msgstr "Imprimir"
+
+#: view~map.tooltip.navbar.title
+msgctxt "view~map.tooltip.navbar.title"
+msgid "Tooltip"
+msgstr "Mensaxe emerxente"
+
+#: view~map.geolocate.navbar.title
+msgctxt "view~map.geolocate.navbar.title"
+msgid "Geolocation"
+msgstr "Xeolocalización"
+
+#: view~map.measure.navbar.title
+msgctxt "view~map.measure.navbar.title"
+msgid "Measure"
+msgstr "Medir"
+
+#: view~map.permalink.navbar.title
+msgctxt "view~map.permalink.navbar.title"
+msgid "Permalink"
+msgstr "Enlace permanente"
+
+#: view~map.selectiontool.navbar.title
+msgctxt "view~map.selectiontool.navbar.title"
+msgid "Selection"
+msgstr "Selección"
+
+#: view~map.toolbar.content.underway
+msgctxt "view~map.toolbar.content.underway"
+msgid "Underway..."
+msgstr "En proceso..."
+
+#: view~map.toolbar.content.stop
+msgctxt "view~map.toolbar.content.stop"
+msgid "Stop"
+msgstr "Parar"
+
+#: view~map.print.toolbar.title
+msgctxt "view~map.print.toolbar.title"
+msgid "Print"
+msgstr "Imprimir"
+
+#: view~map.print.toolbar.scale
+msgctxt "view~map.print.toolbar.scale"
+msgid "Scale"
+msgstr "Escala"
+
+#: view~map.print.toolbar.dpi
+msgctxt "view~map.print.toolbar.dpi"
+msgid "DPI"
+msgstr "Puntos por polgada"
+
+#: view~map.print.toolbar.format
+msgctxt "view~map.print.toolbar.format"
+msgid "Format"
+msgstr "Formato"
+
+#: view~map.print.toolbar.template
+msgctxt "view~map.print.toolbar.template"
+msgid "Template"
+msgstr "Modelo"
+
+#: view~map.tooltip.toolbar.title
+msgctxt "view~map.tooltip.toolbar.title"
+msgid "Tooltip"
+msgstr "Mensaxe emerxente"
+
+#: view~map.tooltip.toolbar.layer
+msgctxt "view~map.tooltip.toolbar.layer"
+msgid "Highlight layer"
+msgstr "Resaltar capa"
+
+#: view~map.geolocate.toolbar.title
+msgctxt "view~map.geolocate.toolbar.title"
+msgid "Geolocation"
+msgstr "Xeolocalización"
+
+#: view~map.geolocate.toolbar.center
+msgctxt "view~map.geolocate.toolbar.center"
+msgid "Center"
+msgstr "Centrar"
+
+#: view~map.geolocate.toolbar.bind
+msgctxt "view~map.geolocate.toolbar.bind"
+msgid "Stay centered"
+msgstr "Permanecer centrado"
+
+#: view~map.geolocate.toolbar.stop
+msgctxt "view~map.geolocate.toolbar.stop"
+msgid "Stop"
+msgstr "Parar"
+
+#: view~map.measure.toolbar.title
+msgctxt "view~map.measure.toolbar.title"
+msgid "Measures"
+msgstr "Medidas"
+
+#: view~map.measure.toolbar.length
+msgctxt "view~map.measure.toolbar.length"
+msgid "Length"
+msgstr "Lonxitude"
+
+#: view~map.measure.toolbar.area
+msgctxt "view~map.measure.toolbar.area"
+msgid "Area"
+msgstr "Área"
+
+#: view~map.measure.toolbar.perimeter
+msgctxt "view~map.measure.toolbar.perimeter"
+msgid "Perimeter"
+msgstr "Perímetro"
+
+#: view~map.selectiontool.toolbar.title
+msgctxt "view~map.selectiontool.toolbar.title"
+msgid "Selection"
+msgstr "Selección"
+
+#: view~map.selectiontool.toolbar.layer
+msgctxt "view~map.selectiontool.toolbar.layer"
+msgid "Selection layer"
+msgstr "Capa de selección"
+
+#: view~map.selectiontool.toolbar.query.deactivate
+msgctxt "view~map.selectiontool.toolbar.query.deactivate"
+msgid "Deactivate"
+msgstr "Desactivar"
+
+#: view~map.selectiontool.toolbar.query.box
+msgctxt "view~map.selectiontool.toolbar.query.box"
+msgid "Box"
+msgstr "Caixa"
+
+#: view~map.selectiontool.toolbar.query.circle
+msgctxt "view~map.selectiontool.toolbar.query.circle"
+msgid "Circle"
+msgstr "Círculo"
+
+#: view~map.selectiontool.toolbar.query.polygon
+msgctxt "view~map.selectiontool.toolbar.query.polygon"
+msgid "Polygon"
+msgstr "Polígono"
+
+#: view~map.selectiontool.toolbar.query.freehand
+msgctxt "view~map.selectiontool.toolbar.query.freehand"
+msgid "Free hand"
+msgstr "Man libre"
+
+#: view~map.selectiontool.toolbar.action.type.refresh
+msgctxt "view~map.selectiontool.toolbar.action.type.refresh"
+msgid "New selection"
+msgstr "Nova selección"
+
+#: view~map.selectiontool.toolbar.action.type.plus
+msgctxt "view~map.selectiontool.toolbar.action.type.plus"
+msgid "Add to selection"
+msgstr "Engadir á selección"
+
+#: view~map.selectiontool.toolbar.action.type.minus
+msgctxt "view~map.selectiontool.toolbar.action.type.minus"
+msgid "Remove from selection"
+msgstr "Eliminar da selección"
+
+#: view~map.selectiontool.toolbar.action.unselect
+msgctxt "view~map.selectiontool.toolbar.action.unselect"
+msgid "Unselect all"
+msgstr "Deseleccionar todo"
+
+#: view~map.selectiontool.toolbar.action.filter
+msgctxt "view~map.selectiontool.toolbar.action.filter"
+msgid "Filter"
+msgstr "Filtrar"
+
+#: view~map.menu.close.hover
+msgctxt "view~map.menu.close.hover"
+msgid "Hide the menu"
+msgstr "Agochar o menú"
+
+#: view~map.menu.show.hover
+msgctxt "view~map.menu.show.hover"
+msgid "Show the menu"
+msgstr "Amosar o menú"
+
+#: view~map.locatemenu.title
+msgctxt "view~map.locatemenu.title"
+msgid "Locating"
+msgstr "Localizar"
+
+#: view~map.switchermenu.title
+msgctxt "view~map.switchermenu.title"
+msgid "Layers"
+msgstr "Capas"
+
+#: view~map.legendmenu.title
+msgctxt "view~map.legendmenu.title"
+msgid "Legend"
+msgstr "Lenda"
+
+#: view~map.baselayermenu.title
+msgctxt "view~map.baselayermenu.title"
+msgid "Base Layer"
+msgstr "Capa Base"
+
+#: view~map.baselayer.select.hover
+msgctxt "view~map.baselayer.select.hover"
+msgid "Select baselayer"
+msgstr "Seleccionar capa base"
+
+#: view~map.navbar.pan.hover
+msgctxt "view~map.navbar.pan.hover"
+msgid "Pan map"
+msgstr "Desprazar mapa"
+
+#: view~map.navbar.zoom.hover
+msgctxt "view~map.navbar.zoom.hover"
+msgid "Zoom by rectangle"
+msgstr "Zoom de rectángulo"
+
+#: view~map.navbar.zoomextent.hover
+msgctxt "view~map.navbar.zoomextent.hover"
+msgid "Zoom to initial map extent"
+msgstr "Ampliar á extensión inicial do mapa"
+
+#: view~map.navbar.zoomin.hover
+msgctxt "view~map.navbar.zoomin.hover"
+msgid "Zoom in"
+msgstr "Achegar"
+
+#: view~map.navbar.slider.hover
+msgctxt "view~map.navbar.slider.hover"
+msgid "Slide to zoom in or out"
+msgstr "Arrastrar para achegar ou afastar"
+
+#: view~map.navbar.zoomout.hover
+msgctxt "view~map.navbar.zoomout.hover"
+msgid "Zoom out"
+msgstr "Afastar"
+
+#: view~map.navbar.previous.hover
+msgctxt "view~map.navbar.previous.hover"
+msgid "Previous"
+msgstr "Previo"
+
+#: view~map.navbar.next.hover
+msgctxt "view~map.navbar.next.hover"
+msgid "Next"
+msgstr "Seguinte"
+
+#: view~map.overviewmap.hover
+msgctxt "view~map.overviewmap.hover"
+msgid "Move the rectanle to pan the map"
+msgstr "Mover o rectángulo para desprazar o mapa"
+
+#: view~map.overviewbar.scaleline.hover
+msgctxt "view~map.overviewbar.scaleline.hover"
+msgid "Scale bar"
+msgstr "Barra de escala"
+
+#: view~map.overviewbar.scaletext.hover
+msgctxt "view~map.overviewbar.scaletext.hover"
+msgid "Scale"
+msgstr "Escala"
+
+#: view~map.overviewbar.scaletext.title
+msgctxt "view~map.overviewbar.scaletext.title"
+msgid "Scale"
+msgstr "Escala"
+
+#: view~map.overviewbar.displayoverview.hover
+msgctxt "view~map.overviewbar.displayoverview.hover"
+msgid "Display/Hide Overview"
+msgstr "Amosar/Agochar Vista Xeral"
+
+#: view~map.mouseposition.hover
+msgctxt "view~map.mouseposition.hover"
+msgid "Mouse position"
+msgstr "Posición do rato"
+
+#: view~map.mouseposition.select
+msgctxt "view~map.mouseposition.select"
+msgid "Coordinate unit"
+msgstr "Unidade das coordenadas"
+
+#: view~map.mouseposition.units.m
+msgctxt "view~map.mouseposition.units.m"
+msgid "Meters"
+msgstr "Metros"
+
+#: view~map.mouseposition.units.f
+msgctxt "view~map.mouseposition.units.f"
+msgid "Feet"
+msgstr "Pés"
+
+#: view~map.mouseposition.units.d
+msgctxt "view~map.mouseposition.units.d"
+msgid "Degrees"
+msgstr "Graos"
+
+#: view~map.mouseposition.units.dm
+msgctxt "view~map.mouseposition.units.dm"
+msgid "Deg. Min."
+msgstr "Grao Min."
+
+#: view~map.mouseposition.units.dms
+msgctxt "view~map.mouseposition.units.dms"
+msgid "D. M. S."
+msgstr "G. M. S."
+
+#: view~map.permalink.toolbar.title
+msgctxt "view~map.permalink.toolbar.title"
+msgid "Permalink"
+msgstr "Enlace permanente"
+
+#: view~map.permalink.share.tab
+msgctxt "view~map.permalink.share.tab"
+msgid "Share"
+msgstr "Compartir"
+
+#: view~map.permalink.share.tab.title
+msgctxt "view~map.permalink.share.tab.title"
+msgid "Share the link to current map"
+msgstr "Compartir o enlace ó mapa actual"
+
+#: view~map.permalink.share.link
+msgctxt "view~map.permalink.share.link"
+msgid "Link to current map"
+msgstr "Enlace ó mapa actual"
+
+#: view~map.permalink.embed.tab
+msgctxt "view~map.permalink.embed.tab"
+msgid "Embed"
+msgstr "Integrar"
+
+#: view~map.permalink.embed.tab.title
+msgctxt "view~map.permalink.embed.tab.title"
+msgid "Embed the current map"
+msgstr "Integrar o mapa actual"
+
+#: view~map.permalink.embed.size.small
+msgctxt "view~map.permalink.embed.size.small"
+msgid "Small"
+msgstr "Pequeno"
+
+#: view~map.permalink.embed.size.medium
+msgctxt "view~map.permalink.embed.size.medium"
+msgid "Medium"
+msgstr "Medio"
+
+#: view~map.permalink.embed.size.large
+msgctxt "view~map.permalink.embed.size.large"
+msgid "Large"
+msgstr "Grande"
+
+#: view~map.permalink.embed.size.personalized
+msgctxt "view~map.permalink.embed.size.personalized"
+msgid "Personalized"
+msgstr "Personalizado"
+
+#: view~map.permalink.geobookmark.title
+msgctxt "view~map.permalink.geobookmark.title"
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+#: view~map.permalink.geobookmark.button.add
+msgctxt "view~map.permalink.geobookmark.button.add"
+msgid "Add a bookmark"
+msgstr "Engadir un marcador"
+
+#: view~map.permalink.geobookmark.button.del
+msgctxt "view~map.permalink.geobookmark.button.del"
+msgid "Remove this bookmark"
+msgstr "Eliminar este marcador"
+
+#: view~map.permalink.geobookmark.button.run
+msgctxt "view~map.permalink.geobookmark.button.run"
+msgid "Use this bookmark"
+msgstr "Utilizar este marcador"
+
+#: view~map.permalink.geobookmark.none
+msgctxt "view~map.permalink.geobookmark.none"
+msgid "No bookmark yet."
+msgstr "Aínda sen marcador."
+
+#: view~map.permalink.geobookmark.name.placeholder
+msgctxt "view~map.permalink.geobookmark.name.placeholder"
+msgid "Bookmark name"
+msgstr "Nome do marcador"
+
+#: view~map.message.zoominmax
+msgctxt "view~map.message.zoominmax"
+msgid "No deeper zoom available for this base layer"
+msgstr "Non hai dispoñible un zoom máis grande para esta capa base"
+
+#: view~map.loading.title
+msgctxt "view~map.loading.title"
+msgid "Loading map data"
+msgstr "Cargando datos do mapa"
+
+#: view~map.popup.table.th.data
+msgctxt "view~map.popup.table.th.data"
+msgid "Field"
+msgstr "Campo"
+
+#: view~map.popup.table.th.band
+msgctxt "view~map.popup.table.th.band"
+msgid "Band"
+msgstr "Banda"
+
+#: view~map.popup.table.th.value
+msgctxt "view~map.popup.table.th.value"
+msgid "Value"
+msgstr "Valor"
+
+#: view~map.metadata.link.label
+msgctxt "view~map.metadata.link.label"
+msgid "Information"
+msgstr "Información"
+
+#: view~map.metadata.h2.illustration
+msgctxt "view~map.metadata.h2.illustration"
+msgid "Illustration"
+msgstr "Ilustración"
+
+#: view~map.metadata.h2.description
+msgctxt "view~map.metadata.h2.description"
+msgid "Map description"
+msgstr "Descrición do mapa"
+
+#: view~map.metadata.h2.resources
+msgctxt "view~map.metadata.h2.resources"
+msgid "Resources"
+msgstr "Fontes"
+
+#: view~map.metadata.h2.properties
+msgctxt "view~map.metadata.h2.properties"
+msgid "Properties"
+msgstr "Propiedades"
+
+#: view~map.metadata.h2.contact
+msgctxt "view~map.metadata.h2.contact"
+msgid "Contact"
+msgstr "Contacto"
+
+#: view~map.metadata.description.title
+msgctxt "view~map.metadata.description.title"
+msgid "Title"
+msgstr "Título"
+
+#: view~map.metadata.description.abstract
+msgctxt "view~map.metadata.description.abstract"
+msgid "Description"
+msgstr "Descrición"
+
+#: view~map.metadata.resources.website
+msgctxt "view~map.metadata.resources.website"
+msgid "Website"
+msgstr "Web"
+
+#: view~map.metadata.properties.projection
+msgctxt "view~map.metadata.properties.projection"
+msgid "Projection"
+msgstr "Proxección"
+
+#: view~map.metadata.properties.extent
+msgctxt "view~map.metadata.properties.extent"
+msgid "Extent"
+msgstr "Extensión"
+
+#: view~map.metadata.properties.wmsGetCapabilitiesUrl
+msgctxt "view~map.metadata.properties.wmsGetCapabilitiesUrl"
+msgid "Web Map Service"
+msgstr "Servizo de Mapas Web"
+
+#: view~map.metadata.contact.organization
+msgctxt "view~map.metadata.contact.organization"
+msgid "Organization"
+msgstr "Organización"
+
+#: view~map.metadata.contact.person
+msgctxt "view~map.metadata.contact.person"
+msgid "Person"
+msgstr "Persoa"
+
+#: view~map.metadata.contact.email
+msgctxt "view~map.metadata.contact.email"
+msgid "E-mail"
+msgstr "Correo electrónico"
+
+#: view~map.metadata.contact.phone
+msgctxt "view~map.metadata.contact.phone"
+msgid "Phone"
+msgstr "Teléfono"
+
+#: view~map.metadata.hide
+msgctxt "view~map.metadata.hide"
+msgid "Hide information"
+msgstr "Agochar información"
+
+#: view~map.timemanager.toolbar.title
+msgctxt "view~map.timemanager.toolbar.title"
+msgid "Time Manager"
+msgstr "Xestor do Tempo"
+
+#: view~map.timemanager.navbar.title
+msgctxt "view~map.timemanager.navbar.title"
+msgid "Time Manager"
+msgstr "Xestor do Tempo"
+
+#: view~map.timemanager.toolbar.play
+msgctxt "view~map.timemanager.toolbar.play"
+msgid "Play"
+msgstr "Prender"
+
+#: view~map.timemanager.toolbar.pause
+msgctxt "view~map.timemanager.toolbar.pause"
+msgid "Pause"
+msgstr "Pausa"
+
+#: view~map.timemanager.toolbar.next
+msgctxt "view~map.timemanager.toolbar.next"
+msgid "Next"
+msgstr "Seguinte"
+
+#: view~map.timemanager.toolbar.prev
+msgctxt "view~map.timemanager.toolbar.prev"
+msgid "Previous"
+msgstr "Previo"
+
+#: view~map.bottomdock.toolbar.btn.clear.title
+msgctxt "view~map.bottomdock.toolbar.btn.clear.title"
+msgid "Close"
+msgstr "Pechar"
+
+#: view~map.bottomdock.toolbar.btn.glue.activate.title
+msgctxt "view~map.bottomdock.toolbar.btn.glue.activate.title"
+msgid "Pin"
+msgstr "Fixar"
+
+#: view~map.bottomdock.toolbar.btn.glue.deactivate.title
+msgctxt "view~map.bottomdock.toolbar.btn.glue.deactivate.title"
+msgid "Unpin"
+msgstr "Liberar"
+
+#: view~map.bottomdock.toolbar.btn.size.maximize.title
+msgctxt "view~map.bottomdock.toolbar.btn.size.maximize.title"
+msgid "Maximize"
+msgstr "Maximizar"
+
+#: view~map.bottomdock.toolbar.btn.size.minimize.title
+msgctxt "view~map.bottomdock.toolbar.btn.size.minimize.title"
+msgid "Minimize"
+msgstr "Minimizar"
+
+#: view~map.attributeLayers.navbar.title
+msgctxt "view~map.attributeLayers.navbar.title"
+msgid "Data"
+msgstr "Datos"
+
+#: view~map.attributeLayers.toolbar.title
+msgctxt "view~map.attributeLayers.toolbar.title"
+msgid "Data"
+msgstr "Datos"
+
+#: view~map.attributeLayers.options.title
+msgctxt "view~map.attributeLayers.options.title"
+msgid "Options"
+msgstr "Opcións"
+
+#: view~map.attributeLayers.options.input.cascade.label
+msgctxt "view~map.attributeLayers.options.input.cascade.label"
+msgid "Cascade filter to children"
+msgstr "Filtro en cadea ás (capas) fillas"
+
+#: view~map.switcher.layers.expand.title
+msgctxt "view~map.switcher.layers.expand.title"
+msgid "Expand all"
+msgstr "Expandir todo"
+
+#: view~map.switcher.layers.collapse.title
+msgctxt "view~map.switcher.layers.collapse.title"
+msgid "Collapse all"
+msgstr "Contraer todo"
+
+#: view~map.switcher.layer.metadata.title
+msgctxt "view~map.switcher.layer.metadata.title"
+msgid "Information"
+msgstr "Información"
+
+#: view~map.switcher.layer.zoomToExtent.title
+msgctxt "view~map.switcher.layer.zoomToExtent.title"
+msgid "Zoom to layer extent"
+msgstr "Zoom á extensión da capa"
+
+#: view~map.switcher.layer.style.title
+msgctxt "view~map.switcher.layer.style.title"
+msgid "Change layer style"
+msgstr "Cambiar estilo da capa"
+
+#: view~map.switcher.layer.export.title
+msgctxt "view~map.switcher.layer.export.title"
+msgid "Export"
+msgstr "Exportar"
+
+#: view~map.switcher.layer.unfilter.title
+msgctxt "view~map.switcher.layer.unfilter.title"
+msgid "Deactivate current filter"
+msgstr "Desactivar o filtro actual"

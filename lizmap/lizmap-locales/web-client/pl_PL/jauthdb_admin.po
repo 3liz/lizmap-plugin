@@ -1,0 +1,330 @@
+# 
+# Translators:
+# Sławomir Bienias <slawomir.bienias@gmail.com>, 2016-2017,2019
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-04-04 08:44+0000\n"
+"Last-Translator: Sławomir Bienias <slawomir.bienias@gmail.com>\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/3liz-1/lizmap-locales/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: jauthdb_admin~auth.adminmenu.item.list
+msgctxt "jauthdb_admin~auth.adminmenu.item.list"
+msgid "Users"
+msgstr "Użytkownicy"
+
+#: jauthdb_admin~user.title.update
+msgctxt "jauthdb_admin~user.title.update"
+msgid "Edit your profile"
+msgstr "Edytuj swój profil"
+
+#: jauthdb_admin~user.title.view
+msgctxt "jauthdb_admin~user.title.view"
+msgid "Details of your profile"
+msgstr "Szczegółowe informacje Twojego profilu"
+
+#: jauthdb_admin~user.title.password
+msgctxt "jauthdb_admin~user.title.password"
+msgid "Change your password"
+msgstr "Zmień swoje hasło"
+
+#: jauthdb_admin~user.link.return.to.view
+msgctxt "jauthdb_admin~user.link.return.to.view"
+msgid "Return to your profile summary"
+msgstr "Powróć do podsumowania profilu"
+
+#: jauthdb_admin~user.link.view.record
+msgctxt "jauthdb_admin~user.link.view.record"
+msgid "View"
+msgstr "Zobacz"
+
+#: jauthdb_admin~user.link.edit.record
+msgctxt "jauthdb_admin~user.link.edit.record"
+msgid "Edit"
+msgstr "Edytuj"
+
+#: jauthdb_admin~user.link.change.password
+msgctxt "jauthdb_admin~user.link.change.password"
+msgid "Change your password"
+msgstr "Zmień swoje hasło"
+
+#: jauthdb_admin~user.confirm
+msgctxt "jauthdb_admin~user.confirm"
+msgid "Confirm"
+msgstr "Zatwierdź"
+
+#: jauthdb_admin~user.confirmation
+msgctxt "jauthdb_admin~user.confirmation"
+msgid "Confirmation"
+msgstr "Zatwierdzenie"
+
+#: jauthdb_admin~user.message.update.ok
+msgctxt "jauthdb_admin~user.message.update.ok"
+msgid "Your profile has been updated."
+msgstr "Twój profil został zaktualizowany."
+
+#: jauthdb_admin~user.message.change.password.ok
+msgctxt "jauthdb_admin~user.message.change.password.ok"
+msgid "Your password has been changed."
+msgstr "Twoje hasło zostało zmienione."
+
+#: jauthdb_admin~user.message.change.password.notok
+msgctxt "jauthdb_admin~user.message.change.password.notok"
+msgid "Error during the change of the password"
+msgstr "Błąd podczas zmieniania hasła"
+
+#: jauthdb_admin~user.message.bad.password
+msgctxt "jauthdb_admin~user.message.bad.password"
+msgid ""
+"The password is bad, or the second password does not correspond to the first"
+" one"
+msgstr "Hasło jest nieprawidłowe lub drugie hasło nie jest takie samo, jak pierwsze"
+
+#: jauthdb_admin~user.list.col.login
+msgctxt "jauthdb_admin~user.list.col.login"
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: jauthdb_admin~user.form.login
+msgctxt "jauthdb_admin~user.form.login"
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: jauthdb_admin~user.form.email
+msgctxt "jauthdb_admin~user.form.email"
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: jauthdb_admin~user.form.password
+msgctxt "jauthdb_admin~user.form.password"
+msgid "Password"
+msgstr "Hasło"
+
+#: jauthdb_admin~user.form.password.confirm
+msgctxt "jauthdb_admin~user.form.password.confirm"
+msgid "Re-type the password"
+msgstr "Powtórz hasło"
+
+#: jauthdb_admin~user.form.submit
+msgctxt "jauthdb_admin~user.form.submit"
+msgid "Save"
+msgstr "Zapisz"
+
+#: jauthdb_admin~user.form.random.password
+msgctxt "jauthdb_admin~user.form.random.password"
+msgid "Example of a password:"
+msgstr "Przykład hasła:"
+
+#: jauthdb_admin~user.form.new.password
+msgctxt "jauthdb_admin~user.form.new.password"
+msgid "Type the new password"
+msgstr "Podaj nowe hasło"
+
+#: jauthdb_admin~user.view.otherinfo
+msgctxt "jauthdb_admin~user.view.otherinfo"
+msgid "Other informations"
+msgstr "Inne informacje"
+
+#: jauthdb_admin~user.view.primaryinfo
+msgctxt "jauthdb_admin~user.view.primaryinfo"
+msgid "Information on your profile"
+msgstr "Informacje Twojego profilu"
+
+#: jauthdb_admin~crud.title.list
+msgctxt "jauthdb_admin~crud.title.list"
+msgid "Users List"
+msgstr "Lista użytkowników"
+
+#: jauthdb_admin~crud.title.update
+msgctxt "jauthdb_admin~crud.title.update"
+msgid "Edit of a user"
+msgstr "Edytuj użytkownika"
+
+#: jauthdb_admin~crud.title.create
+msgctxt "jauthdb_admin~crud.title.create"
+msgid "Create a new user"
+msgstr "Stwórz nowego użytkownika"
+
+#: jauthdb_admin~crud.title.view
+msgctxt "jauthdb_admin~crud.title.view"
+msgid "Details of the user"
+msgstr "Szczegóły użytkownika"
+
+#: jauthdb_admin~crud.title.delete
+msgctxt "jauthdb_admin~crud.title.delete"
+msgid "Delete the user:"
+msgstr "Usuń użytkownika:"
+
+#: jauthdb_admin~crud.title.password
+msgctxt "jauthdb_admin~crud.title.password"
+msgid "Change the password of"
+msgstr "Zmień hasło użytkownika"
+
+#: jauthdb_admin~crud.link.return.to.list
+msgctxt "jauthdb_admin~crud.link.return.to.list"
+msgid "Return to the list"
+msgstr "Powróć do listy"
+
+#: jauthdb_admin~crud.link.return.to.view
+msgctxt "jauthdb_admin~crud.link.return.to.view"
+msgid "Return to the user summary"
+msgstr "Powróć do podsumowania"
+
+#: jauthdb_admin~crud.link.view.record
+msgctxt "jauthdb_admin~crud.link.view.record"
+msgid "View"
+msgstr "Zobacz"
+
+#: jauthdb_admin~crud.link.create.record
+msgctxt "jauthdb_admin~crud.link.create.record"
+msgid "Create a new user"
+msgstr "Stwórz nowego użytkownika"
+
+#: jauthdb_admin~crud.link.edit.record
+msgctxt "jauthdb_admin~crud.link.edit.record"
+msgid "Edit"
+msgstr "Edytuj"
+
+#: jauthdb_admin~crud.link.delete.record
+msgctxt "jauthdb_admin~crud.link.delete.record"
+msgid "Delete"
+msgstr "Usuń"
+
+#: jauthdb_admin~crud.link.change.password
+msgctxt "jauthdb_admin~crud.link.change.password"
+msgid "Change his password"
+msgstr "Zmień jego hasło"
+
+#: jauthdb_admin~crud.confirm
+msgctxt "jauthdb_admin~crud.confirm"
+msgid "Confirm"
+msgstr "Zatwierdź"
+
+#: jauthdb_admin~crud.confirmation
+msgctxt "jauthdb_admin~crud.confirmation"
+msgid "Confirmation"
+msgstr "Zatwierdzenie"
+
+#: jauthdb_admin~crud.confirm.deletion
+msgctxt "jauthdb_admin~crud.confirm.deletion"
+msgid "Are you sure to want to delete this user ?"
+msgstr "Jesteś pewny, że chcesz usunąć tego użytkownika?"
+
+#: jauthdb_admin~crud.confirm.password
+msgctxt "jauthdb_admin~crud.confirm.password"
+msgid "Type your password to confirm"
+msgstr "Wpisz swoje hasło, aby potwierdzić"
+
+#: jauthdb_admin~crud.message.delete.ok
+msgctxt "jauthdb_admin~crud.message.delete.ok"
+msgid "The user %s has been deleted."
+msgstr "Użytkownik %s został usunięty."
+
+#: jauthdb_admin~crud.message.update.ok
+msgctxt "jauthdb_admin~crud.message.update.ok"
+msgid "The user %s has been updated."
+msgstr "Użytkownik %s został zaktualizowany."
+
+#: jauthdb_admin~crud.message.create.ok
+msgctxt "jauthdb_admin~crud.message.create.ok"
+msgid "The user %s has been created."
+msgstr "Użytkownik %s został stworzony."
+
+#: jauthdb_admin~crud.message.create.existing.user
+msgctxt "jauthdb_admin~crud.message.create.existing.user"
+msgid "The user %s already exists"
+msgstr "Użytkownik %s już istnieje"
+
+#: jauthdb_admin~crud.message.delete.invalid.pwd
+msgctxt "jauthdb_admin~crud.message.delete.invalid.pwd"
+msgid "Your password is wrong, the user has not been deleted."
+msgstr "Twoje hasło jest złe; użytkownik nie został usunięty."
+
+#: jauthdb_admin~crud.message.delete.notok
+msgctxt "jauthdb_admin~crud.message.delete.notok"
+msgid "Sorry, the user has not been deleted."
+msgstr "Przykro mi, użytkownik nie został usunięty."
+
+#: jauthdb_admin~crud.message.change.password.ok
+msgctxt "jauthdb_admin~crud.message.change.password.ok"
+msgid "The password for %s has been changed."
+msgstr "Hasło dla użytkownika %s zostało zmienione."
+
+#: jauthdb_admin~crud.message.change.password.notok
+msgctxt "jauthdb_admin~crud.message.change.password.notok"
+msgid "Error during the change of the password"
+msgstr "Błąd podczas zmiany hasła"
+
+#: jauthdb_admin~crud.message.bad.password
+msgctxt "jauthdb_admin~crud.message.bad.password"
+msgid ""
+"The password is bad, or the second password does not correspond to the first"
+" one"
+msgstr "Hasło jest nieprawidłowe lub drugie hasło nie jest takie samo, jak pierwsze"
+
+#: jauthdb_admin~crud.message.bad.id
+msgctxt "jauthdb_admin~crud.message.bad.id"
+msgid "Error, bad identifiant (%s)"
+msgstr "Błąd - zły login (%s)"
+
+#: jauthdb_admin~crud.message.bad.form
+msgctxt "jauthdb_admin~crud.message.bad.form"
+msgid "Error, no form"
+msgstr "Błąd - brak formularza"
+
+#: jauthdb_admin~crud.list.col.login
+msgctxt "jauthdb_admin~crud.list.col.login"
+msgid "Login"
+msgstr "Login"
+
+#: jauthdb_admin~crud.form.login
+msgctxt "jauthdb_admin~crud.form.login"
+msgid "Login"
+msgstr "Login"
+
+#: jauthdb_admin~crud.form.email
+msgctxt "jauthdb_admin~crud.form.email"
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: jauthdb_admin~crud.form.password
+msgctxt "jauthdb_admin~crud.form.password"
+msgid "Password"
+msgstr "Hasło"
+
+#: jauthdb_admin~crud.form.password.confirm
+msgctxt "jauthdb_admin~crud.form.password.confirm"
+msgid "Re-type the password"
+msgstr "Powtórz hasło"
+
+#: jauthdb_admin~crud.form.submit
+msgctxt "jauthdb_admin~crud.form.submit"
+msgid "Save"
+msgstr "Zapisz"
+
+#: jauthdb_admin~crud.form.random.password
+msgctxt "jauthdb_admin~crud.form.random.password"
+msgid "Example of a password:"
+msgstr "Przykład hasła:"
+
+#: jauthdb_admin~crud.form.new.password
+msgctxt "jauthdb_admin~crud.form.new.password"
+msgid "Type the new password"
+msgstr "Podaj nowe hasło"
+
+#: jauthdb_admin~crud.view.otherinfo
+msgctxt "jauthdb_admin~crud.view.otherinfo"
+msgid "Other informations"
+msgstr "Inne informacje"
+
+#: jauthdb_admin~crud.view.primaryinfo
+msgctxt "jauthdb_admin~crud.view.primaryinfo"
+msgid "Information on the user"
+msgstr "Informacje o użytkowniku"

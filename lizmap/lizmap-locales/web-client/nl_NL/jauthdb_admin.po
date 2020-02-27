@@ -1,0 +1,332 @@
+# 
+# Translators:
+# Jean-Louis Stanus <rammstan@msn.com>, 2017
+# Nico Veenstra <nvbgm@gmx.net>, 2019
+# Patrick Hoornaert <patrick.hoornaert@gate-16.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-04-01 18:51+0000\n"
+"Last-Translator: Nico Veenstra <nvbgm@gmx.net>\n"
+"Language-Team: Dutch (http://www.transifex.com/3liz-1/lizmap-locales/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: jauthdb_admin~auth.adminmenu.item.list
+msgctxt "jauthdb_admin~auth.adminmenu.item.list"
+msgid "Users"
+msgstr "Gebruikers"
+
+#: jauthdb_admin~user.title.update
+msgctxt "jauthdb_admin~user.title.update"
+msgid "Edit your profile"
+msgstr "Pas je profiel aan"
+
+#: jauthdb_admin~user.title.view
+msgctxt "jauthdb_admin~user.title.view"
+msgid "Details of your profile"
+msgstr "Details van uw profiel"
+
+#: jauthdb_admin~user.title.password
+msgctxt "jauthdb_admin~user.title.password"
+msgid "Change your password"
+msgstr "Wachtwoord veranderen"
+
+#: jauthdb_admin~user.link.return.to.view
+msgctxt "jauthdb_admin~user.link.return.to.view"
+msgid "Return to your profile summary"
+msgstr "Ga terug naar samenvatting van uw profiel "
+
+#: jauthdb_admin~user.link.view.record
+msgctxt "jauthdb_admin~user.link.view.record"
+msgid "View"
+msgstr "Overzicht"
+
+#: jauthdb_admin~user.link.edit.record
+msgctxt "jauthdb_admin~user.link.edit.record"
+msgid "Edit"
+msgstr "Bewerken"
+
+#: jauthdb_admin~user.link.change.password
+msgctxt "jauthdb_admin~user.link.change.password"
+msgid "Change your password"
+msgstr "Wachtwoord veranderen"
+
+#: jauthdb_admin~user.confirm
+msgctxt "jauthdb_admin~user.confirm"
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: jauthdb_admin~user.confirmation
+msgctxt "jauthdb_admin~user.confirmation"
+msgid "Confirmation"
+msgstr "Bevestiging"
+
+#: jauthdb_admin~user.message.update.ok
+msgctxt "jauthdb_admin~user.message.update.ok"
+msgid "Your profile has been updated."
+msgstr "Uw profiel is bijgewerkt."
+
+#: jauthdb_admin~user.message.change.password.ok
+msgctxt "jauthdb_admin~user.message.change.password.ok"
+msgid "Your password has been changed."
+msgstr "Uw wachtwoord werd gewijzigd."
+
+#: jauthdb_admin~user.message.change.password.notok
+msgctxt "jauthdb_admin~user.message.change.password.notok"
+msgid "Error during the change of the password"
+msgstr "Fout tijdens het wijzigen van het wachtwoord"
+
+#: jauthdb_admin~user.message.bad.password
+msgctxt "jauthdb_admin~user.message.bad.password"
+msgid ""
+"The password is bad, or the second password does not correspond to the first"
+" one"
+msgstr "Het wachtwoord volstaat niet, of het tweede wachtwoord komt niet overeen met het eerste wachtwoord"
+
+#: jauthdb_admin~user.list.col.login
+msgctxt "jauthdb_admin~user.list.col.login"
+msgid "Login"
+msgstr "Aanmelden"
+
+#: jauthdb_admin~user.form.login
+msgctxt "jauthdb_admin~user.form.login"
+msgid "Login"
+msgstr "Aanmelden"
+
+#: jauthdb_admin~user.form.email
+msgctxt "jauthdb_admin~user.form.email"
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: jauthdb_admin~user.form.password
+msgctxt "jauthdb_admin~user.form.password"
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: jauthdb_admin~user.form.password.confirm
+msgctxt "jauthdb_admin~user.form.password.confirm"
+msgid "Re-type the password"
+msgstr "Typ het wachtwoord opnieuw"
+
+#: jauthdb_admin~user.form.submit
+msgctxt "jauthdb_admin~user.form.submit"
+msgid "Save"
+msgstr "Opslaan"
+
+#: jauthdb_admin~user.form.random.password
+msgctxt "jauthdb_admin~user.form.random.password"
+msgid "Example of a password:"
+msgstr "Voorbeeld van een wachtwoord:"
+
+#: jauthdb_admin~user.form.new.password
+msgctxt "jauthdb_admin~user.form.new.password"
+msgid "Type the new password"
+msgstr "Typ het nieuwe wachtwoord"
+
+#: jauthdb_admin~user.view.otherinfo
+msgctxt "jauthdb_admin~user.view.otherinfo"
+msgid "Other informations"
+msgstr "Bijkomende informatie"
+
+#: jauthdb_admin~user.view.primaryinfo
+msgctxt "jauthdb_admin~user.view.primaryinfo"
+msgid "Information on your profile"
+msgstr "Informatie met betrekking tot uw profiel"
+
+#: jauthdb_admin~crud.title.list
+msgctxt "jauthdb_admin~crud.title.list"
+msgid "Users List"
+msgstr "Gebruikerslijst"
+
+#: jauthdb_admin~crud.title.update
+msgctxt "jauthdb_admin~crud.title.update"
+msgid "Edit of a user"
+msgstr "Bewerk een gebruiker"
+
+#: jauthdb_admin~crud.title.create
+msgctxt "jauthdb_admin~crud.title.create"
+msgid "Create a new user"
+msgstr "Maak een nieuwe gebruiker aan"
+
+#: jauthdb_admin~crud.title.view
+msgctxt "jauthdb_admin~crud.title.view"
+msgid "Details of the user"
+msgstr "Details van de gebruiker"
+
+#: jauthdb_admin~crud.title.delete
+msgctxt "jauthdb_admin~crud.title.delete"
+msgid "Delete the user:"
+msgstr "Verwijder de gebruiker:"
+
+#: jauthdb_admin~crud.title.password
+msgctxt "jauthdb_admin~crud.title.password"
+msgid "Change the password of"
+msgstr "Verander het wachtwoord van"
+
+#: jauthdb_admin~crud.link.return.to.list
+msgctxt "jauthdb_admin~crud.link.return.to.list"
+msgid "Return to the list"
+msgstr "Keer terug naar de lijst"
+
+#: jauthdb_admin~crud.link.return.to.view
+msgctxt "jauthdb_admin~crud.link.return.to.view"
+msgid "Return to the user summary"
+msgstr "Keer terug naar overzicht van gebruikers"
+
+#: jauthdb_admin~crud.link.view.record
+msgctxt "jauthdb_admin~crud.link.view.record"
+msgid "View"
+msgstr "Overzicht"
+
+#: jauthdb_admin~crud.link.create.record
+msgctxt "jauthdb_admin~crud.link.create.record"
+msgid "Create a new user"
+msgstr "Maak een nieuwe gebruiker aan"
+
+#: jauthdb_admin~crud.link.edit.record
+msgctxt "jauthdb_admin~crud.link.edit.record"
+msgid "Edit"
+msgstr "Bewerken"
+
+#: jauthdb_admin~crud.link.delete.record
+msgctxt "jauthdb_admin~crud.link.delete.record"
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: jauthdb_admin~crud.link.change.password
+msgctxt "jauthdb_admin~crud.link.change.password"
+msgid "Change his password"
+msgstr "Verander wachtwoord van gebruiker"
+
+#: jauthdb_admin~crud.confirm
+msgctxt "jauthdb_admin~crud.confirm"
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: jauthdb_admin~crud.confirmation
+msgctxt "jauthdb_admin~crud.confirmation"
+msgid "Confirmation"
+msgstr "Bevestiging"
+
+#: jauthdb_admin~crud.confirm.deletion
+msgctxt "jauthdb_admin~crud.confirm.deletion"
+msgid "Are you sure to want to delete this user ?"
+msgstr "Wens u deze gebruiker te verwijderen?"
+
+#: jauthdb_admin~crud.confirm.password
+msgctxt "jauthdb_admin~crud.confirm.password"
+msgid "Type your password to confirm"
+msgstr "Typ uw wachtwoord om te bevestigen"
+
+#: jauthdb_admin~crud.message.delete.ok
+msgctxt "jauthdb_admin~crud.message.delete.ok"
+msgid "The user %s has been deleted."
+msgstr "Gebruiker %s werd verwijderd."
+
+#: jauthdb_admin~crud.message.update.ok
+msgctxt "jauthdb_admin~crud.message.update.ok"
+msgid "The user %s has been updated."
+msgstr "Gebruiker %s werd aangepast."
+
+#: jauthdb_admin~crud.message.create.ok
+msgctxt "jauthdb_admin~crud.message.create.ok"
+msgid "The user %s has been created."
+msgstr "De gebruiker %s werd aangemaakt."
+
+#: jauthdb_admin~crud.message.create.existing.user
+msgctxt "jauthdb_admin~crud.message.create.existing.user"
+msgid "The user %s already exists"
+msgstr "De gebruiker 1%s bestaat al."
+
+#: jauthdb_admin~crud.message.delete.invalid.pwd
+msgctxt "jauthdb_admin~crud.message.delete.invalid.pwd"
+msgid "Your password is wrong, the user has not been deleted."
+msgstr "Uw wachtwoord is verkeerd, de gebruiker werd niet verwijderd."
+
+#: jauthdb_admin~crud.message.delete.notok
+msgctxt "jauthdb_admin~crud.message.delete.notok"
+msgid "Sorry, the user has not been deleted."
+msgstr "Excuseer, de gebruiker werd niet verwijderd."
+
+#: jauthdb_admin~crud.message.change.password.ok
+msgctxt "jauthdb_admin~crud.message.change.password.ok"
+msgid "The password for %s has been changed."
+msgstr "Het wachtwoord voor %s werd gewijzigd."
+
+#: jauthdb_admin~crud.message.change.password.notok
+msgctxt "jauthdb_admin~crud.message.change.password.notok"
+msgid "Error during the change of the password"
+msgstr "Er is een fout opgetreden tijdens het wijzigen van het wachtwoord"
+
+#: jauthdb_admin~crud.message.bad.password
+msgctxt "jauthdb_admin~crud.message.bad.password"
+msgid ""
+"The password is bad, or the second password does not correspond to the first"
+" one"
+msgstr "Het wachtwoord volstaat niet, of het tweede wachtwoord komt niet overeen met het eerste wachtwoord"
+
+#: jauthdb_admin~crud.message.bad.id
+msgctxt "jauthdb_admin~crud.message.bad.id"
+msgid "Error, bad identifiant (%s)"
+msgstr "Foutieve identificatie (%s)"
+
+#: jauthdb_admin~crud.message.bad.form
+msgctxt "jauthdb_admin~crud.message.bad.form"
+msgid "Error, no form"
+msgstr "Fout, geen formulier"
+
+#: jauthdb_admin~crud.list.col.login
+msgctxt "jauthdb_admin~crud.list.col.login"
+msgid "Login"
+msgstr "Gebruikersnaam"
+
+#: jauthdb_admin~crud.form.login
+msgctxt "jauthdb_admin~crud.form.login"
+msgid "Login"
+msgstr "Gebruikersnaam"
+
+#: jauthdb_admin~crud.form.email
+msgctxt "jauthdb_admin~crud.form.email"
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: jauthdb_admin~crud.form.password
+msgctxt "jauthdb_admin~crud.form.password"
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: jauthdb_admin~crud.form.password.confirm
+msgctxt "jauthdb_admin~crud.form.password.confirm"
+msgid "Re-type the password"
+msgstr "Typ het wachtwoord opnieuw"
+
+#: jauthdb_admin~crud.form.submit
+msgctxt "jauthdb_admin~crud.form.submit"
+msgid "Save"
+msgstr "Opslaan"
+
+#: jauthdb_admin~crud.form.random.password
+msgctxt "jauthdb_admin~crud.form.random.password"
+msgid "Example of a password:"
+msgstr "Voorbeeld van een wachtwoord"
+
+#: jauthdb_admin~crud.form.new.password
+msgctxt "jauthdb_admin~crud.form.new.password"
+msgid "Type the new password"
+msgstr "Typ het wachtwoord"
+
+#: jauthdb_admin~crud.view.otherinfo
+msgctxt "jauthdb_admin~crud.view.otherinfo"
+msgid "Other informations"
+msgstr "Overige informatie"
+
+#: jauthdb_admin~crud.view.primaryinfo
+msgctxt "jauthdb_admin~crud.view.primaryinfo"
+msgid "Information on the user"
+msgstr "Informatie over de gebruiker"

@@ -1,0 +1,870 @@
+# Translators:
+# rldhont <rldhont@gmail.com>, 2019
+# Laurent Jouanneau <dev@ljouanneau.com>, 2019
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap Web Client jcommunity 3.4pre.190808\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2018-06-02 13:00+0000\n"
+"Last-Translator: Laurent Jouanneau <dev@ljouanneau.com>, 2019\n"
+"Language-Team: French (https://www.transifex.com/3liz-1/teams/62012/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: jcommunity~prefs.group.jcommunity
+msgctxt "jcommunity~prefs.group.jcommunity"
+msgid "jCommunity"
+msgstr "jCommunity"
+
+#: jcommunity~prefs.pref.registrationEnabled
+msgctxt "jcommunity~prefs.pref.registrationEnabled"
+msgid "An unknown user can create a new account"
+msgstr "Un utilisateur peut se créer un compte"
+
+#: jcommunity~prefs.pref.resetPasswordEnabled
+msgctxt "jcommunity~prefs.pref.resetPasswordEnabled"
+msgid "A user can reset password when he forget it"
+msgstr ""
+"Un utilisateur peut réinitialiser son mot de passe quand il l'a oublié"
+
+#: jcommunity~prefs.jcommunity.admin
+msgctxt "jcommunity~prefs.jcommunity.admin"
+msgid "jCommunity"
+msgstr "jCommunity"
+
+#: jcommunity~prefs.admin.prefs.change
+msgctxt "jcommunity~prefs.admin.prefs.change"
+msgid "Modify preferences of jCommunity"
+msgstr "Modification des préférences pour jCommunity"
+
+#: jcommunity~account.unknown.user
+msgctxt "jcommunity~account.unknown.user"
+msgid "Unknown user"
+msgstr "Utilisateur inconnu"
+
+#: jcommunity~account.error.dup.nickname
+msgctxt "jcommunity~account.error.dup.nickname"
+msgid "The displayed name is already used by another user"
+msgstr "Le nom affiché est déjà utilisé par un autre utilisateur"
+
+#: jcommunity~account.form.login
+msgctxt "jcommunity~account.form.login"
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: jcommunity~account.form.email
+msgctxt "jcommunity~account.form.email"
+msgid "Email"
+msgstr "Courriel"
+
+#: jcommunity~account.form.submit
+msgctxt "jcommunity~account.form.submit"
+msgid "Save"
+msgstr "Enregistrer"
+
+#: jcommunity~account.form.nickname
+msgctxt "jcommunity~account.form.nickname"
+msgid "Displayed name"
+msgstr "Nom affiché"
+
+#: jcommunity~account.form.password
+msgctxt "jcommunity~account.form.password"
+msgid "Password"
+msgstr "Mot de passe"
+
+#: jcommunity~account.form.password.help
+msgctxt "jcommunity~account.form.password.help"
+msgid "The password length must be above 8 characters"
+msgstr "Le mot de passe doit avoir au moins 8 caractères"
+
+#: jcommunity~account.form.password.confirm
+msgctxt "jcommunity~account.form.password.confirm"
+msgid "Retype the password"
+msgstr "Retapez le mot de passe"
+
+#: jcommunity~account.form.status
+msgctxt "jcommunity~account.form.status"
+msgid "Status"
+msgstr "État"
+
+#: jcommunity~account.form.status.deleted
+msgctxt "jcommunity~account.form.status.deleted"
+msgid "Deleted"
+msgstr "Éffacé"
+
+#: jcommunity~account.form.status.deactivate
+msgctxt "jcommunity~account.form.status.deactivate"
+msgid "Deactivated"
+msgstr "Désactivé"
+
+#: jcommunity~account.form.status.newuser
+msgctxt "jcommunity~account.form.status.newuser"
+msgid "New account, awaiting email validation"
+msgstr "Nouveau compte, validation en cours par email"
+
+#: jcommunity~account.form.status.valid
+msgctxt "jcommunity~account.form.status.valid"
+msgid "Account validated"
+msgstr "Compte validé"
+
+#: jcommunity~account.form.status.valid.email.changed
+msgctxt "jcommunity~account.form.status.valid.email.changed"
+msgid "Validated, awaiting new email validation"
+msgstr "Validé, nouvel email en validation"
+
+#: jcommunity~account.form.status.valid.password.changed
+msgctxt "jcommunity~account.form.status.valid.password.changed"
+msgid "Validated, awaiting password reset"
+msgstr "Validé, réinitialisation de mot de passe en cours"
+
+#: jcommunity~account.form.keyactivate
+msgctxt "jcommunity~account.form.keyactivate"
+msgid "Request key"
+msgstr "Clé de demande de changement"
+
+#: jcommunity~account.form.requestdate
+msgctxt "jcommunity~account.form.requestdate"
+msgid "Request date"
+msgstr "Date de demande de changement"
+
+#: jcommunity~account.form.createdate
+msgctxt "jcommunity~account.form.createdate"
+msgid "Date of account creation"
+msgstr "Date de création du compte"
+
+#: jcommunity~account.form.captcha
+msgctxt "jcommunity~account.form.captcha"
+msgid "Are you a human?"
+msgstr "Êtes vous un humain ?"
+
+#: jcommunity~account.form.admin.registration.info
+msgctxt "jcommunity~account.form.admin.registration.info"
+msgid ""
+"An email will be send to the user, so the user could activate the account by"
+" giving a new password."
+msgstr ""
+"Un email sera envoyé à l'utilisateur pour qu'il puisse activer son compte, "
+"en donnant un nouveau mot de passe."
+
+#: jcommunity~account.form.admin.create.emailsent
+msgctxt "jcommunity~account.form.admin.create.emailsent"
+msgid ""
+"An email has been sent to the user, so he could activate its account by "
+"giving a new password"
+msgstr ""
+"Un email a été envoyé à l'utilisateur pour qu'il active son compte en "
+"donnant un mot de passe"
+
+#: jcommunity~account.profile.of
+msgctxt "jcommunity~account.profile.of"
+msgid "%1$s's Profile"
+msgstr "Profil de %1$s"
+
+#: jcommunity~account.link.profile.edit
+msgctxt "jcommunity~account.link.profile.edit"
+msgid "Edit your profile"
+msgstr "Modifier votre profil"
+
+#: jcommunity~account.link.account.delete
+msgctxt "jcommunity~account.link.account.delete"
+msgid "Delete your account"
+msgstr "Supprimer votre compte"
+
+#: jcommunity~account.link.account.change.password
+msgctxt "jcommunity~account.link.account.change.password"
+msgid "Change your password"
+msgstr "Changer votre mot de passe"
+
+#: jcommunity~account.admin.link.account.reset.password
+msgctxt "jcommunity~account.admin.link.account.reset.password"
+msgid "Reset his password"
+msgstr "Réinitialiser son mot de passe"
+
+#: jcommunity~account.admin.link.account.resent.validation.email
+msgctxt "jcommunity~account.admin.link.account.resent.validation.email"
+msgid "Resend the validation email"
+msgstr "Renvoyer l'email de validation"
+
+#: jcommunity~account.form.edit.profile.title
+msgctxt "jcommunity~account.form.edit.profile.title"
+msgid "Editing your profile"
+msgstr "Modifier votre profil"
+
+#: jcommunity~account.form.delete.account.title
+msgctxt "jcommunity~account.form.delete.account.title"
+msgid "Deleting your account"
+msgstr "Supprimer votre compte"
+
+#: jcommunity~account.form.delete.account.confirm.title
+msgctxt "jcommunity~account.form.delete.account.confirm.title"
+msgid "Confirm the deletion of your account"
+msgstr "Confirmation de la suppression de votre compte"
+
+#: jcommunity~account.form.delete.account.confirm
+msgctxt "jcommunity~account.form.delete.account.confirm"
+msgid "Confirm by indicating your password."
+msgstr "Confirmez en indiquant votre mot de passe."
+
+#: jcommunity~account.form.delete.account.submit
+msgctxt "jcommunity~account.form.delete.account.submit"
+msgid "Delete"
+msgstr "Supprimer"
+
+#: jcommunity~account.form.delete.account.done
+msgctxt "jcommunity~account.form.delete.account.done"
+msgid "Your account is now deleted. You are deconnected."
+msgstr "Votre compte est maintenant supprimé et vous êtes déconnecté."
+
+#: jcommunity~account.form.delete.account.error.notremoved
+msgctxt "jcommunity~account.form.delete.account.error.notremoved"
+msgid "Impossible to delete your account. Contact the site manager."
+msgstr ""
+"Impossible de supprimer votre compte. Contacter le responsable du site."
+
+#: jcommunity~account.form.delete.account.error.badpassword
+msgctxt "jcommunity~account.form.delete.account.error.badpassword"
+msgid "Impossible to delete your account: the given password is not valid."
+msgstr ""
+"Impossible de supprimer votre compte : le mot de passe indiqué n'est pas "
+"correct."
+
+#: jcommunity~account.form.delete.account.error.wronguser
+msgctxt "jcommunity~account.form.delete.account.error.wronguser"
+msgid "Sorry, you are not supposed to be on this page..."
+msgstr "Désolé, vous ne devriez pas être sur cette page..."
+
+#: jcommunity~account.form.delete.account.error.nologout
+msgctxt "jcommunity~account.form.delete.account.error.nologout"
+msgid ""
+"Strange... Your account does not exist anymore, but your are still "
+"connected? Contact the site manager."
+msgstr ""
+"Étrange... Votre compte n'existe plus mais vous êtes encore connecté ? "
+"Contacter le responsable du site."
+
+#: jcommunity~account.form.cancel
+msgctxt "jcommunity~account.form.cancel"
+msgid "Cancel"
+msgstr "Annuler"
+
+#: jcommunity~account.cancel.and.back.to.account
+msgctxt "jcommunity~account.cancel.and.back.to.account"
+msgid "Cancel and back to your profile"
+msgstr "Annuler et retourner à votre profil"
+
+#: jcommunity~account.back.to.account
+msgctxt "jcommunity~account.back.to.account"
+msgid "Back to your profile"
+msgstr "Retourner à votre profil"
+
+#: jcommunity~account.duration.day
+msgctxt "jcommunity~account.duration.day"
+msgid "day"
+msgstr "jour"
+
+#: jcommunity~account.duration.days
+msgctxt "jcommunity~account.duration.days"
+msgid "days"
+msgstr "jours"
+
+#: jcommunity~account.duration.hour
+msgctxt "jcommunity~account.duration.hour"
+msgid "hour"
+msgstr "heure"
+
+#: jcommunity~account.duration.hours
+msgctxt "jcommunity~account.duration.hours"
+msgid "hours"
+msgstr "heures"
+
+#: jcommunity~account.duration.minute
+msgctxt "jcommunity~account.duration.minute"
+msgid "minute"
+msgstr "minute"
+
+#: jcommunity~account.duration.minutes
+msgctxt "jcommunity~account.duration.minutes"
+msgid "minutes"
+msgstr "minutes"
+
+#: jcommunity~password.form.title
+msgctxt "jcommunity~password.form.title"
+msgid "Resetting the password"
+msgstr "Réinitialisation d'un mot de passe"
+
+#: jcommunity~password.form.text.html
+msgctxt "jcommunity~password.form.text.html"
+msgid ""
+"<p>If you have forgotten your password, fill the following form with your "
+"username and with the email you have set in your profil.</p> <p>An email "
+"will be sent with a link to a page allowing you to choose a new "
+"password.</p>"
+msgstr ""
+"<p>Si vous avez oublié votre mot de passe, indiquez ci-dessous votre login "
+"et l'adresse e-mail que vous avez indiqué dans votre profil, lors de votre "
+"inscription.</p> <p>Un email vous sera envoyé avec un lien vers une page qui"
+" vous permettra de choisir un nouveau mot de passe.</p>"
+
+#: jcommunity~password.admin.form.reset.html
+msgctxt "jcommunity~password.admin.form.reset.html"
+msgid ""
+"<p>An email will be send to the user, so the user could change his "
+"password.</p>"
+msgstr ""
+"<p>Un email va être envoyé à l'utilisateur, pour qu'il puisse changer son "
+"mot de passe.</p>"
+
+#: jcommunity~password.admin.form.back.to.account
+msgctxt "jcommunity~password.admin.form.back.to.account"
+msgid "Back to the account of"
+msgstr "Retour sur le compte de"
+
+#: jcommunity~password.admin.form.email.button
+msgctxt "jcommunity~password.admin.form.email.button"
+msgid "Send the email to"
+msgstr "Envoyer l'email à"
+
+#: jcommunity~password.admin.waiting.text.html
+msgctxt "jcommunity~password.admin.waiting.text.html"
+msgid "<p>An email has been sent to the user.</p>"
+msgstr "<p>Un email a été envoyé à l'utilisateur.</p>"
+
+#: jcommunity~password.form.submit
+msgctxt "jcommunity~password.form.submit"
+msgid "Send the email"
+msgstr "Envoyer l'email"
+
+#: jcommunity~password.waiting.text.html
+msgctxt "jcommunity~password.waiting.text.html"
+msgid ""
+"<p>An email has been sent to the address you gave. If you don't see it into "
+"your inbox in few minutes, verify your spam folder. If you didn't receive "
+"the email, perhaps the login and the email you gave are invalid. Contact the"
+" web site administrator.</p> <p>This email contains a link to a page which "
+"allows you to change your password. This link is valid only 48 hours.</p> "
+"<p>The current password is still valid as long as you don't change it.</p>"
+msgstr ""
+"<p>Un email vous a été envoyé à l'adresse indiquée. Si vous ne le voyez pas "
+"dans votre boite au lettre d'ici quelques minutes, vérifiez votre dossier de"
+" spam. Si vous n'avez pas reçu le mail, peut-être que le nom d'utilisateur "
+"et l'adresse que vous avez donné ne sont pas valides. Contactez "
+"l'administrateur du site web.</p> <p>Cet email contient un lien vers une "
+"page qui vous permettra de changer de mot de passe. Ce lien est valable 48 "
+"heures.</p> <p>Tant que vous n'avez pas changé le mot de passe, l'ancien "
+"reste valable.</p>"
+
+#: jcommunity~password.mail.pwd.change.subject
+msgctxt "jcommunity~password.mail.pwd.change.subject"
+msgid "Request about a password reset on %s"
+msgstr "Réinitialisation de mot de passe sur le site %s"
+
+#: jcommunity~password.form.change.title
+msgctxt "jcommunity~password.form.change.title"
+msgid "Password change"
+msgstr "Changement de mot de passe"
+
+#: jcommunity~password.form.change.current.password.label
+msgctxt "jcommunity~password.form.change.current.password.label"
+msgid "Your current password"
+msgstr "Votre mot de passe actuel"
+
+#: jcommunity~password.form.change.password.label
+msgctxt "jcommunity~password.form.change.password.label"
+msgid "Your new password"
+msgstr "Votre nouveau mot de passe"
+
+#: jcommunity~password.form.change.submit
+msgctxt "jcommunity~password.form.change.submit"
+msgid "Change"
+msgstr "Changer"
+
+#: jcommunity~password.form.change.text.html
+msgctxt "jcommunity~password.form.change.text.html"
+msgid "<p>Indicate your new password.</p>"
+msgstr "<p>Indiquez votre nouveau mot de passe</p>"
+
+#: jcommunity~password.form.change.error.alreadydone
+msgctxt "jcommunity~password.form.change.error.alreadydone"
+msgid "Sorry, there is no request for a password change."
+msgstr "Il n'y a pas de demande de changement de mot de passe"
+
+#: jcommunity~password.form.change.error.badkey
+msgctxt "jcommunity~password.form.change.error.badkey"
+msgid ""
+"Password change is not possible: the username or the request key is not "
+"valid."
+msgstr ""
+"Changement de mot de passe impossible : le nom d'utilisateur ou la clé de "
+"demande de changement est invalide."
+
+#: jcommunity~password.form.change.error.expiredkey
+msgctxt "jcommunity~password.form.change.error.expiredkey"
+msgid ""
+"Password change is not possible: the request has expired. Do an other "
+"request."
+msgstr ""
+"Changement de mot de passe impossible : la demande de changement a expiré. "
+"Si vous ne vous souvenez toujours pas de votre mot de passe, refaite une "
+"demande."
+
+#: jcommunity~password.form.change.error.badstatus
+msgctxt "jcommunity~password.form.change.error.badstatus"
+msgid "Password change is not allowed because of your account status."
+msgstr ""
+"Changement de mot de passe impossible : le statut de votre compte ne le "
+"permet pas."
+
+#: jcommunity~password.form.change.error.badloginemail
+msgctxt "jcommunity~password.form.change.error.badloginemail"
+msgid "We don't know the username or the email you give"
+msgstr "Le nom d'utilisateur ou l'email nous est inconnu."
+
+#: jcommunity~password.form.change.error.badcurrentpwd
+msgctxt "jcommunity~password.form.change.error.badcurrentpwd"
+msgid "The password does not match the current password"
+msgstr "Le mot de passe donné ne correspond pas au mot de passe courant"
+
+#: jcommunity~password.form.change.error.admin.badstatus
+msgctxt "jcommunity~password.form.change.error.admin.badstatus"
+msgid "Password change is not allowed because of the account status."
+msgstr ""
+"Changement de mot de passe impossible : le statut du compte ne le permet "
+"pas."
+
+#: jcommunity~password.form.change.error.admin.badloginemail
+msgctxt "jcommunity~password.form.change.error.admin.badloginemail"
+msgid "The username or his email is unknown"
+msgstr "Le nom d'utilisateur ou l'email est inconnu."
+
+#: jcommunity~password.form.change.reset.ok
+msgctxt "jcommunity~password.form.change.reset.ok"
+msgid "The new password is now saved. You can sign in now."
+msgstr ""
+"Le mot de passe est enregistré. Vous pouvez maintenant vous connecter."
+
+#: jcommunity~password.form.change.ok
+msgctxt "jcommunity~password.form.change.ok"
+msgid "The new password is now saved."
+msgstr "Le nouveau mot de passe est enregistré."
+
+#: jcommunity~password.form.create.title
+msgctxt "jcommunity~password.form.create.title"
+msgid "Account creation"
+msgstr "Création de compte"
+
+#: jcommunity~password.form.create.text.html
+msgctxt "jcommunity~password.form.create.text.html"
+msgid "<p>Indicate your new password.</p>"
+msgstr "<p>Indiquez votre nouveau mot de passe</p>"
+
+#: jcommunity~password.form.create.error.alreadydone
+msgctxt "jcommunity~password.form.create.error.alreadydone"
+msgid "Sorry, there is no request for a password creation."
+msgstr "Il n'y a pas de demande de création de mot de passe"
+
+#: jcommunity~password.form.create.error.badkey
+msgctxt "jcommunity~password.form.create.error.badkey"
+msgid ""
+"Password creation is not possible: the username or the request key is not "
+"valid."
+msgstr ""
+"Création de mot de passe impossible : le nom d'utilisateur ou la clé de "
+"demande de création est invalide."
+
+#: jcommunity~password.form.create.error.expiredkey
+msgctxt "jcommunity~password.form.create.error.expiredkey"
+msgid ""
+"Password creation is not possible: the request has expired. Contact an "
+"administrator"
+msgstr ""
+"Création de mot de passe impossible : la demande a expiré. Contactez votre "
+"administrateur."
+
+#: jcommunity~password.form.create.error.badstatus
+msgctxt "jcommunity~password.form.create.error.badstatus"
+msgid "Password creation is not allowed because of your account status."
+msgstr ""
+"Création de mot de passe impossible : le statut de votre compte ne le permet"
+" pas."
+
+#: jcommunity~password.form.create.error.badloginemail
+msgctxt "jcommunity~password.form.create.error.badloginemail"
+msgid "We don't know the username or the email you give"
+msgstr "Le nom d'utilisateur ou l'email nous est inconnu."
+
+#: jcommunity~password.form.create.error.badcurrentpwd
+msgctxt "jcommunity~password.form.create.error.badcurrentpwd"
+msgid "The password does not match the current password"
+msgstr "Le mot de passe donné ne correspond pas au mot de passe courant"
+
+#: jcommunity~register.registration.title
+msgctxt "jcommunity~register.registration.title"
+msgid "Registration"
+msgstr "Inscription"
+
+#: jcommunity~register.form.create.title
+msgctxt "jcommunity~register.form.create.title"
+msgid "Create an account"
+msgstr "Création d'un compte"
+
+#: jcommunity~register.form.create.text.html
+msgctxt "jcommunity~register.form.create.text.html"
+msgid ""
+"<p>Register yourself by filling the following form.</p> <p>An email will be "
+"sent to you with a link to confirm your registration. You could then "
+"identified yourself on the web site.</p>"
+msgstr ""
+"<p>Inscrivez-vous en remplissant le formulaire suivant.</p> <p>Un e-mail "
+"vous sera envoyé pour que vous puissiez confirmer votre inscription et "
+"ensuite pouvoir vous identifier sur le site.</p>"
+
+#: jcommunity~register.form.create.submit
+msgctxt "jcommunity~register.form.create.submit"
+msgid "Create the account"
+msgstr "Créer le compte"
+
+#: jcommunity~register.mail.new.subject
+msgctxt "jcommunity~register.mail.new.subject"
+msgid "Activating your account on the web site %s"
+msgstr "Activation de votre compte sur le site %s"
+
+#: jcommunity~register.form.login.exists
+msgctxt "jcommunity~register.form.login.exists"
+msgid "This username already exists"
+msgstr "Ce nom d'utilisateur existe déjà"
+
+#: jcommunity~register.registration.waiting.title
+msgctxt "jcommunity~register.registration.waiting.title"
+msgid "Registration"
+msgstr "Creation de votre compte"
+
+#: jcommunity~register.registration.waiting.text.html
+msgctxt "jcommunity~register.registration.waiting.text.html"
+msgid ""
+"<p>Your account is created, but before using it, we have to verify your "
+"email.</p> <p>In order to verify your email, we just have sent you an email "
+"containing a link on which you must click. Verify your spam folder if you "
+"don't see this email in your inbox.</p>"
+msgstr ""
+"<p>Votre compte vient d'être créé. Mais avant de pouvoir l'utiliser, nous "
+"devons vérifier votre adresse de courriel.</p> <p>Pour cela, vous devez "
+"cliquer sur le lien présent dans <strong>l'email que nous venons de vous "
+"envoyer</strong>. Vérifiez votre dossier de spam si vous ne le voyez pas "
+"dans votre boite au lettre d'ici quelques minutes.</p>"
+
+#: jcommunity~register.registration.confirm.title
+msgctxt "jcommunity~register.registration.confirm.title"
+msgid "Activation of your account"
+msgstr "Activation de votre compte"
+
+#: jcommunity~register.registration.confirm.alreadydone
+msgctxt "jcommunity~register.registration.confirm.alreadydone"
+msgid ""
+"Your account is already activated. You can identify yourself on the web "
+"site."
+msgstr ""
+"Votre compte est déjà activé. Vous pouvez vous identifier sur le site."
+
+#: jcommunity~register.registration.confirm.ok
+msgctxt "jcommunity~register.registration.confirm.ok"
+msgid "Your account is activated. You can identify yourself on the web site."
+msgstr ""
+"Votre compte est maintenant activé et vous pouvez vous identifier sur le "
+"site."
+
+#: jcommunity~register.registration.confirm.badkey
+msgctxt "jcommunity~register.registration.confirm.badkey"
+msgid "Activation is not possible: the key or the username is invalid."
+msgstr "Activation impossible : la clé ou le nom d'utilisateur est invalide."
+
+#: jcommunity~register.registration.confirm.badstatus
+msgctxt "jcommunity~register.registration.confirm.badstatus"
+msgid "Activation is not possible: your account is not a new one."
+msgstr ""
+"Activation impossible : votre compte ne vient pas d'être nouvellement créé."
+
+#: jcommunity~register.registration.confirm.expiredkey
+msgctxt "jcommunity~register.registration.confirm.expiredkey"
+msgid ""
+"Activation is not possible: the request has expired. Ask the administrator "
+"of the web site to activate your account"
+msgstr ""
+"Activation impossible : la demande a expirée. Demander à un administrateur "
+"du site d'activer votre compte."
+
+#: jcommunity~register.admin.resend.email.title
+msgctxt "jcommunity~register.admin.resend.email.title"
+msgid "Account creation: resend the validation email"
+msgstr "Inscription : renvoi d'un email de validation"
+
+#: jcommunity~register.admin.resend.email.text.html
+msgctxt "jcommunity~register.admin.resend.email.text.html"
+msgid ""
+"<p>An email with a new validation key, will be send to the user '%s' who "
+"have a non-validated account. Use this feature when the user has informed "
+"you that the validation key he received has expired.</p>"
+msgstr ""
+"<p>Un email avec une nouvelle clé de validation va être envoyé à l'utilisateur '%s' qui a un compte non validé.\n"
+"Utiliser cette fonction si l'utilisateur vous a informé que la clé qu'il a reçu a expiré.</p>"
+
+#: jcommunity~register.admin.resend.email.done.text.html
+msgctxt "jcommunity~register.admin.resend.email.done.text.html"
+msgid "<p>The email has been sent to the user.</p>"
+msgstr "<p>L'email a été envoyé à l'utilisateur.</p>"
+
+#: jcommunity~login.error.notlogged
+msgctxt "jcommunity~login.error.notlogged"
+msgid "You are not connected, you should sign in."
+msgstr "Vous n'êtes pas identifiés, vous devez vous connecter"
+
+#: jcommunity~login.error.no.after_login
+msgctxt "jcommunity~login.error.no.after_login"
+msgid "In the configuration of the plugin 'auth', after_login is empty"
+msgstr "Dans la configuration du plugin auth, after_login est vide"
+
+#: jcommunity~login.error.no.after_logout
+msgctxt "jcommunity~login.error.no.after_logout"
+msgid "In the configuration of the plugin 'auth', after_logout is empty"
+msgstr "Dans la configuration du plugin auth, after_logout est vide"
+
+#: jcommunity~login.form.remember.me
+msgctxt "jcommunity~login.form.remember.me"
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+#: jcommunity~login.form.submit
+msgctxt "jcommunity~login.form.submit"
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: jcommunity~login.error
+msgctxt "jcommunity~login.error"
+msgid "Unknown username or wrong password"
+msgstr "Utilisateur inconnu ou mauvais mot de passe"
+
+#: jcommunity~login.login.title
+msgctxt "jcommunity~login.login.title"
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: jcommunity~login.logout
+msgctxt "jcommunity~login.logout"
+msgid "Sign out"
+msgstr "Déconnexion"
+
+#: jcommunity~login.login.account
+msgctxt "jcommunity~login.login.account"
+msgid "Your account"
+msgstr "Votre compte"
+
+#: jcommunity~login.login.password.reset
+msgctxt "jcommunity~login.login.password.reset"
+msgid "I forgot my password"
+msgstr "J'ai oublié mon mot de passe"
+
+#: jcommunity~login.access.title
+msgctxt "jcommunity~login.access.title"
+msgid "Page access"
+msgstr "Accés"
+
+#: jcommunity~login.access.forbidden.authenticated
+msgctxt "jcommunity~login.access.forbidden.authenticated"
+msgid "You cannot access to this page because your are connected."
+msgstr ""
+"Vous ne pouvez pas accéder à cette page du site car vous êtes connectés."
+
+#: jcommunity~login.access.forbidden.wrong.user
+msgctxt "jcommunity~login.access.forbidden.wrong.user"
+msgid "You cannot access to this page belonging to another user."
+msgstr ""
+"Vous ne pouvez pas accéder à cette page réservée à un autre utilisateur."
+
+#: jcommunity~login.access.not.available
+msgctxt "jcommunity~login.access.not.available"
+msgid "Page not available"
+msgstr "Page non disponible."
+
+#: jcommunity~login.access.forbidden.badstatus
+msgctxt "jcommunity~login.access.forbidden.badstatus"
+msgid ""
+"You cannot access to this page because the account has not the right status"
+msgstr ""
+"Vous ne pouvez pas accéder à cette page du site car le statut du compte ne "
+"le permet pas"
+
+#: jcommunity~login.startpage.connected
+msgctxt "jcommunity~login.startpage.connected"
+msgid "You are connected."
+msgstr "Vous êtes connectés."
+
+#: jcommunity~login.startpage.not.connected
+msgctxt "jcommunity~login.startpage.not.connected"
+msgid "You are not connected."
+msgstr "Vous n'êtes pas connectés."
+
+#: jcommunity~login.startpage.youcan
+msgctxt "jcommunity~login.startpage.youcan"
+msgid "You can:"
+msgstr "Vous pouvez :"
+
+#: jcommunity~login.startpage.account.view
+msgctxt "jcommunity~login.startpage.account.view"
+msgid "View your profile"
+msgstr "Voir votre profil"
+
+#: jcommunity~login.startpage.account.create
+msgctxt "jcommunity~login.startpage.account.create"
+msgid "Create an account"
+msgstr "Créer un compte"
+
+#: jcommunity~login.startpage.logout
+msgctxt "jcommunity~login.startpage.logout"
+msgid "Sign out"
+msgstr "Vous déconnecter"
+
+#: jcommunity~login.startpage.login
+msgctxt "jcommunity~login.startpage.login"
+msgid "Sign in"
+msgstr "Vous connecter"
+
+#: jcommunity~login.startpage.password.reset
+msgctxt "jcommunity~login.startpage.password.reset"
+msgid "Reset your password"
+msgstr "Réinitialiser votre mot de passe"
+
+#: jcommunity~login.back.to.login
+msgctxt "jcommunity~login.back.to.login"
+msgid "Back to the login form"
+msgstr "Retour au formulaire de connexion"
+
+#: jcommunity~login.cancel.and.back.to.login
+msgctxt "jcommunity~login.cancel.and.back.to.login"
+msgid "Cancel and return to the login form"
+msgstr "Annuler et retourner au formulaire de connexion"
+
+#: jcommunity~mail.registration.subject
+msgctxt "jcommunity~mail.registration.subject"
+msgid "Activating your account on the web site %s"
+msgstr "Activation de votre compte sur le site %s"
+
+#: jcommunity~mail.registration.body.html
+msgctxt "jcommunity~mail.registration.body.html"
+msgid ""
+"<p>Hello,</p>\n"
+"\n"
+" <p>You have created a new account on <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>.</p>\n"
+"\n"
+" <p>Before to use your account, you should confirm your registration by \n"
+" <a href=\"{$confirmation_link}\">clicking on this link</a>. The link is valid {$validationKeyTTL}.</p>\n"
+"\n"
+" <p>See you on {$domain_name}!</p>"
+msgstr ""
+"<p>Bonjour,</p>\n"
+"\n"
+"<p>Vous venez de vous inscrire sur le site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>.</p>\n"
+"\n"
+"<p>Pour utiliser votre compte, vous devez d'abord confirmer votre inscription\n"
+"<a href=\"{$confirmation_link}\">en cliquant sur ce lien</a>. Ce lien est valide {$validationKeyTTL}</p>\n"
+"\n"
+"<p>À tout de suite sur {$domain_name} !</p>"
+
+#: jcommunity~mail.registration.admin.body.html
+msgctxt "jcommunity~mail.registration.admin.body.html"
+msgid ""
+"<p>Hello,</p>\n"
+"\n"
+" <p>The administrator of the web site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>\n"
+" have been created an account for you, with the login <em>\"{$user->login}\"</em>.</p>\n"
+"\n"
+" <p>Before to use your account, you should confirm your registration by \n"
+" <a href=\"{$confirmation_link}\">clicking on this link</a>, \n"
+" and then indicating a new password. The link is valid {$validationKeyTTL}.</p>\n"
+"\n"
+" <p>See you on {$domain_name}!</p>"
+msgstr ""
+"<p>Bonjour,</p>\n"
+"\n"
+"<p>L'administrateur du site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>\n"
+"vous a créé un compte, dont l'identifiant est <em>\"{$user->login}\"</em>.</p>\n"
+"\n"
+"<p>Pour activer votre compte, vous devez <a href=\"{$confirmation_link}\">cliquer sur ce lien</a>\n"
+"afin d'indiquer un nouveau mot de passe. Ce lien est valide {$validationKeyTTL}.</p>\n"
+"\n"
+"<p>À tout de suite sur {$domain_name} !</p>"
+
+#: jcommunity~mail.password.reset.subject
+msgctxt "jcommunity~mail.password.reset.subject"
+msgid "Reset of your password on the web site %s"
+msgstr "Réinitialisation de votre mot de passe sur le site %s"
+
+#: jcommunity~mail.password.reset.body.html
+msgctxt "jcommunity~mail.password.reset.body.html"
+msgid ""
+"<p>Hello,</p>\n"
+"\n"
+" <p>You requested a password reset for your account <em>\"{$user->login|eschtml}\"</em>\n"
+" on the web site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>.</p>\n"
+"\n"
+" <p>If you really want to change it, you should <a href=\"{$confirmation_link}\">click on this link</a>.</p>\n"
+"\n"
+" <p>You could then set a new password for your account. The link is valid {$validationKeyTTL}.</p>\n"
+"\n"
+" <p>If this request is an error or you don't want to confirm, ignore this mail.\n"
+" Your password won't be changed.</p>\n"
+"\n"
+" <p>See you now on {$domain_name}!</p>"
+msgstr ""
+"<p>Bonjour,</p>\n"
+"\n"
+"<p>Vous venez de demander une réinitialisation du mot de passe de votre\n"
+"compte <em>\"{$user->login}\"</em> sur le site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>.</p>\n"
+"\n"
+"<p>Si vous voulez confirmer cette réinitialisation, <a href=\"{$confirmation_link}\">cliquez sur ce lien</a>.</p>\n"
+"\n"
+"<p>Vous pourrez alors changer le mot de passe. Ce lien est valide {$validationKeyTTL}.</p>\n"
+"\n"
+"<p>Si cette demande de réinitialisation est une erreur, ignorez ce mail,\\n\\\n"
+"et votre mot de passe actuel sera toujours valide.</p>\n"
+"\n"
+"<p>À tout de suite sur {$domain_name} !</p>"
+
+#: jcommunity~mail.password.admin.reset.subject
+msgctxt "jcommunity~mail.password.admin.reset.subject"
+msgid "Reset of your password on the web site %s"
+msgstr "Réinitialisation de votre mot de passe sur le site %s"
+
+#: jcommunity~mail.password.admin.reset.body.html
+msgctxt "jcommunity~mail.password.admin.reset.body.html"
+msgid ""
+"<p>Hello,</p>\n"
+"\n"
+" <p>The administrator of the web site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>\n"
+" have been sent this email to you so you can change your password for the account <em>\"{$user->login}\"</em>.</p>\n"
+"\n"
+" <p>If you want to confirm the change, you should <a href=\"{$confirmation_link}\">click on this link</a>.</p>\n"
+"\n"
+" <p>You could then set a new password for your account. The link is valid {$validationKeyTTL}.</p>\n"
+"\n"
+" <p>If this request is an error or you don't want to confirm, ignore this mail,\n"
+" and your password won't be changed.</p>\n"
+"\n"
+" <p>See you on {$domain_name}!</p>"
+msgstr ""
+"<p>Bonjour,</p>\n"
+"\n"
+"<p>L'administrateur du site <a href=\"{$website_uri}\" class=\"notexpandlink\">{$domain_name}</a>\n"
+"vient de lancer une réinitialisation du mot de passe de votre compte <em>\"{$user->login}\"</em>.</p>\n"
+"\n"
+"<p>Si vous voulez confirmer cette réinitialisation, <a href=\"{$confirmation_link}\">cliquez sur ce lien</a>.</p>\n"
+"\n"
+"<p>Vous pourrez alors indiquer un nouveau mot de passe. Ce lien est valide {$validationKeyTTL}.</p>\n"
+"\n"
+"<p>Si cette demande de réinitialisation est une erreur, ignorez ce mail,\n"
+"et votre mot de passe actuel sera toujours valide.</p>\n"
+"\n"
+"<p>À tout de suite sur {$domain_name} !</p>"

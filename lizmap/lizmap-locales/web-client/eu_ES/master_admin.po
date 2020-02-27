@@ -1,0 +1,71 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2018-10-11 07:51+0000\n"
+"Last-Translator: rldhont <rldhont@gmail.com>\n"
+"Language-Team: Basque (http://www.transifex.com/3liz-1/lizmap-locales/language/eu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: master_admin~gui.header.title
+msgctxt "master_admin~gui.header.title"
+msgid "Administration"
+msgstr "Administrazioa"
+
+#: master_admin~gui.header.user
+msgctxt "master_admin~gui.header.user"
+msgid "User:"
+msgstr "Erabiltzaileen:"
+
+#: master_admin~gui.header.disconnect
+msgctxt "master_admin~gui.header.disconnect"
+msgid "Logout"
+msgstr "Deskonektatu"
+
+#: master_admin~gui.header.your.account
+msgctxt "master_admin~gui.header.your.account"
+msgid "My account"
+msgstr "Zure kontua"
+
+#: master_admin~gui.menu.item.dashboard
+msgctxt "master_admin~gui.menu.item.dashboard"
+msgid "Dashboard"
+msgstr "Etxea"
+
+#: master_admin~gui.menu.item.system
+msgctxt "master_admin~gui.menu.item.system"
+msgid "System"
+msgstr "Sistema"
+
+#: master_admin~gui.menu.item.refdata
+msgctxt "master_admin~gui.menu.item.refdata"
+msgid "Reference Data"
+msgstr "Erreferentzia datuak"
+
+#: master_admin~gui.dashboard.title
+msgctxt "master_admin~gui.dashboard.title"
+msgid "Dashboard"
+msgstr "Etxea"
+
+#: master_admin~gui.dashboard.nowidget
+msgctxt "master_admin~gui.dashboard.nowidget"
+msgid ""
+"No widget for the dashboard. Simply click on one of the links in the menu."
+msgstr "Ez dago tresnarik. Bakarrik egin klik menuaren esteka batean."
+
+#: master_admin~gui.message.admin.password
+msgctxt "master_admin~gui.message.admin.password"
+msgid "You have got the default password, you should change it immediatly."
+msgstr "Pasahitz lehenetsia daukazu, aldatu beharko zenuke."
+
+#: master_admin~gui.main.nocontent
+msgctxt "master_admin~gui.main.nocontent"
+msgid "No content. Click on one of the menu links."
+msgstr "Ez dago edukirik. Egin klik menuaren esteka batean."

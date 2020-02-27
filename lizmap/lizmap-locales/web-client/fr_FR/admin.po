@@ -1,0 +1,1070 @@
+# 
+# Translators:
+# Laurent Jouanneau <dev@ljouanneau.com>, 2018-2019
+# Mathieu Bossaert <mathieu.bossaert@gmail.com>, 2018
+# Michael Douchin <kimaidou@gmail.com>, 2017
+# rldhont <rldhont@gmail.com>, 2016-2019
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-06-05 14:15+0000\n"
+"Last-Translator: Laurent Jouanneau <dev@ljouanneau.com>\n"
+"Language-Team: French (http://www.transifex.com/3liz-1/lizmap-locales/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: admin~user.form.comment.label
+msgctxt "admin~user.form.comment.label"
+msgid "Comments"
+msgstr "Commentaires"
+
+#: admin~user.email.admin.subject
+msgctxt "admin~user.email.admin.subject"
+msgid "Lizmap - Someone requested an account"
+msgstr "Lizmap - une personne a demandé un accès aux cartes."
+
+#: admin~user.email.admin.body
+msgctxt "admin~user.email.admin.body"
+msgid ""
+"Someone has requested a Lizmap account to be able to access the maps, with "
+"the login %s and the e-mail %s."
+msgstr "Une personne a souhaité avoir un accès aux cartes Lizmap avec le login %s et le courriel %s."
+
+#: admin~user.acl.no.group
+msgctxt "admin~user.acl.no.group"
+msgid "The user is not in any group"
+msgstr "L'utilisateur n'est dans aucun groupe"
+
+#: admin~user.acl.form.title
+msgctxt "admin~user.acl.form.title"
+msgid "Groups the user belongs to"
+msgstr "Groupes auxquels il appartient"
+
+#: admin~user.acl.form.remove.from.group
+msgctxt "admin~user.acl.form.remove.from.group"
+msgid "Remove him from this group"
+msgstr "Enlever de ce groupe"
+
+#: admin~user.acl.form.add.to.group
+msgctxt "admin~user.acl.form.add.to.group"
+msgid "Add him to this group"
+msgstr "Ajouter l'utilisateur dans le groupe"
+
+#: admin~user.acl.form.add
+msgctxt "admin~user.acl.form.add"
+msgid "Add"
+msgstr "Ajouter"
+
+#: admin~admin.header.admin
+msgctxt "admin~admin.header.admin"
+msgid "Administration"
+msgstr "Administration"
+
+#: admin~admin.menu.configuration.main.label
+msgctxt "admin~admin.menu.configuration.main.label"
+msgid "Lizmap configuration"
+msgstr "Configuration Lizmap"
+
+#: admin~admin.menu.lizmap.logs.label
+msgctxt "admin~admin.menu.lizmap.logs.label"
+msgid "Lizmap Logs"
+msgstr "Logs Lizmap"
+
+#: admin~admin.menu.lizmap.logs.view.label
+msgctxt "admin~admin.menu.lizmap.logs.view.label"
+msgid "View logs"
+msgstr "Voir les logs"
+
+#: admin~admin.generic.h2
+msgctxt "admin~admin.generic.h2"
+msgid "Generic"
+msgstr "Général"
+
+#: admin~admin.generic.version.number.label
+msgctxt "admin~admin.generic.version.number.label"
+msgid "Version number"
+msgstr "Numéro de version"
+
+#: admin~admin.configuration.h1
+msgctxt "admin~admin.configuration.h1"
+msgid "Lizmap configuration"
+msgstr "Configuration Lizmap"
+
+#: admin~admin.configuration.repository.label
+msgctxt "admin~admin.configuration.repository.label"
+msgid "Repository"
+msgstr "Répertoires"
+
+#: admin~admin.configuration.button.back.label
+msgctxt "admin~admin.configuration.button.back.label"
+msgid "Back"
+msgstr "Retour"
+
+#: admin~admin.configuration.services.label
+msgctxt "admin~admin.configuration.services.label"
+msgid "Services"
+msgstr "Services"
+
+#: admin~admin.configuration.services.qgisServerVersion.label
+msgctxt "admin~admin.configuration.services.qgisServerVersion.label"
+msgid "QGIS server version"
+msgstr "Version de QGIS Server"
+
+#: admin~admin.configuration.services.wmsServerURL.label
+msgctxt "admin~admin.configuration.services.wmsServerURL.label"
+msgid "WMS server URL"
+msgstr "URL du serveur WMS"
+
+#: admin~admin.configuration.services.wmsPublicUrlList.label
+msgctxt "admin~admin.configuration.services.wmsPublicUrlList.label"
+msgid "WMS subdomain URLs list (optional)"
+msgstr "Liste d'URLs WMS de sous-domaine (optionnel)"
+
+#: admin~admin.configuration.services.wmsMaxWidth.label
+msgctxt "admin~admin.configuration.services.wmsMaxWidth.label"
+msgid "Maximum Witdh for GetMap request"
+msgstr "Largeur maximale des requêtes GetMap"
+
+#: admin~admin.configuration.services.wmsMaxHeight.label
+msgctxt "admin~admin.configuration.services.wmsMaxHeight.label"
+msgid "Maximum Height for GetMap request"
+msgstr "Hauteur maximale des requêtes GetMap"
+
+#: admin~admin.configuration.services.onlyMaps.label
+msgctxt "admin~admin.configuration.services.onlyMaps.label"
+msgid "Only maps"
+msgstr "Seulement des cartes"
+
+#: admin~admin.configuration.services.defaultRepository.label
+msgctxt "admin~admin.configuration.services.defaultRepository.label"
+msgid "Default repository"
+msgstr "Répertoire par défaut"
+
+#: admin~admin.configuration.services.defaultProject.label
+msgctxt "admin~admin.configuration.services.defaultProject.label"
+msgid "Default project"
+msgstr "Projet par défaut"
+
+#: admin~admin.configuration.services.cacheStorageType.label
+msgctxt "admin~admin.configuration.services.cacheStorageType.label"
+msgid "Server cache storage type"
+msgstr "Type de stockage pour le cache"
+
+#: admin~admin.configuration.services.cacheRootDirectory.label
+msgctxt "admin~admin.configuration.services.cacheRootDirectory.label"
+msgid "Cache root directory"
+msgstr "Répertoire racine du cache"
+
+#: admin~admin.configuration.services.cacheExpiration.label
+msgctxt "admin~admin.configuration.services.cacheExpiration.label"
+msgid "Server cache expiration time(s)"
+msgstr "Durée de vie du cache (s)"
+
+#: admin~admin.configuration.services.rootRepositories.label
+msgctxt "admin~admin.configuration.services.rootRepositories.label"
+msgid "Root folder of repositories"
+msgstr "Dossier racine des répertoires"
+
+#: admin~admin.configuration.services.proxyMethod.label
+msgctxt "admin~admin.configuration.services.proxyMethod.label"
+msgid "Send request to QGIS Server with"
+msgstr "Envoi des requêtes à QGIS Server avec"
+
+#: admin~admin.configuration.services.debugMode.label
+msgctxt "admin~admin.configuration.services.debugMode.label"
+msgid "Debug mode"
+msgstr "Mode de débogage"
+
+#: admin~admin.configuration.services.allowUserAccountRequests.label
+msgctxt "admin~admin.configuration.services.allowUserAccountRequests.label"
+msgid "Allow visitors to request an account"
+msgstr "Autoriser les visiteurs à demander un compte"
+
+#: admin~admin.configuration.services.allowUserAccountRequests.help.deactivated
+msgctxt ""
+"admin~admin.configuration.services.allowUserAccountRequests.help.deactivated"
+msgid "This option is deactivated because of the use of Ldap authentication"
+msgstr "Cette option est désactivée parce que l'authentification ldap est utilisée"
+
+#: admin~admin.configuration.services.adminContactEmail.label
+msgctxt "admin~admin.configuration.services.adminContactEmail.label"
+msgid "Administrator e-mail"
+msgstr "Courriel de l'administrateur"
+
+#: admin~admin.configuration.button.modify.service.label
+msgctxt "admin~admin.configuration.button.modify.service.label"
+msgid "Modify"
+msgstr "Modifier"
+
+#: admin~admin.configuration.button.view.repository.label
+msgctxt "admin~admin.configuration.button.view.repository.label"
+msgid "View"
+msgstr "Voir"
+
+#: admin~admin.configuration.button.modify.repository.label
+msgctxt "admin~admin.configuration.button.modify.repository.label"
+msgid "Modify"
+msgstr "Modifier"
+
+#: admin~admin.configuration.button.remove.repository.label
+msgctxt "admin~admin.configuration.button.remove.repository.label"
+msgid "Remove"
+msgstr "Supprimer"
+
+#: admin~admin.configuration.button.remove.repository.confirm.label
+msgctxt "admin~admin.configuration.button.remove.repository.confirm.label"
+msgid "Would you like to remove this repository?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce répertoire ?"
+
+#: admin~admin.configuration.button.add.repository.label
+msgctxt "admin~admin.configuration.button.add.repository.label"
+msgid "Create a repository"
+msgstr "Ajouter un répertoire"
+
+#: admin~admin.form.admin_services.h1
+msgctxt "admin~admin.form.admin_services.h1"
+msgid "Modify Lizmap generic configuration"
+msgstr "Modifier la configuration générale"
+
+#: admin~admin.form.admin_services.on.label
+msgctxt "admin~admin.form.admin_services.on.label"
+msgid "On"
+msgstr "On"
+
+#: admin~admin.form.admin_services.off.label
+msgctxt "admin~admin.form.admin_services.off.label"
+msgid "Off"
+msgstr "Off"
+
+#: admin~admin.form.admin_services.yes.label
+msgctxt "admin~admin.form.admin_services.yes.label"
+msgid "Yes"
+msgstr "Oui"
+
+#: admin~admin.form.admin_services.no.label
+msgctxt "admin~admin.form.admin_services.no.label"
+msgid "No"
+msgstr "Non"
+
+#: admin~admin.form.admin_services.appName.label
+msgctxt "admin~admin.form.admin_services.appName.label"
+msgid "Application name"
+msgstr "Nom de l'application"
+
+#: admin~admin.form.admin_services.qgisServerVersion.label
+msgctxt "admin~admin.form.admin_services.qgisServerVersion.label"
+msgid "QGIS server version"
+msgstr "Version de QGIS Server"
+
+#: admin~admin.form.admin_services.qgisServerVersion.214.label
+msgctxt "admin~admin.form.admin_services.qgisServerVersion.214.label"
+msgid "≤ 2.14"
+msgstr "≤ 2.14"
+
+#: admin~admin.form.admin_services.qgisServerVersion.218.label
+msgctxt "admin~admin.form.admin_services.qgisServerVersion.218.label"
+msgid "2.18"
+msgstr "2.18"
+
+#: admin~admin.form.admin_services.qgisServerVersion.300.label
+msgctxt "admin~admin.form.admin_services.qgisServerVersion.300.label"
+msgid "≥ 3.0"
+msgstr "≥ 3.0"
+
+#: admin~admin.form.admin_services.wmsServerURL.label
+msgctxt "admin~admin.form.admin_services.wmsServerURL.label"
+msgid "WMS server URL"
+msgstr "URL du serveur WMS"
+
+#: admin~admin.form.admin_services.wmsPublicUrlList.label
+msgctxt "admin~admin.form.admin_services.wmsPublicUrlList.label"
+msgid "WMS subdomain URLs list (optional)"
+msgstr "Liste d'URLs WMS de sous-domaine (optionnel)"
+
+#: admin~admin.form.admin_services.message.wmsPublicUrlList.wrong
+msgctxt "admin~admin.form.admin_services.message.wmsPublicUrlList.wrong"
+msgid "The WMS subdomain URLs structure is not valide."
+msgstr "La structure des URLs WMS de sous-domaines n'est pas valide."
+
+#: admin~admin.form.admin_services.wmsMaxWidth.label
+msgctxt "admin~admin.form.admin_services.wmsMaxWidth.label"
+msgid "Default max. Witdh for GetMap request"
+msgstr "Largeur max. par défaut des requêtes GetMap"
+
+#: admin~admin.form.admin_services.wmsMaxHeight.label
+msgctxt "admin~admin.form.admin_services.wmsMaxHeight.label"
+msgid "Default max. Height for GetMap request"
+msgstr "Hauteur max. par défaut des requêtes GetMap"
+
+#: admin~admin.form.admin_services.cacheStorageType.label
+msgctxt "admin~admin.form.admin_services.cacheStorageType.label"
+msgid "Server cache storage type"
+msgstr "Type de stockage pour le cache"
+
+#: admin~admin.form.admin_services.cacheStorageType.sqlite.label
+msgctxt "admin~admin.form.admin_services.cacheStorageType.sqlite.label"
+msgid "Sqlite database"
+msgstr "Bases de donnée Sqlite"
+
+#: admin~admin.form.admin_services.cacheStorageType.file.label
+msgctxt "admin~admin.form.admin_services.cacheStorageType.file.label"
+msgid "Files"
+msgstr "Fichiers"
+
+#: admin~admin.form.admin_services.cacheStorageType.redis.label
+msgctxt "admin~admin.form.admin_services.cacheStorageType.redis.label"
+msgid "Redis"
+msgstr "Redis"
+
+#: admin~admin.form.admin_services.cacheRedisHost.label
+msgctxt "admin~admin.form.admin_services.cacheRedisHost.label"
+msgid "Redis host"
+msgstr "Hôte Redis"
+
+#: admin~admin.form.admin_services.cacheRedisPort.label
+msgctxt "admin~admin.form.admin_services.cacheRedisPort.label"
+msgid "Redis port"
+msgstr "Port Redis"
+
+#: admin~admin.form.admin_services.cacheRedisDb.label
+msgctxt "admin~admin.form.admin_services.cacheRedisDb.label"
+msgid "Redis database index"
+msgstr "Base de donnée Redis"
+
+#: admin~admin.form.admin_services.cacheRedisKeyPrefix.label
+msgctxt "admin~admin.form.admin_services.cacheRedisKeyPrefix.label"
+msgid "Redis key prefix"
+msgstr "Préfixe de clé Redis"
+
+#: admin~admin.form.admin_services.cacheRedisHost.help
+msgctxt "admin~admin.form.admin_services.cacheRedisHost.help"
+msgid "Redis host (used if Redis is chosen for the cache storage)"
+msgstr "Hôte Redis (utilisé seulement si Redis est choisi pour stocker le cache )"
+
+#: admin~admin.form.admin_services.cacheRedisPort.help
+msgctxt "admin~admin.form.admin_services.cacheRedisPort.help"
+msgid "Redis port (used if Redis is chosen for the cache storage)"
+msgstr "Port Redis (utilisé seulement si Redis est choisi pour stocker le cache )"
+
+#: admin~admin.form.admin_services.cacheRedisDb.help
+msgctxt "admin~admin.form.admin_services.cacheRedisDb.help"
+msgid ""
+"Redis database index: integer >= 0 , optional (used if Redis is chosen for "
+"the cache storage)"
+msgstr "Redis database index : entier >= 0 , optionnel (utilisé seulement si Redis est choisi pour stocker le cache)"
+
+#: admin~admin.form.admin_services.cacheRedisKeyPrefix.help
+msgctxt "admin~admin.form.admin_services.cacheRedisKeyPrefix.help"
+msgid ""
+"Redis key prefix: string, optional (used if Redis is chosen for the cache "
+"storage)"
+msgstr "Redis key prefix : texte, optionnel (utilisé seulement si Redis est choisi pour stocker le cache)"
+
+#: admin~admin.form.admin_services.cacheRootDirectory.label
+msgctxt "admin~admin.form.admin_services.cacheRootDirectory.label"
+msgid "Cache root directory"
+msgstr "Répertoire racine du cache"
+
+#: admin~admin.form.admin_services.cacheRootDirectory.help
+msgctxt "admin~admin.form.admin_services.cacheRootDirectory.help"
+msgid "Choose a writable directory where to store cache files."
+msgstr "Choisir un répertoire du disque accessible en écriture pour y stocker le cache."
+
+#: admin~admin.form.admin_services.message.cacheRootDirectory.wrong
+msgctxt "admin~admin.form.admin_services.message.cacheRootDirectory.wrong"
+msgid "The directory does not exists or is not writable. You can use: %s"
+msgstr "Le répertoire n'existe pas où n'est pas accessible en écriture. Vous pouvez utiliser: %s"
+
+#: admin~admin.form.admin_services.cacheExpiration.label
+msgctxt "admin~admin.form.admin_services.cacheExpiration.label"
+msgid "Server cache expiration time(s)"
+msgstr "Durée de vie du cache (s)"
+
+#: admin~admin.form.admin_services.cacheExpiration.help
+msgctxt "admin~admin.form.admin_services.cacheExpiration.help"
+msgid ""
+"0 means no expiration, else give an integer in seconds (max: 2592000 s = 30 "
+"days)"
+msgstr "0 signifie pas d'expiration. Sinon donner un entier en secondes (Maximum 2592000 = 30 jours)"
+
+#: admin~admin.form.admin_services.message.cacheExpiration.wrong
+msgctxt "admin~admin.form.admin_services.message.cacheExpiration.wrong"
+msgid ""
+"Server cache expiration time must be an integer between 0 and 2592000 "
+"seconds."
+msgstr "La durée de vie du cache doit être un entier entre 0 et 2592000 secondes."
+
+#: admin~admin.form.admin_services.rootRepositories.label
+msgctxt "admin~admin.form.admin_services.rootRepositories.label"
+msgid "Root folder of repositories"
+msgstr "Dossier racine des répertoires"
+
+#: admin~admin.form.admin_services.rootRepositories.help
+msgctxt "admin~admin.form.admin_services.rootRepositories.help"
+msgid ""
+"The root folder of repositories can limit the Lizmap directory to 1 folder. "
+"If a path is set here, it is no longer possible to define the path of a "
+"Lizmap directory."
+msgstr "Le dossier racine des répertoires permet de limiter à 1 dossier les répertoires Lizmap. Si un chemin est défini ici, il n'est plus possible de définir le chemin d'un répertoire Lizmap."
+
+#: admin~admin.form.admin_services.relativeWMSPath.label
+msgctxt "admin~admin.form.admin_services.relativeWMSPath.label"
+msgid "Does the server use relative path from root folder?"
+msgstr "Le serveur QGIS utilise-t-il des chemins relatifs au dossier racine ?"
+
+#: admin~admin.form.admin_services.proxyMethod.label
+msgctxt "admin~admin.form.admin_services.proxyMethod.label"
+msgid "Send request to QGIS Server or request to external services with"
+msgstr "Envoi des requêtes à QGIS Server ou aux services externes avec"
+
+#: admin~admin.form.admin_services.proxyMethod.php.label
+msgctxt "admin~admin.form.admin_services.proxyMethod.php.label"
+msgid "PHP"
+msgstr "PHP"
+
+#: admin~admin.form.admin_services.proxyMethod.curl.label
+msgctxt "admin~admin.form.admin_services.proxyMethod.curl.label"
+msgid "Curl"
+msgstr "Curl"
+
+#: admin~admin.form.admin_services.requestProxy.label
+msgctxt "admin~admin.form.admin_services.requestProxy.label"
+msgid "Use a proxy server to do requests to external services"
+msgstr "Utiliser un serveur proxy pour faire des requêtes à des services externes"
+
+#: admin~admin.form.admin_services.requestProxy.enabled
+msgctxt "admin~admin.form.admin_services.requestProxy.enabled"
+msgid "Use a proxy server"
+msgstr "Utiliser un serveur proxy"
+
+#: admin~admin.form.admin_services.requestProxy.disabled
+msgctxt "admin~admin.form.admin_services.requestProxy.disabled"
+msgid "No proxy"
+msgstr "Pas de proxy"
+
+#: admin~admin.form.admin_services.requestProxyHost.label
+msgctxt "admin~admin.form.admin_services.requestProxyHost.label"
+msgid "Host of the proxy server"
+msgstr "Hôte du proxy serveur"
+
+#: admin~admin.form.admin_services.requestProxyPort.label
+msgctxt "admin~admin.form.admin_services.requestProxyPort.label"
+msgid "Port of the proxy server"
+msgstr "Port du proxy serveur"
+
+#: admin~admin.form.admin_services.requestProxyType.label
+msgctxt "admin~admin.form.admin_services.requestProxyType.label"
+msgid "Type of the proxy"
+msgstr "Type de proxy"
+
+#: admin~admin.form.admin_services.requestProxyUser.label
+msgctxt "admin~admin.form.admin_services.requestProxyUser.label"
+msgid "Login to access to the proxy server"
+msgstr "Utilisateur pour accéder au proxy serveur"
+
+#: admin~admin.form.admin_services.requestProxyPassword.label
+msgctxt "admin~admin.form.admin_services.requestProxyPassword.label"
+msgid "Password to access to the proxy server"
+msgstr "Mot de passe pour accéder au proxy serveur"
+
+#: admin~admin.form.admin_services.requestProxyNotForDomain.label
+msgctxt "admin~admin.form.admin_services.requestProxyNotForDomain.label"
+msgid "Domains for which the proxy will not be used"
+msgstr "Domaines pour lesquels le proxy ne sera pas utilisé"
+
+#: admin~admin.form.admin_services.debugMode.label
+msgctxt "admin~admin.form.admin_services.debugMode.label"
+msgid "Debug mode"
+msgstr "Mode de débogage"
+
+#: admin~admin.form.admin_services.debugMode.0.label
+msgctxt "admin~admin.form.admin_services.debugMode.0.label"
+msgid "Off"
+msgstr "Off"
+
+#: admin~admin.form.admin_services.debugMode.1.label
+msgctxt "admin~admin.form.admin_services.debugMode.1.label"
+msgid "Log"
+msgstr "Log"
+
+#: admin~admin.form.admin_services.onlyMaps.label
+msgctxt "admin~admin.form.admin_services.onlyMaps.label"
+msgid "Only maps"
+msgstr "Seulement des cartes"
+
+#: admin~admin.form.admin_services.projectSwitcher.label
+msgctxt "admin~admin.form.admin_services.projectSwitcher.label"
+msgid "Show projects switcher"
+msgstr "Afficher le sélecteur de projets"
+
+#: admin~admin.form.admin_services.defaultRepository.label
+msgctxt "admin~admin.form.admin_services.defaultRepository.label"
+msgid "Default repository"
+msgstr "Répertoire par défaut"
+
+#: admin~admin.form.admin_services.defaultProject.label
+msgctxt "admin~admin.form.admin_services.defaultProject.label"
+msgid "Default project"
+msgstr "Projet par défaut"
+
+#: admin~admin.form.admin_services.allowUserAccountRequests.label
+msgctxt "admin~admin.form.admin_services.allowUserAccountRequests.label"
+msgid "Allow visitors to request an account?"
+msgstr "Autoriser les visiteurs à demander un compte ?"
+
+#: admin~admin.form.admin_services.allowUserAccountRequests.help
+msgctxt "admin~admin.form.admin_services.allowUserAccountRequests.help"
+msgid ""
+"If set to on, the visitors can fill a form to request an account. Sender "
+"address for e-mails should be set."
+msgstr "Si ce paramètre est mis sur on, alors les visiteurs peuvent remplir un formulaire de demande de compte. Il faut que l'adresse email de l'expéditeur soit configurée."
+
+#: admin~admin.form.admin_services.adminContactEmail.label
+msgctxt "admin~admin.form.admin_services.adminContactEmail.label"
+msgid "E-mail where to send notifications"
+msgstr "Courriel où envoyer les notifications"
+
+#: admin~admin.form.admin_services.adminContactEmail.help
+msgctxt "admin~admin.form.admin_services.adminContactEmail.help"
+msgid "E-mail address to which notifications will be sent"
+msgstr "Les notifications (par exemple les demandes de compte) seront envoyées à ce courriel."
+
+#: admin~admin.form.admin_services.adminSenderEmail.label
+msgctxt "admin~admin.form.admin_services.adminSenderEmail.label"
+msgid "Sender address of e-mails"
+msgstr "Adresse de l'expéditeur des courriels"
+
+#: admin~admin.form.admin_services.adminSenderEmail.help
+msgctxt "admin~admin.form.admin_services.adminSenderEmail.help"
+msgid ""
+"E-mail address used to send e-mails. If empty, no emails will be sent by "
+"Lizmap. Be sure your server is allowed to send email with this address."
+msgstr "Adresse de l'expéditeur utilisé pour l'envoi des courriels par Lizmap. Si il n'est pas indiqué, aucun mail ne sera envoyé par Lizmap. Assurez-vous que le serveur web est autorisé à envoyer des courriels avec cette adresse."
+
+#: admin~admin.form.admin_services.adminSenderEmail.error.required
+msgctxt "admin~admin.form.admin_services.adminSenderEmail.error.required"
+msgid ""
+"A sender e-mail address is required to send notification or requests for "
+"account creation"
+msgstr "Une adresse mail d'expéditeur est nécessaire pour envoyer les mails de notification ou de demande de création de compte"
+
+#: admin~admin.form.admin_services.adminSenderName.label
+msgctxt "admin~admin.form.admin_services.adminSenderName.label"
+msgid "Sender name of e-mails"
+msgstr "Nom de l'expéditeur des courriels"
+
+#: admin~admin.form.admin_services.adminSenderName.help
+msgctxt "admin~admin.form.admin_services.adminSenderName.help"
+msgid "Name of the sender used to send e-mails."
+msgstr "Nom de l'expéditeur utilisé pour l'envoi des courriels par Lizmap"
+
+#: admin~admin.form.admin_services.googleAnalyticsID.label
+msgctxt "admin~admin.form.admin_services.googleAnalyticsID.label"
+msgid "Google Analytics ID"
+msgstr "Identifiant Google Analytics"
+
+#: admin~admin.form.admin_services.googleAnalyticsID.help
+msgctxt "admin~admin.form.admin_services.googleAnalyticsID.help"
+msgid ""
+"The Google Analytics ID is of the form 'UA-XXXX-Y'. It's also called the "
+"\"tracking ID\"."
+msgstr "L'identifiant Google Analytics est de la forme 'UA-XXXX-Y'. Il est ausi appelé \"tracking ID\"."
+
+#: admin~admin.form.admin_services.submit.label
+msgctxt "admin~admin.form.admin_services.submit.label"
+msgid "Save"
+msgstr "Enregistrer"
+
+#: admin~admin.form.admin_services.message.data.saved
+msgctxt "admin~admin.form.admin_services.message.data.saved"
+msgid "Data has been saved."
+msgstr "Les données ont été enregistrées."
+
+#: admin~admin.form.admin_section.h1.create
+msgctxt "admin~admin.form.admin_section.h1.create"
+msgid "Create a repository"
+msgstr "Ajouter un répertoire"
+
+#: admin~admin.form.admin_section.h1.modify
+msgctxt "admin~admin.form.admin_section.h1.modify"
+msgid "Modify the repository"
+msgstr "Modifier le répertoire"
+
+#: admin~admin.form.admin_section.repository.label
+msgctxt "admin~admin.form.admin_section.repository.label"
+msgid "Id"
+msgstr "Identifiant"
+
+#: admin~admin.form.admin_section.repository.label.label
+msgctxt "admin~admin.form.admin_section.repository.label.label"
+msgid "Label"
+msgstr "Nom affiché"
+
+#: admin~admin.form.admin_section.repository.path.label
+msgctxt "admin~admin.form.admin_section.repository.path.label"
+msgid "Local folder path"
+msgstr "Chemin vers le répertoire local"
+
+#: admin~admin.form.admin_section.repository.allowUserDefinedThemes.label
+msgctxt ""
+"admin~admin.form.admin_section.repository.allowUserDefinedThemes.label"
+msgid "Allow themes/javascript codes for this repository"
+msgstr "Autoriser les thèmes/codes javascript pour ce répertoire"
+
+#: admin~admin.form.admin_section.submit.label
+msgctxt "admin~admin.form.admin_section.submit.label"
+msgid "Save"
+msgstr "Enregistrer"
+
+#: admin~admin.form.admin_section.data.label
+msgctxt "admin~admin.form.admin_section.data.label"
+msgid "Data config:"
+msgstr "Données de configuration :"
+
+#: admin~admin.form.admin_section.groups.label
+msgctxt "admin~admin.form.admin_section.groups.label"
+msgid "Rights and granted groups:"
+msgstr "Droits et groupes autorisés :"
+
+#: admin~admin.form.admin_section.grouplist.label
+msgctxt "admin~admin.form.admin_section.grouplist.label"
+msgid "List of groups"
+msgstr "Liste des groupes"
+
+#: admin~admin.form.admin_section.message.data.saved
+msgctxt "admin~admin.form.admin_section.message.data.saved"
+msgid "The repository data have been saved."
+msgstr "Les données du répertoire ont été enregistrées."
+
+#: admin~admin.form.admin_section.message.configure.rights
+msgctxt "admin~admin.form.admin_section.message.configure.rights"
+msgid "You can now configure the rights for this repository."
+msgstr "Vous pouvez maintenant configurer les droits pour ce répertoire."
+
+#: admin~admin.form.admin_section.message.data.removed
+msgctxt "admin~admin.form.admin_section.message.data.removed"
+msgid "The repository has been removed"
+msgstr "Le répertoire a été supprimé"
+
+#: admin~admin.form.admin_section.message.data.removed.groups.concerned
+msgctxt "admin~admin.form.admin_section.message.data.removed.groups.concerned"
+msgid "(%s group(s) concerned)"
+msgstr "(%s groupe(s) concerné(s))"
+
+#: admin~admin.form.admin_section.message.data.removed.failed
+msgctxt "admin~admin.form.admin_section.message.data.removed.failed"
+msgid "The repository has not been removed"
+msgstr "Le répertoire n'a pas été supprimé"
+
+#: admin~admin.form.admin_section.message.repository.wrong
+msgctxt "admin~admin.form.admin_section.message.repository.wrong"
+msgid "The repository's id given does not exist."
+msgstr "L'identifiant de répertoire donné n'existe pas."
+
+#: admin~admin.form.admin_section.message.path.wrong
+msgctxt "admin~admin.form.admin_section.message.path.wrong"
+msgid "The path given for the repository does not exists on the server."
+msgstr "Le chemin donné pour le répertoire n'existe pas sur le serveur."
+
+#: admin~admin.form.admin_section.message.path.not_authorized
+msgctxt "admin~admin.form.admin_section.message.path.not_authorized"
+msgid "The path given for the repository is not authorized."
+msgstr "Le chemin donné pour le répertoire n'est pas autorisé."
+
+#: admin~admin.menu.lizmap.theme.label
+msgctxt "admin~admin.menu.lizmap.theme.label"
+msgid "Theme"
+msgstr "Thème"
+
+#: admin~admin.configuration.button.modify.theme.label
+msgctxt "admin~admin.configuration.button.modify.theme.label"
+msgid "Modify"
+msgstr "Modifier"
+
+#: admin~admin.form.admin_theme.h1
+msgctxt "admin~admin.form.admin_theme.h1"
+msgid "Theme"
+msgstr "Thème"
+
+#: admin~admin.form.admin_theme.headerLogo.label
+msgctxt "admin~admin.form.admin_theme.headerLogo.label"
+msgid "Header - logo"
+msgstr "Entête - Logo"
+
+#: admin~admin.form.admin_theme.headerLogo.help
+msgctxt "admin~admin.form.admin_theme.headerLogo.help"
+msgid "The image to be used for the header logo (200ko Maximum)."
+msgstr "Image utilisée pour le logo de l'entête (200ko Maximum)."
+
+#: admin~admin.form.admin_theme.headerLogoWidth.label
+msgctxt "admin~admin.form.admin_theme.headerLogoWidth.label"
+msgid "Header - logo width"
+msgstr "Entête - Largeur du logo avant le titre"
+
+#: admin~admin.form.admin_theme.headerLogoWidth.help
+msgctxt "admin~admin.form.admin_theme.headerLogoWidth.help"
+msgid "The width taken by the logo before the title (in pixels)."
+msgstr "La largeur minimal que doit prendre le logo (en pixels)."
+
+#: admin~admin.form.admin_theme.headerBackgroundImage.label
+msgctxt "admin~admin.form.admin_theme.headerBackgroundImage.label"
+msgid "Header - background image"
+msgstr "En-tête - image d'arrière plan"
+
+#: admin~admin.form.admin_theme.headerBackgroundImage.help
+msgctxt "admin~admin.form.admin_theme.headerBackgroundImage.help"
+msgid "The image to be used for the header background (400ko Maximum)."
+msgstr "L'image à utiliser comme arrière-plan de l'entête (400ko Maximum)."
+
+#: admin~admin.form.admin_theme.headerBackgroundColor.label
+msgctxt "admin~admin.form.admin_theme.headerBackgroundColor.label"
+msgid "Header - background color"
+msgstr "Entête - Couleur de fond"
+
+#: admin~admin.form.admin_theme.headerBackgroundColor.help
+msgctxt "admin~admin.form.admin_theme.headerBackgroundColor.help"
+msgid "The color of the header background."
+msgstr "La couleur de fond de l'entête."
+
+#: admin~admin.form.admin_theme.headerTitleColor.label
+msgctxt "admin~admin.form.admin_theme.headerTitleColor.label"
+msgid "Header - title color"
+msgstr "Entête - Couleur du titre"
+
+#: admin~admin.form.admin_theme.headerTitleColor.help
+msgctxt "admin~admin.form.admin_theme.headerTitleColor.help"
+msgid "The color of the header title text."
+msgstr "La couleur du titre de l'entête."
+
+#: admin~admin.form.admin_theme.headerSubtitleColor.label
+msgctxt "admin~admin.form.admin_theme.headerSubtitleColor.label"
+msgid "Header - subtitle color"
+msgstr "Entête - Couleur du sous-titre"
+
+#: admin~admin.form.admin_theme.headerSubtitleColor.help
+msgctxt "admin~admin.form.admin_theme.headerSubtitleColor.help"
+msgid "The color of the header subtitle text."
+msgstr "La couleur du sous-titre de l'entête."
+
+#: admin~admin.form.admin_theme.menuBackgroundColor.label
+msgctxt "admin~admin.form.admin_theme.menuBackgroundColor.label"
+msgid "Menu bar - background color"
+msgstr "Barre de menu - couleur de fond"
+
+#: admin~admin.form.admin_theme.menuBackgroundColor.help
+msgctxt "admin~admin.form.admin_theme.menuBackgroundColor.help"
+msgid "The color of the menu left bar background."
+msgstr "La couleur de fond de la barre de menu."
+
+#: admin~admin.form.admin_theme.dockBackgroundColor.label
+msgctxt "admin~admin.form.admin_theme.dockBackgroundColor.label"
+msgid "Docks - background color"
+msgstr "Panneaux - couleur de fond"
+
+#: admin~admin.form.admin_theme.dockBackgroundColor.help
+msgctxt "admin~admin.form.admin_theme.dockBackgroundColor.help"
+msgid "The color of the docks background."
+msgstr "La couleur de fond des panneaux de l'interface"
+
+#: admin~admin.form.admin_theme.navbarColor.label
+msgctxt "admin~admin.form.admin_theme.navbarColor.label"
+msgid "Navigation bar - background color"
+msgstr "Barre de navigation - couleur de fond"
+
+#: admin~admin.form.admin_theme.navbarColor.help
+msgctxt "admin~admin.form.admin_theme.navbarColor.help"
+msgid "The background color of the navigation bar (zoom tools)."
+msgstr "La couleur de fond de la barre de navigation (outils de zoom)."
+
+#: admin~admin.form.admin_theme.additionalCss.label
+msgctxt "admin~admin.form.admin_theme.additionalCss.label"
+msgid "Additional CSS properties"
+msgstr "Propriétés CSS additionnelles. "
+
+#: admin~admin.form.admin_theme.additionalCss.help
+msgctxt "admin~admin.form.admin_theme.additionalCss.help"
+msgid ""
+"You can write any CSS syntax to override Lizmap style (for advanced users)"
+msgstr "Vous pouvez écrire n’importe quelle syntaxe CSS pour surcharger les styles de Lizmap (pour utilisateurs avancés)"
+
+#: admin~admin.theme.detail.title
+msgctxt "admin~admin.theme.detail.title"
+msgid "Theme configuration"
+msgstr "Configuration du thème"
+
+#: admin~admin.theme.button.remove.logo.label
+msgctxt "admin~admin.theme.button.remove.logo.label"
+msgid "Remove"
+msgstr "Supprimer"
+
+#: admin~admin.theme.button.remove.logo.confirm.label
+msgctxt "admin~admin.theme.button.remove.logo.confirm.label"
+msgid "Remove this image (and use default one) ?"
+msgstr "Supprimer l'image (et retrouver celle par défaut) ?"
+
+#: admin~admin.cache.repository.removed
+msgctxt "admin~admin.cache.repository.removed"
+msgid "The cache for the repository %s has been sucessfully emptied."
+msgstr "Le cache pour le répertoire %s a bien été vidé."
+
+#: admin~admin.cache.layer.removed
+msgctxt "admin~admin.cache.layer.removed"
+msgid "The cache for the layer %s has been sucessfully emptied."
+msgstr "Le cache pour la couche %s a bien été vidé."
+
+#: admin~admin.cache.button.remove.repository.cache.confirm.label
+msgctxt "admin~admin.cache.button.remove.repository.cache.confirm.label"
+msgid "Would you like to empty the cache for this repository?"
+msgstr "Êtes-vous sûr de vouloir vider le cache pour ce répertoire ?"
+
+#: admin~admin.cache.button.remove.repository.cache.label
+msgctxt "admin~admin.cache.button.remove.repository.cache.label"
+msgid "Empty cache"
+msgstr "Vider le cache"
+
+#: admin~admin.logs.counter.title
+msgctxt "admin~admin.logs.counter.title"
+msgid "Log count"
+msgstr "Compteurs"
+
+#: admin~admin.logs.detail.title
+msgctxt "admin~admin.logs.detail.title"
+msgid "Log detail"
+msgstr "Logs détaillés"
+
+#: admin~admin.logs.counter.number.sentence
+msgctxt "admin~admin.logs.counter.number.sentence"
+msgid "lines in the global count log table"
+msgstr "lignes dans la table des compteurs"
+
+#: admin~admin.logs.detail.number.sentence
+msgctxt "admin~admin.logs.detail.number.sentence"
+msgid "lines in the detail log table"
+msgstr "lignes dans la table des logs détaillés"
+
+#: admin~admin.logs.view.button
+msgctxt "admin~admin.logs.view.button"
+msgid "View"
+msgstr "Voir"
+
+#: admin~admin.logs.export.button
+msgctxt "admin~admin.logs.export.button"
+msgid "Export"
+msgstr "Exporter"
+
+#: admin~admin.logs.empty.button
+msgctxt "admin~admin.logs.empty.button"
+msgid "Empty"
+msgstr "Vider"
+
+#: admin~admin.logs.empty.confirm
+msgctxt "admin~admin.logs.empty.confirm"
+msgid "Are you sure to want to empty the log content?"
+msgstr "Êtes-vous certain de vouloir vider le contenu du log ?"
+
+#: admin~admin.logs.empty.ok
+msgctxt "admin~admin.logs.empty.ok"
+msgid "The log table %s has been successfully emptied."
+msgstr "La table de log %s a bien été vidée."
+
+#: admin~admin.logs.key
+msgctxt "admin~admin.logs.key"
+msgid "Key"
+msgstr "Item"
+
+#: admin~admin.logs.counter
+msgctxt "admin~admin.logs.counter"
+msgid "Count"
+msgstr "Compteur"
+
+#: admin~admin.logs.timestamp
+msgctxt "admin~admin.logs.timestamp"
+msgid "Timestamp"
+msgstr "Date et heure"
+
+#: admin~admin.logs.user
+msgctxt "admin~admin.logs.user"
+msgid "User"
+msgstr "Utilisateur"
+
+#: admin~admin.logs.content
+msgctxt "admin~admin.logs.content"
+msgid "Content"
+msgstr "Contenu"
+
+#: admin~admin.logs.repository
+msgctxt "admin~admin.logs.repository"
+msgid "Repository"
+msgstr "Dépôt"
+
+#: admin~admin.logs.project
+msgctxt "admin~admin.logs.project"
+msgid "Project"
+msgstr "Projet"
+
+#: admin~admin.logs.ip
+msgctxt "admin~admin.logs.ip"
+msgid "IP"
+msgstr "IP"
+
+#: admin~admin.logs.first_page
+msgctxt "admin~admin.logs.first_page"
+msgid "First"
+msgstr "Premier"
+
+#: admin~admin.logs.previous_page
+msgctxt "admin~admin.logs.previous_page"
+msgid "Previous"
+msgstr "Précédent"
+
+#: admin~admin.logs.next_page
+msgctxt "admin~admin.logs.next_page"
+msgid "Next"
+msgstr "Suivant"
+
+#: admin~admin.logs.email.subject
+msgctxt "admin~admin.logs.email.subject"
+msgid "A new log item has been recorded."
+msgstr "Un nouvelle entrée de log a été enregistrée."
+
+#: admin~admin.logs.email.login.body
+msgctxt "admin~admin.logs.email.login.body"
+msgid "A user has logged in."
+msgstr "Un utilisateur s'est connecté."
+
+#: admin~admin.logs.email.viewmap.body
+msgctxt "admin~admin.logs.email.viewmap.body"
+msgid "A user has accessed a map."
+msgstr "Un utilisateur a consulté une carte."
+
+#: admin~admin.logs.email.print.body
+msgctxt "admin~admin.logs.email.print.body"
+msgid "A user has used the print tool."
+msgstr "Un utilisateur a utilisé l'outil d'impression. "
+
+#: admin~admin.logs.email.popup.body
+msgctxt "admin~admin.logs.email.popup.body"
+msgid "A user has opened a feature information popup."
+msgstr "Un utilisateur a ouvert une pop-up d'information d'un objet."
+
+#: admin~admin.logs.email.editionSaveFeature.body
+msgctxt "admin~admin.logs.email.editionSaveFeature.body"
+msgid "A feature has been created or modified by a user."
+msgstr "Un objet a été créé ou modifié par un utilisateur."
+
+#: admin~admin.logs.email.editionDeleteFeature.body
+msgctxt "admin~admin.logs.email.editionDeleteFeature.body"
+msgid "A feature has been deleted by a user."
+msgstr "Un objet a été supprimé par un utilisateur."
+
+#: admin~admin.logs.error.title
+msgctxt "admin~admin.logs.error.title"
+msgid "Error log"
+msgstr "Logs d'erreurs."
+
+#: admin~admin.logs.error.sentence
+msgctxt "admin~admin.logs.error.sentence"
+msgid "Last lines of the Lizmap Web Client application error log file"
+msgstr "Dernières lignes du fichier de logs d'erreurs de l'application Lizmap Web Client"
+
+#: admin~admin.logs.error.file.too.big
+msgctxt "admin~admin.logs.error.file.too.big"
+msgid ""
+"The error log file is too big. Consider using log rotation for Lizmap Web "
+"Client logs."
+msgstr "Le fichier de log d'erreurs est trop gros. Envisagez l'utilisation de la rotation pour les logs de Lizmap Web Client"
+
+#: admin~admin.logs.error.file.erase
+msgctxt "admin~admin.logs.error.file.erase"
+msgid "Erase the error log file"
+msgstr "Écraser le fichier de logs d'erreurs. "
+
+#: admin~admin.logs.error.file.erase.confirm
+msgctxt "admin~admin.logs.error.file.erase.confirm"
+msgid "Are you sure you want to erase the error log file ?"
+msgstr "Êtes-vous sûr de vouloir écraser le fichier de logs d'erreurs ?"
+
+#: admin~admin.logs.error.file.erase.ok
+msgctxt "admin~admin.logs.error.file.erase.ok"
+msgid "The error log file has successfully been erased."
+msgstr "Le fichier de logs d'erreurs a été écrasé avec succès."
+
+#: admin~jacl2.lizmap.admin.grp
+msgctxt "admin~jacl2.lizmap.admin.grp"
+msgid "Lizmap Administration Management"
+msgstr "Gestion de l'administration de Lizmap"
+
+#: admin~jacl2.lizmap.grp
+msgctxt "admin~jacl2.lizmap.grp"
+msgid "Lizmap Client Management"
+msgstr "Gestion du client Lizmap"
+
+#: admin~jacl2.lizmap.admin.access
+msgctxt "admin~jacl2.lizmap.admin.access"
+msgid "Lizmap Admin access"
+msgstr "Accéder à l'admin Lizmap"
+
+#: admin~jacl2.lizmap.admin.services.view
+msgctxt "admin~jacl2.lizmap.admin.services.view"
+msgid "View services"
+msgstr "Voir les services"
+
+#: admin~jacl2.lizmap.admin.services.update
+msgctxt "admin~jacl2.lizmap.admin.services.update"
+msgid "Modify services"
+msgstr "Modifier les services"
+
+#: admin~jacl2.lizmap.admin.repositories.view
+msgctxt "admin~jacl2.lizmap.admin.repositories.view"
+msgid "View repositories"
+msgstr "Voir les cartes de ce répertoire"
+
+#: admin~jacl2.lizmap.admin.repositories.create
+msgctxt "admin~jacl2.lizmap.admin.repositories.create"
+msgid "Create repositories"
+msgstr "Créer des répertoires"
+
+#: admin~jacl2.lizmap.admin.repositories.update
+msgctxt "admin~jacl2.lizmap.admin.repositories.update"
+msgid "Modify repositories"
+msgstr "Modifier des répertoires"
+
+#: admin~jacl2.lizmap.admin.repositories.delete
+msgctxt "admin~jacl2.lizmap.admin.repositories.delete"
+msgid "Delete repositories"
+msgstr "Supprimer des répertoires"
+
+#: admin~jacl2.lizmap.admin.grp.default
+msgctxt "admin~jacl2.lizmap.admin.grp.default"
+msgid "default group"
+msgstr "groupe par défaut"
+
+#: admin~jacl2.lizmap.repositories.view
+msgctxt "admin~jacl2.lizmap.repositories.view"
+msgid "View projects in the repository"
+msgstr "Visualiser les projets du répertoire"
+
+#: admin~jacl2.lizmap.tools.edition.use
+msgctxt "admin~jacl2.lizmap.tools.edition.use"
+msgid "Use the Edition tool"
+msgstr "Utiliser l'outil Édition"
+
+#: admin~jacl2.lizmap.tools.loginFilteredLayers.override
+msgctxt "admin~jacl2.lizmap.tools.loginFilteredLayers.override"
+msgid "Always see complete layers data, even if filtered by login"
+msgstr "Afficher toutes les données, mêmes si filtrées par login"
+
+#: admin~jacl2.lizmap.tools.displayGetCapabilitiesLinks
+msgctxt "admin~jacl2.lizmap.tools.displayGetCapabilitiesLinks"
+msgid "Display projects WMS links"
+msgstr "Afficher les liens WMS des projets"
+
+#: admin~jacl2.lizmap.tools.layer.export
+msgctxt "admin~jacl2.lizmap.tools.layer.export"
+msgid "Allow export of layers"
+msgstr "Permettre l'export de couches"

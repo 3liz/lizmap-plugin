@@ -1,0 +1,72 @@
+# 
+# Translators:
+# Sławomir Bienias <slawomir.bienias@gmail.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2017-09-22 22:41+0000\n"
+"Last-Translator: Sławomir Bienias <slawomir.bienias@gmail.com>\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/3liz-1/lizmap-locales/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: master_admin~gui.header.title
+msgctxt "master_admin~gui.header.title"
+msgid "Administration"
+msgstr "Administracja"
+
+#: master_admin~gui.header.user
+msgctxt "master_admin~gui.header.user"
+msgid "User:"
+msgstr "Użytkownik:"
+
+#: master_admin~gui.header.disconnect
+msgctxt "master_admin~gui.header.disconnect"
+msgid "Logout"
+msgstr "Wyloguj"
+
+#: master_admin~gui.header.your.account
+msgctxt "master_admin~gui.header.your.account"
+msgid "My account"
+msgstr "Moje konto"
+
+#: master_admin~gui.menu.item.dashboard
+msgctxt "master_admin~gui.menu.item.dashboard"
+msgid "Dashboard"
+msgstr "Panel"
+
+#: master_admin~gui.menu.item.system
+msgctxt "master_admin~gui.menu.item.system"
+msgid "System"
+msgstr "System"
+
+#: master_admin~gui.menu.item.refdata
+msgctxt "master_admin~gui.menu.item.refdata"
+msgid "Reference Data"
+msgstr "Dane referencyjne"
+
+#: master_admin~gui.dashboard.title
+msgctxt "master_admin~gui.dashboard.title"
+msgid "Dashboard"
+msgstr "Panel"
+
+#: master_admin~gui.dashboard.nowidget
+msgctxt "master_admin~gui.dashboard.nowidget"
+msgid ""
+"No widget for the dashboard. Simply click on one of the links in the menu."
+msgstr "Brak widżetów. Kliknij na jeden z linków w menu."
+
+#: master_admin~gui.message.admin.password
+msgctxt "master_admin~gui.message.admin.password"
+msgid "You have got the default password, you should change it immediatly."
+msgstr "Masz ustawione domyślne hasło, powinieneś je jak najszybciej zmienić."
+
+#: master_admin~gui.main.nocontent
+msgctxt "master_admin~gui.main.nocontent"
+msgid "No content. Click on one of the menu links."
+msgstr "Brak zawartości. Kliknij na jeden z linków w menu."

@@ -1,0 +1,63 @@
+[main]
+host = https://www.transifex.com
+lang_map = cs : cs_CZ, de : de_DE, el : el_GR, es : es_ES, eu : eu_ES, fi : fi_FI, fr : fr_FR, gl : gl_ES, hu_HU : hu_HU, it : it_IT, nl : nl_NL, no : no_NO, pl_PL : pl_PL, pt_BR : pt_BR, pt : pt_PT, ro : ro_RO, ru : ru_RU, sv_SE : sv_SE, sl : sl_SL
+
+[lizmap-locales.adminpot]
+file_filter = <lang>/admin.po
+source_file = pot/admin.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.datavizpot]
+file_filter = <lang>/dataviz.po
+source_file = pot/dataviz.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.jacl2pot]
+file_filter = <lang>/jacl2.po
+source_file = pot/jacl2.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.jacl2dbpot]
+file_filter = <lang>/jacl2db.po
+source_file = pot/jacl2db.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.jacl2db_adminpot]
+file_filter = <lang>/jacl2db_admin.po
+source_file = pot/jacl2db_admin.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.jauthdb_adminpot]
+file_filter = <lang>/jauthdb_admin.po
+source_file = pot/jauthdb_admin.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.jcommunitypot]
+file_filter = <lang>/jcommunity.po
+source_file = pot/jcommunity.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.jelixpot]
+file_filter = <lang>/jelix.po
+source_file = pot/jelix.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.master_adminpot]
+file_filter = <lang>/master_admin.po
+source_file = pot/master_admin.pot
+source_lang = en
+type = PO
+
+[lizmap-locales.viewpot]
+file_filter = <lang>/view.po
+source_file = pot/view.pot
+source_lang = en
+type = PO

@@ -1,0 +1,71 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2016-04-05 14:52+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Slovenian (http://www.transifex.com/3liz-1/lizmap-locales/language/sl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+#: master_admin~gui.header.title
+msgctxt "master_admin~gui.header.title"
+msgid "Administration"
+msgstr ""
+
+#: master_admin~gui.header.user
+msgctxt "master_admin~gui.header.user"
+msgid "User:"
+msgstr ""
+
+#: master_admin~gui.header.disconnect
+msgctxt "master_admin~gui.header.disconnect"
+msgid "Logout"
+msgstr ""
+
+#: master_admin~gui.header.your.account
+msgctxt "master_admin~gui.header.your.account"
+msgid "My account"
+msgstr ""
+
+#: master_admin~gui.menu.item.dashboard
+msgctxt "master_admin~gui.menu.item.dashboard"
+msgid "Dashboard"
+msgstr ""
+
+#: master_admin~gui.menu.item.system
+msgctxt "master_admin~gui.menu.item.system"
+msgid "System"
+msgstr ""
+
+#: master_admin~gui.menu.item.refdata
+msgctxt "master_admin~gui.menu.item.refdata"
+msgid "Reference Data"
+msgstr ""
+
+#: master_admin~gui.dashboard.title
+msgctxt "master_admin~gui.dashboard.title"
+msgid "Dashboard"
+msgstr ""
+
+#: master_admin~gui.dashboard.nowidget
+msgctxt "master_admin~gui.dashboard.nowidget"
+msgid ""
+"No widget for the dashboard. Simply click on one of the links in the menu."
+msgstr ""
+
+#: master_admin~gui.message.admin.password
+msgctxt "master_admin~gui.message.admin.password"
+msgid "You have got the default password, you should change it immediatly."
+msgstr ""
+
+#: master_admin~gui.main.nocontent
+msgctxt "master_admin~gui.main.nocontent"
+msgid "No content. Click on one of the menu links."
+msgstr ""

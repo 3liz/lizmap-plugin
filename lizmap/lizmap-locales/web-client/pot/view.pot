@@ -1,0 +1,1702 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap Web Client view 3.4pre.190808\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-08-08 15:02++0200\n"
+"Language: \n"
+
+#: view~user.form.firstname.label
+msgctxt "view~user.form.firstname.label"
+msgid "First name"
+msgstr ""
+
+#: view~user.form.lastname.label
+msgctxt "view~user.form.lastname.label"
+msgid "Last name"
+msgstr ""
+
+#: view~user.form.organization.label
+msgctxt "view~user.form.organization.label"
+msgid "Organization"
+msgstr ""
+
+#: view~user.form.phonenumber.label
+msgctxt "view~user.form.phonenumber.label"
+msgid "Phone number"
+msgstr ""
+
+#: view~user.form.street.label
+msgctxt "view~user.form.street.label"
+msgid "Street"
+msgstr ""
+
+#: view~user.form.postcode.label
+msgctxt "view~user.form.postcode.label"
+msgid "Postcode"
+msgstr ""
+
+#: view~user.form.city.label
+msgctxt "view~user.form.city.label"
+msgid "City"
+msgstr ""
+
+#: view~user.form.country.label
+msgctxt "view~user.form.country.label"
+msgid "Country"
+msgstr ""
+
+#: view~user.form.comment.label
+msgctxt "view~user.form.comment.label"
+msgid "Why do you request an account?"
+msgstr ""
+
+#: view~user.form.comment.help
+msgctxt "view~user.form.comment.help"
+msgid "Please write a small text to explain why you would like to have an access to the maps."
+msgstr ""
+
+#: view~dictionnary.tree.button.checkbox
+msgctxt "view~dictionnary.tree.button.checkbox"
+msgid "Display/Hide"
+msgstr ""
+
+#: view~dictionnary.tree.button.link
+msgctxt "view~dictionnary.tree.button.link"
+msgid "Open documentation"
+msgstr ""
+
+#: view~dictionnary.tree.button.removeCache
+msgctxt "view~dictionnary.tree.button.removeCache"
+msgid "Remove cache server for this layer"
+msgstr ""
+
+#: view~dictionnary.tree.button.expand
+msgctxt "view~dictionnary.tree.button.expand"
+msgid "Expand"
+msgstr ""
+
+#: view~dictionnary.tree.button.collapse
+msgctxt "view~dictionnary.tree.button.collapse"
+msgid "Collapse"
+msgstr ""
+
+#: view~dictionnary.print.activate
+msgctxt "view~dictionnary.print.activate"
+msgid "Place the rectangle for printing"
+msgstr ""
+
+#: view~dictionnary.measure.activate.length
+msgctxt "view~dictionnary.measure.activate.length"
+msgid "Click on the map to start measuring a length."
+msgstr ""
+
+#: view~dictionnary.measure.activate.area
+msgctxt "view~dictionnary.measure.activate.area"
+msgid "Click on the map to start measuring an area."
+msgstr ""
+
+#: view~dictionnary.measure.activate.perimeter
+msgctxt "view~dictionnary.measure.activate.perimeter"
+msgid "Click on the map to start measuring a perimeter."
+msgstr ""
+
+#: view~dictionnary.measure.handle
+msgctxt "view~dictionnary.measure.handle"
+msgid "Measure:"
+msgstr ""
+
+#: view~dictionnary.geolocation.failed
+msgctxt "view~dictionnary.geolocation.failed"
+msgid "Location detection failed"
+msgstr ""
+
+#: view~dictionnary.edition.title
+msgctxt "view~dictionnary.edition.title"
+msgid "Edition"
+msgstr ""
+
+#: view~dictionnary.edition.draw.activate
+msgctxt "view~dictionnary.edition.draw.activate"
+msgid "Draw the feature you want to create on the map."
+msgstr ""
+
+#: view~dictionnary.edition.select.activate
+msgctxt "view~dictionnary.edition.select.activate"
+msgid "Click on one of the layer's features to select it."
+msgstr ""
+
+#: view~dictionnary.edition.select.modify.activate
+msgctxt "view~dictionnary.edition.select.modify.activate"
+msgid "You can modify the feature you have selected, then submit."
+msgstr ""
+
+#: view~dictionnary.edition.datepicker.open
+msgctxt "view~dictionnary.edition.datepicker.open"
+msgid "Open the calendar"
+msgstr ""
+
+#: view~dictionnary.edition.datepicker.reset
+msgctxt "view~dictionnary.edition.datepicker.reset"
+msgid "Reset the date"
+msgstr ""
+
+#: view~dictionnary.edition.confirm.delete
+msgctxt "view~dictionnary.edition.confirm.delete"
+msgid "Are you sure you want to delete the selected feature?"
+msgstr ""
+
+#: view~dictionnary.edition.confirm.cancel
+msgctxt "view~dictionnary.edition.confirm.cancel"
+msgid "Are you sure you want to cancel edition? You will lose any modifications made on the currently edited object."
+msgstr ""
+
+#: view~dictionnary.edition.message.error.no.geometry
+msgctxt "view~dictionnary.edition.message.error.no.geometry"
+msgid "You cannot save this object without a geomtetry. Please draw the geometry on the map."
+msgstr ""
+
+#: view~dictionnary.edition.point.coord.crs.layer
+msgctxt "view~dictionnary.edition.point.coord.crs.layer"
+msgid "Layer"
+msgstr ""
+
+#: view~dictionnary.edition.point.coord.crs.map
+msgctxt "view~dictionnary.edition.point.coord.crs.map"
+msgid "Map"
+msgstr ""
+
+#: view~dictionnary.externalsearch.search
+msgctxt "view~dictionnary.externalsearch.search"
+msgid "Searching"
+msgstr ""
+
+#: view~dictionnary.externalsearch.notfound
+msgctxt "view~dictionnary.externalsearch.notfound"
+msgid "No results"
+msgstr ""
+
+#: view~dictionnary.externalsearch.mapdata
+msgctxt "view~dictionnary.externalsearch.mapdata"
+msgid "Map data"
+msgstr ""
+
+#: view~dictionnary.timemanager.toolbar.play
+msgctxt "view~dictionnary.timemanager.toolbar.play"
+msgid "Play"
+msgstr ""
+
+#: view~dictionnary.timemanager.toolbar.pause
+msgctxt "view~dictionnary.timemanager.toolbar.pause"
+msgid "Pause"
+msgstr ""
+
+#: view~dictionnary.baselayer.empty.title
+msgctxt "view~dictionnary.baselayer.empty.title"
+msgid "No base map"
+msgstr ""
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.activate.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.activate.title"
+msgid "Pin"
+msgstr ""
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.deactivate.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.deactivate.title"
+msgid "Unpin"
+msgstr ""
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.glued.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.glued.title"
+msgid "Pinned"
+msgstr ""
+
+#: view~dictionnary.bottomdock.toolbar.btn.size.maximize.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.size.maximize.title"
+msgid "Maximize"
+msgstr ""
+
+#: view~dictionnary.bottomdock.toolbar.btn.size.minimize.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.size.minimize.title"
+msgid "Minimize"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.detail
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.detail"
+msgid "Detail"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.refresh.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.refresh.title"
+msgid "Get data"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.cb.data.detail.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.cb.data.detail.title"
+msgid "Display info"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.input.search.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.input.search.title"
+msgid "Search"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.select.searched.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.select.searched.title"
+msgid "Select searched line"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.unselect.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.unselect.title"
+msgid "Unselect all"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.moveselectedtotop.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.moveselectedtotop.title"
+msgid "Move selected to top"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.filter.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.filter.title"
+msgid "Filter"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.export.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.export.title"
+msgid "Export"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createFeature.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.createFeature.title"
+msgid "Create feature"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.title"
+msgid "Create a child"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.no.actived
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.no.actived"
+msgid "Activated line needed."
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.toggle.children.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.toggle.children.title"
+msgid "Toggle children tables"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.linkFeatures.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.linkFeatures.title"
+msgid "Link selected features"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.hide.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.hide.title"
+msgid "Hide"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.show.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.show.title"
+msgid "Show"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.title"
+msgid "Refresh"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip"
+msgid "Refresh the table data."
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip.changed
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip.changed"
+msgid "The map extent has changed since the last time data were fetched."
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.lines
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.lines"
+msgid "lines returned"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.nodata
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.nodata"
+msgid "No result for this layer"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.extent
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.extent"
+msgid "in the current extent"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.info.title
+msgctxt "view~dictionnary.attributeLayers.btn.info.title"
+msgid "Info"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.edit.title
+msgctxt "view~dictionnary.attributeLayers.btn.edit.title"
+msgid "Edit"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.delete.title
+msgctxt "view~dictionnary.attributeLayers.btn.delete.title"
+msgid "Delete"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.remove.link.title
+msgctxt "view~dictionnary.attributeLayers.btn.remove.link.title"
+msgid "Unlink child"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.select.title
+msgctxt "view~dictionnary.attributeLayers.btn.select.title"
+msgid "Select"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.unselect.title
+msgctxt "view~dictionnary.attributeLayers.btn.unselect.title"
+msgid "Unselect"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.zoom.title
+msgctxt "view~dictionnary.attributeLayers.btn.zoom.title"
+msgid "Zoom"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.btn.center.title
+msgctxt "view~dictionnary.attributeLayers.btn.center.title"
+msgid "Center"
+msgstr ""
+
+#: view~dictionnary.attributeLayers.msg.layer.not.visible
+msgctxt "view~dictionnary.attributeLayers.msg.layer.not.visible"
+msgid "The layer is not visible. Please zoom at a scale in which the features are visible."
+msgstr ""
+
+#: view~dictionnary.selectiontool.results.none
+msgctxt "view~dictionnary.selectiontool.results.none"
+msgid "No object selected"
+msgstr ""
+
+#: view~dictionnary.selectiontool.results.one
+msgctxt "view~dictionnary.selectiontool.results.one"
+msgid "1 selected object"
+msgstr ""
+
+#: view~dictionnary.selectiontool.results.more
+msgctxt "view~dictionnary.selectiontool.results.more"
+msgid "%s selected objects"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.title
+msgctxt "view~dictionnary.layer.metadata.title"
+msgid "Information"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.name
+msgctxt "view~dictionnary.layer.metadata.layer.name"
+msgid "Name"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.type
+msgctxt "view~dictionnary.layer.metadata.layer.type"
+msgid "Type"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.type.group
+msgctxt "view~dictionnary.layer.metadata.layer.type.group"
+msgid "Group"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.type.layer
+msgctxt "view~dictionnary.layer.metadata.layer.type.layer"
+msgid "Layer"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.abstract
+msgctxt "view~dictionnary.layer.metadata.layer.abstract"
+msgid "Description"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.link
+msgctxt "view~dictionnary.layer.metadata.layer.link"
+msgid "Information"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.layer.info.see
+msgctxt "view~dictionnary.layer.metadata.layer.info.see"
+msgid "Documentation"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.zoomToExtent.title
+msgctxt "view~dictionnary.layer.metadata.zoomToExtent.title"
+msgid "Zoom to layer extent"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.style.title
+msgctxt "view~dictionnary.layer.metadata.style.title"
+msgid "Change layer style"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.export.title
+msgctxt "view~dictionnary.layer.metadata.export.title"
+msgid "Export"
+msgstr ""
+
+#: view~dictionnary.layer.metadata.opacity.title
+msgctxt "view~dictionnary.layer.metadata.opacity.title"
+msgid "Opacity"
+msgstr ""
+
+#: view~dictionnary.layer.export.right.required
+msgctxt "view~dictionnary.layer.export.right.required"
+msgid "Right is required to export layer."
+msgstr ""
+
+#: view~dictionnary.geobookmark.name.required
+msgctxt "view~dictionnary.geobookmark.name.required"
+msgid "A name is required to create a bookmark."
+msgstr ""
+
+#: view~dictionnary.geobookmark.confirm.delete
+msgctxt "view~dictionnary.geobookmark.confirm.delete"
+msgid "Are you sure you want to delete this bookmark?"
+msgstr ""
+
+#: view~dictionnary.popup.msg.start
+msgctxt "view~dictionnary.popup.msg.start"
+msgid "Click to the map to get informations."
+msgstr ""
+
+#: view~dictionnary.popup.msg.no.result
+msgctxt "view~dictionnary.popup.msg.no.result"
+msgid "No object has been found at this location."
+msgstr ""
+
+#: view~dictionnary.generic.btn.close.title
+msgctxt "view~dictionnary.generic.btn.close.title"
+msgid "Close"
+msgstr ""
+
+#: view~dictionnary.atlas.toolbar.title
+msgctxt "view~dictionnary.atlas.toolbar.title"
+msgid "Atlas"
+msgstr ""
+
+#: view~dictionnary.atlas.navbar.title
+msgctxt "view~dictionnary.atlas.navbar.title"
+msgid "Atlas"
+msgstr ""
+
+#: view~dictionnary.atlas.toolbar.play
+msgctxt "view~dictionnary.atlas.toolbar.play"
+msgid "Play"
+msgstr ""
+
+#: view~dictionnary.atlas.toolbar.stop
+msgctxt "view~dictionnary.atlas.toolbar.stop"
+msgid "Stop"
+msgstr ""
+
+#: view~dictionnary.atlas.toolbar.pause
+msgctxt "view~dictionnary.atlas.toolbar.pause"
+msgid "Pause"
+msgstr ""
+
+#: view~dictionnary.atlas.toolbar.next
+msgctxt "view~dictionnary.atlas.toolbar.next"
+msgid "Next"
+msgstr ""
+
+#: view~dictionnary.atlas.toolbar.prev
+msgctxt "view~dictionnary.atlas.toolbar.prev"
+msgid "Previous"
+msgstr ""
+
+#: view~dictionnary.embed.open.map
+msgctxt "view~dictionnary.embed.open.map"
+msgid "Open the map in full screen"
+msgstr ""
+
+#: view~dictionnary.filter.btn.zoom.label
+msgctxt "view~dictionnary.filter.btn.zoom.label"
+msgid "Zoom"
+msgstr ""
+
+#: view~dictionnary.filter.btn.zoom.title
+msgctxt "view~dictionnary.filter.btn.zoom.title"
+msgid "Zoom to filtered features"
+msgstr ""
+
+#: view~dictionnary.filter.btn.export.label
+msgctxt "view~dictionnary.filter.btn.export.label"
+msgid "Export"
+msgstr ""
+
+#: view~dictionnary.filter.btn.export.title
+msgctxt "view~dictionnary.filter.btn.export.title"
+msgid "Export filtered features"
+msgstr ""
+
+#: view~dictionnary.filter.btn.reset.label
+msgctxt "view~dictionnary.filter.btn.reset.label"
+msgid "Reset"
+msgstr ""
+
+#: view~dictionnary.filter.btn.reset.title
+msgctxt "view~dictionnary.filter.btn.reset.title"
+msgid "Reset the filter"
+msgstr ""
+
+#: view~dictionnary.filter.input.text.title
+msgctxt "view~dictionnary.filter.input.text.title"
+msgid "Type some text to search inside this field"
+msgstr ""
+
+#: view~dictionnary.filter.input.text.placeholder
+msgctxt "view~dictionnary.filter.input.text.placeholder"
+msgid "Search inside this field"
+msgstr ""
+
+#: view~dictionnary.filter.label.features
+msgctxt "view~dictionnary.filter.label.features"
+msgid "features"
+msgstr ""
+
+#: view~edition.access.denied
+msgctxt "view~edition.access.denied"
+msgid "You have not the right to use the edition tools."
+msgstr ""
+
+#: view~edition.form.action.future.label
+msgctxt "view~edition.form.action.future.label"
+msgid "After saved"
+msgstr ""
+
+#: view~edition.form.action.future.close
+msgctxt "view~edition.form.action.future.close"
+msgid "Close form"
+msgstr ""
+
+#: view~edition.form.action.future.create
+msgctxt "view~edition.form.action.future.create"
+msgid "Create new feature"
+msgstr ""
+
+#: view~edition.form.action.future.edit
+msgctxt "view~edition.form.action.future.edit"
+msgid "Reopen form"
+msgstr ""
+
+#: view~edition.form.submit.label
+msgctxt "view~edition.form.submit.label"
+msgid "Save"
+msgstr ""
+
+#: view~edition.form.data.saved
+msgctxt "view~edition.form.data.saved"
+msgid "Data has been saved."
+msgstr ""
+
+#: view~edition.form.cancel.label
+msgctxt "view~edition.form.cancel.label"
+msgid "Cancel"
+msgstr ""
+
+#: view~edition.form.reset.label
+msgctxt "view~edition.form.reset.label"
+msgid "Reset"
+msgstr ""
+
+#: view~edition.form.btn.clear.title
+msgctxt "view~edition.form.btn.clear.title"
+msgid "Close"
+msgstr ""
+
+#: view~edition.form.cancel.confirm.message
+msgctxt "view~edition.form.cancel.confirm.message"
+msgid "Cancel edition?"
+msgstr ""
+
+#: view~edition.navbar.title
+msgctxt "view~edition.navbar.title"
+msgid "Edition"
+msgstr ""
+
+#: view~edition.toolbar.title
+msgctxt "view~edition.toolbar.title"
+msgid "Edition"
+msgstr ""
+
+#: view~edition.toolbar.draw.title
+msgctxt "view~edition.toolbar.draw.title"
+msgid "Add"
+msgstr ""
+
+#: view~edition.toolbar.draw.clear.title
+msgctxt "view~edition.toolbar.draw.clear.title"
+msgid "Clear"
+msgstr ""
+
+#: view~edition.toolbar.draw.save.title
+msgctxt "view~edition.toolbar.draw.save.title"
+msgid "Save"
+msgstr ""
+
+#: view~edition.toolbar.select.title
+msgctxt "view~edition.toolbar.select.title"
+msgid "Select"
+msgstr ""
+
+#: view~edition.toolbar.select.unselect.title
+msgctxt "view~edition.toolbar.select.unselect.title"
+msgid "Unsel."
+msgstr ""
+
+#: view~edition.toolbar.select.attr.title
+msgctxt "view~edition.toolbar.select.attr.title"
+msgid "Modify"
+msgstr ""
+
+#: view~edition.toolbar.select.undo.title
+msgctxt "view~edition.toolbar.select.undo.title"
+msgid "Undo"
+msgstr ""
+
+#: view~edition.toolbar.select.delete.title
+msgctxt "view~edition.toolbar.select.delete.title"
+msgid "Del"
+msgstr ""
+
+#: view~edition.toolbar.delete.title
+msgctxt "view~edition.toolbar.delete.title"
+msgid "Delete"
+msgstr ""
+
+#: view~edition.toolbar.cancel.title
+msgctxt "view~edition.toolbar.cancel.title"
+msgid "Cancel"
+msgstr ""
+
+#: view~edition.geomtool.nodetool.title
+msgctxt "view~edition.geomtool.nodetool.title"
+msgid "Node tool"
+msgstr ""
+
+#: view~edition.geomtool.drag.title
+msgctxt "view~edition.geomtool.drag.title"
+msgid "Drag"
+msgstr ""
+
+#: view~edition.geomtool.rotate.title
+msgctxt "view~edition.geomtool.rotate.title"
+msgid "Rotate"
+msgstr ""
+
+#: view~edition.geomtool.reshape.title
+msgctxt "view~edition.geomtool.reshape.title"
+msgid "Reshape"
+msgstr ""
+
+#: view~edition.point.coord.title
+msgctxt "view~edition.point.coord.title"
+msgid "Manage point/vertex coordinates"
+msgstr ""
+
+#: view~edition.point.coord.crs.label
+msgctxt "view~edition.point.coord.crs.label"
+msgid "CRS:"
+msgstr ""
+
+#: view~edition.point.coord.x.label
+msgctxt "view~edition.point.coord.x.label"
+msgid "X:"
+msgstr ""
+
+#: view~edition.point.coord.y.label
+msgctxt "view~edition.point.coord.y.label"
+msgid "Y:"
+msgstr ""
+
+#: view~edition.point.coord.geolocation.label
+msgctxt "view~edition.point.coord.geolocation.label"
+msgid "linked to geolocation"
+msgstr ""
+
+#: view~edition.point.coord.add.label
+msgctxt "view~edition.point.coord.add.label"
+msgid "Add"
+msgstr ""
+
+#: view~edition.point.coord.finalize.label
+msgctxt "view~edition.point.coord.finalize.label"
+msgid "Finalize"
+msgstr ""
+
+#: view~edition.geolocate.toolbar.title
+msgctxt "view~edition.geolocate.toolbar.title"
+msgid "Edition:"
+msgstr ""
+
+#: view~edition.toolbar.draw.tooltip
+msgctxt "view~edition.toolbar.draw.tooltip"
+msgid "Activate the tool for creating new objects."
+msgstr ""
+
+#: view~edition.toolbar.draw.clear.tooltip
+msgctxt "view~edition.toolbar.draw.clear.tooltip"
+msgid "Cancel the current drawing."
+msgstr ""
+
+#: view~edition.toolbar.draw.save.tooltip
+msgctxt "view~edition.toolbar.draw.save.tooltip"
+msgid "Finalize the current drawing."
+msgstr ""
+
+#: view~edition.toolbar.select.tooltip
+msgctxt "view~edition.toolbar.select.tooltip"
+msgid "Activate the selection tool."
+msgstr ""
+
+#: view~edition.toolbar.select.unselect.tooltip
+msgctxt "view~edition.toolbar.select.unselect.tooltip"
+msgid "Unselect the selected object."
+msgstr ""
+
+#: view~edition.toolbar.select.attr.tooltip
+msgctxt "view~edition.toolbar.select.attr.tooltip"
+msgid "Validate the geometry and/or open the attribute form."
+msgstr ""
+
+#: view~edition.toolbar.select.undo.tooltip
+msgctxt "view~edition.toolbar.select.undo.tooltip"
+msgid "Revert into initial geometry state."
+msgstr ""
+
+#: view~edition.toolbar.select.delete.tooltip
+msgctxt "view~edition.toolbar.select.delete.tooltip"
+msgid "Delete the selected object."
+msgstr ""
+
+#: view~edition.toolbar.cancel.tooltip
+msgctxt "view~edition.toolbar.cancel.tooltip"
+msgid "Cancel current edition."
+msgstr ""
+
+#: view~edition.modal.title.default
+msgctxt "view~edition.modal.title.default"
+msgid "Edition"
+msgstr ""
+
+#: view~edition.modal.message.no.feature.found
+msgctxt "view~edition.modal.message.no.feature.found"
+msgid "No feature has been found here."
+msgstr ""
+
+#: view~edition.message.error.parameter.project
+msgctxt "view~edition.message.error.parameter.project"
+msgid "The 'project' parameter is mandatory."
+msgstr ""
+
+#: view~edition.message.error.parameter.featureId
+msgctxt "view~edition.message.error.parameter.featureId"
+msgid "The 'featureId' parameter is mandatory."
+msgstr ""
+
+#: view~edition.message.error.layer.editable
+msgctxt "view~edition.message.error.layer.editable"
+msgid "The layer is not editable."
+msgstr ""
+
+#: view~edition.message.error.layer.editable.create
+msgctxt "view~edition.message.error.layer.editable.create"
+msgid "Create feature for the layer is not available."
+msgstr ""
+
+#: view~edition.message.error.layer.editable.delete
+msgctxt "view~edition.message.error.layer.editable.delete"
+msgid "Delete feature for the layer is not available."
+msgstr ""
+
+#: view~edition.message.error.primary.keys
+msgctxt "view~edition.message.error.primary.keys"
+msgid "Lizmap cannot find the \"%s\" layer's primary keys. The edition tool needs a defined primary key on the table."
+msgstr ""
+
+#: view~edition.message.error.feature.get
+msgctxt "view~edition.message.error.feature.get"
+msgid "Lizmap cannot get the feature data with WFS"
+msgstr ""
+
+#: view~edition.message.error.form.get
+msgctxt "view~edition.message.error.form.get"
+msgid "An error has been raised when getting the form"
+msgstr ""
+
+#: view~edition.message.error.bbox
+msgctxt "view~edition.message.error.bbox"
+msgid "The bbox has to be 4 floats separated by ','."
+msgstr ""
+
+#: view~edition.message.error.crs
+msgctxt "view~edition.message.error.crs"
+msgid "crs is mandatory and has to be an integer or EPSG:*."
+msgstr ""
+
+#: view~edition.message.error.save
+msgctxt "view~edition.message.error.save"
+msgid "An error has been raised when saving the form."
+msgstr ""
+
+#: view~edition.message.error.save.fields
+msgctxt "view~edition.message.error.save.fields"
+msgid "No fields available for saving the form."
+msgstr ""
+
+#: view~edition.message.error.delete
+msgctxt "view~edition.message.error.delete"
+msgid "The deletion has failed."
+msgstr ""
+
+#: view~edition.message.success.delete
+msgctxt "view~edition.message.success.delete"
+msgid "The feature has been deleted."
+msgstr ""
+
+#: view~edition.message.error.create
+msgctxt "view~edition.message.error.create"
+msgid "An error occured while creating the object."
+msgstr ""
+
+#: view~edition.message.success.create
+msgctxt "view~edition.message.success.create"
+msgid "Object successfully created."
+msgstr ""
+
+#: view~edition.message.error.no.geometry
+msgctxt "view~edition.message.error.no.geometry"
+msgid "You cannot save this object without a geomtetry. Please draw the geometry on the map."
+msgstr ""
+
+#: view~edition.message.error.upload.layer
+msgctxt "view~edition.message.error.upload.layer"
+msgid "The layer \"%s\" directory for uploading media is not writable."
+msgstr ""
+
+#: view~edition.message.error.upload.layer.field
+msgctxt "view~edition.message.error.upload.layer.field"
+msgid "The field \"%s\" directory of the layer \"%s\" for uploading media is not writable."
+msgstr ""
+
+#: view~edition.upload.choice.keep
+msgctxt "view~edition.upload.choice.keep"
+msgid "Keep"
+msgstr ""
+
+#: view~edition.upload.choice.update
+msgctxt "view~edition.upload.choice.update"
+msgid "Update"
+msgstr ""
+
+#: view~edition.upload.choice.delete
+msgctxt "view~edition.upload.choice.delete"
+msgid "Delete"
+msgstr ""
+
+#: view~edition.link.error.missing.parameter
+msgctxt "view~edition.link.error.missing.parameter"
+msgid "The pivot, features1 and features2 parameters are mandatory."
+msgstr ""
+
+#: view~edition.link.error.wrong.layer
+msgctxt "view~edition.link.error.wrong.layer"
+msgid "The layer does not exists."
+msgstr ""
+
+#: view~edition.link.error.multiple.ids
+msgctxt "view~edition.link.error.multiple.ids"
+msgid "You cannot link multiple objects for both layers. Please select only one object for one of the layers and retry."
+msgstr ""
+
+#: view~edition.link.error.missing.id
+msgctxt "view~edition.link.error.missing.id"
+msgid "There must be at least one object selected for each layer to create the link."
+msgstr ""
+
+#: view~edition.link.error.not.attribute.layer
+msgctxt "view~edition.link.error.not.attribute.layer"
+msgid "The layers have not be configured to have an attribute table."
+msgstr ""
+
+#: view~edition.link.error.no.create.feature
+msgctxt "view~edition.link.error.no.create.feature"
+msgid "Create feature for the layer \"%s\" is not available."
+msgstr ""
+
+#: view~edition.link.error.no.modify.attributes
+msgctxt "view~edition.link.error.no.modify.attributes"
+msgid "Modify attributes for the layer \"%s\" is not available."
+msgstr ""
+
+#: view~edition.link.error.no.given.fields
+msgctxt "view~edition.link.error.no.given.fields"
+msgid "Given fields do not exists."
+msgstr ""
+
+#: view~edition.link.error.sql
+msgctxt "view~edition.link.error.sql"
+msgid "An error occured while adding linked data."
+msgstr ""
+
+#: view~edition.link.success
+msgctxt "view~edition.link.success"
+msgid "Selected features have been correctly linked."
+msgstr ""
+
+#: view~edition.unlink.success
+msgctxt "view~edition.unlink.success"
+msgid "The child feature has correctly been unlinked."
+msgstr ""
+
+#: view~edition.unlink.error.sql
+msgctxt "view~edition.unlink.error.sql"
+msgid "An error occured while removing link."
+msgstr ""
+
+#: view~default.repository.access.denied
+msgctxt "view~default.repository.access.denied"
+msgid "You cannot access this repository."
+msgstr ""
+
+#: view~default.repository.list.title
+msgctxt "view~default.repository.list.title"
+msgid "Projects"
+msgstr ""
+
+#: view~default.home.title
+msgctxt "view~default.home.title"
+msgid "Home"
+msgstr ""
+
+#: view~default.project.access.denied
+msgctxt "view~default.project.access.denied"
+msgid "Access denied for this project."
+msgstr ""
+
+#: view~default.project.title.label
+msgctxt "view~default.project.title.label"
+msgid "Title"
+msgstr ""
+
+#: view~default.project.abstract.label
+msgctxt "view~default.project.abstract.label"
+msgid "Abstract"
+msgstr ""
+
+#: view~default.project.projection.label
+msgctxt "view~default.project.projection.label"
+msgid "Projection"
+msgstr ""
+
+#: view~default.project.bbox.label
+msgctxt "view~default.project.bbox.label"
+msgid "Bounding Box"
+msgstr ""
+
+#: view~default.project.open.map
+msgctxt "view~default.project.open.map"
+msgid "Load the map"
+msgstr ""
+
+#: view~default.project.open.map.metadata
+msgctxt "view~default.project.open.map.metadata"
+msgid "View metadata"
+msgstr ""
+
+#: view~default.project.close.map.metadata
+msgctxt "view~default.project.close.map.metadata"
+msgid "Close"
+msgstr ""
+
+#: view~default.header.connect
+msgctxt "view~default.header.connect"
+msgid "Connect"
+msgstr ""
+
+#: view~default.header.disconnect
+msgctxt "view~default.header.disconnect"
+msgid "Disconnect"
+msgstr ""
+
+#: view~default.header.createAccount
+msgctxt "view~default.header.createAccount"
+msgid "Register"
+msgstr ""
+
+#: view~default.header.menuitem.admin.label
+msgctxt "view~default.header.menuitem.admin.label"
+msgid "Administration"
+msgstr ""
+
+#: view~map.title.h1
+msgctxt "view~map.title.h1"
+msgid "Lizmap Web Client"
+msgstr ""
+
+#: view~map.title.h2
+msgctxt "view~map.title.h2"
+msgid "Qgis Server Demo"
+msgstr ""
+
+#: view~map.map
+msgctxt "view~map.map"
+msgid "Map"
+msgstr ""
+
+#: view~map.layers
+msgctxt "view~map.layers"
+msgid "Layers"
+msgstr ""
+
+#: view~map.legend
+msgctxt "view~map.legend"
+msgid "Legend"
+msgstr ""
+
+#: view~map.map.only
+msgctxt "view~map.map.only"
+msgid "Map only"
+msgstr ""
+
+#: view~map.legend.map
+msgctxt "view~map.legend.map"
+msgid "Legend/Map"
+msgstr ""
+
+#: view~map.search.nominatim.placeholder
+msgctxt "view~map.search.nominatim.placeholder"
+msgid "Search"
+msgstr ""
+
+#: view~map.search.nominatim.button
+msgctxt "view~map.search.nominatim.button"
+msgid "Searching"
+msgstr ""
+
+#: view~map.print.navbar.title
+msgctxt "view~map.print.navbar.title"
+msgid "Print"
+msgstr ""
+
+#: view~map.tooltip.navbar.title
+msgctxt "view~map.tooltip.navbar.title"
+msgid "Tooltip"
+msgstr ""
+
+#: view~map.geolocate.navbar.title
+msgctxt "view~map.geolocate.navbar.title"
+msgid "Geolocation"
+msgstr ""
+
+#: view~map.measure.navbar.title
+msgctxt "view~map.measure.navbar.title"
+msgid "Measure"
+msgstr ""
+
+#: view~map.permalink.navbar.title
+msgctxt "view~map.permalink.navbar.title"
+msgid "Permalink"
+msgstr ""
+
+#: view~map.selectiontool.navbar.title
+msgctxt "view~map.selectiontool.navbar.title"
+msgid "Selection"
+msgstr ""
+
+#: view~map.toolbar.content.underway
+msgctxt "view~map.toolbar.content.underway"
+msgid "Underway..."
+msgstr ""
+
+#: view~map.toolbar.content.stop
+msgctxt "view~map.toolbar.content.stop"
+msgid "Stop"
+msgstr ""
+
+#: view~map.print.toolbar.title
+msgctxt "view~map.print.toolbar.title"
+msgid "Print"
+msgstr ""
+
+#: view~map.print.toolbar.scale
+msgctxt "view~map.print.toolbar.scale"
+msgid "Scale"
+msgstr ""
+
+#: view~map.print.toolbar.dpi
+msgctxt "view~map.print.toolbar.dpi"
+msgid "DPI"
+msgstr ""
+
+#: view~map.print.toolbar.format
+msgctxt "view~map.print.toolbar.format"
+msgid "Format"
+msgstr ""
+
+#: view~map.print.toolbar.template
+msgctxt "view~map.print.toolbar.template"
+msgid "Template"
+msgstr ""
+
+#: view~map.tooltip.toolbar.title
+msgctxt "view~map.tooltip.toolbar.title"
+msgid "Tooltip"
+msgstr ""
+
+#: view~map.tooltip.toolbar.layer
+msgctxt "view~map.tooltip.toolbar.layer"
+msgid "Highlight layer"
+msgstr ""
+
+#: view~map.geolocate.toolbar.title
+msgctxt "view~map.geolocate.toolbar.title"
+msgid "Geolocation"
+msgstr ""
+
+#: view~map.geolocate.toolbar.center
+msgctxt "view~map.geolocate.toolbar.center"
+msgid "Center"
+msgstr ""
+
+#: view~map.geolocate.toolbar.bind
+msgctxt "view~map.geolocate.toolbar.bind"
+msgid "Stay centered"
+msgstr ""
+
+#: view~map.geolocate.toolbar.stop
+msgctxt "view~map.geolocate.toolbar.stop"
+msgid "Stop"
+msgstr ""
+
+#: view~map.measure.toolbar.title
+msgctxt "view~map.measure.toolbar.title"
+msgid "Measures"
+msgstr ""
+
+#: view~map.measure.toolbar.length
+msgctxt "view~map.measure.toolbar.length"
+msgid "Length"
+msgstr ""
+
+#: view~map.measure.toolbar.area
+msgctxt "view~map.measure.toolbar.area"
+msgid "Area"
+msgstr ""
+
+#: view~map.measure.toolbar.perimeter
+msgctxt "view~map.measure.toolbar.perimeter"
+msgid "Perimeter"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.title
+msgctxt "view~map.selectiontool.toolbar.title"
+msgid "Selection"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.layer
+msgctxt "view~map.selectiontool.toolbar.layer"
+msgid "Selection layer"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.query.deactivate
+msgctxt "view~map.selectiontool.toolbar.query.deactivate"
+msgid "Deactivate"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.query.box
+msgctxt "view~map.selectiontool.toolbar.query.box"
+msgid "Box"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.query.circle
+msgctxt "view~map.selectiontool.toolbar.query.circle"
+msgid "Circle"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.query.polygon
+msgctxt "view~map.selectiontool.toolbar.query.polygon"
+msgid "Polygon"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.query.freehand
+msgctxt "view~map.selectiontool.toolbar.query.freehand"
+msgid "Free hand"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.action.type.refresh
+msgctxt "view~map.selectiontool.toolbar.action.type.refresh"
+msgid "New selection"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.action.type.plus
+msgctxt "view~map.selectiontool.toolbar.action.type.plus"
+msgid "Add to selection"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.action.type.minus
+msgctxt "view~map.selectiontool.toolbar.action.type.minus"
+msgid "Remove from selection"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.action.unselect
+msgctxt "view~map.selectiontool.toolbar.action.unselect"
+msgid "Unselect all"
+msgstr ""
+
+#: view~map.selectiontool.toolbar.action.filter
+msgctxt "view~map.selectiontool.toolbar.action.filter"
+msgid "Filter"
+msgstr ""
+
+#: view~map.menu.close.hover
+msgctxt "view~map.menu.close.hover"
+msgid "Hide the menu"
+msgstr ""
+
+#: view~map.menu.show.hover
+msgctxt "view~map.menu.show.hover"
+msgid "Show the menu"
+msgstr ""
+
+#: view~map.locatemenu.title
+msgctxt "view~map.locatemenu.title"
+msgid "Locating"
+msgstr ""
+
+#: view~map.switchermenu.title
+msgctxt "view~map.switchermenu.title"
+msgid "Layers"
+msgstr ""
+
+#: view~map.legendmenu.title
+msgctxt "view~map.legendmenu.title"
+msgid "Legend"
+msgstr ""
+
+#: view~map.baselayermenu.title
+msgctxt "view~map.baselayermenu.title"
+msgid "Base Layer"
+msgstr ""
+
+#: view~map.baselayer.select.hover
+msgctxt "view~map.baselayer.select.hover"
+msgid "Select baselayer"
+msgstr ""
+
+#: view~map.navbar.pan.hover
+msgctxt "view~map.navbar.pan.hover"
+msgid "Pan map"
+msgstr ""
+
+#: view~map.navbar.zoom.hover
+msgctxt "view~map.navbar.zoom.hover"
+msgid "Zoom by rectangle"
+msgstr ""
+
+#: view~map.navbar.zoomextent.hover
+msgctxt "view~map.navbar.zoomextent.hover"
+msgid "Zoom to initial map extent"
+msgstr ""
+
+#: view~map.navbar.zoomin.hover
+msgctxt "view~map.navbar.zoomin.hover"
+msgid "Zoom in"
+msgstr ""
+
+#: view~map.navbar.slider.hover
+msgctxt "view~map.navbar.slider.hover"
+msgid "Slide to zoom in or out"
+msgstr ""
+
+#: view~map.navbar.zoomout.hover
+msgctxt "view~map.navbar.zoomout.hover"
+msgid "Zoom out"
+msgstr ""
+
+#: view~map.navbar.previous.hover
+msgctxt "view~map.navbar.previous.hover"
+msgid "Previous"
+msgstr ""
+
+#: view~map.navbar.next.hover
+msgctxt "view~map.navbar.next.hover"
+msgid "Next"
+msgstr ""
+
+#: view~map.overviewmap.hover
+msgctxt "view~map.overviewmap.hover"
+msgid "Move the rectanle to pan the map"
+msgstr ""
+
+#: view~map.overviewbar.scaleline.hover
+msgctxt "view~map.overviewbar.scaleline.hover"
+msgid "Scale bar"
+msgstr ""
+
+#: view~map.overviewbar.scaletext.hover
+msgctxt "view~map.overviewbar.scaletext.hover"
+msgid "Scale"
+msgstr ""
+
+#: view~map.overviewbar.scaletext.title
+msgctxt "view~map.overviewbar.scaletext.title"
+msgid "Scale"
+msgstr ""
+
+#: view~map.overviewbar.displayoverview.hover
+msgctxt "view~map.overviewbar.displayoverview.hover"
+msgid "Display/Hide Overview"
+msgstr ""
+
+#: view~map.mouseposition.hover
+msgctxt "view~map.mouseposition.hover"
+msgid "Mouse position"
+msgstr ""
+
+#: view~map.mouseposition.select
+msgctxt "view~map.mouseposition.select"
+msgid "Coordinate unit"
+msgstr ""
+
+#: view~map.mouseposition.units.m
+msgctxt "view~map.mouseposition.units.m"
+msgid "Meters"
+msgstr ""
+
+#: view~map.mouseposition.units.f
+msgctxt "view~map.mouseposition.units.f"
+msgid "Feet"
+msgstr ""
+
+#: view~map.mouseposition.units.d
+msgctxt "view~map.mouseposition.units.d"
+msgid "Degrees"
+msgstr ""
+
+#: view~map.mouseposition.units.dm
+msgctxt "view~map.mouseposition.units.dm"
+msgid "Deg. Min."
+msgstr ""
+
+#: view~map.mouseposition.units.dms
+msgctxt "view~map.mouseposition.units.dms"
+msgid "D. M. S."
+msgstr ""
+
+#: view~map.permalink.toolbar.title
+msgctxt "view~map.permalink.toolbar.title"
+msgid "Permalink"
+msgstr ""
+
+#: view~map.permalink.share.tab
+msgctxt "view~map.permalink.share.tab"
+msgid "Share"
+msgstr ""
+
+#: view~map.permalink.share.tab.title
+msgctxt "view~map.permalink.share.tab.title"
+msgid "Share the link to current map"
+msgstr ""
+
+#: view~map.permalink.share.link
+msgctxt "view~map.permalink.share.link"
+msgid "Link to current map"
+msgstr ""
+
+#: view~map.permalink.embed.tab
+msgctxt "view~map.permalink.embed.tab"
+msgid "Embed"
+msgstr ""
+
+#: view~map.permalink.embed.tab.title
+msgctxt "view~map.permalink.embed.tab.title"
+msgid "Embed the current map"
+msgstr ""
+
+#: view~map.permalink.embed.size.small
+msgctxt "view~map.permalink.embed.size.small"
+msgid "Small"
+msgstr ""
+
+#: view~map.permalink.embed.size.medium
+msgctxt "view~map.permalink.embed.size.medium"
+msgid "Medium"
+msgstr ""
+
+#: view~map.permalink.embed.size.large
+msgctxt "view~map.permalink.embed.size.large"
+msgid "Large"
+msgstr ""
+
+#: view~map.permalink.embed.size.personalized
+msgctxt "view~map.permalink.embed.size.personalized"
+msgid "Personalized"
+msgstr ""
+
+#: view~map.permalink.geobookmark.title
+msgctxt "view~map.permalink.geobookmark.title"
+msgid "Bookmarks"
+msgstr ""
+
+#: view~map.permalink.geobookmark.button.add
+msgctxt "view~map.permalink.geobookmark.button.add"
+msgid "Add a bookmark"
+msgstr ""
+
+#: view~map.permalink.geobookmark.button.del
+msgctxt "view~map.permalink.geobookmark.button.del"
+msgid "Remove this bookmark"
+msgstr ""
+
+#: view~map.permalink.geobookmark.button.run
+msgctxt "view~map.permalink.geobookmark.button.run"
+msgid "Use this bookmark"
+msgstr ""
+
+#: view~map.permalink.geobookmark.none
+msgctxt "view~map.permalink.geobookmark.none"
+msgid "No bookmark yet."
+msgstr ""
+
+#: view~map.permalink.geobookmark.name.placeholder
+msgctxt "view~map.permalink.geobookmark.name.placeholder"
+msgid "Bookmark name"
+msgstr ""
+
+#: view~map.message.zoominmax
+msgctxt "view~map.message.zoominmax"
+msgid "No deeper zoom available for this base layer"
+msgstr ""
+
+#: view~map.loading.title
+msgctxt "view~map.loading.title"
+msgid "Loading map data"
+msgstr ""
+
+#: view~map.popup.table.th.data
+msgctxt "view~map.popup.table.th.data"
+msgid "Field"
+msgstr ""
+
+#: view~map.popup.table.th.band
+msgctxt "view~map.popup.table.th.band"
+msgid "Band"
+msgstr ""
+
+#: view~map.popup.table.th.value
+msgctxt "view~map.popup.table.th.value"
+msgid "Value"
+msgstr ""
+
+#: view~map.metadata.link.label
+msgctxt "view~map.metadata.link.label"
+msgid "Information"
+msgstr ""
+
+#: view~map.metadata.h2.illustration
+msgctxt "view~map.metadata.h2.illustration"
+msgid "Illustration"
+msgstr ""
+
+#: view~map.metadata.h2.description
+msgctxt "view~map.metadata.h2.description"
+msgid "Map description"
+msgstr ""
+
+#: view~map.metadata.h2.resources
+msgctxt "view~map.metadata.h2.resources"
+msgid "Resources"
+msgstr ""
+
+#: view~map.metadata.h2.properties
+msgctxt "view~map.metadata.h2.properties"
+msgid "Properties"
+msgstr ""
+
+#: view~map.metadata.h2.contact
+msgctxt "view~map.metadata.h2.contact"
+msgid "Contact"
+msgstr ""
+
+#: view~map.metadata.description.title
+msgctxt "view~map.metadata.description.title"
+msgid "Title"
+msgstr ""
+
+#: view~map.metadata.description.abstract
+msgctxt "view~map.metadata.description.abstract"
+msgid "Description"
+msgstr ""
+
+#: view~map.metadata.resources.website
+msgctxt "view~map.metadata.resources.website"
+msgid "Website"
+msgstr ""
+
+#: view~map.metadata.properties.projection
+msgctxt "view~map.metadata.properties.projection"
+msgid "Projection"
+msgstr ""
+
+#: view~map.metadata.properties.extent
+msgctxt "view~map.metadata.properties.extent"
+msgid "Extent"
+msgstr ""
+
+#: view~map.metadata.properties.wmsGetCapabilitiesUrl
+msgctxt "view~map.metadata.properties.wmsGetCapabilitiesUrl"
+msgid "Web Map Service"
+msgstr ""
+
+#: view~map.metadata.contact.organization
+msgctxt "view~map.metadata.contact.organization"
+msgid "Organization"
+msgstr ""
+
+#: view~map.metadata.contact.person
+msgctxt "view~map.metadata.contact.person"
+msgid "Person"
+msgstr ""
+
+#: view~map.metadata.contact.email
+msgctxt "view~map.metadata.contact.email"
+msgid "E-mail"
+msgstr ""
+
+#: view~map.metadata.contact.phone
+msgctxt "view~map.metadata.contact.phone"
+msgid "Phone"
+msgstr ""
+
+#: view~map.metadata.hide
+msgctxt "view~map.metadata.hide"
+msgid "Hide information"
+msgstr ""
+
+#: view~map.timemanager.toolbar.title
+msgctxt "view~map.timemanager.toolbar.title"
+msgid "Time Manager"
+msgstr ""
+
+#: view~map.timemanager.navbar.title
+msgctxt "view~map.timemanager.navbar.title"
+msgid "Time Manager"
+msgstr ""
+
+#: view~map.timemanager.toolbar.play
+msgctxt "view~map.timemanager.toolbar.play"
+msgid "Play"
+msgstr ""
+
+#: view~map.timemanager.toolbar.pause
+msgctxt "view~map.timemanager.toolbar.pause"
+msgid "Pause"
+msgstr ""
+
+#: view~map.timemanager.toolbar.next
+msgctxt "view~map.timemanager.toolbar.next"
+msgid "Next"
+msgstr ""
+
+#: view~map.timemanager.toolbar.prev
+msgctxt "view~map.timemanager.toolbar.prev"
+msgid "Previous"
+msgstr ""
+
+#: view~map.bottomdock.toolbar.btn.clear.title
+msgctxt "view~map.bottomdock.toolbar.btn.clear.title"
+msgid "Close"
+msgstr ""
+
+#: view~map.bottomdock.toolbar.btn.glue.activate.title
+msgctxt "view~map.bottomdock.toolbar.btn.glue.activate.title"
+msgid "Pin"
+msgstr ""
+
+#: view~map.bottomdock.toolbar.btn.glue.deactivate.title
+msgctxt "view~map.bottomdock.toolbar.btn.glue.deactivate.title"
+msgid "Unpin"
+msgstr ""
+
+#: view~map.bottomdock.toolbar.btn.size.maximize.title
+msgctxt "view~map.bottomdock.toolbar.btn.size.maximize.title"
+msgid "Maximize"
+msgstr ""
+
+#: view~map.bottomdock.toolbar.btn.size.minimize.title
+msgctxt "view~map.bottomdock.toolbar.btn.size.minimize.title"
+msgid "Minimize"
+msgstr ""
+
+#: view~map.attributeLayers.navbar.title
+msgctxt "view~map.attributeLayers.navbar.title"
+msgid "Data"
+msgstr ""
+
+#: view~map.attributeLayers.toolbar.title
+msgctxt "view~map.attributeLayers.toolbar.title"
+msgid "Data"
+msgstr ""
+
+#: view~map.attributeLayers.options.title
+msgctxt "view~map.attributeLayers.options.title"
+msgid "Options"
+msgstr ""
+
+#: view~map.attributeLayers.options.input.cascade.label
+msgctxt "view~map.attributeLayers.options.input.cascade.label"
+msgid "Cascade filter to children"
+msgstr ""
+
+#: view~map.switcher.layers.expand.title
+msgctxt "view~map.switcher.layers.expand.title"
+msgid "Expand all"
+msgstr ""
+
+#: view~map.switcher.layers.collapse.title
+msgctxt "view~map.switcher.layers.collapse.title"
+msgid "Collapse all"
+msgstr ""
+
+#: view~map.switcher.layer.metadata.title
+msgctxt "view~map.switcher.layer.metadata.title"
+msgid "Information"
+msgstr ""
+
+#: view~map.switcher.layer.zoomToExtent.title
+msgctxt "view~map.switcher.layer.zoomToExtent.title"
+msgid "Zoom to layer extent"
+msgstr ""
+
+#: view~map.switcher.layer.style.title
+msgctxt "view~map.switcher.layer.style.title"
+msgid "Change layer style"
+msgstr ""
+
+#: view~map.switcher.layer.export.title
+msgctxt "view~map.switcher.layer.export.title"
+msgid "Export"
+msgstr ""
+
+#: view~map.switcher.layer.unfilter.title
+msgctxt "view~map.switcher.layer.unfilter.title"
+msgid "Deactivate current filter"
+msgstr ""

@@ -1,0 +1,26 @@
+# Translators:
+# Jean-Louis Stanus <rammstan@msn.com>, 2017
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap Web Client jacl2 3.4pre.190808\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2016-11-09 17:12+0000\n"
+"Last-Translator: Jean-Louis Stanus <rammstan@msn.com>, 2017\n"
+"Language-Team: Dutch (https://www.transifex.com/3liz-1/teams/62012/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: jacl2~errors.driver.notfound
+msgctxt "jacl2~errors.driver.notfound"
+msgid "(370) Driver %s for jAcl2 not found"
+msgstr "(370) Driver %s voor jAcl2 niet gevonden"
+
+#: jacl2~errors.action.right.needed
+msgctxt "jacl2~errors.action.right.needed"
+msgid "(371) The user is not allowed to access to this page"
+msgstr "(371) De gebruiker heeft geen toegang tot deze pagina"

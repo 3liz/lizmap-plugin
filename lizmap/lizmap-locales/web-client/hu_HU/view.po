@@ -1,0 +1,1730 @@
+# 
+# Translators:
+# kasza jozsef <kasza.nkataszri@gmail.com>, 2018-2019
+# kasza jozsef <kasza.nkataszri@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-05-27 13:28+0000\n"
+"Last-Translator: kasza jozsef <kasza.nkataszri@gmail.com>\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/3liz-1/lizmap-locales/language/hu_HU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: view~user.form.firstname.label
+msgctxt "view~user.form.firstname.label"
+msgid "First name"
+msgstr "Keresztnév"
+
+#: view~user.form.lastname.label
+msgctxt "view~user.form.lastname.label"
+msgid "Last name"
+msgstr "Vezetéknév"
+
+#: view~user.form.organization.label
+msgctxt "view~user.form.organization.label"
+msgid "Organization"
+msgstr "Szervezet"
+
+#: view~user.form.phonenumber.label
+msgctxt "view~user.form.phonenumber.label"
+msgid "Phone number"
+msgstr "Telefon"
+
+#: view~user.form.street.label
+msgctxt "view~user.form.street.label"
+msgid "Street"
+msgstr "Utca"
+
+#: view~user.form.postcode.label
+msgctxt "view~user.form.postcode.label"
+msgid "Postcode"
+msgstr "Irányítószám"
+
+#: view~user.form.city.label
+msgctxt "view~user.form.city.label"
+msgid "City"
+msgstr "Város"
+
+#: view~user.form.country.label
+msgctxt "view~user.form.country.label"
+msgid "Country"
+msgstr "Ország"
+
+#: view~user.form.comment.label
+msgctxt "view~user.form.comment.label"
+msgid "Why do you request an account?"
+msgstr "Miért igényel felhasználói fiókot?"
+
+#: view~user.form.comment.help
+msgctxt "view~user.form.comment.help"
+msgid ""
+"Please write a small text to explain why you would like to have an access to"
+" the maps."
+msgstr "Kérem írjon néhány sort, melyből kiderül, hogy milyen céllal szeretne hozzáférni a térképekhez."
+
+#: view~dictionnary.tree.button.checkbox
+msgctxt "view~dictionnary.tree.button.checkbox"
+msgid "Display/Hide"
+msgstr "Mutat/Elrejt"
+
+#: view~dictionnary.tree.button.link
+msgctxt "view~dictionnary.tree.button.link"
+msgid "Open documentation"
+msgstr "Dokumentáció megnyitása"
+
+#: view~dictionnary.tree.button.removeCache
+msgctxt "view~dictionnary.tree.button.removeCache"
+msgid "Remove cache server for this layer"
+msgstr "Gyorsítótár-szerver eltávolítása erre a rétegre"
+
+#: view~dictionnary.tree.button.expand
+msgctxt "view~dictionnary.tree.button.expand"
+msgid "Expand"
+msgstr "Kinyit"
+
+#: view~dictionnary.tree.button.collapse
+msgctxt "view~dictionnary.tree.button.collapse"
+msgid "Collapse"
+msgstr "Bezár"
+
+#: view~dictionnary.print.activate
+msgctxt "view~dictionnary.print.activate"
+msgid "Place the rectangle for printing"
+msgstr "Húzza a négyzetet a nyomtatandó területre."
+
+#: view~dictionnary.measure.activate.length
+msgctxt "view~dictionnary.measure.activate.length"
+msgid "Click on the map to start measuring a length."
+msgstr "Kattintson a térképre a hosszmérés kezdőpontjának megadásához."
+
+#: view~dictionnary.measure.activate.area
+msgctxt "view~dictionnary.measure.activate.area"
+msgid "Click on the map to start measuring an area."
+msgstr "Kattintson a térképre a területmérés kezdőpontjának megadásához."
+
+#: view~dictionnary.measure.activate.perimeter
+msgctxt "view~dictionnary.measure.activate.perimeter"
+msgid "Click on the map to start measuring a perimeter."
+msgstr "Kattintson a térképre a kerületmérés kezdőpontjának megadásához."
+
+#: view~dictionnary.measure.handle
+msgctxt "view~dictionnary.measure.handle"
+msgid "Measure:"
+msgstr "Mérés:"
+
+#: view~dictionnary.geolocation.failed
+msgctxt "view~dictionnary.geolocation.failed"
+msgid "Location detection failed"
+msgstr "A helymeghatározás sikertelen"
+
+#: view~dictionnary.edition.title
+msgctxt "view~dictionnary.edition.title"
+msgid "Edition"
+msgstr "szerkesztőeszköz"
+
+#: view~dictionnary.edition.draw.activate
+msgctxt "view~dictionnary.edition.draw.activate"
+msgid "Draw the feature you want to create on the map."
+msgstr "Rajzolja meg a létrehozandó elemet a térképen."
+
+#: view~dictionnary.edition.select.activate
+msgctxt "view~dictionnary.edition.select.activate"
+msgid "Click on one of the layer's features to select it."
+msgstr "Kattintással válassza ki a réteg kívánt elemét."
+
+#: view~dictionnary.edition.select.modify.activate
+msgctxt "view~dictionnary.edition.select.modify.activate"
+msgid "You can modify the feature you have selected, then submit."
+msgstr "Módosíthatja a kiválasztott elemet, és elmentheti a módosításokat."
+
+#: view~dictionnary.edition.datepicker.open
+msgctxt "view~dictionnary.edition.datepicker.open"
+msgid "Open the calendar"
+msgstr "Naptár megnyitása"
+
+#: view~dictionnary.edition.datepicker.reset
+msgctxt "view~dictionnary.edition.datepicker.reset"
+msgid "Reset the date"
+msgstr "Dátum reset"
+
+#: view~dictionnary.edition.confirm.delete
+msgctxt "view~dictionnary.edition.confirm.delete"
+msgid "Are you sure you want to delete the selected feature?"
+msgstr "Biztosan törölni szeretné a kiválasztott elemet?"
+
+#: view~dictionnary.edition.confirm.cancel
+msgctxt "view~dictionnary.edition.confirm.cancel"
+msgid ""
+"Are you sure you want to cancel edition? You will lose any modifications "
+"made on the currently edited object."
+msgstr "Biztosan kilép az aktuális szerkesztőből? A folyamatban lévő szerkesztések el fognak veszni."
+
+#: view~dictionnary.edition.message.error.no.geometry
+msgctxt "view~dictionnary.edition.message.error.no.geometry"
+msgid ""
+"You cannot save this object without a geomtetry. Please draw the geometry on"
+" the map."
+msgstr "Az objektum nem menthető geometriai alakzat rajzolása nélkül. Rajzoljon egy geometriai alakzatot a térképre."
+
+#: view~dictionnary.edition.point.coord.crs.layer
+msgctxt "view~dictionnary.edition.point.coord.crs.layer"
+msgid "Layer"
+msgstr "Réteg"
+
+#: view~dictionnary.edition.point.coord.crs.map
+msgctxt "view~dictionnary.edition.point.coord.crs.map"
+msgid "Map"
+msgstr "Térkép"
+
+#: view~dictionnary.externalsearch.search
+msgctxt "view~dictionnary.externalsearch.search"
+msgid "Searching"
+msgstr "Keresés folyamatban"
+
+#: view~dictionnary.externalsearch.notfound
+msgctxt "view~dictionnary.externalsearch.notfound"
+msgid "No results"
+msgstr "Nincs eredmény"
+
+#: view~dictionnary.externalsearch.mapdata
+msgctxt "view~dictionnary.externalsearch.mapdata"
+msgid "Map data"
+msgstr "Térkép-adat"
+
+#: view~dictionnary.timemanager.toolbar.play
+msgctxt "view~dictionnary.timemanager.toolbar.play"
+msgid "Play"
+msgstr "Lejátszás"
+
+#: view~dictionnary.timemanager.toolbar.pause
+msgctxt "view~dictionnary.timemanager.toolbar.pause"
+msgid "Pause"
+msgstr "Lejátszás szüneteltetése"
+
+#: view~dictionnary.baselayer.empty.title
+msgctxt "view~dictionnary.baselayer.empty.title"
+msgid "No base map"
+msgstr "Nincs alaptérkép"
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.activate.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.activate.title"
+msgid "Pin"
+msgstr "Rögzít"
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.deactivate.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.deactivate.title"
+msgid "Unpin"
+msgstr "Felold"
+
+#: view~dictionnary.bottomdock.toolbar.btn.glue.glued.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.glue.glued.title"
+msgid "Pinned"
+msgstr "Rögzítve"
+
+#: view~dictionnary.bottomdock.toolbar.btn.size.maximize.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.size.maximize.title"
+msgid "Maximize"
+msgstr "Maximális méret"
+
+#: view~dictionnary.bottomdock.toolbar.btn.size.minimize.title
+msgctxt "view~dictionnary.bottomdock.toolbar.btn.size.minimize.title"
+msgid "Minimize"
+msgstr "Minimális méret"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.detail
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.detail"
+msgid "Detail"
+msgstr "Részletek"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.refresh.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.refresh.title"
+msgid "Get data"
+msgstr "Adatkérés"
+
+#: view~dictionnary.attributeLayers.toolbar.cb.data.detail.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.cb.data.detail.title"
+msgid "Display info"
+msgstr "Információ megjelenítése"
+
+#: view~dictionnary.attributeLayers.toolbar.input.search.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.input.search.title"
+msgid "Search"
+msgstr "Keresés"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.select.searched.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.select.searched.title"
+msgid "Select searched line"
+msgstr "A keresett sor kijelölése"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.unselect.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.unselect.title"
+msgid "Unselect all"
+msgstr "Szelekció megszüntetése"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.moveselectedtotop.title
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.moveselectedtotop.title"
+msgid "Move selected to top"
+msgstr "A kiválasztott elem mozgatása legfölülre"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.filter.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.filter.title"
+msgid "Filter"
+msgstr "Szűrés"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.export.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.export.title"
+msgid "Export"
+msgstr "Exportálás"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createFeature.title
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.createFeature.title"
+msgid "Create feature"
+msgstr "Elem létrehozása"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.title
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.title"
+msgid "Create a child"
+msgstr "Gyermek létrekozása"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.no.actived
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.data.createChildFeature.no.actived"
+msgid "Activated line needed."
+msgstr "Aktív sor szükséges."
+
+#: view~dictionnary.attributeLayers.toolbar.btn.toggle.children.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.toggle.children.title"
+msgid "Toggle children tables"
+msgstr "Gyermektáblák bekapcsolása"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.linkFeatures.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.linkFeatures.title"
+msgid "Link selected features"
+msgstr "A kiválasztott elemek összekapcsolása"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.hide.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.hide.title"
+msgid "Hide"
+msgstr "Elrejt"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.data.show.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.data.show.title"
+msgid "Show"
+msgstr "Mutat"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.title
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.title"
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip
+msgctxt "view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip"
+msgid "Refresh the table data."
+msgstr "A tábla adatainak frissítése"
+
+#: view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip.changed
+msgctxt ""
+"view~dictionnary.attributeLayers.toolbar.btn.refresh.table.tooltip.changed"
+msgid "The map extent has changed since the last time data were fetched."
+msgstr "A térkép külső határai megváltoztak az utolsó adatkérés óta."
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.lines
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.lines"
+msgid "lines returned"
+msgstr "sor visszaadva"
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.nodata
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.nodata"
+msgid "No result for this layer"
+msgstr "A megadott rétegre nincs eredmény"
+
+#: view~dictionnary.attributeLayers.toolbar.msg.data.extent
+msgctxt "view~dictionnary.attributeLayers.toolbar.msg.data.extent"
+msgid "in the current extent"
+msgstr "az aktuális külső határokon belül"
+
+#: view~dictionnary.attributeLayers.btn.info.title
+msgctxt "view~dictionnary.attributeLayers.btn.info.title"
+msgid "Info"
+msgstr "Információ"
+
+#: view~dictionnary.attributeLayers.btn.edit.title
+msgctxt "view~dictionnary.attributeLayers.btn.edit.title"
+msgid "Edit"
+msgstr "Szerkeszt"
+
+#: view~dictionnary.attributeLayers.btn.delete.title
+msgctxt "view~dictionnary.attributeLayers.btn.delete.title"
+msgid "Delete"
+msgstr "Töröl"
+
+#: view~dictionnary.attributeLayers.btn.remove.link.title
+msgctxt "view~dictionnary.attributeLayers.btn.remove.link.title"
+msgid "Unlink child"
+msgstr "A származtatott / gyermek elemek leválasztása"
+
+#: view~dictionnary.attributeLayers.btn.select.title
+msgctxt "view~dictionnary.attributeLayers.btn.select.title"
+msgid "Select"
+msgstr "Kiválaszt"
+
+#: view~dictionnary.attributeLayers.btn.unselect.title
+msgctxt "view~dictionnary.attributeLayers.btn.unselect.title"
+msgid "Unselect"
+msgstr "Szelekció megszüntetése"
+
+#: view~dictionnary.attributeLayers.btn.zoom.title
+msgctxt "view~dictionnary.attributeLayers.btn.zoom.title"
+msgid "Zoom"
+msgstr "Zoom"
+
+#: view~dictionnary.attributeLayers.btn.center.title
+msgctxt "view~dictionnary.attributeLayers.btn.center.title"
+msgid "Center"
+msgstr "Középpont"
+
+#: view~dictionnary.attributeLayers.msg.layer.not.visible
+msgctxt "view~dictionnary.attributeLayers.msg.layer.not.visible"
+msgid ""
+"The layer is not visible. Please zoom at a scale in which the features are "
+"visible."
+msgstr "A réteg nem látható. Kérem, közelítsen/távolítson olyan méretig, melynél láthatók a térképelemek."
+
+#: view~dictionnary.selectiontool.results.none
+msgctxt "view~dictionnary.selectiontool.results.none"
+msgid "No object selected"
+msgstr "Nincs kiválasztott objektum "
+
+#: view~dictionnary.selectiontool.results.one
+msgctxt "view~dictionnary.selectiontool.results.one"
+msgid "1 selected object"
+msgstr "1 kiválasztott objektum"
+
+#: view~dictionnary.selectiontool.results.more
+msgctxt "view~dictionnary.selectiontool.results.more"
+msgid "%s selected objects"
+msgstr "%s kiválasztott objektum"
+
+#: view~dictionnary.layer.metadata.title
+msgctxt "view~dictionnary.layer.metadata.title"
+msgid "Information"
+msgstr "Információ"
+
+#: view~dictionnary.layer.metadata.layer.name
+msgctxt "view~dictionnary.layer.metadata.layer.name"
+msgid "Name"
+msgstr "Név"
+
+#: view~dictionnary.layer.metadata.layer.type
+msgctxt "view~dictionnary.layer.metadata.layer.type"
+msgid "Type"
+msgstr "Típus"
+
+#: view~dictionnary.layer.metadata.layer.type.group
+msgctxt "view~dictionnary.layer.metadata.layer.type.group"
+msgid "Group"
+msgstr "Csoport"
+
+#: view~dictionnary.layer.metadata.layer.type.layer
+msgctxt "view~dictionnary.layer.metadata.layer.type.layer"
+msgid "Layer"
+msgstr "Réteg"
+
+#: view~dictionnary.layer.metadata.layer.abstract
+msgctxt "view~dictionnary.layer.metadata.layer.abstract"
+msgid "Description"
+msgstr "Leírás"
+
+#: view~dictionnary.layer.metadata.layer.link
+msgctxt "view~dictionnary.layer.metadata.layer.link"
+msgid "Information"
+msgstr "Információ"
+
+#: view~dictionnary.layer.metadata.layer.info.see
+msgctxt "view~dictionnary.layer.metadata.layer.info.see"
+msgid "Documentation"
+msgstr "Dokumentáció"
+
+#: view~dictionnary.layer.metadata.zoomToExtent.title
+msgctxt "view~dictionnary.layer.metadata.zoomToExtent.title"
+msgid "Zoom to layer extent"
+msgstr "Zoom a réteg széleihez igazodva"
+
+#: view~dictionnary.layer.metadata.style.title
+msgctxt "view~dictionnary.layer.metadata.style.title"
+msgid "Change layer style"
+msgstr "Rétegstílus megváltoztatása"
+
+#: view~dictionnary.layer.metadata.export.title
+msgctxt "view~dictionnary.layer.metadata.export.title"
+msgid "Export"
+msgstr "Export"
+
+#: view~dictionnary.layer.metadata.opacity.title
+msgctxt "view~dictionnary.layer.metadata.opacity.title"
+msgid "Opacity"
+msgstr "Átlátszóság"
+
+#: view~dictionnary.layer.export.right.required
+msgctxt "view~dictionnary.layer.export.right.required"
+msgid "Right is required to export layer."
+msgstr "A réteg exportálásához jogosultság szükséges"
+
+#: view~dictionnary.geobookmark.name.required
+msgctxt "view~dictionnary.geobookmark.name.required"
+msgid "A name is required to create a bookmark."
+msgstr "A könyvjelző létrehozásához adja meg a nevét."
+
+#: view~dictionnary.geobookmark.confirm.delete
+msgctxt "view~dictionnary.geobookmark.confirm.delete"
+msgid "Are you sure you want to delete this bookmark?"
+msgstr "Biztosan törölni szeretné ezt a könyvjelzőt?"
+
+#: view~dictionnary.popup.msg.start
+msgctxt "view~dictionnary.popup.msg.start"
+msgid "Click to the map to get informations."
+msgstr "Kattintson a térképre az információkért."
+
+#: view~dictionnary.popup.msg.no.result
+msgctxt "view~dictionnary.popup.msg.no.result"
+msgid "No object has been found at this location."
+msgstr "A megadott helyen nem található objektum."
+
+#: view~dictionnary.generic.btn.close.title
+msgctxt "view~dictionnary.generic.btn.close.title"
+msgid "Close"
+msgstr "Bezár"
+
+#: view~dictionnary.atlas.toolbar.title
+msgctxt "view~dictionnary.atlas.toolbar.title"
+msgid "Atlas"
+msgstr "Atlasz"
+
+#: view~dictionnary.atlas.navbar.title
+msgctxt "view~dictionnary.atlas.navbar.title"
+msgid "Atlas"
+msgstr "Atlasz"
+
+#: view~dictionnary.atlas.toolbar.play
+msgctxt "view~dictionnary.atlas.toolbar.play"
+msgid "Play"
+msgstr "Lejátszás"
+
+#: view~dictionnary.atlas.toolbar.stop
+msgctxt "view~dictionnary.atlas.toolbar.stop"
+msgid "Stop"
+msgstr "Stop"
+
+#: view~dictionnary.atlas.toolbar.pause
+msgctxt "view~dictionnary.atlas.toolbar.pause"
+msgid "Pause"
+msgstr "Lejátszás szüneteltetése"
+
+#: view~dictionnary.atlas.toolbar.next
+msgctxt "view~dictionnary.atlas.toolbar.next"
+msgid "Next"
+msgstr "Következő"
+
+#: view~dictionnary.atlas.toolbar.prev
+msgctxt "view~dictionnary.atlas.toolbar.prev"
+msgid "Previous"
+msgstr "Előző"
+
+#: view~dictionnary.embed.open.map
+msgctxt "view~dictionnary.embed.open.map"
+msgid "Open the map in full screen"
+msgstr "A térkép megnyitása teljes képernyőn"
+
+#: view~dictionnary.filter.btn.zoom.label
+msgctxt "view~dictionnary.filter.btn.zoom.label"
+msgid "Zoom"
+msgstr "Zoom"
+
+#: view~dictionnary.filter.btn.zoom.title
+msgctxt "view~dictionnary.filter.btn.zoom.title"
+msgid "Zoom to filtered features"
+msgstr ""
+
+#: view~dictionnary.filter.btn.export.label
+msgctxt "view~dictionnary.filter.btn.export.label"
+msgid "Export"
+msgstr "Exportálás"
+
+#: view~dictionnary.filter.btn.export.title
+msgctxt "view~dictionnary.filter.btn.export.title"
+msgid "Export filtered features"
+msgstr ""
+
+#: view~dictionnary.filter.btn.reset.label
+msgctxt "view~dictionnary.filter.btn.reset.label"
+msgid "Reset"
+msgstr "Újrakezdés"
+
+#: view~dictionnary.filter.btn.reset.title
+msgctxt "view~dictionnary.filter.btn.reset.title"
+msgid "Reset the filter"
+msgstr ""
+
+#: view~dictionnary.filter.input.text.title
+msgctxt "view~dictionnary.filter.input.text.title"
+msgid "Type some text to search inside this field"
+msgstr ""
+
+#: view~dictionnary.filter.input.text.placeholder
+msgctxt "view~dictionnary.filter.input.text.placeholder"
+msgid "Search inside this field"
+msgstr ""
+
+#: view~dictionnary.filter.label.features
+msgctxt "view~dictionnary.filter.label.features"
+msgid "features"
+msgstr ""
+
+#: view~edition.access.denied
+msgctxt "view~edition.access.denied"
+msgid "You have not the right to use the edition tools."
+msgstr "Nincs joga a szerkesztő eszköz használatához."
+
+#: view~edition.form.action.future.label
+msgctxt "view~edition.form.action.future.label"
+msgid "After saved"
+msgstr "Mentés utáni"
+
+#: view~edition.form.action.future.close
+msgctxt "view~edition.form.action.future.close"
+msgid "Close form"
+msgstr "Form bezárása"
+
+#: view~edition.form.action.future.create
+msgctxt "view~edition.form.action.future.create"
+msgid "Create new feature"
+msgstr "Új elem létrehozása"
+
+#: view~edition.form.action.future.edit
+msgctxt "view~edition.form.action.future.edit"
+msgid "Reopen form"
+msgstr "Form újranyitása"
+
+#: view~edition.form.submit.label
+msgctxt "view~edition.form.submit.label"
+msgid "Save"
+msgstr "Mentés"
+
+#: view~edition.form.data.saved
+msgctxt "view~edition.form.data.saved"
+msgid "Data has been saved."
+msgstr "Az adatok mentése sikeres"
+
+#: view~edition.form.cancel.label
+msgctxt "view~edition.form.cancel.label"
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: view~edition.form.reset.label
+msgctxt "view~edition.form.reset.label"
+msgid "Reset"
+msgstr "Újrakezdés"
+
+#: view~edition.form.btn.clear.title
+msgctxt "view~edition.form.btn.clear.title"
+msgid "Close"
+msgstr "Bezár"
+
+#: view~edition.form.cancel.confirm.message
+msgctxt "view~edition.form.cancel.confirm.message"
+msgid "Cancel edition?"
+msgstr "Kilép a szerkesztőeszközből?"
+
+#: view~edition.navbar.title
+msgctxt "view~edition.navbar.title"
+msgid "Edition"
+msgstr "szerkesztőeszköz"
+
+#: view~edition.toolbar.title
+msgctxt "view~edition.toolbar.title"
+msgid "Edition"
+msgstr "szerkesztőeszköz"
+
+#: view~edition.toolbar.draw.title
+msgctxt "view~edition.toolbar.draw.title"
+msgid "Add"
+msgstr "Hozzáad"
+
+#: view~edition.toolbar.draw.clear.title
+msgctxt "view~edition.toolbar.draw.clear.title"
+msgid "Clear"
+msgstr "Törlés"
+
+#: view~edition.toolbar.draw.save.title
+msgctxt "view~edition.toolbar.draw.save.title"
+msgid "Save"
+msgstr "Mentés"
+
+#: view~edition.toolbar.select.title
+msgctxt "view~edition.toolbar.select.title"
+msgid "Select"
+msgstr "Kiválaszt"
+
+#: view~edition.toolbar.select.unselect.title
+msgctxt "view~edition.toolbar.select.unselect.title"
+msgid "Unsel."
+msgstr "Kijelölés törlése"
+
+#: view~edition.toolbar.select.attr.title
+msgctxt "view~edition.toolbar.select.attr.title"
+msgid "Modify"
+msgstr "Módosít"
+
+#: view~edition.toolbar.select.undo.title
+msgctxt "view~edition.toolbar.select.undo.title"
+msgid "Undo"
+msgstr "Visszavon"
+
+#: view~edition.toolbar.select.delete.title
+msgctxt "view~edition.toolbar.select.delete.title"
+msgid "Del"
+msgstr "Törlés"
+
+#: view~edition.toolbar.delete.title
+msgctxt "view~edition.toolbar.delete.title"
+msgid "Delete"
+msgstr "Töröl"
+
+#: view~edition.toolbar.cancel.title
+msgctxt "view~edition.toolbar.cancel.title"
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: view~edition.geomtool.nodetool.title
+msgctxt "view~edition.geomtool.nodetool.title"
+msgid "Node tool"
+msgstr "Csomópont eszköz"
+
+#: view~edition.geomtool.drag.title
+msgctxt "view~edition.geomtool.drag.title"
+msgid "Drag"
+msgstr "Mozgatás"
+
+#: view~edition.geomtool.rotate.title
+msgctxt "view~edition.geomtool.rotate.title"
+msgid "Rotate"
+msgstr "Forgatás"
+
+#: view~edition.geomtool.reshape.title
+msgctxt "view~edition.geomtool.reshape.title"
+msgid "Reshape"
+msgstr "Újra-rajzolás"
+
+#: view~edition.point.coord.title
+msgctxt "view~edition.point.coord.title"
+msgid "Manage point/vertex coordinates"
+msgstr "A point/vertex koordináták módosítása"
+
+#: view~edition.point.coord.crs.label
+msgctxt "view~edition.point.coord.crs.label"
+msgid "CRS:"
+msgstr "CRS:"
+
+#: view~edition.point.coord.x.label
+msgctxt "view~edition.point.coord.x.label"
+msgid "X:"
+msgstr "X:"
+
+#: view~edition.point.coord.y.label
+msgctxt "view~edition.point.coord.y.label"
+msgid "Y:"
+msgstr "Y:"
+
+#: view~edition.point.coord.geolocation.label
+msgctxt "view~edition.point.coord.geolocation.label"
+msgid "linked to geolocation"
+msgstr "földrajzi helyhez /geolokációhoz/ kapcsolva"
+
+#: view~edition.point.coord.add.label
+msgctxt "view~edition.point.coord.add.label"
+msgid "Add"
+msgstr "Hozzáad"
+
+#: view~edition.point.coord.finalize.label
+msgctxt "view~edition.point.coord.finalize.label"
+msgid "Finalize"
+msgstr "Véglegesítés"
+
+#: view~edition.geolocate.toolbar.title
+msgctxt "view~edition.geolocate.toolbar.title"
+msgid "Edition:"
+msgstr "Szerkesztőeszköz:"
+
+#: view~edition.toolbar.draw.tooltip
+msgctxt "view~edition.toolbar.draw.tooltip"
+msgid "Activate the tool for creating new objects."
+msgstr "Aktiválja az eszközt új objektumok létrehozásához."
+
+#: view~edition.toolbar.draw.clear.tooltip
+msgctxt "view~edition.toolbar.draw.clear.tooltip"
+msgid "Cancel the current drawing."
+msgstr "Kilépés az aktuális rajzból."
+
+#: view~edition.toolbar.draw.save.tooltip
+msgctxt "view~edition.toolbar.draw.save.tooltip"
+msgid "Finalize the current drawing."
+msgstr "Az aktuális rajz véglegesítése."
+
+#: view~edition.toolbar.select.tooltip
+msgctxt "view~edition.toolbar.select.tooltip"
+msgid "Activate the selection tool."
+msgstr "A kiválasztó eszköz aktiválása."
+
+#: view~edition.toolbar.select.unselect.tooltip
+msgctxt "view~edition.toolbar.select.unselect.tooltip"
+msgid "Unselect the selected object."
+msgstr "Szelekció megszüntetése a kiválasztott objektumokra."
+
+#: view~edition.toolbar.select.attr.tooltip
+msgctxt "view~edition.toolbar.select.attr.tooltip"
+msgid "Validate the geometry and/or open the attribute form."
+msgstr "A geometria validálása és/vagy az attribútumok megnyitása."
+
+#: view~edition.toolbar.select.undo.tooltip
+msgctxt "view~edition.toolbar.select.undo.tooltip"
+msgid "Revert into initial geometry state."
+msgstr "Visszalépés a geometria eredeti állapotához."
+
+#: view~edition.toolbar.select.delete.tooltip
+msgctxt "view~edition.toolbar.select.delete.tooltip"
+msgid "Delete the selected object."
+msgstr "A kiválasztott objektum törlése."
+
+#: view~edition.toolbar.cancel.tooltip
+msgctxt "view~edition.toolbar.cancel.tooltip"
+msgid "Cancel current edition."
+msgstr "Kilépés a szerkesztőeszközből."
+
+#: view~edition.modal.title.default
+msgctxt "view~edition.modal.title.default"
+msgid "Edition"
+msgstr "szerkesztőeszköz"
+
+#: view~edition.modal.message.no.feature.found
+msgctxt "view~edition.modal.message.no.feature.found"
+msgid "No feature has been found here."
+msgstr "Nem találhatóak elemek."
+
+#: view~edition.message.error.parameter.project
+msgctxt "view~edition.message.error.parameter.project"
+msgid "The 'project' parameter is mandatory."
+msgstr "A 'project' paraméter elengedhetetlen."
+
+#: view~edition.message.error.parameter.featureId
+msgctxt "view~edition.message.error.parameter.featureId"
+msgid "The 'featureId' parameter is mandatory."
+msgstr "A 'featured' paraméter elengedhetetlen."
+
+#: view~edition.message.error.layer.editable
+msgctxt "view~edition.message.error.layer.editable"
+msgid "The layer is not editable."
+msgstr "A réteg nem módosítható."
+
+#: view~edition.message.error.layer.editable.create
+msgctxt "view~edition.message.error.layer.editable.create"
+msgid "Create feature for the layer is not available."
+msgstr "Nem hozható létre új elem a rétegen."
+
+#: view~edition.message.error.layer.editable.delete
+msgctxt "view~edition.message.error.layer.editable.delete"
+msgid "Delete feature for the layer is not available."
+msgstr "Az elem törlése nem hajtható végre a rétegen."
+
+#: view~edition.message.error.primary.keys
+msgctxt "view~edition.message.error.primary.keys"
+msgid ""
+"Lizmap cannot find the \"%s\" layer's primary keys. The edition tool needs a"
+" defined primary key on the table."
+msgstr "A Lizmap nem találja a \"%s\" réteg elsődleges kulcsát. A szerkesztőeszköz használatához elengedhetetlen, hogy a táblának legyen elsődleges kulcsa."
+
+#: view~edition.message.error.feature.get
+msgctxt "view~edition.message.error.feature.get"
+msgid "Lizmap cannot get the feature data with WFS"
+msgstr "A Lizmap nem éri el az elem adatait WFS-en keresztül"
+
+#: view~edition.message.error.form.get
+msgctxt "view~edition.message.error.form.get"
+msgid "An error has been raised when getting the form"
+msgstr "Hiba az űrlap betöltése közben"
+
+#: view~edition.message.error.bbox
+msgctxt "view~edition.message.error.bbox"
+msgid "The bbox has to be 4 floats separated by ','."
+msgstr "A határoló négyszög megadása 4 darab tört számmal lehetséges, ','-vel elválasztva."
+
+#: view~edition.message.error.crs
+msgctxt "view~edition.message.error.crs"
+msgid "crs is mandatory and has to be an integer or EPSG:*."
+msgstr "crs megadása kötelező, melynek egész számnak, vagy ESPG:* formátumnak kell lennie."
+
+#: view~edition.message.error.save
+msgctxt "view~edition.message.error.save"
+msgid "An error has been raised when saving the form."
+msgstr "Hiba az űrlap mentése közben."
+
+#: view~edition.message.error.save.fields
+msgctxt "view~edition.message.error.save.fields"
+msgid "No fields available for saving the form."
+msgstr "Nincs mező az űrlap mentéséhez."
+
+#: view~edition.message.error.delete
+msgctxt "view~edition.message.error.delete"
+msgid "The deletion has failed."
+msgstr "A törlés nem történt meg."
+
+#: view~edition.message.success.delete
+msgctxt "view~edition.message.success.delete"
+msgid "The feature has been deleted."
+msgstr "Az elem törlésre került."
+
+#: view~edition.message.error.create
+msgctxt "view~edition.message.error.create"
+msgid "An error occured while creating the object."
+msgstr "Hiba történt az objektum létrehozása közben."
+
+#: view~edition.message.success.create
+msgctxt "view~edition.message.success.create"
+msgid "Object successfully created."
+msgstr "Az objektum létrehozása sikeresen megtörtént."
+
+#: view~edition.message.error.no.geometry
+msgctxt "view~edition.message.error.no.geometry"
+msgid ""
+"You cannot save this object without a geomtetry. Please draw the geometry on"
+" the map."
+msgstr "Az objektum nem menthető geometriai alakzat rajzolása nélkül. Rajzoljon egy geometriai alakzatot a térképre."
+
+#: view~edition.message.error.upload.layer
+msgctxt "view~edition.message.error.upload.layer"
+msgid "The layer \"%s\" directory for uploading media is not writable."
+msgstr "A réteg \"%s\" média-feltöltési könyvtára nem írható."
+
+#: view~edition.message.error.upload.layer.field
+msgctxt "view~edition.message.error.upload.layer.field"
+msgid ""
+"The field \"%s\" directory of the layer \"%s\" for uploading media is not "
+"writable."
+msgstr "A/Az\"%s\" nevű mező, mely a/az \"%s\" réteg média-feltöltési könyvtára, nem írható."
+
+#: view~edition.upload.choice.keep
+msgctxt "view~edition.upload.choice.keep"
+msgid "Keep"
+msgstr "Megtart"
+
+#: view~edition.upload.choice.update
+msgctxt "view~edition.upload.choice.update"
+msgid "Update"
+msgstr "Frissít"
+
+#: view~edition.upload.choice.delete
+msgctxt "view~edition.upload.choice.delete"
+msgid "Delete"
+msgstr "Töröl"
+
+#: view~edition.link.error.missing.parameter
+msgctxt "view~edition.link.error.missing.parameter"
+msgid "The pivot, features1 and features2 parameters are mandatory."
+msgstr "A pivot, elemek1 és elemek2 paraméterek megadása kötelező."
+
+#: view~edition.link.error.wrong.layer
+msgctxt "view~edition.link.error.wrong.layer"
+msgid "The layer does not exists."
+msgstr "A réteg nem létezik"
+
+#: view~edition.link.error.multiple.ids
+msgctxt "view~edition.link.error.multiple.ids"
+msgid ""
+"You cannot link multiple objects for both layers. Please select only one "
+"object for one of the layers and retry."
+msgstr "Nem kapcsolhat több objektumot mindkét réteghez. Kérem válasszon egy objektumot az egyik réteghez és próbálja újra."
+
+#: view~edition.link.error.missing.id
+msgctxt "view~edition.link.error.missing.id"
+msgid ""
+"There must be at least one object selected for each layer to create the "
+"link."
+msgstr "Minden réteghez legalább egy objektumot ki kell jelölni a link létrehozásához."
+
+#: view~edition.link.error.not.attribute.layer
+msgctxt "view~edition.link.error.not.attribute.layer"
+msgid "The layers have not be configured to have an attribute table."
+msgstr "A rétegek beállítása nem tartalmaz attribútumtáblát."
+
+#: view~edition.link.error.no.create.feature
+msgctxt "view~edition.link.error.no.create.feature"
+msgid "Create feature for the layer \"%s\" is not available."
+msgstr "Nem hozható létre új elem a  \"%s\" rétegen."
+
+#: view~edition.link.error.no.modify.attributes
+msgctxt "view~edition.link.error.no.modify.attributes"
+msgid "Modify attributes for the layer \"%s\" is not available."
+msgstr "A/Az \"%s\"  réteg attribútumainak módosítása nem lehetséges."
+
+#: view~edition.link.error.no.given.fields
+msgctxt "view~edition.link.error.no.given.fields"
+msgid "Given fields do not exists."
+msgstr "A megadott mezők nem léteznek."
+
+#: view~edition.link.error.sql
+msgctxt "view~edition.link.error.sql"
+msgid "An error occured while adding linked data."
+msgstr "Hiba történt a kapcsolt adatok létrehozása közben."
+
+#: view~edition.link.success
+msgctxt "view~edition.link.success"
+msgid "Selected features have been correctly linked."
+msgstr "A kiválasztott elemek összekapcsolása sikeres."
+
+#: view~edition.unlink.success
+msgctxt "view~edition.unlink.success"
+msgid "The child feature has correctly been unlinked."
+msgstr "A származtatott / gyermek elemek leválasztása sikeres."
+
+#: view~edition.unlink.error.sql
+msgctxt "view~edition.unlink.error.sql"
+msgid "An error occured while removing link."
+msgstr "Hiba törtlén a link eltávolítása közben."
+
+#: view~default.repository.access.denied
+msgctxt "view~default.repository.access.denied"
+msgid "You cannot access this repository."
+msgstr "Nem férhet hozzá ehhez a gyűjteményhez"
+
+#: view~default.repository.list.title
+msgctxt "view~default.repository.list.title"
+msgid "Projects"
+msgstr "Projektek"
+
+#: view~default.home.title
+msgctxt "view~default.home.title"
+msgid "Home"
+msgstr ""
+
+#: view~default.project.access.denied
+msgctxt "view~default.project.access.denied"
+msgid "Access denied for this project."
+msgstr "A hozzáférés megtagadva ehhez a projekthez."
+
+#: view~default.project.title.label
+msgctxt "view~default.project.title.label"
+msgid "Title"
+msgstr "Cím"
+
+#: view~default.project.abstract.label
+msgctxt "view~default.project.abstract.label"
+msgid "Abstract"
+msgstr "Kivonat"
+
+#: view~default.project.projection.label
+msgctxt "view~default.project.projection.label"
+msgid "Projection"
+msgstr "Vetület"
+
+#: view~default.project.bbox.label
+msgctxt "view~default.project.bbox.label"
+msgid "Bounding Box"
+msgstr "Határoló négyszög"
+
+#: view~default.project.open.map
+msgctxt "view~default.project.open.map"
+msgid "Load the map"
+msgstr "Térkép betöltése"
+
+#: view~default.project.open.map.metadata
+msgctxt "view~default.project.open.map.metadata"
+msgid "View metadata"
+msgstr "Metaadatok megtekintése"
+
+#: view~default.project.close.map.metadata
+msgctxt "view~default.project.close.map.metadata"
+msgid "Close"
+msgstr "Bezár"
+
+#: view~default.header.connect
+msgctxt "view~default.header.connect"
+msgid "Connect"
+msgstr "Belépés"
+
+#: view~default.header.disconnect
+msgctxt "view~default.header.disconnect"
+msgid "Disconnect"
+msgstr "Kilépés"
+
+#: view~default.header.createAccount
+msgctxt "view~default.header.createAccount"
+msgid "Register"
+msgstr "Regisztráció"
+
+#: view~default.header.menuitem.admin.label
+msgctxt "view~default.header.menuitem.admin.label"
+msgid "Administration"
+msgstr "Felügyelet"
+
+#: view~map.title.h1
+msgctxt "view~map.title.h1"
+msgid "Lizmap Web Client"
+msgstr "Lizmap Web Kliens"
+
+#: view~map.title.h2
+msgctxt "view~map.title.h2"
+msgid "Qgis Server Demo"
+msgstr "Qgis Server Demo"
+
+#: view~map.map
+msgctxt "view~map.map"
+msgid "Map"
+msgstr "Térkép"
+
+#: view~map.layers
+msgctxt "view~map.layers"
+msgid "Layers"
+msgstr "Rétegek"
+
+#: view~map.legend
+msgctxt "view~map.legend"
+msgid "Legend"
+msgstr "Jelmagyarázat"
+
+#: view~map.map.only
+msgctxt "view~map.map.only"
+msgid "Map only"
+msgstr "Csak térkép"
+
+#: view~map.legend.map
+msgctxt "view~map.legend.map"
+msgid "Legend/Map"
+msgstr "Jelmagyarázat/Térkép"
+
+#: view~map.search.nominatim.placeholder
+msgctxt "view~map.search.nominatim.placeholder"
+msgid "Search"
+msgstr "Keresés"
+
+#: view~map.search.nominatim.button
+msgctxt "view~map.search.nominatim.button"
+msgid "Searching"
+msgstr "Keresés folyamatban"
+
+#: view~map.print.navbar.title
+msgctxt "view~map.print.navbar.title"
+msgid "Print"
+msgstr "Nyomtatás"
+
+#: view~map.tooltip.navbar.title
+msgctxt "view~map.tooltip.navbar.title"
+msgid "Tooltip"
+msgstr "Elemleírás -tooltip-"
+
+#: view~map.geolocate.navbar.title
+msgctxt "view~map.geolocate.navbar.title"
+msgid "Geolocation"
+msgstr "Helymeghatározás"
+
+#: view~map.measure.navbar.title
+msgctxt "view~map.measure.navbar.title"
+msgid "Measure"
+msgstr "Mérés"
+
+#: view~map.permalink.navbar.title
+msgctxt "view~map.permalink.navbar.title"
+msgid "Permalink"
+msgstr "Permalink"
+
+#: view~map.selectiontool.navbar.title
+msgctxt "view~map.selectiontool.navbar.title"
+msgid "Selection"
+msgstr "Szelekció"
+
+#: view~map.toolbar.content.underway
+msgctxt "view~map.toolbar.content.underway"
+msgid "Underway..."
+msgstr "Underway..."
+
+#: view~map.toolbar.content.stop
+msgctxt "view~map.toolbar.content.stop"
+msgid "Stop"
+msgstr "Stop"
+
+#: view~map.print.toolbar.title
+msgctxt "view~map.print.toolbar.title"
+msgid "Print"
+msgstr "Nyomtatás"
+
+#: view~map.print.toolbar.scale
+msgctxt "view~map.print.toolbar.scale"
+msgid "Scale"
+msgstr "Méretezés"
+
+#: view~map.print.toolbar.dpi
+msgctxt "view~map.print.toolbar.dpi"
+msgid "DPI"
+msgstr "DPI"
+
+#: view~map.print.toolbar.format
+msgctxt "view~map.print.toolbar.format"
+msgid "Format"
+msgstr "Formátum"
+
+#: view~map.print.toolbar.template
+msgctxt "view~map.print.toolbar.template"
+msgid "Template"
+msgstr "Sablon"
+
+#: view~map.tooltip.toolbar.title
+msgctxt "view~map.tooltip.toolbar.title"
+msgid "Tooltip"
+msgstr "Elemleírás -tooltip-"
+
+#: view~map.tooltip.toolbar.layer
+msgctxt "view~map.tooltip.toolbar.layer"
+msgid "Highlight layer"
+msgstr "Réteg kiemelése"
+
+#: view~map.geolocate.toolbar.title
+msgctxt "view~map.geolocate.toolbar.title"
+msgid "Geolocation"
+msgstr "Helymeghatározás"
+
+#: view~map.geolocate.toolbar.center
+msgctxt "view~map.geolocate.toolbar.center"
+msgid "Center"
+msgstr "Középre"
+
+#: view~map.geolocate.toolbar.bind
+msgctxt "view~map.geolocate.toolbar.bind"
+msgid "Stay centered"
+msgstr "Maradjon középen"
+
+#: view~map.geolocate.toolbar.stop
+msgctxt "view~map.geolocate.toolbar.stop"
+msgid "Stop"
+msgstr "Stop"
+
+#: view~map.measure.toolbar.title
+msgctxt "view~map.measure.toolbar.title"
+msgid "Measures"
+msgstr "Mérések"
+
+#: view~map.measure.toolbar.length
+msgctxt "view~map.measure.toolbar.length"
+msgid "Length"
+msgstr "Hossz"
+
+#: view~map.measure.toolbar.area
+msgctxt "view~map.measure.toolbar.area"
+msgid "Area"
+msgstr "Terület"
+
+#: view~map.measure.toolbar.perimeter
+msgctxt "view~map.measure.toolbar.perimeter"
+msgid "Perimeter"
+msgstr "Kerület"
+
+#: view~map.selectiontool.toolbar.title
+msgctxt "view~map.selectiontool.toolbar.title"
+msgid "Selection"
+msgstr "Szelekció"
+
+#: view~map.selectiontool.toolbar.layer
+msgctxt "view~map.selectiontool.toolbar.layer"
+msgid "Selection layer"
+msgstr "Szelekciós réteg"
+
+#: view~map.selectiontool.toolbar.query.deactivate
+msgctxt "view~map.selectiontool.toolbar.query.deactivate"
+msgid "Deactivate"
+msgstr "Kikapcsol"
+
+#: view~map.selectiontool.toolbar.query.box
+msgctxt "view~map.selectiontool.toolbar.query.box"
+msgid "Box"
+msgstr "Négyszög"
+
+#: view~map.selectiontool.toolbar.query.circle
+msgctxt "view~map.selectiontool.toolbar.query.circle"
+msgid "Circle"
+msgstr "Kör"
+
+#: view~map.selectiontool.toolbar.query.polygon
+msgctxt "view~map.selectiontool.toolbar.query.polygon"
+msgid "Polygon"
+msgstr "Poligon"
+
+#: view~map.selectiontool.toolbar.query.freehand
+msgctxt "view~map.selectiontool.toolbar.query.freehand"
+msgid "Free hand"
+msgstr "Szabadkézi rajz"
+
+#: view~map.selectiontool.toolbar.action.type.refresh
+msgctxt "view~map.selectiontool.toolbar.action.type.refresh"
+msgid "New selection"
+msgstr "Új szelekció"
+
+#: view~map.selectiontool.toolbar.action.type.plus
+msgctxt "view~map.selectiontool.toolbar.action.type.plus"
+msgid "Add to selection"
+msgstr "Szelekcióhoz ad"
+
+#: view~map.selectiontool.toolbar.action.type.minus
+msgctxt "view~map.selectiontool.toolbar.action.type.minus"
+msgid "Remove from selection"
+msgstr "Eltávolítás a szelekcióból"
+
+#: view~map.selectiontool.toolbar.action.unselect
+msgctxt "view~map.selectiontool.toolbar.action.unselect"
+msgid "Unselect all"
+msgstr "Szelekció megszüntetése"
+
+#: view~map.selectiontool.toolbar.action.filter
+msgctxt "view~map.selectiontool.toolbar.action.filter"
+msgid "Filter"
+msgstr "Szűrés"
+
+#: view~map.menu.close.hover
+msgctxt "view~map.menu.close.hover"
+msgid "Hide the menu"
+msgstr "Menü elrejtése"
+
+#: view~map.menu.show.hover
+msgctxt "view~map.menu.show.hover"
+msgid "Show the menu"
+msgstr "Menü mutatása"
+
+#: view~map.locatemenu.title
+msgctxt "view~map.locatemenu.title"
+msgid "Locating"
+msgstr "Helymeghatározás"
+
+#: view~map.switchermenu.title
+msgctxt "view~map.switchermenu.title"
+msgid "Layers"
+msgstr "Rétegek"
+
+#: view~map.legendmenu.title
+msgctxt "view~map.legendmenu.title"
+msgid "Legend"
+msgstr "Jelmagyarázat"
+
+#: view~map.baselayermenu.title
+msgctxt "view~map.baselayermenu.title"
+msgid "Base Layer"
+msgstr "Háttérréteg"
+
+#: view~map.baselayer.select.hover
+msgctxt "view~map.baselayer.select.hover"
+msgid "Select baselayer"
+msgstr "Háttér-réteg kiválasztása"
+
+#: view~map.navbar.pan.hover
+msgctxt "view~map.navbar.pan.hover"
+msgid "Pan map"
+msgstr "A térkép pásztázása"
+
+#: view~map.navbar.zoom.hover
+msgctxt "view~map.navbar.zoom.hover"
+msgid "Zoom by rectangle"
+msgstr "Zoom négyszöggel"
+
+#: view~map.navbar.zoomextent.hover
+msgctxt "view~map.navbar.zoomextent.hover"
+msgid "Zoom to initial map extent"
+msgstr "Zoom a térkép külső határaihoz igazodva"
+
+#: view~map.navbar.zoomin.hover
+msgctxt "view~map.navbar.zoomin.hover"
+msgid "Zoom in"
+msgstr "Közelítés"
+
+#: view~map.navbar.slider.hover
+msgctxt "view~map.navbar.slider.hover"
+msgid "Slide to zoom in or out"
+msgstr "Csúsztassa a közelítéshez, vagy távolításhoz"
+
+#: view~map.navbar.zoomout.hover
+msgctxt "view~map.navbar.zoomout.hover"
+msgid "Zoom out"
+msgstr "Távolítás"
+
+#: view~map.navbar.previous.hover
+msgctxt "view~map.navbar.previous.hover"
+msgid "Previous"
+msgstr "Előző"
+
+#: view~map.navbar.next.hover
+msgctxt "view~map.navbar.next.hover"
+msgid "Next"
+msgstr "Következő"
+
+#: view~map.overviewmap.hover
+msgctxt "view~map.overviewmap.hover"
+msgid "Move the rectanle to pan the map"
+msgstr "A pásztázáshoz mozgassa a négyzetet"
+
+#: view~map.overviewbar.scaleline.hover
+msgctxt "view~map.overviewbar.scaleline.hover"
+msgid "Scale bar"
+msgstr "Méretező csúszka"
+
+#: view~map.overviewbar.scaletext.hover
+msgctxt "view~map.overviewbar.scaletext.hover"
+msgid "Scale"
+msgstr "Méretezés"
+
+#: view~map.overviewbar.scaletext.title
+msgctxt "view~map.overviewbar.scaletext.title"
+msgid "Scale"
+msgstr "Méretezés"
+
+#: view~map.overviewbar.displayoverview.hover
+msgctxt "view~map.overviewbar.displayoverview.hover"
+msgid "Display/Hide Overview"
+msgstr "Az áttekintés mutatása/elrejtése"
+
+#: view~map.mouseposition.hover
+msgctxt "view~map.mouseposition.hover"
+msgid "Mouse position"
+msgstr "Egér-pozíció"
+
+#: view~map.mouseposition.select
+msgctxt "view~map.mouseposition.select"
+msgid "Coordinate unit"
+msgstr "Koordináta-egység"
+
+#: view~map.mouseposition.units.m
+msgctxt "view~map.mouseposition.units.m"
+msgid "Meters"
+msgstr "Méter"
+
+#: view~map.mouseposition.units.f
+msgctxt "view~map.mouseposition.units.f"
+msgid "Feet"
+msgstr "Láb"
+
+#: view~map.mouseposition.units.d
+msgctxt "view~map.mouseposition.units.d"
+msgid "Degrees"
+msgstr "Fok"
+
+#: view~map.mouseposition.units.dm
+msgctxt "view~map.mouseposition.units.dm"
+msgid "Deg. Min."
+msgstr "Szögperc"
+
+#: view~map.mouseposition.units.dms
+msgctxt "view~map.mouseposition.units.dms"
+msgid "D. M. S."
+msgstr "D. M. S."
+
+#: view~map.permalink.toolbar.title
+msgctxt "view~map.permalink.toolbar.title"
+msgid "Permalink"
+msgstr "Permalink"
+
+#: view~map.permalink.share.tab
+msgctxt "view~map.permalink.share.tab"
+msgid "Share"
+msgstr "Megosztás"
+
+#: view~map.permalink.share.tab.title
+msgctxt "view~map.permalink.share.tab.title"
+msgid "Share the link to current map"
+msgstr "Az aktuális térkép linkjének megosztása"
+
+#: view~map.permalink.share.link
+msgctxt "view~map.permalink.share.link"
+msgid "Link to current map"
+msgstr "Link az aktuális térképhez"
+
+#: view~map.permalink.embed.tab
+msgctxt "view~map.permalink.embed.tab"
+msgid "Embed"
+msgstr "Beágyazott"
+
+#: view~map.permalink.embed.tab.title
+msgctxt "view~map.permalink.embed.tab.title"
+msgid "Embed the current map"
+msgstr "Beágyazva az aktuális térképbe"
+
+#: view~map.permalink.embed.size.small
+msgctxt "view~map.permalink.embed.size.small"
+msgid "Small"
+msgstr "Kicsi"
+
+#: view~map.permalink.embed.size.medium
+msgctxt "view~map.permalink.embed.size.medium"
+msgid "Medium"
+msgstr "Közepes"
+
+#: view~map.permalink.embed.size.large
+msgctxt "view~map.permalink.embed.size.large"
+msgid "Large"
+msgstr "Nagy"
+
+#: view~map.permalink.embed.size.personalized
+msgctxt "view~map.permalink.embed.size.personalized"
+msgid "Personalized"
+msgstr "Személyre szabott"
+
+#: view~map.permalink.geobookmark.title
+msgctxt "view~map.permalink.geobookmark.title"
+msgid "Bookmarks"
+msgstr "Könyvjelzők"
+
+#: view~map.permalink.geobookmark.button.add
+msgctxt "view~map.permalink.geobookmark.button.add"
+msgid "Add a bookmark"
+msgstr "Könyvjelző hozzáadása"
+
+#: view~map.permalink.geobookmark.button.del
+msgctxt "view~map.permalink.geobookmark.button.del"
+msgid "Remove this bookmark"
+msgstr "Könyvjelző eltávolítása"
+
+#: view~map.permalink.geobookmark.button.run
+msgctxt "view~map.permalink.geobookmark.button.run"
+msgid "Use this bookmark"
+msgstr "Használja ezt a könyvjelzőt"
+
+#: view~map.permalink.geobookmark.none
+msgctxt "view~map.permalink.geobookmark.none"
+msgid "No bookmark yet."
+msgstr "Még nincs könyvjelző"
+
+#: view~map.permalink.geobookmark.name.placeholder
+msgctxt "view~map.permalink.geobookmark.name.placeholder"
+msgid "Bookmark name"
+msgstr "Könyvjelző neve"
+
+#: view~map.message.zoominmax
+msgctxt "view~map.message.zoominmax"
+msgid "No deeper zoom available for this base layer"
+msgstr "Nem lehet jobban közelíteni az adott rétegen."
+
+#: view~map.loading.title
+msgctxt "view~map.loading.title"
+msgid "Loading map data"
+msgstr "A térkép adatainak betöltése"
+
+#: view~map.popup.table.th.data
+msgctxt "view~map.popup.table.th.data"
+msgid "Field"
+msgstr "Mező"
+
+#: view~map.popup.table.th.band
+msgctxt "view~map.popup.table.th.band"
+msgid "Band"
+msgstr "Band"
+
+#: view~map.popup.table.th.value
+msgctxt "view~map.popup.table.th.value"
+msgid "Value"
+msgstr "Érték"
+
+#: view~map.metadata.link.label
+msgctxt "view~map.metadata.link.label"
+msgid "Information"
+msgstr "Információ"
+
+#: view~map.metadata.h2.illustration
+msgctxt "view~map.metadata.h2.illustration"
+msgid "Illustration"
+msgstr "Illusztráció"
+
+#: view~map.metadata.h2.description
+msgctxt "view~map.metadata.h2.description"
+msgid "Map description"
+msgstr "Térkép-leírás"
+
+#: view~map.metadata.h2.resources
+msgctxt "view~map.metadata.h2.resources"
+msgid "Resources"
+msgstr "Erőforrások"
+
+#: view~map.metadata.h2.properties
+msgctxt "view~map.metadata.h2.properties"
+msgid "Properties"
+msgstr "Részletek"
+
+#: view~map.metadata.h2.contact
+msgctxt "view~map.metadata.h2.contact"
+msgid "Contact"
+msgstr "Kapcsolat"
+
+#: view~map.metadata.description.title
+msgctxt "view~map.metadata.description.title"
+msgid "Title"
+msgstr "Cím"
+
+#: view~map.metadata.description.abstract
+msgctxt "view~map.metadata.description.abstract"
+msgid "Description"
+msgstr "Leírás"
+
+#: view~map.metadata.resources.website
+msgctxt "view~map.metadata.resources.website"
+msgid "Website"
+msgstr "Weboldal"
+
+#: view~map.metadata.properties.projection
+msgctxt "view~map.metadata.properties.projection"
+msgid "Projection"
+msgstr "Vetület"
+
+#: view~map.metadata.properties.extent
+msgctxt "view~map.metadata.properties.extent"
+msgid "Extent"
+msgstr "Külső határ"
+
+#: view~map.metadata.properties.wmsGetCapabilitiesUrl
+msgctxt "view~map.metadata.properties.wmsGetCapabilitiesUrl"
+msgid "Web Map Service"
+msgstr "Web Map Service"
+
+#: view~map.metadata.contact.organization
+msgctxt "view~map.metadata.contact.organization"
+msgid "Organization"
+msgstr "Szervezet"
+
+#: view~map.metadata.contact.person
+msgctxt "view~map.metadata.contact.person"
+msgid "Person"
+msgstr "Személy"
+
+#: view~map.metadata.contact.email
+msgctxt "view~map.metadata.contact.email"
+msgid "E-mail"
+msgstr "E-mail"
+
+#: view~map.metadata.contact.phone
+msgctxt "view~map.metadata.contact.phone"
+msgid "Phone"
+msgstr "Telefon"
+
+#: view~map.metadata.hide
+msgctxt "view~map.metadata.hide"
+msgid "Hide information"
+msgstr "Információk elrejtése"
+
+#: view~map.timemanager.toolbar.title
+msgctxt "view~map.timemanager.toolbar.title"
+msgid "Time Manager"
+msgstr "Time Manager"
+
+#: view~map.timemanager.navbar.title
+msgctxt "view~map.timemanager.navbar.title"
+msgid "Time Manager"
+msgstr "Time Manager"
+
+#: view~map.timemanager.toolbar.play
+msgctxt "view~map.timemanager.toolbar.play"
+msgid "Play"
+msgstr "Lejátszás"
+
+#: view~map.timemanager.toolbar.pause
+msgctxt "view~map.timemanager.toolbar.pause"
+msgid "Pause"
+msgstr "Lejátszás szüneteltetése"
+
+#: view~map.timemanager.toolbar.next
+msgctxt "view~map.timemanager.toolbar.next"
+msgid "Next"
+msgstr "Következő"
+
+#: view~map.timemanager.toolbar.prev
+msgctxt "view~map.timemanager.toolbar.prev"
+msgid "Previous"
+msgstr "Előző"
+
+#: view~map.bottomdock.toolbar.btn.clear.title
+msgctxt "view~map.bottomdock.toolbar.btn.clear.title"
+msgid "Close"
+msgstr "Bezár"
+
+#: view~map.bottomdock.toolbar.btn.glue.activate.title
+msgctxt "view~map.bottomdock.toolbar.btn.glue.activate.title"
+msgid "Pin"
+msgstr "Rögzít"
+
+#: view~map.bottomdock.toolbar.btn.glue.deactivate.title
+msgctxt "view~map.bottomdock.toolbar.btn.glue.deactivate.title"
+msgid "Unpin"
+msgstr "Felold"
+
+#: view~map.bottomdock.toolbar.btn.size.maximize.title
+msgctxt "view~map.bottomdock.toolbar.btn.size.maximize.title"
+msgid "Maximize"
+msgstr "Maximális méret"
+
+#: view~map.bottomdock.toolbar.btn.size.minimize.title
+msgctxt "view~map.bottomdock.toolbar.btn.size.minimize.title"
+msgid "Minimize"
+msgstr "Minimális méret"
+
+#: view~map.attributeLayers.navbar.title
+msgctxt "view~map.attributeLayers.navbar.title"
+msgid "Data"
+msgstr "Adat"
+
+#: view~map.attributeLayers.toolbar.title
+msgctxt "view~map.attributeLayers.toolbar.title"
+msgid "Data"
+msgstr "Adat"
+
+#: view~map.attributeLayers.options.title
+msgctxt "view~map.attributeLayers.options.title"
+msgid "Options"
+msgstr "Opciók"
+
+#: view~map.attributeLayers.options.input.cascade.label
+msgctxt "view~map.attributeLayers.options.input.cascade.label"
+msgid "Cascade filter to children"
+msgstr "A szűrő a gyermekekre is vonatkozzon."
+
+#: view~map.switcher.layers.expand.title
+msgctxt "view~map.switcher.layers.expand.title"
+msgid "Expand all"
+msgstr "Összes kinyitása"
+
+#: view~map.switcher.layers.collapse.title
+msgctxt "view~map.switcher.layers.collapse.title"
+msgid "Collapse all"
+msgstr "Összes bezárása"
+
+#: view~map.switcher.layer.metadata.title
+msgctxt "view~map.switcher.layer.metadata.title"
+msgid "Information"
+msgstr "Információ"
+
+#: view~map.switcher.layer.zoomToExtent.title
+msgctxt "view~map.switcher.layer.zoomToExtent.title"
+msgid "Zoom to layer extent"
+msgstr "Zoom a réteg külső határaihoz igazodva"
+
+#: view~map.switcher.layer.style.title
+msgctxt "view~map.switcher.layer.style.title"
+msgid "Change layer style"
+msgstr "Réteg-stílus megváltoztatása"
+
+#: view~map.switcher.layer.export.title
+msgctxt "view~map.switcher.layer.export.title"
+msgid "Export"
+msgstr "Export"
+
+#: view~map.switcher.layer.unfilter.title
+msgctxt "view~map.switcher.layer.unfilter.title"
+msgid "Deactivate current filter"
+msgstr "Az aktuális szűrő kikapcsolása"

@@ -1,0 +1,72 @@
+# 
+# Translators:
+# Paolo Cavallini <cavallini@faunalia.it>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2017-09-23 22:23+0000\n"
+"Last-Translator: Paolo Cavallini <cavallini@faunalia.it>\n"
+"Language-Team: Italian (http://www.transifex.com/3liz-1/lizmap-locales/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: master_admin~gui.header.title
+msgctxt "master_admin~gui.header.title"
+msgid "Administration"
+msgstr "Amministrazione"
+
+#: master_admin~gui.header.user
+msgctxt "master_admin~gui.header.user"
+msgid "User:"
+msgstr "Utente:"
+
+#: master_admin~gui.header.disconnect
+msgctxt "master_admin~gui.header.disconnect"
+msgid "Logout"
+msgstr "Disconnetti"
+
+#: master_admin~gui.header.your.account
+msgctxt "master_admin~gui.header.your.account"
+msgid "My account"
+msgstr "Tuo account"
+
+#: master_admin~gui.menu.item.dashboard
+msgctxt "master_admin~gui.menu.item.dashboard"
+msgid "Dashboard"
+msgstr "Cruscotto"
+
+#: master_admin~gui.menu.item.system
+msgctxt "master_admin~gui.menu.item.system"
+msgid "System"
+msgstr "Sistema"
+
+#: master_admin~gui.menu.item.refdata
+msgctxt "master_admin~gui.menu.item.refdata"
+msgid "Reference Data"
+msgstr "Dati di riferimento"
+
+#: master_admin~gui.dashboard.title
+msgctxt "master_admin~gui.dashboard.title"
+msgid "Dashboard"
+msgstr "Cruscotto"
+
+#: master_admin~gui.dashboard.nowidget
+msgctxt "master_admin~gui.dashboard.nowidget"
+msgid ""
+"No widget for the dashboard. Simply click on one of the links in the menu."
+msgstr "Nessun widget per la il cruscotto. È sufficiente fare clic su uno dei links nel menu."
+
+#: master_admin~gui.message.admin.password
+msgctxt "master_admin~gui.message.admin.password"
+msgid "You have got the default password, you should change it immediatly."
+msgstr "La tua password non è sicura, dovresti modificarla immediatamente."
+
+#: master_admin~gui.main.nocontent
+msgctxt "master_admin~gui.main.nocontent"
+msgid "No content. Click on one of the menu links."
+msgstr "Nessun contenuto. Fai click su uno dei links nel menu."

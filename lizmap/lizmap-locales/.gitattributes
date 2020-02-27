@@ -1,0 +1,7 @@
+.gitignore export-ignore
+DEV.md export-ignore
+icon.png export-ignore
+README.md export-ignore
+/plugin/.tx/ export-ignore
+config export-ignore
+*.ts export-ignore

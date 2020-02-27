@@ -1,0 +1,369 @@
+# 
+# Translators:
+# trendspotter <j.podhorecky@volny.cz>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-03-01 14:24+0000\n"
+"Last-Translator: trendspotter <j.podhorecky@volny.cz>\n"
+"Language-Team: Czech (http://www.transifex.com/3liz-1/lizmap-locales/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+#: jacl2db_admin~acl2.menu.item.groups
+msgctxt "jacl2db_admin~acl2.menu.item.groups"
+msgid "Groups of users for rights"
+msgstr "Skupiny uživatelů práv"
+
+#: jacl2db_admin~acl2.menu.item.rights
+msgctxt "jacl2db_admin~acl2.menu.item.rights"
+msgid "Rights of users"
+msgstr "Práva uživatelů"
+
+#: jacl2db_admin~acl2.groups.title
+msgctxt "jacl2db_admin~acl2.groups.title"
+msgid "Groups of users for rights"
+msgstr "Skupiny uživatelů práv"
+
+#: jacl2db_admin~acl2.groups.change.rights.link
+msgctxt "jacl2db_admin~acl2.groups.change.rights.link"
+msgid "Change rights of groups"
+msgstr "Změna práv skupin"
+
+#: jacl2db_admin~acl2.groups.new.users.title
+msgctxt "jacl2db_admin~acl2.groups.new.users.title"
+msgid "Groups of new users"
+msgstr "Skupiny nových uživatelů"
+
+#: jacl2db_admin~acl2.setdefault.button
+msgctxt "jacl2db_admin~acl2.setdefault.button"
+msgid "Set default groups"
+msgstr "Nastavení výchozích skupin"
+
+#: jacl2db_admin~acl2.message.groups.setdefault.ok
+msgctxt "jacl2db_admin~acl2.message.groups.setdefault.ok"
+msgid "Default groups set"
+msgstr "Výchozí nastavení skupin"
+
+#: jacl2db_admin~acl2.create.group
+msgctxt "jacl2db_admin~acl2.create.group"
+msgid "Create a group"
+msgstr "Vytvořit skupinu"
+
+#: jacl2db_admin~acl2.group.name.label
+msgctxt "jacl2db_admin~acl2.group.name.label"
+msgid "Label:"
+msgstr "Značka:"
+
+#: jacl2db_admin~acl2.group.name.id
+msgctxt "jacl2db_admin~acl2.group.name.id"
+msgid "Ident:"
+msgstr "Identifikace:"
+
+#: jacl2db_admin~acl2.message.group.create.ok
+msgctxt "jacl2db_admin~acl2.message.group.create.ok"
+msgid "Group created"
+msgstr "Skupina vytvořena"
+
+#: jacl2db_admin~acl2.change.name.title
+msgctxt "jacl2db_admin~acl2.change.name.title"
+msgid "Change the name"
+msgstr "Změnit název"
+
+#: jacl2db_admin~acl2.rename.button
+msgctxt "jacl2db_admin~acl2.rename.button"
+msgid "Rename"
+msgstr "Přejmenovat"
+
+#: jacl2db_admin~acl2.new.name.label
+msgctxt "jacl2db_admin~acl2.new.name.label"
+msgid "New name:"
+msgstr "Nový název:"
+
+#: jacl2db_admin~acl2.message.group.rename.ok
+msgctxt "jacl2db_admin~acl2.message.group.rename.ok"
+msgid "Group renamed"
+msgstr "Skupina přejmenována"
+
+#: jacl2db_admin~acl2.delete.group
+msgctxt "jacl2db_admin~acl2.delete.group"
+msgid "Delete a group"
+msgstr "Smazat skupinu"
+
+#: jacl2db_admin~acl2.delete.button
+msgctxt "jacl2db_admin~acl2.delete.button"
+msgid "Delete"
+msgstr "Smazat"
+
+#: jacl2db_admin~acl2.message.group.delete.ok
+msgctxt "jacl2db_admin~acl2.message.group.delete.ok"
+msgid "Group deleted"
+msgstr "Skupina smazána"
+
+#: jacl2db_admin~acl2.message.group.delete.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.group.delete.error.noacl.yourself"
+msgid "The group cannot be deleted, else you couldn't manage rights"
+msgstr "Skupina nemůže být smazána, jinak byste nemohli spravovat práva"
+
+#: jacl2db_admin~acl2.message.group.delete.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.group.delete.error.noacl.anybody"
+msgid "The group cannot be deleted, else nobody couldn't manage rights"
+msgstr "Skupina nemůže být smazána, jinak by nikdo nemohl spravovat práva"
+
+#: jacl2db_admin~acl2.groups.rights.title
+msgctxt "jacl2db_admin~acl2.groups.rights.title"
+msgid "Rights of groups"
+msgstr "Práva skupin"
+
+#: jacl2db_admin~acl2.table.th.groups
+msgctxt "jacl2db_admin~acl2.table.th.groups"
+msgid "Groups"
+msgstr "Skupiny"
+
+#: jacl2db_admin~acl2.table.th.rights
+msgctxt "jacl2db_admin~acl2.table.th.rights"
+msgid "Rights"
+msgstr "Práva"
+
+#: jacl2db_admin~acl2.group.help.rights.inherit
+msgctxt "jacl2db_admin~acl2.group.help.rights.inherit"
+msgid "\"-\": undefined right, it can be defined in other groups of the user"
+msgstr "\"-\": nesprávně definováno, může být definováno v jiných skupinách uživatele"
+
+#: jacl2db_admin~acl2.group.help.rights.yes
+msgctxt "jacl2db_admin~acl2.group.help.rights.yes"
+msgid ""
+"\"yes\": indicate that the right is set, but can be canceled (\"no\") in an "
+"other group"
+msgstr "\"ano\": uveďte, že právo je nastaveno, ale může být zrušeno (\"ne\") v jiné skupině"
+
+#: jacl2db_admin~acl2.group.help.rights.no
+msgctxt "jacl2db_admin~acl2.group.help.rights.no"
+msgid ""
+"\"no\": the right is not assign to this group, and to any other groups of "
+"the user."
+msgstr "\"ne\": Právo není přiděleno této skupině a ostatním skupinám uživatele."
+
+#: jacl2db_admin~acl2.global.rights
+msgctxt "jacl2db_admin~acl2.global.rights"
+msgid "global"
+msgstr "globální"
+
+#: jacl2db_admin~acl2.special.rights
+msgctxt "jacl2db_admin~acl2.special.rights"
+msgid "special"
+msgstr "speciální"
+
+#: jacl2db_admin~acl2.message.savegrouprights.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.savegrouprights.error.noacl.yourself"
+msgid "Changes cannot be applied else you won't be able to change some rights"
+msgstr "Změny nelze použít, jinak nebudete moci některé práva změnit"
+
+#: jacl2db_admin~acl2.message.savegrouprights.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.savegrouprights.error.noacl.anybody"
+msgid ""
+"Changes cannot be applied else nobody won't be able to change some rights"
+msgstr "Změny nelze použít, jinak nikdo nebude moci změnit některá práva"
+
+#: jacl2db_admin~acl2.message.group.rights.ok
+msgctxt "jacl2db_admin~acl2.message.group.rights.ok"
+msgid "Rights saved"
+msgstr "Práva uložena"
+
+#: jacl2db_admin~acl2.group.rightres.title
+msgctxt "jacl2db_admin~acl2.group.rightres.title"
+msgid "Rights on resources for the group"
+msgstr "Práva na zdroje pro skupinu"
+
+#: jacl2db_admin~acl2.users.title
+msgctxt "jacl2db_admin~acl2.users.title"
+msgid "Rights of users"
+msgstr "Práva uživatelů"
+
+#: jacl2db_admin~acl2.filter.title
+msgctxt "jacl2db_admin~acl2.filter.title"
+msgid "Filter"
+msgstr "Filtr"
+
+#: jacl2db_admin~acl2.filter.group
+msgctxt "jacl2db_admin~acl2.filter.group"
+msgid "Group:"
+msgstr "Skupina:"
+
+#: jacl2db_admin~acl2.filter.word
+msgctxt "jacl2db_admin~acl2.filter.word"
+msgid "(part of) name:"
+msgstr "(část) názvu:"
+
+#: jacl2db_admin~acl2.show.button
+msgctxt "jacl2db_admin~acl2.show.button"
+msgid "Show"
+msgstr "Zobrazit"
+
+#: jacl2db_admin~acl2.no.user.message
+msgctxt "jacl2db_admin~acl2.no.user.message"
+msgid "No user."
+msgstr "Žádný uživatel."
+
+#: jacl2db_admin~acl2.col.users
+msgctxt "jacl2db_admin~acl2.col.users"
+msgid "Users"
+msgstr "Uživatelé"
+
+#: jacl2db_admin~acl2.rights.link
+msgctxt "jacl2db_admin~acl2.rights.link"
+msgid "rights"
+msgstr "práva"
+
+#: jacl2db_admin~acl2.pages.links.label
+msgctxt "jacl2db_admin~acl2.pages.links.label"
+msgid "Pages:"
+msgstr "Strany:"
+
+#: jacl2db_admin~acl2.anonymous.group.name
+msgctxt "jacl2db_admin~acl2.anonymous.group.name"
+msgid "Anonymous"
+msgstr "Anonymní"
+
+#: jacl2db_admin~acl2.all.users.option
+msgctxt "jacl2db_admin~acl2.all.users.option"
+msgid "All users"
+msgstr "Všichni uživatelé"
+
+#: jacl2db_admin~acl2.without.groups.option
+msgctxt "jacl2db_admin~acl2.without.groups.option"
+msgid "Without group"
+msgstr "Bez skupiny"
+
+#: jacl2db_admin~acl2.user.rights.title
+msgctxt "jacl2db_admin~acl2.user.rights.title"
+msgid "Rights for"
+msgstr "Práva pro"
+
+#: jacl2db_admin~acl2.has.rights.on.resources
+msgctxt "jacl2db_admin~acl2.has.rights.on.resources"
+msgid "This user has rights on some resources"
+msgstr "Tento uživatel má práva na některé zdroje"
+
+#: jacl2db_admin~acl2.see.rights.on.resources
+msgctxt "jacl2db_admin~acl2.see.rights.on.resources"
+msgid "See this rights"
+msgstr "Zobrazit práva"
+
+#: jacl2db_admin~acl2.message.user.rights.ok
+msgctxt "jacl2db_admin~acl2.message.user.rights.ok"
+msgid "Rights saved"
+msgstr "Práva uložena"
+
+#: jacl2db_admin~acl2.message.saveuserrights.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.saveuserrights.error.noacl.yourself"
+msgid "Changes cannot be applied else you won't be able to change some rights"
+msgstr "Změny nelze použít, jinak nebudete moci některé práva změnit"
+
+#: jacl2db_admin~acl2.message.saveuserrights.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.saveuserrights.error.noacl.anybody"
+msgid ""
+"Changes cannot be applied else nobody won't be able to change some rights"
+msgstr "Změny nelze použít, jinak nikdo nebude moci změnit některé práva"
+
+#: jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.yourself"
+msgid ""
+"You cannot be removed from this group else you won't be able to change some "
+"rights"
+msgstr "Nemůžete být z této skupiny odstraněni, jinak nebudete moci některé práva změnit"
+
+#: jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.anybody"
+msgid ""
+"The user cannot be removed from this group else nobody won't be able to "
+"change some rights"
+msgstr "Uživatel nemůže být z této skupiny odstraněn, jinak nikdo nebude moci změnit některé práva"
+
+#: jacl2db_admin~acl2.col.personnal.rights
+msgctxt "jacl2db_admin~acl2.col.personnal.rights"
+msgid "Personal rights"
+msgstr "Osobní práva"
+
+#: jacl2db_admin~acl2.col.personnal.rights.res
+msgctxt "jacl2db_admin~acl2.col.personnal.rights.res"
+msgid "Personal rights on resources"
+msgstr "Osobní práva na zdroje"
+
+#: jacl2db_admin~acl2.col.groups
+msgctxt "jacl2db_admin~acl2.col.groups"
+msgid "Groups"
+msgstr "Skupiny"
+
+#: jacl2db_admin~acl2.col.resulting
+msgctxt "jacl2db_admin~acl2.col.resulting"
+msgid "Resulting rights"
+msgstr "Výsledná práva"
+
+#: jacl2db_admin~acl2.col.subjects
+msgctxt "jacl2db_admin~acl2.col.subjects"
+msgid "Subjects"
+msgstr "Předměty"
+
+#: jacl2db_admin~acl2.col.resources
+msgctxt "jacl2db_admin~acl2.col.resources"
+msgid "Resources"
+msgstr "Zdroje"
+
+#: jacl2db_admin~acl2.remove.group.tooltip
+msgctxt "jacl2db_admin~acl2.remove.group.tooltip"
+msgid "Remove the user from this group"
+msgstr "Odstranit uživatele z této skupiny"
+
+#: jacl2db_admin~acl2.add.group.tooltip
+msgctxt "jacl2db_admin~acl2.add.group.tooltip"
+msgid "Add the user to this group"
+msgstr "Přidat uživatele do této skupiny"
+
+#: jacl2db_admin~acl2.user.rightres.title
+msgctxt "jacl2db_admin~acl2.user.rightres.title"
+msgid "Rights on resources for"
+msgstr "Práva na zdroje pro"
+
+#: jacl2db_admin~acl2.rights.title
+msgctxt "jacl2db_admin~acl2.rights.title"
+msgid "Rights"
+msgstr "Práva"
+
+#: jacl2db_admin~acl2.rightres.title
+msgctxt "jacl2db_admin~acl2.rightres.title"
+msgid "Rights on resources"
+msgstr "Práva na zdroje"
+
+#: jacl2db_admin~acl2.link.return.to.rights
+msgctxt "jacl2db_admin~acl2.link.return.to.rights"
+msgid "Return to global rights"
+msgstr "Zpět k globálním právům"
+
+#: jacl2db_admin~acl2.warning.deleting.rightres
+msgctxt "jacl2db_admin~acl2.warning.deleting.rightres"
+msgid ""
+"Warning! To remove this rights, you should use the interfaces provided by "
+"business modules corresponding to this rights. Use this page only if you "
+"know what you do!"
+msgstr "Varování! Chcete-li tato práva odstranit, měli byste používat rozhraní poskytovaná obchodními moduly odpovídajících těmto právům. Použijte tuto stránku pouze, pokud víte, co děláte!"
+
+#: jacl2db_admin~acl2.no.rightres
+msgctxt "jacl2db_admin~acl2.no.rightres"
+msgid "No special rights"
+msgstr "Žádná zvláštní práva"
+
+#: jacl2db_admin~acl2.save.button
+msgctxt "jacl2db_admin~acl2.save.button"
+msgid "Save"
+msgstr "Uložit"
+
+#: jacl2db_admin~acl2.error.invalid.user
+msgctxt "jacl2db_admin~acl2.error.invalid.user"
+msgid "Invalid user"
+msgstr "Neplatný uživatel"

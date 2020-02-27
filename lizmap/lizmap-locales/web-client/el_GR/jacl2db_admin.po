@@ -1,0 +1,368 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2018-10-11 07:51+0000\n"
+"Last-Translator: rldhont <rldhont@gmail.com>\n"
+"Language-Team: Greek (http://www.transifex.com/3liz-1/lizmap-locales/language/el/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: jacl2db_admin~acl2.menu.item.groups
+msgctxt "jacl2db_admin~acl2.menu.item.groups"
+msgid "Groups of users for rights"
+msgstr "Ομάδα χρηστών"
+
+#: jacl2db_admin~acl2.menu.item.rights
+msgctxt "jacl2db_admin~acl2.menu.item.rights"
+msgid "Rights of users"
+msgstr "Δικαιώματα χρηστών"
+
+#: jacl2db_admin~acl2.groups.title
+msgctxt "jacl2db_admin~acl2.groups.title"
+msgid "Groups of users for rights"
+msgstr "Ομάδα χρηστών για τα δικαιώματα"
+
+#: jacl2db_admin~acl2.groups.change.rights.link
+msgctxt "jacl2db_admin~acl2.groups.change.rights.link"
+msgid "Change rights of groups"
+msgstr "Αλλαγή τα δικαιώματα των ομαδών"
+
+#: jacl2db_admin~acl2.groups.new.users.title
+msgctxt "jacl2db_admin~acl2.groups.new.users.title"
+msgid "Groups of new users"
+msgstr "Ομάδες των νέων χρηστών"
+
+#: jacl2db_admin~acl2.setdefault.button
+msgctxt "jacl2db_admin~acl2.setdefault.button"
+msgid "Set default groups"
+msgstr "Αποθήκευση"
+
+#: jacl2db_admin~acl2.message.groups.setdefault.ok
+msgctxt "jacl2db_admin~acl2.message.groups.setdefault.ok"
+msgid "Default groups set"
+msgstr "Επιτυχία στην αποθήκευση των ομάδων!"
+
+#: jacl2db_admin~acl2.create.group
+msgctxt "jacl2db_admin~acl2.create.group"
+msgid "Create a group"
+msgstr "Δημιουργία μιας ομάδας"
+
+#: jacl2db_admin~acl2.group.name.label
+msgctxt "jacl2db_admin~acl2.group.name.label"
+msgid "Label:"
+msgstr "Κείμενο :"
+
+#: jacl2db_admin~acl2.group.name.id
+msgctxt "jacl2db_admin~acl2.group.name.id"
+msgid "Ident:"
+msgstr "Αναγνωριστικός αριθμός :"
+
+#: jacl2db_admin~acl2.message.group.create.ok
+msgctxt "jacl2db_admin~acl2.message.group.create.ok"
+msgid "Group created"
+msgstr "Επιτυχία στη δημιουργία της ομάδας !"
+
+#: jacl2db_admin~acl2.change.name.title
+msgctxt "jacl2db_admin~acl2.change.name.title"
+msgid "Change the name"
+msgstr "Αλλαγή του ονόματος"
+
+#: jacl2db_admin~acl2.rename.button
+msgctxt "jacl2db_admin~acl2.rename.button"
+msgid "Rename"
+msgstr "Μετανομασία"
+
+#: jacl2db_admin~acl2.new.name.label
+msgctxt "jacl2db_admin~acl2.new.name.label"
+msgid "New name:"
+msgstr "Νέο όνομα:"
+
+#: jacl2db_admin~acl2.message.group.rename.ok
+msgctxt "jacl2db_admin~acl2.message.group.rename.ok"
+msgid "Group renamed"
+msgstr "Επιτυχία στη μετανομασία της ομάδας !"
+
+#: jacl2db_admin~acl2.delete.group
+msgctxt "jacl2db_admin~acl2.delete.group"
+msgid "Delete a group"
+msgstr "Διαγραφή μια ομάδα"
+
+#: jacl2db_admin~acl2.delete.button
+msgctxt "jacl2db_admin~acl2.delete.button"
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: jacl2db_admin~acl2.message.group.delete.ok
+msgctxt "jacl2db_admin~acl2.message.group.delete.ok"
+msgid "Group deleted"
+msgstr "Επιτυχία στη διαγραφή της ομάδας !"
+
+#: jacl2db_admin~acl2.message.group.delete.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.group.delete.error.noacl.yourself"
+msgid "The group cannot be deleted, else you couldn't manage rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.message.group.delete.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.group.delete.error.noacl.anybody"
+msgid "The group cannot be deleted, else nobody couldn't manage rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.groups.rights.title
+msgctxt "jacl2db_admin~acl2.groups.rights.title"
+msgid "Rights of groups"
+msgstr "Δικαιώματα ομαδών"
+
+#: jacl2db_admin~acl2.table.th.groups
+msgctxt "jacl2db_admin~acl2.table.th.groups"
+msgid "Groups"
+msgstr "Ομάδες"
+
+#: jacl2db_admin~acl2.table.th.rights
+msgctxt "jacl2db_admin~acl2.table.th.rights"
+msgid "Rights"
+msgstr "Δικαιώματα"
+
+#: jacl2db_admin~acl2.group.help.rights.inherit
+msgctxt "jacl2db_admin~acl2.group.help.rights.inherit"
+msgid "\"-\": undefined right, it can be defined in other groups of the user"
+msgstr "\"-\" πληροφορεί ότι το δικαίωμα είναι απροσδιόριστο,η τιμή των άλλων ομάδων του χρήστη θα είναι σε προτεραιότητα"
+
+#: jacl2db_admin~acl2.group.help.rights.yes
+msgctxt "jacl2db_admin~acl2.group.help.rights.yes"
+msgid ""
+"\"yes\": indicate that the right is set, but can be canceled (\"no\") in an "
+"other group"
+msgstr "\"ναι\" πληροφορεί ότι η ομάδα έχει αυτό το δικαίωμα, εκτός αν μια άλλη ομάδα απ'του χρήστη ενημερώνει \"όχι\""
+
+#: jacl2db_admin~acl2.group.help.rights.no
+msgctxt "jacl2db_admin~acl2.group.help.rights.no"
+msgid ""
+"\"no\": the right is not assign to this group, and to any other groups of "
+"the user."
+msgstr "\"όχι\" πληροφορεί ότι η ομάδα δεν έχει αυτό το δικαίωμα, καθώς μια άλλη ομάδα απ' το χρήστη ενημερώνει \"ναι\"."
+
+#: jacl2db_admin~acl2.global.rights
+msgctxt "jacl2db_admin~acl2.global.rights"
+msgid "global"
+msgstr "Κενικώς"
+
+#: jacl2db_admin~acl2.special.rights
+msgctxt "jacl2db_admin~acl2.special.rights"
+msgid "special"
+msgstr "Ειδικώς"
+
+#: jacl2db_admin~acl2.message.savegrouprights.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.savegrouprights.error.noacl.yourself"
+msgid "Changes cannot be applied else you won't be able to change some rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.message.savegrouprights.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.savegrouprights.error.noacl.anybody"
+msgid ""
+"Changes cannot be applied else nobody won't be able to change some rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.message.group.rights.ok
+msgctxt "jacl2db_admin~acl2.message.group.rights.ok"
+msgid "Rights saved"
+msgstr "Επιτυχία στη αποθήκευση των δικαιώματων της ομάδας !"
+
+#: jacl2db_admin~acl2.group.rightres.title
+msgctxt "jacl2db_admin~acl2.group.rightres.title"
+msgid "Rights on resources for the group"
+msgstr "Δικαιώματα στους πόρους για την ομάδα"
+
+#: jacl2db_admin~acl2.users.title
+msgctxt "jacl2db_admin~acl2.users.title"
+msgid "Rights of users"
+msgstr "Δικαιώματα χρηστών"
+
+#: jacl2db_admin~acl2.filter.title
+msgctxt "jacl2db_admin~acl2.filter.title"
+msgid "Filter"
+msgstr ""
+
+#: jacl2db_admin~acl2.filter.group
+msgctxt "jacl2db_admin~acl2.filter.group"
+msgid "Group:"
+msgstr ""
+
+#: jacl2db_admin~acl2.filter.word
+msgctxt "jacl2db_admin~acl2.filter.word"
+msgid "(part of) name:"
+msgstr ""
+
+#: jacl2db_admin~acl2.show.button
+msgctxt "jacl2db_admin~acl2.show.button"
+msgid "Show"
+msgstr "Προβολή"
+
+#: jacl2db_admin~acl2.no.user.message
+msgctxt "jacl2db_admin~acl2.no.user.message"
+msgid "No user."
+msgstr "Μηδέν χρήστης."
+
+#: jacl2db_admin~acl2.col.users
+msgctxt "jacl2db_admin~acl2.col.users"
+msgid "Users"
+msgstr "Χρήστες"
+
+#: jacl2db_admin~acl2.rights.link
+msgctxt "jacl2db_admin~acl2.rights.link"
+msgid "rights"
+msgstr "Δικαιώματα"
+
+#: jacl2db_admin~acl2.pages.links.label
+msgctxt "jacl2db_admin~acl2.pages.links.label"
+msgid "Pages:"
+msgstr "Σελίδες :"
+
+#: jacl2db_admin~acl2.anonymous.group.name
+msgctxt "jacl2db_admin~acl2.anonymous.group.name"
+msgid "Anonymous"
+msgstr "Ανώνυμοι"
+
+#: jacl2db_admin~acl2.all.users.option
+msgctxt "jacl2db_admin~acl2.all.users.option"
+msgid "All users"
+msgstr "Ολες οι χρήστες"
+
+#: jacl2db_admin~acl2.without.groups.option
+msgctxt "jacl2db_admin~acl2.without.groups.option"
+msgid "Without group"
+msgstr "Χώρις ομάδα"
+
+#: jacl2db_admin~acl2.user.rights.title
+msgctxt "jacl2db_admin~acl2.user.rights.title"
+msgid "Rights for"
+msgstr "Δικαιώματα για"
+
+#: jacl2db_admin~acl2.has.rights.on.resources
+msgctxt "jacl2db_admin~acl2.has.rights.on.resources"
+msgid "This user has rights on some resources"
+msgstr "Αυτός χρήστης κατέχει δικαιώματα για τους πόρους"
+
+#: jacl2db_admin~acl2.see.rights.on.resources
+msgctxt "jacl2db_admin~acl2.see.rights.on.resources"
+msgid "See this rights"
+msgstr "Προβολή των διακιώματων"
+
+#: jacl2db_admin~acl2.message.user.rights.ok
+msgctxt "jacl2db_admin~acl2.message.user.rights.ok"
+msgid "Rights saved"
+msgstr "Επιτυχία στη αποθήκευση των δικαιώματων  !"
+
+#: jacl2db_admin~acl2.message.saveuserrights.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.saveuserrights.error.noacl.yourself"
+msgid "Changes cannot be applied else you won't be able to change some rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.message.saveuserrights.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.saveuserrights.error.noacl.anybody"
+msgid ""
+"Changes cannot be applied else nobody won't be able to change some rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.yourself"
+msgid ""
+"You cannot be removed from this group else you won't be able to change some "
+"rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.anybody"
+msgid ""
+"The user cannot be removed from this group else nobody won't be able to "
+"change some rights"
+msgstr ""
+
+#: jacl2db_admin~acl2.col.personnal.rights
+msgctxt "jacl2db_admin~acl2.col.personnal.rights"
+msgid "Personal rights"
+msgstr "Προσωπικά δικαιώματα"
+
+#: jacl2db_admin~acl2.col.personnal.rights.res
+msgctxt "jacl2db_admin~acl2.col.personnal.rights.res"
+msgid "Personal rights on resources"
+msgstr "Προσωπικά δικαιώματα στους πόρους"
+
+#: jacl2db_admin~acl2.col.groups
+msgctxt "jacl2db_admin~acl2.col.groups"
+msgid "Groups"
+msgstr "Ομάδες"
+
+#: jacl2db_admin~acl2.col.resulting
+msgctxt "jacl2db_admin~acl2.col.resulting"
+msgid "Resulting rights"
+msgstr "Δικαιώματα στο τέλος"
+
+#: jacl2db_admin~acl2.col.subjects
+msgctxt "jacl2db_admin~acl2.col.subjects"
+msgid "Subjects"
+msgstr "Θέματα"
+
+#: jacl2db_admin~acl2.col.resources
+msgctxt "jacl2db_admin~acl2.col.resources"
+msgid "Resources"
+msgstr "Πόροι"
+
+#: jacl2db_admin~acl2.remove.group.tooltip
+msgctxt "jacl2db_admin~acl2.remove.group.tooltip"
+msgid "Remove the user from this group"
+msgstr "Βγάλει ένας χρήστης από την ομάδα"
+
+#: jacl2db_admin~acl2.add.group.tooltip
+msgctxt "jacl2db_admin~acl2.add.group.tooltip"
+msgid "Add the user to this group"
+msgstr "Προσθήκη ένας χρήστης στην ομάδα"
+
+#: jacl2db_admin~acl2.user.rightres.title
+msgctxt "jacl2db_admin~acl2.user.rightres.title"
+msgid "Rights on resources for"
+msgstr "Δικαιώματα χρήστων για"
+
+#: jacl2db_admin~acl2.rights.title
+msgctxt "jacl2db_admin~acl2.rights.title"
+msgid "Rights"
+msgstr "Δικαιώματα χρηστών"
+
+#: jacl2db_admin~acl2.rightres.title
+msgctxt "jacl2db_admin~acl2.rightres.title"
+msgid "Rights on resources"
+msgstr "Δικαιώματα στους πόρους"
+
+#: jacl2db_admin~acl2.link.return.to.rights
+msgctxt "jacl2db_admin~acl2.link.return.to.rights"
+msgid "Return to global rights"
+msgstr "Επιστροφή στα γενικά δικαιώματα"
+
+#: jacl2db_admin~acl2.warning.deleting.rightres
+msgctxt "jacl2db_admin~acl2.warning.deleting.rightres"
+msgid ""
+"Warning! To remove this rights, you should use the interfaces provided by "
+"business modules corresponding to this rights. Use this page only if you "
+"know what you do!"
+msgstr "Προσοχή! Για να σβήσετε αυτά τα δικαιώματα θα πρέπει να χρησιμοποιήσετε τη διεπαφή που παρέχει από τα modules που επιτρέπουν αυτά διακιώματα. Χρησιμοποιήστε αυτή σελίδα μόνο αν ξέρετε τι κάνετε !"
+
+#: jacl2db_admin~acl2.no.rightres
+msgctxt "jacl2db_admin~acl2.no.rightres"
+msgid "No special rights"
+msgstr "Δεν υπάρχει συγκεκριμένο δικαίωμα"
+
+#: jacl2db_admin~acl2.save.button
+msgctxt "jacl2db_admin~acl2.save.button"
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#: jacl2db_admin~acl2.error.invalid.user
+msgctxt "jacl2db_admin~acl2.error.invalid.user"
+msgid "Invalid user"
+msgstr ""

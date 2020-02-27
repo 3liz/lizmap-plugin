@@ -1,0 +1,369 @@
+# 
+# Translators:
+# kasza jozsef <kasza.nkataszri@gmail.com>, 2018-2019
+msgid ""
+msgstr ""
+"Project-Id-Version: Lizmap locales\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 15:02++0200\n"
+"PO-Revision-Date: 2019-01-01 17:54+0000\n"
+"Last-Translator: kasza jozsef <kasza.nkataszri@gmail.com>\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/3liz-1/lizmap-locales/language/hu_HU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: jacl2db_admin~acl2.menu.item.groups
+msgctxt "jacl2db_admin~acl2.menu.item.groups"
+msgid "Groups of users for rights"
+msgstr "Felhasználói csoportok és jogosultságok"
+
+#: jacl2db_admin~acl2.menu.item.rights
+msgctxt "jacl2db_admin~acl2.menu.item.rights"
+msgid "Rights of users"
+msgstr "Felhasználói jogok"
+
+#: jacl2db_admin~acl2.groups.title
+msgctxt "jacl2db_admin~acl2.groups.title"
+msgid "Groups of users for rights"
+msgstr "Felhasználói csoportok és jogosultságok"
+
+#: jacl2db_admin~acl2.groups.change.rights.link
+msgctxt "jacl2db_admin~acl2.groups.change.rights.link"
+msgid "Change rights of groups"
+msgstr "Csoport-jogosultságok megváltoztatása"
+
+#: jacl2db_admin~acl2.groups.new.users.title
+msgctxt "jacl2db_admin~acl2.groups.new.users.title"
+msgid "Groups of new users"
+msgstr "Új felhasználók alapértelmezett csoportja"
+
+#: jacl2db_admin~acl2.setdefault.button
+msgctxt "jacl2db_admin~acl2.setdefault.button"
+msgid "Set default groups"
+msgstr "Alapértelmezett csoportok beállítása"
+
+#: jacl2db_admin~acl2.message.groups.setdefault.ok
+msgctxt "jacl2db_admin~acl2.message.groups.setdefault.ok"
+msgid "Default groups set"
+msgstr "Az alapértelmezett csoportok beállítása megtörtént"
+
+#: jacl2db_admin~acl2.create.group
+msgctxt "jacl2db_admin~acl2.create.group"
+msgid "Create a group"
+msgstr "Felhasználói csoport létrehozása"
+
+#: jacl2db_admin~acl2.group.name.label
+msgctxt "jacl2db_admin~acl2.group.name.label"
+msgid "Label:"
+msgstr "Csoportcímke"
+
+#: jacl2db_admin~acl2.group.name.id
+msgctxt "jacl2db_admin~acl2.group.name.id"
+msgid "Ident:"
+msgstr "Csoport-azonosító"
+
+#: jacl2db_admin~acl2.message.group.create.ok
+msgctxt "jacl2db_admin~acl2.message.group.create.ok"
+msgid "Group created"
+msgstr "A felhasználói csoport létrejött"
+
+#: jacl2db_admin~acl2.change.name.title
+msgctxt "jacl2db_admin~acl2.change.name.title"
+msgid "Change the name"
+msgstr "Csoportnév megváltoztatása"
+
+#: jacl2db_admin~acl2.rename.button
+msgctxt "jacl2db_admin~acl2.rename.button"
+msgid "Rename"
+msgstr "Átnevezés"
+
+#: jacl2db_admin~acl2.new.name.label
+msgctxt "jacl2db_admin~acl2.new.name.label"
+msgid "New name:"
+msgstr "Új csoportnév"
+
+#: jacl2db_admin~acl2.message.group.rename.ok
+msgctxt "jacl2db_admin~acl2.message.group.rename.ok"
+msgid "Group renamed"
+msgstr "A felhasználói csoport átnevezése megtörtént"
+
+#: jacl2db_admin~acl2.delete.group
+msgctxt "jacl2db_admin~acl2.delete.group"
+msgid "Delete a group"
+msgstr "Felhasználói csoport törlése"
+
+#: jacl2db_admin~acl2.delete.button
+msgctxt "jacl2db_admin~acl2.delete.button"
+msgid "Delete"
+msgstr "Töröl"
+
+#: jacl2db_admin~acl2.message.group.delete.ok
+msgctxt "jacl2db_admin~acl2.message.group.delete.ok"
+msgid "Group deleted"
+msgstr "A felhasználói csoport törölve"
+
+#: jacl2db_admin~acl2.message.group.delete.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.group.delete.error.noacl.yourself"
+msgid "The group cannot be deleted, else you couldn't manage rights"
+msgstr "A csoport nem törölhető, vagy nincs joga a csoport-jogosultságok változtatásához"
+
+#: jacl2db_admin~acl2.message.group.delete.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.group.delete.error.noacl.anybody"
+msgid "The group cannot be deleted, else nobody couldn't manage rights"
+msgstr "A csoport nem törölhető, különben nem marad felhasználó a jogosultságok módosításához"
+
+#: jacl2db_admin~acl2.groups.rights.title
+msgctxt "jacl2db_admin~acl2.groups.rights.title"
+msgid "Rights of groups"
+msgstr "Felhasználói csoportok jogosultságai"
+
+#: jacl2db_admin~acl2.table.th.groups
+msgctxt "jacl2db_admin~acl2.table.th.groups"
+msgid "Groups"
+msgstr "Felhasználói csoportok"
+
+#: jacl2db_admin~acl2.table.th.rights
+msgctxt "jacl2db_admin~acl2.table.th.rights"
+msgid "Rights"
+msgstr "Jogosultságok"
+
+#: jacl2db_admin~acl2.group.help.rights.inherit
+msgctxt "jacl2db_admin~acl2.group.help.rights.inherit"
+msgid "\"-\": undefined right, it can be defined in other groups of the user"
+msgstr "\"-\": Nem beállított jogosultság, megadható a felhasználó más csoportjainál"
+
+#: jacl2db_admin~acl2.group.help.rights.yes
+msgctxt "jacl2db_admin~acl2.group.help.rights.yes"
+msgid ""
+"\"yes\": indicate that the right is set, but can be canceled (\"no\") in an "
+"other group"
+msgstr "\"yes\": engedélyezett jogosultság, de letiltható (\"no\")a felhasználó más csoportjaiban"
+
+#: jacl2db_admin~acl2.group.help.rights.no
+msgctxt "jacl2db_admin~acl2.group.help.rights.no"
+msgid ""
+"\"no\": the right is not assign to this group, and to any other groups of "
+"the user."
+msgstr "\"no\": a jogosultság nem engedélyezett sem ebben, sem a felhasználó más csoportjaiban"
+
+#: jacl2db_admin~acl2.global.rights
+msgctxt "jacl2db_admin~acl2.global.rights"
+msgid "global"
+msgstr "globális"
+
+#: jacl2db_admin~acl2.special.rights
+msgctxt "jacl2db_admin~acl2.special.rights"
+msgid "special"
+msgstr "speciális"
+
+#: jacl2db_admin~acl2.message.savegrouprights.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.savegrouprights.error.noacl.yourself"
+msgid "Changes cannot be applied else you won't be able to change some rights"
+msgstr "A módosítások nem végezhetők el, különben nem lesz joga bizonyos jogosultságok megváltoztatásához."
+
+#: jacl2db_admin~acl2.message.savegrouprights.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.savegrouprights.error.noacl.anybody"
+msgid ""
+"Changes cannot be applied else nobody won't be able to change some rights"
+msgstr "A módosítások nem végezhetők el, különben nem marad felhasználó a jogosultságok módosításához"
+
+#: jacl2db_admin~acl2.message.group.rights.ok
+msgctxt "jacl2db_admin~acl2.message.group.rights.ok"
+msgid "Rights saved"
+msgstr "A jogosultságok mentése megtörtént"
+
+#: jacl2db_admin~acl2.group.rightres.title
+msgctxt "jacl2db_admin~acl2.group.rightres.title"
+msgid "Rights on resources for the group"
+msgstr "Erőforrások feletti jogosultságok a csoportra vonatkozóan"
+
+#: jacl2db_admin~acl2.users.title
+msgctxt "jacl2db_admin~acl2.users.title"
+msgid "Rights of users"
+msgstr "Felhasználói jogosultságok"
+
+#: jacl2db_admin~acl2.filter.title
+msgctxt "jacl2db_admin~acl2.filter.title"
+msgid "Filter"
+msgstr "Szűrés"
+
+#: jacl2db_admin~acl2.filter.group
+msgctxt "jacl2db_admin~acl2.filter.group"
+msgid "Group:"
+msgstr "Csoport:"
+
+#: jacl2db_admin~acl2.filter.word
+msgctxt "jacl2db_admin~acl2.filter.word"
+msgid "(part of) name:"
+msgstr "név (vagy a név részlete):"
+
+#: jacl2db_admin~acl2.show.button
+msgctxt "jacl2db_admin~acl2.show.button"
+msgid "Show"
+msgstr "Megmutat"
+
+#: jacl2db_admin~acl2.no.user.message
+msgctxt "jacl2db_admin~acl2.no.user.message"
+msgid "No user."
+msgstr "Nincs felhasználó"
+
+#: jacl2db_admin~acl2.col.users
+msgctxt "jacl2db_admin~acl2.col.users"
+msgid "Users"
+msgstr "Felhasználók"
+
+#: jacl2db_admin~acl2.rights.link
+msgctxt "jacl2db_admin~acl2.rights.link"
+msgid "rights"
+msgstr "jogosultságok"
+
+#: jacl2db_admin~acl2.pages.links.label
+msgctxt "jacl2db_admin~acl2.pages.links.label"
+msgid "Pages:"
+msgstr "Oldalak"
+
+#: jacl2db_admin~acl2.anonymous.group.name
+msgctxt "jacl2db_admin~acl2.anonymous.group.name"
+msgid "Anonymous"
+msgstr "Névtelen"
+
+#: jacl2db_admin~acl2.all.users.option
+msgctxt "jacl2db_admin~acl2.all.users.option"
+msgid "All users"
+msgstr "Összes felhasználó"
+
+#: jacl2db_admin~acl2.without.groups.option
+msgctxt "jacl2db_admin~acl2.without.groups.option"
+msgid "Without group"
+msgstr "Csoport nélkül"
+
+#: jacl2db_admin~acl2.user.rights.title
+msgctxt "jacl2db_admin~acl2.user.rights.title"
+msgid "Rights for"
+msgstr "Jogosultságok"
+
+#: jacl2db_admin~acl2.has.rights.on.resources
+msgctxt "jacl2db_admin~acl2.has.rights.on.resources"
+msgid "This user has rights on some resources"
+msgstr "Ennek a felhasználónak már vannak jogosultságai az aktuális erőforrások felett."
+
+#: jacl2db_admin~acl2.see.rights.on.resources
+msgctxt "jacl2db_admin~acl2.see.rights.on.resources"
+msgid "See this rights"
+msgstr "Aktuális jogosultságok megtekintése"
+
+#: jacl2db_admin~acl2.message.user.rights.ok
+msgctxt "jacl2db_admin~acl2.message.user.rights.ok"
+msgid "Rights saved"
+msgstr "A jogosultságok mentése megtörtént"
+
+#: jacl2db_admin~acl2.message.saveuserrights.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.saveuserrights.error.noacl.yourself"
+msgid "Changes cannot be applied else you won't be able to change some rights"
+msgstr "A módosítások nem végezhetők el, különben nem lesz joga bizonyos jogosultságok megváltoztatásához."
+
+#: jacl2db_admin~acl2.message.saveuserrights.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.saveuserrights.error.noacl.anybody"
+msgid ""
+"Changes cannot be applied else nobody won't be able to change some rights"
+msgstr "A módosítások nem végezhetők el, különben nem marad felhasználó a jogosultságok módosításához"
+
+#: jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.yourself
+msgctxt "jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.yourself"
+msgid ""
+"You cannot be removed from this group else you won't be able to change some "
+"rights"
+msgstr "Az aktuális felhasználó nem távolítható el a csoportból, különben nem lesz joga bizonyos jogosultságok megváltoztatásához."
+
+#: jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.anybody
+msgctxt "jacl2db_admin~acl2.message.removeuserfromgroup.error.noacl.anybody"
+msgid ""
+"The user cannot be removed from this group else nobody won't be able to "
+"change some rights"
+msgstr "Az aktuális felhasználó nem távolítható el a csoportból, különben nem marad felhasználó a jogosultságok módosításához"
+
+#: jacl2db_admin~acl2.col.personnal.rights
+msgctxt "jacl2db_admin~acl2.col.personnal.rights"
+msgid "Personal rights"
+msgstr "Személyes jogosultságok"
+
+#: jacl2db_admin~acl2.col.personnal.rights.res
+msgctxt "jacl2db_admin~acl2.col.personnal.rights.res"
+msgid "Personal rights on resources"
+msgstr "Személyes jogosultságok az erőforrások felett"
+
+#: jacl2db_admin~acl2.col.groups
+msgctxt "jacl2db_admin~acl2.col.groups"
+msgid "Groups"
+msgstr "Csoportok"
+
+#: jacl2db_admin~acl2.col.resulting
+msgctxt "jacl2db_admin~acl2.col.resulting"
+msgid "Resulting rights"
+msgstr "Vonatkozó jogosultságok"
+
+#: jacl2db_admin~acl2.col.subjects
+msgctxt "jacl2db_admin~acl2.col.subjects"
+msgid "Subjects"
+msgstr "Érintett elemek"
+
+#: jacl2db_admin~acl2.col.resources
+msgctxt "jacl2db_admin~acl2.col.resources"
+msgid "Resources"
+msgstr "Erőforrások"
+
+#: jacl2db_admin~acl2.remove.group.tooltip
+msgctxt "jacl2db_admin~acl2.remove.group.tooltip"
+msgid "Remove the user from this group"
+msgstr "Felhasználó eltávolítása a csoportból"
+
+#: jacl2db_admin~acl2.add.group.tooltip
+msgctxt "jacl2db_admin~acl2.add.group.tooltip"
+msgid "Add the user to this group"
+msgstr "Felhasználó hozzáadása a csoporthoz"
+
+#: jacl2db_admin~acl2.user.rightres.title
+msgctxt "jacl2db_admin~acl2.user.rightres.title"
+msgid "Rights on resources for"
+msgstr "Erőforrás-jogosultságok a következőnek:"
+
+#: jacl2db_admin~acl2.rights.title
+msgctxt "jacl2db_admin~acl2.rights.title"
+msgid "Rights"
+msgstr "Jogosultságok"
+
+#: jacl2db_admin~acl2.rightres.title
+msgctxt "jacl2db_admin~acl2.rightres.title"
+msgid "Rights on resources"
+msgstr "Jogosultságok az erőforrások felett"
+
+#: jacl2db_admin~acl2.link.return.to.rights
+msgctxt "jacl2db_admin~acl2.link.return.to.rights"
+msgid "Return to global rights"
+msgstr "Vissza a globális jogosultságokhoz"
+
+#: jacl2db_admin~acl2.warning.deleting.rightres
+msgctxt "jacl2db_admin~acl2.warning.deleting.rightres"
+msgid ""
+"Warning! To remove this rights, you should use the interfaces provided by "
+"business modules corresponding to this rights. Use this page only if you "
+"know what you do!"
+msgstr "FIGYELMEZTETÉS! A jogosultságok eltávolításához használja a jogosultságkezelő modult. Csak akkor használja ezt az oldalt ha biztos a dolgában!"
+
+#: jacl2db_admin~acl2.no.rightres
+msgctxt "jacl2db_admin~acl2.no.rightres"
+msgid "No special rights"
+msgstr "Nincsenek speciális jogosultságok"
+
+#: jacl2db_admin~acl2.save.button
+msgctxt "jacl2db_admin~acl2.save.button"
+msgid "Save"
+msgstr "Mentés"
+
+#: jacl2db_admin~acl2.error.invalid.user
+msgctxt "jacl2db_admin~acl2.error.invalid.user"
+msgid "Invalid user"
+msgstr "Nem létező felhasználó"
