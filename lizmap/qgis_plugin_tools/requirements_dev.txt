@@ -1,5 +1,0 @@
-mock==2.0.0
-transifex-client==0.13.6
-pylint==2.4.4
-pycodestyle==2.4.0
-git-archive-all==1.19.4

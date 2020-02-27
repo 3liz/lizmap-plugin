@@ -1,8 +1,0 @@
-[main]
-host = https://www.transifex.com
-
-[lizmap-locales.lizmap_ents]
-file_filter = i18n/lizmap_<lang>.ts
-source_file = i18n/lizmap_en.ts
-source_lang = en
-type = QT

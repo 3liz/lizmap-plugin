@@ -1,8 +1,0 @@
-README.md export-ignore
-infrastructure/* export-ignore
-update_strings.sh export-ignore
-requirements_dev.txt export-ignore
-.gitattributes export-ignore
-.gitignore export-ignore
-Makefile export-ignore
-Makefile.parent export-ignore
