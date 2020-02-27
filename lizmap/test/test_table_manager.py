@@ -9,18 +9,18 @@ from qgis.testing import unittest, start_app
 
 start_app()
 
-from .definitions.atlas import AtlasDefinitions
-from .definitions.attribute_table import AttributeTableDefinitions
-from .definitions.dataviz import DatavizDefinitions
-from .definitions.edition import EditionDefinitions
-from .definitions.filter_by_form import FilterByFormDefinitions
-from .definitions.filter_by_login import FilterByLoginDefinitions
-from .definitions.locate_by_layer import LocateByLayerDefinitions
-from .definitions.tooltip import ToolTipDefinitions
-from .definitions import TimeManagerDefinitions
-from .forms import TableManager
-from .forms import AtlasEditionDialog
-from .qgis_plugin_tools import plugin_test_data_path
+from ..definitions.atlas import AtlasDefinitions
+from ..definitions.attribute_table import AttributeTableDefinitions
+from ..definitions.dataviz import DatavizDefinitions
+from ..definitions.edition import EditionDefinitions
+from ..definitions.filter_by_form import FilterByFormDefinitions
+from ..definitions.filter_by_login import FilterByLoginDefinitions
+from ..definitions.locate_by_layer import LocateByLayerDefinitions
+from ..definitions.tooltip import ToolTipDefinitions
+from ..definitions.time_manager import TimeManagerDefinitions
+from ..forms.table_manager import TableManager
+from ..forms.atlas_edition import AtlasEditionDialog
+from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
 
 
 __copyright__ = 'Copyright 2020, 3Liz'

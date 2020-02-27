@@ -17,8 +17,8 @@ from qgis.testing import unittest, start_app
 start_app()
 
 
-from .qgis_plugin_tools import plugin_test_data_path
-from .tooltip import Tooltip
+from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
+from ..tooltip import Tooltip
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
