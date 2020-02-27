@@ -1,4 +1,4 @@
-## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
+## [![logo](lizmap/resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
 
 * Latest download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.7/download/
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)

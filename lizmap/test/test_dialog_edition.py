@@ -7,8 +7,6 @@ start_app()
 
 from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
 from ..forms.atlas_edition import AtlasEditionDialog
-from ..forms.tooltip_edition import ToolTipEditionDialog
-
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
