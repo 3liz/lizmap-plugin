@@ -6,8 +6,8 @@ from qgis.core import QgsVectorLayer, QgsProject, Qgis
 from qgis.testing import unittest, start_app
 from qgis.testing.mocked import get_iface
 
-from lizmap.lizmap import Lizmap
-from lizmap.qgis_plugin_tools import plugin_test_data_path
+from .lizmap import Lizmap
+from .qgis_plugin_tools import plugin_test_data_path
 
 
 start_app()

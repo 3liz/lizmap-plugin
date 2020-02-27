@@ -9,18 +9,18 @@ from qgis.testing import unittest, start_app
 
 start_app()
 
-from lizmap.definitions.atlas import AtlasDefinitions
-from lizmap.definitions.attribute_table import AttributeTableDefinitions
-from lizmap.definitions.dataviz import DatavizDefinitions
-from lizmap.definitions.edition import EditionDefinitions
-from lizmap.definitions.filter_by_form import FilterByFormDefinitions
-from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
-from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
-from lizmap.definitions.tooltip import ToolTipDefinitions
-from lizmap.definitions import TimeManagerDefinitions
-from lizmap.forms import TableManager
-from lizmap.forms import AtlasEditionDialog
-from lizmap.qgis_plugin_tools import plugin_test_data_path
+from .definitions.atlas import AtlasDefinitions
+from .definitions.attribute_table import AttributeTableDefinitions
+from .definitions.dataviz import DatavizDefinitions
+from .definitions.edition import EditionDefinitions
+from .definitions.filter_by_form import FilterByFormDefinitions
+from .definitions.filter_by_login import FilterByLoginDefinitions
+from .definitions.locate_by_layer import LocateByLayerDefinitions
+from .definitions.tooltip import ToolTipDefinitions
+from .definitions import TimeManagerDefinitions
+from .forms import TableManager
+from .forms import AtlasEditionDialog
+from .qgis_plugin_tools import plugin_test_data_path
 
 
 __copyright__ = 'Copyright 2020, 3Liz'
