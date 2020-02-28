@@ -9,7 +9,7 @@ env:
 
   matrix:
     - QGIS_VERSION_TAG=release-3_4
-    - QGIS_VERSION_TAG=release-3_10
+    # - QGIS_VERSION_TAG=release-3_10
     # - QGIS_VERSION_TAG=latest
 
 branches:
@@ -21,7 +21,7 @@ before_install:
   - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
 
 install:
-  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/lizmap -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/lizmap:/lizmap -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
   - sleep 10
   - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
 

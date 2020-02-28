@@ -2352,20 +2352,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="table_attribute_table">
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                </widget>
+                <widget class="QTableWidget" name="table_attribute_table"/>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2497,21 +2484,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    <height>16777215</height>
                   </size>
                  </property>
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <attribute name="horizontalHeaderStretchLastSection">
-                  <bool>false</bool>
-                 </attribute>
                 </widget>
                </item>
                <item>
@@ -2640,6 +2612,20 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <widget class="QPushButton" name="edit_tooltip_button">
                    <property name="text">
                     <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_tooltip_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_tooltip_button">
+                   <property name="text">
+                    <string notr="true">down</string>
                    </property>
                   </widget>
                  </item>
@@ -2800,18 +2786,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        <width>16777215</width>
                        <height>16777215</height>
                       </size>
-                     </property>
-                     <property name="editTriggers">
-                      <set>QAbstractItemView::NoEditTriggers</set>
-                     </property>
-                     <property name="alternatingRowColors">
-                      <bool>true</bool>
-                     </property>
-                     <property name="selectionMode">
-                      <enum>QAbstractItemView::SingleSelection</enum>
-                     </property>
-                     <property name="selectionBehavior">
-                      <enum>QAbstractItemView::SelectRows</enum>
                      </property>
                     </widget>
                    </item>
@@ -3175,11 +3149,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTableWidget" name="table_atlas">
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectColumns</enum>
-                 </property>
-                </widget>
+                <widget class="QTableWidget" name="table_atlas"/>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_23">
@@ -3305,18 +3275,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    <width>16777215</width>
                    <height>16777215</height>
                   </size>
-                 </property>
-                 <property name="editTriggers">
-                  <set>QAbstractItemView::NoEditTriggers</set>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
                  </property>
                 </widget>
                </item>

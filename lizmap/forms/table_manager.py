@@ -52,6 +52,7 @@ class TableManager:
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setAlternatingRowColors(True)
 
         header = self.table.horizontalHeader()
         # header.setSectionResizeMode(QHeaderView.ResizeToContents)

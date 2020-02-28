@@ -1,10 +1,12 @@
-## [![logo](resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
+## [![logo](lizmap/resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
+
+[![Build Status](https://api.travis-ci.org/3liz/lizmap-plugin.svg?branch=master)](https://travis-ci.org/3liz/lizmap-plugin)
 
 * Latest download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.7/download/
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
 * Do not use the link provided by GitHub by default.
 
-Banches :
+Branches :
 
 * The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/). 
 * The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/). 
@@ -47,7 +49,7 @@ From QGIS application:
 or from GitHub repository:
 
 1. Clone the repo: `git clone --recursive git@github.com:3liz/lizmap-plugin.git lizmap`
-1. `mv lizmap ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins`
+1. `mv lizmap/lizmap ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins`
 
 If it's from a previous GitHub repository:
 1. `git submodule update` to update the submodule.
