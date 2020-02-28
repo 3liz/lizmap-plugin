@@ -205,16 +205,16 @@ dist-api:
 	python3 setup.py sdist --dist-dir=dist
 
 help:
-	$(MAKE) -C qgis_plugin_tools help
+	$(MAKE) -C lizmap/qgis_plugin_tools help
 
 pylint:
-	$(MAKE) -C qgis_plugin_tools pylint
+	$(MAKE) -C lizmap/qgis_plugin_tools pylint
 
 docker_test:
-	$(MAKE) -C qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
+	$(MAKE) -C lizmap/qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
 
 release_%:
-	$(MAKE) -C qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME) VERSION=$(VERSION)
+	$(MAKE) -C lizmap/qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME) VERSION=$(VERSION)
 
 # i18n_%:
     # Do not use qgis_plugin_tools, translation are shared with LWC
