@@ -15,6 +15,11 @@ lizmap.cfg
 build/
 dist/
 
+.local
+.cache
+.pytest_cache
+__output__
+
 lizmap.zip
 unittest.qgs
 test/data/points_lines.gpkg-shm
