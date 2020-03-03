@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 3.2.9
+
+* Work on ValueMap widget
+
 ## Version 3.2.8
 
 * Fix using the plugin with QGIS 3.10
