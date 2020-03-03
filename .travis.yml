@@ -45,7 +45,6 @@ jobs:
           edge: true
           file: .
           name: ${RELEASE_TITLE}
-          release_notes: ${RELEASE_DESC}
           api_key: ${GH_TOKEN}
 
         - provider: script
