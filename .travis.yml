@@ -40,6 +40,9 @@ jobs:
       before_deploy:
         - export RELEASE_TITLE="Release of $TRAVIS_TAG"
 
+      script:
+        - qgis-plugin-ci -v
+
       deploy:
 
         - provider: releases
