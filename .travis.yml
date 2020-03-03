@@ -34,7 +34,7 @@ jobs:
       name: Create release, plugins.qgis.org
 
       install:
-        - pip3 install qgis-plugin-ci
+        - pip install qgis-plugin-ci
 
       before_deploy:
         - export RELEASE_TITLE="Release of $TRAVIS_TAG"
@@ -50,5 +50,3 @@ jobs:
 
         - provider: script
           script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password {OSGEO_PASSWORD} --create-plugin-repo
-          on:
-            tags: true
