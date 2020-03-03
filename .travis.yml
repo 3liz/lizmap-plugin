@@ -33,7 +33,7 @@ jobs:
       name: Create release, plugins.qgis.org
 
       install:
-        - pip install qgis-plugin-ci
+        - pip3 install qgis-plugin-ci
 
       before_deploy:
         - export RELEASE_TITLE="Release of $TRAVIS_TAG"
