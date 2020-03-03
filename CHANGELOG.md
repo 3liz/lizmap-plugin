@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Version 3.2.8
+
+* Fix using the plugin with QGIS 3.10
+* Refactoring the code about drag&drop forms layout
+* Move up/down tooltip layers
+* Alternate row colors in all tables
+
 ## Version 3.2.7
 
 * Refactor dataviz to be editable
