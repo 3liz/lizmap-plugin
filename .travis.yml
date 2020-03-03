@@ -1,5 +1,4 @@
-os:
-  - linux
+dist: bionic
 
 language: python
 
@@ -27,25 +26,25 @@ jobs:
       script:
         - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
 
-#    - stage: Deploy
-#      if: branch = master
-#      on:
-#         tags=true
-#      name: Create release, plugins.qgis.org
-#
-#      install:
-#        - pip install qgis-plugin-ci
-#
-#      before_deploy:
-#        - export RELEASE_TITLE="Release of $TRAVIS_TAG"
-#
-#      deploy:
-#
-#        - provider: releases
-#          edge: true
-#          file: .
-#          name: ${RELEASE_TITLE}
-#          api_key: ${GH_TOKEN}
-#
-#        - provider: script
-#          script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password {OSGEO_PASSWORD} --create-plugin-repo
+    - stage: Deploy
+      if: branch = master
+      on:
+         tags=true
+      name: Create release, plugins.qgis.org
+
+      install:
+        - pip install qgis-plugin-ci
+
+      before_deploy:
+        - export RELEASE_TITLE="Release of $TRAVIS_TAG"
+
+      deploy:
+
+        - provider: releases
+          edge: true
+          file: .
+          name: ${RELEASE_TITLE}
+          api_key: ${GH_TOKEN}
+
+        - provider: script
+          script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password {OSGEO_PASSWORD} --create-plugin-repo
