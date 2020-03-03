@@ -47,8 +47,6 @@
 # Edit the following to match your sources lists
 #################################################
 
-VERSION = "3.2.7"
-
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # Empty in Transifex for now 20/09/2019 : bg_BG zh_CN lt_LT tr
@@ -214,7 +212,7 @@ docker_test:
 	$(MAKE) -C lizmap/qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
 
 release_%:
-	$(MAKE) -C lizmap/qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME) VERSION=$(VERSION)
+	$(MAKE) -C lizmap/qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME)
 
 # i18n_%:
     # Do not use qgis_plugin_tools, translation are shared with LWC

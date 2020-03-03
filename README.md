@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/3liz/lizmap-plugin.svg?branch=master)](https://travis-ci.org/3liz/lizmap-plugin)
 
-* Latest download link: https://plugins.qgis.org/plugins/lizmap/version/3.2.7/download/
+* Latest download link: https://github.com/3liz/lizmap-plugin/releases/latest/download/lizmap.zip
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
 * Do not use the link provided by GitHub by default.
 
