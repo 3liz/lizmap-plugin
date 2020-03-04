@@ -12,6 +12,14 @@ version=3.3.0-beta
 
 ; start of optional metadata
 changelog=
+ Version 3.2.9
+ * Work on ValueMap widget
+
+ Version 3.2.8
+  * Fix using the plugin with QGIS 3.10
+  * Refactoring the code about drag&drop forms layout
+  * Add up/down buttons in tooltip layers
+  * Alternate row colors in all tables
  Version 3.2.7
   * Refactor dataviz to be editable
   * Warn the user if there is an existing tooltip when using drap/drop layout

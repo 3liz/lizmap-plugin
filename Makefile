@@ -47,8 +47,6 @@
 # Edit the following to match your sources lists
 #################################################
 
-VERSION = "3.3.0"
-
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # Empty in Transifex for now 20/09/2019 : bg_BG zh_CN lt_LT tr
@@ -205,16 +203,16 @@ dist-api:
 	python3 setup.py sdist --dist-dir=dist
 
 help:
-	$(MAKE) -C qgis_plugin_tools help
+	$(MAKE) -C lizmap/qgis_plugin_tools help
 
 pylint:
-	$(MAKE) -C qgis_plugin_tools pylint
+	$(MAKE) -C lizmap/qgis_plugin_tools pylint
 
 docker_test:
-	$(MAKE) -C qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
+	$(MAKE) -C lizmap/qgis_plugin_tools docker_test PLUGINNAME=$(PLUGINNAME)
 
 release_%:
-	$(MAKE) -C qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME) VERSION=$(VERSION)
+	$(MAKE) -C lizmap/qgis_plugin_tools release_$* PLUGINNAME=$(PLUGINNAME)
 
 # i18n_%:
     # Do not use qgis_plugin_tools, translation are shared with LWC
@@ -235,3 +233,32 @@ i18n_3_pull:
 i18n_4_compile:
 	@echo Compile TS files to QM 4/4
 	@./scripts/update_compiled_strings.sh $(LOCALES)
+
+SHELL:=bash
+
+COMMITID=$(shell git rev-parse --short HEAD)
+
+ifdef REGISTRY_URL
+	REGISTRY_PREFIX=$(REGISTRY_URL)/
+endif
+
+FLAVOR:=3.4
+
+BECOME_USER:=$(shell id -u)
+
+QGIS_IMAGE=$(REGISTRY_PREFIX)qgis-platform:$(FLAVOR)
+
+LOCAL_HOME ?= $(shell pwd)
+
+SRCDIR=$(shell realpath .)
+
+test_server:
+	mkdir -p $$(pwd)/.local $(LOCAL_HOME)/.cache
+	docker run --rm --name qgis-server-lizmap-test-$(FLAVOR)-$(COMMITID) -w /src/test/server \
+		-u $(BECOME_USER) \
+		-v $(SRCDIR):/src \
+		-v $$(pwd)/.local:/.local \
+		-v $(LOCAL_HOME)/.cache:/.cache \
+		-e PIP_CACHE_DIR=/.cache \
+		-e PYTEST_ADDOPTS="$(TEST_OPTS)" \
+		$(QGIS_IMAGE) ./run-tests.sh

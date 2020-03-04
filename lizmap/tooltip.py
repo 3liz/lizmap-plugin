@@ -186,9 +186,15 @@ class Tooltip:
     @staticmethod
     def _generate_value_map(widget_config, name):
         values = dict()
-        for row in widget_config['map']:
-            if '<NULL>' not in list(row.keys()):
-                values.update(row)
+        if isinstance(widget_config['map'], list):
+            for row in widget_config['map']:
+                if '<NULL>' not in list(row.keys()):
+                    values.update(row)
+        else:
+            # It's not a list, it's a dict.
+            values = widget_config['map']
+            if values.get('<NULL>'):
+                del values['<NULL>']
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
         field_view = '''

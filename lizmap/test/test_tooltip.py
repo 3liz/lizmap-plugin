@@ -107,6 +107,22 @@ class TestToolTip(unittest.TestCase):
         self.assertEqual(expected, expression)
         self.check_layer_context('a', expression, 'A')
 
+        widget_config = {
+            'map': {
+                'a': 'A',
+                'b': 'B',
+                '<NULL>': '{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}',
+            }
+        }
+        expression = Tooltip._generate_value_map(widget_config, 'field_a')
+        expected = '''
+                    map_get(
+                        hstore_to_map('"a"=>"A","b"=>"B"'),
+                        "field_a"
+                    )'''
+        self.assertEqual(expected, expression)
+        self.check_layer_context('a', expression, 'A')
+
     def test_date(self):
         """Test we can generate date."""
         widget_config = {

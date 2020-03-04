@@ -1,33 +1,57 @@
+dist: bionic
+
+language: python
+
+python: 3.7
+
 services:
   - docker
 
-sudo: false
+#branches:
+#  only:
+#    - master
+#    - dev
 
-env:
-  global:
-    - IMAGE=qgis/qgis
+jobs:
+  include:
+    - stage: Run tests
+      name: QGIS Desktop 3.4
 
-  matrix:
-    - QGIS_VERSION_TAG=release-3_4
-    # - QGIS_VERSION_TAG=release-3_10
-    # - QGIS_VERSION_TAG=latest
+      before_install:
+        - docker pull qgis/qgis:release-3_4
 
-branches:
-  only:
-    - master
-    - dev
+      install:
+        - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/lizmap:/lizmap -e DISPLAY=:99 qgis/qgis:release-3_4
+        - sleep 10
+        - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
 
-before_install:
-  - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
+      script:
+        - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
 
-install:
-  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/lizmap:/lizmap -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
-  - sleep 10
-  - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
+    - stage: Deploy
+      if: tag IS present
+      name: Create release, plugins.qgis.org
 
-script:
-  - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
+      install:
+        - pip3 install qgis-plugin-ci
 
-notifications:
-  email:
-    - etrimaille@3liz.com
+      before_deploy:
+        - export RELEASE_TITLE="Release of $TRAVIS_TAG"
+
+      script:
+        - qgis-plugin-ci -v
+
+      deploy:
+
+        - provider: releases
+          edge: true
+          file: .
+          name: ${RELEASE_TITLE}
+          api_key: ${GH_TOKEN}
+          on:
+            tags: true
+
+        - provider: script
+          script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password ${OSGEO_PASSWORD} --create-plugin-repo
+          on:
+            tags: true
