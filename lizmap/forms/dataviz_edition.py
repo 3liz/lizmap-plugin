@@ -36,6 +36,8 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('colorfield2', self.color_field_2)
         self.config.add_layer_widget('color2', self.color_2)
         self.config.add_layer_widget('z_field', self.z_field)
+        self.config.add_layer_widget('horizontal', self.horizontal)
+        self.config.add_layer_widget('stacked', self.stacked)
         self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
         self.config.add_layer_widget('only_show_child', self.only_show_child)
         self.config.add_layer_widget('display_legend', self.display_legend)
@@ -123,6 +125,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.color_field_2.setVisible(True)
             self.label_y_field_2.setVisible(True)
             self.label_y_color_2.setVisible(True)
+
+        # Bar chart
+        self.horizontal.setVisible(graph == GraphType.Bar)
+        self.stacked.setVisible(graph == GraphType.Bar)
 
         # Z Field
         if graph == GraphType.Sunburst:

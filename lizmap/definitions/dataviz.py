@@ -194,6 +194,20 @@ class DatavizDefinitions(BaseDefinitions):
                 'with data filtered according to a QGIS relation between the graph layer and the parent layer. '
                 'For example show the repartition between men and women employment rate filtered by the town selected in the pop-up.')
         }
+        self._layer_config['stacked'] = {
+            'type': InputType.CheckBox,
+            'header': tr('If the chart is stacked'),
+            'default': False,
+            'tooltip': tr('If the bar chart is stacked.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['horizontal'] = {
+            'type': InputType.CheckBox,
+            'header': tr('If the chart is horizontal'),
+            'default': False,
+            'tooltip': tr('If the bar chart is horizontal.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
         self._layer_config['only_show_child'] = {
             'type': InputType.CheckBox,
             'header': tr('Only show child'),
