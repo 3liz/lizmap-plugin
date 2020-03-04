@@ -178,6 +178,13 @@ class DatavizDefinitions(BaseDefinitions):
             'default': '#FF8900',
             'tooltip': tr('The second color')
         }
+        self._layer_config['z_field'] = {
+            'type': InputType.Field,
+            'header': tr('Z field'),
+            'default': '',
+            'tooltip': tr('The Z field of your graph.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
         self._layer_config['popup_display_child_plot'] = {
             'type': InputType.CheckBox,
             'header': tr('Popup for children'),

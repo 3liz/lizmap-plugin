@@ -26,30 +26,63 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="6" column="1">
-      <widget class="QgsFieldComboBox" name="y_field"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_layer">
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_y_color_2">
        <property name="text">
-        <string>Layer</string>
+        <string>Color Y 2</string>
        </property>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="type_graph"/>
+     </item>
      <item row="12" column="1">
-      <widget class="QCheckBox" name="only_show_child">
+      <widget class="QCheckBox" name="popup_display_child_plot">
        <property name="text">
-        <string>Only show in child popup</string>
+        <string>Display filtered plot in popups of parent layer</string>
        </property>
        <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="label_y_color_2">
+     <item row="5" column="1">
+      <widget class="QComboBox" name="aggregation"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="QgsFieldComboBox" name="y_field"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_aggregation">
        <property name="text">
-        <string>Color Y 2</string>
+        <string>Aggregation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPlainTextEdit" name="text_description"/>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_y_field_2">
+       <property name="text">
+        <string>Optional Y field 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_type">
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QgsFieldComboBox" name="x_field"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_y_field">
+       <property name="text">
+        <string>Y field</string>
        </property>
       </widget>
      </item>
@@ -63,57 +96,13 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_y_field_2">
+     <item row="14" column="1">
+      <widget class="QCheckBox" name="display_legend">
        <property name="text">
-        <string>Optional Y field 2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QgsFieldComboBox" name="color_field"/>
-       </item>
-       <item>
-        <widget class="QgsColorButton" name="color">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_type">
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QgsFieldComboBox" name="y_field_2"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="QgsFieldComboBox" name="x_field"/>
-     </item>
-     <item row="11" column="1">
-      <widget class="QCheckBox" name="popup_display_child_plot">
-       <property name="text">
-        <string>Display filtered plot in popups of parent layer</string>
+        <string>Display the legend</string>
        </property>
        <property name="checked">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_x_field">
-       <property name="text">
-        <string>X field</string>
        </property>
       </widget>
      </item>
@@ -134,35 +123,8 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_y_field">
-       <property name="text">
-        <string>Y field</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_y_color">
-       <property name="text">
-        <string>Color Y</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="title"/>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="aggregation"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QgsMapLayerComboBox" name="layer"/>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_aggregation">
-       <property name="text">
-        <string>Aggregation</string>
-       </property>
-      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_description">
@@ -171,21 +133,69 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="type_graph"/>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_layer">
+       <property name="text">
+        <string>Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QgsFieldComboBox" name="color_field"/>
+       </item>
+       <item>
+        <widget class="QgsColorButton" name="color">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_x_field">
+       <property name="text">
+        <string>X field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QgsFieldComboBox" name="y_field_2"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_y_color">
+       <property name="text">
+        <string>Color Y</string>
+       </property>
+      </widget>
      </item>
      <item row="13" column="1">
-      <widget class="QCheckBox" name="display_legend">
+      <widget class="QCheckBox" name="only_show_child">
        <property name="text">
-        <string>Display the legend</string>
+        <string>Only show in child popup</string>
        </property>
        <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QPlainTextEdit" name="text_description"/>
+     <item row="3" column="1">
+      <widget class="QgsMapLayerComboBox" name="layer"/>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_z_field">
+       <property name="text">
+        <string>Z field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QgsFieldComboBox" name="z_field"/>
      </item>
     </layout>
    </item>

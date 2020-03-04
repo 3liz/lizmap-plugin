@@ -35,6 +35,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('y2_field', self.y_field_2)
         self.config.add_layer_widget('colorfield2', self.color_field_2)
         self.config.add_layer_widget('color2', self.color_2)
+        self.config.add_layer_widget('z_field', self.z_field)
         self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
         self.config.add_layer_widget('only_show_child', self.only_show_child)
         self.config.add_layer_widget('display_legend', self.display_legend)
@@ -49,22 +50,26 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('color', self.label_y_color)
         self.config.add_layer_label('y2_field', self.label_y_field_2)
         self.config.add_layer_label('colorfield2', self.label_y_color_2)
+        self.config.add_layer_label('z_field', self.label_z_field)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.x_field.setLayer)
         self.layer.layerChanged.connect(self.y_field.setLayer)
+        self.layer.layerChanged.connect(self.z_field.setLayer)
         self.layer.layerChanged.connect(self.y_field_2.setLayer)
         self.layer.layerChanged.connect(self.color_field.setLayer)
         self.layer.layerChanged.connect(self.color_field_2.setLayer)
 
         # self.x_field.setAllowEmptyFieldName(False) DONE according to kind of graph
         self.y_field.setAllowEmptyFieldName(False)
+        self.z_field.setAllowEmptyFieldName(True)
         self.y_field_2.setAllowEmptyFieldName(True)
         self.color_field.setAllowEmptyFieldName(True)
         self.color_field_2.setAllowEmptyFieldName(True)
         
         self.x_field.setLayer(self.layer.currentLayer())
         self.y_field.setLayer(self.layer.currentLayer())
+        self.z_field.setLayer(self.layer.currentLayer())
         self.y_field_2.setLayer(self.layer.currentLayer())
         self.color_field.setLayer(self.layer.currentLayer())
         self.color_field_2.setLayer(self.layer.currentLayer())
@@ -118,6 +123,17 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.color_field_2.setVisible(True)
             self.label_y_field_2.setVisible(True)
             self.label_y_color_2.setVisible(True)
+
+        # Z Field
+        if graph == GraphType.Sunburst:
+            self.label_z_field.setVisible(True)
+            self.z_field.setVisible(True)
+            self.z_field.setAllowEmptyFieldName(False)
+        else:
+            self.label_z_field.setVisible(False)
+            self.z_field.setVisible(False)
+            self.z_field.setAllowEmptyFieldName(True)
+            self.z_field.setCurrentIndex(0)
 
     def check_y_color_field(self):
         if self.color_field.currentField() == '':
