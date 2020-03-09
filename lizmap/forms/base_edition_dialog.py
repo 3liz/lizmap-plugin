@@ -107,6 +107,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Color:
                 color = QColor(value)
                 if color.isValid():
+                    definition['widget'].setDefaultColor(color)
                     definition['widget'].setColor(color)
                 else:
                     definition['widget'].setToNull()
