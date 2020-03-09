@@ -90,9 +90,9 @@ class TestToolTip(unittest.TestCase):
         widget_config = {
             'map': [
                 {
-                    'a': 'A',
+                    'A': 'a',
                 }, {
-                    'b': 'B',
+                    'B': 'b',
                 }, {
                     '<NULL>': '{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}',
                 }
@@ -109,8 +109,8 @@ class TestToolTip(unittest.TestCase):
 
         widget_config = {
             'map': {
-                'a': 'A',
-                'b': 'B',
+                'A': 'a',
+                'B': 'b',
                 '<NULL>': '{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}',
             }
         }
@@ -358,7 +358,7 @@ class TestToolTip(unittest.TestCase):
                             '<p>', '<b>name</b>',
                             '<div class="field">', 
                     map_get(
-                        hstore_to_map('"A"=>"a","B"=>"b","C"=>"c"'),
+                        hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         "name"
                     ), '</div>',
                             '</p>'

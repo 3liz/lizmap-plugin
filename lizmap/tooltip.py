@@ -25,7 +25,7 @@ class Tooltip:
     @staticmethod
     def create_popup(html):
         template = '''
-        <div class="container popup_lizmap_dd" style="width:100%;">'
+        <div class="container popup_lizmap_dd" style="width:100%;">
         {}
         </div>
         '''
@@ -185,16 +185,19 @@ class Tooltip:
 
     @staticmethod
     def _generate_value_map(widget_config, name):
-        values = dict()
         if isinstance(widget_config['map'], list):
+            values = dict()
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
-                    values.update(row)
+                    reverted = {y: x for x, y in row.items()}
+                    values.update(reverted)
         else:
             # It's not a list, it's a dict.
             values = widget_config['map']
             if values.get('<NULL>'):
                 del values['<NULL>']
+            values = {y: x for x, y in values.items()}
+
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
         field_view = '''
