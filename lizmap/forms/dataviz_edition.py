@@ -153,11 +153,3 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
                 ' option of the QGIS Server tab in the "Project Properties" dialog.')
             return msg
-
-        for k, layer_config in self.config.layer_config.items():
-            if layer_config['type'] == InputType.Field:
-                widget = layer_config['widget']
-                if not widget.allowEmptyFieldName():
-                    if widget.currentField() == '':
-                        msg = tr('The field "{}" is mandatory.'.format(k))
-                        return msg

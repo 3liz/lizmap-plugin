@@ -58,17 +58,3 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.sort_field.setLayer(self.layer.currentLayer())
 
         self.setup_ui()
-
-    def validate(self) -> str:
-        upstream = super().validate()
-        if upstream:
-            return upstream
-
-        if not self.primary_key.currentField():
-            return tr('Primary key field is mandatory.')
-
-        if not self.feature_label.currentField():
-            return tr('Label field is mandatory.')
-
-        if not self.sort_field.currentField():
-            return tr('Sort field is mandatory.')

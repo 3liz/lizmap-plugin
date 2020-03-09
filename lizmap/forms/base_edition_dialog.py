@@ -1,5 +1,7 @@
 """Base class for the edition dialog."""
 
+import re
+
 from collections import OrderedDict
 
 from qgis.PyQt.QtGui import QColor, QIcon
@@ -79,6 +81,16 @@ class BaseEditionDialog(QDialog):
                                 return msg
                         else:
                             raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
+
+        for k, layer_config in self.config.layer_config.items():
+            if layer_config['type'] == InputType.Field:
+                widget = layer_config['widget']
+                if not widget.allowEmptyFieldName():
+                    if widget.currentField() == '':
+                        names = re.findall('.[^A-Z]*',  k)
+                        names = [n.lower() for n in names]
+                        msg = tr('The field "{}" is mandatory.'.format(' '.join(names)))
+                        return msg
 
         return None
 
