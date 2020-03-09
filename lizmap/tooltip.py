@@ -96,10 +96,10 @@ class Tooltip:
                 act = ''
                 if not headers:
                     act = 'active'
-                a += '\n' + '  ' * l + '<div id="popup_dd_{}" class="tab-pane {}">'.format(
+                a += '\n' + '  ' * l + '<div id="popup_dd_[% $id %]_{}" class="tab-pane {}">'.format(
                     regex.sub('_', node.name()), act)
 
-                h += '\n    ' + '<li class="{}"><a href="#popup_dd_{}" data-toggle="tab">{}</a></li>'.format(
+                h += '\n    ' + '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'.format(
                     act, regex.sub('_', node.name()), node.name())
                 headers.append(h)
 

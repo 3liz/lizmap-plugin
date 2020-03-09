@@ -261,10 +261,10 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_tab1" data-toggle="tab">tab1</a></li>
+    <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 </ul>
 <div class="tab-content">
-  <div id="popup_dd_tab1" class="tab-pane active">
+  <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
   </div>
 </div>'''
         self.assertEqual(expected, html_content)
@@ -298,15 +298,15 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_tab1" data-toggle="tab">tab1</a></li>
+    <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 
-    <li class=""><a href="#popup_dd_tab2" data-toggle="tab">tab2</a></li>
+    <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
 </ul>
 <div class="tab-content">
-  <div id="popup_dd_tab1" class="tab-pane active">
+  <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
   </div>
 
-  <div id="popup_dd_tab2" class="tab-pane ">
+  <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
   </div>
 </div>'''
         self.assertEqual(expected, html_content)
@@ -316,15 +316,15 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-        <li class="active"><a href="#popup_dd_tab1" data-toggle="tab">tab1</a></li>
+        <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 
-        <li class=""><a href="#popup_dd_tab2" data-toggle="tab">tab2</a></li>
+        <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
     </ul>
     <div class="tab-content">
-      <div id="popup_dd_tab1" class="tab-pane active">
+      <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
       </div>
 
-      <div id="popup_dd_tab2" class="tab-pane ">
+      <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
       </div>
     </div>'''
         self.assertEqual(expected, html_content)
@@ -345,12 +345,12 @@ class TestToolTip(unittest.TestCase):
         self.maxDiff = None
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_tab_1" data-toggle="tab">tab 1</a></li>
+    <li class="active"><a href="#popup_dd_[% $id %]_tab_1" data-toggle="tab">tab 1</a></li>
 
-    <li class=""><a href="#popup_dd_tab2" data-toggle="tab">tab2</a></li>
+    <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
 </ul>
 <div class="tab-content">
-  <div id="popup_dd_tab_1" class="tab-pane active">
+  <div id="popup_dd_[% $id %]_tab_1" class="tab-pane active">
     
                     [% CASE
                         WHEN "name" IS NOT NULL OR trim("name") != ''
@@ -367,7 +367,7 @@ class TestToolTip(unittest.TestCase):
                     END %]
   </div>
 
-  <div id="popup_dd_tab2" class="tab-pane ">
+  <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
   </div>
 </div>'''
 
