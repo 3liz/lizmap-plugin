@@ -85,22 +85,26 @@ class Tooltip:
 
         if isinstance(node, QgsAttributeEditorContainer):
 
+            visibility = ''
             if node.visibilityExpression().enabled():
-                context = QgsExpressionContext()
-                context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
-                # context.setFeature(feature)
+                visibility = Tooltip._generate_eval_visibility(node.visibilityExpression().data().expression())
 
             l = level
             # create div container
             if l == 1:
-                act = ''
+                active = ''
                 if not headers:
-                    act = 'active'
-                a += '\n' + '  ' * l + '<div id="popup_dd_[% $id %]_{}" class="tab-pane {}">'.format(
-                    regex.sub('_', node.name()), act)
+                    active = 'active'
 
+                a += '\n' + '  ' * l + '<div id="popup_dd_[% $id %]_{}" class="tab-pane {}">'.format(
+                    regex.sub('_', node.name()), active)
+
+                if visibility and active:
+                    active = '{} {}'.format(active, visibility)
+                if visibility and not active:
+                    active = visibility
                 h += '\n    ' + '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'.format(
-                    act, regex.sub('_', node.name()), node.name())
+                    active, regex.sub('_', node.name()), node.name())
                 headers.append(h)
 
             if l > 1:
@@ -145,6 +149,10 @@ class Tooltip:
 
         html += a
         return html
+
+    @staticmethod
+    def _generate_eval_visibility(expression):
+        return "[% if ({}, '', 'hidden') %]".format(expression)
 
     @staticmethod
     def _generate_relation_reference(name, parent_pk, layer_id, display_expression):

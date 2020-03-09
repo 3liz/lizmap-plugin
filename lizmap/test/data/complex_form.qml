@@ -1,35 +1,35 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis hasScaleBasedVisibilityFlag="0" minScale="100000000" simplifyLocal="1" labelsEnabled="0" simplifyMaxScale="1" readOnly="0" version="3.13.0-Master" simplifyDrawingTol="1" styleCategories="AllStyleCategories" simplifyDrawingHints="1" simplifyAlgorithm="0" maxScale="0">
+<qgis version="3.13.0-Master" minScale="100000000" styleCategories="AllStyleCategories" simplifyLocal="1" simplifyMaxScale="1" labelsEnabled="0" simplifyDrawingHints="1" simplifyAlgorithm="0" readOnly="0" hasScaleBasedVisibilityFlag="0" maxScale="0" simplifyDrawingTol="1">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
   </flags>
-  <renderer-v2 enableorderby="0" type="singleSymbol" symbollevels="0" forceraster="0">
+  <renderer-v2 type="singleSymbol" enableorderby="0" symbollevels="0" forceraster="0">
     <symbols>
-      <symbol name="0" alpha="1" clip_to_extent="1" type="line" force_rhr="0">
-        <layer locked="0" enabled="1" pass="0" class="SimpleLine">
-          <prop v="square" k="capstyle"/>
-          <prop v="5;2" k="customdash"/>
-          <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-          <prop v="MM" k="customdash_unit"/>
-          <prop v="0" k="draw_inside_polygon"/>
-          <prop v="bevel" k="joinstyle"/>
-          <prop v="164,113,88,255" k="line_color"/>
-          <prop v="solid" k="line_style"/>
-          <prop v="0.26" k="line_width"/>
-          <prop v="MM" k="line_width_unit"/>
-          <prop v="0" k="offset"/>
-          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-          <prop v="MM" k="offset_unit"/>
-          <prop v="0" k="ring_filter"/>
-          <prop v="0" k="use_custom_dash"/>
-          <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+      <symbol type="line" force_rhr="0" clip_to_extent="1" name="0" alpha="1">
+        <layer locked="0" pass="0" enabled="1" class="SimpleLine">
+          <prop k="capstyle" v="square"/>
+          <prop k="customdash" v="5;2"/>
+          <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="customdash_unit" v="MM"/>
+          <prop k="draw_inside_polygon" v="0"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="line_color" v="164,113,88,255"/>
+          <prop k="line_style" v="solid"/>
+          <prop k="line_width" v="0.26"/>
+          <prop k="line_width_unit" v="MM"/>
+          <prop k="offset" v="0"/>
+          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="ring_filter" v="0"/>
+          <prop k="use_custom_dash" v="0"/>
+          <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <data_defined_properties>
             <Option type="Map">
-              <Option name="name" value="" type="QString"/>
+              <Option type="QString" name="name" value=""/>
               <Option name="properties"/>
-              <Option name="type" value="collection" type="QString"/>
+              <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
         </layer>
@@ -47,34 +47,34 @@
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
-  <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
-    <DiagramCategory direction="1" penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" showAxis="0" opacity="1" maxScaleDenominator="1e+08" lineSizeType="MM" backgroundAlpha="255" scaleBasedVisibility="0" minScaleDenominator="0" spacingUnitScale="3x:0,0,0,0,0,0" barWidth="5" spacingUnit="MM" enabled="0" width="15" penColor="#000000" sizeScale="3x:0,0,0,0,0,0" penAlpha="255" diagramOrientation="Up" minimumSize="0" backgroundColor="#ffffff" height="15" spacing="0" rotationOffset="270" sizeType="MM" labelPlacementMethod="XHeight" scaleDependency="Area">
+  <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+    <DiagramCategory scaleDependency="Area" maxScaleDenominator="1e+08" showAxis="0" spacingUnit="MM" height="15" opacity="1" backgroundColor="#ffffff" labelPlacementMethod="XHeight" scaleBasedVisibility="0" spacing="0" lineSizeScale="3x:0,0,0,0,0,0" sizeScale="3x:0,0,0,0,0,0" spacingUnitScale="3x:0,0,0,0,0,0" width="15" diagramOrientation="Up" enabled="0" penAlpha="255" backgroundAlpha="255" barWidth="5" penColor="#000000" sizeType="MM" penWidth="0" minimumSize="0" rotationOffset="270" direction="1" minScaleDenominator="0" lineSizeType="MM">
       <fontProperties style="" description="Ubuntu,11,-1,5,50,0,0,0,0,0"/>
-      <attribute field="" color="#000000" label=""/>
+      <attribute label="" color="#000000" field=""/>
       <axisSymbol>
-        <symbol name="" alpha="1" clip_to_extent="1" type="line" force_rhr="0">
-          <layer locked="0" enabled="1" pass="0" class="SimpleLine">
-            <prop v="square" k="capstyle"/>
-            <prop v="5;2" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="0.26" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="0" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+        <symbol type="line" force_rhr="0" clip_to_extent="1" name="" alpha="1">
+          <layer locked="0" pass="0" enabled="1" class="SimpleLine">
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="5;2"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="35,35,35,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="0.26"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="use_custom_dash" v="0"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
-                <Option name="name" value="" type="QString"/>
+                <Option type="QString" name="name" value=""/>
                 <Option name="properties"/>
-                <Option name="type" value="collection" type="QString"/>
+                <Option type="QString" name="type" value="collection"/>
               </Option>
             </data_defined_properties>
           </layer>
@@ -82,12 +82,12 @@
       </axisSymbol>
     </DiagramCategory>
   </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings linePlacementFlags="18" zIndex="0" showAll="1" obstacle="0" dist="0" placement="2" priority="0">
+  <DiagramLayerSettings zIndex="0" obstacle="0" priority="0" linePlacementFlags="18" dist="0" placement="2" showAll="1">
     <properties>
       <Option type="Map">
-        <Option name="name" value="" type="QString"/>
+        <Option type="QString" name="name" value=""/>
         <Option name="properties"/>
-        <Option name="type" value="collection" type="QString"/>
+        <Option type="QString" name="type" value="collection"/>
       </Option>
     </properties>
   </DiagramLayerSettings>
@@ -109,18 +109,18 @@
       <editWidget type="ValueMap">
         <config>
           <Option type="Map">
-            <Option name="map" type="List">
+            <Option type="List" name="map">
               <Option type="Map">
-                <Option name="A" value="a" type="QString"/>
+                <Option type="QString" name="A" value="a"/>
               </Option>
               <Option type="Map">
-                <Option name="B" value="b" type="QString"/>
+                <Option type="QString" name="B" value="b"/>
               </Option>
               <Option type="Map">
-                <Option name="C" value="c" type="QString"/>
+                <Option type="QString" name="C" value="c"/>
               </Option>
               <Option type="Map">
-                <Option name="&lt;NULL>" value="{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" type="QString"/>
+                <Option type="QString" name="&lt;NULL>" value="{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"/>
               </Option>
             </Option>
           </Option>
@@ -129,22 +129,22 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias name="" field="id" index="0"/>
-    <alias name="" field="name" index="1"/>
+    <alias index="0" name="" field="id"/>
+    <alias index="1" name="" field="name"/>
   </aliases>
   <excludeAttributesWMS/>
   <excludeAttributesWFS/>
   <defaults>
-    <default expression="" field="id" applyOnUpdate="0"/>
-    <default expression="" field="name" applyOnUpdate="0"/>
+    <default applyOnUpdate="0" field="id" expression=""/>
+    <default applyOnUpdate="0" field="name" expression=""/>
   </defaults>
   <constraints>
-    <constraint field="id" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
-    <constraint field="name" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint exp_strength="0" unique_strength="0" notnull_strength="0" field="id" constraints="0"/>
+    <constraint exp_strength="0" unique_strength="0" notnull_strength="0" field="name" constraints="0"/>
   </constraints>
   <constraintExpressions>
-    <constraint field="id" desc="" exp=""/>
-    <constraint field="name" desc="" exp=""/>
+    <constraint desc="" exp="" field="id"/>
+    <constraint desc="" exp="" field="name"/>
   </constraintExpressions>
   <expressionfields/>
   <attributeactions>
@@ -152,9 +152,9 @@
   </attributeactions>
   <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
     <columns>
-      <column name="id" width="-1" hidden="0" type="field"/>
-      <column name="name" width="-1" hidden="0" type="field"/>
-      <column width="-1" hidden="1" type="actions"/>
+      <column type="field" width="-1" hidden="0" name="id"/>
+      <column type="field" width="-1" hidden="0" name="name"/>
+      <column type="actions" width="-1" hidden="1"/>
     </columns>
   </attributetableconfig>
   <conditionalstyles>
@@ -185,14 +185,17 @@ def my_form_open(dialog, layer, feature):
   <featformsuppress>0</featformsuppress>
   <editorlayout>tablayout</editorlayout>
   <attributeEditorForm>
-    <attributeEditorContainer name="tab 1" visibilityExpression="" visibilityExpressionEnabled="0" showLabel="1" columnCount="1" groupBox="0">
-      <attributeEditorField name="id" showLabel="1" index="0"/>
-      <attributeEditorField name="name" showLabel="1" index="1"/>
-      <attributeEditorField name="checkbox" showLabel="1" index="-1"/>
-      <attributeEditorField name="value_map" showLabel="1" index="-1"/>
+    <attributeEditorContainer groupBox="0" columnCount="1" visibilityExpressionEnabled="0" showLabel="1" visibilityExpression="" name="tab 1">
+      <attributeEditorField index="0" showLabel="1" name="id"/>
+      <attributeEditorField index="1" showLabel="1" name="name"/>
+      <attributeEditorField index="-1" showLabel="1" name="checkbox"/>
+      <attributeEditorField index="-1" showLabel="1" name="value_map"/>
     </attributeEditorContainer>
-    <attributeEditorContainer name="tab2" visibilityExpression="True" visibilityExpressionEnabled="1" showLabel="1" columnCount="1" groupBox="1">
-      <attributeEditorField name="photo" showLabel="1" index="-1"/>
+    <attributeEditorContainer groupBox="1" columnCount="1" visibilityExpressionEnabled="0" showLabel="1" visibilityExpression="True" name="tab2">
+      <attributeEditorField index="-1" showLabel="1" name="photo"/>
+    </attributeEditorContainer>
+    <attributeEditorContainer groupBox="1" columnCount="1" visibilityExpressionEnabled="1" showLabel="1" visibilityExpression="False" name="invisible">
+      <attributeEditorField index="1" showLabel="1" name="name"/>
     </attributeEditorContainer>
   </attributeEditorForm>
   <editable>
@@ -203,11 +206,11 @@ def my_form_open(dialog, layer, feature):
     <field name="value_map" editable="1"/>
   </editable>
   <labelOnTop>
-    <field name="checkbox" labelOnTop="0"/>
-    <field name="id" labelOnTop="0"/>
-    <field name="name" labelOnTop="0"/>
-    <field name="photo" labelOnTop="0"/>
-    <field name="value_map" labelOnTop="0"/>
+    <field labelOnTop="0" name="checkbox"/>
+    <field labelOnTop="0" name="id"/>
+    <field labelOnTop="0" name="name"/>
+    <field labelOnTop="0" name="photo"/>
+    <field labelOnTop="0" name="value_map"/>
   </labelOnTop>
   <widgets/>
   <previewExpression>id</previewExpression>
