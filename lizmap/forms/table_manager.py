@@ -55,7 +55,10 @@ class TableManager:
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_existing_row)
 
-        header = self.table.horizontalHeader()
+        # This is a hack to get the layer and then field icons.
+        self._layer = None
+
+        # header = self.table.horizontalHeader()
         # header.setSectionResizeMode(QHeaderView.ResizeToContents)
         # header.setSectionResizeMode(0, QHeaderView.Stretch)
 
@@ -124,6 +127,7 @@ class TableManager:
 
     def _edit_row(self, row, data):
         """Internal function to edit a row."""
+        self._layer = None
         for i, key in enumerate(data.keys()):
             value = data[key]
             cell = QTableWidgetItem()
@@ -132,6 +136,7 @@ class TableManager:
 
             if input_type == InputType.Layer:
                 layer = QgsProject.instance().mapLayer(value)
+                self._layer = layer
                 cell.setText(layer.name())
                 cell.setData(Qt.UserRole, layer.id())
                 cell.setData(Qt.ToolTipRole, '{} ({})'.format(layer.name(), layer.crs().authid()))
@@ -143,13 +148,10 @@ class TableManager:
                 cell.setData(Qt.ToolTipRole, value)
 
                 # Get the icon for the field
-                layer_cell = self.table.item(row, 0)
-                layer_value = layer_cell.data(Qt.UserRole)
-                layer = QgsProject.instance().mapLayer(layer_value)
-                if layer:
-                    index = layer.fields().indexFromName(value)
+                if self._layer:
+                    index = self._layer.fields().indexFromName(value)
                     if index >= 0:
-                        cell.setIcon(layer.fields().iconForField(index))
+                        cell.setIcon(self._layer.fields().iconForField(index))
 
             elif input_type == InputType.Fields:
                 cell.setText(value)
@@ -206,6 +208,7 @@ class TableManager:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
 
             self.table.setItem(row, i, cell)
+        self._layer = None
         self.table.clearSelection()
 
     def move_layer_up(self):
