@@ -36,6 +36,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('colorfield2', self.color_field_2)
         self.config.add_layer_widget('color2', self.color_2)
         self.config.add_layer_widget('z_field', self.z_field)
+        self.config.add_layer_widget('html_template', self.html_template)
         self.config.add_layer_widget('horizontal', self.horizontal)
         self.config.add_layer_widget('stacked', self.stacked)
         self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
@@ -53,6 +54,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('y2_field', self.label_y_field_2)
         self.config.add_layer_label('colorfield2', self.label_y_color_2)
         self.config.add_layer_label('z_field', self.label_z_field)
+        self.config.add_layer_label('html_template', self.label_html_template)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.x_field.setLayer)
@@ -101,7 +103,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         if graph in [
                 GraphType.Scatter, GraphType.Bar, GraphType.Histogram,
                 GraphType.Histogram2D, GraphType.Polar, GraphType.Pie,
-                GraphType.Sunburst]:
+                GraphType.Sunburst, GraphType.HtmlTemplate]:
             self.x_field.setAllowEmptyFieldName(False)
         elif graph in [GraphType.Box]:
             self.x_field.setAllowEmptyFieldName(True)
@@ -140,6 +142,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.z_field.setVisible(False)
             self.z_field.setAllowEmptyFieldName(True)
             self.z_field.setCurrentIndex(0)
+
+        self.label_html_template.setVisible(graph == GraphType.HtmlTemplate)
+        self.html_template.setVisible(graph == GraphType.HtmlTemplate)
+        self.display_legend.setVisible(graph != GraphType.HtmlTemplate)
 
     def check_y_color_field(self):
         if self.color_field.currentField() == '':
@@ -186,3 +192,13 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
                 ' option of the QGIS Server tab in the "Project Properties" dialog.')
             return msg
+
+        graph = self.type_graph.currentData()
+        for item_enum in GraphType:
+            if item_enum.value['data'] == graph:
+                graph = item_enum
+                break
+        if graph == GraphType.HtmlTemplate:
+            html = self.html_template.toPlainText()
+            if html == '':
+                return tr('HTML template is mandatory.')
