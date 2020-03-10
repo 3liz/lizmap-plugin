@@ -14,7 +14,7 @@ services:
 
 jobs:
   include:
-    - stage: Run tests
+    - stage: Run tests desktop
       name: QGIS Desktop 3.4
 
       before_install:
@@ -27,6 +27,20 @@ jobs:
 
       script:
         - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
+
+    - stage: Run tests server
+      name: QGIS Server 3.4
+
+      before_install:
+        - docker pull 3liz/qgis-platform:3.4
+
+      install:
+        - cd ${TRAVIS_BUILD_DIR}
+        - mkdir .local
+        - mkdir .cache
+
+      script:
+        - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.4 ./run-tests.sh
 
     - stage: Deploy
       if: tag IS present

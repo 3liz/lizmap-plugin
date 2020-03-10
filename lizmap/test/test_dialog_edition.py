@@ -26,11 +26,11 @@ class TestEditionDialog(unittest.TestCase):
         dialog = AtlasEditionDialog()
         self.assertFalse(dialog.error.isVisible())
 
-        self.assertEqual(dialog.validate(), 'Primary key field is mandatory.')
+        self.assertEqual(dialog.validate(), 'The field "primary key" is mandatory.')
         dialog.primary_key.setCurrentIndex(1)
-        self.assertEqual(dialog.validate(), 'Label field is mandatory.')
+        self.assertEqual(dialog.validate(), 'The field "feature label" is mandatory.')
         dialog.feature_label.setCurrentIndex(1)
-        self.assertEqual(dialog.validate(), 'Sort field is mandatory.')
+        self.assertEqual(dialog.validate(), 'The field "sort field" is mandatory.')
         dialog.sort_field.setCurrentIndex(1)
         self.assertIsNone(dialog.validate())
 
@@ -55,7 +55,7 @@ class TestEditionDialog(unittest.TestCase):
 
         del dialog
         dialog = AtlasEditionDialog()
-        self.assertEqual(dialog.validate(), 'Primary key field is mandatory.')
+        self.assertEqual(dialog.validate(), 'The field "primary key" is mandatory.')
 
         dialog.load_form(data)
         self.assertIsNone(dialog.validate())

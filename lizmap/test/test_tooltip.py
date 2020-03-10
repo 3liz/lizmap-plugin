@@ -71,6 +71,18 @@ class TestToolTip(unittest.TestCase):
         expression = QgsExpression().replaceExpressionText(template, sub_context)
         self.assertEqual('\n                    <p><b>Field Name</b><div class="field">foo</div></p>', expression)
 
+    def test_visibility_expression(self):
+        """Test the visibility expression."""
+        expression = Tooltip._generate_eval_visibility('True')
+        self.assertEqual("[% if (True, '', 'hidden') %]", expression)
+        expression = QgsExpression().replaceExpressionText(expression, QgsExpressionContext())
+        self.assertEqual('', expression)
+
+        expression = Tooltip._generate_eval_visibility('False')
+        self.assertEqual("[% if (False, '', 'hidden') %]", expression)
+        expression = QgsExpression().replaceExpressionText(expression, QgsExpressionContext())
+        self.assertEqual('hidden', expression)
+
     def test_relation_reference(self):
         """Test we can generate a relation reference."""
         result = Tooltip._generate_relation_reference('name', 'parent_pk', 'layer_id', 'display_expression')
@@ -90,9 +102,9 @@ class TestToolTip(unittest.TestCase):
         widget_config = {
             'map': [
                 {
-                    'a': 'A',
+                    'A': 'a',
                 }, {
-                    'b': 'B',
+                    'B': 'b',
                 }, {
                     '<NULL>': '{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}',
                 }
@@ -109,8 +121,8 @@ class TestToolTip(unittest.TestCase):
 
         widget_config = {
             'map': {
-                'a': 'A',
-                'b': 'B',
+                'A': 'a',
+                'B': 'b',
                 '<NULL>': '{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}',
             }
         }
@@ -261,10 +273,10 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_tab1" data-toggle="tab">tab1</a></li>
+    <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 </ul>
 <div class="tab-content">
-  <div id="popup_dd_tab1" class="tab-pane active">
+  <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
   </div>
 </div>'''
         self.assertEqual(expected, html_content)
@@ -298,15 +310,15 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_tab1" data-toggle="tab">tab1</a></li>
+    <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 
-    <li class=""><a href="#popup_dd_tab2" data-toggle="tab">tab2</a></li>
+    <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
 </ul>
 <div class="tab-content">
-  <div id="popup_dd_tab1" class="tab-pane active">
+  <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
   </div>
 
-  <div id="popup_dd_tab2" class="tab-pane ">
+  <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
   </div>
 </div>'''
         self.assertEqual(expected, html_content)
@@ -316,15 +328,15 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-        <li class="active"><a href="#popup_dd_tab1" data-toggle="tab">tab1</a></li>
+        <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 
-        <li class=""><a href="#popup_dd_tab2" data-toggle="tab">tab2</a></li>
+        <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
     </ul>
     <div class="tab-content">
-      <div id="popup_dd_tab1" class="tab-pane active">
+      <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
       </div>
 
-      <div id="popup_dd_tab2" class="tab-pane ">
+      <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
       </div>
     </div>'''
         self.assertEqual(expected, html_content)
@@ -345,12 +357,14 @@ class TestToolTip(unittest.TestCase):
         self.maxDiff = None
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_tab_1" data-toggle="tab">tab 1</a></li>
+    <li class="active"><a href="#popup_dd_[% $id %]_tab_1" data-toggle="tab">tab 1</a></li>
 
-    <li class=""><a href="#popup_dd_tab2" data-toggle="tab">tab2</a></li>
+    <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
+
+    <li class="[% if (False, '', 'hidden') %]"><a href="#popup_dd_[% $id %]_invisible" data-toggle="tab">invisible</a></li>
 </ul>
 <div class="tab-content">
-  <div id="popup_dd_tab_1" class="tab-pane active">
+  <div id="popup_dd_[% $id %]_tab_1" class="tab-pane active">
     
                     [% CASE
                         WHEN "name" IS NOT NULL OR trim("name") != ''
@@ -358,7 +372,7 @@ class TestToolTip(unittest.TestCase):
                             '<p>', '<b>name</b>',
                             '<div class="field">', 
                     map_get(
-                        hstore_to_map('"A"=>"a","B"=>"b","C"=>"c"'),
+                        hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         "name"
                     ), '</div>',
                             '</p>'
@@ -367,7 +381,24 @@ class TestToolTip(unittest.TestCase):
                     END %]
   </div>
 
-  <div id="popup_dd_tab2" class="tab-pane ">
+  <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
+  </div>
+
+  <div id="popup_dd_[% $id %]_invisible" class="tab-pane ">
+    
+                    [% CASE
+                        WHEN "name" IS NOT NULL OR trim("name") != ''
+                        THEN concat(
+                            '<p>', '<b>name</b>',
+                            '<div class="field">', 
+                    map_get(
+                        hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
+                        "name"
+                    ), '</div>',
+                            '</p>'
+                        )
+                        ELSE ''
+                    END %]
   </div>
 </div>'''
 

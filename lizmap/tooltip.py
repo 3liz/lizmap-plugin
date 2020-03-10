@@ -25,7 +25,7 @@ class Tooltip:
     @staticmethod
     def create_popup(html):
         template = '''
-        <div class="container popup_lizmap_dd" style="width:100%;">'
+        <div class="container popup_lizmap_dd" style="width:100%;">
         {}
         </div>
         '''
@@ -85,22 +85,26 @@ class Tooltip:
 
         if isinstance(node, QgsAttributeEditorContainer):
 
+            visibility = ''
             if node.visibilityExpression().enabled():
-                context = QgsExpressionContext()
-                context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
-                # context.setFeature(feature)
+                visibility = Tooltip._generate_eval_visibility(node.visibilityExpression().data().expression())
 
             l = level
             # create div container
             if l == 1:
-                act = ''
+                active = ''
                 if not headers:
-                    act = 'active'
-                a += '\n' + '  ' * l + '<div id="popup_dd_{}" class="tab-pane {}">'.format(
-                    regex.sub('_', node.name()), act)
+                    active = 'active'
 
-                h += '\n    ' + '<li class="{}"><a href="#popup_dd_{}" data-toggle="tab">{}</a></li>'.format(
-                    act, regex.sub('_', node.name()), node.name())
+                a += '\n' + '  ' * l + '<div id="popup_dd_[% $id %]_{}" class="tab-pane {}">'.format(
+                    regex.sub('_', node.name()), active)
+
+                if visibility and active:
+                    active = '{} {}'.format(active, visibility)
+                if visibility and not active:
+                    active = visibility
+                h += '\n    ' + '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'.format(
+                    active, regex.sub('_', node.name()), node.name())
                 headers.append(h)
 
             if l > 1:
@@ -147,6 +151,10 @@ class Tooltip:
         return html
 
     @staticmethod
+    def _generate_eval_visibility(expression):
+        return "[% if ({}, '', 'hidden') %]".format(expression)
+
+    @staticmethod
     def _generate_relation_reference(name, parent_pk, layer_id, display_expression):
         expression = '''
                     "{}" = attribute(@parent, '{}')
@@ -185,16 +193,19 @@ class Tooltip:
 
     @staticmethod
     def _generate_value_map(widget_config, name):
-        values = dict()
         if isinstance(widget_config['map'], list):
+            values = dict()
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
-                    values.update(row)
+                    reverted = {y: x for x, y in row.items()}
+                    values.update(reverted)
         else:
             # It's not a list, it's a dict.
             values = widget_config['map']
             if values.get('<NULL>'):
                 del values['<NULL>']
+            values = {y: x for x, y in values.items()}
+
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
         field_view = '''

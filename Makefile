@@ -238,6 +238,8 @@ SHELL:=bash
 
 COMMITID=$(shell git rev-parse --short HEAD)
 
+REGISTRY_URL=3liz
+
 ifdef REGISTRY_URL
 	REGISTRY_PREFIX=$(REGISTRY_URL)/
 endif

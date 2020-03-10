@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## Version 3.2.10
+
+* Conditional display expression for tabs in drag&drop tooltip
+* Improve form validation when a field is required
+* Add missing icons in dataviz panel
+* Fix default color when editing a row
+* Add feature ID in tabs when using drag&drop tooltip
+* Fix inverted HStore in valuemap when using drag&drop tooltip
+* Allow double click in table for editing
+
 ## Version 3.2.9
 
 * Work on ValueMap widget
