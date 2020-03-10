@@ -55,6 +55,11 @@ class GraphType(Enum):
         'label': tr('Sunburst'),
         'icon': resources_path('icons', 'plots', 'sunburst.svg'),
     }
+    HtmlTemplate = {
+        'data': 'html',
+        'label': tr('HTML Template'),
+        'icon': resources_path('icons', 'plots', 'html_template.png'),
+    }
 
 
 @unique
@@ -183,6 +188,13 @@ class DatavizDefinitions(BaseDefinitions):
             'header': tr('Z field'),
             'default': '',
             'tooltip': tr('The Z field of your graph.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['html_template'] = {
+            'type': InputType.MultiLine,
+            'header': tr('HTML template'),
+            'default': '',
+            'tooltip': tr('The HTML template.'),
             'version': LwcVersions.Lizmap_3_4,
         }
         self._layer_config['popup_display_child_plot'] = {
