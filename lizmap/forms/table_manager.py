@@ -49,6 +49,10 @@ class TableManager:
                 column.setToolTip(tooltip)
             self.table.setHorizontalHeaderItem(i, column)
 
+            visible = item.get('visible', True)
+            if not visible:
+                self.table.setColumnHidden(i, True)
+
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
