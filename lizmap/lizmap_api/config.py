@@ -55,6 +55,7 @@ from qgis.core import (
 
 from .. import DEFAULT_LWC_VERSION
 from ..qgis_plugin_tools.tools.resources import metadata_config
+from ..qgis_plugin_tools.tools.version import format_version_integer
 
 
 class LizmapConfigError(Exception):
@@ -74,14 +75,15 @@ class LizmapConfig:
     }
 
     lizmap_version = metadata_config()['general']['version']
-    lizmap_version = lizmap_version.replace('-beta', '')
+    lizmap_version = format_version_integer(lizmap_version.replace('-beta', ''))
+    target_lwc_version = format_version_integer('{}.0'.format(DEFAULT_LWC_VERSION.value))
 
     metadata = dict()
     metadata['lizmap_plugin_version'] = {
-        'wType': 'spinbox', 'type': 'integer', 'default': int(''.join([format(int(i), '02d') for i in lizmap_version.split('.')])),
+        'wType': 'spinbox', 'type': 'integer', 'default': lizmap_version,
     }
     metadata['lizmap_web_client_target_version'] = {
-        'wType': 'spinbox', 'type': 'integer', 'default': DEFAULT_LWC_VERSION.value,
+        'wType': 'spinbox', 'type': 'integer', 'default': target_lwc_version,
     }
 
     globalOptionDefinitions = {
