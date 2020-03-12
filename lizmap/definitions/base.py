@@ -16,6 +16,7 @@ class InputType(Enum):
     Field = 'Field'  # QgsFieldMapLayerComboBox
     Fields = 'Fields'  # QListWidget
     Layer = 'Layer'  # QgsMapLayerComboBox
+    Layers = 'Layers'  # ListLayersSelection
     List = 'List'  # QComboBox
     SpinBox = 'SpinBox'  # QSpinbox
     Text = 'Text'  # QLineEdit
