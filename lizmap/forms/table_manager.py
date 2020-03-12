@@ -146,6 +146,18 @@ class TableManager:
                 cell.setData(Qt.ToolTipRole, '{} ({})'.format(layer.name(), layer.crs().authid()))
                 cell.setIcon(QgsMapLayerModel.iconForLayer(layer))
 
+            elif input_type == InputType.Layers:
+                layers = value.split(',')
+                names = []
+                for layer in layers:
+                    if layer != '':
+                        vector = QgsProject.instance().mapLayer(layer)
+                        if vector:
+                            names.append(vector.name())
+                cell.setText(', '.join(names))
+                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, ' ,'.join(names))
+
             elif input_type == InputType.Field:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
@@ -302,6 +314,8 @@ class TableManager:
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
 
                 if input_type == InputType.Layer:
+                    layer_data[key] = cell
+                elif input_type == InputType.Layers:
                     layer_data[key] = cell
                 elif input_type == InputType.Color:
                     layer_data[key] = cell
@@ -464,6 +478,8 @@ class TableManager:
                                 ' Skipping that layer.'.format(
                                     self.definitions.key(), value))
                             valid_layer = False
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Layers:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Field:
                         layer_data[key] = value

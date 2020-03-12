@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>238</height>
+    <width>567</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,6 +36,16 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="create_feature">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_edit_attributes">
        <property name="text">
@@ -60,34 +70,17 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_delete">
-       <property name="text">
-        <string>Delete</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_allowed_groups">
-       <property name="text">
-        <string>Allowed groups</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="create_feature">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <widget class="QCheckBox" name="edit_geometry">
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_delete">
+       <property name="text">
+        <string>Delete</string>
        </property>
       </widget>
      </item>
@@ -98,10 +91,64 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_allowed_groups">
+       <property name="text">
+        <string>Allowed groups</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="1">
       <widget class="QLineEdit" name="allowed_groups"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="group_box_snapping">
+     <property name="title">
+      <string>Snapping</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_layers_snapping">
+        <property name="text">
+         <string>Layers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="ListLayersSelection" name="layers"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Snap on</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="snap_node">
+        <property name="text">
+         <string>Nodes</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="snap_segments">
+        <property name="text">
+         <string>Segments</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="snap_intersection">
+        <property name="text">
+         <string>Intersections</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="error">
@@ -133,6 +180,11 @@
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>ListLayersSelection</class>
+   <extends>QListWidget</extends>
+   <header>lizmap.qgis_plugin_tools.widgets.list_layers_selection</header>
   </customwidget>
  </customwidgets>
  <resources/>

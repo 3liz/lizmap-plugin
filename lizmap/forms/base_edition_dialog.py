@@ -162,6 +162,8 @@ class BaseEditionDialog(QDialog):
             if definition['type'] == InputType.Layer:
                 layer = QgsProject.instance().mapLayer(value)
                 definition['widget'].setLayer(layer)
+            elif definition['type'] == InputType.Layers:
+                definition['widget'].set_selection(value.split(','))
             elif definition['type'] == InputType.Field:
                 definition['widget'].setField(value)
             elif definition['type'] == InputType.Fields:
@@ -193,6 +195,8 @@ class BaseEditionDialog(QDialog):
         for key, definition in self.config.layer_config.items():
             if definition['type'] == InputType.Layer:
                 value = definition['widget'].currentLayer().id()
+            elif definition['type'] == InputType.Layers:
+                value = ','.join(definition['widget'].selection())
             elif definition['type'] == InputType.Field:
                 value = definition['widget'].currentField()
             elif definition['type'] == InputType.Fields:

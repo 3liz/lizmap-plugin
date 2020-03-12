@@ -407,6 +407,9 @@ class TestTableManager(unittest.TestCase):
                     'deleteFeature': 'True'
                 },
                 'acl': 'edition_group',
+                'snap_layers': layer.id(),
+                'snap_segments': 'False',
+                'snap_intersections': 'True',
                 'order': 0
             }
         }
@@ -421,6 +424,9 @@ class TestTableManager(unittest.TestCase):
                     'modifyGeometry': 'True',
                     'deleteFeature': 'True',
                     'acl': 'edition_group',
+                    'snap_layers': layer.id(),
+                    'snap_segments': 'False',
+                    'snap_intersections': 'True',
                     'order': 0
                 },
             ]
@@ -431,6 +437,24 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(copy.deepcopy(json))
         self.assertEqual(table_manager.table.rowCount(), 1)
         data = table_manager.to_json()
+        json = {
+            'lines': {
+                'layerId': layer.id(),
+                'geometryType': 'line',
+                'capabilities': {
+                    'createFeature': 'True',
+                    'modifyAttribute': 'True',
+                    'modifyGeometry': 'True',
+                    'deleteFeature': 'True'
+                },
+                'acl': 'edition_group',
+                'snap_layers': layer.id(),
+                'snap_nodes': 'False',
+                'snap_segments': 'False',
+                'snap_intersections': 'True',
+                'order': 0
+            }
+        }
         self.assertDictEqual(data, json)
 
     def test_locate_by_layer(self):

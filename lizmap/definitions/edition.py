@@ -1,6 +1,7 @@
 """Definitions for edition."""
 
 from .base import BaseDefinitions, InputType
+from .definitions import LwcVersions
 from ..qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -50,6 +51,34 @@ class EditionDefinitions(BaseDefinitions):
             'tooltip': tr(
                 'Use a comma separated list of Lizmap groups ids to restrict access '
                 'to this layer edition.')
+        }
+        self._layer_config['snap_layers'] = {
+            'type': InputType.Layers,
+            'header': tr('Layers'),
+            'default': '',
+            'tooltip': tr('List of layers to snap on.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['snap_nodes'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Node'),
+            'default': False,
+            'tooltip': tr('If we should snap on nodes.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['snap_segments'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Segments'),
+            'default': False,
+            'tooltip': tr('If we should snap on segments.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['snap_intersections'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Intersections'),
+            'default': False,
+            'tooltip': tr('If we should snap on intersections.'),
+            'version': LwcVersions.Lizmap_3_4,
         }
 
     @staticmethod

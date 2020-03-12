@@ -4,6 +4,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsMapLayerProxyModel, QgsProject, QgsWkbTypes
 
 from .base_edition_dialog import BaseEditionDialog
+from ..definitions.definitions import LwcVersions
 from ..definitions.edition import EditionDefinitions
 from ..qgis_plugin_tools.tools.i18n import tr
 from ..qgis_plugin_tools.tools.resources import load_ui
@@ -31,6 +32,10 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('modifyGeometry', self.edit_geometry)
         self.config.add_layer_widget('deleteFeature', self.delete_feature)
         self.config.add_layer_widget('acl', self.allowed_groups)
+        self.config.add_layer_widget('snap_layers', self.layers)
+        self.config.add_layer_widget('snap_nodes', self.snap_node)
+        self.config.add_layer_widget('snap_segments', self.snap_segments)
+        self.config.add_layer_widget('snap_intersections', self.snap_intersection)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('createFeature', self.label_create)
@@ -38,9 +43,15 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('modifyGeometry', self.label_edit_geometry)
         self.config.add_layer_label('deleteFeature', self.label_delete)
         self.config.add_layer_label('acl', self.label_allowed_groups)
+        self.config.add_layer_label('snap_layers', self.label_layers_snapping)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.setExcludedProviders(excluded_providers())
+        self.layers.set_project(QgsProject.instance())
+
+        self.lwc_versions[LwcVersions.Lizmap_3_4] = [
+            self.group_box_snapping
+        ]
 
         self.setup_ui()
 
@@ -82,3 +93,26 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
                 tr('Editing Z/M Values'),
                 tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
             )
+
+        has_snap = self.snap_node.isChecked() or self.snap_segments.isChecked() or self.snap_intersection.isChecked()
+        layers = self.layers.selection()
+        if len(layers) == 0 and has_snap:
+            return tr('One snapping checkbox is checked, so at least one layer is mandatory in the list.')
+
+        if len(layers) > 0 and not has_snap:
+            return tr('One layer is selected in the list, so at least one snapping mode is mandatory.')
+
+        missing_layers = []
+        for layer in layers:
+            wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
+            for wfs_layer in wfs_layers_list:
+                if layer == wfs_layer:
+                    break
+            else:
+                missing_layers.append(layer)
+        if missing_layers:
+            missing_layers = [QgsProject.instance().mapLayer(layer_id).name() for layer_id in missing_layers]
+            msg = tr(
+                'The layer "{}" for the snapping must be checked in the "WFS Capabilities"\n'
+                ' option of the QGIS Server tab in the "Project Properties" dialog.'.format(', '.join(missing_layers)))
+            return msg
