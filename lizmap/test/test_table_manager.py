@@ -190,6 +190,7 @@ class TestTableManager(unittest.TestCase):
                 'horizontal': 'False',
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
+                'display_when_layer_visible': 'False',
                 'layerId': layer.id(),
                 'order': 0
             }
@@ -216,6 +217,7 @@ class TestTableManager(unittest.TestCase):
                 'horizontal': 'False',
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
+                'display_when_layer_visible': 'False',
                 'layerId': layer.id(),
                 'order': 0
             }
@@ -243,6 +245,7 @@ class TestTableManager(unittest.TestCase):
                 'horizontal': 'False',
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
+                'display_when_layer_visible': 'False',
                 'layerId': layer.id(),
                 'order': 0
             }

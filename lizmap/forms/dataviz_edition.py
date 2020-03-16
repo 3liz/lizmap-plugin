@@ -42,6 +42,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
         self.config.add_layer_widget('only_show_child', self.only_show_child)
         self.config.add_layer_widget('display_legend', self.display_legend)
+        self.config.add_layer_widget('display_when_layer_visible', self.display_when_layer_visible)
 
         self.config.add_layer_label('title', self.label_title)
         self.config.add_layer_label('type', self.label_type)
@@ -70,7 +71,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.y_field_2.setAllowEmptyFieldName(True)
         self.color_field.setAllowEmptyFieldName(True)
         self.color_field_2.setAllowEmptyFieldName(True)
-        
+
         self.x_field.setLayer(self.layer.currentLayer())
         self.y_field.setLayer(self.layer.currentLayer())
         self.z_field.setLayer(self.layer.currentLayer())
