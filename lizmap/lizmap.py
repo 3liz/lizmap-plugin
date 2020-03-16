@@ -527,6 +527,11 @@ class Lizmap:
 
     def lwc_version_changed(self):
         current_version = self.dlg.combo_lwc_version.currentData()
+
+        if current_version is None:
+            # We come from a higher version of Lizmap
+            current_version = DEFAULT_LWC_VERSION
+
         found = False
         for lwc_version, items in self.lwc_versions.items():
             if found:
