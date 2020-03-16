@@ -38,11 +38,21 @@ class TestToolTip(unittest.TestCase):
         context.appendScope(QgsExpressionContextUtils.layerScope(layer))
         context.setFeature(feature)
 
+        error = 'Expression : {}\nError : {}'
+
         expression = QgsExpression(expression)
-        self.assertFalse(expression.hasParserError())
+        self.assertFalse(
+            expression.hasParserError(),
+            error.format(
+                expression.expression(),
+                expression.parserErrorString()))
 
         expression.prepare(context)
-        self.assertFalse(expression.hasEvalError())
+        self.assertFalse(
+            expression.hasEvalError(),
+            error.format(
+                expression.expression(),
+                expression.evalErrorString()))
         self.assertEqual(expected, expression.evaluate(context))
 
     def test_field_name(self):
@@ -134,6 +144,26 @@ class TestToolTip(unittest.TestCase):
                     )'''
         self.assertEqual(expected, expression)
         self.check_layer_context('a', expression, 'A')
+
+    def test_value_map_with_quote(self):
+        """Test we can generate a value map with some quotes."""
+        widget_config = {
+            'map': [
+                {
+                    'L\'eau c\'est bon': 'a',
+                }, {
+                    'B': 'b',
+                }
+            ]
+        }
+        expression = Tooltip._generate_value_map(widget_config, 'field_a')
+        expected = '''
+                    map_get(
+                        hstore_to_map('"a"=>"L’eau c’est bon","b"=>"B"'),
+                        "field_a"
+                    )'''
+        self.assertEqual(expected, expression)
+        self.check_layer_context('a', expression, 'L’eau c’est bon')
 
     def test_date(self):
         """Test we can generate date."""

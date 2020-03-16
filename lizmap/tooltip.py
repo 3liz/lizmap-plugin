@@ -197,14 +197,14 @@ class Tooltip:
             values = dict()
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
-                    reverted = {y: x for x, y in row.items()}
+                    reverted = {y.replace("'", "’"): x.replace("'", "’") for x, y in row.items()}
                     values.update(reverted)
         else:
             # It's not a list, it's a dict.
             values = widget_config['map']
             if values.get('<NULL>'):
                 del values['<NULL>']
-            values = {y: x for x, y in values.items()}
+            values = {y.replace("'", "’"): x.replace("'", "’") for x, y in values.items()}
 
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)

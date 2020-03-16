@@ -113,7 +113,7 @@ from .qgis_plugin_tools.tools.custom_logging import setup_logger
 from .qgis_plugin_tools.tools.i18n import setup_translation, tr
 from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
-from .qgis_plugin_tools.tools.version import is_dev_version, version
+from .qgis_plugin_tools.tools.version import is_dev_version, version, format_version_integer
 from .tooltip import Tooltip
 
 
@@ -1545,10 +1545,10 @@ class Lizmap:
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
-        # lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         metadata = {
             'lizmap_plugin_version': self.global_options['metadata']['lizmap_plugin_version']['default'],
-            'lizmap_web_client_target_version': self.global_options['metadata']['lizmap_web_client_target_version']['default'],
+            'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
         }
 
         liz2json = dict()

@@ -110,6 +110,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         else:
             raise Exception('unknown graph type for X')
 
+        self.label_y_color.setVisible(graph != GraphType.Histogram2D)
+        self.color_field.setVisible(graph != GraphType.Histogram2D)
+        self.color.setVisible(graph != GraphType.Histogram2D)
+
         if graph in [GraphType.Pie, GraphType.Histogram2D]:
             # Disable Y field 2
             self.y_field_2.setAllowEmptyFieldName(True)

@@ -20,6 +20,7 @@ dist/
 .pytest_cache
 __output__
 
+lizmap.*.zip
 lizmap.zip
 unittest.qgs
 test/data/points_lines.gpkg-shm

@@ -80,3 +80,6 @@ deprecated=False
 
 author=3liz
 email=mdouchin@3liz.com
+
+; server flag
+server=True
