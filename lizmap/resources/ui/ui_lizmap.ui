@@ -870,7 +870,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item row="0" column="0">
                    <widget class="QTreeWidget" name="layer_tree">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
