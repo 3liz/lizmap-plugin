@@ -233,6 +233,13 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('If the legend must be displayed with the graph.'),
             'version': LwcVersions.Lizmap_3_4,
         }
+        self._layer_config['display_when_layer_visible'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Display plot only when the layer is visible'),
+            'default': False,
+            'tooltip': tr('If checked, the plot will be shown only if the source layer is visible in the map (checked in the legend panel)'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
 
         self._general_config['datavizLocation'] = {
             # 'type': InputType.CheckBox,
