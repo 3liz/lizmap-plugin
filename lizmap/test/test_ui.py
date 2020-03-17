@@ -2,15 +2,13 @@
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsProject, Qgis
-from qgis.testing import unittest, start_app
+from qgis.core import QgsVectorLayer, QgsProject
+from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
 from ..lizmap import Lizmap
 from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
 
-
-start_app()
 
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'
@@ -23,7 +21,6 @@ class TestUiLizmapDialog(unittest.TestCase):
     def tearDown(self) -> None:
         os.remove(plugin_test_data_path('unittest.qgs'))
 
-    @unittest.skipIf(Qgis.QGIS_VERSION_INT >= 31000, 'Segfault')
     def test_ui(self):
         project = QgsProject.instance()
         lizmap = Lizmap(get_iface())

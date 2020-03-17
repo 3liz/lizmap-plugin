@@ -3,11 +3,9 @@
 import copy
 
 from qgis.PyQt.QtWidgets import QTableWidget
-from qgis.core import QgsVectorLayer, QgsProject, Qgis
-from qgis.testing import unittest, start_app
+from qgis.core import QgsVectorLayer, QgsProject
+from qgis.testing import unittest
 
-
-start_app()
 
 from ..definitions.atlas import AtlasDefinitions
 from ..definitions.attribute_table import AttributeTableDefinitions
@@ -29,7 +27,6 @@ __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
 
 
-@unittest.skipIf(Qgis.QGIS_VERSION_INT >= 31000, 'Segfault')
 class TestTableManager(unittest.TestCase):
 
     def setUp(self) -> None:
