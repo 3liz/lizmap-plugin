@@ -155,6 +155,9 @@ class LizmapConfig:
         'hideGroupCheckbox': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
+        'activateFirstMapTheme': {
+            'wType': 'checkbox', 'type': 'boolean', 'default': False
+        },
         'popupLocation': {
             'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
         },

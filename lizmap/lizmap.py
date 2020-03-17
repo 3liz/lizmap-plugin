@@ -173,7 +173,8 @@ class Lizmap:
             self.dlg.btQgisPopupFromForm,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
-            self.dlg.label_atlas_34
+            self.dlg.label_atlas_34,
+            self.dlg.activate_first_maptheme
         ]
         next_release = False
         for lwc_version in LwcVersions:
@@ -311,6 +312,7 @@ class Lizmap:
         self.global_options['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
         self.global_options['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
         self.global_options['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
+        self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_maptheme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
