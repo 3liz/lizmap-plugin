@@ -1,9 +1,7 @@
 """Test Lizmap dialog form edition."""
 
-from qgis.core import QgsVectorLayer, QgsProject, Qgis
-from qgis.testing import unittest, start_app
-
-start_app()
+from qgis.core import QgsVectorLayer, QgsProject
+from qgis.testing import unittest
 
 from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
 from ..forms.atlas_edition import AtlasEditionDialog
@@ -16,7 +14,6 @@ __revision__ = '$Format:%H$'
 
 class TestEditionDialog(unittest.TestCase):
 
-    @unittest.skipIf(Qgis.QGIS_VERSION_INT >= 31000, 'Segfault')
     def test_atlas_dialog(self):
         """Test atlas dialog."""
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')

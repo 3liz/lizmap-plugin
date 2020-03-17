@@ -11,10 +11,7 @@ from qgis.core import (
     QgsOptionalExpression,
     QgsAttributeEditorField)
 from qgis.gui import QgsExternalResourceWidget
-from qgis.testing import unittest, start_app
-
-
-start_app()
+from qgis.testing import unittest
 
 
 from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
