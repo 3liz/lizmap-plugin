@@ -14,10 +14,10 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
 )
 
-from ..definitions.base import BaseDefinitions, InputType
-from ..qgis_plugin_tools.tools.i18n import tr
-from ..qgis_plugin_tools.tools.resources import plugin_name
-from ..qgis_plugin_tools.tools.version import is_dev_version
+from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.resources import plugin_name
+from lizmap.qgis_plugin_tools.tools.version import is_dev_version
 
 LOGGER = logging.getLogger(plugin_name())
 

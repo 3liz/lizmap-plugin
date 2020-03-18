@@ -1,11 +1,10 @@
 """Dialog for dataviz edition."""
 from qgis.core import QgsMapLayerProxyModel, QgsProject
 
-from .base_edition_dialog import BaseEditionDialog
-from ..definitions.base import InputType
-from ..definitions.dataviz import DatavizDefinitions, GraphType
-from ..qgis_plugin_tools.tools.i18n import tr
-from ..qgis_plugin_tools.tools.resources import load_ui
+from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
+from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

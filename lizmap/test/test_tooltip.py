@@ -14,8 +14,8 @@ from qgis.gui import QgsExternalResourceWidget
 from qgis.testing import unittest
 
 
-from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
-from ..tooltip import Tooltip
+from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.tooltip import Tooltip
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

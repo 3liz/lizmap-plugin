@@ -84,37 +84,37 @@ from qgis.core import (
     QgsMapLayer,
 )
 
-from . import DEFAULT_LWC_VERSION
-from .definitions.atlas import AtlasDefinitions
-from .definitions.attribute_table import AttributeTableDefinitions
-from .definitions.dataviz import DatavizDefinitions
-from .definitions.definitions import LwcVersions
-from .definitions.edition import EditionDefinitions
-from .definitions.filter_by_form import FilterByFormDefinitions
-from .definitions.filter_by_login import FilterByLoginDefinitions
-from .definitions.locate_by_layer import LocateByLayerDefinitions
-from .definitions.time_manager import TimeManagerDefinitions
-from .definitions.tooltip import ToolTipDefinitions
-from .forms.atlas_edition import AtlasEditionDialog
-from .forms.attribute_table_edition import AttributeTableEditionDialog
-from .forms.dataviz_edition import DatavizEditionDialog
-from .forms.edition_edition import EditionLayerDialog
-from .forms.filter_by_form_edition import FilterByFormEditionDialog
-from .forms.filter_by_login import FilterByLoginEditionDialog
-from .forms.locate_layer_edition import LocateLayerEditionDialog
-from .forms.table_manager import TableManager
-from .forms.time_manager_edition import TimeManagerEditionDialog
-from .forms.tooltip_edition import ToolTipEditionDialog
-from .html_and_expressions import STYLESHEET, NEW_FEATURE
-from .lizmap_api.config import LizmapConfig
-from .lizmap_dialog import LizmapDialog
-from .lizmap_popup_dialog import LizmapPopupDialog
-from .qgis_plugin_tools.tools.custom_logging import setup_logger
-from .qgis_plugin_tools.tools.i18n import setup_translation, tr
-from .qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
-from .qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
-from .qgis_plugin_tools.tools.version import is_dev_version, version, format_version_integer
-from .tooltip import Tooltip
+from lizmap import DEFAULT_LWC_VERSION
+from lizmap.definitions.atlas import AtlasDefinitions
+from lizmap.definitions.attribute_table import AttributeTableDefinitions
+from lizmap.definitions.dataviz import DatavizDefinitions
+from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.edition import EditionDefinitions
+from lizmap.definitions.filter_by_form import FilterByFormDefinitions
+from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
+from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
+from lizmap.definitions.time_manager import TimeManagerDefinitions
+from lizmap.definitions.tooltip import ToolTipDefinitions
+from lizmap.forms.atlas_edition import AtlasEditionDialog
+from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
+from lizmap.forms.dataviz_edition import DatavizEditionDialog
+from lizmap.forms.edition_edition import EditionLayerDialog
+from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
+from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
+from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
+from lizmap.forms.table_manager import TableManager
+from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
+from lizmap.forms.tooltip_edition import ToolTipEditionDialog
+from lizmap.html_and_expressions import STYLESHEET, NEW_FEATURE
+from lizmap.lizmap_api.config import LizmapConfig
+from lizmap.lizmap_dialog import LizmapDialog
+from lizmap.lizmap_popup_dialog import LizmapPopupDialog
+from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
+from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
+from lizmap.qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
+from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
+from lizmap.qgis_plugin_tools.tools.version import is_dev_version, version, format_version_integer
+from lizmap.tooltip import Tooltip
 
 
 LOGGER = logging.getLogger(plugin_name())

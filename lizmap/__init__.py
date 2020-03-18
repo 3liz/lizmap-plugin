@@ -52,7 +52,7 @@ DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_3
 
 
 def classFactory(iface):
-    from .lizmap import Lizmap
+    from lizmap.plugin import Lizmap
     return Lizmap(iface)
 
 
@@ -62,5 +62,5 @@ def serverClassFactory(serverIface):  # pylint: disable=invalid-name
     :param serverIface: A QGIS Server interface instance.
     :type serverIface: QgsServerInterface
     """
-    from .server.lizmap_server import LizmapServer
+    from lizmap.server.lizmap_server import LizmapServer
     return LizmapServer(serverIface)

@@ -7,6 +7,7 @@ from .expression_service import ExpressionService
 from .lizmap_service import LizmapService
 from .lizmap_filter import LizmapFilter
 
+
 class LizmapServer:
     """Plugin for QGIS server
     this plugin loads atlasprint filter"""

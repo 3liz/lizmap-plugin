@@ -6,8 +6,8 @@ from qgis.core import QgsVectorLayer, QgsProject
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
-from ..lizmap import Lizmap
-from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.plugin import Lizmap
+from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 
 
 __copyright__ = 'Copyright 2019, 3Liz'
