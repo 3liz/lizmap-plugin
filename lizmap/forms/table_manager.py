@@ -1,5 +1,6 @@
 """Table manager."""
 
+import json
 import logging
 
 from typing import Type
@@ -15,6 +16,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qgis_plugin_tools.tools.version import is_dev_version
@@ -225,6 +227,13 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
+            elif input_type == InputType.Collection:
+                json_dump = json.dumps(value)
+                cell.setText(json_dump)
+                cell.setData(Qt.UserRole, json_dump)
+                function = self.definitions.layer_config[key]['represent_value']
+                cell.setData(Qt.ToolTipRole, function(value))
+
             else:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
 
@@ -315,6 +324,8 @@ class TableManager:
 
                 if input_type == InputType.Layer:
                     layer_data[key] = cell
+                elif input_type == InputType.Collection:
+                    layer_data[key] = cell
                 elif input_type == InputType.Layers:
                     layer_data[key] = cell
                 elif input_type == InputType.Color:
@@ -355,6 +366,11 @@ class TableManager:
                 }
                 vector_layer = QgsProject.instance().mapLayer(layer_data['layerId'])
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
+
+            if self.definitions.key() == 'datavizLayers':
+                # Hard code lizmap 3.3 for now
+                version = LwcVersions.Lizmap_3_3
+                layer_data['graph'] = []
 
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
@@ -397,7 +413,10 @@ class TableManager:
         return data
 
     def _from_json_legacy(self, data) -> list:
-        """Reformat the JSON data from 3.3 to 3.4 format."""
+        """Reformat the JSON data from 3.3 to 3.4 format.
+
+        Used for atlas when all keys are stored in the main config scope.
+        """
         layer = {}
         for key in data:
             if not key.startswith(self.definitions.key()):
@@ -412,13 +431,17 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_order(data):
+        """Used when there is a dictionary with the row number as a key.
+
+        No keys will be removed.
+        """
         new_data = dict()
         new_data['layers'] = []
 
         def layer_from_order(layers, row):
-            for l in layers.values():
-                if l['order'] == row:
-                    return l
+            for a_layer in layers.values():
+                if a_layer['order'] == row:
+                    return a_layer
 
         order = []
         for layer in data.values():
@@ -433,11 +456,51 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_capabilities(data):
+        """Function used for the edition capabilities.
+        ACL are stored in a sub list."""
         for layer in data.get('layers'):
             capabilities = layer.get('capabilities')
             layer.update(capabilities)
             layer.pop('capabilities')
             layer.pop('geometryType')
+        return data
+
+    @staticmethod
+    def _from_json_legacy_dataviz(data):
+        """Read legacy Dataviz without the traces config."""
+
+        # Todo, we should read the definition file
+        legacy = [
+            {
+                'y_field': 'y_field',
+                'color': 'color',
+                'colorfield': 'colorfield',
+            }, {
+                'y2_field': 'y_field',
+                'color2': 'color',
+                'colorfield2': 'colorfield',
+            }
+        ]
+
+        for layer in data.get('layers'):
+
+            # Remove unused parameter
+            if layer.get('has_y2_field'):
+                del layer['has_y2_field']
+
+            layer['traces'] = []
+            for trace in legacy:
+                one_trace = {}
+                for key in trace.keys():
+                    value = layer.get(key)
+
+                    if value is not None:
+                        one_trace[trace[key]] = layer.get(key)
+                        del layer[key]
+
+                if one_trace:
+                    layer['traces'].append(one_trace)
+
         return data
 
     def from_json(self, data):
@@ -456,6 +519,9 @@ class TableManager:
 
         if self.definitions.key() == 'editionLayers':
             data = self._from_json_legacy_capabilities(data)
+
+        if self.definitions.key() == 'datavizLayers':
+            data = self._from_json_legacy_dataviz(data)
 
         layers = data.get('layers')
 
@@ -496,6 +562,8 @@ class TableManager:
                     elif definition['type'] == InputType.Text:
                         layer_data[key] = value
                     elif definition['type'] == InputType.MultiLine:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Collection:
                         layer_data[key] = value
                     else:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))

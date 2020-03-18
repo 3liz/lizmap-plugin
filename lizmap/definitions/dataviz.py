@@ -102,6 +102,32 @@ class AggregationType(Enum):
     }
 
 
+def represent_traces(data):
+    html = '''<style>
+.box {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+</style>\n'''
+    for trace in data:
+        y_field = trace.get('y_field')
+        color = trace.get('color')
+        color_field = trace.get('colorfield')
+        if y_field:
+            html += '<p>{}: '.format(y_field)
+            if color_field:
+                html += color_field
+            else:
+                html += '<div class="box" style="background:{};"></div>'.format(color)
+            html += '</p>\n'
+
+    html += '\n'
+    return html
+
+
 class DatavizDefinitions(BaseDefinitions):
 
     def __init__(self):
@@ -145,43 +171,45 @@ class DatavizDefinitions(BaseDefinitions):
             'default': AggregationType.Sum,
             'tooltip': tr('For a few types of charts like "bar" or "pie", you can choose to aggregate the data in the graph.')
         }
+        self._layer_config['traces'] = {
+            'type': InputType.Collection,
+            'header': tr('Traces'),
+            'tooltip': tr('Textual representations of traces'),
+            'items': [
+                'y_field',
+                'color',
+                'colorfield',
+            ],
+            'represent_value': represent_traces,
+        }
         self._layer_config['y_field'] = {
+            'visible': False,
+            # 'legacy': 'y2_field',
+            'plural': 'y{}_field',
             'type': InputType.Field,
             'header': tr('Y field'),
             'default': '',
             'tooltip': tr('The Y field of your graph.')
         }
         self._layer_config['color'] = {
+            'visible': False,
+            # 'legacy': 'color2',
+            'plural': 'color{}',
             'type': InputType.Color,
             'header': tr('Color'),
             'default': '#086FA1',
             'tooltip': tr('The color for Y.')
         }
         self._layer_config['colorfield'] = {
+            'visible': False,
+            'legacy': 'colorfield2',
+            'plural': 'colorfield{}',
             'type': InputType.Field,
             'header': tr('Color field'),
             'default': '',
             'tooltip': tr(
                 'You can choose or not a color field to customize the color of each category of your chart. '
                 'Choose the field of your layer which contains the colors you want to use. The color can be written like "red" or "blue" but it can be an HTML color code like "#01DFD7" for example.')
-        }
-        self._layer_config['y2_field'] = {
-            'type': InputType.Field,
-            'header': tr('Y field 2'),
-            'default': '',
-            'tooltip': tr('You can add a second Y field.')
-        }
-        self._layer_config['colorfield2'] = {
-            'type': InputType.Field,
-            'header': tr('Color field 2'),
-            'default': '',
-            'tooltip': tr('You can choose the color of the second Y field the same way you choose the one for his first Y field.')
-        }
-        self._layer_config['color2'] = {
-            'type': InputType.Color,
-            'header': tr('Color 2'),
-            'default': '#FF8900',
-            'tooltip': tr('The second color')
         }
         self._layer_config['z_field'] = {
             'type': InputType.Field,

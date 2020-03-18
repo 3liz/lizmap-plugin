@@ -11,6 +11,7 @@ __revision__ = '$Format:%H$'
 
 @unique
 class InputType(Enum):
+    Collection = 'Collection'  # Does not have a input widget, it's a JSON representation
     Color = 'Color'  # QgsColorButton
     CheckBox = 'CheckBox'  # QCheckbox
     Field = 'Field'  # QgsFieldMapLayerComboBox
