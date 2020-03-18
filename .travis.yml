@@ -28,6 +28,20 @@ jobs:
       script:
         - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
 
+    - stage: Run tests desktop
+      name: QGIS Desktop 3.10
+
+      before_install:
+        - docker pull qgis/qgis:release-3_10
+
+      install:
+        - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/lizmap:/lizmap -e DISPLAY=:99 qgis/qgis:release-3_10
+        - sleep 10
+        - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
+
+      script:
+        - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
+
     - stage: Run tests server
       name: QGIS Server 3.4
 
@@ -41,6 +55,21 @@ jobs:
 
       script:
         - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.4 ./run-tests.sh
+
+    - stage: Run tests server
+      name: QGIS Server 3.10
+
+      before_install:
+        - docker pull 3liz/qgis-platform:3.10
+
+      install:
+        - cd ${TRAVIS_BUILD_DIR}
+        - mkdir .local
+        - mkdir .cache
+
+      script:
+        - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.10 ./run-tests.sh
+
 
     - stage: Deploy
       if: tag IS present
