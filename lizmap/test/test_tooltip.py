@@ -11,14 +11,11 @@ from qgis.core import (
     QgsOptionalExpression,
     QgsAttributeEditorField)
 from qgis.gui import QgsExternalResourceWidget
-from qgis.testing import unittest, start_app
+from qgis.testing import unittest
 
 
-start_app()
-
-
-from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
-from ..tooltip import Tooltip
+from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.tooltip import Tooltip
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -35,6 +32,7 @@ class TestToolTip(unittest.TestCase):
         feature.setAttributes([field_value])
 
         context = QgsExpressionContext()
+        # noinspection PyCallByClass,PyArgumentList
         context.appendScope(QgsExpressionContextUtils.layerScope(layer))
         context.setFeature(feature)
 
@@ -73,6 +71,7 @@ class TestToolTip(unittest.TestCase):
 
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
         sub_context = QgsExpressionContext()
+        # noinspection PyCallByClass,PyArgumentList
         sub_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
         feature = QgsFeature()
         feature.setAttributes(['a'])
@@ -298,6 +297,7 @@ class TestToolTip(unittest.TestCase):
         tab_1 = QgsAttributeEditorContainer('tab1', root)
         config.addTab(tab_1)
 
+        # noinspection PyArgumentList
         html_content = Tooltip.create_popup_node_item_from_form(
             layer, root, 0, [], '', QgsProject.instance().relationManager())
 
@@ -313,6 +313,7 @@ class TestToolTip(unittest.TestCase):
 
         tab_1.addChildElement(QgsAttributeEditorField('fake_field', -1, tab_1))
 
+        # noinspection PyArgumentList
         html_content = Tooltip.create_popup_node_item_from_form(
             layer, root, 0, [], '', QgsProject.instance().relationManager())
 
@@ -335,6 +336,7 @@ class TestToolTip(unittest.TestCase):
         tab_2 = QgsAttributeEditorContainer('tab2', root)
         config.addTab(tab_2)
 
+        # noinspection PyArgumentList
         html_content = Tooltip.create_popup_node_item_from_form(
             layer, root, 0, [], '', QgsProject.instance().relationManager())
 
@@ -374,6 +376,7 @@ class TestToolTip(unittest.TestCase):
     def test_tooltip_layer(self):
         """Test tooltip on a layer."""
         layer = QgsVectorLayer(plugin_test_data_path('complex_form.geojson'), 'form', 'ogr')
+        # noinspection PyArgumentList
         QgsProject.instance().addMapLayer(layer)
         self.assertTrue(layer.isValid())
 
@@ -381,6 +384,7 @@ class TestToolTip(unittest.TestCase):
         self.assertEqual(QgsEditFormConfig.TabLayout, config.layout())
 
         root = config.invisibleRootContainer()
+        # noinspection PyArgumentList
         html_content = Tooltip.create_popup_node_item_from_form(
             layer, root, 0, [], '', QgsProject.instance().relationManager())
 

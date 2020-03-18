@@ -4,7 +4,7 @@ import os
 import re
 import unittest
 
-from ..qgis_plugin_tools.tools.resources import resources_path
+from lizmap.qgis_plugin_tools.tools.resources import resources_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

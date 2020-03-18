@@ -53,9 +53,9 @@ from qgis.core import (
     QgsMapLayer,
 )
 
-from .. import DEFAULT_LWC_VERSION
-from ..qgis_plugin_tools.tools.resources import metadata_config
-from ..qgis_plugin_tools.tools.version import format_version_integer
+from lizmap import DEFAULT_LWC_VERSION
+from lizmap.qgis_plugin_tools.tools.resources import metadata_config
+from lizmap.qgis_plugin_tools.tools.version import format_version_integer
 
 
 class LizmapConfigError(Exception):

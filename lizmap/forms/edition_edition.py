@@ -3,12 +3,12 @@
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsMapLayerProxyModel, QgsProject, QgsWkbTypes
 
-from .base_edition_dialog import BaseEditionDialog
-from ..definitions.definitions import LwcVersions
-from ..definitions.edition import EditionDefinitions
-from ..qgis_plugin_tools.tools.i18n import tr
-from ..qgis_plugin_tools.tools.resources import load_ui
-from ..tools import excluded_providers
+from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.edition import EditionDefinitions
+from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.tools import excluded_providers
 
 
 __copyright__ = 'Copyright 2020, 3Liz'

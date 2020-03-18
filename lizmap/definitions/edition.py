@@ -1,8 +1,8 @@
 """Definitions for edition."""
 
-from .base import BaseDefinitions, InputType
-from .definitions import LwcVersions
-from ..qgis_plugin_tools.tools.i18n import tr
+from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
