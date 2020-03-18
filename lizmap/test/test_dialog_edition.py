@@ -3,8 +3,8 @@
 from qgis.core import QgsVectorLayer, QgsProject
 from qgis.testing import unittest
 
-from ..qgis_plugin_tools.tools.resources import plugin_test_data_path
-from ..forms.atlas_edition import AtlasEditionDialog
+from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.forms.atlas_edition import AtlasEditionDialog
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

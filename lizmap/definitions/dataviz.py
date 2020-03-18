@@ -2,9 +2,9 @@
 
 from enum import Enum, unique
 
-from .base import BaseDefinitions, InputType
-from ..qgis_plugin_tools.tools.i18n import tr
-from ..qgis_plugin_tools.tools.resources import resources_path
+from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.resources import resources_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

@@ -54,6 +54,7 @@ from .config import LizmapConfig
 # And not make this object garbage collected
 qgis_application = None
 
+
 def init_qgis(verbose=False):
     """ Initialize qgis application
     """
