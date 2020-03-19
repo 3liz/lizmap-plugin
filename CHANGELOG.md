@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Version 3.2.11
+
+* Escape characters in tooltips (drag and drop form)
+* Fix horizontal expanding of the layer list
+* Fix on group visibility expression in Drag&Drop form
+* Improve UI for Histogram 2D in Dataviz
+* Improve continuous integration
+
 ## Version 3.2.10
 
 * Conditional display expression for tabs in drag&drop tooltip
