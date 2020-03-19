@@ -9,8 +9,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsAttributeEditorElement,
     QgsHstoreUtils,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
 )
 
 
@@ -54,14 +52,15 @@ class Tooltip:
             field_widget_setup = field.editorWidgetSetup()
             widget_type = field_widget_setup.type()
             widget_config = field_widget_setup.config()
-            field_view = '"{}"'.format(name)
 
-            # If hidden field, do nothing
+            field_view = Tooltip._generate_field_view(name)
+
             if widget_type == 'Hidden':
+                # If hidden field, do nothing
                 return html
 
-            # External resource: file, url, photo, iframe
             if widget_type == 'ExternalResource':
+                # External resource: file, url, photo, iframe
                 field_view = Tooltip._generate_external_resource(widget_config, name, fname)
 
             if widget_type == 'ValueRelation':
@@ -149,6 +148,10 @@ class Tooltip:
 
         html += a
         return html
+
+    @staticmethod
+    def _generate_field_view(name):
+        return '"{}"'.format(name)
 
     @staticmethod
     def _generate_eval_visibility(expression):
