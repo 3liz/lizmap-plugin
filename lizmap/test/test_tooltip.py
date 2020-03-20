@@ -1,4 +1,5 @@
 """Test tooltip."""
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsVectorLayer,
     QgsProject,
@@ -9,10 +10,12 @@ from qgis.core import (
     QgsExpressionContextUtils,
     QgsAttributeEditorContainer,
     QgsOptionalExpression,
-    QgsAttributeEditorField)
+    QgsAttributeEditorField,
+    QgsField,
+    Qgis,
+)
 from qgis.gui import QgsExternalResourceWidget
 from qgis.testing import unittest
-
 
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.tooltip import Tooltip
@@ -105,6 +108,50 @@ class TestToolTip(unittest.TestCase):
                 
                     )'''
         self.assertEqual(expected, result)
+
+    @unittest.skipIf(Qgis.QGIS_VERSION_INT < 31000, 'Memory layer is not so good in tests on 3.4')
+    def test_checkbox(self):
+        """Test we can generate checkbox."""
+        # Here, we have nothing to do, it's working by default in QGIS.
+        field_view = Tooltip._generate_field_view('is_ok')
+        self.assertEqual('"is_ok"', field_view)
+
+        template = Tooltip._generate_field_name('is_ok', 'Is ok ?', field_view)
+        expected = '''
+                    [% CASE
+                        WHEN "is_ok" IS NOT NULL OR trim("is_ok") != ''
+                        THEN concat(
+                            '<p>', '<b>Is ok ?</b>',
+                            '<div class="field">', "is_ok", '</div>',
+                            '</p>'
+                        )
+                        ELSE ''
+                    END %]'''
+        self.assertEqual(expected, template, template)
+
+        layer = QgsVectorLayer('Point', 'temporary_points', 'memory')
+        provider = layer.dataProvider()
+        provider.addAttributes([QgsField('is_ok', QVariant.Bool)])
+        layer.updateFields()
+        sub_context = QgsExpressionContext()
+        # noinspection PyCallByClass,PyArgumentList
+        sub_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+        feature = QgsFeature()
+        feature.setAttributes([True])
+        layer.dataProvider().addFeatures([feature])
+        sub_context.setFeature(next(layer.getFeatures()))
+        expression = QgsExpression().replaceExpressionText(template, sub_context)
+        self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
+
+        # FIXME On memory layers, we can't custom config on checkbox widget
+        # config = {
+        #     'CheckedState': 'Good',
+        #     'UncheckedState': 'Not good',
+        # }
+        # layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('CheckBox', config))
+        # sub_context.setFeature(next(layer.getFeatures()))
+        # expression = QgsExpression().replaceExpressionText(template, sub_context)
+        # self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
 
     def test_value_map(self):
         """Test we can generate value map."""
