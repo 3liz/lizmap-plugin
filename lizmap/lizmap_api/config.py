@@ -287,6 +287,9 @@ class LizmapConfig:
         'displayInLegend': {
             'wType': 'checkbox', 'type': 'boolean', 'default': True
         },
+        'group_visibility': {
+            'wType': 'text', 'type': 'string', 'default': ''
+        },
         'singleTile': {
             'wType': 'checkbox', 'type': 'boolean', 'default': True, 'children': 'cached', 'exclusive': True
         },

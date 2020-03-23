@@ -1083,6 +1083,20 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            </item>
                           </layout>
                          </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_3">
+                           <item>
+                            <widget class="QLabel" name="label_group_visibility">
+                             <property name="text">
+                              <string>Group visibility</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="list_group_visiblity"/>
+                           </item>
+                          </layout>
+                         </item>
                         </layout>
                        </widget>
                       </item>
