@@ -174,6 +174,8 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
             self.dlg.label_atlas_34,
+            self.dlg.label_group_visibility,
+            self.dlg.list_group_visiblity,
             self.dlg.activate_first_maptheme
         ]
         next_release = False
@@ -347,6 +349,7 @@ class Lizmap:
         self.layer_options_list['minScale']['widget'] = None
         self.layer_options_list['maxScale']['widget'] = None
         self.layer_options_list['toggled']['widget'] = self.dlg.cbToggled
+        self.layer_options_list['group_visibility']['widget'] = self.dlg.list_group_visiblity
         self.layer_options_list['popup']['widget'] = self.dlg.checkbox_popup
         self.layer_options_list['popupFrame']['widget'] = self.dlg.popup_frame
         self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
@@ -521,6 +524,16 @@ class Lizmap:
                 'manager': None,
             }
         }
+
+        # Set some tooltips
+        tooltip = tr(
+            'By default the layer is visible for all groups in Lizmap.\n'
+            'If a comma separated list of groups IDs is defined,\n'
+            'the layer will be visible only for these groups.\n'
+            'Use Lizmap Web Client group IDs and not labels.')
+        self.dlg.label_group_visibility.setToolTip(tooltip)
+        self.dlg.list_group_visiblity.setToolTip(tooltip)
+
         self.layerList = None
         self.action = None
         self.isok = None
