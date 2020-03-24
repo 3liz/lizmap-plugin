@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>334</width>
-    <height>132</height>
+    <width>387</width>
+    <height>187</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <widget class="QgsFieldComboBox" name="field"/>
-     </item>
      <item row="1" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -42,6 +39,19 @@
         <string>Color</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsFieldComboBox" name="y_field"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_z_field">
+       <property name="text">
+        <string>Z field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsFieldComboBox" name="z_field"/>
      </item>
     </layout>
    </item>

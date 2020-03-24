@@ -4,8 +4,9 @@ from collections import OrderedDict
 from qgis.core import QgsVectorLayer, QgsProject
 from qgis.testing import unittest
 
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.definitions.dataviz import GraphType
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
+from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -15,16 +16,35 @@ __revision__ = '$Format:%H$'
 
 class TestTraceDialog(unittest.TestCase):
 
+    @unittest.expectedFailure
+    def test_z_field(self):
+        """Test Z field is visible or not."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        # Must be visible
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Sunburst)
+        self.assertTrue(dialog.label_z_field.isVisible())
+        self.assertTrue(dialog.z_field.isVisible())
+        self.assertFalse(dialog.z_field.allowEmptyFieldName())
+
+        # Not visible
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram)
+        self.assertFalse(dialog.label_z_field.isVisible())
+        self.assertFalse(dialog.z_field.isVisible())
+        self.assertTrue(dialog.z_field.allowEmptyFieldName())
+
     def test_trace_dialog(self):
         """Test trace dialog."""
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         QgsProject.instance().addMapLayer(layer)
         self.assertTrue(layer.isValid())
 
-        dialog = TraceDatavizEditionDialog(None, layer)
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram)
         self.assertFalse(dialog.error.isVisible())
 
-        self.assertEqual('Field is required.', dialog.validate())
+        self.assertEqual('Y field is required.', dialog.validate())
         self.assertEqual('#086fa1', dialog.color.color().name())
         self.assertEqual('', dialog.color_field.currentField())
         self.assertTrue(dialog.color.isEnabled())
@@ -38,7 +58,7 @@ class TestTraceDialog(unittest.TestCase):
         self.assertEqual('', dialog.color_field.currentField())
         self.assertTrue(dialog.color.isEnabled())
 
-        dialog.field.setCurrentIndex(0)
+        dialog.y_field.setCurrentIndex(0)
         self.assertIsNone(dialog.validate())
 
         data = dialog.save_form()
@@ -46,11 +66,13 @@ class TestTraceDialog(unittest.TestCase):
         expected['y_field'] = 'id'
         expected['color'] = '#086fa1'
         expected['colorfield'] = ''
+        expected['z_field'] = ''
         self.assertEqual(expected, data)
 
         data = OrderedDict()
         data['y_field'] = 'name'
         data['color'] = '#aabbcc'
         data['colorfield'] = ''
+        data['z_field'] = ''
         dialog.load_form(data)
         self.assertEqual(data, dialog.save_form())

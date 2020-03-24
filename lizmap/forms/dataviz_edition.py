@@ -5,8 +5,10 @@ from qgis.core import (
     QgsProject,
     QgsApplication,
 )
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QColor
 
+from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
@@ -91,7 +93,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         # self.traces.cellDoubleClicked.connect(self.edit_existing_row)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.layer.layerChanged.connect(self.x_field.setLayer)
+        self.layer.layerChanged.connect(self.current_layer_changed)
         # self.layer.layerChanged.connect(self.y_field.setLayer)
         # self.layer.layerChanged.connect(self.z_field.setLayer)
         # self.layer.layerChanged.connect(self.color_field.setLayer)
@@ -127,14 +129,56 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         # self.check_y_color_field()
         # self.check_y_2_field()
 
+    def current_layer_changed(self):
+        """When the layer is changed."""
+        self.x_field.setLayer(self.layer.currentLayer())
+        self.traces.setRowCount(0)
+
     def add_new_trace(self):
-        dialog = TraceDatavizEditionDialog(self.parent, self.layer.currentLayer())
+        graph = self.type_graph.currentData()
+        for item_enum in GraphType:
+            if item_enum.value['data'] == graph:
+                graph = item_enum
+                break
+        else:
+            raise Exception('Error with list')
+        dialog = TraceDatavizEditionDialog(self.parent, self.layer.currentLayer(), graph)
         result = dialog.exec_()
         if result == QDialog.Accepted:
-            # data = dialog.save_form()
+            data = dialog.save_form()
             row = self.traces.rowCount()
             self.traces.setRowCount(row + 1)
-            # self._edit_row(row, data)
+            self._edit_trace_row(row, data)
+
+    def _edit_trace_row(self, row, data):
+        """Internal function to edit a row."""
+        for i, key in enumerate(self.config.layer_config['traces']['items']):
+            value = data[key]
+            cell = QTableWidgetItem()
+            input_type = self.config.layer_config[key]['type']
+            if input_type == InputType.Field:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
+
+                # Get the icon for the field
+                if self.layer:
+                    index = self.layer.currentLayer().fields().indexFromName(value)
+                    if index >= 0:
+                        cell.setIcon(self.layer.currentLayer().fields().iconForField(index))
+
+            elif input_type == InputType.Color:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
+                if value:
+                    cell.setData(Qt.DecorationRole, QColor(value))
+
+            else:
+                raise Exception('InputType "{}" not implemented'.format(input_type))
+
+            self.traces.setItem(row, i, cell)
+        self.traces.clearSelection()
 
     def remove_selection(self):
         """Remove the selected row from the table."""
@@ -190,17 +234,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         # Bar chart
         self.horizontal.setVisible(graph == GraphType.Bar)
         self.stacked.setVisible(graph == GraphType.Bar)
-
-        # Z Field
-        if graph == GraphType.Sunburst:
-            self.label_z_field.setVisible(True)
-            self.z_field.setVisible(True)
-            self.z_field.setAllowEmptyFieldName(False)
-        else:
-            self.label_z_field.setVisible(False)
-            self.z_field.setVisible(False)
-            self.z_field.setAllowEmptyFieldName(True)
-            self.z_field.setCurrentIndex(0)
 
         self.label_html_template.setVisible(graph == GraphType.HtmlTemplate)
         self.html_template.setVisible(graph == GraphType.HtmlTemplate)

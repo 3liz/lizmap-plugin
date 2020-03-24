@@ -179,6 +179,7 @@ class DatavizDefinitions(BaseDefinitions):
                 'y_field',
                 'color',
                 'colorfield',
+                'z_field',
             ],
             'represent_value': represent_traces,
         }
@@ -212,6 +213,7 @@ class DatavizDefinitions(BaseDefinitions):
                 'Choose the field of your layer which contains the colors you want to use. The color can be written like "red" or "blue" but it can be an HTML color code like "#01DFD7" for example.')
         }
         self._layer_config['z_field'] = {
+            'visible': False,
             'type': InputType.Field,
             'header': tr('Z field'),
             'default': '',

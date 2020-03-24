@@ -27,22 +27,26 @@ CLASS = load_ui('ui_trace.ui')
 
 class TraceDatavizEditionDialog(QDialog, CLASS):
 
-    def __init__(self, parent, layer):
+    def __init__(self, parent, layer, graph):
         super().__init__(parent)
         self.config = DatavizDefinitions()
+        self._graph = graph
         self._layer = layer
         self.setupUi(self)
         self.setWindowTitle(tr('Dataviz Trace'))
 
-        self.field.setLayer(self._layer)
+        self.y_field.setLayer(self._layer)
         self.color_field.setLayer(self._layer)
+        self.z_field.setLayer(self._layer)
 
-        self.config.add_layer_widget('y_field', self.field)
+        self.config.add_layer_widget('y_field', self.y_field)
         self.config.add_layer_widget('colorfield', self.color_field)
         self.config.add_layer_widget('color', self.color)
+        self.config.add_layer_widget('z_field', self.z_field)
 
         self.config.add_layer_label('y_field', self.label_y_field)
         self.config.add_layer_label('colorfield', self.label_color)
+        self.config.add_layer_label('z_field', self.label_z_field)
 
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
@@ -56,6 +60,17 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.color_field.currentTextChanged.connect(self.check_y_color_field)
         self.check_y_color_field()
 
+        # Z Field
+        if graph == GraphType.Sunburst:
+            self.label_z_field.setVisible(True)
+            self.z_field.setVisible(True)
+            self.z_field.setAllowEmptyFieldName(False)
+        else:
+            self.label_z_field.setVisible(False)
+            self.z_field.setVisible(False)
+            self.z_field.setAllowEmptyFieldName(True)
+            self.z_field.setCurrentIndex(0)
+
     def check_y_color_field(self):
         if self.color_field.currentField() == '':
             self.color.setToDefaultColor()
@@ -65,8 +80,8 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
             self.color.setEnabled(False)
 
     def validate(self):
-        if self.field.currentField() == '':
-            return tr('Field is required.')
+        if self.y_field.currentField() == '':
+            return tr('Y field is required.')
 
         return
 
