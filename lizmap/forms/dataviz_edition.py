@@ -1,9 +1,16 @@
 """Dialog for dataviz edition."""
-from qgis.core import QgsMapLayerProxyModel, QgsProject
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QDialog, QHeaderView
+from qgis.core import (
+    QgsMapLayerProxyModel,
+    QgsProject,
+    QgsApplication,
+)
+from qgis.PyQt.QtGui import QIcon
 
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
@@ -21,6 +28,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
     def __init__(self, parent=None, unicity=None):
         super().__init__(parent, unicity)
         self.setupUi(self)
+        self.parent = parent
         self.config = DatavizDefinitions()
         self.config.add_layer_widget('title', self.title)
         self.config.add_layer_widget('type', self.type_graph)
@@ -28,13 +36,14 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('layerId', self.layer)
         self.config.add_layer_widget('x_field', self.x_field)
         self.config.add_layer_widget('aggregation', self.aggregation)
-        self.config.add_layer_widget('y_field', self.y_field)
-        self.config.add_layer_widget('color', self.color)
-        self.config.add_layer_widget('colorfield', self.color_field)
-        self.config.add_layer_widget('y2_field', self.y_field_2)
-        self.config.add_layer_widget('colorfield2', self.color_field_2)
-        self.config.add_layer_widget('color2', self.color_2)
-        self.config.add_layer_widget('z_field', self.z_field)
+        self.config.add_layer_widget('traces', self.traces)
+        # self.config.add_layer_widget('y_field', self.y_field)
+        # self.config.add_layer_widget('color', self.color)
+        # self.config.add_layer_widget('colorfield', self.color_field)
+        # self.config.add_layer_widget('y2_field', self.y_field_2)
+        # self.config.add_layer_widget('colorfield2', self.color_field_2)
+        # self.config.add_layer_widget('color2', self.color_2)
+        # self.config.add_layer_widget('z_field', self.z_field)
         self.config.add_layer_widget('html_template', self.html_template)
         self.config.add_layer_widget('horizontal', self.horizontal)
         self.config.add_layer_widget('stacked', self.stacked)
@@ -49,48 +58,93 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('x_field', self.label_x_field)
         self.config.add_layer_label('aggregation', self.label_aggregation)
-        self.config.add_layer_label('y_field', self.label_y_field)
-        self.config.add_layer_label('color', self.label_y_color)
-        self.config.add_layer_label('y2_field', self.label_y_field_2)
-        self.config.add_layer_label('colorfield2', self.label_y_color_2)
-        self.config.add_layer_label('z_field', self.label_z_field)
+        self.config.add_layer_label('traces', self.label_traces)
+
+        # self.config.add_layer_label('colorfield2', self.label_y_color_2)
+        # self.config.add_layer_label('z_field', self.label_z_field)
         self.config.add_layer_label('html_template', self.label_html_template)
+
+        # noinspection PyCallByClass,PyArgumentList
+        self.add_trace.setText('')
+        self.add_trace.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+        self.add_trace.setToolTip(tr('Add a new trace to the chart.'))
+        self.remove_trace.setText('')
+        self.remove_trace.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+        self.remove_trace.setToolTip(tr('Remove the selected trace from the chart.'))
+
+        # Set traces table
+        items = self.config.layer_config['traces']['items']
+        self.traces.setColumnCount(len(items))
+        for i, item in enumerate(items):
+            sub_definition = self.config.layer_config[item]
+            column = QTableWidgetItem(sub_definition['header'])
+            column.setToolTip(sub_definition['tooltip'])
+            self.traces.setHorizontalHeaderItem(i, column)
+        header = self.traces.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+
+        self.traces.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.traces.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.traces.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.traces.setAlternatingRowColors(True)
+        # self.traces.cellDoubleClicked.connect(self.edit_existing_row)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.x_field.setLayer)
-        self.layer.layerChanged.connect(self.y_field.setLayer)
-        self.layer.layerChanged.connect(self.z_field.setLayer)
-        self.layer.layerChanged.connect(self.y_field_2.setLayer)
-        self.layer.layerChanged.connect(self.color_field.setLayer)
-        self.layer.layerChanged.connect(self.color_field_2.setLayer)
+        # self.layer.layerChanged.connect(self.y_field.setLayer)
+        # self.layer.layerChanged.connect(self.z_field.setLayer)
+        # self.layer.layerChanged.connect(self.color_field.setLayer)
+        # self.layer.layerChanged.connect(self.y_field_2.setLayer)
+        # self.layer.layerChanged.connect(self.color_field_2.setLayer)
 
-        # self.x_field.setAllowEmptyFieldName(False) DONE according to kind of graph
-        self.y_field.setAllowEmptyFieldName(False)
-        self.z_field.setAllowEmptyFieldName(True)
-        self.y_field_2.setAllowEmptyFieldName(True)
-        self.color_field.setAllowEmptyFieldName(True)
-        self.color_field_2.setAllowEmptyFieldName(True)
+        # self.y_field.setAllowEmptyFieldName(False)
+        # self.z_field.setAllowEmptyFieldName(True)
+        # self.y_field_2.setAllowEmptyFieldName(True)
+        # self.color_field.setAllowEmptyFieldName(True)
+        # self.color_field_2.setAllowEmptyFieldName(True)
 
         self.x_field.setLayer(self.layer.currentLayer())
-        self.y_field.setLayer(self.layer.currentLayer())
-        self.z_field.setLayer(self.layer.currentLayer())
-        self.y_field_2.setLayer(self.layer.currentLayer())
-        self.color_field.setLayer(self.layer.currentLayer())
-        self.color_field_2.setLayer(self.layer.currentLayer())
+        # self.y_field.setLayer(self.layer.currentLayer())
+        # self.z_field.setLayer(self.layer.currentLayer())
+        # self.y_field_2.setLayer(self.layer.currentLayer())
+        # self.color_field.setLayer(self.layer.currentLayer())
+        # self.color_field_2.setLayer(self.layer.currentLayer())
 
-        self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
-        self.y_field_2.currentTextChanged.connect(self.check_y_2_field)
-        self.color_field.currentTextChanged.connect(self.check_y_color_field)
-        self.color_field_2.currentTextChanged.connect(self.check_y_2_color_field)
+        # self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
+        # self.y_field_2.currentTextChanged.connect(self.check_y_2_field)
+        # self.color_field.currentTextChanged.connect(self.check_y_color_field)
+        # self.color_field_2.currentTextChanged.connect(self.check_y_2_color_field)
+        self.add_trace.clicked.connect(self.add_new_trace)
+        self.remove_trace.clicked.connect(self.remove_selection)
 
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
             self.label_graph_34
         ]
 
         self.setup_ui()
-        self.check_form_graph_type()
-        self.check_y_color_field()
-        self.check_y_2_field()
+        # self.check_form_graph_type()
+        # self.check_y_color_field()
+        # self.check_y_2_field()
+
+    def add_new_trace(self):
+        dialog = TraceDatavizEditionDialog(self.parent, self.layer.currentLayer())
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            # data = dialog.save_form()
+            row = self.traces.rowCount()
+            self.traces.setRowCount(row + 1)
+            # self._edit_row(row, data)
+
+    def remove_selection(self):
+        """Remove the selected row from the table."""
+        selection = self.traces.selectedIndexes()
+        if len(selection) <= 0:
+            return
+
+        row = selection[0].row()
+        self.traces.clearSelection()
+        self.traces.removeRow(row)
 
     def check_form_graph_type(self):
         graph = self.type_graph.currentData()
@@ -100,6 +154,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 break
         else:
             raise Exception('Error with list')
+
         if graph in [
                 GraphType.Scatter, GraphType.Bar, GraphType.Histogram,
                 GraphType.Histogram2D, GraphType.Polar, GraphType.Pie,
@@ -108,7 +163,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         elif graph in [GraphType.Box]:
             self.x_field.setAllowEmptyFieldName(True)
         else:
-            raise Exception('unknown graph type for X')
+            raise Exception('Unknown graph type for X')
 
         self.label_y_color.setVisible(graph != GraphType.Histogram2D)
         self.color_field.setVisible(graph != GraphType.Histogram2D)
