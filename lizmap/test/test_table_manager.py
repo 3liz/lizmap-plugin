@@ -355,7 +355,7 @@ class TestTableManager(unittest.TestCase):
             }
         }
         expected_traces = expected['0'].pop('traces')
-        data_traces = eval(data['0'].pop('traces'))
+        data_traces = data['0'].pop('traces')
         self.assertDictEqual(data, expected)
         for exp, got in zip(expected_traces, data_traces):
             self.assertDictEqual(exp, got)

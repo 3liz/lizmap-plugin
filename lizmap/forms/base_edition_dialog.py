@@ -145,7 +145,7 @@ class BaseEditionDialog(QDialog):
                 if not widget.allowEmptyFieldName():
                     if widget.currentField() == '':
                         names = re.findall('.[^A-Z]*',  k)
-                        names = [n.lower() for n in names]
+                        names = [n.lower().replace('_', ' ') for n in names]
                         msg = tr('The field "{}" is mandatory.'.format(' '.join(names)))
                         return msg
 
@@ -159,12 +159,24 @@ class BaseEditionDialog(QDialog):
         else:
             super().accept()
 
+    def load_collection(self, value):
+        """Load a collection to JSON."""
+        # This function is implemented in child class.
+        pass
+
+    def save_collection(self):
+        """Save a collection into JSON."""
+        # This function is implemented in child class.
+        pass
+
     def load_form(self, data: OrderedDict) -> None:
         """A dictionary to load in the UI."""
+        layer_properties = OrderedDict()
         for key, definition in self.config.layer_config.items():
-            if definition.get('plural') is not None:
-                continue
+            if definition.get('plural') is None:
+                layer_properties[key] = definition
 
+        for key, definition in layer_properties.items():
             value = data.get(key)
 
             if definition['type'] == InputType.Layer:
@@ -195,22 +207,20 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.MultiLine:
                 definition['widget'].setPlainText(value)
             elif definition['type'] == InputType.Collection:
-                # Hack, only dataviz /!\
-                value = eval(value)
-                for trace in value:
-                    row = self.traces.rowCount()
-                    self.traces.setRowCount(row + 1)
-                    self._edit_trace_row(row, trace)
+                self.load_collection(value)
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
     def save_form(self) -> OrderedDict:
         """Save the UI in the dictionary with QGIS objects"""
-        data = OrderedDict()
+        layer_properties = OrderedDict()
         for key, definition in self.config.layer_config.items():
+            if definition.get('plural') is None:
+                layer_properties[key] = definition
 
-            if definition.get('plural') is not None:
-                continue
+        data = OrderedDict()
+
+        for key, definition in layer_properties.items():
 
             if definition['type'] == InputType.Layer:
                 value = definition['widget'].currentLayer().id()
@@ -237,45 +247,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.MultiLine:
                 value = definition['widget'].toPlainText().strip(' \t')
             elif definition['type'] == InputType.Collection:
-                # Hack, only dataviz /!\
-                value = list()
-                rows = self.traces.rowCount()
-                for row in range(rows):
-                    trace_data = dict()
-                    i = 0
-                    for sub_key in self.config.layer_config.keys():
-                        if self.config.layer_config[sub_key].get('plural') is None:
-                            continue
-
-                        input_type = self.config.layer_config[sub_key]['type']
-                        item = self.traces.item(row, i)
-                        print(row)
-                        print(i)
-                        print(item)
-
-                        if item is None:
-                            # Do not put if not item, it might be False
-                            raise Exception('Cell is not initialized ({}, {})'.format(row, i))
-
-                        cell = item.data(Qt.UserRole)
-                        if cell is None:
-                            # Do not put if not cell, it might be False
-                            raise Exception('Cell has no data ({}, {})'.format(row, i))
-
-                        if input_type == InputType.Field:
-                            trace_data[sub_key] = cell
-                        elif input_type == InputType.Color:
-                            trace_data[sub_key] = cell
-                        else:
-                            raise Exception('InputType "{}" not implemented'.format(input_type))
-
-                        i += 1
-
-                        print(trace_data)
-                        print(cell)
-
-                    value.append(trace_data)
-
+                value = self.save_collection()
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 

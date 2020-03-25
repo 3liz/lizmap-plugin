@@ -103,28 +103,23 @@ class AggregationType(Enum):
 
 
 def represent_traces(data):
-    html = '''<style>
-.box {
-  float: left;
-  width: 20px;
-  height: 20px;
-  margin: 5px;
-  border: 1px solid rgba(0, 0, 0, .2);
-}
-</style>\n'''
+    html = '<ul>'
     for trace in data:
         y_field = trace.get('y_field')
-        color = trace.get('color')
-        color_field = trace.get('colorfield')
         if y_field:
-            html += '<p>{}: '.format(y_field)
+            html += '<li>{}: '.format(y_field)
+
+            color_field = trace.get('colorfield')
             if color_field:
                 html += color_field
-            else:
-                html += '<div class="box" style="background:{};"></div>'.format(color)
-            html += '</p>\n'
 
-    html += '\n'
+            color = trace.get('color')
+            if color:
+                html += color
+
+            html += '</li>\n'
+
+    html += '</ul>\n'
     return html
 
 
@@ -184,8 +179,6 @@ class DatavizDefinitions(BaseDefinitions):
             'represent_value': represent_traces,
         }
         self._layer_config['y_field'] = {
-            # 'visible': False,
-            # 'legacy': 'y2_field',
             'plural': 'y{}_field',
             'type': InputType.Field,
             'header': tr('Y field'),
@@ -193,8 +186,6 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('The Y field of your graph.')
         }
         self._layer_config['color'] = {
-            # 'visible': False,
-            # 'legacy': 'color2',
             'plural': 'color{}',
             'type': InputType.Color,
             'header': tr('Color'),
@@ -202,8 +193,6 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('The color for Y.')
         }
         self._layer_config['colorfield'] = {
-            # 'visible': False,
-            # 'legacy': 'colorfield2',
             'plural': 'colorfield{}',
             'type': InputType.Field,
             'header': tr('Color field'),

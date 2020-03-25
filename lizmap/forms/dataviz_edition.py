@@ -1,5 +1,11 @@
 """Dialog for dataviz edition."""
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QDialog, QHeaderView
+
+from qgis.PyQt.QtWidgets import (
+    QTableWidgetItem,
+    QAbstractItemView,
+    QDialog,
+    QHeaderView,
+)
 from qgis.core import (
     QgsMapLayerProxyModel,
     QgsProject,
@@ -39,13 +45,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('x_field', self.x_field)
         self.config.add_layer_widget('aggregation', self.aggregation)
         self.config.add_layer_widget('traces', self.traces)
-        # self.config.add_layer_widget('y_field', self.y_field)
-        # self.config.add_layer_widget('color', self.color)
-        # self.config.add_layer_widget('colorfield', self.color_field)
-        # self.config.add_layer_widget('y2_field', self.y_field_2)
-        # self.config.add_layer_widget('colorfield2', self.color_field_2)
-        # self.config.add_layer_widget('color2', self.color_2)
-        # self.config.add_layer_widget('z_field', self.z_field)
         self.config.add_layer_widget('html_template', self.html_template)
         self.config.add_layer_widget('horizontal', self.horizontal)
         self.config.add_layer_widget('stacked', self.stacked)
@@ -61,9 +60,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('x_field', self.label_x_field)
         self.config.add_layer_label('aggregation', self.label_aggregation)
         self.config.add_layer_label('traces', self.label_traces)
-
-        # self.config.add_layer_label('colorfield2', self.label_y_color_2)
-        # self.config.add_layer_label('z_field', self.label_z_field)
         self.config.add_layer_label('html_template', self.label_html_template)
 
         # noinspection PyCallByClass,PyArgumentList
@@ -90,28 +86,11 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.traces.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.traces.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.traces.setAlternatingRowColors(True)
-        # self.traces.cellDoubleClicked.connect(self.edit_existing_row)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.current_layer_changed)
-        # self.layer.layerChanged.connect(self.y_field.setLayer)
-        # self.layer.layerChanged.connect(self.z_field.setLayer)
-        # self.layer.layerChanged.connect(self.color_field.setLayer)
-        # self.layer.layerChanged.connect(self.y_field_2.setLayer)
-        # self.layer.layerChanged.connect(self.color_field_2.setLayer)
-
-        # self.y_field.setAllowEmptyFieldName(False)
-        # self.z_field.setAllowEmptyFieldName(True)
-        # self.y_field_2.setAllowEmptyFieldName(True)
-        # self.color_field.setAllowEmptyFieldName(True)
-        # self.color_field_2.setAllowEmptyFieldName(True)
 
         self.x_field.setLayer(self.layer.currentLayer())
-        # self.y_field.setLayer(self.layer.currentLayer())
-        # self.z_field.setLayer(self.layer.currentLayer())
-        # self.y_field_2.setLayer(self.layer.currentLayer())
-        # self.color_field.setLayer(self.layer.currentLayer())
-        # self.color_field_2.setLayer(self.layer.currentLayer())
 
         # self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
         # self.y_field_2.currentTextChanged.connect(self.check_y_2_field)
@@ -128,6 +107,49 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         # self.check_form_graph_type()
         # self.check_y_color_field()
         # self.check_y_2_field()
+
+    def load_collection(self, value):
+        """Load a collection into the table from JSON."""
+        for trace in value:
+            row = self.traces.rowCount()
+            self.traces.setRowCount(row + 1)
+            self._edit_trace_row(row, trace)
+
+    def save_collection(self):
+        """Save a collection into JSON"""
+        value = list()
+        rows = self.traces.rowCount()
+
+        collection_definition = self.config.layer_config['traces']
+        for row in range(rows):
+            trace_data = dict()
+            i = 0
+            for sub_key in collection_definition['items']:
+
+                input_type = self.config.layer_config[sub_key]['type']
+                item = self.traces.item(row, i)
+
+                if item is None:
+                    # Do not put if not item, it might be False
+                    raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+
+                cell = item.data(Qt.UserRole)
+                if cell is None:
+                    # Do not put if not cell, it might be False
+                    raise Exception('Cell has no data ({}, {})'.format(row, i))
+
+                if input_type == InputType.Field:
+                    trace_data[sub_key] = cell
+                elif input_type == InputType.Color:
+                    trace_data[sub_key] = cell
+                else:
+                    raise Exception('InputType "{}" not implemented'.format(input_type))
+
+                i += 1
+
+            value.append(trace_data)
+
+        return value
 
     def current_layer_changed(self):
         """When the layer is changed."""

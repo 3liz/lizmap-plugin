@@ -242,7 +242,7 @@ class TableManager:
             elif input_type == InputType.Collection:
                 json_dump = json.dumps(value)
                 cell.setText(json_dump)
-                cell.setData(Qt.UserRole, json_dump)
+                cell.setData(Qt.UserRole, value)
                 function = self.definitions.layer_config[key]['represent_value']
                 cell.setData(Qt.ToolTipRole, function(value))
 
@@ -390,7 +390,7 @@ class TableManager:
 
             if self.definitions.key() == 'datavizLayers':
                 if version != LwcVersions.Lizmap_3_4:
-                    traces = eval(layer_data.pop('traces'))
+                    traces = layer_data.pop('traces')
                     for j, trace in enumerate(traces):
                         for key in trace:
                             definition = self.definitions.layer_config[key]

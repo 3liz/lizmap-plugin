@@ -48,6 +48,10 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.config.add_layer_label('colorfield', self.label_color)
         self.config.add_layer_label('z_field', self.label_z_field)
 
+        self.y_field.setAllowEmptyFieldName(False)
+        self.z_field.setAllowEmptyFieldName(True)
+        self.color_field.setAllowEmptyFieldName(True)
+
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.error.setVisible(False)
@@ -61,7 +65,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.check_y_color_field()
 
         # Z Field
-        if graph == GraphType.Sunburst:
+        if self._graph == GraphType.Sunburst:
             self.label_z_field.setVisible(True)
             self.z_field.setVisible(True)
             self.z_field.setAllowEmptyFieldName(False)
