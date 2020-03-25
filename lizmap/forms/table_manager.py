@@ -307,6 +307,7 @@ class TableManager:
     def to_json(self, version=None):
         if not version:
             version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+            version = LwcVersions(version)
 
         data = dict()
 

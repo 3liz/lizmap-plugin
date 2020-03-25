@@ -75,6 +75,12 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
             self.z_field.setAllowEmptyFieldName(True)
             self.z_field.setCurrentIndex(0)
 
+        # Color field
+        histo_2d = self._graph == GraphType.Histogram2D
+        self.label_color.setVisible(not histo_2d)
+        self.color_field.setVisible(not histo_2d)
+        self.color.setVisible(not histo_2d)
+
     def check_y_color_field(self):
         if self.color_field.currentField() == '':
             self.color.setToDefaultColor()

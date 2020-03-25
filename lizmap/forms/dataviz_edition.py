@@ -10,10 +10,12 @@ from qgis.core import (
     QgsMapLayerProxyModel,
     QgsProject,
     QgsApplication,
-)
+    QgsSettings)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QColor
 
+from lizmap.html_and_expressions import NEW_FEATURE
+from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
@@ -92,10 +94,8 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
         self.x_field.setLayer(self.layer.currentLayer())
 
-        # self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
+        self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
         # self.y_field_2.currentTextChanged.connect(self.check_y_2_field)
-        # self.color_field.currentTextChanged.connect(self.check_y_color_field)
-        # self.color_field_2.currentTextChanged.connect(self.check_y_2_color_field)
         self.add_trace.clicked.connect(self.add_new_trace)
         self.remove_trace.clicked.connect(self.remove_selection)
 
@@ -104,9 +104,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         ]
 
         self.setup_ui()
-        # self.check_form_graph_type()
-        # self.check_y_color_field()
-        # self.check_y_2_field()
+        self.check_form_graph_type()
 
     def load_collection(self, value):
         """Load a collection into the table from JSON."""
@@ -114,6 +112,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             row = self.traces.rowCount()
             self.traces.setRowCount(row + 1)
             self._edit_trace_row(row, trace)
+        self.disable_more_trace()
 
     def save_collection(self):
         """Save a collection into JSON"""
@@ -171,6 +170,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             row = self.traces.rowCount()
             self.traces.setRowCount(row + 1)
             self._edit_trace_row(row, data)
+            self.disable_more_trace()
 
     def _edit_trace_row(self, row, data):
         """Internal function to edit a row."""
@@ -218,6 +218,34 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         row = selection[0].row()
         self.traces.clearSelection()
         self.traces.removeRow(row)
+        self.disable_more_trace()
+
+    def disable_more_trace(self):
+        """According to the kind of graph, the button might be disabled."""
+        graph = self.type_graph.currentData()
+        for item_enum in GraphType:
+            if item_enum.value['data'] == graph:
+                graph = item_enum
+                break
+        else:
+            raise Exception('Error with list')
+
+        if self.traces.rowCount() > 0 and graph in [GraphType.Pie, GraphType.Histogram2D]:
+            self.add_trace.setEnabled(False)
+        else:
+            self.add_trace.setEnabled(True)
+
+        version = QgsSettings().value(
+            'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        version = LwcVersions(version)
+
+        if version in [LwcVersions.Lizmap_3_1, LwcVersions.Lizmap_3_2, LwcVersions.Lizmap_3_3]:
+            if self.traces.rowCount() >= 2:
+                self.add_trace.setStyleSheet(NEW_FEATURE)
+            else:
+                self.add_trace.setStyleSheet('')
+        else:
+            self.add_trace.setStyleSheet('')
 
     def check_form_graph_type(self):
         graph = self.type_graph.currentData()
@@ -238,65 +266,19 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         else:
             raise Exception('Unknown graph type for X')
 
-        self.label_y_color.setVisible(graph != GraphType.Histogram2D)
-        self.color_field.setVisible(graph != GraphType.Histogram2D)
-        self.color.setVisible(graph != GraphType.Histogram2D)
-
-        if graph in [GraphType.Pie, GraphType.Histogram2D]:
-            # Disable Y field 2
-            self.y_field_2.setAllowEmptyFieldName(True)
-            self.y_field_2.setCurrentIndex(0)
-            self.y_field_2.setVisible(False)
-            self.color_2.setVisible(False)
-            self.color_field_2.setVisible(False)
-            self.label_y_field_2.setVisible(False)
-            self.label_y_color_2.setVisible(False)
-        else:
-            # Enable Y field 2
-            self.y_field_2.setAllowEmptyFieldName(True)
-            self.y_field_2.setVisible(True)
-            self.color_2.setVisible(True)
-            self.color_field_2.setVisible(True)
-            self.label_y_field_2.setVisible(True)
-            self.label_y_color_2.setVisible(True)
-
         # Bar chart
-        self.horizontal.setVisible(graph == GraphType.Bar)
-        self.stacked.setVisible(graph == GraphType.Bar)
+        is_bar_chart = graph == GraphType.Bar
+        self.horizontal.setVisible(is_bar_chart)
+        self.stacked.setVisible(is_bar_chart)
 
-        self.label_html_template.setVisible(graph == GraphType.HtmlTemplate)
-        self.html_template.setVisible(graph == GraphType.HtmlTemplate)
-        self.display_legend.setVisible(graph != GraphType.HtmlTemplate)
+        # HTML template
+        is_html_template = graph == GraphType.HtmlTemplate
+        self.label_html_template.setVisible(is_html_template)
+        self.html_template.setVisible(is_html_template)
+        self.display_legend.setVisible(not is_html_template)
 
-    def check_y_color_field(self):
-        if self.color_field.currentField() == '':
-            self.color.setToDefaultColor()
-            self.color.setEnabled(True)
-        else:
-            self.color.setToNull()
-            self.color.setEnabled(False)
-
-    def check_y_2_field(self):
-        """Enable or disable the Y2 color."""
-        if self.y_field_2.currentField() == '':
-            self.color_field_2.setEnabled(False)
-        else:
-            self.color_field_2.setEnabled(True)
-        self.color_field_2.setCurrentIndex(0)
-        self.check_y_2_color_field()
-
-    def check_y_2_color_field(self):
-        if self.y_field_2.currentField() == '':
-            self.color_2.setToNull()
-            self.color_2.setEnabled(False)
-            return
-
-        if self.color_field_2.currentField():
-            self.color_2.setToNull()
-            self.color_2.setEnabled(False)
-        else:
-            self.color_2.setToDefaultColor()
-            self.color_2.setEnabled(True)
+        # Add more trace button
+        self.disable_more_trace()
 
     def validate(self) -> str:
         upstream = super().validate()
