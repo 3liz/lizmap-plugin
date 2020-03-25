@@ -95,7 +95,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.x_field.setLayer(self.layer.currentLayer())
 
         self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
-        # self.y_field_2.currentTextChanged.connect(self.check_y_2_field)
         self.add_trace.clicked.connect(self.add_new_trace)
         self.remove_trace.clicked.connect(self.remove_selection)
 
