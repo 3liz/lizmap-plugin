@@ -4,7 +4,7 @@ import re
 
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
@@ -136,7 +136,12 @@ class BaseEditionDialog(QDialog):
 
         for k, layer_config in self.config.layer_config.items():
             if layer_config['type'] == InputType.Field:
-                widget = layer_config['widget']
+                widget = layer_config.get('widget')
+
+                if not widget:
+                    # Dataviz does not have widget for Y, Z
+                    continue
+
                 if not widget.allowEmptyFieldName():
                     if widget.currentField() == '':
                         names = re.findall('.[^A-Z]*',  k)
@@ -157,6 +162,9 @@ class BaseEditionDialog(QDialog):
     def load_form(self, data: OrderedDict) -> None:
         """A dictionary to load in the UI."""
         for key, definition in self.config.layer_config.items():
+            if definition.get('plural') is not None:
+                continue
+
             value = data.get(key)
 
             if definition['type'] == InputType.Layer:
@@ -186,6 +194,13 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setText(value)
             elif definition['type'] == InputType.MultiLine:
                 definition['widget'].setPlainText(value)
+            elif definition['type'] == InputType.Collection:
+                # Hack, only dataviz /!\
+                value = eval(value)
+                for trace in value:
+                    row = self.traces.rowCount()
+                    self.traces.setRowCount(row + 1)
+                    self._edit_trace_row(row, trace)
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
@@ -193,6 +208,10 @@ class BaseEditionDialog(QDialog):
         """Save the UI in the dictionary with QGIS objects"""
         data = OrderedDict()
         for key, definition in self.config.layer_config.items():
+
+            if definition.get('plural') is not None:
+                continue
+
             if definition['type'] == InputType.Layer:
                 value = definition['widget'].currentLayer().id()
             elif definition['type'] == InputType.Layers:
@@ -217,6 +236,46 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].text().strip(' \t')
             elif definition['type'] == InputType.MultiLine:
                 value = definition['widget'].toPlainText().strip(' \t')
+            elif definition['type'] == InputType.Collection:
+                # Hack, only dataviz /!\
+                value = list()
+                rows = self.traces.rowCount()
+                for row in range(rows):
+                    trace_data = dict()
+                    i = 0
+                    for sub_key in self.config.layer_config.keys():
+                        if self.config.layer_config[sub_key].get('plural') is None:
+                            continue
+
+                        input_type = self.config.layer_config[sub_key]['type']
+                        item = self.traces.item(row, i)
+                        print(row)
+                        print(i)
+                        print(item)
+
+                        if item is None:
+                            # Do not put if not item, it might be False
+                            raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+
+                        cell = item.data(Qt.UserRole)
+                        if cell is None:
+                            # Do not put if not cell, it might be False
+                            raise Exception('Cell has no data ({}, {})'.format(row, i))
+
+                        if input_type == InputType.Field:
+                            trace_data[sub_key] = cell
+                        elif input_type == InputType.Color:
+                            trace_data[sub_key] = cell
+                        else:
+                            raise Exception('InputType "{}" not implemented'.format(input_type))
+
+                        i += 1
+
+                        print(trace_data)
+                        print(cell)
+
+                    value.append(trace_data)
+
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 

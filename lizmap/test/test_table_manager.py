@@ -10,6 +10,7 @@ from qgis.testing import unittest
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
@@ -177,6 +178,64 @@ class TestTableManager(unittest.TestCase):
         # table_manager.from_json(json)
         # self.assertEqual(table_manager.table.rowCount(), 1)
 
+    def test_remove_extra_field_dataviz(self):
+        """Test we can remove an empty field from a trace."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = DatavizDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        # Lizmap 3.3
+        json = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'x_field': 'id',
+                'aggregation': '',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'colorfield': '',
+                'has_y2_field': 'True',
+                # 'y2_field': 'name', Not this one in the test
+                'color2': '#ffaa00',  # Even if we have this line and the next one
+                'colorfield2': '',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        data = table_manager._from_json_legacy_order(copy.deepcopy(json))
+        data = table_manager._from_json_legacy_dataviz(data)
+        expected = {
+            'layers': [
+                {
+                    'title': 'My graph',
+                    'type': 'scatter',
+                    'x_field': 'id',
+                    'aggregation': '',
+                    'popup_display_child_plot': 'False',
+                    'only_show_child': 'True',
+                    'layerId': layer.id(),
+                    'order': 0,
+                    'traces': [
+                        {
+                            'y_field': 'name',
+                            'color': '#00aaff',
+                            'colorfield': '',
+                        }
+                    ]
+                }
+            ]
+        }
+        self.assertDictEqual(expected, data)
+
     def test_dataviz_legacy_3_3(self):
         """Test table manager with dataviz format 3.3."""
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
@@ -210,12 +269,64 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             }
         }
+        data = table_manager._from_json_legacy_order(copy.deepcopy(json))
+        expected = {
+            'layers': [
+                {
+                    'title': 'My graph',
+                    'type': 'scatter',
+                    'x_field': 'id',
+                    'aggregation': '',
+                    'y_field': 'name',
+                    'color': '#00aaff',
+                    'colorfield': '',
+                    'has_y2_field': 'True',
+                    'y2_field': 'name',
+                    'color2': '#ffaa00',
+                    'colorfield2': '',
+                    'popup_display_child_plot': 'False',
+                    'only_show_child': 'True',
+                    'layerId': layer.id(),
+                    'order': 0
+                }
+            ]
+        }
+        self.assertDictEqual(expected, data)
+
+        data = table_manager._from_json_legacy_dataviz(data)
+        expected = {
+            'layers': [
+                {
+                    'title': 'My graph',
+                    'type': 'scatter',
+                    'x_field': 'id',
+                    'aggregation': '',
+                    'popup_display_child_plot': 'False',
+                    'only_show_child': 'True',
+                    'layerId': layer.id(),
+                    'order': 0,
+                    'traces': [
+                        {
+                            'y_field': 'name',
+                            'color': '#00aaff',
+                            'colorfield': '',
+                        }, {
+                            'y_field': 'name',
+                            'color': '#ffaa00',
+                            'colorfield': '',
+                        }
+                    ]
+                }
+            ]
+        }
+        self.assertDictEqual(expected, data)
 
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
 
+        # To Lizmap 3.4
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_4)
         expected = {
             '0': {
                 'title': 'My graph',
@@ -223,10 +334,17 @@ class TestTableManager(unittest.TestCase):
                 'x_field': 'id',
                 'aggregation': 'sum',
                 'display_legend': 'True',
-                'y_field': 'name',
-                'color': '#00aaff',
-                'y2_field': 'name',
-                'color2': '#ffaa00',
+                'traces': [
+                    {
+                        'y_field': 'name',
+                        'color': '#00aaff',
+                        'colorfield': '',
+                    }, {
+                        'y_field': 'name',
+                        'color': '#ffaa00',
+                        'colorfield': '',
+                    }
+                ],
                 'stacked': 'False',
                 'horizontal': 'False',
                 'popup_display_child_plot': 'False',
@@ -236,8 +354,51 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             }
         }
-
+        expected_traces = expected['0'].pop('traces')
+        data_traces = eval(data['0'].pop('traces'))
         self.assertDictEqual(data, expected)
+        for exp, got in zip(expected_traces, data_traces):
+            self.assertDictEqual(exp, got)
+
+        # To Lizmap 3.3
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_3)
+        expected = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'x_field': 'id',
+                'aggregation': 'sum',
+                'display_legend': 'True',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'colorfield': '',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'colorfield2': '',
+                'stacked': 'False',
+                'horizontal': 'False',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'display_when_layer_visible': 'False',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertDictEqual(data, expected)
+
+    @unittest.expectedFailure
+    def test_dataviz_legacy_3_4(self):
+
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = DatavizDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
 
         # Lizmap 3.4
         json = {
@@ -742,8 +903,8 @@ class TestTableManager(unittest.TestCase):
 
         # noinspection PyProtectedMember
         self.assertDictEqual(
-            table_manager._primary_keys(),
-            {'layer': [layer.id(), layer.id()]}
+            {'layer': [layer.id(), layer.id()]},
+            table_manager._primary_keys()
         )
 
         data = table_manager.to_json()

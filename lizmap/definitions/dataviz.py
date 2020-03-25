@@ -184,7 +184,7 @@ class DatavizDefinitions(BaseDefinitions):
             'represent_value': represent_traces,
         }
         self._layer_config['y_field'] = {
-            'visible': False,
+            # 'visible': False,
             # 'legacy': 'y2_field',
             'plural': 'y{}_field',
             'type': InputType.Field,
@@ -193,7 +193,7 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('The Y field of your graph.')
         }
         self._layer_config['color'] = {
-            'visible': False,
+            # 'visible': False,
             # 'legacy': 'color2',
             'plural': 'color{}',
             'type': InputType.Color,
@@ -202,8 +202,8 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('The color for Y.')
         }
         self._layer_config['colorfield'] = {
-            'visible': False,
-            'legacy': 'colorfield2',
+            # 'visible': False,
+            # 'legacy': 'colorfield2',
             'plural': 'colorfield{}',
             'type': InputType.Field,
             'header': tr('Color field'),
@@ -213,7 +213,7 @@ class DatavizDefinitions(BaseDefinitions):
                 'Choose the field of your layer which contains the colors you want to use. The color can be written like "red" or "blue" but it can be an HTML color code like "#01DFD7" for example.')
         }
         self._layer_config['z_field'] = {
-            'visible': False,
+            'plural': 'z_field_{}',
             'type': InputType.Field,
             'header': tr('Z field'),
             'default': '',

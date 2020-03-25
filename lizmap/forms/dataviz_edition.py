@@ -153,8 +153,15 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
     def _edit_trace_row(self, row, data):
         """Internal function to edit a row."""
         for i, key in enumerate(self.config.layer_config['traces']['items']):
-            value = data[key]
             cell = QTableWidgetItem()
+
+            value = data.get(key)
+            if not value:
+                cell.setText('')
+                cell.setData(Qt.UserRole, '')
+                self.traces.setItem(row, i, cell)
+                continue
+
             input_type = self.config.layer_config[key]['type']
             if input_type == InputType.Field:
                 cell.setText(value)

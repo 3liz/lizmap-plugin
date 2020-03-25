@@ -5,7 +5,7 @@ import logging
 
 from typing import Type
 
-from qgis.core import QgsMapLayerModel, QgsProject
+from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
@@ -15,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
 )
 
+from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -42,18 +43,20 @@ class TableManager:
         self.up_button = up_button
         self.down_button = down_button
 
-        self.table.setColumnCount(len(self.definitions.layer_config.keys()))
+        keys = [i for i in self.definitions.layer_config.values() if i.get('plural') is None]
+        self.table.setColumnCount(len(keys))
 
-        for i, item in enumerate(self.definitions.layer_config.values()):
+        i = 0
+        for item in self.definitions.layer_config.values():
+            if item.get('plural') is not None:
+                continue
+
             column = QTableWidgetItem(item['header'])
             tooltip = item.get('tooltip')
             if tooltip:
                 column.setToolTip(tooltip)
             self.table.setHorizontalHeaderItem(i, column)
-
-            visible = item.get('visible', True)
-            if not visible:
-                self.table.setColumnHidden(i, True)
+            i += 1
 
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -74,7 +77,11 @@ class TableManager:
 
         for key in self.definitions.primary_keys():
             unicity_dict[key] = list()
-            for i, item in enumerate(self.definitions.layer_config.keys()):
+            i = 0
+            for item in self.definitions.layer_config.keys():
+                if self.definitions.layer_config[key].get('plural') is not None:
+                    continue
+
                 if item == key:
                     for row in range(rows):
                         item = self.table.item(row, i)
@@ -88,6 +95,8 @@ class TableManager:
                             raise Exception('Cell has no data ({}, {})'.format(row, i))
 
                         unicity_dict[key].append(cell)
+
+                i += 1
 
         return unicity_dict
 
@@ -116,11 +125,14 @@ class TableManager:
         row = selection[0].row()
 
         data = dict()
-        for i, key in enumerate(self.definitions.layer_config.keys()):
-
+        i = 0
+        for key in self.definitions.layer_config.keys():
+            if self.definitions.layer_config[key].get('plural') is not None:
+                continue
             cell = self.table.item(row, i)
             value = cell.data(Qt.UserRole)
             data[key] = value
+            i += 1
 
         dialog = self.edition()
         dialog.load_form(data)
@@ -292,7 +304,10 @@ class TableManager:
     def use_single_row(self):
         return self.definitions.use_single_row
 
-    def to_json(self):
+    def to_json(self, version=None):
+        if not version:
+            version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+
         data = dict()
 
         # TODO Lizmap 4
@@ -306,7 +321,11 @@ class TableManager:
 
         for row in range(rows):
             layer_data = dict()
-            for i, key in enumerate(self.definitions.layer_config.keys()):
+            i = 0
+            for key in self.definitions.layer_config.keys():
+                if self.definitions.layer_config[key].get('plural'):
+                    continue
+
                 input_type = self.definitions.layer_config[key]['type']
                 item = self.table.item(row, i)
 
@@ -351,6 +370,8 @@ class TableManager:
                 if layer_data[key] == '':
                     layer_data.pop(key)
 
+                i += 1
+
             if self.definitions.key() == 'editionLayers':
                 capabilities_keys = ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature']
                 layer_data['capabilities'] = {key: layer_data[key] for key in capabilities_keys}
@@ -368,9 +389,17 @@ class TableManager:
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
             if self.definitions.key() == 'datavizLayers':
-                # Hard code lizmap 3.3 for now
-                version = LwcVersions.Lizmap_3_3
-                layer_data['graph'] = []
+                if version != LwcVersions.Lizmap_3_4:
+                    traces = eval(layer_data.pop('traces'))
+                    for j, trace in enumerate(traces):
+                        for key in trace:
+                            definition = self.definitions.layer_config[key]
+                            if j == 0:
+                                json_key = definition['plural'].format('')
+                            else:
+                                json_key = definition['plural'].format(j+1)
+
+                            layer_data[json_key] = trace[key]
 
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
@@ -467,7 +496,7 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_dataviz(data):
-        """Read legacy Dataviz without the traces config."""
+        """Read legacy dataviz without the traces config."""
 
         # Todo, we should read the definition file
         legacy = [
@@ -490,7 +519,7 @@ class TableManager:
 
             layer['traces'] = []
             for trace in legacy:
-                one_trace = {}
+                one_trace = dict()
                 for key in trace.keys():
                     value = layer.get(key)
 
@@ -499,7 +528,10 @@ class TableManager:
                         del layer[key]
 
                 if one_trace:
-                    layer['traces'].append(one_trace)
+                    missing_field = one_trace.get('y_field') is None
+                    if not missing_field:
+                        # We skip if Y field is not missing
+                        layer['traces'].append(one_trace)
 
         return data
 
@@ -534,6 +566,9 @@ class TableManager:
             layer_data = {}
             valid_layer = True
             for key, definition in self.definitions.layer_config.items():
+                if definition.get('plural'):
+                    continue
+
                 value = layer.get(key)
                 if value:
                     if definition['type'] == InputType.Layer:
