@@ -342,9 +342,8 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
-    @unittest.expectedFailure
     def test_dataviz(self):
-        """Test we can read dataviz 3.4."""
+        """Test we can read dataviz 3.4 format."""
         table = QTableWidget()
         definitions = EditionDefinitions()
 
@@ -381,123 +380,6 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-
-    @unittest.expectedFailure
-    def test_dataviz_legacy_3_4(self):
-        table = QTableWidget()
-        definitions = DatavizDefinitions()
-
-        table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None)
-
-        # Lizmap 3.4
-        json = {
-            '0': {
-                'title': 'My graph',
-                'type': 'scatter',
-                'description': '<b>Hello</b>',
-                'x_field': 'id',
-                'aggregation': '',
-                'y_field': 'name',
-                'color': '#00aaff',
-                'colorfield': '',
-                'has_y2_field': 'True',
-                'y2_field': 'name',
-                'color2': '#ffaa00',
-                'colorfield2': '',
-                'stacked': 'False',
-                'horizontal': 'False',
-                'popup_display_child_plot': 'False',
-                'only_show_child': 'True',
-                'display_when_layer_visible': 'False',
-                'layerId': self.layer.id(),
-                'order': 0
-            }
-        }
-
-        json_legacy = table_manager._from_json_legacy_order(copy.deepcopy(json))
-
-        expected = {
-            'layers': [
-                {
-                    'title': 'My graph',
-                    'type': 'scatter',
-                    'x_field': 'id',
-                    'aggregation': '',
-                    'y_field': 'name',
-                    'color': '#00aaff',
-                    'colorfield': '',
-                    'has_y2_field': 'True',
-                    'y2_field': 'name',
-                    'color2': '#ffaa00',
-                    'colorfield2': '',
-                    'popup_display_child_plot': 'False',
-                    'only_show_child': 'True',
-                    'layerId': self.layer.id(),
-                    'order': 0
-                }
-            ]
-        }
-        self.assertDictEqual(expected, json_legacy)
-
-        json_legacy = table_manager._from_json_legacy_dataviz(json_legacy)
-
-        expected = {
-            'layers': [
-                {
-                    'title': 'My graph',
-                    'type': 'scatter',
-                    'x_field': 'id',
-                    'aggregation': '',
-                    'popup_display_child_plot': 'False',
-                    'only_show_child': 'True',
-                    'layerId': self.layer.id(),
-                    'order': 0,
-                    'traces': [
-                        {
-                            'y_field': 'name',
-                            'color': '#00aaff',
-                            'colorfield': '',
-                        }, {
-                            'y_field': 'name',
-                            'color': '#ffaa00',
-                            'colorfield': '',
-                        }
-                    ]
-                }
-            ]
-        }
-        self.assertDictEqual(expected, json_legacy)
-
-        table_manager.truncate()
-        self.assertEqual(table_manager.table.rowCount(), 0)
-        table_manager.from_json(json)
-        self.assertEqual(table_manager.table.rowCount(), 1)
-        # data = table_manager.to_json()
-
-        expected = {
-            '0': {
-                'title': 'My graph',
-                'type': 'scatter',
-                'x_field': 'id',
-                'description': '<b>Hello</b>',
-                'aggregation': 'sum',
-                'display_legend': 'True',
-                'y_field': 'name',
-                'color': '#00aaff',
-                'y2_field': 'name',
-                'color2': '#ffaa00',
-                'stacked': 'False',
-                'horizontal': 'False',
-                'popup_display_child_plot': 'False',
-                'only_show_child': 'True',
-                'display_when_layer_visible': 'False',
-                'layerId': self.layer.id(),
-                'order': 0
-            }
-        }
-
-        # self.assertDictEqual(data, expected)
 
     def test_tool_tip(self):
         """Test table manager with tooltip layer."""
