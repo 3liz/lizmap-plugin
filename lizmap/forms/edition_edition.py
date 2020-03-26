@@ -33,7 +33,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('deleteFeature', self.delete_feature)
         self.config.add_layer_widget('acl', self.allowed_groups)
         self.config.add_layer_widget('snap_layers', self.layers)
-        self.config.add_layer_widget('snap_nodes', self.snap_node)
+        self.config.add_layer_widget('snap_vertices', self.snap_node)
         self.config.add_layer_widget('snap_segments', self.snap_segments)
         self.config.add_layer_widget('snap_intersections', self.snap_intersection)
 

@@ -59,11 +59,11 @@ class EditionDefinitions(BaseDefinitions):
             'tooltip': tr('List of layers to snap on.'),
             'version': LwcVersions.Lizmap_3_4,
         }
-        self._layer_config['snap_nodes'] = {
+        self._layer_config['snap_vertices'] = {
             'type': InputType.CheckBox,
             'header': tr('Node'),
             'default': False,
-            'tooltip': tr('If we should snap on nodes.'),
+            'tooltip': tr('If we should snap on vertices.'),
             'version': LwcVersions.Lizmap_3_4,
         }
         self._layer_config['snap_segments'] = {

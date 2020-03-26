@@ -129,7 +129,7 @@
       <item>
        <widget class="QCheckBox" name="snap_node">
         <property name="text">
-         <string>Nodes</string>
+         <string>Vertices</string>
         </property>
        </widget>
       </item>

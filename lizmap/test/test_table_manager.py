@@ -741,7 +741,7 @@ class TestTableManager(unittest.TestCase):
                 },
                 'acl': 'edition_group',
                 'snap_layers': self.layer.id(),
-                'snap_nodes': 'False',
+                'snap_vertices': 'False',
                 'snap_segments': 'False',
                 'snap_intersections': 'True',
                 'order': 0

@@ -8,7 +8,15 @@ from qgis.testing import unittest
 
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.forms.atlas_edition import AtlasEditionDialog
+from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
+from lizmap.forms.edition_edition import EditionLayerDialog
+from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
+from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
+from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
+from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
+from lizmap.forms.tooltip_edition import ToolTipEditionDialog
+
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -25,6 +33,24 @@ class TestEditionDialog(unittest.TestCase):
 
     def tearDown(self) -> None:
         del self.layer
+
+    def test_batch_loading_dialogs(self):
+        """Open all dialogs to check that definitions are correct."""
+        # It would be better to have a proper test for each dialog, checking form validation.
+        dialogs = [
+            AtlasEditionDialog,
+            AttributeTableEditionDialog,
+            DatavizEditionDialog,
+            EditionLayerDialog,
+            FilterByFormEditionDialog,
+            FilterByLoginEditionDialog,
+            LocateLayerEditionDialog,
+            TimeManagerEditionDialog,
+            ToolTipEditionDialog,
+        ]
+        for dialog in dialogs:
+            d = dialog()
+            self.assertFalse(d.error.isVisible())
 
     def test_load_save_collection_dataviz(self):
         """Test we can load collection."""
