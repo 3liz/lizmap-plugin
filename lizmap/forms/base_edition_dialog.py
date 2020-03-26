@@ -4,7 +4,7 @@ import re
 
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.core import QgsProject
@@ -136,11 +136,16 @@ class BaseEditionDialog(QDialog):
 
         for k, layer_config in self.config.layer_config.items():
             if layer_config['type'] == InputType.Field:
-                widget = layer_config['widget']
+                widget = layer_config.get('widget')
+
+                if not widget:
+                    # Dataviz does not have widget for Y, Z
+                    continue
+
                 if not widget.allowEmptyFieldName():
                     if widget.currentField() == '':
                         names = re.findall('.[^A-Z]*',  k)
-                        names = [n.lower() for n in names]
+                        names = [n.lower().replace('_', ' ') for n in names]
                         msg = tr('The field "{}" is mandatory.'.format(' '.join(names)))
                         return msg
 
@@ -154,9 +159,29 @@ class BaseEditionDialog(QDialog):
         else:
             super().accept()
 
+    def load_collection(self, value):
+        """Load a collection to JSON."""
+        # This function is implemented in child class.
+        pass
+
+    def save_collection(self) -> dict:
+        """Save a collection into JSON."""
+        # This function is implemented in child class.
+        pass
+
+    def primary_keys_collection(self) -> list:
+        """List of unique keys in the collection."""
+        # This function is implemented in child class.
+        pass
+
     def load_form(self, data: OrderedDict) -> None:
         """A dictionary to load in the UI."""
+        layer_properties = OrderedDict()
         for key, definition in self.config.layer_config.items():
+            if definition.get('plural') is None:
+                layer_properties[key] = definition
+
+        for key, definition in layer_properties.items():
             value = data.get(key)
 
             if definition['type'] == InputType.Layer:
@@ -186,13 +211,22 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setText(value)
             elif definition['type'] == InputType.MultiLine:
                 definition['widget'].setPlainText(value)
+            elif definition['type'] == InputType.Collection:
+                self.load_collection(value)
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
     def save_form(self) -> OrderedDict:
         """Save the UI in the dictionary with QGIS objects"""
-        data = OrderedDict()
+        layer_properties = OrderedDict()
         for key, definition in self.config.layer_config.items():
+            if definition.get('plural') is None:
+                layer_properties[key] = definition
+
+        data = OrderedDict()
+
+        for key, definition in layer_properties.items():
+
             if definition['type'] == InputType.Layer:
                 value = definition['widget'].currentLayer().id()
             elif definition['type'] == InputType.Layers:
@@ -217,6 +251,8 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].text().strip(' \t')
             elif definition['type'] == InputType.MultiLine:
                 value = definition['widget'].toPlainText().strip(' \t')
+            elif definition['type'] == InputType.Collection:
+                value = self.save_collection()
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 

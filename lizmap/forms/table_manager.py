@@ -1,10 +1,15 @@
 """Table manager."""
 
+import json
 import logging
 
 from typing import Type
 
-from qgis.core import QgsMapLayerModel, QgsProject
+from qgis.core import (
+    QgsMapLayerModel,
+    QgsProject,
+    QgsSettings,
+)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
@@ -14,7 +19,9 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
 )
 
+from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qgis_plugin_tools.tools.version import is_dev_version
@@ -40,18 +47,16 @@ class TableManager:
         self.up_button = up_button
         self.down_button = down_button
 
-        self.table.setColumnCount(len(self.definitions.layer_config.keys()))
+        self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
+        self.table.setColumnCount(len(self.keys))
 
-        for i, item in enumerate(self.definitions.layer_config.values()):
+        for i, key in enumerate(self.keys):
+            item = self.definitions.layer_config[key]
             column = QTableWidgetItem(item['header'])
             tooltip = item.get('tooltip')
             if tooltip:
                 column.setToolTip(tooltip)
             self.table.setHorizontalHeaderItem(i, column)
-
-            visible = item.get('visible', True)
-            if not visible:
-                self.table.setColumnHidden(i, True)
 
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -72,8 +77,9 @@ class TableManager:
 
         for key in self.definitions.primary_keys():
             unicity_dict[key] = list()
-            for i, item in enumerate(self.definitions.layer_config.keys()):
-                if item == key:
+
+            for i, config_key in enumerate(self.keys):
+                if config_key == key:
                     for row in range(rows):
                         item = self.table.item(row, i)
                         if item is None:
@@ -114,8 +120,7 @@ class TableManager:
         row = selection[0].row()
 
         data = dict()
-        for i, key in enumerate(self.definitions.layer_config.keys()):
-
+        for i, key in enumerate(self.keys):
             cell = self.table.item(row, i)
             value = cell.data(Qt.UserRole)
             data[key] = value
@@ -225,6 +230,13 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
+            elif input_type == InputType.Collection:
+                json_dump = json.dumps(value)
+                cell.setText(json_dump)
+                cell.setData(Qt.UserRole, value)
+                function = self.definitions.layer_config[key]['represent_value']
+                cell.setData(Qt.ToolTipRole, function(value))
+
             else:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
 
@@ -283,7 +295,15 @@ class TableManager:
     def use_single_row(self):
         return self.definitions.use_single_row
 
-    def to_json(self):
+    def to_json(self, version=None) -> dict:
+        """Write the configuration to JSON.
+
+        Since Lizmap 3.4, the JSON is different.
+        """
+        if not version:
+            version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+            version = LwcVersions(version)
+
         data = dict()
 
         # TODO Lizmap 4
@@ -297,7 +317,7 @@ class TableManager:
 
         for row in range(rows):
             layer_data = dict()
-            for i, key in enumerate(self.definitions.layer_config.keys()):
+            for i, key in enumerate(self.keys):
                 input_type = self.definitions.layer_config[key]['type']
                 item = self.table.item(row, i)
 
@@ -314,6 +334,8 @@ class TableManager:
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
 
                 if input_type == InputType.Layer:
+                    layer_data[key] = cell
+                elif input_type == InputType.Collection:
                     layer_data[key] = cell
                 elif input_type == InputType.Layers:
                     layer_data[key] = cell
@@ -356,6 +378,22 @@ class TableManager:
                 vector_layer = QgsProject.instance().mapLayer(layer_data['layerId'])
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
+            if self.definitions.key() == 'datavizLayers':
+                if version != LwcVersions.Lizmap_3_4:
+                    traces = layer_data.pop('traces')
+                    for j, trace in enumerate(traces):
+                        for key in trace:
+                            definition = self.definitions.layer_config[key]
+                            if j == 0:
+                                json_key = definition['plural'].format('')
+                                if json_key.endswith('_'):
+                                    # If the plural is at the end
+                                    json_key = json_key[:-1]
+                            else:
+                                json_key = definition['plural'].format(j + 1)
+
+                            layer_data[json_key] = trace[key]
+
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
                     layer_data['atlasEnabled'] = 'True'
@@ -397,7 +435,10 @@ class TableManager:
         return data
 
     def _from_json_legacy(self, data) -> list:
-        """Reformat the JSON data from 3.3 to 3.4 format."""
+        """Reformat the JSON data from 3.3 to 3.4 format.
+
+        Used for atlas when all keys are stored in the main config scope.
+        """
         layer = {}
         for key in data:
             if not key.startswith(self.definitions.key()):
@@ -412,13 +453,17 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_order(data):
+        """Used when there is a dictionary with the row number as a key.
+
+        No keys will be removed.
+        """
         new_data = dict()
         new_data['layers'] = []
 
         def layer_from_order(layers, row):
-            for l in layers.values():
-                if l['order'] == row:
-                    return l
+            for a_layer in layers.values():
+                if a_layer['order'] == row:
+                    return a_layer
 
         order = []
         for layer in data.values():
@@ -433,11 +478,59 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_capabilities(data):
+        """Function used for the edition capabilities.
+        ACL are stored in a sub list."""
         for layer in data.get('layers'):
             capabilities = layer.get('capabilities')
             layer.update(capabilities)
             layer.pop('capabilities')
             layer.pop('geometryType')
+        return data
+
+    @staticmethod
+    def _from_json_legacy_dataviz(data):
+        """Read legacy dataviz without the traces config."""
+
+        # Todo, we should read the definition file
+        legacy = [
+            {
+                'y_field': 'y_field',
+                'color': 'color',
+                'colorfield': 'colorfield',
+            }, {
+                'y2_field': 'y_field',
+                'color2': 'color',
+                'colorfield2': 'colorfield',
+            }
+        ]
+
+        for layer in data.get('layers'):
+
+            if layer.get('traces'):
+                # Already in the new format, we do nothing.
+                continue
+
+            # Remove unused parameter
+            if layer.get('has_y2_field'):
+                del layer['has_y2_field']
+
+            layer['traces'] = []
+            for trace in legacy:
+                one_trace = dict()
+                for key in trace.keys():
+                    value = layer.get(key)
+
+                    if value is not None:
+                        one_trace[trace[key]] = layer.get(key)
+                        del layer[key]
+
+                if one_trace:
+                    y_field = one_trace.get('y_field')
+                    missing_field = y_field is None or y_field == ''
+                    if not missing_field:
+                        # We skip if Y field is missing
+                        layer['traces'].append(one_trace)
+
         return data
 
     def from_json(self, data):
@@ -457,6 +550,9 @@ class TableManager:
         if self.definitions.key() == 'editionLayers':
             data = self._from_json_legacy_capabilities(data)
 
+        if self.definitions.key() == 'datavizLayers':
+            data = self._from_json_legacy_dataviz(data)
+
         layers = data.get('layers')
 
         if not layers:
@@ -468,6 +564,9 @@ class TableManager:
             layer_data = {}
             valid_layer = True
             for key, definition in self.definitions.layer_config.items():
+                if definition.get('plural'):
+                    continue
+
                 value = layer.get(key)
                 if value:
                     if definition['type'] == InputType.Layer:
@@ -496,6 +595,8 @@ class TableManager:
                     elif definition['type'] == InputType.Text:
                         layer_data[key] = value
                     elif definition['type'] == InputType.MultiLine:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.Collection:
                         layer_data[key] = value
                     else:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))
