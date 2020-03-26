@@ -102,7 +102,9 @@ class AggregationType(Enum):
     }
 
 
-def represent_traces(data):
+def represent_traces(data) -> str:
+    """Generate HTMl string for the tooltip instead of JSON representation."""
+    # Nice to have : color in a small square
     html = '<ul>'
     for trace in data:
         y_field = trace.get('y_field')

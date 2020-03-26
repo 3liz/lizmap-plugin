@@ -52,7 +52,6 @@ class TestEditionDialog(unittest.TestCase):
         result = dialog.save_collection()
         self.assertCountEqual(result, data)
 
-
     def test_atlas_dialog(self):
         """Test atlas dialog."""
         dialog = AtlasEditionDialog()

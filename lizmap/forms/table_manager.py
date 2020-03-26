@@ -5,7 +5,11 @@ import logging
 
 from typing import Type
 
-from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
+from qgis.core import (
+    QgsMapLayerModel,
+    QgsProject,
+    QgsSettings,
+)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
@@ -43,20 +47,16 @@ class TableManager:
         self.up_button = up_button
         self.down_button = down_button
 
-        keys = [i for i in self.definitions.layer_config.values() if i.get('plural') is None]
-        self.table.setColumnCount(len(keys))
+        self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
+        self.table.setColumnCount(len(self.keys))
 
-        i = 0
-        for item in self.definitions.layer_config.values():
-            if item.get('plural') is not None:
-                continue
-
+        for i, key in enumerate(self.keys):
+            item = self.definitions.layer_config[key]
             column = QTableWidgetItem(item['header'])
             tooltip = item.get('tooltip')
             if tooltip:
                 column.setToolTip(tooltip)
             self.table.setHorizontalHeaderItem(i, column)
-            i += 1
 
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -77,12 +77,9 @@ class TableManager:
 
         for key in self.definitions.primary_keys():
             unicity_dict[key] = list()
-            i = 0
-            for item in self.definitions.layer_config.keys():
-                if self.definitions.layer_config[key].get('plural') is not None:
-                    continue
 
-                if item == key:
+            for i, config_key in enumerate(self.keys):
+                if config_key == key:
                     for row in range(rows):
                         item = self.table.item(row, i)
                         if item is None:
@@ -95,8 +92,6 @@ class TableManager:
                             raise Exception('Cell has no data ({}, {})'.format(row, i))
 
                         unicity_dict[key].append(cell)
-
-                i += 1
 
         return unicity_dict
 
@@ -125,14 +120,10 @@ class TableManager:
         row = selection[0].row()
 
         data = dict()
-        i = 0
-        for key in self.definitions.layer_config.keys():
-            if self.definitions.layer_config[key].get('plural') is not None:
-                continue
+        for i, key in enumerate(self.keys):
             cell = self.table.item(row, i)
             value = cell.data(Qt.UserRole)
             data[key] = value
-            i += 1
 
         dialog = self.edition()
         dialog.load_form(data)
@@ -304,7 +295,11 @@ class TableManager:
     def use_single_row(self):
         return self.definitions.use_single_row
 
-    def to_json(self, version=None):
+    def to_json(self, version=None) -> dict:
+        """Write the configuration to JSON.
+
+        Since Lizmap 3.4, the JSON is different.
+        """
         if not version:
             version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
             version = LwcVersions(version)
@@ -322,11 +317,7 @@ class TableManager:
 
         for row in range(rows):
             layer_data = dict()
-            i = 0
-            for key in self.definitions.layer_config.keys():
-                if self.definitions.layer_config[key].get('plural'):
-                    continue
-
+            for i, key in enumerate(self.keys):
                 input_type = self.definitions.layer_config[key]['type']
                 item = self.table.item(row, i)
 
@@ -371,8 +362,6 @@ class TableManager:
                 if layer_data[key] == '':
                     layer_data.pop(key)
 
-                i += 1
-
             if self.definitions.key() == 'editionLayers':
                 capabilities_keys = ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature']
                 layer_data['capabilities'] = {key: layer_data[key] for key in capabilities_keys}
@@ -398,7 +387,7 @@ class TableManager:
                             if j == 0:
                                 json_key = definition['plural'].format('')
                             else:
-                                json_key = definition['plural'].format(j+1)
+                                json_key = definition['plural'].format(j + 1)
 
                             layer_data[json_key] = trace[key]
 
@@ -531,7 +520,7 @@ class TableManager:
                 if one_trace:
                     missing_field = one_trace.get('y_field') is None
                     if not missing_field:
-                        # We skip if Y field is not missing
+                        # We skip if Y field is missing
                         layer['traces'].append(one_trace)
 
         return data

@@ -82,6 +82,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.color.setVisible(not histo_2d)
 
     def check_y_color_field(self):
+        """Enable or disable the color input."""
         if self.color_field.currentField() == '':
             self.color.setToDefaultColor()
             self.color.setEnabled(True)
@@ -104,6 +105,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
             super().accept()
 
     def save_form(self) -> OrderedDict:
+        """Save the form into a dictionary."""
         data = OrderedDict()
 
         for key in self.config.layer_config['traces']['items']:
@@ -123,6 +125,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         return data
 
     def load_form(self, data: OrderedDict) -> None:
+        """Load a dictionary into the form."""
         for key in self.config.layer_config['traces']['items']:
             definition = self.config.layer_config[key]
             value = data.get(key)

@@ -105,15 +105,15 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
         self.check_form_graph_type()
 
-    def load_collection(self, value):
-        """Load a collection into the table from JSON."""
+    def load_collection(self, value) -> None:
+        """Load a collection into the table from JSON string."""
         for trace in value:
             row = self.traces.rowCount()
             self.traces.setRowCount(row + 1)
             self._edit_trace_row(row, trace)
         self.disable_more_trace()
 
-    def save_collection(self):
+    def save_collection(self) -> list:
         """Save a collection into JSON"""
         value = list()
         rows = self.traces.rowCount()
@@ -121,18 +121,19 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         collection_definition = self.config.layer_config['traces']
         for row in range(rows):
             trace_data = dict()
-            i = 0
-            for sub_key in collection_definition['items']:
+            for i, sub_key in enumerate(collection_definition['items']):
 
                 input_type = self.config.layer_config[sub_key]['type']
                 item = self.traces.item(row, i)
 
                 if item is None:
+                    # Safe guard
                     # Do not put if not item, it might be False
                     raise Exception('Cell is not initialized ({}, {})'.format(row, i))
 
                 cell = item.data(Qt.UserRole)
                 if cell is None:
+                    # Safe guard
                     # Do not put if not cell, it might be False
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
 
@@ -142,8 +143,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     trace_data[sub_key] = cell
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
-
-                i += 1
 
             value.append(trace_data)
 
@@ -155,6 +154,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.traces.setRowCount(0)
 
     def add_new_trace(self):
+        """Add a new trace in the table after clicking the 'add' button."""
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
             if item_enum.value['data'] == graph:
@@ -247,6 +247,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.add_trace.setStyleSheet('')
 
     def check_form_graph_type(self):
+        """Enable or not features according to the type of graph."""
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
             if item_enum.value['data'] == graph:
@@ -255,6 +256,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         else:
             raise Exception('Error with list')
 
+        # Field X
         if graph in [
                 GraphType.Scatter, GraphType.Bar, GraphType.Histogram,
                 GraphType.Histogram2D, GraphType.Polar, GraphType.Pie,

@@ -32,13 +32,16 @@ class TestTableManager(unittest.TestCase):
 
     def setUp(self) -> None:
         self.maxDiff = None
+        self.layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        QgsProject.instance().addMapLayer(self.layer)
+        self.assertTrue(self.layer.isValid())
+
+    def tearDown(self) -> None:
+        QgsProject.instance().removeMapLayer(self.layer)
+        del self.layer
 
     def test_form_filter(self):
         """Test table manager with filter by form."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = FilterByFormDefinitions()
 
@@ -55,7 +58,7 @@ class TestTableManager(unittest.TestCase):
                 'format': 'checkboxes',
                 'splitter': '',
                 'provider': 'ogr',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             },
             '1': {
@@ -67,7 +70,7 @@ class TestTableManager(unittest.TestCase):
                 'format': 'checkboxes',
                 'splitter': '',
                 'provider': 'ogr',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 1
             }
         }
@@ -79,7 +82,7 @@ class TestTableManager(unittest.TestCase):
 
         expected = {
             '0': {
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'provider': 'ogr',  # Added automatically on the fly
                 'title': 'Line filtering',
                 'type': 'text',
@@ -88,7 +91,7 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             },
             '1': {
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'provider': 'ogr',  # Added automatically on the fly
                 'title': 'Line filtering',
                 'type': 'numeric',
@@ -101,10 +104,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_filter_by_login(self):
         """Test table manager with filter by login."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = FilterByLoginDefinitions()
 
@@ -115,7 +114,7 @@ class TestTableManager(unittest.TestCase):
             'lines': {
                 'filterAttribute': 'name',
                 'filterPrivate': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -128,19 +127,25 @@ class TestTableManager(unittest.TestCase):
             'lines': {
                 'filterAttribute': 'name',
                 'filterPrivate': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
         self.assertDictEqual(data, expected)
 
-    @unittest.skip
-    def test_dataviz_legacy_read_trace(self):
-        """Test we can read traces from legacy 3.3."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
+    def test_dataviz_definitions(self):
+        """Test dataviz collections keys."""
+        table_manager = TableManager(
+            None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
+        expected = [
+            'type', 'title', 'description', 'layerId', 'x_field', 'aggregation',
+            'traces', 'html_template', 'popup_display_child_plot', 'stacked',
+            'horizontal', 'only_show_child', 'display_legend', 'display_when_layer_visible',
+        ]
+        self.assertListEqual(expected, table_manager.keys)
 
+    def test_dataviz(self):
+        """Test we can read dataviz 3.4."""
         table = QTableWidget()
         definitions = EditionDefinitions()
 
@@ -180,11 +185,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_remove_extra_field_dataviz(self):
         """Test we can remove an empty field from a trace."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = DatavizDefinitions()
 
@@ -207,7 +207,7 @@ class TestTableManager(unittest.TestCase):
                 'colorfield2': '',
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -222,7 +222,7 @@ class TestTableManager(unittest.TestCase):
                     'aggregation': '',
                     'popup_display_child_plot': 'False',
                     'only_show_child': 'True',
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'order': 0,
                     'traces': [
                         {
@@ -238,11 +238,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_dataviz_legacy_3_3(self):
         """Test table manager with dataviz format 3.3."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = DatavizDefinitions()
 
@@ -265,7 +260,7 @@ class TestTableManager(unittest.TestCase):
                 'colorfield2': '',
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -286,7 +281,7 @@ class TestTableManager(unittest.TestCase):
                     'colorfield2': '',
                     'popup_display_child_plot': 'False',
                     'only_show_child': 'True',
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'order': 0
                 }
             ]
@@ -303,7 +298,7 @@ class TestTableManager(unittest.TestCase):
                     'aggregation': '',
                     'popup_display_child_plot': 'False',
                     'only_show_child': 'True',
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'order': 0,
                     'traces': [
                         {
@@ -350,7 +345,7 @@ class TestTableManager(unittest.TestCase):
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -380,7 +375,7 @@ class TestTableManager(unittest.TestCase):
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -388,12 +383,6 @@ class TestTableManager(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_dataviz_legacy_3_4(self):
-
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = DatavizDefinitions()
 
@@ -420,7 +409,7 @@ class TestTableManager(unittest.TestCase):
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -443,7 +432,7 @@ class TestTableManager(unittest.TestCase):
                     'colorfield2': '',
                     'popup_display_child_plot': 'False',
                     'only_show_child': 'True',
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'order': 0
                 }
             ]
@@ -461,7 +450,7 @@ class TestTableManager(unittest.TestCase):
                     'aggregation': '',
                     'popup_display_child_plot': 'False',
                     'only_show_child': 'True',
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'order': 0,
                     'traces': [
                         {
@@ -502,7 +491,7 @@ class TestTableManager(unittest.TestCase):
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -511,11 +500,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_tool_tip(self):
         """Test table manager with tooltip layer."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = ToolTipDefinitions()
 
@@ -527,7 +511,7 @@ class TestTableManager(unittest.TestCase):
                 'fields': 'id,name',
                 'displayGeom': 'False',
                 'colorGeom': '',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -540,11 +524,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_attribute_table(self):
         """Test table manager with attribute table."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = AttributeTableDefinitions()
 
@@ -558,7 +537,7 @@ class TestTableManager(unittest.TestCase):
                 'pivot': 'False',
                 'hideAsChild': 'False',
                 'hideLayer': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -570,11 +549,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_time_manager_table(self):
         """Test table manager with time manager."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = TimeManagerDefinitions()
 
@@ -588,7 +562,7 @@ class TestTableManager(unittest.TestCase):
                 'label': 'name',
                 'group': 'fake',
                 'groupTitle': 'fake',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -600,7 +574,7 @@ class TestTableManager(unittest.TestCase):
             'lines': {
                 'startAttribute': 'id',
                 'attributeResolution': 'years',  # missing from the input, default value in definitions
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -612,7 +586,7 @@ class TestTableManager(unittest.TestCase):
         json = {
             'lines': {
                 'startAttribute': 'id',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -630,7 +604,7 @@ class TestTableManager(unittest.TestCase):
                 'startAttribute': 'id',
                 'endAttribute': 'id',
                 'attributeResolution': 'minutes',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 0
             }
         }
@@ -642,10 +616,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_edition_layer(self):
         """Test table manager with edition layer."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = EditionDefinitions()
 
@@ -654,7 +624,7 @@ class TestTableManager(unittest.TestCase):
 
         json = {
             'lines': {
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'geometryType': 'line',
                 'capabilities': {
                     'createFeature': 'True',
@@ -663,7 +633,7 @@ class TestTableManager(unittest.TestCase):
                     'deleteFeature': 'True'
                 },
                 'acl': 'edition_group',
-                'snap_layers': layer.id(),
+                'snap_layers': self.layer.id(),
                 'snap_segments': 'False',
                 'snap_intersections': 'True',
                 'order': 0
@@ -674,13 +644,13 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'layers': [
                 {
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'createFeature': 'True',
                     'modifyAttribute': 'True',
                     'modifyGeometry': 'True',
                     'deleteFeature': 'True',
                     'acl': 'edition_group',
-                    'snap_layers': layer.id(),
+                    'snap_layers': self.layer.id(),
                     'snap_segments': 'False',
                     'snap_intersections': 'True',
                     'order': 0
@@ -695,7 +665,7 @@ class TestTableManager(unittest.TestCase):
         data = table_manager.to_json()
         json = {
             'lines': {
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'geometryType': 'line',
                 'capabilities': {
                     'createFeature': 'True',
@@ -704,7 +674,7 @@ class TestTableManager(unittest.TestCase):
                     'deleteFeature': 'True'
                 },
                 'acl': 'edition_group',
-                'snap_layers': layer.id(),
+                'snap_layers': self.layer.id(),
                 'snap_nodes': 'False',
                 'snap_segments': 'False',
                 'snap_intersections': 'True',
@@ -715,12 +685,8 @@ class TestTableManager(unittest.TestCase):
 
     def test_locate_by_layer(self):
         """Test table manager with locate by layer."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         layer_2 = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines_2', 'ogr')
-
-        QgsProject.instance().addMapLayer(layer)
         QgsProject.instance().addMapLayer(layer_2)
-        self.assertTrue(layer.isValid())
         self.assertTrue(layer_2.isValid())
 
         table = QTableWidget()
@@ -736,7 +702,7 @@ class TestTableManager(unittest.TestCase):
                 'displayGeom': 'True',
                 'minLength': 0,
                 'filterOnLocate': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 1
             },
             'lines_2': {
@@ -769,7 +735,7 @@ class TestTableManager(unittest.TestCase):
                     'displayGeom': 'True',
                     'minLength': 0,
                     'filterOnLocate': 'False',
-                    'layerId': layer.id(),
+                    'layerId': self.layer.id(),
                     'order': 1
                 },
             ]
@@ -796,7 +762,7 @@ class TestTableManager(unittest.TestCase):
                 'displayGeom': 'True',
                 'minLength': 0,
                 'filterOnLocate': 'False',
-                'layerId': layer.id(),
+                'layerId': self.layer.id(),
                 'order': 1
             },
         }
@@ -841,11 +807,7 @@ class TestTableManager(unittest.TestCase):
         Edit existing new row
         are not tested
         """
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         field = 'id'
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = AtlasDefinitions()
         definitions._use_single_row = False
@@ -857,7 +819,7 @@ class TestTableManager(unittest.TestCase):
 
         # JSON from LWC 3.4 and above
         layer_1 = {
-            'layer': layer.id(),
+            'layer': self.layer.id(),
             'primaryKey': field,
             'displayLayerDescription': 'False',
             'featureLabel': 'name',
@@ -882,7 +844,7 @@ class TestTableManager(unittest.TestCase):
         # QGIS notify layer has been deleted
         table_manager.layers_has_been_deleted(['another_layer_ID_in_canvas'])
         self.assertEqual(table_manager.table.rowCount(), 1)
-        table_manager.layers_has_been_deleted([layer.id()])
+        table_manager.layers_has_been_deleted([self.layer.id()])
         self.assertEqual(table_manager.table.rowCount(), 0)
 
         data = table_manager.to_json()
@@ -903,7 +865,7 @@ class TestTableManager(unittest.TestCase):
 
         # noinspection PyProtectedMember
         self.assertDictEqual(
-            {'layer': [layer.id(), layer.id()]},
+            {'layer': [self.layer.id(), self.layer.id()]},
             table_manager._primary_keys()
         )
 
@@ -944,9 +906,6 @@ class TestTableManager(unittest.TestCase):
 
     def test_atlas_missing_json_parameter(self):
         """Test if we can load CFG file with missing parameter."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-
         table = QTableWidget()
 
         definitions = AtlasDefinitions()
@@ -957,7 +916,7 @@ class TestTableManager(unittest.TestCase):
         json = {
             'layers': [
                 {
-                    'layer': layer.id(),
+                    'layer': self.layer.id(),
                     'primaryKey': 'id',
                     'displayLayerDescription': 'False',
                     'featureLabel': 'name',
@@ -990,18 +949,14 @@ class TestTableManager(unittest.TestCase):
 
     def test_table_manager_3_3(self):
         """Test we can read/write to LWC 3.3 format."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         field = 'id'
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         table = QTableWidget()
         definitions = AtlasDefinitions()
         definitions._use_single_row = False
 
         json = {
             'atlasEnabled': 'True',  # Will not be used
-            'atlasLayer': layer.id(),
+            'atlasLayer': self.layer.id(),
             'atlasPrimaryKey': field,
             'atlasDisplayLayerDescription': 'True',
             'atlasFeatureLabel': 'inf3_o_t',
@@ -1023,7 +978,7 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'layers': [
                 {
-                    'layer': layer.id(),
+                    'layer': self.layer.id(),
                     'primaryKey': field,
                     'displayLayerDescription': 'True',
                     'featureLabel': 'inf3_o_t',
@@ -1044,7 +999,7 @@ class TestTableManager(unittest.TestCase):
         expected = {
             'atlasEnabled': 'True',  # Hard coded for Lizmap 3.3
             'atlasMaxWidth': 25,  # will not be used
-            'atlasLayer': layer.id(),
+            'atlasLayer': self.layer.id(),
             'atlasPrimaryKey': 'id',
             'atlasDisplayLayerDescription': 'True',
             'atlasFeatureLabel': 'inf3_o_t',
