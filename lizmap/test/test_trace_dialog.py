@@ -16,32 +16,55 @@ __revision__ = '$Format:%H$'
 
 class TestTraceDialog(unittest.TestCase):
 
+    def setUp(self) -> None:
+        self.layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        QgsProject.instance().addMapLayer(self.layer)
+        self.assertTrue(self.layer.isValid())
+
+    def tearDown(self) -> None:
+        QgsProject.instance().removeMapLayer(self.layer)
+        del self.layer
+
     def test_z_field(self):
         """Test Z field is visible or not."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
         # Must be visible
-        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Sunburst)
+        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Sunburst, [])
         self.assertEqual(GraphType.Sunburst, dialog._graph)
         # self.assertTrue(dialog.label_z_field.isVisible())
         # self.assertTrue(dialog.z_field.isVisible())
         self.assertFalse(dialog.z_field.allowEmptyFieldName())
 
         # Not visible
-        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram)
+        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
         self.assertFalse(dialog.label_z_field.isVisible())
         self.assertFalse(dialog.z_field.isVisible())
         self.assertTrue(dialog.z_field.allowEmptyFieldName())
 
+    def test_unique(self):
+        """Test Y is unique when we add a new row."""
+        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
+        self.assertFalse(dialog.error.isVisible())
+        self.assertEqual('Y field is required.', dialog.validate())
+        dialog.y_field.setCurrentIndex(0)
+        self.assertIsNone(dialog.validate())
+
+        # Same but with a unique value not existing
+        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, ['hello'])
+        self.assertFalse(dialog.error.isVisible())
+        self.assertEqual('Y field is required.', dialog.validate())
+        dialog.y_field.setCurrentIndex(0)
+        self.assertIsNone(dialog.validate())
+
+        # Same but with a unique value
+        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, ['id'])
+        self.assertFalse(dialog.error.isVisible())
+        self.assertEqual('Y field is required.', dialog.validate())
+        dialog.y_field.setCurrentIndex(0)
+        self.assertEqual('This Y field is already existing.', dialog.validate())
+
     def test_trace_dialog(self):
         """Test trace dialog."""
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
-        self.assertTrue(layer.isValid())
-
-        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram)
+        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
         self.assertFalse(dialog.error.isVisible())
 
         self.assertEqual('Y field is required.', dialog.validate())

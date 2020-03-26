@@ -27,11 +27,12 @@ CLASS = load_ui('ui_trace.ui')
 
 class TraceDatavizEditionDialog(QDialog, CLASS):
 
-    def __init__(self, parent, layer, graph):
+    def __init__(self, parent, layer, graph, uniques):
         super().__init__(parent)
         self.config = DatavizDefinitions()
         self._graph = graph
         self._layer = layer
+        self.uniques = uniques
         self.setupUi(self)
         self.setWindowTitle(tr('Dataviz Trace'))
 
@@ -91,9 +92,11 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
             self.color.setEnabled(False)
 
     def validate(self):
-        if self.y_field.currentField() == '':
+        y_field = self.y_field.currentField()
+        if y_field == '':
             return tr('Y field is required.')
-
+        if y_field in self.uniques:
+            return tr('This Y field is already existing.')
         return
 
     def accept(self):

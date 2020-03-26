@@ -144,45 +144,6 @@ class TestTableManager(unittest.TestCase):
         ]
         self.assertListEqual(expected, table_manager.keys)
 
-    def test_dataviz(self):
-        """Test we can read dataviz 3.4."""
-        table = QTableWidget()
-        definitions = EditionDefinitions()
-
-        table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None)
-
-        json = {
-            '0': {
-                'title': 'My graph',
-                'type': 'scatter',
-                'x_field': 'id',
-                'aggregation': '',
-                'traces': [
-                    {
-                        'y_field': 'name',
-                        'color': '#00aaff',
-                        'colorfield': '',
-                    }, {
-                        'y_field': 'name',
-                        'color': '#00aaff',
-                        'colorfield': '',
-                    },
-                ],
-                'popup_display_child_plot': 'False',
-                'only_show_child': 'True',
-                'layerId': 'fake_id',
-                'order': 0
-            }
-        }
-
-        json_legacy = table_manager._from_json_legacy_order(copy.deepcopy(json))
-        print(json_legacy)
-
-        # self.assertEqual(table_manager.table.rowCount(), 0)
-        # table_manager.from_json(json)
-        # self.assertEqual(table_manager.table.rowCount(), 1)
-
     def test_remove_extra_field_dataviz(self):
         """Test we can remove an empty field from a trace."""
         table = QTableWidget()
@@ -380,6 +341,46 @@ class TestTableManager(unittest.TestCase):
             }
         }
         self.assertDictEqual(data, expected)
+
+    @unittest.expectedFailure
+    def test_dataviz(self):
+        """Test we can read dataviz 3.4."""
+        table = QTableWidget()
+        definitions = EditionDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            '0': {
+                'title': 'My graph',
+                'type': 'scatter',
+                'x_field': 'id',
+                'aggregation': '',
+                'traces': [
+                    {
+                        'y_field': 'name',
+                        'color': '#00aaff',
+                        'colorfield': '',
+                    }, {
+                        'y_field': 'name',
+                        'color': '#00aaff',
+                        'colorfield': '',
+                    },
+                ],
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': 'fake_id',
+                'order': 0
+            }
+        }
+
+        json_legacy = table_manager._from_json_legacy_order(copy.deepcopy(json))
+        print(json_legacy)
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
 
     @unittest.expectedFailure
     def test_dataviz_legacy_3_4(self):

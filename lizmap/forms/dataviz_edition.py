@@ -113,6 +113,15 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self._edit_trace_row(row, trace)
         self.disable_more_trace()
 
+    def primary_keys_collection(self) -> list:
+        """Return the list of unique values in the collection."""
+        values = list()
+        for row in range(self.traces.rowCount()):
+            item = self.traces.item(row, 0)
+            cell = item.data(Qt.UserRole)
+            values.append(cell)
+        return values
+
     def save_collection(self) -> list:
         """Save a collection into JSON"""
         value = list()
@@ -162,7 +171,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 break
         else:
             raise Exception('Error with list')
-        dialog = TraceDatavizEditionDialog(self.parent, self.layer.currentLayer(), graph)
+
+        dialog = TraceDatavizEditionDialog(
+            self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection())
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
