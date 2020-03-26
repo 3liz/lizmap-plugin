@@ -386,6 +386,9 @@ class TableManager:
                             definition = self.definitions.layer_config[key]
                             if j == 0:
                                 json_key = definition['plural'].format('')
+                                if json_key.endswith('_'):
+                                    # If the plural is at the end
+                                    json_key = json_key[:-1]
                             else:
                                 json_key = definition['plural'].format(j + 1)
 
@@ -503,6 +506,10 @@ class TableManager:
 
         for layer in data.get('layers'):
 
+            if layer.get('traces'):
+                # Already in the new format, we do nothing.
+                continue
+
             # Remove unused parameter
             if layer.get('has_y2_field'):
                 del layer['has_y2_field']
@@ -518,7 +525,8 @@ class TableManager:
                         del layer[key]
 
                 if one_trace:
-                    missing_field = one_trace.get('y_field') is None
+                    y_field = one_trace.get('y_field')
+                    missing_field = y_field is None or y_field == ''
                     if not missing_field:
                         # We skip if Y field is missing
                         layer['traces'].append(one_trace)

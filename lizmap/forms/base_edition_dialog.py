@@ -164,8 +164,13 @@ class BaseEditionDialog(QDialog):
         # This function is implemented in child class.
         pass
 
-    def save_collection(self):
+    def save_collection(self) -> dict:
         """Save a collection into JSON."""
+        # This function is implemented in child class.
+        pass
+
+    def primary_keys_collection(self) -> list:
+        """List of unique keys in the collection."""
         # This function is implemented in child class.
         pass
 
