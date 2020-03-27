@@ -139,7 +139,7 @@
       </widget>
      </item>
      <item row="9" column="1">
-      <widget class="QTextEdit" name="html_template"/>
+      <widget class="QgsCodeEditorHTML" name="html_template"/>
      </item>
      <item row="13" column="1">
       <widget class="QCheckBox" name="only_show_child">
@@ -219,6 +219,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QTextEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>

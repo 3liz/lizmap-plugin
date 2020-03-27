@@ -4,9 +4,13 @@ import re
 
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor, QIcon
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QPlainTextEdit,
+)
 from qgis.core import QgsProject
 
 from lizmap import DEFAULT_LWC_VERSION
@@ -210,7 +214,11 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Text:
                 definition['widget'].setText(value)
             elif definition['type'] == InputType.MultiLine:
-                definition['widget'].setPlainText(value)
+                widget = definition['widget']
+                if isinstance(widget, QPlainTextEdit):
+                    widget.setPlainText(value)
+                else:
+                    widget.setText(value)
             elif definition['type'] == InputType.Collection:
                 self.load_collection(value)
             else:
@@ -250,7 +258,12 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Text:
                 value = definition['widget'].text().strip(' \t')
             elif definition['type'] == InputType.MultiLine:
-                value = definition['widget'].toPlainText().strip(' \t')
+                widget = definition['widget']
+                if isinstance(widget, QPlainTextEdit):
+                    value = definition['widget'].toPlainText()
+                else:
+                    value = definition['widget'].text()
+                value = value.strip(' \t')
             elif definition['type'] == InputType.Collection:
                 value = self.save_collection()
             else:
