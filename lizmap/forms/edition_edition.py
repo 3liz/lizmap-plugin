@@ -36,6 +36,9 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('snap_vertices', self.snap_node)
         self.config.add_layer_widget('snap_segments', self.snap_segments)
         self.config.add_layer_widget('snap_intersections', self.snap_intersection)
+        self.config.add_layer_widget('snap_vertices_tolerance', self.vertices_tolerance)
+        self.config.add_layer_widget('snap_segments_tolerance', self.segments_tolerance)
+        self.config.add_layer_widget('snap_intersections_tolerance', self.intersections_tolerance)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('createFeature', self.label_create)

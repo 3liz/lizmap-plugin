@@ -719,11 +719,14 @@ class TestTableManager(unittest.TestCase):
                     'snap_layers': self.layer.id(),
                     'snap_segments': 'False',
                     'snap_intersections': 'True',
+                    # 'snap_vertices_tolerance': 10, these values are added later by defaults
+                    # 'snap_segments_tolerance': 10,
+                    # 'snap_intersections_tolerance': 10,
                     'order': 0
                 },
             ]
         }
-        self.assertDictEqual(json_legacy, expected)
+        self.assertDictEqual(expected, json_legacy)
 
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(copy.deepcopy(json))
@@ -744,10 +747,13 @@ class TestTableManager(unittest.TestCase):
                 'snap_vertices': 'False',
                 'snap_segments': 'False',
                 'snap_intersections': 'True',
+                'snap_vertices_tolerance': 10,
+                'snap_segments_tolerance': 10,
+                'snap_intersections_tolerance': 10,
                 'order': 0
             }
         }
-        self.assertDictEqual(data, json)
+        self.assertDictEqual(json, data)
 
     def test_locate_by_layer(self):
         """Test table manager with locate by layer."""

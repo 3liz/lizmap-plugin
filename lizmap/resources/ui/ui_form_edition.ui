@@ -120,32 +120,52 @@
        <widget class="ListLayersSelection" name="layers"/>
       </item>
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Snap on</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="snap_node">
-        <property name="text">
-         <string>Vertices</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="snap_segments">
-        <property name="text">
-         <string>Segments</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="snap_intersection">
-        <property name="text">
-         <string>Intersections</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="segments_tolerance"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="intersections_tolerance"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="snap_segments">
+          <property name="text">
+           <string>Segments</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="snap_node">
+          <property name="text">
+           <string>Vertices</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="vertices_tolerance"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QCheckBox" name="snap_intersection">
+          <property name="text">
+           <string>Intersections</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Snap on</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Tolerance</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
