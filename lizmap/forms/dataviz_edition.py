@@ -314,6 +314,6 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         if graph == GraphType.HtmlTemplate:
-            html = self.html_template.toPlainText()
+            html = self.html_template.text()
             if html == '':
                 return tr('HTML template is mandatory.')
