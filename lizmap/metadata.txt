@@ -12,6 +12,18 @@ version=3.3.0-beta
 
 ; start of optional metadata
 changelog=
+ Version 3.3.0
+ * Enable multiple Lizmap atlas
+ * Layer visibility according to a Lizmap group
+ * Add option to activate the first map theme defined in QGIS
+ * Add dataviz description
+ * Add Sunburst chart (and Z field) in Dataviz
+ * Add HTML template chart in Dataviz
+ * Add stacked and horizontal options for a bar chart in Dataviz
+ * Add option to display the legend in Dataviz
+ * Add option to display the chart only of the layer is visible
+ * Add many options to snap on a list of layers when editing a vector layer geometry
+ * Refactor the time manager panel
  Version 3.2.11
  * Escape characters in tooltips (drag and drop form)
  * Fix horizontal expanding of the layer list
