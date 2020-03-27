@@ -308,6 +308,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 ' option of the QGIS Server tab in the "Project Properties" dialog.')
             return msg
 
+        if self.traces.rowCount() == 0:
+            return tr('At least one Y field is required.')
+
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
             if item_enum.value['data'] == graph:
