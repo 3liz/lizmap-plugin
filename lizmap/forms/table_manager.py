@@ -216,7 +216,12 @@ class TableManager:
                     cell.setText(value)
 
             elif input_type == InputType.SpinBox:
-                cell.setText(str(value))
+                unit = self.definitions.layer_config[key].get('unit')
+                if unit:
+                    display = '{}{}'.format(value, unit)
+                else:
+                    display = '{}'.format(value)
+                cell.setText(display)
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 

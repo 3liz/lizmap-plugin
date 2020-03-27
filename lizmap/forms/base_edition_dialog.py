@@ -72,6 +72,16 @@ class BaseEditionDialog(QDialog):
                 if widget is not None:
                     widget.setChecked(layer_config['default'])
 
+            if layer_config['type'] == InputType.SpinBox:
+                if widget is not None:
+                    unit = layer_config.get('unit')
+                    if unit:
+                        widget.setSuffix(unit)
+
+                    default = layer_config.get('default')
+                    if unit:
+                        widget.setValue(default)
+
             if layer_config['type'] == InputType.Color:
                 if widget is not None:
                     if layer_config['default'] == '':

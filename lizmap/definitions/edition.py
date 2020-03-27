@@ -80,6 +80,30 @@ class EditionDefinitions(BaseDefinitions):
             'tooltip': tr('If we should snap on intersections.'),
             'version': LwcVersions.Lizmap_3_4,
         }
+        self._layer_config['snap_vertices_tolerance'] = {
+            'type': InputType.SpinBox,
+            'header': tr('Vertices tolerance'),
+            'default': 10,
+            'unit': ' px',
+            'tooltip': tr('Snapping tolerance for vertices.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['snap_segments_tolerance'] = {
+            'type': InputType.SpinBox,
+            'header': tr('Segments tolerance'),
+            'default': 10,
+            'unit': ' px',
+            'tooltip': tr('Snapping tolerance for segments.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['snap_intersections_tolerance'] = {
+            'type': InputType.SpinBox,
+            'header': tr('Intersections tolerance'),
+            'default': 10,
+            'unit': ' px',
+            'tooltip': tr('Snapping tolerance for intersections.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
 
     @staticmethod
     def primary_keys() -> tuple:
