@@ -699,7 +699,7 @@ class TestTableManager(unittest.TestCase):
                     'deleteFeature': 'True'
                 },
                 'acl': 'edition_group',
-                'snap_layers': self.layer.id(),
+                'snap_layers': [self.layer.id()],
                 'snap_segments': 'False',
                 'snap_intersections': 'True',
                 'order': 0
@@ -716,7 +716,7 @@ class TestTableManager(unittest.TestCase):
                     'modifyGeometry': 'True',
                     'deleteFeature': 'True',
                     'acl': 'edition_group',
-                    'snap_layers': self.layer.id(),
+                    'snap_layers': [self.layer.id()],
                     'snap_segments': 'False',
                     'snap_intersections': 'True',
                     # 'snap_vertices_tolerance': 10, these values are added later by defaults
@@ -743,7 +743,7 @@ class TestTableManager(unittest.TestCase):
                     'deleteFeature': 'True'
                 },
                 'acl': 'edition_group',
-                'snap_layers': self.layer.id(),
+                'snap_layers': [self.layer.id()],
                 'snap_vertices': 'False',
                 'snap_segments': 'False',
                 'snap_intersections': 'True',

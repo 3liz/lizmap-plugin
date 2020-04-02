@@ -152,16 +152,16 @@ class TableManager:
                 cell.setIcon(QgsMapLayerModel.iconForLayer(layer))
 
             elif input_type == InputType.Layers:
-                layers = value.split(',')
                 names = []
-                for layer in layers:
+                for layer in value:
                     if layer != '':
                         vector = QgsProject.instance().mapLayer(layer)
                         if vector:
                             names.append(vector.name())
-                cell.setText(', '.join(names))
+                display = ' ,'.join(names)
+                cell.setText(display)
                 cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, ' ,'.join(names))
+                cell.setData(Qt.ToolTipRole, display)
 
             elif input_type == InputType.Field:
                 cell.setText(value)
