@@ -105,7 +105,7 @@ from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.table_manager import TableManager
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-from lizmap.html_and_expressions import STYLESHEET, NEW_FEATURE
+from lizmap.qt_style_sheets import STYLESHEET, NEW_FEATURE
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
@@ -1528,6 +1528,7 @@ class Lizmap:
         relation_manager = self.project.relationManager()
         html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
         html_content = Tooltip.create_popup(html_content)
+        html_content += Tooltip.css()
 
         if layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
