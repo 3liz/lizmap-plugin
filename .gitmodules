@@ -1,6 +1,3 @@
 [submodule "lizmap/qgis_plugin_tools"]
 	path = lizmap/qgis_plugin_tools
 	url = https://github.com/3liz/qgis_plugin_tools.git
-[submodule "lizmap/lizmap-locales"]
-	path = lizmap/lizmap-locales
-	url = https://github.com/3liz/lizmap-locales.git
