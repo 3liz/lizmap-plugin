@@ -7,10 +7,10 @@ python: 3.7
 services:
   - docker
 
-#branches:
-#  only:
-#    - master
-#    - dev
+branches:
+  only:
+    - master
+    - dev
 
 jobs:
   include:
@@ -58,8 +58,9 @@ jobs:
       script:
         - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.10 ./run-tests.sh
 
-    - stage: Push translations to Transifex
-      if: branch = master
+    - stage: Translations
+      name: Push translations
+      if: branch = master AND type != pull_request
       install:
         - pip3 install git+https://github.com/Gustry/qgis-plugin-ci.git
       script: qgis-plugin-ci push-translation ${TX_TOKEN}
