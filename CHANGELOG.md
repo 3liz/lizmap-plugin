@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 3.2.12
+
+* Fix bug about popup QGIS using the drag&drop layout
+* Improve the plugin management for releasing the plugin
+
 ## Version 3.2.11
 
 * Escape characters in tooltips (drag and drop form)

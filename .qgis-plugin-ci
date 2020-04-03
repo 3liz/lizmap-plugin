@@ -1,3 +1,7 @@
 plugin_path: lizmap
 github_organization_slug: 3liz
 project_slug: lizmap-plugin
+transifex_organization: 3liz-1
+transifex_project: lizmap-locales
+transifex_resource: lizmap_qgis_plugin
+transifex_coordinator: etrimaille

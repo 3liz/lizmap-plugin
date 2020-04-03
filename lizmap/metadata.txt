@@ -7,7 +7,7 @@ description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
 about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
 category=Web
 # set -beta for dev version
-version=3.3.0-beta
+version=3.3.99-beta
 ; end of mandatory metadata
 
 ; start of optional metadata
@@ -24,6 +24,9 @@ changelog=
  * Add option to display the chart only of the layer is visible
  * Add many options to snap on a list of layers when editing a vector layer geometry
  * Refactor the time manager panel
+ Version 3.2.12
+ * Fix bug about popup QGIS using the drag&drop layout
+ * Improve the plugin management for releasing the plugin
  Version 3.2.11
  * Escape characters in tooltips (drag and drop form)
  * Fix horizontal expanding of the layer list

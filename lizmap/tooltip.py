@@ -22,11 +22,9 @@ class Tooltip:
 
     @staticmethod
     def create_popup(html):
-        template = '''
-        <div class="container popup_lizmap_dd" style="width:100%;">
-        {}
-        </div>
-        '''
+        template = '''<div class="container popup_lizmap_dd" style="width:100%;">
+    {}
+</div>\n'''
         return template.format(html)
 
     @staticmethod
@@ -35,6 +33,7 @@ class Tooltip:
         regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
         a = ''
         h = ''
+        SPACES = '  '
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
                 # The form might have been imported from QML with some not existing fields
@@ -79,7 +78,7 @@ class Tooltip:
             if widget_type == 'DateTime':
                 field_view = Tooltip._generate_date(widget_config, name)
 
-            a += '\n' + '  ' * level
+            a += '\n' + SPACES * level
             a += Tooltip._generate_field_name(name, fname, field_view)
 
         if isinstance(node, QgsAttributeEditorContainer):
@@ -95,21 +94,21 @@ class Tooltip:
                 if not headers:
                     active = 'active'
 
-                a += '\n' + '  ' * l + '<div id="popup_dd_[% $id %]_{}" class="tab-pane {}">'.format(
+                a += '\n' + SPACES + '<div id="popup_dd_[% $id %]_{}" class="tab-pane {}">'.format(
                     regex.sub('_', node.name()), active)
 
                 if visibility and active:
                     active = '{} {}'.format(active, visibility)
                 if visibility and not active:
                     active = visibility
-                h += '\n    ' + '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'.format(
+                h += '\n' + SPACES + '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'.format(
                     active, regex.sub('_', node.name()), node.name())
                 headers.append(h)
 
             if l > 1:
-                a += '\n' + '  ' * l + '<fieldset>'
-                a += '\n' + '  ' * l + '<legend>{}</legend>'.format(node.name())
-                a += '\n' + '  ' * l + '<div>'
+                a += '\n' + SPACES * l + '<fieldset>'
+                a += '\n' + SPACES * l + '<legend>{}</legend>'.format(node.name())
+                a += '\n' + SPACES * l + '<div>'
 
             # In case of root children
             before_tabs = []
@@ -134,17 +133,25 @@ class Tooltip:
 
             if l == 0:
                 if before_tabs:
-                    a += '\n<div class="before-tabs">' + '\n'.join(before_tabs) + '\n</div>'
+                    a += '\n<div class="before-tabs">'
+                    a += '\n'.join(before_tabs)
+                    a += '\n</div>'
                 if headers:
-                    a += '<ul class="nav nav-tabs">\n' + '\n'.join(headers) + '\n</ul>'
-                    a += '\n<div class="tab-content">' + '\n'.join(content_tabs) + '\n</div>'
+                    a += '<ul class="nav nav-tabs">\n'
+                    a += '\n'.join(headers)
+                    a += '\n</ul>'
+                    a += '\n<div class="tab-content">'
+                    a += '\n'.join(content_tabs)
+                    a += '\n</div>'
                 if after_tabs:
-                    a += '\n<div class="after-tabs">' + '\n'.join(after_tabs) + '\n</div>'
+                    a += '\n<div class="after-tabs">'
+                    a += '\n'.join(after_tabs)
+                    a += '\n</div>'
             elif l == 1:
-                a += '\n' + '  ' * l + '</div>'
+                a += '\n' + SPACES * l + '</div>'
             elif l > 1:
-                a += '\n' + '  ' * l + '</div>'
-                a += '\n' + '  ' * l + '</fieldset>'
+                a += '\n' + SPACES * l + '</div>'
+                a += '\n' + SPACES * l + '</fieldset>'
 
         html += a
         return html
@@ -300,3 +307,45 @@ class Tooltip:
                                 expression
                             )
         return field_view
+
+    @staticmethod
+    def css():
+        css = '''<style>
+    div.popup_lizmap_dd {
+        margin: 2px;
+    }
+    div.popup_lizmap_dd div {
+        padding: 5px;
+    }
+    div.popup_lizmap_dd div.tab-content{
+        border: 1px solid rgba(150,150,150,0.5);
+    }
+    div.popup_lizmap_dd ul.nav.nav-tabs li a {
+        border: 1px solid rgba(150,150,150,0.5);
+        border-bottom: none;
+        color: grey;
+    }
+    div.popup_lizmap_dd ul.nav.nav-tabs li.active a {
+        color: #333333;
+    }
+    div.popup_lizmap_dd div.tab-content div.tab-pane div {
+        border: 1px solid rgba(150,150,150,0.5);
+        border-radius: 5px;
+        background-color: rgba(150,150,150,0.5);
+    }
+    div.popup_lizmap_dd div.tab-content div.tab-pane div.field,
+    div.popup_lizmap_dd div.field,
+    div.popup_lizmap_dd div.tab-content div.field {
+        background-color: white;
+        border: 1px solid white;
+    }
+    div.popup_lizmap_dd div.tab-content legend {
+        font-weight: bold;
+        font-size: 1em !important;
+        color: #333333;
+        border-bottom: none;
+        margin-top: 15px !important;
+    }
+
+</style>\n'''
+        return css

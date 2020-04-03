@@ -350,13 +350,13 @@ class TestToolTip(unittest.TestCase):
 
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
+  <li class="active"><a href="#popup_dd_[% $id %]_tab1" data-toggle="tab">tab1</a></li>
 </ul>
 <div class="tab-content">
   <div id="popup_dd_[% $id %]_tab1" class="tab-pane active">
   </div>
 </div>'''
-        self.assertEqual(expected, html_content)
+        self.assertEqual(expected, html_content, html_content)
 
         tab_1.addChildElement(QgsAttributeEditorField('fake_field', -1, tab_1))
 
@@ -438,11 +438,11 @@ class TestToolTip(unittest.TestCase):
         self.maxDiff = None
         expected = '''<ul class="nav nav-tabs">
 
-    <li class="active"><a href="#popup_dd_[% $id %]_tab_1" data-toggle="tab">tab 1</a></li>
+  <li class="active"><a href="#popup_dd_[% $id %]_tab_1" data-toggle="tab">tab 1</a></li>
 
-    <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
+  <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
 
-    <li class="[% if (False, '', 'hidden') %]"><a href="#popup_dd_[% $id %]_invisible" data-toggle="tab">invisible</a></li>
+  <li class="[% if (False, '', 'hidden') %]"><a href="#popup_dd_[% $id %]_invisible" data-toggle="tab">invisible</a></li>
 </ul>
 <div class="tab-content">
   <div id="popup_dd_[% $id %]_tab_1" class="tab-pane active">
@@ -483,4 +483,4 @@ class TestToolTip(unittest.TestCase):
   </div>
 </div>'''
 
-        self.assertEqual(expected, html_content)
+        self.assertEqual(expected, html_content, html_content)
