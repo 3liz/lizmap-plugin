@@ -11,6 +11,7 @@ branches:
   only:
     - master
     - dev
+    - /^v.*$/
 
 jobs:
   include:
@@ -69,9 +70,9 @@ jobs:
       if: tag IS present
       name: Create release, plugins.qgis.org
       install:
-        - pip3 install qgis-plugin-ci
+        - pip3 install git+https://github.com/Gustry/qgis-plugin-ci.git
       before_deploy:
-        - export RELEASE_TITLE="Release of $TRAVIS_TAG"
+        - export RELEASE_TITLE=${TRAVIS_TAG:1}
       script:
         - qgis-plugin-ci -v
       deploy:
@@ -84,6 +85,6 @@ jobs:
             tags: true
 
         - provider: script
-          script: qgis-plugin-ci release ${TRAVIS_TAG} --transifex-token ${TK_TOKEN} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password ${OSGEO_PASSWORD} --create-plugin-repo
+          script: qgis-plugin-ci release ${TRAVIS_TAG} --transifex-token ${TX_TOKEN} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password ${OSGEO_PASSWORD} --create-plugin-repo
           on:
             tags: true

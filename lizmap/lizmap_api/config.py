@@ -54,8 +54,7 @@ from qgis.core import (
 )
 
 from lizmap import DEFAULT_LWC_VERSION
-from lizmap.qgis_plugin_tools.tools.resources import metadata_config
-from lizmap.qgis_plugin_tools.tools.version import format_version_integer
+from lizmap.qgis_plugin_tools.tools.version import format_version_integer, version
 
 
 class LizmapConfigError(Exception):
@@ -74,7 +73,7 @@ class LizmapConfig:
         4: 'none'
     }
 
-    lizmap_version = metadata_config()['general']['version']
+    lizmap_version = version()
     lizmap_version = format_version_integer(lizmap_version.replace('-beta', ''))
     target_lwc_version = format_version_integer('{}.0'.format(DEFAULT_LWC_VERSION.value))
 
