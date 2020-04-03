@@ -7,85 +7,74 @@ python: 3.7
 services:
   - docker
 
-#branches:
-#  only:
-#    - master
-#    - dev
+branches:
+  only:
+    - master
+    - dev
 
 jobs:
   include:
     - stage: Run tests desktop
       name: QGIS Desktop 3.4
-
       before_install:
         - docker pull qgis/qgis:release-3_4
-
       install:
         - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/lizmap:/lizmap -e DISPLAY=:99 qgis/qgis:release-3_4
         - sleep 10
         - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
-
       script:
         - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
 
     - stage: Run tests desktop
       name: QGIS Desktop 3.10
-
       before_install:
         - docker pull qgis/qgis:release-3_10
-
       install:
         - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/lizmap:/lizmap -e DISPLAY=:99 qgis/qgis:release-3_10
         - sleep 10
         - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh lizmap"
-
       script:
         - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh lizmap.qgis_plugin_tools.infrastructure.test_runner.test_package"
 
     - stage: Run tests server
       name: QGIS Server 3.4
-
       before_install:
         - docker pull 3liz/qgis-platform:3.4
-
       install:
         - cd ${TRAVIS_BUILD_DIR}
         - mkdir .local
         - mkdir .cache
-
       script:
         - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.4 ./run-tests.sh
 
     - stage: Run tests server
       name: QGIS Server 3.10
-
       before_install:
         - docker pull 3liz/qgis-platform:3.10
-
       install:
         - cd ${TRAVIS_BUILD_DIR}
         - mkdir .local
         - mkdir .cache
-
       script:
         - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.10 ./run-tests.sh
 
+    - stage: Translations
+      name: Push translations
+      if: branch = master AND type != pull_request
+      install:
+        - pip3 install git+https://github.com/Gustry/qgis-plugin-ci.git
+      script: qgis-plugin-ci push-translation ${TX_TOKEN}
 
     - stage: Deploy
       if: tag IS present
       name: Create release, plugins.qgis.org
-
       install:
         - pip3 install qgis-plugin-ci
-
       before_deploy:
         - export RELEASE_TITLE="Release of $TRAVIS_TAG"
-
       script:
         - qgis-plugin-ci -v
-
       deploy:
-
         - provider: releases
           edge: true
           file: .
@@ -95,6 +84,6 @@ jobs:
             tags: true
 
         - provider: script
-          script: qgis-plugin-ci release ${TRAVIS_TAG} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password ${OSGEO_PASSWORD} --create-plugin-repo
+          script: qgis-plugin-ci release ${TRAVIS_TAG} --transifex-token ${TK_TOKEN} --github-token ${GH_TOKEN} --osgeo-username ${OSGEO_USERNAME} --osgeo-password ${OSGEO_PASSWORD} --create-plugin-repo
           on:
             tags: true

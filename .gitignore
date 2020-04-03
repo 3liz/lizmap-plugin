@@ -21,6 +21,8 @@ dist/
 __output__
 
 lizmap.*.zip
+lizmap/i18n/*.ts
+lizmap/i18n/*.qm
 lizmap.zip
 unittest.qgs
 test/data/points_lines.gpkg-shm

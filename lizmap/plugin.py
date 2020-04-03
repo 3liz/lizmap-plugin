@@ -60,7 +60,6 @@ from qgis.PyQt.QtCore import (
     QTranslator,
     QSettings,
     QUrl,
-    QFileInfo,
 )
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -131,26 +130,13 @@ class Lizmap:
         setup_logger(plugin_name())
 
         locale, file_path = setup_translation(
-            'lizmap_{}.qm', plugin_path('lizmap-locales', 'plugin', 'i18n'))
+            'lizmap_qgis_plugin_{}.qm', plugin_path('i18n'))
         self.locale = locale[0:2]  # For the online help
 
         if file_path:
             self.translator = QTranslator()
             self.translator.load(file_path)
             QCoreApplication.installTranslator(self.translator)
-
-        english_path = plugin_path('lizmap-locales', 'plugin', 'i18n', 'lizmap_en.qm')
-        if not file_path and not QFileInfo(english_path).exists():
-            # It means the submodule is not here.
-            # Either lizmap has been downloaded from Github automatic ZIP
-            # Or git submodule has never been used
-            text = (
-                'The translation submodule has not been found. '
-                'You should do "git submodule init" and "git submodule update" or if you need a new '
-                'clone, do "git clone --recursive https://github.com/3liz/lizmap-plugin.git". '
-                'Finally, restart QGIS.')
-            self.iface.messageBar().pushMessage('Lizmap Submodule', text, Qgis.Warning)
-            LOGGER.warning('Translation is not set, missing the submodule')
 
         self.dlg = LizmapDialog()
         if is_dev_version():
