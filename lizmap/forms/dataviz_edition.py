@@ -14,7 +14,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QColor
 
-from lizmap.html_and_expressions import NEW_FEATURE
+from lizmap.qt_style_sheets import NEW_FEATURE
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType

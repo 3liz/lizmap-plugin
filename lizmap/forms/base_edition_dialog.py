@@ -14,7 +14,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.core import QgsProject
 
 from lizmap import DEFAULT_LWC_VERSION
-from lizmap.html_and_expressions import NEW_FEATURE
+from lizmap.qt_style_sheets import NEW_FEATURE
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.base import InputType
 from lizmap.qgis_plugin_tools.tools.i18n import tr
