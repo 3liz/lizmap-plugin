@@ -10,7 +10,7 @@ kwargs = {}
 
 # Read tag from metadata
 metadata = configparser.ConfigParser()
-metadata.read('metadata.txt')
+metadata.read('lizmap/metadata.txt')
 
 version_tag = metadata['general']['version'].replace("version", "").strip()
 
