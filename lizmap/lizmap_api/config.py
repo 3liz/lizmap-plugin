@@ -228,6 +228,9 @@ class LizmapConfig:
         'datavizTemplate': {
             'wType': 'html', 'type': 'string', 'default': ''
         },
+        'theme': {
+            'wType': 'list', 'type': 'string', 'default': 'light', 'list': ['dark', 'light']
+        },
         'atlasShowAtStartup': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },

@@ -874,11 +874,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <property name="columnCount">
                      <number>1</number>
                     </property>
-                    <attribute name="headerDefaultSectionSize">
-                     <number>57</number>
-                    </attribute>
                     <attribute name="headerMinimumSectionSize">
                      <number>50</number>
+                    </attribute>
+                    <attribute name="headerDefaultSectionSize">
+                     <number>57</number>
                     </attribute>
                     <attribute name="headerStretchLastSection">
                      <bool>true</bool>
@@ -2868,16 +2868,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <string>Dataviz options</string>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_5">
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="label_79">
-                        <property name="styleSheet">
-                         <string notr="true"/>
-                        </property>
-                        <property name="text">
-                         <string>Dataviz container</string>
-                        </property>
-                       </widget>
-                      </item>
                       <item row="0" column="1">
                        <widget class="QComboBox" name="liDatavizContainer">
                         <item>
@@ -2896,6 +2886,26 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                         </item>
                        </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_79">
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="text">
+                         <string>Container</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="label">
+                        <property name="text">
+                         <string>Panel theme</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QComboBox" name="combo_theme"/>
                       </item>
                      </layout>
                     </widget>

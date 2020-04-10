@@ -86,7 +86,7 @@ from qgis.core import (
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
-from lizmap.definitions.dataviz import DatavizDefinitions
+from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
@@ -324,6 +324,7 @@ class Lizmap:
         self.global_options['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
         self.global_options['datavizLocation']['widget'] = self.dlg.liDatavizContainer
         self.global_options['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
+        self.global_options['theme']['widget'] = self.dlg.combo_theme
         self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
         self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
 
@@ -581,8 +582,11 @@ class Lizmap:
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
         self.dlg.btSetExtentFromCanvas.clicked.connect(self.set_initial_extent_from_canvas)
 
-        # Handle tables (locate by layer, edition layers, etc.)
-        #########
+        # Dataviz options
+        for item in Theme:
+            self.global_options['theme']['widget'].addItem(item.value["label"], item.value["data"])
+        index = self.global_options['theme']['widget'].findData(Theme.Light.value["data"])
+        self.global_options['theme']['widget'].setCurrentIndex(index)
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():

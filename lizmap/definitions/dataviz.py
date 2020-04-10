@@ -14,6 +14,18 @@ __revision__ = '$Format:%H$'
 
 
 @unique
+class Theme(Enum):
+    Dark = {
+        'data': 'dark',
+        'label': tr('Dark'),
+    }
+    Light = {
+        'data': 'light',
+        'label': tr('Light'),
+    }
+
+
+@unique
 class GraphType(Enum):
     Scatter = {
         'data': 'scatter',
@@ -270,6 +282,13 @@ class DatavizDefinitions(BaseDefinitions):
         self._general_config['datavizTemplate'] = {
             # 'type': InputType.CheckBox,
             # 'default': False,
+        }
+
+        self._general_config['theme'] = {
+            'type': InputType.List,
+            'items': Theme,
+            'default': Theme.Light,
+            'tooltip': tr('Choose between the theme for the dataviz panel.')
         }
 
     @staticmethod
