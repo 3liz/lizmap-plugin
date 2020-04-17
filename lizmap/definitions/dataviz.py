@@ -275,20 +275,24 @@ class DatavizDefinitions(BaseDefinitions):
         }
 
         self._general_config['datavizLocation'] = {
-            # 'type': InputType.CheckBox,
+            'type': InputType.List,
             # 'default': False,
+            'tooltip': tr('Position of the Dataviz panel in the web interface.'),
+            'version': LwcVersions.Lizmap_3_2,
         }
 
         self._general_config['datavizTemplate'] = {
-            # 'type': InputType.CheckBox,
-            # 'default': False,
+            'type': InputType.MultiLine,
+            'tooltip': tr('You can write our own HTML layout. Follow the documentation online to have an example.'),
+            'version': LwcVersions.Lizmap_3_2,
         }
 
         self._general_config['theme'] = {
             'type': InputType.List,
             'items': Theme,
             'default': Theme.Light,
-            'tooltip': tr('Choose between the theme for the dataviz panel.')
+            'tooltip': tr('Choose the theme for the dataviz panel.'),
+            'version': LwcVersions.Lizmap_3_4,
         }
 
     @staticmethod

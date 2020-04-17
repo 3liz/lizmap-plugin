@@ -96,8 +96,9 @@ class BaseEditionDialog(QDialog):
     def version_lwc(self):
         current_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         current_version = LwcVersions(current_version)
-        found = False
 
+        # For labels in the UI files, which are not part of the definitions.
+        found = False
         for lwc_version, items in self.lwc_versions.items():
             if found:
                 for item in items:
@@ -110,6 +111,7 @@ class BaseEditionDialog(QDialog):
             if lwc_version == current_version:
                 found = True
 
+        # For definition properties
         found = False
         for lwc_version in self.lwc_versions.keys():
             if found:
