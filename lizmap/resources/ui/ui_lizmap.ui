@@ -2888,7 +2888,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item row="0" column="0">
-                       <widget class="QLabel" name="label_79">
+                       <widget class="QLabel" name="label_dataviz_location">
                         <property name="styleSheet">
                          <string notr="true"/>
                         </property>
@@ -2898,7 +2898,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item row="1" column="0">
-                       <widget class="QLabel" name="label">
+                       <widget class="QLabel" name="label_dataviz_theme">
                         <property name="text">
                          <string>Panel theme</string>
                         </property>
@@ -2918,7 +2918,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout">
                    <item>
-                    <widget class="QLabel" name="label_97">
+                    <widget class="QLabel" name="label_dataviz_template">
                      <property name="text">
                       <string>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
                      </property>

@@ -142,6 +142,7 @@ class Lizmap:
         if is_dev_version():
             self.dlg.setWindowTitle('DEV Lizmap {}'.format(version()))
         self.popup_dialog = None
+        self.layers_table = dict()
 
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE)
@@ -423,6 +424,7 @@ class Lizmap:
             item.stateChanged.connect(slot)
 
         # tables of layers
+        # Todo Lizmap 3.4, remove dict init here
         self.layers_table = {
             'atlas': {
                 'tableWidget': self.dlg.table_atlas,
@@ -545,6 +547,12 @@ class Lizmap:
 
             if lwc_version == current_version:
                 found = True
+
+        # Change in all table manager too
+        for key in self.layers_table.keys():
+            manager = self.layers_table[key].get('manager')
+            if manager:
+                manager.set_lwc_version(current_version)
 
         QSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
 

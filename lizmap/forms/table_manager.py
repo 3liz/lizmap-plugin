@@ -25,6 +25,7 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qgis_plugin_tools.tools.version import is_dev_version
+from lizmap.qt_style_sheets import NEW_FEATURE
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -46,6 +47,12 @@ class TableManager:
         self.edit_button = edit_button
         self.up_button = up_button
         self.down_button = down_button
+
+        self.lwc_versions = list()
+        self.lwc_versions.append(LwcVersions.Lizmap_3_1)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_2)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_3)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_4)
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))
@@ -70,6 +77,53 @@ class TableManager:
         # header = self.table.horizontalHeader()
         # header.setSectionResizeMode(QHeaderView.ResizeToContents)
         # header.setSectionResizeMode(0, QHeaderView.Stretch)
+
+        if self.definitions.key() == 'datavizLayers' and self.parent:
+            self.definitions.add_general_widget('datavizLocation', self.parent.liDatavizContainer)
+            self.definitions.add_general_widget('datavizTemplate', self.parent.inDatavizTemplate)
+            self.definitions.add_general_widget('theme', self.parent.combo_theme)
+
+            self.definitions.add_general_label('datavizLocation', self.parent.label_dataviz_location)
+            self.definitions.add_general_label('datavizTemplate', self.parent.label_dataviz_template)
+            self.definitions.add_general_label('theme', self.parent.label_dataviz_theme)
+
+        # Set tooltips
+        for general_config in self.definitions.general_config.values():
+            widget = general_config.get('widget')
+            if not widget:
+                continue
+            tooltip = general_config.get('tooltip')
+            if tooltip:
+                widget.setToolTip(tooltip)
+                label = general_config.get('label')
+                if label:
+                    label.setToolTip(tooltip)
+
+        # Set versions
+        current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        current_version = LwcVersions(current_version)
+        self.set_lwc_version(current_version)
+
+    def set_lwc_version(self, current_version):
+        found = False
+        for lwc_version in self.lwc_versions:
+            if found:
+                for general_config in self.definitions.general_config.values():
+                    version = general_config.get('version')
+                    if version == lwc_version:
+                        label = general_config.get('label')
+                        if label:
+                            label.setStyleSheet(NEW_FEATURE)
+            else:
+                for general_config in self.definitions.general_config.values():
+                    version = general_config.get('version')
+                    if version == lwc_version:
+                        label = general_config.get('label')
+                        if label:
+                            label.setStyleSheet('')
+
+            if lwc_version == current_version:
+                found = True
 
     def _primary_keys(self) -> dict:
         unicity_dict = dict()
