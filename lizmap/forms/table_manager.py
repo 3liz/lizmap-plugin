@@ -251,10 +251,10 @@ class TableManager:
 
     def layers_has_been_deleted(self, layer_ids):
         """When some layers have been deleted from QGIS."""
-        row = self.table.rowCount()
         for layer in layer_ids:
+            row = self.table.rowCount()
             for i in range(row):
-                cell = self.table.item(0, i)
+                cell = self.table.item(i, 0)
                 value = cell.data(Qt.UserRole)
                 if value == layer:
                     self.table.removeRow(i)
