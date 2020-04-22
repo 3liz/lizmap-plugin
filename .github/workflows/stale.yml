@@ -1,0 +1,23 @@
+name: "Close stale issues"
+on:
+  schedule:
+  - cron: "0 0 * * *"
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/stale@v2.0.0
+      with:
+        repo-token: ${{ secrets.GH_TOKEN }}
+        stale-issue-message: |
+          Hiya!
+          This issue has gone quiet. Spooky quiet. 👻
+          We get a lot of issues, so we currently close issues after 60 days of inactivity.
+          It’s been at least 20 days since the last update here.
+          If we missed this issue or if you want to keep it open, please reply here.
+          As a friendly reminder: the best way to see this issue, or any other, fixed is to open a Pull Request.
+          Thanks for being a part of the Lizmap community! 🦎
+        stale-issue-label: 'Stale'
+        exempt-issue-labels: 'Bug,Feature Request'
+        debug-only: true
