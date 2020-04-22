@@ -4,14 +4,13 @@ import re
 
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QPlainTextEdit,
 )
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsSettings
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.qt_style_sheets import NEW_FEATURE
@@ -94,7 +93,7 @@ class BaseEditionDialog(QDialog):
         self.version_lwc()
 
     def version_lwc(self):
-        current_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         current_version = LwcVersions(current_version)
 
         # For labels in the UI files, which are not part of the definitions.

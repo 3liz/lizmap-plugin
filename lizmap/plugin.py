@@ -58,7 +58,6 @@ from typing import Optional
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QTranslator,
-    QSettings,
     QUrl,
 )
 from qgis.PyQt.QtGui import (
@@ -81,6 +80,7 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsApplication,
     QgsMapLayer,
+    QgsSettings,
 )
 
 from lizmap import DEFAULT_LWC_VERSION
@@ -172,7 +172,7 @@ class Lizmap:
                 if lwc_version == DEFAULT_LWC_VERSION:
                     next_release = True if not is_dev_version() else False
 
-        lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         lwc_version = LwcVersions(lwc_version)
         index = self.dlg.combo_lwc_version.findData(lwc_version)
         self.dlg.combo_lwc_version.setCurrentIndex(index)
@@ -554,7 +554,7 @@ class Lizmap:
             if manager:
                 manager.set_lwc_version(current_version)
 
-        QSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+        QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -1564,7 +1564,7 @@ class Lizmap:
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
-        lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         metadata = {
             'lizmap_plugin_version': self.global_options['metadata']['lizmap_plugin_version']['default'],
             'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
@@ -1846,7 +1846,7 @@ class Lizmap:
 
         if is_valid:
             # Check if Qgis/capitaliseLayerName is set
-            settings = QSettings()
+            settings = QgsSettings()
             if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
                 message = tr(
                     'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
@@ -2017,7 +2017,7 @@ class Lizmap:
 
                 # Ask to save the project
                 auto_save = self.dlg.checkbox_save_project.isChecked()
-                QSettings().setValue('lizmap/auto_save_project', auto_save)
+                QgsSettings().setValue('lizmap/auto_save_project', auto_save)
                 if self.project.isDirty():
                     if auto_save:
                         # Do not use QgsProject.write() as it will trigger file
@@ -2153,7 +2153,7 @@ class Lizmap:
             self.onBaselayerCheckboxChange()
             self.setStartupBaselayerFromConfig()
 
-            auto_save = QSettings().value('lizmap/auto_save_project', False, bool)
+            auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
             self.dlg.checkbox_save_project.setChecked(auto_save)
 
             self.isok = 1
