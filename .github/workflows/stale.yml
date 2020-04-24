@@ -1,7 +1,7 @@
 name: "Close stale issues"
 on:
   schedule:
-  - cron: "0 0 * * *"
+  - cron: "35 6 * * *"
 
 jobs:
   stale:
@@ -20,4 +20,3 @@ jobs:
           Thanks for being a part of the Lizmap community! 🦎
         stale-issue-label: 'Stale'
         exempt-issue-labels: 'Bug,Feature Request'
-        debug-only: true
