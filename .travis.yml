@@ -11,7 +11,7 @@ branches:
   only:
     - master
     - dev
-    - /^v.*$/
+    - /^\d+\.\d+\.\d+$/
 
 jobs:
   include:
@@ -72,7 +72,7 @@ jobs:
       install:
         - pip3 install git+https://github.com/Gustry/qgis-plugin-ci.git
       before_deploy:
-        - export RELEASE_TITLE=${TRAVIS_TAG:1}
+        - export RELEASE_TITLE=${TRAVIS_TAG}
       script:
         - qgis-plugin-ci -v
       deploy:
