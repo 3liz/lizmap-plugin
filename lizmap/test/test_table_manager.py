@@ -139,7 +139,7 @@ class TestTableManager(unittest.TestCase):
             None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
         expected = [
             'type', 'title', 'description', 'layerId', 'x_field', 'aggregation',
-            'traces', 'html_template', 'popup_display_child_plot', 'stacked',
+            'traces', 'html_template', 'layout', 'popup_display_child_plot', 'stacked',
             'horizontal', 'only_show_child', 'display_legend', 'display_when_layer_visible',
         ]
         self.assertListEqual(expected, table_manager.keys)
@@ -494,6 +494,7 @@ class TestTableManager(unittest.TestCase):
                 'type': 'scatter',
                 'x_field': 'id',
                 'aggregation': '',
+                'layout': {'1': '2'},
                 'traces': [
                     {
                         'y_field': 'name',
@@ -516,6 +517,7 @@ class TestTableManager(unittest.TestCase):
                     'type': 'scatter',
                     'x_field': 'id',
                     'aggregation': '',
+                    'layout': {'1': '2'},
                     'traces': [
                         {
                             'y_field': 'name',
@@ -540,6 +542,7 @@ class TestTableManager(unittest.TestCase):
                     'type': 'scatter',
                     'x_field': 'id',
                     'aggregation': '',
+                    'layout': {'1': '2'},
                     'traces': [
                         {
                             'y_field': 'name',

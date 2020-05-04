@@ -251,6 +251,16 @@ class TableManager:
                     cell.setData(Qt.ToolTipRole, tr('False'))
                 cell.setTextAlignment(Qt.AlignCenter)
 
+            elif input_type == InputType.Json:
+                if value:
+                    cell.setText(json.dumps(value))
+                    cell.setData(Qt.UserRole, value)
+                    cell.setData(Qt.ToolTipRole, value)
+                else:
+                    cell.setText('')
+                    cell.setData(Qt.UserRole, '')
+                    cell.setData(Qt.ToolTipRole, '')
+
             elif input_type == InputType.List:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
@@ -403,6 +413,8 @@ class TableManager:
                 elif input_type == InputType.Field:
                     layer_data[key] = cell
                 elif input_type == InputType.Fields:
+                    layer_data[key] = cell
+                elif input_type == InputType.Json:
                     layer_data[key] = cell
                 elif input_type == InputType.CheckBox:
                     # Lizmap 4 #176
@@ -647,6 +659,8 @@ class TableManager:
                         layer_data[key] = value
                     elif definition['type'] == InputType.CheckBox:
                         layer_data[key] = True if value in ['true', 'True'] else False
+                    elif definition['type'] == InputType.Json:
+                        layer_data[key] = value
                     elif definition['type'] == InputType.List:
                         layer_data[key] = value
                     elif definition['type'] == InputType.SpinBox:

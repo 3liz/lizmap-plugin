@@ -230,6 +230,13 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('The HTML template.'),
             'version': LwcVersions.Lizmap_3_4,
         }
+        self._layer_config['layout'] = {
+            'type': InputType.Json,
+            'header': tr('Layout'),
+            'default': '',
+            'tooltip': tr('You can add here a JSON configuration to override the default layout object created by Lizmap.'),
+            'version': LwcVersions.Lizmap_3_4,
+        }
         self._layer_config['popup_display_child_plot'] = {
             'type': InputType.CheckBox,
             'header': tr('Popup for children'),

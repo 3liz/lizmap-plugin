@@ -48,6 +48,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('aggregation', self.aggregation)
         self.config.add_layer_widget('traces', self.traces)
         self.config.add_layer_widget('html_template', self.html_template)
+        self.config.add_layer_widget('layout', self.json_layout)
         self.config.add_layer_widget('horizontal', self.horizontal)
         self.config.add_layer_widget('stacked', self.stacked)
         self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
@@ -63,6 +64,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('aggregation', self.label_aggregation)
         self.config.add_layer_label('traces', self.label_traces)
         self.config.add_layer_label('html_template', self.label_html_template)
+        self.config.add_layer_label('html_template', self.label_layout)
 
         # noinspection PyCallByClass,PyArgumentList
         self.add_trace.setText('')
@@ -320,3 +322,14 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             html = self.html_template.text()
             if html == '':
                 return tr('HTML template is mandatory.')
+
+        layout = self.json_layout.text()
+        if layout:
+            import json
+            try:
+                data = json.loads(layout)
+            except json.decoder.JSONDecodeError as e:
+                return tr('JSON layout is not valid : {}').format(str(e))
+
+            if not isinstance(data, dict):
+                return tr('The JSON layout must be a dictionary.')

@@ -1,5 +1,6 @@
 """Base class for the edition dialog."""
 
+import json
 import re
 
 from collections import OrderedDict
@@ -224,6 +225,9 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setValue(value)
             elif definition['type'] == InputType.Text:
                 definition['widget'].setText(value)
+            elif definition['type'] == InputType.Json:
+                if value:
+                    definition['widget'].setText(json.dumps(value))
             elif definition['type'] == InputType.MultiLine:
                 widget = definition['widget']
                 if isinstance(widget, QPlainTextEdit):
@@ -275,6 +279,12 @@ class BaseEditionDialog(QDialog):
                 else:
                     value = definition['widget'].text()
                 value = value.strip(' \t')
+            elif definition['type'] == InputType.Json:
+                text = definition['widget'].text()
+                if text:
+                    value = json.loads(text)
+                else:
+                    value = ''
             elif definition['type'] == InputType.Collection:
                 value = self.save_collection()
             else:
