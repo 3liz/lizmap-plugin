@@ -15,7 +15,8 @@ class InputType(Enum):
     Color = 'Color'  # QgsColorButton
     CheckBox = 'CheckBox'  # QCheckbox
     Field = 'Field'  # QgsFieldMapLayerComboBox
-    Fields = 'Fields'  # QListWidget
+    Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget in qgis_plugin_tools
+    Json = 'Json'  # QTextEdit then JsonEditor, a custom widget in qgis_plugin_tools
     Layer = 'Layer'  # QgsMapLayerComboBox
     Layers = 'Layers'  # ListLayersSelection
     List = 'List'  # QComboBox
