@@ -91,7 +91,7 @@ class AggregationType(Enum):
     }
     No = {
         'data': 'no',
-        'label': 'No',
+        'label': tr('No'),
     }
 
 
