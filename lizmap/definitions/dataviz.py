@@ -112,6 +112,10 @@ class AggregationType(Enum):
         'data': 'last',
         'label': tr('Last'),
     }
+    No = {
+        'data': 'no',
+        'label': tr('No'),
+    }
 
 
 def represent_traces(data) -> str:

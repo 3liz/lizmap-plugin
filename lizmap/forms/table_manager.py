@@ -21,6 +21,7 @@ from qgis.PyQt.QtWidgets import (
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
@@ -349,10 +350,10 @@ class TableManager:
 
     def layers_has_been_deleted(self, layer_ids):
         """When some layers have been deleted from QGIS."""
-        row = self.table.rowCount()
         for layer in layer_ids:
+            row = self.table.rowCount()
             for i in range(row):
-                cell = self.table.item(0, i)
+                cell = self.table.item(i, 0)
                 value = cell.data(Qt.UserRole)
                 if value == layer:
                     self.table.removeRow(i)
@@ -432,6 +433,11 @@ class TableManager:
 
                 if layer_data[key] == '':
                     layer_data.pop(key)
+
+            if self.definitions.key() == 'datavizLayers':
+                if layer_data['type'] == GraphType.Box.value['data']:
+                    if layer_data['aggregation'] == AggregationType.No.value['data']:
+                        layer_data['aggregation'] = ''
 
             if self.definitions.key() == 'editionLayers':
                 capabilities_keys = ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature']
@@ -676,7 +682,9 @@ class TableManager:
                 else:
                     default_value = definition.get('default')
                     if default_value is not None:
-                        if definition['type'] == InputType.List and default_value != '':
+                        if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box' and key == 'aggregation':
+                            layer_data[key] = AggregationType.No.value['data']
+                        elif definition['type'] == InputType.List and default_value != '':
                             layer_data[key] = default_value.value['data']
                         else:
                             layer_data[key] = default_value

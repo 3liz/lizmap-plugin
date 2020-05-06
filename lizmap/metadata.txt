@@ -3,104 +3,22 @@
 name=Lizmap
 qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
-description=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com
-about=Publish QGIS maps to the Web via Lizmap Web Client, by 3liz.com. Documentation : https://docs.lizmap.com
+author=3Liz
+email=info@3liz.com
+description=Publish and share your QGIS maps on the Web via Lizmap Web Client, by 3liz.com
+about=With a few clicks, it's possible to publish and share your QGIS projects on the Web via Lizmap Web Client, by 3liz.com. QGIS Server is used in the background so all the symbology is kept. The edition forms in QGIS are also available. Demo : https://demo.lizmap.com and documentation : https://docs.lizmap.com and hosting solutions https://lizmap.com
 category=Web
 # set -beta for dev version
 version=3.3.99-beta
-; end of mandatory metadata
 
-; start of optional metadata
-changelog=
- Version 3.3.0
- * Enable multiple Lizmap atlas
- * Layer visibility according to a Lizmap group
- * Add option to activate the first map theme defined in QGIS
- * Add dataviz description
- * Add Sunburst chart (and Z field) in Dataviz
- * Add HTML template chart in Dataviz
- * Add stacked and horizontal options for a bar chart in Dataviz
- * Add option to display the legend in Dataviz
- * Add option to display the chart only of the layer is visible
- * Add many options to snap on a list of layers when editing a vector layer geometry
- * Refactor the time manager panel
- Version 3.2.12
- * Fix bug about popup QGIS using the drag&drop layout
- * Improve the plugin management for releasing the plugin
- Version 3.2.11
- * Escape characters in tooltips (drag and drop form)
- * Fix horizontal expanding of the layer list
- * Fix on group visibility expression in Drag&Drop form
- * Improve UI for Histogram 2D in Dataviz
- * Improve continuous integration
- Version 3.2.10
- * Conditional display expression for tabs in drag&drop tooltip
- * Improve form validation when a field is required
- * Add missing icons in dataviz panel
- * Fix default color when editing a row
- * Add feature ID in tabs when using drag&drop tooltip
- * Fix inverted HStore in valuemap when using drag&drop tooltip
- * Allow double click in table for editing
- Version 3.2.9
- * Work on ValueMap widget
- Version 3.2.8
-  * Fix using the plugin with QGIS 3.10
-  * Refactoring the code about drag&drop forms layout
-  * Add up/down buttons in tooltip layers
-  * Alternate row colors in all tables
- Version 3.2.7
-  * Refactor dataviz to be editable
-  * Warn the user if there is an existing tooltip when using drap/drop layout
-  * Add a Lizmap Web Client version combobox
-  * Use icons in enums when possible
-  Version 3.2.6:
-  * Refactor form filter to be editable
-  * Some UX issues with table headers
-  * Fix missing translations
-  * Display field alias when possible
-  * Disable color in tooltip if disabled
-  Version 3.2.5:
-  * Fix Python syntax
-  * Refactor Time Manager panel to be editable
-  Version 3.2.4:
-  * Display color in table
-  * Re-enable color button
-  * Switch to a list to select fields
-  Version 3.2.3:
-  * Fix crash about color button
-  Version 3.2.2:
-  * Fix bug about the new form with locate by layer #210
-  * Refactor Edition panel to be editable
-  * Refactor Attribute Table panel to be editable
-  * Refactor Tooltip panel to be editable
-  * Fix compulsory field in Filter by login
-  Version 3.2.1:
-  * Remove experimental from 3.2.0
-  * Refactor Locate by layer to be editable
-  * Refactor Filter by login to be editable
-  * Remove Lizmap submenu for help and about
-  Version 3.2.0:
-  * Version experimental
-  * Add tooltip about the layer name
-  * Add support for editing existing rows in atlas panel
-  * Some code cleanup about UI connections
+changelog=changelog
+tags=online,server,web,webgis,webservice,webmapping,mobile,publication,wms,wfs,wps,internet,cloud,dashboard
 
-; tags are in comma separated value format, spaces are allowed
-tags=lizmap, server, web, publication, webmapping, WMS, internet
-
-homepage=https://github.com/3liz/lizmap-plugin
+homepage=https://docs.lizmap.com
 tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
+
 icon=resources/icons/icon.png
-
-; experimental flag
 experimental=False
-
-; deprecated flag (applies to the whole plugin and not only to the uploaded version)
 deprecated=False
-
-author=3liz
-email=mdouchin@3liz.com
-
-; server flag
 server=True

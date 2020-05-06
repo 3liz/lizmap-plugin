@@ -483,6 +483,67 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+    def test_dataviz_box(self):
+        """Box chart has an empty key."""
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
+        self.assertTrue(layer.isValid())
+
+        table = QTableWidget()
+        definitions = DatavizDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            '0': {
+                'title': 'My graph',
+                'type': 'box',
+                'x_field': 'id',
+                'aggregation': '',
+                'y_field': 'name',
+                'color': '#00aaff',
+                'colorfield': '',
+                'has_y2_field': 'True',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'colorfield2': '',
+                'popup_display_child_plot': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json()
+
+        expected = {
+            '0': {
+                'title': 'My graph',
+                'type': 'box',
+                'x_field': 'id',
+                'aggregation': '',  # It must stay empty
+                'y_field': 'name',
+                'color': '#00aaff',
+                'y2_field': 'name',
+                'color2': '#ffaa00',
+                'colorfield': '',
+                'colorfield2': '',
+                'display_legend': 'True',
+                'display_when_layer_visible': 'False',
+                'horizontal': 'False',
+                'popup_display_child_plot': 'False',
+                'stacked': 'False',
+                'only_show_child': 'True',
+                'layerId': layer.id(),
+                'order': 0
+            }
+        }
+        self.assertDictEqual(data, expected)
+
     def test_dataviz(self):
         """Test we can read dataviz 3.4 format."""
         table_manager = TableManager(

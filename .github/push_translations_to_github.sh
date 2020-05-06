@@ -1,7 +1,7 @@
 #!/bin/sh
 
 setup_git() {
-  git config --global user.email "gustrimaille@yahoo.fr"
+  git config --global user.email "etrimaille@3liz.com"
   git config --global user.name "3Liz bot"
 }
 
