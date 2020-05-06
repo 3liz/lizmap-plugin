@@ -2,7 +2,7 @@
 from qgis.core import QgsMapLayerProxyModel, QgsProject
 
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
-from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
+from lizmap.definitions.dataviz import DatavizDefinitions, GraphType, AggregationType
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
@@ -110,6 +110,19 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.color_field_2.setVisible(True)
             self.label_y_field_2.setVisible(True)
             self.label_y_color_2.setVisible(True)
+
+        if graph != GraphType.Box:
+            index = self.aggregation.findData(AggregationType.No.value['data'])
+            if index >= 0:
+                self.aggregation.removeItem(index)
+            self.aggregation.setCurrentIndex(0)
+        else:
+            index = self.aggregation.findData(AggregationType.No.value['data'])
+            if index < 0:
+                self.aggregation.addItem(
+                    AggregationType.No.value['label'], AggregationType.No.value['data'])
+            index = self.aggregation.findData(AggregationType.No.value['data'])
+            self.aggregation.setCurrentIndex(index)
 
     def check_y_color_field(self):
         if self.color_field.currentField() == '':
