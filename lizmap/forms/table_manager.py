@@ -15,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qgis_plugin_tools.tools.version import is_dev_version
@@ -319,6 +320,11 @@ class TableManager:
                 if layer_data[key] == '':
                     layer_data.pop(key)
 
+            if self.definitions.key() == 'datavizLayers':
+                if layer_data['type'] == GraphType.Box.value['data']:
+                    if layer_data['aggregation'] == AggregationType.No.value['data']:
+                        layer_data['aggregation'] = ''
+
             if self.definitions.key() == 'editionLayers':
                 capabilities_keys = ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature']
                 layer_data['capabilities'] = {key: layer_data[key] for key in capabilities_keys}
@@ -477,7 +483,9 @@ class TableManager:
                 else:
                     default_value = definition.get('default')
                     if default_value is not None:
-                        if definition['type'] == InputType.List and default_value != '':
+                        if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box' and key == 'aggregation':
+                            layer_data[key] = AggregationType.No.value['data']
+                        elif definition['type'] == InputType.List and default_value != '':
                             layer_data[key] = default_value.value['data']
                         else:
                             layer_data[key] = default_value

@@ -89,6 +89,10 @@ class AggregationType(Enum):
         'data': 'last',
         'label': tr('Last'),
     }
+    No = {
+        'data': 'no',
+        'label': 'No',
+    }
 
 
 class DatavizDefinitions(BaseDefinitions):
