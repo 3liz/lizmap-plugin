@@ -91,6 +91,6 @@ jobs:
 
         - provider: script
           skip_cleanup: true
-          script: ./github/push_translations_to_github.sh
+          script: chmod +x .github/push_translations_to_github.sh; .github/push_translations_to_github.sh
           on:
             tags: true
