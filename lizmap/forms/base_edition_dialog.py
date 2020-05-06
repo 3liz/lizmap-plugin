@@ -87,7 +87,7 @@ class BaseEditionDialog(QDialog):
                 widget = layer_config['widget']
                 if not widget.allowEmptyFieldName():
                     if widget.currentField() == '':
-                        names = re.findall('.[^A-Z]*',  k)
+                        names = re.findall('.[^A-Z]*', k)
                         names = [n.lower() for n in names]
                         msg = tr('The field "{}" is mandatory.'.format(' '.join(names)))
                         return msg

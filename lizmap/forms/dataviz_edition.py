@@ -57,7 +57,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.y_field_2.setAllowEmptyFieldName(True)
         self.color_field.setAllowEmptyFieldName(True)
         self.color_field_2.setAllowEmptyFieldName(True)
-        
+
         self.x_field.setLayer(self.layer.currentLayer())
         self.y_field.setLayer(self.layer.currentLayer())
         self.y_field_2.setLayer(self.layer.currentLayer())

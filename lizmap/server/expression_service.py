@@ -1,14 +1,11 @@
 import traceback
 import json
-from pathlib import Path
-from configparser import ConfigParser
 from typing import Dict
 
 from qgis.core import (
     Qgis,
     QgsMessageLog,
     QgsProject,
-    QgsMapLayer,
     QgsJsonUtils,
     QgsExpression,
     QgsExpressionContext,
@@ -26,7 +23,7 @@ from qgis.server import (
     QgsServerResponse,
 )
 
-from qgis.PyQt.QtCore import QVariant, QTextCodec
+from qgis.PyQt.QtCore import QTextCodec
 
 from .core import (
     write_json_response,
@@ -35,11 +32,13 @@ from .core import (
     ServiceError,
 )
 
+
 class ExpressionServiceError(ServiceError):
 
     def __init__(self, code: str, msg: str, responseCode: int = 500) -> None:
         super().__init__(code, msg, responseCode)
         self.service = 'Expression'
+
 
 class ExpressionService(QgsService):
 
@@ -77,7 +76,7 @@ class ExpressionService(QgsService):
             reqparam = params.get('REQUEST', '').upper()
 
             try:
-                data = bytes(request.data()).decode()
+                bytes(request.data()).decode()
             except Exception:
                 raise ExpressionServiceError(
                     "Bad request error",
@@ -308,7 +307,7 @@ class ExpressionService(QgsService):
             result = {}
             error = {}
             for k, exp in exp_map.items():
-                if addFormScope: # need to prepare the expression because the context as been updated with a new scope
+                if addFormScope:  # need to prepare the expression because the context as been updated with a new scope
                     exp.prepare(exp_context)
                 value = exp.evaluate(exp_context)
                 if exp.hasEvalError():
@@ -385,7 +384,6 @@ class ExpressionService(QgsService):
             if feature:
                 features = '['+feature+']'
 
-
         # create expression context
         exp_context = QgsExpressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
@@ -418,7 +416,6 @@ class ExpressionService(QgsService):
         # without features just replace expression string with layer context
         if not features:
             result = {}
-            error = {}
             for k, s in str_map.items():
                 value = QgsExpression.replaceExpressionText(s, exp_context, da)
                 result[k] = json.loads(QgsJsonUtils.encodeValue(value))
@@ -427,7 +424,6 @@ class ExpressionService(QgsService):
             return
 
         # Check features
-        geojson = []
         try:
             geojson = json.loads(features)
         except Exception:
@@ -489,7 +485,7 @@ class ExpressionService(QgsService):
 
             # Add form scope to expression context
             if addFormScope:
-                exp_context.appendScope(QgsExpressionContextUtils.formScope(feat));
+                exp_context.appendScope(QgsExpressionContextUtils.formScope(feat))
 
             exp_context.setFeature(feat)
             exp_context.setFields(feat.fields())
@@ -504,8 +500,8 @@ class ExpressionService(QgsService):
         write_json_response(body, response)
         return
 
-
-    def getFeatureWithFormScope(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    def getFeatureWithFormScope(
+            self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get filtered features with a form scope
         In parameters:
             LAYER=wms-layer-name
@@ -571,7 +567,6 @@ class ExpressionService(QgsService):
                 "Bad request error",
                 "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed: type not defined or not Feature.".format(form_feature),
                 400)
-
 
         # try to load form feature
         # read fields
@@ -665,7 +660,6 @@ class ExpressionService(QgsService):
             separator = ',\n'
         response.write(']}')
         return
-
 
     def virtualFields(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get virtual fields for features
@@ -832,4 +826,3 @@ class ExpressionService(QgsService):
             separator = ',\n'
         response.write(']}')
         return
-

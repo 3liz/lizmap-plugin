@@ -1579,7 +1579,6 @@ class Lizmap:
                     inputValue = str(item['widget'].isChecked())
 
                 if item['wType'] == 'list':
-                    listDic = {item['list'][i]: i for i in range(0, len(item['list']))}
                     inputValue = item['list'][item['widget'].currentIndex()]
 
                 if item['wType'] == 'layers':
@@ -1607,7 +1606,7 @@ class Lizmap:
                 elif item['type'] == 'integer':
                     try:
                         inputValue = int(inputValue)
-                    except:
+                    except Exception:
                         inputValue = int(item['default'])
 
                 elif item['type'] == 'boolean':
@@ -1628,8 +1627,6 @@ class Lizmap:
                     liz2json['options'].update(data)
                 else:
                     liz2json[key] = data
-
-        wfsLayersList = self.project.readListEntry('WFSLayers', '')[0]
 
         # list of Lizmap external baselayers
         eblTableWidget = self.dlg.twLizmapBaselayers
@@ -1655,7 +1652,6 @@ class Lizmap:
 
         # gui user defined layers options
         for k, v in self.layerList.items():
-            addToCfg = True
             ltype = v['type']
             gal = v['groupAsLayer']
             geometryType = -1

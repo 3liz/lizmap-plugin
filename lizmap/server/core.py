@@ -14,12 +14,14 @@ from qgis.server import (
     QgsServerResponse,
 )
 
+
 def write_json_response(data: Dict[str, str], response: QgsServerResponse, code: int = 200) -> None:
     """ Write data as json response
     """
     response.setStatusCode(code)
     response.setHeader("Content-Type", "application/json")
     response.write(json.dumps(data))
+
 
 def findVectorLayer(layername: str, project: QgsProject) -> QgsVectorLayer:
     """ Find vector layer with name, short name or layer id """
@@ -38,12 +40,14 @@ def findVectorLayer(layername: str, project: QgsProject) -> QgsVectorLayer:
             return l
     return None
 
+
 def getServerFid(feature: QgsFeature, pkAttributes: []) -> str:
     """ Build server feature id """
     if not pkAttributes:
         return str(feature.id())
 
     return '@@'.join([str(feature.attributes(pk)) for pk in pkAttributes])
+
 
 class ServiceError(Exception):
 

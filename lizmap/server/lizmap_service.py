@@ -1,5 +1,4 @@
 import traceback
-import json
 from pathlib import Path
 from configparser import ConfigParser
 from typing import Dict
@@ -8,33 +7,26 @@ from qgis.core import (
     Qgis,
     QgsMessageLog,
     QgsProject,
-    QgsMapLayer,
-    QgsJsonUtils,
-    QgsExpression,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
-    QgsDistanceArea,
-    QgsFeature,
-    QgsFields,
 )
 
 from qgis.server import (
     QgsService,
     QgsServerRequest,
     QgsServerResponse,
+    QgsServerInterface,
 )
-
-from qgis.PyQt.QtCore import QVariant, QTextCodec
 
 from .core import (
     write_json_response,
     ServiceError,
 )
 
+
 class LizmapServiceError(ServiceError):
 
     def __init__(self, code: str, msg: str, responseCode: int = 500) -> None:
         super().__init__(code, msg, responseCode)
+
 
 class LizmapService(QgsService):
 
@@ -73,7 +65,7 @@ class LizmapService(QgsService):
             reqparam = params.get('REQUEST', '').upper()
 
             try:
-                data = bytes(request.data()).decode()
+                bytes(request.data()).decode()
             except Exception:
                 raise LizmapServiceError(
                     "Bad request error",
