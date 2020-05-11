@@ -1,7 +1,13 @@
+__copyright__ = "Copyright 2020, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
+__revision__ = "$Format:%H$"
+
 import traceback
-from pathlib import Path
-from configparser import ConfigParser
+
 from typing import Dict
+
+from osgeo import gdal
 
 from qgis.core import (
     Qgis,
@@ -20,6 +26,9 @@ from .core import (
     write_json_response,
     ServiceError,
 )
+
+from lizmap.qgis_plugin_tools.tools.version import version
+from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 
 
 class LizmapServiceError(ServiceError):
@@ -87,7 +96,6 @@ class LizmapService(QgsService):
             err = LizmapServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
-    # Lizmap Service request methods
     def getserversettings(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get Lizmap Server settings
         """
@@ -95,6 +103,7 @@ class LizmapService(QgsService):
         # create the body
         body = {
             'qgis': {},
+            'gdalogr': {},
             'services': [],
             'lizmap': {},
         }
@@ -103,6 +112,11 @@ class LizmapService(QgsService):
         qgis_version_splitted = Qgis.QGIS_VERSION.split('-')
         body['qgis']['version'] = qgis_version_splitted[0]
         body['qgis']['name'] = qgis_version_splitted[1]
+        body['qgis']['version_int'] = Qgis.QGIS_VERSION_INT
+
+        # GDAL/OGR
+        body['gdalogr']['name'] = gdal.VersionInfo('NAME')
+        body['gdalogr']['version_int'] = gdal.VersionInfo('VERSION_NUM')
 
         reg = self.server_iface.serviceRegistry()
         services = ['WMS', 'WFS', 'WCS', 'WMTS', 'ATLAS', 'CADASTRE', 'EXPRESSION', 'LIZMAP']
@@ -110,13 +124,9 @@ class LizmapService(QgsService):
             if reg.getService(s):
                 body['services'].append(s)
 
-        # lizmap plugin metadata.
-        metadata_file = Path(__file__).resolve().parent.parent / 'metadata.txt'
-        if metadata_file.is_file():
-            config = ConfigParser()
-            config.read(str(metadata_file))
-            body['lizmap']['name'] = config.get('general', 'name')
-            body['lizmap']['version'] = config.get('general', 'version')
+        # Lizmap plugin metadata.
+        body['lizmap']['name'] = plugin_name()
+        body['lizmap']['version'] = version()
 
         write_json_response(body, response)
         return
