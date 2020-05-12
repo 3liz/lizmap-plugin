@@ -1221,7 +1221,7 @@ class Lizmap:
                 child_id = child.name()
                 child_type = 'group'
                 # noinspection PyCallByClass,PyArgumentList
-                child_icon = QIcon(QgsApplication.iconPath('mActionAddGroup.svg'))
+                child_icon = QIcon(QgsApplication.iconPath('mActionFolder.svg'))
             elif isinstance(child, QgsLayerTreeLayer):
                 child_id = child.layerId()
                 child_type = 'layer'
