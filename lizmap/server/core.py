@@ -25,19 +25,19 @@ def write_json_response(data: Dict[str, str], response: QgsServerResponse, code:
 
 def findVectorLayer(layername: str, project: QgsProject) -> QgsVectorLayer:
     """ Find vector layer with name, short name or layer id """
-    for l in project.mapLayers().values():
-        # only vectorlayer
-        if l.type() != QgsMapLayer.VectorLayer:
+    for layer in project.mapLayers().values():
+        # only vector layer
+        if layer.type() != QgsMapLayer.VectorLayer:
             continue
         # check name
-        if l.name() == layername:
-            return l
+        if layer.name() == layername:
+            return layer
         # check short name
-        if l.shortName() == layername:
-            return l
+        if layer.shortName() == layername:
+            return layer
         # check layer id
-        if l.id() == layername:
-            return l
+        if layer.id() == layername:
+            return layer
     return None
 
 

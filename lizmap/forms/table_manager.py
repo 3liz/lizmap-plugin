@@ -401,9 +401,9 @@ class TableManager:
         new_data['layers'] = []
 
         def layer_from_order(layers, row):
-            for l in layers.values():
-                if l['order'] == row:
-                    return l
+            for one_layer in layers.values():
+                if one_layer['order'] == row:
+                    return one_layer
 
         order = []
         for layer in data.values():
