@@ -997,7 +997,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <string>If the layer is displayed by default</string>
                              </property>
                              <property name="text">
-                              <string>Toggled?</string>
+                              <string>Toggled</string>
                              </property>
                              <property name="checked">
                               <bool>true</bool>
@@ -1010,7 +1010,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <string>If the layer is displayed in the legend</string>
                              </property>
                              <property name="text">
-                              <string>Display in Legend tree</string>
+                              <string>Display in legend tree</string>
                              </property>
                              <property name="checked">
                               <bool>true</bool>
@@ -1038,7 +1038,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <string>If we want to hide the legend content of the layer in the legend panel</string>
                            </property>
                            <property name="text">
-                            <string>Hide legend image?</string>
+                            <string>Hide legend image</string>
                            </property>
                           </widget>
                          </item>
@@ -1050,14 +1050,14 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <string>Useful for groups, we want to manage all layers inluded in the group as a single layer</string>
                              </property>
                              <property name="text">
-                              <string>Group as layer?</string>
+                              <string>Group as layer</string>
                              </property>
                             </widget>
                            </item>
                            <item>
                             <widget class="QCheckBox" name="cbLayerIsBaseLayer">
                              <property name="text">
-                              <string>Base layer?</string>
+                              <string>Base layer</string>
                              </property>
                             </widget>
                            </item>
@@ -1295,7 +1295,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            <item>
                             <widget class="QLabel" name="label_18">
                              <property name="text">
-                              <string>Browser client cache?</string>
+                              <string>Browser client cache</string>
                              </property>
                              <property name="wordWrap">
                               <bool>true</bool>
@@ -1304,15 +1304,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            </item>
                            <item>
                             <widget class="QSpinBox" name="inClientCacheExpiration">
+                             <property name="suffix">
+                              <string> s</string>
+                             </property>
                              <property name="maximum">
                               <number>2592000</number>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLabel" name="label_20">
-                             <property name="text">
-                              <string>seconds</string>
                              </property>
                             </widget>
                            </item>
@@ -1387,7 +1383,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <string>If Lizmap must call this layer as a single tile. This is incompatible with server tile cache.</string>
                            </property>
                            <property name="text">
-                            <string>Single Tile?</string>
+                            <string>Single tile</string>
                            </property>
                            <property name="checked">
                             <bool>true</bool>
@@ -1416,7 +1412,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <widget class="QLabel" name="label_12">
                            <property name="text">
-                            <string>Expiration (seconds)</string>
+                            <string>Expiration</string>
                            </property>
                            <property name="wordWrap">
                             <bool>true</bool>
@@ -1425,6 +1421,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </item>
                          <item>
                           <widget class="QSpinBox" name="inCacheExpiration">
+                           <property name="suffix">
+                            <string> s</string>
+                           </property>
                            <property name="maximum">
                             <number>2592000</number>
                            </property>
