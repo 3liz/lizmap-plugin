@@ -964,7 +964,7 @@ class Lizmap:
             rows = widget.rowCount()
             if rows >= 1:
                 self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
-                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated'.format(key))
+                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated')
         else:
             LOGGER.info('Table "{}" has been loaded'.format(key))
 
