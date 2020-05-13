@@ -125,6 +125,7 @@ class TestTableManager(unittest.TestCase):
 
         expected = {
             'lines': {
+                'edition_only': 'False',
                 'filterAttribute': 'name',
                 'filterPrivate': 'False',
                 'layerId': self.layer.id(),

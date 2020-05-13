@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>390</width>
-    <height>153</height>
+    <width>389</width>
+    <height>188</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,20 +39,20 @@
      <item row="1" column="1">
       <widget class="QgsFieldComboBox" name="field"/>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_filter_user">
-       <property name="text">
-        <string>Filter by user</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="1">
       <widget class="QCheckBox" name="filter_by_user">
        <property name="text">
-        <string/>
+        <string>Filter by user</string>
        </property>
        <property name="checked">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="edition_only">
+       <property name="text">
+        <string>Edition only</string>
        </property>
       </widget>
      </item>

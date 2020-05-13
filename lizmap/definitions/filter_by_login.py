@@ -1,6 +1,7 @@
 """Definitions for filter by login."""
 
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -30,6 +31,13 @@ class FilterByLoginDefinitions(BaseDefinitions):
             'header': tr('Filter by user'),
             'default': False,
             'tooltip': tr('If Lizmap should use the group or the username for filtering data.')
+        }
+        self._layer_config['edition_only'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Edition only'),
+            'default': False,
+            'tooltip': tr('If this filter is used for edition capabilities only.'),
+            'version': LwcVersions.Lizmap_3_4,
         }
 
     @staticmethod
