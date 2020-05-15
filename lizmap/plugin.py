@@ -991,7 +991,7 @@ class Lizmap:
             rows = widget.rowCount()
             if rows >= 1:
                 self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
-                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated'.format(key))
+                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated')
         else:
             LOGGER.info('Table "{}" has been loaded'.format(key))
 
@@ -1248,7 +1248,7 @@ class Lizmap:
                 child_id = child.name()
                 child_type = 'group'
                 # noinspection PyCallByClass,PyArgumentList
-                child_icon = QIcon(QgsApplication.iconPath('mActionAddGroup.svg'))
+                child_icon = QIcon(QgsApplication.iconPath('mActionFolder.svg'))
             elif isinstance(child, QgsLayerTreeLayer):
                 child_id = child.layerId()
                 child_type = 'layer'
@@ -1606,7 +1606,6 @@ class Lizmap:
                     inputValue = str(item['widget'].isChecked())
 
                 if item['wType'] == 'list':
-                    listDic = {item['list'][i]: i for i in range(0, len(item['list']))}
                     inputValue = item['list'][item['widget'].currentIndex()]
 
                 if item['wType'] == 'layers':
@@ -1634,7 +1633,7 @@ class Lizmap:
                 elif item['type'] == 'integer':
                     try:
                         inputValue = int(inputValue)
-                    except:
+                    except Exception:
                         inputValue = int(item['default'])
 
                 elif item['type'] == 'boolean':
@@ -1655,8 +1654,6 @@ class Lizmap:
                     liz2json['options'].update(data)
                 else:
                     liz2json[key] = data
-
-        wfsLayersList = self.project.readListEntry('WFSLayers', '')[0]
 
         # list of Lizmap external baselayers
         eblTableWidget = self.dlg.twLizmapBaselayers
@@ -1682,7 +1679,6 @@ class Lizmap:
 
         # gui user defined layers options
         for k, v in self.layerList.items():
-            addToCfg = True
             ltype = v['type']
             gal = v['groupAsLayer']
             geometryType = -1

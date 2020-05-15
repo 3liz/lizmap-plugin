@@ -20,11 +20,12 @@ dist/
 .pytest_cache
 __output__
 
+*.qgz
 lizmap.*.zip
 lizmap/i18n/lizmap_qgis_plugin_*.ts
 # lizmap/i18n/lizmap_qgis_plugin_*.qm
 lizmap.zip
 unittest.qgs
-test/data/points_lines.gpkg-shm
-test/data/points_lines.gpkg-wal
-test/data/lizmap_3_3.qgs.cfg.back
+lizmap/test/data/points_lines.gpkg-shm
+lizmap/test/data/points_lines.gpkg-wal
+lizmap/test/data/lizmap_3_3.qgs.cfg.back

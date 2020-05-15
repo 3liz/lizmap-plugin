@@ -94,7 +94,7 @@ class TestEditionDialog(unittest.TestCase):
         data = dialog.save_form()
         self.assertEqual(len(data), len(dialog.config.layer_config.keys()))
 
-        first_field = self.layer.fields().at(0).name()
+        # first_field = layer.fields().at(0).name()
 
         for key, value in data.items():
 

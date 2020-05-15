@@ -160,7 +160,7 @@ class BaseEditionDialog(QDialog):
 
                 if not widget.allowEmptyFieldName():
                     if widget.currentField() == '':
-                        names = re.findall('.[^A-Z]*',  k)
+                        names = re.findall('.[^A-Z]*', k)
                         names = [n.lower().replace('_', ' ') for n in names]
                         msg = tr('The field "{}" is mandatory.'.format(' '.join(names)))
                         return msg

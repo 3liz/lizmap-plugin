@@ -34,4 +34,3 @@ class LizmapServer:
         except Exception as e:
             QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
             raise
-

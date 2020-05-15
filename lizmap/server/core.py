@@ -14,6 +14,7 @@ from qgis.server import (
     QgsServerResponse,
 )
 
+
 def write_json_response(data: Dict[str, str], response: QgsServerResponse, code: int = 200) -> None:
     """ Write data as json response
     """
@@ -21,22 +22,24 @@ def write_json_response(data: Dict[str, str], response: QgsServerResponse, code:
     response.setHeader("Content-Type", "application/json")
     response.write(json.dumps(data))
 
+
 def findVectorLayer(layername: str, project: QgsProject) -> QgsVectorLayer:
     """ Find vector layer with name, short name or layer id """
-    for l in project.mapLayers().values():
-        # only vectorlayer
-        if l.type() != QgsMapLayer.VectorLayer:
+    for layer in project.mapLayers().values():
+        # only vector layer
+        if layer.type() != QgsMapLayer.VectorLayer:
             continue
         # check name
-        if l.name() == layername:
-            return l
+        if layer.name() == layername:
+            return layer
         # check short name
-        if l.shortName() == layername:
-            return l
+        if layer.shortName() == layername:
+            return layer
         # check layer id
-        if l.id() == layername:
-            return l
+        if layer.id() == layername:
+            return layer
     return None
+
 
 def getServerFid(feature: QgsFeature, pkAttributes: []) -> str:
     """ Build server feature id """
@@ -44,6 +47,7 @@ def getServerFid(feature: QgsFeature, pkAttributes: []) -> str:
         return str(feature.id())
 
     return '@@'.join([str(feature.attributes(pk)) for pk in pkAttributes])
+
 
 class ServiceError(Exception):
 
