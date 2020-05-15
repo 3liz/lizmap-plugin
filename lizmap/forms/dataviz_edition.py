@@ -17,7 +17,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from lizmap.qt_style_sheets import NEW_FEATURE
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
-from lizmap.definitions.dataviz import DatavizDefinitions, GraphType, AggregationType
+from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog

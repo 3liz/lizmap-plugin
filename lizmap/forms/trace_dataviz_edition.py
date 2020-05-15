@@ -1,18 +1,14 @@
 """Dialog for editing a trace in the dataviz window."""
 from collections import OrderedDict
 
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QAbstractItemView, QDialog, QDialogButtonBox
-from qgis.core import (
-    QgsMapLayerProxyModel,
-    QgsProject,
-    QgsApplication,
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
 )
-from qgis.PyQt.QtGui import QIcon, QColor
+from qgis.PyQt.QtGui import QColor
 
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
-from lizmap.definitions.definitions import LwcVersions
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
