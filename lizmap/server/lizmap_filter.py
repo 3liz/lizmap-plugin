@@ -51,14 +51,14 @@ class LizmapFilter(QgsServerFilter):
             config_path = self.iface.configFilePath()
             if not os.path.exists(config_path):
                 # QGIS Project path does not exist as a file
-                # The request can be  evaluated by QGIS Server
+                # The request can be evaluated by QGIS Server
                 return
 
             # Get Lizmap config path
             config_path += '.cfg'
             if not os.path.exists(config_path):
                 # Lizmap config path does not exist
-                # The request can be  evaluated by QGIS Server
+                # The request can be evaluated by QGIS Server
                 return
 
             # Get Lizmap config
@@ -68,19 +68,19 @@ class LizmapFilter(QgsServerFilter):
                     cfg = json.loads(cfg_file.read())
                 except Exception:
                     # Lizmap config is not a valid JSON file
-                    # The request can be  evaluated by QGIS Server
+                    # The request can be evaluated by QGIS Server
                     return
 
             if not cfg:
                 # Lizmap config is empty
-                # The request can be  evaluated by QGIS Server
+                # The request can be evaluated by QGIS Server
                 return
 
             # Check project acl option
             cfg_options = cfg['options']
             if 'acl' not in cfg_options or not cfg_options['acl']:
                 # No acl defined
-                # The request can be  evaluated by QGIS Server
+                # The request can be evaluated by QGIS Server
                 return
 
             # Get project acl option
@@ -98,7 +98,7 @@ class LizmapFilter(QgsServerFilter):
             groups = [g.strip() for g in groups]
 
             # If one Lizmap user group provided in request headers is
-            # defined in project acl option, the request can be  evaluated
+            # defined in project acl option, the request can be evaluated
             # by QGIS Server
             for g in groups:
                 if g in cfg_acl:
