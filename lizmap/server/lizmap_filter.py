@@ -79,6 +79,13 @@ class LizmapFilter(QgsServerFilter):
                 # The request can be evaluated by QGIS Server
                 return
 
+            # Check Lizmap config options
+            if 'options' not in cfg or not cfg['options']:
+                # Lizmap config has no options
+                QgsMessageLog.logMessage("Lizmap config has no options", "lizmap", Qgis.Warning)
+                # The request can be evaluated by QGIS Server
+                return
+
             # Check project acl option
             cfg_options = cfg['options']
             if 'acl' not in cfg_options or not cfg_options['acl']:
