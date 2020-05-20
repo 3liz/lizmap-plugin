@@ -58,6 +58,7 @@ class LizmapFilter(QgsServerFilter):
             config_path += '.cfg'
             if not os.path.exists(config_path):
                 # Lizmap config path does not exist
+                QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
                 # The request can be evaluated by QGIS Server
                 return
 
@@ -68,13 +69,13 @@ class LizmapFilter(QgsServerFilter):
                     cfg = json.loads(cfg_file.read())
                 except Exception:
                     # Lizmap config is not a valid JSON file
-                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Debug)
+                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Error)
                     # The request can be evaluated by QGIS Server
                     return
 
             if not cfg:
                 # Lizmap config is empty
-                QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Debug)
+                QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
                 # The request can be evaluated by QGIS Server
                 return
 
@@ -82,19 +83,19 @@ class LizmapFilter(QgsServerFilter):
             cfg_options = cfg['options']
             if 'acl' not in cfg_options or not cfg_options['acl']:
                 # No acl defined
-                QgsMessageLog.logMessage("No acl defined in Lizmap config", "lizmap", Qgis.Debug)
+                QgsMessageLog.logMessage("No acl defined in Lizmap config", "lizmap", Qgis.Info)
                 # The request can be evaluated by QGIS Server
                 return
 
             # Get project acl option
             cfg_acl = cfg_options['acl']
-            QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Debug)
+            QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Info)
 
             # Get request headers
             handler = self.iface.requestHandler()
             headers = handler.requestHeaders()
             if not headers:
-                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Debug)
+                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Info)
                 return
 
             # Get Lizmap user groups defined in request headers
