@@ -68,11 +68,13 @@ class LizmapFilter(QgsServerFilter):
                     cfg = json.loads(cfg_file.read())
                 except Exception:
                     # Lizmap config is not a valid JSON file
+                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Debug)
                     # The request can be evaluated by QGIS Server
                     return
 
             if not cfg:
                 # Lizmap config is empty
+                QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Debug)
                 # The request can be evaluated by QGIS Server
                 return
 
@@ -80,17 +82,19 @@ class LizmapFilter(QgsServerFilter):
             cfg_options = cfg['options']
             if 'acl' not in cfg_options or not cfg_options['acl']:
                 # No acl defined
+                QgsMessageLog.logMessage("No acl defined in Lizmap config", "lizmap", Qgis.Debug)
                 # The request can be evaluated by QGIS Server
                 return
 
             # Get project acl option
             cfg_acl = cfg_options['acl']
+            QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Debug)
 
             # Get request headers
             handler = self.iface.requestHandler()
             headers = handler.requestHeaders()
             if not headers:
-                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Critical)
+                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Debug)
                 return
 
             # Get Lizmap user groups defined in request headers
