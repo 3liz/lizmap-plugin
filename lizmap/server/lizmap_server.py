@@ -6,6 +6,7 @@ from qgis.server import QgsServerInterface
 from .expression_service import ExpressionService
 from .lizmap_service import LizmapService
 from .lizmap_filter import LizmapFilter
+from .lizmap_accesscontrol import LizmapAccessControlFilter
 
 
 class LizmapServer:
@@ -31,6 +32,13 @@ class LizmapServer:
         # Add filter
         try:
             serverIface.registerFilter(LizmapFilter(self.server_iface), 50)
+        except Exception as e:
+            QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
+            raise
+
+        # Add Access Control
+        try:
+            serverIface.registerAccessControl(LizmapAccessControlFilter(self.server_iface), 100)
         except Exception as e:
             QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
             raise
