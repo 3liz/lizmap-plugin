@@ -15,9 +15,9 @@ LOGGER.setLevel(logging.DEBUG)
 from typing import Any, Mapping, Dict, Generator
 
 from qgis.core import Qgis, QgsApplication, QgsProject,QgsFontUtils
-from qgis.server import (QgsServer, 
-                         QgsServerRequest, 
-                         QgsBufferServerRequest, 
+from qgis.server import (QgsServer,
+                         QgsServerRequest,
+                         QgsBufferServerRequest,
                          QgsBufferServerResponse)
 
 qgis_application = None
@@ -77,7 +77,7 @@ class OWSResponse:
     @property
     def xml(self) -> 'xml':
         if self._xml is None and self._resp.headers().get('Content-Type','').find('text/xml')==0:
-            self._xml = lxml.etree.fromstring(self.content.decode('utf-8'))
+            self._xml = lxml.etree.fromstring(self.content)
         return self._xml
 
     @property
@@ -147,7 +147,7 @@ def client(request):
     return _Client()
 
 
-## 
+##
 ## Plugins
 ##
 
@@ -206,7 +206,7 @@ def find_plugins(pluginpath: str) -> Generator[str,None,None]:
                     Qgis.QGIS_VERSION.split('-')[0]))
             continue
 
-        yield os.path.basename(plugin)        
+        yield os.path.basename(plugin)
 
 
 server_plugins = {}
