@@ -1,0 +1,158 @@
+import json
+import logging
+import warnings
+
+LOGGER = logging.getLogger('server')
+
+__copyright__ = 'Copyright 2019, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+__revision__ = '$Format:%H$'
+
+
+def test_no_lizmap_config(client):
+    """
+    Test Access Control response with a project without
+    lizmap config
+    """
+    projectfile = "france_parts.qgs"
+
+    # Make a request without LIZMAP_USER_GROUPS
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts.qgs"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with 1 group
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts.qgs&LIZMAP_USER_GROUPS=test1"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with 2 groups
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts.qgs&LIZMAP_USER_GROUPS=test1,test2"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+
+
+def test_no_group_visibility(client):
+    """
+    Test Access Control response with a project with
+    lizmap config without a group visibility
+    """
+    projectfile = "france_parts_liz.qgs"
+
+    # Make a request with LIZMAP_USER_GROUPS
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz.qgs"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with 1 group
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz.qgs&LIZMAP_USER_GROUPS=test1"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request without LIZMAP_USER_GROUPS with 2 groups
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz.qgs&LIZMAP_USER_GROUPS=test1,test2"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+
+
+def test_group_visibility(client):
+    """
+    Test Access Control response with a project with
+    lizmap config with a group visibility
+    """
+    projectfile = "france_parts_liz_grp_v.qgs"
+
+    # Make a request with LIZMAP_USER_GROUPS
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz_grp_v.qgs"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with 1 group not authorized
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz_grp_v.qgs&LIZMAP_USER_GROUPS=test1"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 1
+
+    # Make a request with LIZMAP_USER_GROUPS with 1 group authorized
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz_grp_v.qgs&LIZMAP_USER_GROUPS=test2"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request without LIZMAP_USER_GROUPS with 2 groups which 1 is authorized
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz_grp_v.qgs&LIZMAP_USER_GROUPS=test1,test2"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with anonymous group not authorized
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz_grp_v.qgs&LIZMAP_USER_GROUPS="
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 1
+
