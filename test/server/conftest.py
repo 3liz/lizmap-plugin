@@ -129,10 +129,10 @@ def client(request):
         def getprojectpath(self, name: str) -> str:
             return self.datapath.join(name)
 
-        def get(self, query: str, project: str=None) -> OWSResponse:
+        def get(self, query: str, project: str=None, headers: Dict[str, str]={}) -> OWSResponse:
             """ Return server response from query
             """
-            request  = QgsBufferServerRequest(query, QgsServerRequest.GetMethod, {}, None)
+            request  = QgsBufferServerRequest(query, QgsServerRequest.GetMethod, headers, None)
             response = QgsBufferServerResponse()
             if project is not None and not os.path.isabs(project):
                 projectpath = self.datapath.join(project)
