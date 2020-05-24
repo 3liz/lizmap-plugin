@@ -100,7 +100,60 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         return super().allowToEdit(layer, feature)
 
     def cacheKey(self) -> str:
-        return super().cacheKey()
+        """ The key used to cache documents """
+        defaultCacheKey = super().cacheKey()
+
+        # Get Lizmap user groups provided by the request
+        groups = self.getLizmapGroups()
+
+        # If groups is empty, no Lizmap user groups provided by the request
+        # The default cache key is returned
+        if len(groups) == 0:
+            return defaultCacheKey
+
+        # Get Lizmap config
+        cfg = self.getLizmapConfig()
+        if not cfg:
+            # Lizmap config is empty
+            QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
+            # The default cache key is returned
+            return defaultCacheKey
+
+        # Check Lizmap config layers
+        if 'layers' not in cfg or not cfg['layers']:
+            # Lizmap config has no options
+            QgsMessageLog.logMessage("Lizmap config has no layers", "lizmap", Qgis.Warning)
+            # The default cache key is returned
+            return defaultCacheKey
+
+        # Check group_visibility in Lizmap config layers
+        cfg_layers = cfg['layers']
+        hasGroupVisibility = False
+        for l_name, cfg_layer in cfg_layers.items():
+            # check group_visibility in config
+            if 'group_visibility' not in cfg_layer or not cfg_layer['group_visibility']:
+                continue
+
+            # get group_visibility as list
+            group_visibility = cfg_layer['group_visibility'].split(',')
+            group_visibility = [g.strip() for g in group_visibility]
+
+            # the group_visibility was just an empty string
+            if len(group_visibility) == 1 and groups[0] == '':
+                continue
+
+            hasGroupVisibility = True
+            break
+
+        # group_visibility option is defined in Lizmap config layers
+        if hasGroupVisibility:
+            # The group provided in request is anonymous
+            if len(groups) == 1 and groups[0] == '':
+                return '@@'
+            # for other groups, removing duplicates and joining
+            return '@@'.join(list(set(groups)))
+
+        return defaultCacheKey
 
     def getLizmapConfig(self) -> 'Dict':
         """ Get Lizmap config """
