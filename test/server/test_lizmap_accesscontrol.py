@@ -156,3 +156,67 @@ def test_group_visibility(client):
     assert layers is not None
     assert len(layers) == 1
 
+
+
+def test_group_visibility_headers(client):
+    """
+    Test Access Control response with a project with
+    lizmap config with a group visibility
+    and groups provided in headers
+    """
+    projectfile = "france_parts_liz_grp_v.qgs"
+
+    # Make a request without LIZMAP_USER_GROUPS
+    qs = "?SERVICE=WMS&REQUEST=GetCapabilities&MAP=france_parts_liz_grp_v.qgs"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with 1 group not authorized
+    headers = {'X-Lizmap-User-Groups': 'test1'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 1
+
+    # Make a request with LIZMAP_USER_GROUPS with 1 group authorized
+    headers = {'X-Lizmap-User-Groups': 'test2'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with 2 groups which 1 is authorized
+    headers = {'X-Lizmap-User-Groups': 'test1,test2'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 2
+
+    # Make a request with LIZMAP_USER_GROUPS with anonymous group not authorized
+    headers = {'X-Lizmap-User-Groups': ''}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 1
