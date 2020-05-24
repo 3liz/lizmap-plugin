@@ -28,6 +28,14 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Get default layer rights
         rights = super().layerPermissions(layer)
 
+        # Get Lizmap user groups provided by the request
+        groups = self.getLizmapGroups()
+
+        # If groups is empty, no Lizmap user groups provided by the request
+        # The default layer rights is applied
+        if len(groups) == 0:
+            return rights
+
         # Get Lizmap config
         cfg = self.getLizmapConfig()
         if not cfg:
@@ -43,9 +51,72 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             # Default layer rights applied
             return rights
 
-        # Check Lizmap layer config
+        # Get layers config
         cfg_layers = cfg['layers']
+        # Get layer name
         layer_name = layer.name()
+
+        # Check lizmap edition config
+        layer_id = layer.id()
+        if 'editionLayers' in cfg and cfg['editionLayers']:
+            if layer_id in cfg['editionLayers'] and cfg['editionLayers'][layer_id]:
+                edit_layer = cfg['editionLayers'][layer_id]
+
+                # Check if edition is possible
+                # By default not
+                canEdit = False
+                if 'acl' in edit_layer and edit_layer['acl']:
+                    # acl is defined and not an empty string
+                    # authorization defined for edition
+                    group_edit = edit_layer['acl'].split(',')
+                    group_edit = [g.strip() for g in group_edit]
+
+                    # check if a group is in authorization groups list
+                    if len(group_edit) != 0:
+                        for g in groups:
+                            if g in group_edit:
+                                canEdit = True
+                    else:
+                        canEdit = True
+                else:
+                    # acl is not defined or an empty string
+                    # no authorization defined for edition
+                    canEdit = True
+
+                if canEdit and 'capabilities' in edit_layer and edit_layer['capabilities']:
+                    # A user group can edit the layer and capabilities
+                    # edition for the layer is defined in Lizmap edition config
+                    edit_layer_cap = cfg['editionLayers'][layer_id]['capabilities']
+                    if edit_layer_cap['createFeature'] == 'True':
+                        rights.canInsert = True
+                    else:
+                        rights.canInsert = False
+                    if edit_layer_cap['modifyAttribute'] == 'True' or edit_layer_cap['modifyGeometry'] == 'True':
+                        rights.canUpdate = True
+                    else:
+                        rights.canUpdate = False
+                    if edit_layer_cap['deleteFeature'] == 'True':
+                        rights.canDelete = True
+                    else:
+                        rights.canDelete = False
+                else:
+                    # Any user groups can edit the layer or capabilities
+                    # edition for the layer is not defined in Lizmap
+                    # edition config
+                    # Reset edition rights
+                    rights.canInsert = rights.canUpdate = rights.canDelete = False
+            else:
+                # The layer has no editionLayers config defined
+                # Reset edition rights
+                QgsMessageLog.logMessage("No edition config defined for layer: %s (%s)" % (layer_name, layer_id), "lizmap", Qgis.Info)
+                rights.canInsert = rights.canUpdate = rights.canDelete = False
+        else:
+            # No editionLayers defined
+            # Reset edition rights
+            QgsMessageLog.logMessage("Lizmap config has no editionLayers", "lizmap", Qgis.Info)
+            rights.canInsert = rights.canUpdate = rights.canDelete = False
+
+        # Check Lizmap layer config
         if layer_name not in cfg_layers or not cfg_layers[layer_name]:
             # Lizmap layer config not defined
             QgsMessageLog.logMessage("Lizmap config has no layer: %s" % layer_name, "lizmap", Qgis.Warning)
@@ -63,14 +134,6 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Get Lizmap layer group visibility
         group_visibility = cfg_layer['group_visibility'].split(',')
         group_visibility = [g.strip() for g in group_visibility]
-
-        # Get Lizmap user groups provided by the request
-        groups = self.getLizmapGroups()
-
-        # If groups is empty, no Lizmap user groups provided by the request
-        # The default layre rights is applied
-        if len(groups) == 0:
-            return rights
 
         # If one Lizmap user group provided in request headers is
         # defined in Lizmap layer group visibility, the default layer
