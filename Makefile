@@ -11,6 +11,7 @@ start_tests:
 run_tests:
 	@echo 'Running tests, containers must be running'
 	@cd .docker && ./exec.sh
+	@flake8
 
 stop_tests:
 	@echo 'Stopping/killing containers'
@@ -39,8 +40,8 @@ LOCAL_HOME ?= $(shell pwd)
 SRCDIR=$(shell realpath .)
 
 test_server:
-	mkdir -p $$(pwd)/.local $(LOCAL_HOME)/.cache
-	docker run --rm --name qgis-server-lizmap-test-$(FLAVOR)-$(COMMITID) -w /src/test/server \
+	@mkdir -p $$(pwd)/.local $(LOCAL_HOME)/.cache
+	@docker run --rm --name qgis-server-lizmap-test-$(FLAVOR)-$(COMMITID) -w /src/test/server \
 		-u $(BECOME_USER) \
 		-v $(SRCDIR):/src \
 		-v $$(pwd)/.local:/.local \
@@ -48,3 +49,4 @@ test_server:
 		-e PIP_CACHE_DIR=/.cache \
 		-e PYTEST_ADDOPTS="$(TEST_OPTS)" \
 		$(QGIS_IMAGE) ./run-tests.sh
+	@flake8

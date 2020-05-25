@@ -1,9 +1,7 @@
-import logging
 import json
 
 from urllib.parse import quote
 
-LOGGER = logging.getLogger('server')
 
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'
@@ -52,7 +50,6 @@ def test_features_error(client):
     qs+= "&EXPRESSIONS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
         quote('1', safe=''), quote('1 + 1', safe=''), quote('prop0', safe=''), quote('$x', safe=''))
     qs+= "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}"
-    #qs+= "}" the error
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -75,10 +72,10 @@ def test_features_error(client):
     qs+= "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
     qs+= ", "
     qs+= "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [105.0, 0.5]}, \"properties\": {\"prop0\": \"value1\"}}"
-    #qs+= "]" the error
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
+
 
 def test_request_without_features(client):
     """  Test Expression Evaluate request without Feature or Features parameter
@@ -95,13 +92,13 @@ def test_request_without_features(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 1)
-    assert ('0' in b['results'][0])
-    assert (b['results'][0]['0'] == 2)
+    assert 'results' in b
+    assert len(b['results']) == 1
+    assert '0' in b['results'][0]
+    assert b['results'][0]['0'] == 2
 
     qs = "?SERVICE=EXPRESSION&REQUEST=Evaluate&MAP=france_parts.qgs&LAYER=france_parts&EXPRESSIONS=[\"%s\", \"%s\"]" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
@@ -112,15 +109,15 @@ def test_request_without_features(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 1)
-    assert ('0' in b['results'][0])
-    assert (b['results'][0]['0'] == 1)
-    assert ('1' in b['results'][0])
-    assert (b['results'][0]['1'] == 2)
+    assert 'results' in b
+    assert len(b['results']) == 1
+    assert '0' in b['results'][0]
+    assert b['results'][0]['0'] == 1
+    assert '1' in b['results'][0]
+    assert b['results'][0]['1'] == 2
 
     qs = "?SERVICE=EXPRESSION&REQUEST=Evaluate&MAP=france_parts.qgs&LAYER=france_parts&EXPRESSIONS={\"a\":\"%s\", \"b\":\"%s\"}" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
@@ -131,15 +128,15 @@ def test_request_without_features(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 1)
-    assert ('a' in b['results'][0])
-    assert (b['results'][0]['a'] == 1)
-    assert ('b' in b['results'][0])
-    assert (b['results'][0]['b'] == 2)
+    assert 'results' in b
+    assert len(b['results']) == 1
+    assert 'a' in b['results'][0]
+    assert b['results'][0]['a'] == 1
+    assert 'b' in b['results'][0]
+    assert b['results'][0]['b'] == 2
 
 
 def test_request_with_features(client):
@@ -159,19 +156,19 @@ def test_request_with_features(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 1)
-    assert ('a' in b['results'][0])
-    assert (b['results'][0]['a'] == 1)
-    assert ('b' in b['results'][0])
-    assert (b['results'][0]['b'] == 2)
-    assert ('c' in b['results'][0])
-    assert (b['results'][0]['c'] == 'value0')
-    assert ('d' in b['results'][0])
-    assert (b['results'][0]['d'] == 102.0)
+    assert 'results' in b
+    assert len(b['results']) == 1
+    assert 'a' in b['results'][0]
+    assert b['results'][0]['a'] == 1
+    assert 'b' in b['results'][0]
+    assert b['results'][0]['b'] == 2
+    assert 'c' in b['results'][0]
+    assert b['results'][0]['c'] == 'value0'
+    assert 'd' in b['results'][0]
+    assert b['results'][0]['d'] == 102.0
 
     # Make a second request
     qs = "?SERVICE=EXPRESSION&REQUEST=Evaluate&MAP=france_parts.qgs&LAYER=france_parts"
@@ -189,24 +186,24 @@ def test_request_with_features(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 2)
-    assert ('a' in b['results'][0])
-    assert (b['results'][0]['a'] == 1)
-    assert ('b' in b['results'][0])
-    assert (b['results'][0]['b'] == 2)
-    assert ('c' in b['results'][0])
-    assert (b['results'][0]['c'] == 'value0')
-    assert ('d' in b['results'][0])
-    assert (b['results'][0]['d'] == 102.0)
+    assert 'results' in b
+    assert len(b['results']) == 2
+    assert 'a' in b['results'][0]
+    assert b['results'][0]['a'] == 1
+    assert 'b' in b['results'][0]
+    assert b['results'][0]['b'] == 2
+    assert 'c' in b['results'][0]
+    assert b['results'][0]['c'] == 'value0'
+    assert 'd' in b['results'][0]
+    assert b['results'][0]['d'] == 102.0
 
-    assert ('c' in b['results'][1])
-    assert (b['results'][1]['c'] == 'value1')
-    assert ('d' in b['results'][1])
-    assert (b['results'][1]['d'] == 105.0)
+    assert 'c' in b['results'][1]
+    assert b['results'][1]['c'] == 'value1'
+    assert 'd' in b['results'][1]
+    assert b['results'][1]['d'] == 105.0
 
 
 def test_request_with_formscope(client):
@@ -227,19 +224,19 @@ def test_request_with_formscope(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 1)
-    assert ('a' in b['results'][0])
-    assert (b['results'][0]['a'] == 1)
-    assert ('b' in b['results'][0])
-    assert (b['results'][0]['b'] == 2)
-    assert ('c' in b['results'][0])
-    assert (b['results'][0]['c'] == 'value0')
-    assert ('d' in b['results'][0])
-    assert (b['results'][0]['d'] == 102.0)
+    assert 'results' in b
+    assert len(b['results']) == 1
+    assert 'a' in b['results'][0]
+    assert b['results'][0]['a'] == 1
+    assert 'b' in b['results'][0]
+    assert b['results'][0]['b'] == 2
+    assert 'c' in b['results'][0]
+    assert b['results'][0]['c'] == 'value0'
+    assert 'd' in b['results'][0]
+    assert b['results'][0]['d'] == 102.0
 
     # Make a request without form scope but with current_value function
     qs = "?SERVICE=EXPRESSION&REQUEST=Evaluate&MAP=france_parts.qgs&LAYER=france_parts"
@@ -253,11 +250,11 @@ def test_request_with_formscope(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('status' in b)
+    assert 'status' in b
     assert b['status'] == 'success'
 
-    assert ('results' in b)
-    assert (len(b['results']) == 1)
+    assert 'results' in b
+    assert len(b['results']) == 1
 
-    assert ('c' in b['results'][0])
-    assert (b['results'][0]['c'] == None)
+    assert 'c' in b['results'][0]
+    assert b['results'][0]['c'] is None

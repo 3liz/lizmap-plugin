@@ -1,9 +1,7 @@
-import logging
 import json
 
 from urllib.parse import quote
 
-LOGGER = logging.getLogger('server')
 
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'
@@ -44,7 +42,6 @@ def test_virtuals_error(client):
     qs = "?SERVICE=EXPRESSION&REQUEST=VirtualFields&MAP=france_parts.qgs&LAYER=france_parts"
     qs+= "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
-    #qs+= "}" the error
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -65,25 +62,25 @@ def test_request(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 4
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] == None
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is None
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
-    assert ('Region' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
+    assert 'Region' in b['features'][0]['properties']
 
-    assert ('a' in b['features'][0]['properties'])
+    assert 'a' in b['features'][0]['properties']
     assert b['features'][0]['properties']['a'] == 1
-    assert ('b' in b['features'][0]['properties'])
+    assert 'b' in b['features'][0]['properties']
     assert b['features'][0]['properties']['b'] == 2
 
 
@@ -104,27 +101,27 @@ def test_request_with_filter(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] == None
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is None
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
-    assert ('Region' in b['features'][0]['properties'])
+    assert 'Region' in b['features'][0]['properties']
     assert b['features'][0]['properties']['Region'] == 'Bretagne'
 
-    assert ('a' in b['features'][0]['properties'])
+    assert 'a' in b['features'][0]['properties']
     assert b['features'][0]['properties']['a'] == 1
-    assert ('b' in b['features'][0]['properties'])
+    assert 'b' in b['features'][0]['properties']
     assert b['features'][0]['properties']['b'] == 2
 
 
@@ -146,26 +143,26 @@ def test_request_with_filter_fields(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] == None
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is None
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
-    assert ('Region' not in b['features'][0]['properties'])
+    assert 'Region' not in b['features'][0]['properties']
 
-    assert ('a' in b['features'][0]['properties'])
+    assert 'a' in b['features'][0]['properties']
     assert b['features'][0]['properties']['a'] == 1
-    assert ('b' in b['features'][0]['properties'])
+    assert 'b' in b['features'][0]['properties']
     assert b['features'][0]['properties']['b'] == 2
 
 
@@ -188,24 +185,24 @@ def test_request_with_filter_fields_geometry(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] != None
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is not None
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
-    assert ('Region' not in b['features'][0]['properties'])
+    assert 'Region' not in b['features'][0]['properties']
 
-    assert ('a' in b['features'][0]['properties'])
+    assert 'a' in b['features'][0]['properties']
     assert b['features'][0]['properties']['a'] == 1
-    assert ('b' in b['features'][0]['properties'])
+    assert 'b' in b['features'][0]['properties']
     assert b['features'][0]['properties']['b'] == 2
