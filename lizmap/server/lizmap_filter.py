@@ -47,43 +47,79 @@ class LizmapFilter(QgsServerFilter):
 
     def requestReady(self):
         try:
+            # Get QGIS Project path
             config_path = self.iface.configFilePath()
             if not os.path.exists(config_path):
+                # QGIS Project path does not exist as a file
+                # The request can be evaluated by QGIS Server
                 return
 
+            # Get Lizmap config path
             config_path += '.cfg'
             if not os.path.exists(config_path):
+                # Lizmap config path does not exist
+                QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
+                # The request can be evaluated by QGIS Server
                 return
 
+            # Get Lizmap config
             cfg = None
             with open(config_path, 'r') as cfg_file:
                 try:
                     cfg = json.loads(cfg_file.read())
                 except Exception:
+                    # Lizmap config is not a valid JSON file
+                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Error)
+                    # The request can be evaluated by QGIS Server
                     return
 
             if not cfg:
+                # Lizmap config is empty
+                QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
+                # The request can be evaluated by QGIS Server
                 return
 
+            # Check Lizmap config options
+            if 'options' not in cfg or not cfg['options']:
+                # Lizmap config has no options
+                QgsMessageLog.logMessage("Lizmap config has no options", "lizmap", Qgis.Warning)
+                # The request can be evaluated by QGIS Server
+                return
+
+            # Check project acl option
             cfg_options = cfg['options']
             if 'acl' not in cfg_options or not cfg_options['acl']:
+                # No acl defined
+                QgsMessageLog.logMessage("No acl defined in Lizmap config", "lizmap", Qgis.Info)
+                # The request can be evaluated by QGIS Server
                 return
 
+            # Get project acl option
             cfg_acl = cfg_options['acl']
+            QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Info)
 
+            # Get request headers
             handler = self.iface.requestHandler()
             headers = handler.requestHeaders()
             if not headers:
-                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Critical)
+                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Info)
                 return
 
+            # Get Lizmap user groups defined in request headers
             groups = headers.get('X-Lizmap-User-Groups').split(',')
             groups = [g.strip() for g in groups]
+
+            # If one Lizmap user group provided in request headers is
+            # defined in project acl option, the request can be evaluated
+            # by QGIS Server
             for g in groups:
                 if g in cfg_acl:
                     return
 
+            # The lizmap user groups provided in request header are not
+            # authorized to get access to the QGIS Project
             exc = LizmapFilterException('Forbidden', 'No ACL permissions', responseCode=403)
+
             # use setServiceException to be sure to stop the request
             handler.setServiceException(exc)
 
