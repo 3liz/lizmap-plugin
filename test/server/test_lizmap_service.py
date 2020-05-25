@@ -1,8 +1,5 @@
 import json
-import logging
-import warnings
 
-LOGGER = logging.getLogger('server')
 
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'

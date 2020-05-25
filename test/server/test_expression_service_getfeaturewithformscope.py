@@ -1,9 +1,6 @@
-import logging
 import json
 
 from urllib.parse import quote
-
-LOGGER = logging.getLogger('server')
 
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'
@@ -59,7 +56,6 @@ def test_formfeature_error(client):
     qs+= "&FILTER=%s" % (
         quote("NAME_1 = current_value('prop0')", safe=''))
     qs+= "&FORM_FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"Bretagne\"}"
-    #qs+= "}" the error
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -91,24 +87,24 @@ def test_request(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] == None
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is None
 
-    assert ('id' in b['features'][0])
-    assert b['features'][0]['id'] == 'france_parts.1' # should be 4
+    assert 'id' in b['features'][0]
+    assert b['features'][0]['id'] == 'france_parts.1'  # should be 4
 
     # Make a request with geometry
     qs = "?SERVICE=EXPRESSION&REQUEST=GetFeatureWithFormScope&MAP=france_parts.qgs&LAYER=france_parts"
@@ -122,22 +118,22 @@ def test_request(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] != None
-    assert ('type' in b['features'][0]['geometry'])
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is not None
+    assert 'type' in b['features'][0]['geometry']
     assert b['features'][0]['geometry']['type'] == 'MultiPolygon'
 
     # Make a request with fields
@@ -152,22 +148,22 @@ def test_request(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
-    assert ('NAME_0' not in b['features'][0]['properties'])
+    assert 'NAME_0' not in b['features'][0]['properties']
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] == None
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is None
 
     # Make a request with spatial filter
     qs = "?SERVICE=EXPRESSION&REQUEST=GetFeatureWithFormScope&MAP=france_parts.qgs&LAYER=france_parts"
@@ -181,20 +177,20 @@ def test_request(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert ('type' in b)
+    assert 'type' in b
     assert b['type'] == 'FeatureCollection'
 
-    assert ('features' in b)
+    assert 'features' in b
     assert len(b['features']) == 1
 
-    assert ('type' in b['features'][0])
+    assert 'type' in b['features'][0]
     assert b['features'][0]['type'] == 'Feature'
 
-    assert ('properties' in b['features'][0])
-    assert ('NAME_1' in b['features'][0]['properties'])
+    assert 'properties' in b['features'][0]
+    assert 'NAME_1' in b['features'][0]['properties']
     assert b['features'][0]['properties']['NAME_1'] == 'Bretagne'
 
-    assert ('geometry' in b['features'][0])
-    assert b['features'][0]['geometry'] != None
-    assert ('type' in b['features'][0]['geometry'])
+    assert 'geometry' in b['features'][0]
+    assert b['features'][0]['geometry'] is not None
+    assert 'type' in b['features'][0]['geometry']
     assert b['features'][0]['geometry']['type'] == 'MultiPolygon'
