@@ -9,6 +9,8 @@ package:
   stage: package 📦
   only:
     - schedules
+  before_script:
+    - docker pull etrimaille/qgis-plugin-ci:latest
   script:
     - docker run --rm -w /plugin -v ${CI_PROJECT_DIR}:/plugin -u $(id -u):$(id -g) etrimaille/qgis-plugin-ci package ${CI_COMMIT_REF_NAME} --allow-uncommitted-changes --disallow-submodule-update
   after_script:
