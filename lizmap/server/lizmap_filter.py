@@ -8,6 +8,8 @@ from qgis.server import QgsServerInterface, QgsServerException, QgsServerFilter
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtXml import QDomDocument
 
+from typing import List
+
 
 class LizmapFilterException(QgsServerException):
 
@@ -41,7 +43,7 @@ class LizmapFilter(QgsServerFilter):
 
     def __init__(self, server_iface: 'QgsServerInterface') -> None:
         QgsMessageLog.logMessage('LizmapFilter.init', 'lizmap', Qgis.Info)
-        super(LizmapFilter, self).__init__(server_iface)
+        super().__init__(server_iface)
 
         self.iface = server_iface
 
@@ -60,6 +62,14 @@ class LizmapFilter(QgsServerFilter):
                 # Lizmap config path does not exist
                 QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
                 # The request can be evaluated by QGIS Server
+                return
+
+            # Get Lizmap user groups defined in request headers
+            groups = self.getLizmapGroups()
+
+            # If groups is empty, no Lizmap user groups provided by the request
+            # The request can be evaluated by QGIS Server
+            if len(groups) == 0:
                 return
 
             # Get Lizmap config
@@ -97,17 +107,7 @@ class LizmapFilter(QgsServerFilter):
             # Get project acl option
             cfg_acl = cfg_options['acl']
             QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Info)
-
-            # Get request headers
-            handler = self.iface.requestHandler()
-            headers = handler.requestHeaders()
-            if not headers:
-                QgsMessageLog.logMessage("No headers provided", "lizmap", Qgis.Info)
-                return
-
-            # Get Lizmap user groups defined in request headers
-            groups = headers.get('X-Lizmap-User-Groups').split(',')
-            groups = [g.strip() for g in groups]
+            cfg_acl = [g.strip() for g in cfg_acl.split(',')]
 
             # If one Lizmap user group provided in request headers is
             # defined in project acl option, the request can be evaluated
@@ -120,8 +120,46 @@ class LizmapFilter(QgsServerFilter):
             # authorized to get access to the QGIS Project
             exc = LizmapFilterException('Forbidden', 'No ACL permissions', responseCode=403)
 
+            # Get request handler
+            handler = self.iface.requestHandler()
             # use setServiceException to be sure to stop the request
             handler.setServiceException(exc)
 
         except Exception:
             QgsMessageLog.logMessage("Unhandled exception:\n%s" % traceback.format_exc(), "lizmap", Qgis.Critical)
+
+    def getLizmapGroups(self) -> 'List[str]':
+        """ Get Lizmap user groups provided by the request """
+        # Defined groups
+        groups = []
+
+        # Get request handler
+        handler = self.iface.requestHandler()
+
+        # Get Lizmap User Groups in request headers
+        headers = handler.requestHeaders()
+        if headers:
+            QgsMessageLog.logMessage("Request headers provided", "lizmap", Qgis.Info)
+            # Get Lizmap user groups defined in request headers
+            userGroups = headers.get('X-Lizmap-User-Groups')
+            if userGroups is not None:
+                groups = [g.strip() for g in userGroups.split(',')]
+                QgsMessageLog.logMessage("Lizmap user groups in request headers", "lizmap", Qgis.Info)
+        else:
+            QgsMessageLog.logMessage("No request headers provided", "lizmap", Qgis.Info)
+
+        if len(groups) != 0:
+            return groups
+        else:
+            QgsMessageLog.logMessage("No lizmap user groups in request headers", "lizmap", Qgis.Info)
+
+        # Get group in parameters
+        params = handler.parameterMap()
+        if params:
+            # Get Lizmap user groups defined in parameters
+            userGroups = params.get('LIZMAP_USER_GROUPS')
+            if userGroups is not None:
+                groups = [g.strip() for g in userGroups.split(',')]
+                QgsMessageLog.logMessage("Lizmap user groups in parameters", "lizmap", Qgis.Info)
+
+        return groups
