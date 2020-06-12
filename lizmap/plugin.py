@@ -1767,7 +1767,13 @@ class Lizmap:
         cfg_file.close()
 
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
+        self.clean_project()
 
+    def clean_project(self):
+        """Clean a little bit the QGIS project.
+
+        Mainly ghost layers for now.
+        """
         layers = remove_all_ghost_layers()
         if layers:
             message = tr(
@@ -1776,6 +1782,21 @@ class Lizmap:
             self.iface.messageBar().pushMessage(
                 'Lizmap', message, level=Qgis.Warning, duration=30
             )
+
+    def check_project(self):
+        """Project checker about issues that the user might hae when running in LWC."""
+        if Qgis.QGIS_VERSION_INT >= 31300:
+            from qgis.core import QgsProjectServerValidator
+            validator = QgsProjectServerValidator()
+            valid, results = validator.validate(QgsProject.instance())
+            if not valid:
+                message = tr(
+                    'The QGIS project is not valid according to OGC standards. You should check '
+                    'messages in the Project properties -> QGIS Server tab then Test configuration. '
+                    '{} error(s) have been found').format(len(results))
+                self.iface.messageBar().pushMessage(
+                    'Lizmap', message, level=Qgis.Warning, duration=15
+                )
 
     def check_global_project_options(self):
         """Checks that the needed options are correctly set : relative path, project saved, etc.
