@@ -48,7 +48,6 @@ import logging
 import os
 import re
 import sys
-import urllib.parse
 
 from collections import OrderedDict
 from functools import partial
@@ -114,6 +113,7 @@ from lizmap.qgis_plugin_tools.tools.resources import resources_path, plugin_path
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.version import is_dev_version, version, format_version_integer
 from lizmap.tooltip import Tooltip
+from lizmap.tools import get_layer_wms_parameters
 
 
 LOGGER = logging.getLogger(plugin_name())
@@ -1393,7 +1393,7 @@ class Lizmap:
             if not layer:
                 return
             if layer.providerType() in ['wms']:
-                if self.getLayerWmsParameters(layer):
+                if get_layer_wms_parameters(layer):
                     wms_enabled = True
         return wms_enabled
 
@@ -1742,7 +1742,7 @@ class Lizmap:
                 layerProviderKey = layer.providerType()
                 # Only for layers stored in disk
                 if layerProviderKey in ['wms']:
-                    wmsParams = self.getLayerWmsParameters(layer)
+                    wmsParams = get_layer_wms_parameters(layer)
                     if wmsParams:
                         layerOptions['externalAccess'] = wmsParams
                     else:
@@ -1776,23 +1776,6 @@ class Lizmap:
             self.iface.messageBar().pushMessage(
                 'Lizmap', message, level=Qgis.Warning, duration=30
             )
-
-    def getLayerWmsParameters(self, layer):
-        """
-        Get WMS parameters for a raster WMS layers
-        """
-        uri = layer.dataProvider().dataSourceUri()
-        # avoid WMTS layers (not supported yet in Lizmap Web Client)
-        if 'wmts' in uri or 'WMTS' in uri:
-            return None
-
-        # Split WMS parameters
-        wms_params = dict((p.split('=') + [''])[:2] for p in uri.split('&'))
-
-        # urldecode WMS url
-        wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
-
-        return wms_params
 
     def check_global_project_options(self):
         """Checks that the needed options are correctly set : relative path, project saved, etc.
