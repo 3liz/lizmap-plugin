@@ -142,6 +142,10 @@ class Lizmap:
         self.version = version()
         if self.version in ['master', 'dev']:
             self.dlg.setWindowTitle('Lizmap branch {}'.format(self.version))
+            text = self.dlg.label_dev_version.text().format(self.version)
+            self.dlg.label_dev_version.setText(text)
+        else:
+            self.dlg.label_dev_version.setVisible(False)
         self.popup_dialog = None
 
         # Manage LWC versions combo
