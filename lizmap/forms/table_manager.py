@@ -18,7 +18,7 @@ from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
-from lizmap.qgis_plugin_tools.tools.version import is_dev_version
+from lizmap.qgis_plugin_tools.tools.version import version
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -93,7 +93,7 @@ class TableManager:
     def add_new_row(self):
         # noinspection PyCallingNonCallable
         row = self.table.rowCount()
-        if row >= 1 and self.definitions.key() == 'atlas' and not is_dev_version():
+        if row >= 1 and self.definitions.key() == 'atlas' and version() not in ['master', 'dev']:
             message = tr('The multi-atlas is coming soon in Lizmap 3.4.')
             QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
             return

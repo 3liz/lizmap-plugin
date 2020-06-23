@@ -111,7 +111,7 @@ from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
 from lizmap.qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
-from lizmap.qgis_plugin_tools.tools.version import is_dev_version, version, format_version_integer
+from lizmap.qgis_plugin_tools.tools.version import version, format_version_integer
 from lizmap.tooltip import Tooltip
 from lizmap.tools import get_layer_wms_parameters
 
@@ -139,8 +139,9 @@ class Lizmap:
             QCoreApplication.installTranslator(self.translator)
 
         self.dlg = LizmapDialog()
-        if is_dev_version():
-            self.dlg.setWindowTitle('DEV Lizmap {}'.format(version()))
+        self.version = version()
+        if self.version in ['master', 'dev']:
+            self.dlg.setWindowTitle('Lizmap branch {}'.format(self.version))
         self.popup_dialog = None
 
         # Manage LWC versions combo
@@ -166,7 +167,7 @@ class Lizmap:
             if not next_release:
                 self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
                 if lwc_version == DEFAULT_LWC_VERSION:
-                    next_release = True if not is_dev_version() else False
+                    next_release = self.version not in ['master', 'dev']
 
         lwc_version = QSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         lwc_version = LwcVersions(lwc_version)
@@ -666,7 +667,7 @@ class Lizmap:
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
 
         # Atlas
-        self.dlg.label_atlas_34.setVisible(is_dev_version())
+        self.dlg.label_atlas_34.setVisible(self.version in ['master', 'dev'])
 
         self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
@@ -783,7 +784,7 @@ class Lizmap:
                                 manager.from_json(data)
 
             except Exception as e:
-                if is_dev_version():
+                if self.version in ['master', 'dev']:
                     raise
                 LOGGER.critical(e)
                 copyfile(json_file, '{}.back'.format(json_file))
@@ -1288,7 +1289,7 @@ class Lizmap:
                 sjson = json.loads(json_file_reader)
                 json_layers = sjson['layers']
             except Exception:
-                if is_dev_version():
+                if self.version in ['master' 'dev']:
                     raise
                 QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
                 self.log(
