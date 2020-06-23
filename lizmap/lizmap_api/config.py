@@ -74,7 +74,6 @@ class LizmapConfig:
     }
 
     lizmap_version = version()
-    lizmap_version = format_version_integer(lizmap_version.replace('-beta', ''))
     target_lwc_version = format_version_integer('{}.0'.format(DEFAULT_LWC_VERSION.value))
 
     metadata = dict()

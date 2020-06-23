@@ -44,6 +44,8 @@
  ***** END LICENSE BLOCK ***** */
 """
 
+import urllib.parse
+
 from qgis.core import QgsProviderRegistry
 
 
@@ -57,3 +59,21 @@ def excluded_providers():
     providers.remove('postgres')
     providers.remove('spatialite')
     return providers
+
+
+def get_layer_wms_parameters(layer):
+    """
+    Get WMS parameters for a raster WMS layers
+    """
+    uri = layer.dataProvider().dataSourceUri()
+    # avoid WMTS layers (not supported yet in Lizmap Web Client)
+    if 'wmts' in uri or 'WMTS' in uri:
+        return None
+
+    # Split WMS parameters
+    wms_params = dict((p.split('=') + [''])[:2] for p in uri.split('&'))
+
+    # urldecode WMS url
+    wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
+
+    return wms_params

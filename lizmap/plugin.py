@@ -48,7 +48,6 @@ import logging
 import os
 import re
 import sys
-import urllib.parse
 
 from collections import OrderedDict
 from functools import partial
@@ -112,8 +111,9 @@ from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
 from lizmap.qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
-from lizmap.qgis_plugin_tools.tools.version import is_dev_version, version, format_version_integer
+from lizmap.qgis_plugin_tools.tools.version import version, format_version_integer
 from lizmap.tooltip import Tooltip
+from lizmap.tools import get_layer_wms_parameters
 
 
 LOGGER = logging.getLogger(plugin_name())
@@ -139,8 +139,9 @@ class Lizmap:
             QCoreApplication.installTranslator(self.translator)
 
         self.dlg = LizmapDialog()
-        if is_dev_version():
-            self.dlg.setWindowTitle('DEV Lizmap {}'.format(version()))
+        self.version = version()
+        if self.version in ['master', 'dev']:
+            self.dlg.setWindowTitle('Lizmap branch {}'.format(self.version))
         self.popup_dialog = None
         self.layers_table = dict()
 
@@ -170,7 +171,7 @@ class Lizmap:
             if not next_release:
                 self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
                 if lwc_version == DEFAULT_LWC_VERSION:
-                    next_release = True if not is_dev_version() else False
+                    next_release = self.version not in ['master', 'dev']
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         lwc_version = LwcVersions(lwc_version)
@@ -693,7 +694,7 @@ class Lizmap:
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
 
         # Atlas
-        self.dlg.label_atlas_34.setVisible(is_dev_version())
+        self.dlg.label_atlas_34.setVisible(self.version in ['master', 'dev'])
 
         self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
@@ -810,7 +811,7 @@ class Lizmap:
                                 manager.from_json(data)
 
             except Exception as e:
-                if is_dev_version():
+                if self.version in ['master', 'dev']:
                     raise
                 LOGGER.critical(e)
                 copyfile(json_file, '{}.back'.format(json_file))
@@ -1315,7 +1316,7 @@ class Lizmap:
                 sjson = json.loads(json_file_reader)
                 json_layers = sjson['layers']
             except Exception:
-                if is_dev_version():
+                if self.version in ['master' 'dev']:
                     raise
                 QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
                 self.log(
@@ -1420,7 +1421,7 @@ class Lizmap:
             if not layer:
                 return
             if layer.providerType() in ['wms']:
-                if self.getLayerWmsParameters(layer):
+                if get_layer_wms_parameters(layer):
                     wms_enabled = True
         return wms_enabled
 
@@ -1769,7 +1770,7 @@ class Lizmap:
                 layerProviderKey = layer.providerType()
                 # Only for layers stored in disk
                 if layerProviderKey in ['wms']:
-                    wmsParams = self.getLayerWmsParameters(layer)
+                    wmsParams = get_layer_wms_parameters(layer)
                     if wmsParams:
                         layerOptions['externalAccess'] = wmsParams
                     else:
@@ -1794,7 +1795,13 @@ class Lizmap:
         cfg_file.close()
 
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
+        self.clean_project()
 
+    def clean_project(self):
+        """Clean a little bit the QGIS project.
+
+        Mainly ghost layers for now.
+        """
         layers = remove_all_ghost_layers()
         if layers:
             message = tr(
@@ -1804,22 +1811,20 @@ class Lizmap:
                 'Lizmap', message, level=Qgis.Warning, duration=30
             )
 
-    def getLayerWmsParameters(self, layer):
-        """
-        Get WMS parameters for a raster WMS layers
-        """
-        uri = layer.dataProvider().dataSourceUri()
-        # avoid WMTS layers (not supported yet in Lizmap Web Client)
-        if 'wmts' in uri or 'WMTS' in uri:
-            return None
-
-        # Split WMS parameters
-        wms_params = dict((p.split('=') + [''])[:2] for p in uri.split('&'))
-
-        # urldecode WMS url
-        wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
-
-        return wms_params
+    def check_project(self):
+        """Project checker about issues that the user might hae when running in LWC."""
+        if Qgis.QGIS_VERSION_INT >= 31300:
+            from qgis.core import QgsProjectServerValidator
+            validator = QgsProjectServerValidator()
+            valid, results = validator.validate(QgsProject.instance())
+            if not valid:
+                message = tr(
+                    'The QGIS project is not valid according to OGC standards. You should check '
+                    'messages in the Project properties -> QGIS Server tab then Test configuration. '
+                    '{} error(s) have been found').format(len(results))
+                self.iface.messageBar().pushMessage(
+                    'Lizmap', message, level=Qgis.Warning, duration=15
+                )
 
     def check_global_project_options(self):
         """Checks that the needed options are correctly set : relative path, project saved, etc.
