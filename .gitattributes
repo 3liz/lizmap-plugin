@@ -1,7 +1,1 @@
-.github export-ignore
-.gitattributes export-ignore
-.gitignore export-ignore
-.gitmodules export-ignore
-Makefile export-ignore
-MANIFEST.in export-ignore
-setup.py export-ignore
+lizmap/test export-ignore
