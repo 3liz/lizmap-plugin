@@ -181,12 +181,6 @@ QgsApplication.exitQgis()
 app.exit()
 ```
 
-# Debug
-
-The `dev` branch is automatically on debug mode. Python exceptions will be re-raised when they occurred. 
-On the `master` branch, you can switch to debug mode by adding `-beta` to the version number in the `metadata.txt`.
-You can notice if you are on debug mode by checking the Lizmap dialog title (if you can read `DEV Lizmap version number`).
-
 # Attributions
 
 * Some icons come from https://loading.io/ with the Loading.io BY License
