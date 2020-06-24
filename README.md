@@ -5,11 +5,12 @@
 * Latest download link: https://github.com/3liz/lizmap-plugin/releases/latest/download/lizmap.zip
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
 * Do not use the link provided by GitHub by default.
+* The `dev` branch can be found on https://packages.3liz.org/
 
-Branches :
+### Branches
 
-* The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/). 
-* The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/). 
+* The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/).
+* The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/).
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
 
