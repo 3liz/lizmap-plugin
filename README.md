@@ -5,11 +5,12 @@
 * Latest download link: https://github.com/3liz/lizmap-plugin/releases/latest/download/lizmap.zip
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
 * Do not use the link provided by GitHub by default.
+* The `dev` branch can be found on https://packages.3liz.org/
 
-Branches :
+### Branches
 
-* The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/). 
-* The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/). 
+* The [dev](https://github.com/3liz/lizmap-plugin/tree/dev) branch is for the next release of [LWC](https://github.com/3liz/lizmap-web-client/).
+* The [master](https://github.com/3liz/lizmap-plugin/tree/master) branch is for the actual released version on [qgis.org](https://plugins.qgis.org) and compatible with the current of [LWC](https://github.com/3liz/lizmap-web-client/).
 
 Publication plugin for Lizmap Web Application, by 3LIZ.
 
@@ -180,12 +181,6 @@ if lv:
 QgsApplication.exitQgis()
 app.exit()
 ```
-
-# Debug
-
-The `dev` branch is automatically on debug mode. Python exceptions will be re-raised when they occurred. 
-On the `master` branch, you can switch to debug mode by adding `-beta` to the version number in the `metadata.txt`.
-You can notice if you are on debug mode by checking the Lizmap dialog title (if you can read `DEV Lizmap version number`).
 
 # Attributions
 
