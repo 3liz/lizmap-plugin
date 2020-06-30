@@ -2,7 +2,7 @@
 "type": "FeatureCollection",
 "name": "lines",
 "features": [
-{ "type": "Feature", "properties": { "id": 1, "name": "1" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8540, 43.6220 ], [ 3.8540, 43.5786 ] ] } },
-{ "type": "Feature", "properties": { "id": 2, "name": "2" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8970, 43.6220 ], [ 3.8970, 43.5786 ] ] } }
+{ "type": "Feature", "properties": { "id": 1, "name": "1 Name" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8540, 43.6220 ], [ 3.8540, 43.5786 ] ] } },
+{ "type": "Feature", "properties": { "id": 2, "name": "2 Name" }, "geometry": { "type": "LineString", "coordinates": [ [ 3.8970, 43.6220 ], [ 3.8970, 43.5786 ] ] } }
 ]
 }

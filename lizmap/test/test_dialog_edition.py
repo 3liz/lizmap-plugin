@@ -116,3 +116,19 @@ class TestEditionDialog(unittest.TestCase):
 
         dialog.load_form(data)
         self.assertIsNone(dialog.validate())
+
+    def test_time_manager_dialog(self):
+        """Test time manager dialog."""
+        dialog = TimeManagerEditionDialog()
+        self.assertFalse(dialog.error.isVisible())
+
+        self.assertEqual('', dialog.edit_min_value.text())
+        self.assertEqual('', dialog.edit_max_value.text())
+
+        dialog.start_field.setCurrentIndex(1)  # Field "name"
+        self.assertEqual(dialog.compute_value_min_max(True), '1 Name')
+        self.assertEqual(dialog.compute_value_min_max(False), '2 Name')
+
+        dialog.end_field.setCurrentIndex(1)  # Field "id"
+        self.assertEqual(dialog.compute_value_min_max(True), '1 Name')
+        self.assertEqual(dialog.compute_value_min_max(False), 2)

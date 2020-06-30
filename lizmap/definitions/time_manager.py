@@ -75,6 +75,22 @@ class TimeManagerDefinitions(BaseDefinitions):
             'tooltip': tr('Date/time resolution of the chosen attribute(s).'),
             'version': LwcVersions.Lizmap_3_4,
         }
+        self._layer_config['min_timestamp'] = {
+            'type': InputType.Text,
+            'header': tr('Minimum timestamp'),
+            'default': '',
+            'tooltip': tr('The minimum value from the data'),
+            'read_only': True,
+            'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['max_timestamp'] = {
+            'type': InputType.Text,
+            'header': tr('Maximum timestamp'),
+            'default': '',
+            'tooltip': tr('The maximum value from the data'),
+            'read_only': True,
+            'version': LwcVersions.Lizmap_3_4,
+        }
         self._general_config['inTimeFrameSize'] = {
             'type': InputType.SpinBox,
             'default': 10,

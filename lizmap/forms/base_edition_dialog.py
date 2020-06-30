@@ -91,6 +91,11 @@ class BaseEditionDialog(QDialog):
                         widget.setDefaultColor(QColor(layer_config['default']))
                         widget.setToDefaultColor()
 
+            if layer_config['type'] == InputType.Text:
+                if layer_config.get('read_only'):
+                    if widget is not None:
+                        widget.setReadOnly(True)
+
         self.version_lwc()
 
     def version_lwc(self):
