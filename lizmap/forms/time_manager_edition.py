@@ -1,11 +1,18 @@
 """Dialog for time manager."""
 
-from qgis.core import QgsMapLayerProxyModel, QgsProject
+from qgis.core import (
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsMapLayerProxyModel,
+    QgsProject,
+)
 
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.tools import is_database_layer
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -26,11 +33,15 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('startAttribute', self.start_field)
         self.config.add_layer_widget('endAttribute', self.end_field)
         self.config.add_layer_widget('attributeResolution', self.resolution)
+        self.config.add_layer_widget('min_timestamp', self.edit_min_value)
+        self.config.add_layer_widget('max_timestamp', self.edit_max_value)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('startAttribute', self.label_start_attribute)
         self.config.add_layer_label('endAttribute', self.label_end_attribute)
         self.config.add_layer_label('attributeResolution', self.label_resolution)
+        self.config.add_layer_label('min_timestamp', self.label_min_value)
+        self.config.add_layer_label('max_timestamp', self.label_max_value)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
@@ -39,11 +50,69 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
         self.layer.layerChanged.connect(self.start_field.setLayer)
         self.layer.layerChanged.connect(self.end_field.setLayer)
+        self.layer.layerChanged.connect(self.set_visible_min_max)
 
         self.start_field.setLayer(self.layer.currentLayer())
+        self.start_field.fieldChanged.connect(self.start_field_changed)
         self.end_field.setLayer(self.layer.currentLayer())
+        self.end_field.fieldChanged.connect(self.end_field_changed)
 
+        self.set_min_value.clicked.connect(self.compute_minimum_value)
+        self.set_max_value.clicked.connect(self.compute_maximum_value)
+
+        self.set_visible_min_max()
         self.setup_ui()
+
+    def compute_minimum_value(self):
+        value = self.compute_value_min_max(True)
+        self.edit_min_value.setText(value)
+
+    def compute_maximum_value(self):
+        value = self.compute_value_min_max(False)
+        self.edit_max_value.setText(value)
+
+    def compute_value_min_max(self, is_min):
+        layer = self.layer.currentLayer()
+        start_field = self.start_field.currentField()
+        end_field = self.end_field.currentField()
+
+        if is_min:
+            expression = 'minimum("{}")'.format(start_field)
+        else:
+            if end_field:
+                expression = 'maximum("{}")'.format(end_field)
+            else:
+                expression = 'maximum("{}")'.format(start_field)
+
+        exp_context = QgsExpressionContext()
+        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
+        exp_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+
+        exp = QgsExpression(expression)
+        exp.prepare(exp_context)
+        value = exp.evaluate(exp_context)
+        return value
+
+    def set_visible_min_max(self):
+        layer = self.layer.currentLayer()
+        hidden = is_database_layer(layer)
+        self.label_min_value.setVisible(hidden)
+        self.label_max_value.setVisible(hidden)
+        self.set_min_value.setVisible(hidden)
+        self.set_max_value.setVisible(hidden)
+        self.edit_min_value.setVisible(hidden)
+        self.edit_max_value.setVisible(hidden)
+        self.edit_min_value.setText('')
+        self.edit_max_value.setText('')
+
+    def start_field_changed(self):
+        self.edit_min_value.setText('')
+        if not self.end_field.currentField():
+            self.edit_max_value.setText('')
+
+    def end_field_changed(self):
+        self.edit_max_value.setText('')
 
     def validate(self) -> str:
         upstream = super().validate()
@@ -63,3 +132,8 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.start_field.currentField():
             return tr('Start attribute is mandatory.')
+
+        msg = tr('The min/max values must be computed.')
+        if self.edit_min_value.isVisible():
+            if self.edit_min_value.text() == '' or self.edit_max_value.text() == '':
+                return msg

@@ -44,6 +44,7 @@
  ***** END LICENSE BLOCK ***** */
 """
 
+import os
 import urllib.parse
 
 from qgis.core import QgsProviderRegistry
@@ -77,3 +78,19 @@ def get_layer_wms_parameters(layer):
     wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
 
     return wms_params
+
+
+def is_database_layer(layer) -> bool:
+    """ Check if the layer is a database layer.
+
+    It returns True for postgres, spatialite and gpkg files.
+    """
+    if layer.providerType() in ('postgres', 'spatialite'):
+        return True
+
+    uri = QgsProviderRegistry.instance().decodeUri('ogr', layer.source())
+    extension = os.path.splitext(uri['path'])[1]
+    if extension.lower() == '.gpkg':
+        return True
+
+    return False
