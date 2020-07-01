@@ -1790,7 +1790,7 @@ class Lizmap:
 
     def check_project(self):
         """Project checker about issues that the user might hae when running in LWC."""
-        if Qgis.QGIS_VERSION_INT >= 31300:
+        if Qgis.QGIS_VERSION_INT >= 31400:
             from qgis.core import QgsProjectServerValidator
             validator = QgsProjectServerValidator()
             valid, results = validator.validate(QgsProject.instance())
