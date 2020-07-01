@@ -57,7 +57,7 @@ class ServiceError(Exception):
         self.msg = msg
         self.code = code
         self.responseCode = responseCode
-        QgsMessageLog.logMessage("%s request error %s: %s" % (self.service, code, msg), "lizmap", Qgis.Critical)
+        QgsMessageLog.logMessage("{} request error {}: {}".format(self.service, code, msg), "lizmap", Qgis.Critical)
 
     def formatResponse(self, response: QgsServerResponse) -> None:
         """ Format error response

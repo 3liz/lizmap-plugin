@@ -1015,7 +1015,7 @@ class Lizmap:
         """
         p_wms_extent = self.project.readListEntry('WMSExtent', '')[0]
         if len(p_wms_extent) > 1:
-            extent = '%s, %s, %s, %s' % (
+            extent = '{}, {}, {}, {}'.format(
                 p_wms_extent[0],
                 p_wms_extent[1],
                 p_wms_extent[2],
@@ -1033,7 +1033,7 @@ class Lizmap:
         """
         # Get map canvas extent
         extent = self.iface.mapCanvas().extent()
-        initial_extent = '%s, %s, %s, %s' % (
+        initial_extent = '{}, {}, {}, {}'.format(
             extent.xMinimum(),
             extent.yMinimum(),
             extent.xMaximum(),
@@ -1160,7 +1160,7 @@ class Lizmap:
         self.myDic[itemKey]['type'] = itemType
 
         # DEFAULT VALUES : generic default values for layers and group
-        self.myDic[itemKey]['name'] = "%s" % itemKey
+        self.myDic[itemKey]['name'] = itemKey
         for key, item in self.layer_options_list.items():
             self.myDic[itemKey][key] = item['default']
         self.myDic[itemKey]['title'] = self.myDic[itemKey]['name']
@@ -1209,8 +1209,8 @@ class Lizmap:
                 self.myDic[itemKey]['sourceProject'] = pName
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
-        if '%s' % self.myDic[itemKey]['name'] in jsonLayers:
-            jsonKey = '%s' % self.myDic[itemKey]['name']
+        if self.myDic[itemKey]['name'] in jsonLayers:
+            jsonKey = self.myDic[itemKey]['name']
             # loop through layer options to override
             for key, item in self.layer_options_list.items():
                 # override only for ui widgets
@@ -1484,11 +1484,11 @@ class Lizmap:
                 if layer:
                     if hasattr(layer, key):
                         if key == 'title':
-                            layer.setTitle("%s" % self.layerList[item.text(1)][key])
+                            layer.setTitle(self.layerList[item.text(1)][key])
                         if key == 'abstract':
-                            layer.setAbstract("%s" % self.layerList[item.text(1)][key])
+                            layer.setAbstract(self.layerList[item.text(1)][key])
                         if key == 'link':
-                            layer.setAttributionUrl("%s" % self.layerList[item.text(1)][key])
+                            layer.setAttributionUrl(self.layerList[item.text(1)][key])
 
     def configure_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
@@ -1817,7 +1817,7 @@ class Lizmap:
 
     def check_project(self):
         """Project checker about issues that the user might hae when running in LWC."""
-        if Qgis.QGIS_VERSION_INT >= 31300:
+        if Qgis.QGIS_VERSION_INT >= 31400:
             from qgis.core import QgsProjectServerValidator
             validator = QgsProjectServerValidator()
             valid, results = validator.validate(QgsProject.instance())
@@ -1923,18 +1923,18 @@ class Lizmap:
             project_wms_extent, _ = self.project.readListEntry('WMSExtent', '')
             full_extent = self.iface.mapCanvas().extent()
             if not project_wms_extent:
-                project_wms_extent.append('%s' % full_extent.xMinimum())
-                project_wms_extent.append('%s' % full_extent.yMinimum())
-                project_wms_extent.append('%s' % full_extent.xMaximum())
-                project_wms_extent.append('%s' % full_extent.yMaximum())
+                project_wms_extent.append(str(full_extent.xMinimum()))
+                project_wms_extent.append(str(full_extent.yMinimum()))
+                project_wms_extent.append(str(full_extent.xMaximum()))
+                project_wms_extent.append(str(full_extent.yMaximum()))
                 self.project.writeEntry('WMSExtent', '', project_wms_extent)
             else:
                 if not project_wms_extent[0] or not project_wms_extent[1] or not \
                         project_wms_extent[2] or not project_wms_extent[3]:
-                    project_wms_extent[0] = '%s' % full_extent.xMinimum()
-                    project_wms_extent[1] = '%s' % full_extent.yMinimum()
-                    project_wms_extent[2] = '%s' % full_extent.xMaximum()
-                    project_wms_extent[3] = '%s' % full_extent.yMaximum()
+                    project_wms_extent[0] = str(full_extent.xMinimum())
+                    project_wms_extent[1] = str(full_extent.yMinimum())
+                    project_wms_extent[2] = str(full_extent.xMaximum())
+                    project_wms_extent[3] = str(full_extent.yMaximum())
                     self.project.writeEntry('WMSExtent', '', project_wms_extent)
 
         return is_valid, error_message

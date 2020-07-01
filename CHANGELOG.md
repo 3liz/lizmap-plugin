@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### 3.2.14 - 01/07/2020
+
+* Check project validity when running with QGIS 3.14
+* Change icon for group in the layer tree
+* Review some HIG guidelines
+* Some small code cleanup
+
 ### 3.2.13 - 06/05/2020
 
 * Fix bug about Box chart without aggregation

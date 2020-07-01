@@ -73,6 +73,8 @@ jobs:
         - pip3 install git+https://github.com/Gustry/qgis-plugin-ci.git
       before_deploy:
         - export RELEASE_TITLE=${TRAVIS_TAG}
+        - qgis-plugin-ci changelog $TRAVIS_TAG > ../release.md
+        - cat ../release.md
       script:
         - qgis-plugin-ci -v
       deploy:
@@ -80,6 +82,7 @@ jobs:
           edge: true
           file: .
           name: ${RELEASE_TITLE}
+          release_notes_file: ../release.md
           api_key: ${GH_TOKEN}
           on:
             tags: true

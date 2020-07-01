@@ -92,7 +92,7 @@ class LizmapService(QgsService):
         except LizmapServiceError as err:
             err.formatResponse(response)
         except Exception:
-            QgsMessageLog.logMessage("Unhandled exception:\n%s" % traceback.format_exc(), "lizmap", Qgis.Critical)
+            QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
             err = LizmapServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
