@@ -88,4 +88,4 @@ class LizmapFilter(QgsServerFilter):
             handler.setServiceException(exc)
 
         except Exception:
-            QgsMessageLog.logMessage("Unhandled exception:\n%s" % traceback.format_exc(), "lizmap", Qgis.Critical)
+            QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
