@@ -62,14 +62,14 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         self.min_date.setAllowEmptyFieldName(False)
         self.max_date.setAllowEmptyFieldName(True)
 
-        black_list = []
+        block_list = []
         for layer in QgsProject().instance().mapLayers().values():
             if layer.providerType() not in ('ogr', 'postgres', 'spatialite'):
-                black_list.append(layer)
+                block_list.append(layer)
             if layer.providerType() == 'ogr':
                 if '|layername=' not in layer.dataProvider().dataSourceUri():
-                    black_list.append(layer)
-        self.layer.setExceptedLayerList(black_list)
+                    block_list.append(layer)
+        self.layer.setExceptedLayerList(block_list)
 
         self.setup_ui()
         self.update_visibility()
