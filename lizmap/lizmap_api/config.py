@@ -159,7 +159,9 @@ class LizmapConfig:
         'popupLocation': {
             'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
         },
-
+        'draw': {
+            'wType': 'checkbox', 'type': 'boolean', 'default': False
+        },
         'print': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },

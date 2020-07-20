@@ -168,7 +168,8 @@ class Lizmap:
             self.dlg.label_atlas_34,
             self.dlg.label_group_visibility,
             self.dlg.list_group_visiblity,
-            self.dlg.activate_first_maptheme
+            self.dlg.activate_first_maptheme,
+            self.dlg.activate_drawing_tools,
         ]
         next_release = False
         for lwc_version in LwcVersions:
@@ -308,6 +309,7 @@ class Lizmap:
         self.global_options['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
         self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_maptheme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
+        self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
         self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
