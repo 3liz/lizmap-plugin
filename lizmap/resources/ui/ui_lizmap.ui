@@ -328,28 +328,18 @@ QListWidget::item::selected {
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_6">
-                    <item>
-                     <widget class="QCheckBox" name="cbActivatePrint">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Print</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
+                   <layout class="QGridLayout" name="gridLayout_4">
+                    <item row="0" column="0">
                      <widget class="QCheckBox" name="cbActivateMeasure">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Measure tools</string>
+                       <string>Measure</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
+                    <item row="1" column="0">
                      <widget class="QCheckBox" name="cbActivateZoomHistory">
                       <property name="enabled">
                        <bool>true</bool>
@@ -359,7 +349,7 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item>
+                    <item row="1" column="1">
                      <widget class="QCheckBox" name="cbActivateGeolocation">
                       <property name="enabled">
                        <bool>true</bool>
@@ -369,71 +359,65 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_10">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cbActivatePrint">
+                      <property name="enabled">
+                       <bool>true</bool>
                       </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="QLabel" name="label_19">
                       <property name="text">
-                       <string>Address search</string>
+                       <string>Print</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QComboBox" name="liExternalSearch">
-                      <item>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>nominatim</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>google</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>ban</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>ign</string>
-                       </property>
-                      </item>
+                    <item row="2" column="0">
+                     <widget class="QCheckBox" name="activate_drawing_tools">
+                      <property name="text">
+                       <string>Draw</string>
+                      </property>
+                      <property name="toolTip">
+                       <string>If drawing tools are activated or not</string>
+                      </property>
                      </widget>
                     </item>
-                    <item>
-                     <spacer name="horizontalSpacer_7">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
+                    <item row="2" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_14">
+                      <item>
+                       <widget class="QLabel" name="label_19">
+                        <property name="text">
+                         <string>Address search</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="liExternalSearch">
+                        <item>
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>nominatim</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>google</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ban</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>ign</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
                   </item>
@@ -3442,10 +3426,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>scrollArea</tabstop>
   <tabstop>cbHideProject</tabstop>
   <tabstop>inAcl</tabstop>
-  <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateMeasure</tabstop>
+  <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateZoomHistory</tabstop>
   <tabstop>cbActivateGeolocation</tabstop>
+  <tabstop>activate_drawing_tools</tabstop>
   <tabstop>liExternalSearch</tabstop>
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
