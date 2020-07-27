@@ -240,7 +240,7 @@ class LizmapConfig:
             'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata': True
         },
         'link': {
-            'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
+            'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': False
         },
         'minScale': {
             'wType': 'text', 'type': 'integer', 'default': 1
