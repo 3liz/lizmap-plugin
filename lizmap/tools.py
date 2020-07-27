@@ -47,7 +47,9 @@
 import os
 import urllib.parse
 
-from qgis.core import QgsProviderRegistry
+from qgis.core import QgsProviderRegistry, QgsVectorLayer
+
+from lizmap.definitions.definitions import LayerProperties
 
 
 def excluded_providers():
@@ -94,3 +96,10 @@ def is_database_layer(layer) -> bool:
         return True
 
     return False
+
+
+def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:
+    if item_property == LayerProperties.DataUrl:
+        return layer.dataUrl()
+    else:
+        raise NotImplementedError

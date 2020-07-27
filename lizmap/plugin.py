@@ -80,13 +80,16 @@ from qgis.core import (
     QgsApplication,
     QgsMapLayer,
     QgsSettings,
+    QgsRasterLayer,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
-from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.definitions import LwcVersions, LayerProperties
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
@@ -113,10 +116,11 @@ from lizmap.qgis_plugin_tools.tools.resources import resources_path, plugin_path
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.version import version, format_version_integer
 from lizmap.tooltip import Tooltip
-from lizmap.tools import get_layer_wms_parameters
+from lizmap.tools import get_layer_wms_parameters, layer_property
 
 
 LOGGER = logging.getLogger(plugin_name())
+DOC_URL = 'https://docs.lizmap.com/next/'
 
 
 class Lizmap:
@@ -587,7 +591,13 @@ class Lizmap:
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
-        self.dlg.btQgisPopupFromForm.clicked.connect(self.tooltip_content_from_form)
+        self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
+
+        # Link button
+        self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.dlg.button_refresh_link.setText('')
+        self.dlg.button_refresh_link.setToolTip('Set the link from the dataUrl property in the layer properties.')
+        self.dlg.button_refresh_link.clicked.connect(self.link_from_properties)
 
         # detect project closed
         self.iface.projectRead.connect(self.onProjectRead)
@@ -733,11 +743,11 @@ class Lizmap:
     def show_help(self):
         """Opens the html help file content with default browser."""
         if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
-            local_help_url = 'http://docs.3liz.com/{}/'.format(self.locale)
+            local_help_url = '{url}{lang}/'.format(url=DOC_URL, lang=self.locale)
         else:
             local_help_url = (
-                'http://translate.google.fr/translate?'
-                'sl=fr&tl={}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com').format(self.locale)
+                'https://translate.google.fr/translate?'
+                'sl=fr&tl={lang}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u={url}').format(lang=self.locale, url=DOC_URL)
         QDesktopServices.openUrl(QUrl(local_help_url))
 
     def log(self, msg, abort=None, textarea=None):
@@ -1190,6 +1200,9 @@ class Lizmap:
                 self.myDic[itemKey]['abstract'] = layer.abstract()
                 keepMetadata = True
 
+            if not self.myDic[itemKey]['link']:
+                self.myDic[itemKey]['link'] = layer_property(layer, LayerProperties.DataUrl)
+
             # hide non geo layers (csv, etc.)
             # if layer.type() == 0:
             #    if layer.geometryType() == 4:
@@ -1231,7 +1244,7 @@ class Lizmap:
                         # text inputs
                         elif item['wType'] in ('text', 'textarea'):
                             if jsonLayers[jsonKey][key] != '':
-                                if 'isMetadata' in item:  # title and abstract and link
+                                if item.get('isMetadata'):  # title and abstract
                                     if not keepMetadata:
                                         self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                                 else:
@@ -1302,15 +1315,8 @@ class Lizmap:
             if child_type == 'group':
                 self.process_node(child, item, json_layers)
 
-    def populateLayerTree(self):
-        """Populate the layer tree of the Layers tab from Qgis legend interface.
-
-        Needs to be refactored.
-        """
-        self.dlg.layer_tree.clear()
-        self.dlg.layer_tree.headerItem().setText(0, tr('List of layers'))
-        self.myDic = {}
-
+    def read_lizmap_config_file(self) -> dict:
+        """ Read the CFG file and returns the JSON content. """
         # Check if a json configuration file exists (myproject.qgs.cfg)
         json_file = '{}.cfg'.format(self.project.fileName())
         json_layers = {}
@@ -1333,8 +1339,18 @@ class Lizmap:
                     textarea=self.dlg.outLog)
             finally:
                 f.close()
+        return json_layers
 
-        # Get layer tree root
+    def populateLayerTree(self):
+        """Populate the layer tree of the Layers tab from QGIS legend interface.
+
+        Needs to be refactored.
+        """
+        self.dlg.layer_tree.clear()
+        self.dlg.layer_tree.headerItem().setText(0, tr('List of layers'))
+        self.myDic = {}
+
+        json_layers = self.read_lizmap_config_file()
         root = self.project.layerTreeRoot()
 
         # Recursively process layer tree nodes
@@ -1359,8 +1375,6 @@ class Lizmap:
         if iKey in self.layerList:
             # get information about the layer or the group from the layerList dictionary
             selectedItem = self.layerList[iKey]
-
-            isLayer = selectedItem['type'] == 'layer'
 
             # set options
             for key, val in self.layer_options_list.items():
@@ -1395,9 +1409,22 @@ class Lizmap:
                             if not wms_enabled:
                                 self.dlg.cbExternalWms.setChecked(False)
 
+            layer = self._current_selected_layer()  # It can be a layer or a group
+
             # deactivate popup configuration for groups
-            self.dlg.btConfigurePopup.setEnabled(isLayer)
-            self.dlg.btQgisPopupFromForm.setEnabled(isLayer)
+            is_vector = isinstance(layer, QgsVectorLayer) and layer.wkbType() != QgsWkbTypes.NoGeometry
+            self.dlg.btConfigurePopup.setEnabled(is_vector)
+            self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
+            self.dlg.label_drag_drop_form.setEnabled(is_vector)
+            self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
+
+            # Max feature per popup
+            self.dlg.label_max_feature_popup.setEnabled(is_vector)
+            self.layer_options_list['popupMaxFeatures']['widget'].setEnabled(is_vector)
+
+            # Checkbox display children
+            self.layer_options_list['popupDisplayChildren']['widget'].setEnabled(is_vector)
+            self.dlg.label_display_popup_children.setEnabled(is_vector)
 
         else:
             # set default values for this layer/group
@@ -1489,8 +1516,6 @@ class Lizmap:
                             layer.setTitle(self.layerList[item.text(1)][key])
                         if key == 'abstract':
                             layer.setAbstract(self.layerList[item.text(1)][key])
-                        if key == 'link':
-                            layer.setAttributionUrl(self.layerList[item.text(1)][key])
 
     def configure_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
@@ -1521,18 +1546,32 @@ class Lizmap:
                 # Write the content into the global object
                 self.layerList[item.text(1)]['popupTemplate'] = content
 
-    def tooltip_content_from_form(self):
+    def _current_selected_layer(self) -> QgsMapLayer:
+        """ Current selected map layer in the tree. """
         item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             lid = item.text(1)
             layers = [a for a in self.project.mapLayers().values() if a.id() == lid]
             if not layers:
-                LOGGER.warning('Maptip : layers not found.')
+                LOGGER.warning('Layers not found.')
                 return
         else:
-            LOGGER.warning('Maptip : no item.')
+            LOGGER.warning('No item.')
             return
         layer = layers[0]
+        return layer
+
+    def link_from_properties(self):
+        """ Button set link from layer in the Lizmap configuration. """
+        layer = self._current_selected_layer()
+        value = layer_property(layer, LayerProperties.DataUrl)
+        self.layer_options_list['link']['widget'].setText(value)
+
+    def maptip_from_form(self):
+        """ Button set popup maptip from layer in the Lizmap configuration. """
+        layer = self._current_selected_layer()
+        if not isinstance(layer, QgsRasterLayer):
+            return
 
         config = layer.editFormConfig()
         if config.layout() != QgsEditFormConfig.TabLayout:
