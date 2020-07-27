@@ -8,7 +8,7 @@ setup_git() {
 commit_i18n_files() {
   git checkout -b master
   git add lizmap/i18n/*.qm
-  git commit --message "Update translations from Transifex version : $TRAVIS_TAG"
+  git commit --message "Update translations to version : $TRAVIS_TAG" --message "[skip travis]"
 }
 
 upload_files() {
