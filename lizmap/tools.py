@@ -46,7 +46,9 @@
 
 import urllib.parse
 
-from qgis.core import QgsProviderRegistry
+from qgis.core import QgsProviderRegistry, QgsVectorLayer
+
+from lizmap.definitions.definitions import LayerProperties
 
 
 def excluded_providers():
@@ -77,3 +79,10 @@ def get_layer_wms_parameters(layer):
     wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
 
     return wms_params
+
+
+def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:
+    if item_property == LayerProperties.DataUrl:
+        return layer.dataUrl()
+    else:
+        raise NotImplementedError
