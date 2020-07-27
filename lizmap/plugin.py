@@ -80,6 +80,9 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsApplication,
     QgsMapLayer,
+    QgsRasterLayer,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 
 from lizmap import DEFAULT_LWC_VERSION
@@ -117,6 +120,7 @@ from lizmap.tools import get_layer_wms_parameters, layer_property
 
 
 LOGGER = logging.getLogger(plugin_name())
+DOC_URL = 'https://docs.lizmap.com/next/'
 
 
 class Lizmap:
@@ -561,7 +565,7 @@ class Lizmap:
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
-        self.dlg.btQgisPopupFromForm.clicked.connect(self.tooltip_content_from_form)
+        self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
 
         # Link button
         self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
@@ -710,11 +714,11 @@ class Lizmap:
     def show_help(self):
         """Opens the html help file content with default browser."""
         if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
-            local_help_url = 'http://docs.3liz.com/{}/'.format(self.locale)
+            local_help_url = '{url}{lang}/'.format(url=DOC_URL, lang=self.locale)
         else:
             local_help_url = (
-                'http://translate.google.fr/translate?'
-                'sl=fr&tl={}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u=http://docs.3liz.com').format(self.locale)
+                'https://translate.google.fr/translate?'
+                'sl=fr&tl={lang}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u={url}').format(lang=self.locale, url=DOC_URL)
         QDesktopServices.openUrl(QUrl(local_help_url))
 
     def log(self, msg, abort=None, textarea=None):
@@ -1343,8 +1347,6 @@ class Lizmap:
             # get information about the layer or the group from the layerList dictionary
             selectedItem = self.layerList[iKey]
 
-            isLayer = selectedItem['type'] == 'layer'
-
             # set options
             for key, val in self.layer_options_list.items():
                 if val['widget']:
@@ -1378,9 +1380,22 @@ class Lizmap:
                             if not wms_enabled:
                                 self.dlg.cbExternalWms.setChecked(False)
 
+            layer = self._current_selected_layer()  # It can be a layer or a group
+
             # deactivate popup configuration for groups
-            self.dlg.btConfigurePopup.setEnabled(isLayer)
-            self.dlg.btQgisPopupFromForm.setEnabled(isLayer)
+            is_vector = isinstance(layer, QgsVectorLayer) and layer.wkbType() != QgsWkbTypes.NoGeometry
+            self.dlg.btConfigurePopup.setEnabled(is_vector)
+            self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
+            self.dlg.label_drag_drop_form.setEnabled(is_vector)
+            self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
+
+            # Max feature per popup
+            self.dlg.label_max_feature_popup.setEnabled(is_vector)
+            self.layer_options_list['popupMaxFeatures']['widget'].setEnabled(is_vector)
+
+            # Checkbox display children
+            self.layer_options_list['popupDisplayChildren']['widget'].setEnabled(is_vector)
+            self.dlg.label_display_popup_children.setEnabled(is_vector)
 
         else:
             # set default values for this layer/group
@@ -1523,9 +1538,12 @@ class Lizmap:
         value = layer_property(layer, LayerProperties.DataUrl)
         self.layer_options_list['link']['widget'].setText(value)
 
-    def tooltip_content_from_form(self):
+    def maptip_from_form(self):
         """ Button set popup maptip from layer in the Lizmap configuration. """
         layer = self._current_selected_layer()
+        if not isinstance(layer, QgsRasterLayer):
+            return
+
         config = layer.editFormConfig()
         if config.layout() != QgsEditFormConfig.TabLayout:
             LOGGER.warning('Maptip : the layer is not using a drag and drop form.')
