@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### 3.2.15 - 27/07/2020
+
+* Fix bug when the user set a link on a layer
+* Add a button to fetch the dataUrl in the layer properties and fill the link
+* Add some checks about the layer geometry type
+
 ### 3.2.14 - 01/07/2020
 
 * Check project validity when running with QGIS 3.14
