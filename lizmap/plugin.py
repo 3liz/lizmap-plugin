@@ -80,7 +80,6 @@ from qgis.core import (
     QgsApplication,
     QgsMapLayer,
     QgsSettings,
-    QgsRasterLayer,
     QgsVectorLayer,
     QgsWkbTypes,
 )
@@ -1570,7 +1569,7 @@ class Lizmap:
     def maptip_from_form(self):
         """ Button set popup maptip from layer in the Lizmap configuration. """
         layer = self._current_selected_layer()
-        if not isinstance(layer, QgsRasterLayer):
+        if not isinstance(layer, QgsVectorLayer):
             return
 
         config = layer.editFormConfig()
