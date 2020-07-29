@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 3.2.16 - 28/07/2020
+
+* Fix an issue about copying Drag&Drop from to the maptip
+
 ### 3.2.15 - 27/07/2020
 
 * Fix bug when the user set a link on a layer
