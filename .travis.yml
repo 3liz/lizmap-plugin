@@ -59,6 +59,19 @@ jobs:
       script:
         - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.10 ./run-tests.sh
 
+    - stage: Run tests server
+      name: QGIS Server 3.14
+      before_install:
+        - docker pull 3liz/qgis-platform:3.14
+      install:
+        - cd ${TRAVIS_BUILD_DIR}
+        - mkdir .local
+        - mkdir .cache
+      script:
+        - docker run --rm --name qgis-server -u $(id -u) -v ${TRAVIS_BUILD_DIR}/.cache:/.cache -e PIP_CACHE_DIR=/.cache -w /src/test/server -e PYTEST_ADDOPTS="" -v ${TRAVIS_BUILD_DIR}:/src -v ${TRAVIS_BUILD_DIR}/.local:/.local 3liz/qgis-platform:3.14 ./run-tests.sh
+
+
+
 #    - stage: Translations
 #      name: Push translations
 #      if: branch = master AND type != pull_request
