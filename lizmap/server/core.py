@@ -46,7 +46,7 @@ def getServerFid(feature: QgsFeature, pkAttributes: []) -> str:
     if not pkAttributes:
         return str(feature.id())
 
-    return '@@'.join([str(feature.attributes(pk)) for pk in pkAttributes])
+    return '@@'.join([str(feature.attribute(pk)) for pk in pkAttributes])
 
 
 class ServiceError(Exception):
