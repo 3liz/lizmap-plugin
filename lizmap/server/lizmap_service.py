@@ -86,7 +86,7 @@ class LizmapService(QgsService):
             else:
                 raise LizmapServiceError(
                     "Bad request error",
-                    "Invalid REQUEST parameter: must be one of EVALUATE, found '{}'".format(reqparam),
+                    "Invalid REQUEST parameter: must be one of GETSERVERSETTINGS, found '{}'".format(reqparam),
                     400)
 
         except LizmapServiceError as err:
