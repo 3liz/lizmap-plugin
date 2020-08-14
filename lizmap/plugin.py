@@ -59,6 +59,7 @@ from qgis.PyQt.QtCore import (
     QTranslator,
     QSettings,
     QUrl,
+    Qt,
 )
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -709,6 +710,17 @@ class Lizmap:
         """Enable or not the "Configure" button according to the popup source."""
         data = self.layer_options_list['popupSource']['widget'].currentText()
         self.dlg.btConfigurePopup.setEnabled(data not in ['auto', 'qgis'])
+        self.dlg.btQgisPopupFromForm.setEnabled(data == 'qgis')
+
+        layer = self._current_selected_layer()
+        is_vector = isinstance(layer, QgsVectorLayer)
+        has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
+        index = self.layer_options_list['popupSource']['widget'].findText('qgis')
+        qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
+        if has_geom:
+            qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
+        else:
+            qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
 
     def show_help(self):
         """Opens the html help file content with default browser."""
@@ -1381,11 +1393,13 @@ class Lizmap:
 
             layer = self._current_selected_layer()  # It can be a layer or a group
 
-            # deactivate popup configuration for groups
-            is_vector = isinstance(layer, QgsVectorLayer) and layer.wkbType() != QgsWkbTypes.NoGeometry
-            self.dlg.btConfigurePopup.setEnabled(is_vector)
+            # Disable popup configuration for groups and raster
+            # Disable QGIS popup for layer without geom
+            is_vector = isinstance(layer, QgsVectorLayer)
+            has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
+            self.dlg.btConfigurePopup.setEnabled(has_geom)
             self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
-            self.dlg.label_drag_drop_form.setEnabled(is_vector)
+            self.dlg.label_drag_drop_form.setEnabled(has_geom)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
             # Max feature per popup
