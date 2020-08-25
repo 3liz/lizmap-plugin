@@ -12,7 +12,15 @@ package:
   before_script:
     - docker pull etrimaille/qgis-plugin-ci:latest
   script:
-    - docker run --rm -w /plugin -v ${CI_PROJECT_DIR}:/plugin -u $(id -u):$(id -g) etrimaille/qgis-plugin-ci package ${CI_COMMIT_REF_NAME} --allow-uncommitted-changes --disallow-submodule-update
+    - >
+      docker run
+      --rm -w /plugin
+      -v ${CI_PROJECT_DIR}:/plugin
+      -u $(id -u):$(id -g)
+      etrimaille/qgis-plugin-ci:1.8.2
+      package ${CI_COMMIT_REF_NAME}
+      --allow-uncommitted-changes
+      --disable-submodule-update
   after_script:
     - mv lizmap.${CI_COMMIT_REF_NAME}.zip lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
   tags:

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 3.2.17 - 14/08/2020
+
+* Fix and improve the UX when setting up a popup
+
 ### 3.2.16 - 28/07/2020
 
 * Fix an issue about copying Drag&Drop from to the maptip
