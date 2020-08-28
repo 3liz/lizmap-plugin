@@ -1,14 +1,18 @@
+__copyright__ = 'Copyright 2020, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+__revision__ = '$Format:%H$'
+
 import os
 import json
 import traceback
 
+from typing import List
+
 from qgis.core import Qgis, QgsMessageLog
 from qgis.server import QgsServerInterface, QgsServerException, QgsServerFilter
-
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtXml import QDomDocument
-
-from typing import List
 
 
 class LizmapFilterException(QgsServerException):

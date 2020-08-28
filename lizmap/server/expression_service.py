@@ -1,5 +1,6 @@
 import traceback
 import json
+
 from typing import Dict
 
 from qgis.core import (
@@ -27,8 +28,8 @@ from qgis.PyQt.QtCore import QTextCodec
 
 from .core import (
     write_json_response,
-    findVectorLayer,
-    getServerFid,
+    find_vector_layer,
+    get_server_fid,
     ServiceError,
 )
 
@@ -129,7 +130,7 @@ class ExpressionService(QgsService):
                 400)
 
         # get layer
-        layer = findVectorLayer(layername, project)
+        layer = find_vector_layer(layername, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
@@ -345,7 +346,7 @@ class ExpressionService(QgsService):
                 400)
 
         # get layer
-        layer = findVectorLayer(layername, project)
+        layer = find_vector_layer(layername, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
@@ -519,7 +520,7 @@ class ExpressionService(QgsService):
                 400)
 
         # get layer
-        layer = findVectorLayer(layername, project)
+        layer = find_vector_layer(layername, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
@@ -654,7 +655,7 @@ class ExpressionService(QgsService):
 
         separator = ''
         for feat in layer.getFeatures(req):
-            fid = layername+'.'+getServerFid(feat, pkAttributes)
+            fid = layername +'.' + get_server_fid(feat, pkAttributes)
             response.write(separator+jsonExporter.exportFeature(feat, {}, fid))
             response.flush()
             separator = ',\n'
@@ -679,7 +680,7 @@ class ExpressionService(QgsService):
                 400)
 
         # get layer
-        layer = findVectorLayer(layername, project)
+        layer = find_vector_layer(layername, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
@@ -802,7 +803,7 @@ class ExpressionService(QgsService):
 
         separator = ''
         for feat in layer.getFeatures(req):
-            fid = layername+'.'+getServerFid(feat, pkAttributes)
+            fid = layername +'.' + get_server_fid(feat, pkAttributes)
 
             extra = {}
 
