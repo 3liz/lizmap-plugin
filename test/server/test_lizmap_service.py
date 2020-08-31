@@ -52,8 +52,8 @@ def test_lizmap_getserversettings(client):
     assert 'name' in b['gdalogr']
 
     assert 'lizmap' in b
-    assert 'version' in b['lizmap']
-    assert 'name' in b['lizmap']
+    assert b['lizmap']['version'] == 'dev'
+    assert b['lizmap']['name'] == 'Lizmap'
 
     assert 'services' in b
     assert 'WMS' in b['services']

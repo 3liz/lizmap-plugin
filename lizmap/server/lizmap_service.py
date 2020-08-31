@@ -3,8 +3,10 @@ __license__ = "GPL version 3"
 __email__ = "info@3liz.org"
 __revision__ = "$Format:%H$"
 
+import configparser
 import traceback
 
+from os.path import dirname, join
 from typing import Dict
 
 from osgeo import gdal
@@ -26,9 +28,6 @@ from .core import (
     write_json_response,
     ServiceError,
 )
-
-from lizmap.qgis_plugin_tools.tools.version import version
-from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 
 
 class LizmapServiceError(ServiceError):
@@ -124,9 +123,13 @@ class LizmapService(QgsService):
             if reg.getService(s):
                 body['services'].append(s)
 
-        # Lizmap plugin metadata.
-        body['lizmap']['name'] = plugin_name()
-        body['lizmap']['version'] = version()
+        # Lizmap plugin metadata, do not use qgis_plugin_tools because of the packaging.
+        file_path = join(dirname(dirname(__file__)), 'metadata.txt')
+        config = configparser.ConfigParser()
+        config.read(file_path)
+
+        body['lizmap']['name'] = 'Lizmap'
+        body['lizmap']['version'] = config["general"]["version"]
 
         write_json_response(body, response)
         return
