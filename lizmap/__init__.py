@@ -46,14 +46,18 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-from .definitions.definitions import LwcVersions
+try:
+    from .definitions.definitions import LwcVersions
 
-DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_3
+    DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_3
 
+    def classFactory(iface):
+        from lizmap.plugin import Lizmap
+        return Lizmap(iface)
 
-def classFactory(iface):
-    from lizmap.plugin import Lizmap
-    return Lizmap(iface)
+except ImportError:
+    # We may not have this package when running on a server.
+    pass
 
 
 def serverClassFactory(serverIface):  # pylint: disable=invalid-name
