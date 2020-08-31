@@ -36,8 +36,8 @@ from .core import (
 
 class ExpressionServiceError(ServiceError):
 
-    def __init__(self, code: str, msg: str, responseCode: int = 500) -> None:
-        super().__init__(code, msg, responseCode)
+    def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
+        super().__init__(code, msg, response_code)
         self.service = 'Expression'
 
 
@@ -59,11 +59,11 @@ class ExpressionService(QgsService):
         """
         return "1.0.0"
 
-    def allowMethod(self, method: QgsServerRequest.Method) -> bool:
-        """ Check supported HTTP methods
-        """
-        return method in (
-            QgsServerRequest.GetMethod, QgsServerRequest.PostMethod)
+    # def allowMethod(self, method: QgsServerRequest.Method) -> bool:
+    #     """ Check supported HTTP methods
+    #     """
+    #     return method in (
+    #         QgsServerRequest.GetMethod, QgsServerRequest.PostMethod)
 
     def executeRequest(self, request: QgsServerRequest, response: QgsServerResponse,
                        project: QgsProject) -> None:
@@ -87,15 +87,16 @@ class ExpressionService(QgsService):
             if reqparam == 'EVALUATE':
                 self.evaluate(params, response, project)
             elif reqparam == 'REPLACEEXPRESSIONTEXT':
-                self.replaceExpressionText(params, response, project)
+                self.replace_expression_text(params, response, project)
             elif reqparam == 'GETFEATUREWITHFORMSCOPE':
-                self.getFeatureWithFormScope(params, response, project)
+                self.get_feature_with_form_scope(params, response, project)
             elif reqparam == 'VIRTUALFIELDS':
                 self.virtualFields(params, response, project)
             else:
                 raise ExpressionServiceError(
                     "Bad request error",
-                    "Invalid REQUEST parameter: must be one of 'Evaluate', 'ReplaceExpressionText', 'GetFeatureWithFormScope', 'VirtualFields'; found '{}'".format(reqparam),
+                    "Invalid REQUEST parameter: must be one of 'Evaluate', 'ReplaceExpressionText', "
+                    "'GetFeatureWithFormScope', 'VirtualFields'; found '{}'".format(reqparam),
                     400)
 
         except ExpressionServiceError as err:
@@ -106,7 +107,8 @@ class ExpressionService(QgsService):
             err.formatResponse(response)
 
     # EXPRESSION Service request methods
-    def evaluate(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    @staticmethod
+    def evaluate(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Evaluate expressions against layer or features
         In parameters:
             LAYER=wms-layer-name
@@ -118,7 +120,8 @@ class ExpressionService(QgsService):
             // optionals
             FEATURE={"type": "Feature", "geometry": {}, "properties": {}}
             or
-            FEATURES=[{"type": "Feature", "geometry": {}, "properties": {}}, {"type": "Feature", "geometry": {}, "properties": {}}]
+            FEATURES=[{"type": "Feature", "geometry": {}, "properties": {}}, {"type": "Feature", "geometry": {},
+            "properties": {}}]
             FORM_SCOPE=boolean to add formScope based on provided features
         """
 
@@ -150,7 +153,6 @@ class ExpressionService(QgsService):
             expressions = '["{}"]'.format(expression)
 
         # try to load expressions list or dict
-        exp_json = None
         try:
             exp_json = json.loads(expressions)
         except Exception:
@@ -237,7 +239,6 @@ class ExpressionService(QgsService):
             return
 
         # Check features
-        geojson = []
         try:
             geojson = json.loads(features)
         except Exception:
@@ -255,10 +256,11 @@ class ExpressionService(QgsService):
                 "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed".format(features),
                 400)
 
-        if ('type' not in geojson[0]) or geojson[0]['type'] != 'Feature':
+        if 'type' not in geojson[0] or geojson[0]['type'] != 'Feature':
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed: type not defined or not Feature.".format(features),
+                ("Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed: type not defined or not "
+                 "Feature.").format(features),
                 400)
 
         # try to load features
@@ -284,7 +286,7 @@ class ExpressionService(QgsService):
         feat_fields.extend(feature_fields)
 
         # form scope
-        addFormScope = params.get('FORM_SCOPE', '').lower() in ['true', '1', 't']
+        add_form_scope = params.get('FORM_SCOPE', '').lower() in ['true', '1', 't']
 
         # loop through provided features to evaluate expressions
         for f in feature_list:
@@ -298,7 +300,7 @@ class ExpressionService(QgsService):
                     feat.setAttribute(fname, f[fname])
 
             # Add form scope to expression context
-            if addFormScope:
+            if add_form_scope:
                 exp_context.appendScope(QgsExpressionContextUtils.formScope(feat))
 
             exp_context.setFeature(feat)
@@ -308,7 +310,8 @@ class ExpressionService(QgsService):
             result = {}
             error = {}
             for k, exp in exp_map.items():
-                if addFormScope:  # need to prepare the expression because the context as been updated with a new scope
+                if add_form_scope:
+                    # need to prepare the expression because the context has been updated with a new scope
                     exp.prepare(exp_context)
                 value = exp.evaluate(exp_context)
                 if exp.hasEvalError():
@@ -323,7 +326,8 @@ class ExpressionService(QgsService):
         write_json_response(body, response)
         return
 
-    def replaceExpressionText(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    @staticmethod
+    def replace_expression_text(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Replace expression texts against layer or features
         In parameters:
             LAYER=wms-layer-name
@@ -335,7 +339,8 @@ class ExpressionService(QgsService):
             // optionals
             FEATURE={"type": "Feature", "geometry": {}, "properties": {}}
             or
-            FEATURES=[{"type": "Feature", "geometry": {}, "properties": {}}, {"type": "Feature", "geometry": {}, "properties": {}}]
+            FEATURES=[{"type": "Feature", "geometry": {}, "properties": {}}, {"type": "Feature", "geometry": {},
+            "properties": {}}]
             FORM_SCOPE=boolean to add formScope based on provided features
         """
         layername = params.get('LAYER', '')
@@ -366,7 +371,6 @@ class ExpressionService(QgsService):
             strings = '["{}"]'.format(the_string)
 
         # try to load expressions list or dict
-        str_json = None
         try:
             str_json = json.loads(strings)
         except Exception:
@@ -445,7 +449,8 @@ class ExpressionService(QgsService):
         if ('type' not in geojson[0]) or geojson[0]['type'] != 'Feature':
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed: type not defined or not Feature.".format(features),
+                ("Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed: type not defined or not "
+                 "Feature.").format(features),
                 400)
 
         # try to load features
@@ -463,7 +468,8 @@ class ExpressionService(QgsService):
         if not feature_list:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid FEATURES for 'ReplaceExpressionText': not GeoJSON features array provided\n{}".format(features),
+                ("Invalid FEATURES for 'ReplaceExpressionText': not GeoJSON features array "
+                 "provided\n{}").format(features),
                 400)
 
         # Extend layer fields with this provided in GeoJSON Features
@@ -471,7 +477,7 @@ class ExpressionService(QgsService):
         feat_fields.extend(feature_fields)
 
         # form scope
-        addFormScope = params.get('FORM_SCOPE', '').lower() in ['true', '1', 't']
+        add_form_scope = params.get('FORM_SCOPE', '').lower() in ['true', '1', 't']
 
         # loop through provided features to replace expression strings
         for f in feature_list:
@@ -480,12 +486,12 @@ class ExpressionService(QgsService):
             feat = QgsFeature(feat_fields)
             feat.setGeometry(f.geometry())
             for field in f.fields():
-                fname = field.name()
-                if feat_fields.indexOf(fname) != -1:
-                    feat.setAttribute(fname, f[fname])
+                field_name = field.name()
+                if feat_fields.indexOf(field_name) != -1:
+                    feat.setAttribute(field_name, f[field_name])
 
             # Add form scope to expression context
-            if addFormScope:
+            if add_form_scope:
                 exp_context.appendScope(QgsExpressionContextUtils.formScope(feat))
 
             exp_context.setFeature(feat)
@@ -501,8 +507,8 @@ class ExpressionService(QgsService):
         write_json_response(body, response)
         return
 
-    def getFeatureWithFormScope(
-            self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    @staticmethod
+    def get_feature_with_form_scope(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get filtered features with a form scope
         In parameters:
             LAYER=wms-layer-name
@@ -512,20 +518,20 @@ class ExpressionService(QgsService):
             FIELDS=list of requested field separated by comma
             WITH_GEOMETRY=False
         """
-        layername = params.get('LAYER', '')
-        if not layername:
+        layer_name = params.get('LAYER', '')
+        if not layer_name:
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'GetFeatureWithFormScope' REQUEST: LAYER parameter is mandatory",
                 400)
 
         # get layer
-        layer = find_vector_layer(layername, project)
+        layer = find_vector_layer(layer_name, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid LAYER parameter for 'VirtualField': {} provided".format(layername),
+                "Invalid LAYER parameter for 'VirtualField': {} provided".format(layer_name),
                 400)
 
         # get filter
@@ -545,7 +551,6 @@ class ExpressionService(QgsService):
                 400)
 
         # Check features
-        geojson = {}
         try:
             geojson = json.loads(form_feature)
         except Exception:
@@ -566,7 +571,8 @@ class ExpressionService(QgsService):
         if ('type' not in geojson) or geojson['type'] != 'Feature':
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed: type not defined or not Feature.".format(form_feature),
+                ("Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed: type not defined "
+                 "or not Feature.").format(form_feature),
                 400)
 
         # try to load form feature
@@ -584,13 +590,15 @@ class ExpressionService(QgsService):
         if not form_feature_list:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid FORM_FEATURE for 'GetFeatureWithFormScope': not GeoJSON feature provided\n{}".format(form_feature),
+                ("Invalid FORM_FEATURE for 'GetFeatureWithFormScope': not GeoJSON feature provided\n"
+                 "{}").format(form_feature),
                 400)
 
         if len(form_feature_list) != 1:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid FORM_FEATURE for 'GetFeatureWithFormScope': not GeoJSON feature provided\n{}".format(form_feature),
+                ("Invalid FORM_FEATURE for 'GetFeatureWithFormScope': not GeoJSON feature provided\n"
+                 "{}").format(form_feature),
                 400)
 
         # Get the form feature
@@ -617,7 +625,8 @@ class ExpressionService(QgsService):
         if exp_f.hasParserError():
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid FILTER for 'GetFeatureWithFormScope': Error \"{}\": {}".format(exp_filter, exp_f.parserErrorString()),
+                "Invalid FILTER for 'GetFeatureWithFormScope': Error \"{}\": {}".format(
+                    exp_filter, exp_f.parserErrorString()),
                 400)
 
         if not exp_f.isValid():
@@ -631,17 +640,17 @@ class ExpressionService(QgsService):
         req = QgsFeatureRequest(exp_f, exp_context)
 
         # With geometry
-        withGeom = params.get('WITH_GEOMETRY', '').lower() in ['true', '1', 't']
-        if not withGeom:
+        with_geom = params.get('WITH_GEOMETRY', '').lower() in ['true', '1', 't']
+        if not with_geom:
             req.setFlags(QgsFeatureRequest.NoGeometry)
 
         # Fields
-        pkAttributes = layer.primaryKeyAttributes()
-        attributeList = [i for i in pkAttributes]
+        pk_attributes = layer.primaryKeyAttributes()
+        attribute_list = [i for i in pk_attributes]
         fields = layer.fields()
         r_fields = [f.strip() for f in params.get('FIELDS', '').split(',') if f]
         for f in r_fields:
-            attributeList.append(fields.indexOf(f))
+            attribute_list.append(fields.indexOf(f))
 
         # response
         response.setStatusCode(200)
@@ -649,20 +658,21 @@ class ExpressionService(QgsService):
         response.write('{ "type": "FeatureCollection","features":[')
         response.flush()
 
-        jsonExporter = QgsJsonExporter(layer)
-        if attributeList:
-            jsonExporter.setAttributes(attributeList)
+        json_exporter = QgsJsonExporter(layer)
+        if attribute_list:
+            json_exporter.setAttributes(attribute_list)
 
         separator = ''
         for feat in layer.getFeatures(req):
-            fid = layername +'.' + get_server_fid(feat, pkAttributes)
-            response.write(separator+jsonExporter.exportFeature(feat, {}, fid))
+            fid = layer_name + '.' + get_server_fid(feat, pk_attributes)
+            response.write(separator+json_exporter.exportFeature(feat, {}, fid))
             response.flush()
             separator = ',\n'
         response.write(']}')
         return
 
-    def virtualFields(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    @staticmethod
+    def virtualFields(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get virtual fields for features
         In parameters:
             LAYER=wms-layer-name
@@ -672,20 +682,20 @@ class ExpressionService(QgsService):
             FIELDS=list of requested field separated by comma
             WITH_GEOMETRY=False
         """
-        layername = params.get('LAYER', '')
-        if not layername:
+        layer_name = params.get('LAYER', '')
+        if not layer_name:
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'VirtualFields' REQUEST: LAYER parameter is mandatory",
                 400)
 
         # get layer
-        layer = find_vector_layer(layername, project)
+        layer = find_vector_layer(layer_name, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid LAYER parameter for 'VirtualFields': {} provided".format(layername),
+                "Invalid LAYER parameter for 'VirtualFields': {} provided".format(layer_name),
                 400)
 
         # get virtuals
@@ -697,7 +707,6 @@ class ExpressionService(QgsService):
                 400)
 
         # try to load virtuals dict
-        vir_json = None
         try:
             vir_json = json.loads(virtuals)
         except Exception:
@@ -766,7 +775,8 @@ class ExpressionService(QgsService):
             if req_exp.hasParserError():
                 raise ExpressionServiceError(
                     "Bad request error",
-                    "Invalid FILTER for 'VirtualFields' Error \"{}\": {}".format(req_filter, req_exp.parserErrorString()),
+                    "Invalid FILTER for 'VirtualFields' Error \"{}\": {}".format(
+                        req_filter, req_exp.parserErrorString()),
                     400)
 
             if not req_exp.isValid():
@@ -779,17 +789,17 @@ class ExpressionService(QgsService):
             req = QgsFeatureRequest(req_exp, exp_context)
 
         # With geometry
-        withGeom = params.get('WITH_GEOMETRY', '').lower() in ['true', '1', 't']
-        if not withGeom:
+        with_geom = params.get('WITH_GEOMETRY', '').lower() in ['true', '1', 't']
+        if not with_geom:
             req.setFlags(QgsFeatureRequest.NoGeometry)
 
         # Fields
-        pkAttributes = layer.primaryKeyAttributes()
-        attributeList = [i for i in pkAttributes]
+        pk_attributes = layer.primaryKeyAttributes()
+        attribute_list = [i for i in pk_attributes]
         fields = layer.fields()
         r_fields = [f.strip() for f in params.get('FIELDS', '').split(',') if f]
         for f in r_fields:
-            attributeList.append(fields.indexOf(f))
+            attribute_list.append(fields.indexOf(f))
 
         # response
         response.setStatusCode(200)
@@ -797,13 +807,13 @@ class ExpressionService(QgsService):
         response.write('{ "type": "FeatureCollection","features":[')
         response.flush()
 
-        jsonExporter = QgsJsonExporter(layer)
-        if attributeList:
-            jsonExporter.setAttributes(attributeList)
+        json_exporter = QgsJsonExporter(layer)
+        if attribute_list:
+            json_exporter.setAttributes(attribute_list)
 
         separator = ''
         for feat in layer.getFeatures(req):
-            fid = layername +'.' + get_server_fid(feat, pkAttributes)
+            fid = layer_name + '.' + get_server_fid(feat, pk_attributes)
 
             extra = {}
 
@@ -822,7 +832,7 @@ class ExpressionService(QgsService):
                     extra[k] = json.loads(QgsJsonUtils.encodeValue(value))
                     errors[k] = exp.expression()
 
-            response.write(separator+jsonExporter.exportFeature(feat, extra, fid))
+            response.write(separator+json_exporter.exportFeature(feat, extra, fid))
             response.flush()
             separator = ',\n'
         response.write(']}')

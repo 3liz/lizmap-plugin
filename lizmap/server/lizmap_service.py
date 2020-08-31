@@ -32,15 +32,16 @@ from .core import (
 
 class LizmapServiceError(ServiceError):
 
-    def __init__(self, code: str, msg: str, responseCode: int = 500) -> None:
-        super().__init__(code, msg, responseCode)
+    # def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
+    #     super().__init__(code, msg, response_code)
+    pass
 
 
 class LizmapService(QgsService):
 
-    def __init__(self, serverIface: 'QgsServerInterface', debug: bool = False) -> None:
+    def __init__(self, server_iface: 'QgsServerInterface', debug: bool = False) -> None:
         super().__init__()
-        self.server_iface = serverIface
+        self.server_iface = server_iface
         self.debugMode = debug
 
     # QgsService inherited
@@ -55,11 +56,11 @@ class LizmapService(QgsService):
         """
         return "1.0.0"
 
-    def allowMethod(self, method: QgsServerRequest.Method) -> bool:
-        """ Check supported HTTP methods
-        """
-        return method in (
-            QgsServerRequest.GetMethod, QgsServerRequest.PostMethod)
+    # def allowMethod(self, method: QgsServerRequest.Method) -> bool:
+    #     """ Check supported HTTP methods
+    #     """
+    #     return method in (
+    #         QgsServerRequest.GetMethod, QgsServerRequest.PostMethod)
 
     def executeRequest(self, request: QgsServerRequest, response: QgsServerResponse,
                        project: QgsProject) -> None:
@@ -70,22 +71,22 @@ class LizmapService(QgsService):
 
         # noinspection PyBroadException
         try:
-            reqparam = params.get('REQUEST', '').upper()
+            req_param = params.get('REQUEST', '').upper()
 
             try:
                 bytes(request.data()).decode()
             except Exception:
                 raise LizmapServiceError(
                     "Bad request error",
-                    "Invalid POST DATA for '{}'".format(reqparam),
+                    "Invalid POST DATA for '{}'".format(req_param),
                     400)
 
-            if reqparam == 'GETSERVERSETTINGS':
+            if req_param == 'GETSERVERSETTINGS':
                 self.getserversettings(params, response, project)
             else:
                 raise LizmapServiceError(
                     "Bad request error",
-                    "Invalid REQUEST parameter: must be one of GETSERVERSETTINGS, found '{}'".format(reqparam),
+                    "Invalid REQUEST parameter: must be one of GETSERVERSETTINGS, found '{}'".format(req_param),
                     400)
 
         except LizmapServiceError as err:
@@ -98,6 +99,8 @@ class LizmapService(QgsService):
     def getserversettings(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get Lizmap Server settings
         """
+        _ = params
+        _ = project
 
         # create the body
         body = {
@@ -108,9 +111,9 @@ class LizmapService(QgsService):
         }
 
         # QGIS info
-        qgis_version_splitted = Qgis.QGIS_VERSION.split('-')
-        body['qgis']['version'] = qgis_version_splitted[0]
-        body['qgis']['name'] = qgis_version_splitted[1]
+        qgis_version_split = Qgis.QGIS_VERSION.split('-')
+        body['qgis']['version'] = qgis_version_split[0]
+        body['qgis']['name'] = qgis_version_split[1]
         body['qgis']['version_int'] = Qgis.QGIS_VERSION_INT
 
         # GDAL/OGR

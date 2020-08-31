@@ -16,10 +16,10 @@ from .lizmap_accesscontrol import LizmapAccessControlFilter
 
 class LizmapServer:
     """Plugin for QGIS server
-    this plugin loads atlasprint filter"""
+    this plugin loads Lizmap filter"""
 
-    def __init__(self, serverIface: 'QgsServerInterface') -> None:
-        self.server_iface = serverIface
+    def __init__(self, server_iface: 'QgsServerInterface') -> None:
+        self.server_iface = server_iface
         QgsMessageLog.logMessage('SUCCESS - init', 'Lizmap Server', Qgis.Info)
 
         # debug
@@ -27,7 +27,7 @@ class LizmapServer:
 
         # Register service
         try:
-            reg = serverIface.serviceRegistry()
+            reg = server_iface.serviceRegistry()
             reg.registerService(ExpressionService(debug=debug))
             reg.registerService(LizmapService(self.server_iface, debug=debug))
         except Exception as e:
@@ -36,14 +36,14 @@ class LizmapServer:
 
         # Add filter
         try:
-            serverIface.registerFilter(LizmapFilter(self.server_iface), 50)
+            server_iface.registerFilter(LizmapFilter(self.server_iface), 50)
         except Exception as e:
             QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
             raise
 
         # Add Access Control
         try:
-            serverIface.registerAccessControl(LizmapAccessControlFilter(self.server_iface), 100)
+            server_iface.registerAccessControl(LizmapAccessControlFilter(self.server_iface), 100)
         except Exception as e:
             QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
             raise

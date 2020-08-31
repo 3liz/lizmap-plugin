@@ -6,14 +6,12 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
-from typing import List, Dict, Iterable
+from typing import List, Dict, Union
 
 from qgis.core import (
     Qgis,
     QgsMessageLog,
     QgsMapLayer,
-    QgsVectorLayer,
-    QgsFeature,
 )
 from qgis.server import (
     QgsServerInterface,
@@ -28,13 +26,13 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         self.iface = server_iface
 
-    def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
-        """ Return an additional expression filter """
-        return super().layerFilterExpression(layer)
-
-    def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
-        """ Return an additional subset string (typically SQL) filter """
-        return super().layerFilterSubsetString(layer)
+    # def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
+    #     """ Return an additional expression filter """
+    #     return super().layerFilterExpression(layer)
+    #
+    # def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
+    #     """ Return an additional subset string (typically SQL) filter """
+    #     return super().layerFilterSubsetString(layer)
 
     def layerPermissions(self, layer: 'QgsMapLayer') -> QgsAccessControlFilter.LayerPermissions:
         """ Return the layer rights """
@@ -42,7 +40,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         rights = super().layerPermissions(layer)
 
         # Get Lizmap user groups provided by the request
-        groups = self.getLizmapGroups()
+        groups = self.get_lizmap_groups()
 
         # If groups is empty, no Lizmap user groups provided by the request
         # The default layer rights is applied
@@ -50,7 +48,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return rights
 
         # Get Lizmap config
-        cfg = self.getLizmapConfig()
+        cfg = self.get_lizmap_config()
         if not cfg:
             # Lizmap config is empty
             QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
@@ -77,7 +75,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
                 # Check if edition is possible
                 # By default not
-                canEdit = False
+                can_edit = False
                 if 'acl' in edit_layer and edit_layer['acl']:
                     # acl is defined and not an empty string
                     # authorization defined for edition
@@ -88,15 +86,15 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
                     if len(group_edit) != 0:
                         for g in groups:
                             if g in group_edit:
-                                canEdit = True
+                                can_edit = True
                     else:
-                        canEdit = True
+                        can_edit = True
                 else:
                     # acl is not defined or an empty string
                     # no authorization defined for edition
-                    canEdit = True
+                    can_edit = True
 
-                if canEdit and 'capabilities' in edit_layer and edit_layer['capabilities']:
+                if can_edit and 'capabilities' in edit_layer and edit_layer['capabilities']:
                     # A user group can edit the layer and capabilities
                     # edition for the layer is defined in Lizmap edition config
                     edit_layer_cap = cfg['editionLayers'][layer_id]['capabilities']
@@ -121,7 +119,8 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             else:
                 # The layer has no editionLayers config defined
                 # Reset edition rights
-                QgsMessageLog.logMessage("No edition config defined for layer: %s (%s)" % (layer_name, layer_id), "lizmap", Qgis.Info)
+                QgsMessageLog.logMessage(
+                    "No edition config defined for layer: %s (%s)" % (layer_name, layer_id), "lizmap", Qgis.Info)
                 rights.canInsert = rights.canUpdate = rights.canDelete = False
         else:
             # No editionLayers defined
@@ -167,44 +166,44 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         rights.canInsert = rights.canUpdate = rights.canDelete = False
         return rights
 
-    def authorizedLayerAttributes(self, layer: 'QgsVectorLayer', attributes: 'Iterable[str]') -> 'List[str]':
-        """ Return the authorised layer attributes """
-        return super().authorizedLayerAttributes(layer, attributes)
-
-    def allowToEdit(self, layer: 'QgsVectorLayer', feature: 'QgsFeature') -> bool:
-        """ Are we authorise to modify the following geometry """
-        return super().allowToEdit(layer, feature)
+    # def authorizedLayerAttributes(self, layer: 'QgsVectorLayer', attributes: 'Iterable[str]') -> 'List[str]':
+    #     """ Return the authorised layer attributes """
+    #     return super().authorizedLayerAttributes(layer, attributes)
+    #
+    # def allowToEdit(self, layer: 'QgsVectorLayer', feature: 'QgsFeature') -> bool:
+    #     """ Are we authorise to modify the following geometry """
+    #     return super().allowToEdit(layer, feature)
 
     def cacheKey(self) -> str:
         """ The key used to cache documents """
-        defaultCacheKey = super().cacheKey()
+        default_cache_key = super().cacheKey()
 
         # Get Lizmap user groups provided by the request
-        groups = self.getLizmapGroups()
+        groups = self.get_lizmap_groups()
 
         # If groups is empty, no Lizmap user groups provided by the request
         # The default cache key is returned
         if len(groups) == 0:
-            return defaultCacheKey
+            return default_cache_key
 
         # Get Lizmap config
-        cfg = self.getLizmapConfig()
+        cfg = self.get_lizmap_config()
         if not cfg:
             # Lizmap config is empty
             QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
             # The default cache key is returned
-            return defaultCacheKey
+            return default_cache_key
 
         # Check Lizmap config layers
         if 'layers' not in cfg or not cfg['layers']:
             # Lizmap config has no options
             QgsMessageLog.logMessage("Lizmap config has no layers", "lizmap", Qgis.Warning)
             # The default cache key is returned
-            return defaultCacheKey
+            return default_cache_key
 
         # Check group_visibility in Lizmap config layers
         cfg_layers = cfg['layers']
-        hasGroupVisibility = False
+        has_group_visibility = False
         for l_name, cfg_layer in cfg_layers.items():
             # check group_visibility in config
             if 'group_visibility' not in cfg_layer or not cfg_layer['group_visibility']:
@@ -218,20 +217,20 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             if len(group_visibility) == 1 and groups[0] == '':
                 continue
 
-            hasGroupVisibility = True
+            has_group_visibility = True
             break
 
         # group_visibility option is defined in Lizmap config layers
-        if hasGroupVisibility:
+        if has_group_visibility:
             # The group provided in request is anonymous
             if len(groups) == 1 and groups[0] == '':
                 return '@@'
             # for other groups, removing duplicates and joining
             return '@@'.join(list(set(groups)))
 
-        return defaultCacheKey
+        return default_cache_key
 
-    def getLizmapConfig(self) -> 'Dict':
+    def get_lizmap_config(self) -> Union[Dict, None]:
         """ Get Lizmap config """
         # Get QGIS Project path
         config_path = self.iface.configFilePath()
@@ -249,19 +248,17 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return None
 
         # Get Lizmap config
-        cfg = None
         with open(config_path, 'r') as cfg_file:
+            # noinspection PyBroadException
             try:
                 cfg = json.loads(cfg_file.read())
+                return cfg
             except Exception:
                 # Lizmap config is not a valid JSON file
-                QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Error)
-                cfg = None
-                return cfg
+                QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Critical)
+                return None
 
-        return cfg
-
-    def getLizmapGroups(self) -> 'List[str]':
+    def get_lizmap_groups(self) -> 'List[str]':
         """ Get Lizmap user groups provided by the request """
         # Defined groups
         groups = []
@@ -274,9 +271,9 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         if headers:
             QgsMessageLog.logMessage("Request headers provided", "lizmap", Qgis.Info)
             # Get Lizmap user groups defined in request headers
-            userGroups = headers.get('X-Lizmap-User-Groups')
-            if userGroups is not None:
-                groups = [g.strip() for g in userGroups.split(',')]
+            user_groups = headers.get('X-Lizmap-User-Groups')
+            if user_groups is not None:
+                groups = [g.strip() for g in user_groups.split(',')]
                 QgsMessageLog.logMessage("Lizmap user groups in request headers", "lizmap", Qgis.Info)
         else:
             QgsMessageLog.logMessage("No request headers provided", "lizmap", Qgis.Info)
@@ -290,9 +287,9 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         params = handler.parameterMap()
         if params:
             # Get Lizmap user groups defined in parameters
-            userGroups = params.get('LIZMAP_USER_GROUPS')
-            if userGroups is not None:
-                groups = [g.strip() for g in userGroups.split(',')]
+            user_groups = params.get('LIZMAP_USER_GROUPS')
+            if user_groups is not None:
+                groups = [g.strip() for g in user_groups.split(',')]
                 QgsMessageLog.logMessage("Lizmap user groups in parameters", "lizmap", Qgis.Info)
 
         return groups

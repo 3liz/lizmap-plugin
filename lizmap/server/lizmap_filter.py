@@ -17,12 +17,13 @@ from qgis.PyQt.QtXml import QDomDocument
 
 class LizmapFilterException(QgsServerException):
 
-    def __init__(self, code: str, message: str, locator: str = '', responseCode: int = 500, version: str = '1.3.0') -> None:
-        super(QgsServerException, self).__init__(message, responseCode)
+    def __init__(
+            self, code: str, message: str, locator: str = '', response_code: int = 500, version: str = '1.3.0') -> None:
+        super(QgsServerException, self).__init__(message, response_code)
         self.code = code
         self.message = message
         self.locator = locator
-        self.responseCode = responseCode
+        self.response_code = response_code
         self.version = version
 
     def formatResponse(self) -> (QByteArray, str):
@@ -52,6 +53,7 @@ class LizmapFilter(QgsServerFilter):
         self.iface = server_iface
 
     def requestReady(self):
+        # noinspection PyBroadException
         try:
             # Get QGIS Project path
             config_path = self.iface.configFilePath()
@@ -77,13 +79,13 @@ class LizmapFilter(QgsServerFilter):
                 return
 
             # Get Lizmap config
-            cfg = None
             with open(config_path, 'r') as cfg_file:
+                # noinspection PyBroadException
                 try:
                     cfg = json.loads(cfg_file.read())
                 except Exception:
                     # Lizmap config is not a valid JSON file
-                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Error)
+                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Critical)
                     # The request can be evaluated by QGIS Server
                     return
 
@@ -122,7 +124,7 @@ class LizmapFilter(QgsServerFilter):
 
             # The lizmap user groups provided in request header are not
             # authorized to get access to the QGIS Project
-            exc = LizmapFilterException('Forbidden', 'No ACL permissions', responseCode=403)
+            exc = LizmapFilterException('Forbidden', 'No ACL permissions', response_code=403)
 
             # Get request handler
             handler = self.iface.requestHandler()
@@ -145,9 +147,9 @@ class LizmapFilter(QgsServerFilter):
         if headers:
             QgsMessageLog.logMessage("Request headers provided", "lizmap", Qgis.Info)
             # Get Lizmap user groups defined in request headers
-            userGroups = headers.get('X-Lizmap-User-Groups')
-            if userGroups is not None:
-                groups = [g.strip() for g in userGroups.split(',')]
+            user_groups = headers.get('X-Lizmap-User-Groups')
+            if user_groups is not None:
+                groups = [g.strip() for g in user_groups.split(',')]
                 QgsMessageLog.logMessage("Lizmap user groups in request headers", "lizmap", Qgis.Info)
         else:
             QgsMessageLog.logMessage("No request headers provided", "lizmap", Qgis.Info)
@@ -161,9 +163,9 @@ class LizmapFilter(QgsServerFilter):
         params = handler.parameterMap()
         if params:
             # Get Lizmap user groups defined in parameters
-            userGroups = params.get('LIZMAP_USER_GROUPS')
-            if userGroups is not None:
-                groups = [g.strip() for g in userGroups.split(',')]
+            user_groups = params.get('LIZMAP_USER_GROUPS')
+            if user_groups is not None:
+                groups = [g.strip() for g in user_groups.split(',')]
                 QgsMessageLog.logMessage("Lizmap user groups in parameters", "lizmap", Qgis.Info)
 
         return groups
