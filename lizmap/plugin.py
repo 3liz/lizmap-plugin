@@ -746,10 +746,13 @@ class Lizmap:
         has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
         index = self.layer_options_list['popupSource']['widget'].findText('qgis')
         qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
+        qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
+
         if has_geom:
             qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
-        else:
-            qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
+
+        if not has_geom and Qgis.QGIS_VERSION_INT >= 31000:
+            qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
 
     def show_help(self):
         """Opens the html help file content with default browser."""

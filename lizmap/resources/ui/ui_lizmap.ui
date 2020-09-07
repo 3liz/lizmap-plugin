@@ -1196,7 +1196,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <widget class="QPushButton" name="btQgisPopupFromForm">
                            <property name="text">
-                            <string>Copy the form drag &amp; drop template</string>
+                            <string>Copy the drag &amp;&amp; drop form layout</string>
                            </property>
                           </widget>
                          </item>

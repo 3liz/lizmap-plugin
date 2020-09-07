@@ -1,15 +1,21 @@
 """Create QGIS tooltip from Drag&Drop designer form."""
 
+import logging
 import re
 
 from qgis.gui import QgsExternalResourceWidget
 from qgis.core import (
-    QgsAttributeEditorField,
     QgsAttributeEditorContainer,
-    QgsVectorLayer,
     QgsAttributeEditorElement,
+    QgsAttributeEditorField,
     QgsHstoreUtils,
+    QgsProject,
+    QgsVectorLayer,
 )
+
+from lizmap.qgis_plugin_tools.tools.custom_logging import plugin_name
+
+LOGGER = logging.getLogger(plugin_name())
 
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -37,6 +43,8 @@ class Tooltip:
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
                 # The form might have been imported from QML with some not existing fields
+                LOGGER.warning(
+                    'Layer {} does not have a valid editor field'.format(layer.id()))
                 return html
 
             field = layer.fields()[node.idx()]
@@ -63,11 +71,27 @@ class Tooltip:
                 field_view = Tooltip._generate_external_resource(widget_config, name, fname)
 
             if widget_type == 'ValueRelation':
+                if not QgsProject.instance().mapLayer(widget_config['Layer']):
+                    # Issue #287
+                    LOGGER.warning(
+                        'Layer {} does not have a valid value relation layer for field {}'.format(
+                            layer.id(), fname))
+                    return html
+
                 field_view = Tooltip._generate_value_relation(widget_config, name)
 
             if widget_type == 'RelationReference':
                 relation = relation_manager.relation(widget_config['Relation'])
-                display = relation.referencedLayer().displayExpression()
+                referenced_layer = relation.referencedLayer()
+
+                if not referenced_layer:
+                    # Issue #287
+                    LOGGER.warning(
+                        'Layer {} does not have a valid relation reference layer for field {}'.format(
+                            layer.id(), fname))
+                    return html
+
+                display = referenced_layer.displayExpression()
                 layer_id = relation.referencedLayerId()
                 parent_pk = relation.resolveReferencedField(name)
                 field_view = Tooltip._generate_relation_reference(name, parent_pk, layer_id, display)

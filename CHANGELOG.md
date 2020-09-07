@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### 3.2.18 - 07/09/2020
+
+* Add missing translations coming from UI files
+* Enable QGIS Popup if QGIS ⩾ 3.10
+* Do not generate the QGIS Popup if the form contains an invalid input widget
+* Fix display of the Drag&Drop form button
+
 ### 3.2.17 - 14/08/2020
 
 * Fix and improve the UX when setting up a popup

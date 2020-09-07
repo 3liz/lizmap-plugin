@@ -113,14 +113,14 @@ jobs:
       name: Push translations
       if: branch = master AND type != pull_request
       install:
-        - pip3 install qgis-plugin-ci==1.8.3
+        - pip3 install qgis-plugin-ci==1.8.4
       script: qgis-plugin-ci push-translation ${TX_TOKEN}
 
     - stage: Deploy
       if: tag IS present
       name: Create release, plugins.qgis.org
       install:
-        - pip3 install qgis-plugin-ci==1.8.3
+        - pip3 install qgis-plugin-ci==1.8.4
       before_deploy:
         - export RELEASE_TITLE=${TRAVIS_TAG}
         - qgis-plugin-ci changelog $TRAVIS_TAG > ../release.md
