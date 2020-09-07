@@ -15,8 +15,9 @@ package:
       --rm -w /plugin
       -v ${CI_PROJECT_DIR}:/plugin
       -u $(id -u):$(id -g)
-      3liz/qgis-plugin-ci:1.8.3
+      3liz/qgis-plugin-ci:1.8.4
       package ${CI_COMMIT_REF_NAME}
+      --transifex-token ${TX_TOKEN}
       --allow-uncommitted-changes
       --disable-submodule-update
   after_script:
