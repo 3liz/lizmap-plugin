@@ -1,6 +1,6 @@
 # CHANGELOG
 
-### 3.2.18 - 7/09/2020
+### 3.2.18 - 07/09/2020
 
 * Add missing translations coming from UI files
 * Enable QGIS Popup if QGIS ⩾ 3.10
