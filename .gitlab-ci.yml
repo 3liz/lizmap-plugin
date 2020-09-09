@@ -9,19 +9,24 @@ package:
   stage: package 📦
   only:
     - schedules
+  before_script:
+    - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-beta
   script:
+    # --transifex-token ${TX_TOKEN}  # Need to fix the docker image about lrelease
     - >
       docker run
       --rm -w /plugin
       -v ${CI_PROJECT_DIR}:/plugin
       -u $(id -u):$(id -g)
       3liz/qgis-plugin-ci:1.8.4
-      package ${CI_COMMIT_REF_NAME}
-      --transifex-token ${TX_TOKEN}
+      package ${VERSION}
       --allow-uncommitted-changes
       --disable-submodule-update
   after_script:
-    - mv lizmap.${CI_COMMIT_REF_NAME}.zip lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
+    - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-beta
+    - mv lizmap.${VERSION}.zip lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
   tags:
     - factory
   artifacts:
