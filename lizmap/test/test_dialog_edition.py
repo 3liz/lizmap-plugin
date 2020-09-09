@@ -29,12 +29,13 @@ class TestEditionDialog(unittest.TestCase):
         dialog.feature_label.setCurrentIndex(1)
         self.assertEqual(dialog.validate(), 'The field "sort field" is mandatory.')
         dialog.sort_field.setCurrentIndex(1)
-        self.assertIsNone(dialog.validate())
-
+        self.assertEqual(
+            'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n option of the QGIS '
+            'Server tab in the "Project Properties" dialog.',
+            dialog.validate()
+        )
         data = dialog.save_form()
         self.assertEqual(len(data), len(dialog.config.layer_config.keys()))
-
-        # first_field = layer.fields().at(0).name()
 
         for key, value in data.items():
 
@@ -55,4 +56,9 @@ class TestEditionDialog(unittest.TestCase):
         self.assertEqual(dialog.validate(), 'The field "primary key" is mandatory.')
 
         dialog.load_form(data)
-        self.assertIsNone(dialog.validate())
+
+        self.assertEqual(
+            'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n option of the QGIS '
+            'Server tab in the "Project Properties" dialog.',
+            dialog.validate()
+        )

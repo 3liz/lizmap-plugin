@@ -1,9 +1,10 @@
 """Dialog for atlas edition."""
 
-from qgis.core import QgsMapLayerProxyModel
+from qgis.core import QgsMapLayerProxyModel, QgsProject
 
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.definitions.atlas import AtlasDefinitions
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -57,3 +58,22 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.sort_field.setLayer(self.layer.currentLayer())
 
         self.setup_ui()
+
+    def validate(self) -> str:
+        layer = self.layer.currentLayer()
+        if not layer:
+            return tr('A layer is mandatory.')
+
+        upstream = super().validate()
+        if upstream:
+            return upstream
+
+        wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
+        for wfs_layer in wfs_layers_list:
+            if layer.id() == wfs_layer:
+                break
+        else:
+            msg = tr(
+                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
+                ' option of the QGIS Server tab in the "Project Properties" dialog.')
+            return msg
