@@ -9,6 +9,8 @@ from qgis.core import (
     Qgis,
     QgsMessageLog,
     QgsMapLayer,
+    QgsVectorLayer,
+    QgsExpression,
 )
 from qgis.server import (
     QgsServerInterface,
@@ -16,9 +18,12 @@ from qgis.server import (
 )
 
 from .core import (
+    config_value_to_boolean,
     get_lizmap_config,
     get_lizmap_layers_config,
+    get_lizmap_layer_login_filter,
     get_lizmap_groups,
+    get_lizmap_user_login,
 )
 
 
@@ -29,13 +34,23 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         self.iface = server_iface
 
-    # def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
-    #     """ Return an additional expression filter """
-    #     return = super().layerFilterExpression(layer)
-    #
-    # def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
-    #     """ Return an additional subset string (typically SQL) filter """
-    #     return super().layerFilterSubsetString(layer)
+    def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
+        """ Return an additional expression filter """
+        QgsMessageLog.logMessage("Lizmap layerFilterExpression", "lizmap", Qgis.Info)
+        filter_exp = self.get_lizmap_layer_filter(layer)
+        if filter_exp:
+            return filter_exp
+
+        return super().layerFilterExpression(layer)
+
+    def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
+        """ Return an additional subset string (typically SQL) filter """
+        QgsMessageLog.logMessage("Lizmap layerFilterSubsetString", "lizmap", Qgis.Info)
+        filter_exp = self.get_lizmap_layer_filter(layer)
+        if filter_exp:
+            return filter_exp
+
+        return super().layerFilterSubsetString(layer)
 
     def layerPermissions(self, layer: 'QgsMapLayer') -> QgsAccessControlFilter.LayerPermissions:
         """ Return the layer rights """
@@ -233,3 +248,81 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         """ Get Lizmap user groups provided by the request """
 
         return get_lizmap_groups(self.iface.requestHandler())
+
+    def get_lizmap_user_login(self) -> str:
+        """ Get Lizmap user login provided by the request """
+
+        return get_lizmap_user_login(self.iface.requestHandler())
+
+    def get_lizmap_layer_filter(self, layer: 'QgsVectorLayer') -> str:
+        """ Get lizmap layer filter based on login filter """
+        layer_filter = ''
+
+        # Get Lizmap config
+        cfg = self.get_lizmap_config()
+        if not cfg:
+            # Return empty filter
+            return layer_filter
+
+        # Get layers config
+        cfg_layers = get_lizmap_layers_config(cfg)
+        if not cfg_layers:
+            # Return empty filter
+            return layer_filter
+
+        # Get layer name
+        layer_name = layer.name()
+        # Check that
+        if layer_name not in cfg_layers:
+            # Return empty filter
+            return layer_filter
+
+        # Get layer login filter
+        cfg_layer_login_filter = get_lizmap_layer_login_filter(cfg, layer_name)
+        if not cfg_layer_login_filter:
+            # Return empty filter
+            return layer_filter
+
+        # Layer login fliter only for edition does not filter layer
+        if 'edition_only' in cfg_layer_login_filter and config_value_to_boolean(cfg_layer_login_filter['edition_only']):
+            return layer_filter
+
+        # Get Lizmap user groups provided by the request
+        groups = self.get_lizmap_groups()
+        user_login = self.get_lizmap_user_login()
+
+        # If groups is empty, no Lizmap user groups provided by the request
+        # Return empty filter
+        if len(groups) == 0 and not user_login:
+            return layer_filter
+
+        attribute = cfg_layer_login_filter['filterAttribute']
+
+        # Default filter for no user connected
+        # we use expression tools also for subsetstring
+        layer_filter = QgsExpression.createFieldEqualityExpression(attribute, 'all')
+
+        # If groups is not empty but the only group like user login has no name
+        # Return the filter for no user connected
+        if len(groups) == 1 and groups[0] == '' and user_login == '':
+            return layer_filter
+
+        # List of quoted values for expression
+        quotedValues = []
+        if config_value_to_boolean(cfg_layer_login_filter['filterPrivate']):
+            # If filter is private use user_login
+            quotedValues.append(QgsExpression.quotedString(user_login))
+        else:
+            # Else use user groups
+            quotedValues = [QgsExpression.quotedString(g) for g in groups]
+        # Add all to quoted values
+        quotedValues.append(QgsExpression.quotedString('all'))
+
+        # Build filter
+        layer_filter = '{} IN ({})'.format(
+            QgsExpression.quotedColumnRef(attribute),
+            ', '.join(quotedValues)
+        )
+
+        # Return build filter
+        return layer_filter
