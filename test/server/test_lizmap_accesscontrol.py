@@ -157,7 +157,6 @@ def test_group_visibility(client):
     assert len(layers) == 1
 
 
-
 def test_group_visibility_headers(client):
     """
     Test Access Control response with a project with
@@ -220,3 +219,4 @@ def test_group_visibility_headers(client):
     layers = rv.xpath('//wms:Layer')
     assert layers is not None
     assert len(layers) == 1
+
