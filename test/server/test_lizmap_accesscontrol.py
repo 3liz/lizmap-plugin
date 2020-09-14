@@ -220,3 +220,138 @@ def test_group_visibility_headers(client):
     assert layers is not None
     assert len(layers) == 1
 
+
+def test_layer_filter_login(client):
+
+    # Project without config
+    projectfile = "france_parts.qgs"
+
+    qs = "?SERVICE=WFS&REQUEST=GetCapabilities&MAP=france_parts.qgs"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+
+    qs = "?SERVICE=WFS&REQUEST=GetFeature&MAP=france_parts.qgs&TYPENAME=france_parts"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    headers = {'X-Lizmap-User-Groups': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    headers = {'X-Lizmap-User-Groups': 'test1', 'X-Lizmap-User': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    # Project with config but without login filter
+    projectfile = "france_parts_liz.qgs"
+
+    qs = "?SERVICE=WFS&REQUEST=GetFeature&MAP=france_parts_liz.qgs&TYPENAME=france_parts"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    headers = {'X-Lizmap-User-Groups': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    headers = {'X-Lizmap-User-Groups': 'test1', 'X-Lizmap-User': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    # Project with config with group filter
+    projectfile = "france_parts_liz_filter_group.qgs"
+
+    qs = "?SERVICE=WFS&REQUEST=GetFeature&MAP=france_parts_liz_filter_group.qgs&TYPENAME=france_parts"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    headers = {'X-Lizmap-User-Groups': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 1
+
+    headers = {'X-Lizmap-User-Groups': 'Bretagne, Centre, test1'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 2
+
+    headers = {'X-Lizmap-User-Groups': 'test1', 'X-Lizmap-User': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 0
+
+    # Project with config with login filter
+    projectfile = "france_parts_liz_filter_login.qgs"
+
+    qs = "?SERVICE=WFS&REQUEST=GetFeature&MAP=france_parts_liz_filter_login.qgs&TYPENAME=france_parts"
+    rv = client.get(qs, projectfile)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 4
+
+    headers = {'X-Lizmap-User-Groups': 'test1', 'X-Lizmap-User': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 1
+
+    headers = {'X-Lizmap-User-Groups': 'Bretagne, Centre, test1', 'X-Lizmap-User': 'test'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 0
