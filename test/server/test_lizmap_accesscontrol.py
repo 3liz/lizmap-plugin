@@ -1,6 +1,4 @@
-import json
 import logging
-import warnings
 
 LOGGER = logging.getLogger('server')
 
@@ -51,7 +49,6 @@ def test_no_lizmap_config(client):
     assert len(layers) == 2
 
 
-
 def test_no_group_visibility(client):
     """
     Test Access Control response with a project with
@@ -91,7 +88,6 @@ def test_no_group_visibility(client):
     layers = rv.xpath('//wms:Layer')
     assert layers is not None
     assert len(layers) == 2
-
 
 
 def test_group_visibility(client):
