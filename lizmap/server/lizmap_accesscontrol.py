@@ -3,19 +3,27 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
 
-import os
-import json
-
 from typing import List, Dict, Union
 
 from qgis.core import (
     Qgis,
     QgsMessageLog,
     QgsMapLayer,
+    QgsVectorLayer,
+    QgsExpression,
 )
 from qgis.server import (
     QgsServerInterface,
     QgsAccessControlFilter,
+)
+
+from .core import (
+    config_value_to_boolean,
+    get_lizmap_config,
+    get_lizmap_layers_config,
+    get_lizmap_layer_login_filter,
+    get_lizmap_groups,
+    get_lizmap_user_login,
 )
 
 
@@ -26,13 +34,23 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         self.iface = server_iface
 
-    # def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
-    #     """ Return an additional expression filter """
-    #     return super().layerFilterExpression(layer)
-    #
-    # def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
-    #     """ Return an additional subset string (typically SQL) filter """
-    #     return super().layerFilterSubsetString(layer)
+    def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
+        """ Return an additional expression filter """
+        QgsMessageLog.logMessage("Lizmap layerFilterExpression", "lizmap", Qgis.Info)
+        filter_exp = self.get_lizmap_layer_filter(layer)
+        if filter_exp:
+            return filter_exp
+
+        return super().layerFilterExpression(layer)
+
+    def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
+        """ Return an additional subset string (typically SQL) filter """
+        QgsMessageLog.logMessage("Lizmap layerFilterSubsetString", "lizmap", Qgis.Info)
+        filter_exp = self.get_lizmap_layer_filter(layer)
+        if filter_exp:
+            return filter_exp
+
+        return super().layerFilterSubsetString(layer)
 
     def layerPermissions(self, layer: 'QgsMapLayer') -> QgsAccessControlFilter.LayerPermissions:
         """ Return the layer rights """
@@ -50,20 +68,15 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Get Lizmap config
         cfg = self.get_lizmap_config()
         if not cfg:
-            # Lizmap config is empty
-            QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
-            # Default layer rights applied
-            return rights
-
-        # Check Lizmap config layers
-        if 'layers' not in cfg or not cfg['layers']:
-            # Lizmap config has no options
-            QgsMessageLog.logMessage("Lizmap config has no layers", "lizmap", Qgis.Warning)
             # Default layer rights applied
             return rights
 
         # Get layers config
-        cfg_layers = cfg['layers']
+        cfg_layers = get_lizmap_layers_config(cfg)
+        if not cfg_layers:
+            # Default layer rights applied
+            return rights
+
         # Get layer name
         layer_name = layer.name()
 
@@ -189,20 +202,16 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Get Lizmap config
         cfg = self.get_lizmap_config()
         if not cfg:
-            # Lizmap config is empty
-            QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
             # The default cache key is returned
             return default_cache_key
 
-        # Check Lizmap config layers
-        if 'layers' not in cfg or not cfg['layers']:
-            # Lizmap config has no options
-            QgsMessageLog.logMessage("Lizmap config has no layers", "lizmap", Qgis.Warning)
+        # Get layers config
+        cfg_layers = get_lizmap_layers_config(cfg)
+        if not cfg_layers:
             # The default cache key is returned
             return default_cache_key
 
         # Check group_visibility in Lizmap config layers
-        cfg_layers = cfg['layers']
         has_group_visibility = False
         for l_name, cfg_layer in cfg_layers.items():
             # check group_visibility in config
@@ -232,64 +241,88 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
     def get_lizmap_config(self) -> Union[Dict, None]:
         """ Get Lizmap config """
-        # Get QGIS Project path
-        config_path = self.iface.configFilePath()
-        if not os.path.exists(config_path):
-            # QGIS Project path does not exist as a file
-            # No Lizmap config
-            return None
 
-        # Get Lizmap config path
-        config_path += '.cfg'
-        if not os.path.exists(config_path):
-            # Lizmap config path does not exist
-            QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
-            # No Lizmap config
-            return None
-
-        # Get Lizmap config
-        with open(config_path, 'r') as cfg_file:
-            # noinspection PyBroadException
-            try:
-                cfg = json.loads(cfg_file.read())
-                return cfg
-            except Exception:
-                # Lizmap config is not a valid JSON file
-                QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Critical)
-                return None
+        return get_lizmap_config(self.iface.configFilePath())
 
     def get_lizmap_groups(self) -> 'List[str]':
         """ Get Lizmap user groups provided by the request """
-        # Defined groups
-        groups = []
 
-        # Get request handler
-        handler = self.iface.requestHandler()
+        return get_lizmap_groups(self.iface.requestHandler())
 
-        # Get Lizmap User Groups in request headers
-        headers = handler.requestHeaders()
-        if headers:
-            QgsMessageLog.logMessage("Request headers provided", "lizmap", Qgis.Info)
-            # Get Lizmap user groups defined in request headers
-            user_groups = headers.get('X-Lizmap-User-Groups')
-            if user_groups is not None:
-                groups = [g.strip() for g in user_groups.split(',')]
-                QgsMessageLog.logMessage("Lizmap user groups in request headers", "lizmap", Qgis.Info)
+    def get_lizmap_user_login(self) -> str:
+        """ Get Lizmap user login provided by the request """
+
+        return get_lizmap_user_login(self.iface.requestHandler())
+
+    def get_lizmap_layer_filter(self, layer: 'QgsVectorLayer') -> str:
+        """ Get lizmap layer filter based on login filter """
+        layer_filter = ''
+
+        # Get Lizmap config
+        cfg = self.get_lizmap_config()
+        if not cfg:
+            # Return empty filter
+            return layer_filter
+
+        # Get layers config
+        cfg_layers = get_lizmap_layers_config(cfg)
+        if not cfg_layers:
+            # Return empty filter
+            return layer_filter
+
+        # Get layer name
+        layer_name = layer.name()
+        # Check that
+        if layer_name not in cfg_layers:
+            # Return empty filter
+            return layer_filter
+
+        # Get layer login filter
+        cfg_layer_login_filter = get_lizmap_layer_login_filter(cfg, layer_name)
+        if not cfg_layer_login_filter:
+            # Return empty filter
+            return layer_filter
+
+        # Layer login fliter only for edition does not filter layer
+        if 'edition_only' in cfg_layer_login_filter and config_value_to_boolean(cfg_layer_login_filter['edition_only']):
+            return layer_filter
+
+        # Get Lizmap user groups provided by the request
+        groups = self.get_lizmap_groups()
+        user_login = self.get_lizmap_user_login()
+
+        # If groups is empty, no Lizmap user groups provided by the request
+        # Return empty filter
+        if len(groups) == 0 and not user_login:
+            return layer_filter
+
+        attribute = cfg_layer_login_filter['filterAttribute']
+
+        # Default filter for no user connected
+        # we use expression tools also for subsetstring
+        layer_filter = QgsExpression.createFieldEqualityExpression(attribute, 'all')
+
+        # If groups is not empty but the only group like user login has no name
+        # Return the filter for no user connected
+        if len(groups) == 1 and groups[0] == '' and user_login == '':
+            return layer_filter
+
+        # List of quoted values for expression
+        quotedValues = []
+        if config_value_to_boolean(cfg_layer_login_filter['filterPrivate']):
+            # If filter is private use user_login
+            quotedValues.append(QgsExpression.quotedString(user_login))
         else:
-            QgsMessageLog.logMessage("No request headers provided", "lizmap", Qgis.Info)
+            # Else use user groups
+            quotedValues = [QgsExpression.quotedString(g) for g in groups]
+        # Add all to quoted values
+        quotedValues.append(QgsExpression.quotedString('all'))
 
-        if len(groups) != 0:
-            return groups
-        else:
-            QgsMessageLog.logMessage("No lizmap user groups in request headers", "lizmap", Qgis.Info)
+        # Build filter
+        layer_filter = '{} IN ({})'.format(
+            QgsExpression.quotedColumnRef(attribute),
+            ', '.join(quotedValues)
+        )
 
-        # Get group in parameters
-        params = handler.parameterMap()
-        if params:
-            # Get Lizmap user groups defined in parameters
-            user_groups = params.get('LIZMAP_USER_GROUPS')
-            if user_groups is not None:
-                groups = [g.strip() for g in user_groups.split(',')]
-                QgsMessageLog.logMessage("Lizmap user groups in parameters", "lizmap", Qgis.Info)
-
-        return groups
+        # Return build filter
+        return layer_filter
