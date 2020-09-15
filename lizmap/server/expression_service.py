@@ -212,7 +212,7 @@ class ExpressionService(QgsService):
         if not features:
             feature = params.get('FEATURE', '')
             if feature:
-                features = '['+feature+']'
+                features = '[' + feature + ']'
 
         # create the body
         body = {
@@ -266,11 +266,11 @@ class ExpressionService(QgsService):
         # try to load features
         # read fields
         feature_fields = QgsJsonUtils.stringToFields(
-            '{ "type": "FeatureCollection","features":'+features+'}',
+            '{ "type": "FeatureCollection","features":' + features + '}',
             QTextCodec.codecForName("UTF-8"))
         # read features
         feature_list = QgsJsonUtils.stringToFeatureList(
-            '{ "type": "FeatureCollection","features":'+features+'}',
+            '{ "type": "FeatureCollection","features":' + features + '}',
             feature_fields,
             QTextCodec.codecForName("UTF-8"))
 
@@ -387,7 +387,7 @@ class ExpressionService(QgsService):
         if not features:
             feature = params.get('FEATURE', '')
             if feature:
-                features = '['+feature+']'
+                features = '[' + feature + ']'
 
         # create expression context
         exp_context = QgsExpressionContext()
@@ -456,11 +456,11 @@ class ExpressionService(QgsService):
         # try to load features
         # read fields
         feature_fields = QgsJsonUtils.stringToFields(
-            '{ "type": "FeatureCollection","features":'+features+'}',
+            '{ "type": "FeatureCollection","features":' + features + '}',
             QTextCodec.codecForName("UTF-8"))
         # read features
         feature_list = QgsJsonUtils.stringToFeatureList(
-            '{ "type": "FeatureCollection","features":'+features+'}',
+            '{ "type": "FeatureCollection","features":' + features + '}',
             feature_fields,
             QTextCodec.codecForName("UTF-8"))
 
@@ -665,7 +665,7 @@ class ExpressionService(QgsService):
         separator = ''
         for feat in layer.getFeatures(req):
             fid = layer_name + '.' + get_server_fid(feat, pk_attributes)
-            response.write(separator+json_exporter.exportFeature(feat, {}, fid))
+            response.write(separator + json_exporter.exportFeature(feat, {}, fid))
             response.flush()
             separator = ',\n'
         response.write(']}')
@@ -832,7 +832,7 @@ class ExpressionService(QgsService):
                     extra[k] = json.loads(QgsJsonUtils.encodeValue(value))
                     errors[k] = exp.expression()
 
-            response.write(separator+json_exporter.exportFeature(feat, extra, fid))
+            response.write(separator + json_exporter.exportFeature(feat, extra, fid))
             response.flush()
             separator = ',\n'
         response.write(']}')

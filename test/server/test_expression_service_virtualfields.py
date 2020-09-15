@@ -2,7 +2,6 @@ import json
 
 from urllib.parse import quote
 
-
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
@@ -40,7 +39,7 @@ def test_virtuals_error(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=VirtualFields&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"" % (
+    qs += "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
@@ -54,7 +53,7 @@ def test_request(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=VirtualFields&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
+    qs += "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
@@ -91,9 +90,9 @@ def test_request_with_filter(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=VirtualFields&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
+    qs += "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
-    qs+= "&FILTER=%s" % (
+    qs += "&FILTER=%s" % (
         quote("NAME_1 = 'Bretagne'", safe=''))
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
@@ -132,11 +131,11 @@ def test_request_with_filter_fields(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=VirtualFields&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
+    qs += "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
-    qs+= "&FILTER=%s" % (
+    qs += "&FILTER=%s" % (
         quote("NAME_1 = 'Bretagne'", safe=''))
-    qs+= "&FIELDS=ISO,NAME_1"
+    qs += "&FIELDS=ISO,NAME_1"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -173,12 +172,12 @@ def test_request_with_filter_fields_geometry(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=VirtualFields&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
+    qs += "&VIRTUALS={\"a\":\"%s\", \"b\":\"%s\"}" % (
         quote('1', safe=''), quote('1 + 1', safe=''))
-    qs+= "&FILTER=%s" % (
+    qs += "&FILTER=%s" % (
         quote("NAME_1 = 'Bretagne'", safe=''))
-    qs+= "&FIELDS=ISO,NAME_1"
-    qs+= "&WITH_GEOMETRY=true"
+    qs += "&FIELDS=ISO,NAME_1"
+    qs += "&WITH_GEOMETRY=true"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
     assert rv.headers.get('Content-Type', '').find('application/json') == 0

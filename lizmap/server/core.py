@@ -77,7 +77,7 @@ def get_lizmap_config(qgis_project_path: str) -> Union[Dict, None]:
         return None
 
     # Get Lizmap config path
-    config_path = qgis_project_path+'.cfg'
+    config_path = qgis_project_path + '.cfg'
     if not os.path.exists(config_path):
         # Lizmap config path does not exist
         QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
@@ -151,14 +151,16 @@ def get_lizmap_layer_login_filter(config: Dict, layerName: str) -> Union[Dict, N
 
     # Check loginFilteredLayers for layer is dict
     if type(cfg_layer_login_filter) != dict:
-        QgsMessageLog.logMessage("loginFilteredLayers for layer {} is not dict".format(layerName), "lizmap", Qgis.Warning)
+        QgsMessageLog.logMessage(
+            "loginFilteredLayers for layer {} is not dict".format(layerName), "lizmap", Qgis.Warning)
         return None
 
     if 'layerId' not in cfg_layer_login_filter or \
             'filterAttribute' not in cfg_layer_login_filter or \
             'filterPrivate' not in cfg_layer_login_filter:
         # loginFilteredLayers for layer not well formed
-        QgsMessageLog.logMessage("loginFilteredLayers for layer {} not well formed".format(layerName), "lizmap", Qgis.Warning)
+        QgsMessageLog.logMessage(
+            "loginFilteredLayers for layer {} not well formed".format(layerName), "lizmap", Qgis.Warning)
         return None
 
     return cfg_layer_login_filter

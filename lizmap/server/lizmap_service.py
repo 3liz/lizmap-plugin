@@ -31,7 +31,6 @@ from .core import (
 
 
 class LizmapServiceError(ServiceError):
-
     # def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
     #     super().__init__(code, msg, response_code)
     pass

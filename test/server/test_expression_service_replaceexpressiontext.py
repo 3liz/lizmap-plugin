@@ -2,7 +2,6 @@ import json
 
 from urllib.parse import quote
 
-
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
@@ -46,18 +45,20 @@ def test_features_error(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURE={\"type\":\"feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURE={\"type\":\"feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
     # type feature and not Feature error
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
@@ -65,12 +66,13 @@ def test_features_error(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURES=["
-    qs+= "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
-    qs+= ", "
-    qs+= "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [105.0, 0.5]}, \"properties\": {\"prop0\": \"value1\"}}"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURES=["
+    qs += "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
+    qs += ", "
+    qs += "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [105.0, 0.5]}, \"properties\": {\"prop0\": \"value1\"}}"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 400
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -142,9 +144,10 @@ def test_request_with_features(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -166,13 +169,14 @@ def test_request_with_features(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURES=["
-    qs+= "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
-    qs+= ", "
-    qs+= "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [105.0, 0.5]}, \"properties\": {\"prop0\": \"value1\"}}"
-    qs+= "]"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote('[% prop0 %]', safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURES=["
+    qs += "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
+    qs += ", "
+    qs += "{\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [105.0, 0.5]}, \"properties\": {\"prop0\": \"value1\"}}"
+    qs += "]"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -205,10 +209,11 @@ def test_request_with_form_scope(client):
 
     # Make a request
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote("[% current_value('prop0') %]", safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
-    qs+= "&FORM_SCOPE=true"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote("[% current_value('prop0') %]", safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
+    qs += "&FORM_SCOPE=true"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
     assert rv.headers.get('Content-Type', '').find('application/json') == 0
@@ -230,9 +235,10 @@ def test_request_with_form_scope(client):
 
     # Make a request without form scope but with current_value function
     qs = "?SERVICE=EXPRESSION&REQUEST=replaceExpressionText&MAP=france_parts.qgs&LAYER=france_parts"
-    qs+= "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
-        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote("[% current_value('prop0') %]", safe=''), quote('[% $x %]', safe=''))
-    qs+= "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
+    qs += "&STRINGS={\"a\":\"%s\", \"b\":\"%s\", \"c\":\"%s\", \"d\":\"%s\"}" % (
+        quote('[% 1 %]', safe=''), quote('[% 1 + 1 %]', safe=''), quote("[% current_value('prop0') %]", safe=''),
+        quote('[% $x %]', safe=''))
+    qs += "&FEATURE={\"type\":\"Feature\", \"geometry\": {\"type\": \"Point\", \"coordinates\": [102.0, 0.5]}, \"properties\": {\"prop0\": \"value0\"}}"
     rv = client.get(qs, projectfile)
     assert rv.status_code == 200
 
