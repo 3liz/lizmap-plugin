@@ -144,7 +144,7 @@ class Lizmap:
 
         self.dlg = LizmapDialog()
         self.version = version()
-        self.is_dev_version = self.version not in ['master', 'dev'] or 'beta' in self.version
+        self.is_dev_version = self.version in ['master', 'dev'] or 'beta' in self.version
         if self.is_dev_version:
             self.dlg.setWindowTitle('Lizmap branch {}'.format(self.version))
             text = self.dlg.label_dev_version.text().format(self.version)

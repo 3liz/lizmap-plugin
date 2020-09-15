@@ -9,6 +9,7 @@
 lizmap.cfg
 
 .idea/
+.vscode/
 
 *.egg-info
 
