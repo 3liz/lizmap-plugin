@@ -157,8 +157,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return rights
 
         # Get Lizmap layer group visibility
-        group_visibility = cfg_layer['group_visibility'].split(',')
-        group_visibility = [g.strip() for g in group_visibility]
+        group_visibility = [g.strip() for g in cfg_layer['group_visibility']]
 
         # If one Lizmap user group provided in request headers is
         # defined in Lizmap layer group visibility, the default layer
@@ -218,9 +217,8 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             if 'group_visibility' not in cfg_layer or not cfg_layer['group_visibility']:
                 continue
 
-            # get group_visibility as list
-            group_visibility = cfg_layer['group_visibility'].split(',')
-            group_visibility = [g.strip() for g in group_visibility]
+            # clean group_visibility
+            group_visibility = [g.strip() for g in cfg_layer['group_visibility']]
 
             # the group_visibility was just an empty string
             if len(group_visibility) == 1 and groups[0] == '':
