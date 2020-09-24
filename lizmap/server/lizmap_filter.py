@@ -113,7 +113,6 @@ class LizmapFilter(QgsServerFilter):
             # Get project acl option
             cfg_acl = cfg_options['acl']
             QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Info)
-            cfg_acl = [g.strip() for g in cfg_acl.split(',')]
 
             # If one Lizmap user group provided in request headers is
             # defined in project acl option, the request can be evaluated
