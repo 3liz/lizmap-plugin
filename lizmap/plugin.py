@@ -1396,7 +1396,11 @@ class Lizmap:
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
                         if val['type'] == 'list':
-                            text = ','.join(selectedItem[key])
+                            data = selectedItem[key]
+                            if isinstance(data, str):
+                                # It should be a list, but it has been temporary a string during the dev process
+                                data = [data]
+                            text = ','.join(data)
                         else:
                             text = selectedItem[key]
                         val['widget'].setText(text)
@@ -1452,7 +1456,11 @@ class Lizmap:
             for key, val in self.layer_options_list.items():
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
-                        val['widget'].setText(val['default'])
+                        if isinstance(val['default']):
+                            text = ','.join(val['default'])
+                        else:
+                            text = val['default']
+                        val['widget'].setText(text)
                     elif val['wType'] == 'spinbox':
                         val['widget'].setValue(val['default'])
                     elif val['wType'] == 'checkbox':
