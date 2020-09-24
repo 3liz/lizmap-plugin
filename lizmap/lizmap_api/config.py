@@ -291,7 +291,7 @@ class LizmapConfig:
             'wType': 'checkbox', 'type': 'boolean', 'default': True
         },
         'group_visibility': {
-            'wType': 'text', 'type': 'string', 'default': ''
+            'wType': 'text', 'type': 'list', 'default': []
         },
         'singleTile': {
             'wType': 'checkbox', 'type': 'boolean', 'default': True, 'children': 'cached', 'exclusive': True

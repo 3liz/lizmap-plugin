@@ -1395,7 +1395,11 @@ class Lizmap:
             for key, val in self.layer_options_list.items():
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
-                        val['widget'].setText(selectedItem[key])
+                        if val['type'] == 'list':
+                            text = ','.join(selectedItem[key])
+                        else:
+                            text = selectedItem[key]
+                        val['widget'].setText(text)
                     elif val['wType'] == 'spinbox':
                         val['widget'].setValue(int(selectedItem[key]))
                     elif val['wType'] == 'checkbox':
@@ -1475,6 +1479,13 @@ class Lizmap:
                     wms_enabled = True
         return wms_enabled
 
+    @staticmethod
+    def string_to_list(text):
+        """ Format a string to a list. """
+        data = text.split(',') if len(text) > 0 else []
+        data = [item.strip() for item in data]
+        return data
+
     def set_layer_property(self, key):
         """Set a layer property in global self.layerList
         when the corresponding ui widget has sent changed signal.
@@ -1487,7 +1498,10 @@ class Lizmap:
         # modify the property for the selected item
         if item and item.text(1) in self.layerList:
             if layer_option['wType'] == 'text':
-                self.layerList[item.text(1)][key] = layer_option['widget'].text()
+                text = layer_option['widget'].text()
+                if layer_option['type'] == 'list':
+                    text = self.string_to_list(text)
+                self.layerList[item.text(1)][key] = text
                 self.set_layer_metadata(item, key)
             elif layer_option['wType'] == 'textarea':
                 self.layerList[item.text(1)][key] = layer_option['widget'].toPlainText()

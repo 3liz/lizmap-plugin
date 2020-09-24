@@ -23,6 +23,14 @@ class TestLayerTree(unittest.TestCase):
         layer.setDataUrl('https://hello.world')
         self.assertEqual('https://hello.world', layer_property(layer, LayerProperties.DataUrl))
 
+    def test_string_to_list(self):
+        """ Test about text to JSON list. """
+        lizmap = Lizmap(get_iface())
+        self.assertListEqual(lizmap.string_to_list(''), [])
+        self.assertListEqual(lizmap.string_to_list('a'), ['a'])
+        self.assertListEqual(lizmap.string_to_list(' a '), ['a'])
+        self.assertListEqual(lizmap.string_to_list('a,b'), ['a', 'b'])
+
     def test_layer_metadata(self):
         """ Test metadata coming from layer or from Lizmap. """
         project = QgsProject.instance()
