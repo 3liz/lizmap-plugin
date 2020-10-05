@@ -1456,7 +1456,7 @@ class Lizmap:
             for key, val in self.layer_options_list.items():
                 if val['widget']:
                     if val['wType'] in ('text', 'textarea'):
-                        if isinstance(val['default']):
+                        if isinstance(val['default'], (list, tuple)):
                             text = ','.join(val['default'])
                         else:
                             text = val['default']
