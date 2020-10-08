@@ -13,6 +13,10 @@ build:infrav3:
   artifacts:
     paths:
       - ".lizcloud/factory.manifest"
+  only:
+    refs:
+      - tags
+      - dev
   tags:
     - infrav3
 
@@ -24,6 +28,10 @@ deploy:infrav3:
     - build:infrav3
   environment:
     name: snap
+  only:
+    refs:
+      - tags
+      - dev
   tags:
     - infrav3
 
