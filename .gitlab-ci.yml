@@ -2,8 +2,19 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
+- test
+- build
 - package 📦
 - deploy 🚀
+- release
+
+test:server:
+  stage: test
+  script: make test_server
+  environment:
+    name: snap
+  tags:
+    - infrav3
 
 package:
   stage: package 📦
@@ -41,3 +52,9 @@ deploy:
     - upload_to_packages_server lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip pub/lizmap-qgis-plugin/${CI_COMMIT_REF_NAME}
   tags:
     - fabric
+
+
+# Infrav3 build
+include: '/.lizcloud/.gitlab-ci.yml'
+
+
