@@ -89,7 +89,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
 
-        exp = QgsExpression(expression)
+        exp = QgsExpression('to_string({})'.format(expression))
         exp.prepare(exp_context)
         value = exp.evaluate(exp_context)
         return value
