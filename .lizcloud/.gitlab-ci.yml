@@ -1,0 +1,51 @@
+variables:
+  FACTORY_PRODUCT_NAME: lizmap
+  FACTORY_PACKAGE_NAME: lizmap_qgis_plugin
+  FACTORY_PACKAGE_TYPE: plugin
+  FACTORY_MANIFEST: ".lizcloud/factory.manifest"
+
+build:infrav3:
+  stage: build
+  script:
+    - make -C .lizcloud -f factory.mk package
+  environment:
+    name: snap
+  artifacts:
+    paths:
+      - ".lizcloud/factory.manifest"
+  only:
+    refs:
+      - tags
+      - dev
+  tags:
+    - infrav3
+
+deploy:infrav3:
+  stage: deploy 🚀
+  script:
+    - $FACTORY_SCRIPTS/deploy-package $FACTORY_PACKAGE_NAME
+  dependencies:
+    - build:infrav3
+  environment:
+    name: snap
+  only:
+    refs:
+      - tags
+      - dev
+  tags:
+    - infrav3
+
+release:infrav3:
+  stage: release
+  script:
+    - $FACTORY_SCRIPTS/release-package $FACTORY_PACKAGE_NAME
+  environment:
+    name: production
+  dependencies:
+    - build:infrav3
+  when: manual
+  only:
+    - tags
+  tags:
+    - infrav3
+
