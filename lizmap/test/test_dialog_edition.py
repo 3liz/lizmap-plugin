@@ -137,4 +137,4 @@ class TestEditionDialog(unittest.TestCase):
 
         dialog.end_field.setCurrentIndex(1)  # Field "id"
         self.assertEqual(dialog.compute_value_min_max(True), '1 Name')
-        self.assertEqual(dialog.compute_value_min_max(False), 2)
+        self.assertEqual(dialog.compute_value_min_max(False), '2')
