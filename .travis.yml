@@ -109,13 +109,6 @@ jobs:
           3liz/qgis-platform:3.14
           ./run-tests.sh
 
-    - stage: Translations
-      name: Push translations
-      if: branch = master AND type != pull_request
-      install:
-        - pip3 install qgis-plugin-ci==1.8.4
-      script: qgis-plugin-ci push-translation ${TX_TOKEN}
-
     - stage: Deploy
       if: tag IS present
       name: Create release, plugins.qgis.org
