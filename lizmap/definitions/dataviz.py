@@ -279,9 +279,11 @@ class DatavizDefinitions(BaseDefinitions):
         }
         self._layer_config['display_when_layer_visible'] = {
             'type': InputType.CheckBox,
-            'header': tr('Display plot only when the layer is visible'),
+            'header': tr('Display chart only when the layer is visible'),
             'default': False,
-            'tooltip': tr('If checked, the plot will be shown only if the source layer is visible in the map (checked in the legend panel)'),
+            'tooltip': tr(
+                'If checked, the chart will be shown only if the source layer is visible in the map (checked '
+                'in the legend panel)'),
             'version': LwcVersions.Lizmap_3_4,
         }
 
@@ -302,7 +304,7 @@ class DatavizDefinitions(BaseDefinitions):
             'type': InputType.List,
             'items': Theme,
             'default': Theme.Dark,
-            'tooltip': tr('Choose the theme for the dataviz panel.'),
+            'tooltip': tr('The theme for the dataviz panel.'),
             'version': LwcVersions.Lizmap_3_4,
         }
 

@@ -894,7 +894,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item row="2" column="0">
                    <widget class="QCheckBox" name="activate_first_maptheme">
                     <property name="text">
-                     <string>Activate 1st map theme on startup</string>
+                     <string>Activate first map theme on startup</string>
                     </property>
                    </widget>
                   </item>
