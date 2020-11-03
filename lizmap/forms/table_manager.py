@@ -327,7 +327,13 @@ class TableManager:
                         layer_data['aggregation'] = ''
 
             if self.definitions.key() == 'editionLayers':
-                capabilities_keys = ['createFeature', 'modifyAttribute', 'modifyGeometry', 'deleteFeature']
+                capabilities_keys = [
+                    'createFeature',
+                    'allow_without_geom',
+                    'modifyAttribute',
+                    'modifyGeometry',
+                    'deleteFeature',
+                ]
                 layer_data['capabilities'] = {key: layer_data[key] for key in capabilities_keys}
                 for key in capabilities_keys:
                     layer_data.pop(key)

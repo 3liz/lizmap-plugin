@@ -27,6 +27,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config = EditionDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
         self.config.add_layer_widget('createFeature', self.create_feature)
+        self.config.add_layer_widget('allow_without_geom', self.without_geom)
         self.config.add_layer_widget('modifyAttribute', self.edit_attributes)
         self.config.add_layer_widget('modifyGeometry', self.edit_geometry)
         self.config.add_layer_widget('deleteFeature', self.delete_feature)
@@ -34,6 +35,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('createFeature', self.label_create)
+        self.config.add_layer_label('allow_without_geom', self.label_without_geom)
         self.config.add_layer_label('modifyAttribute', self.label_edit_attributes)
         self.config.add_layer_label('modifyGeometry', self.label_edit_geometry)
         self.config.add_layer_label('deleteFeature', self.label_delete)
