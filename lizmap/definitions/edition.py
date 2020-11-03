@@ -1,6 +1,7 @@
 """Definitions for edition."""
 
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -24,6 +25,13 @@ class EditionDefinitions(BaseDefinitions):
             'header': tr('Create'),
             'default': False,
             'tooltip': tr('If a new feature can be added.')
+        }
+        self._layer_config['allow_without_geom'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Allow feature without geometry'),
+            'default': False,
+            'tooltip': tr('If a feature is valid without a geometry.'),
+            'version': LwcVersions.Lizmap_3_3,
         }
         self._layer_config['modifyAttribute'] = {
             'type': InputType.CheckBox,
