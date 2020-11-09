@@ -193,7 +193,9 @@ class TableManager:
                             icon = item_enum.value.get('icon')
                             break
                     else:
-                        raise Exception('Error with list value="{}"'.format(value))
+                        msg = 'Error with value = "{}" in list "{}"'.format(value, key)
+                        LOGGER.critical(msg)
+                        raise Exception(msg)
                     cell.setText(text)
                     if icon:
                         cell.setIcon(QIcon(icon))
@@ -474,6 +476,16 @@ class TableManager:
                     elif definition['type'] == InputType.CheckBox:
                         layer_data[key] = True if value in ['true', 'True'] else False
                     elif definition['type'] == InputType.List:
+                        items = definition.get('items')
+                        if items:
+                            for item_enum in items:
+                                if item_enum.value['data'] == value:
+                                    break
+                            else:
+                                default_list_value = definition.get('default').value['data']
+                                msg = 'Error with value = "{}" in list "{}", set default to {}'.format(value, key, default_list_value)
+                                LOGGER.warning(msg)
+                                value = default_list_value
                         layer_data[key] = value
                     elif definition['type'] == InputType.SpinBox:
                         layer_data[key] = value
