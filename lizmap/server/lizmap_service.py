@@ -129,7 +129,7 @@ class LizmapService(QgsService):
         file_path = join(dirname(dirname(__file__)), 'metadata.txt')
         config = configparser.ConfigParser()
         try:
-            config.read(file_path)
+            config.read(file_path, encoding='utf8')
         except UnicodeDecodeError:
             # Issue LWC https://github.com/3liz/lizmap-web-client/issues/1908
             # Maybe a locale issue ?
