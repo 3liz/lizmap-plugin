@@ -128,10 +128,22 @@ class LizmapService(QgsService):
         # Lizmap plugin metadata, do not use qgis_plugin_tools because of the packaging.
         file_path = join(dirname(dirname(__file__)), 'metadata.txt')
         config = configparser.ConfigParser()
-        config.read(file_path)
+        try:
+            config.read(file_path)
+        except UnicodeDecodeError:
+            # Issue LWC https://github.com/3liz/lizmap-web-client/issues/1908
+            # Maybe a locale issue ?
+            QgsMessageLog.logMessage((
+                "Error, an UnicodeDecodeError occurred while reading the metadata.txt. Is the locale "
+                "correctly set on the server ?"),
+                "lizmap",
+                Qgis.Critical)
+            version = 'NULL'
+        else:
+            version = config["general"]["version"]
 
         body['lizmap']['name'] = 'Lizmap'
-        body['lizmap']['version'] = config["general"]["version"]
+        body['lizmap']['version'] = version
 
         write_json_response(body, response)
         return
