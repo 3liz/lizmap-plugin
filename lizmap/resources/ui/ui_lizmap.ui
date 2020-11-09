@@ -1014,9 +1014,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           <layout class="QHBoxLayout" name="horizontalLayout_32">
                            <item>
                             <widget class="QCheckBox" name="cbToggled">
-                             <property name="toolTip">
-                              <string>If the layer is displayed by default</string>
-                             </property>
                              <property name="text">
                               <string>Toggled</string>
                              </property>
