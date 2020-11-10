@@ -49,3 +49,45 @@ release:infrav3:
   tags:
     - infrav3
 
+build:infrav2:
+  stage: build
+  script:
+    - make -C .lizcloud -f fabric.mk package
+  environment:
+    name: snap
+  only:
+    refs:
+      - tags
+      - dev
+  tags:
+    - fabric
+
+deploy:infrav2:
+  stage: deploy 🚀
+  script:
+    - sudo -u fabric fab snap deploy:qgis310_lizmap,force=true
+  dependencies:
+    - build:infrav2
+  environment:
+    name: snap
+  only:
+    refs:
+      - tags
+      - dev
+  tags:
+    - fabric
+
+release:infrav2:
+  stage: release
+  script:
+    - sudo -u fabric fab prod release:qgis310_lizmap
+  environment:
+    name: production
+  dependencies:
+    - build:infrav2
+  when: manual
+  only:
+    - tags
+  tags:
+    - fabric
+
