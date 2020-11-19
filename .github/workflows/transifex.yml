@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.repository == '3liz/lizmap-plugin'
     steps:
     - uses: actions/checkout@v2
 

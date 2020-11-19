@@ -26,6 +26,13 @@ class EditionDefinitions(BaseDefinitions):
             'default': False,
             'tooltip': tr('If a new feature can be added.')
         }
+        self._layer_config['allow_without_geom'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Allow feature without geometry'),
+            'default': False,
+            'tooltip': tr('If a feature is valid without a geometry.'),
+            'version': LwcVersions.Lizmap_3_3,
+        }
         self._layer_config['modifyAttribute'] = {
             'type': InputType.CheckBox,
             'header': tr('Edit attributes'),

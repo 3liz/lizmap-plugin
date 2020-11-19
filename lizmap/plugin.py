@@ -1443,6 +1443,16 @@ class Lizmap:
             self.dlg.label_drag_drop_form.setEnabled(has_geom)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
+            # For a group, there isn't the toggle option, #298
+            if isinstance(layer, QgsMapLayer):
+                self.layer_options_list['toggled']['widget'].setEnabled(True)
+                tooltip = tr("If the layer is displayed by default")
+            else:
+                self.layer_options_list['toggled']['widget'].setEnabled(False)
+                self.layer_options_list['toggled']['widget'].setChecked(False)
+                tooltip = tr("For a group, it depends of layers inside the group")
+            self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+
             # Max feature per popup
             self.dlg.label_max_feature_popup.setEnabled(is_vector)
             self.layer_options_list['popupMaxFeatures']['widget'].setEnabled(is_vector)

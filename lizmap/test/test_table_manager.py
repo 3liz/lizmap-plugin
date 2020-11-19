@@ -759,6 +759,7 @@ class TestTableManager(unittest.TestCase):
                 'geometryType': 'line',
                 'capabilities': {
                     'createFeature': 'True',
+                    'allow_without_geom': 'False',
                     'modifyAttribute': 'True',
                     'modifyGeometry': 'True',
                     'deleteFeature': 'True'
@@ -777,6 +778,7 @@ class TestTableManager(unittest.TestCase):
                 {
                     'layerId': self.layer.id(),
                     'createFeature': 'True',
+                    'allow_without_geom': 'False',
                     'modifyAttribute': 'True',
                     'modifyGeometry': 'True',
                     'deleteFeature': 'True',
@@ -802,6 +804,7 @@ class TestTableManager(unittest.TestCase):
                 'layerId': self.layer.id(),
                 'geometryType': 'line',
                 'capabilities': {
+                    'allow_without_geom': 'False',
                     'createFeature': 'True',
                     'modifyAttribute': 'True',
                     'modifyGeometry': 'True',

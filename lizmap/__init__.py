@@ -47,7 +47,7 @@
 """
 
 try:
-    from .definitions.definitions import LwcVersions
+    from lizmap.definitions.definitions import LwcVersions
 
     DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_3
 

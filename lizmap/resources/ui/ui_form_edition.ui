@@ -47,13 +47,27 @@
       </widget>
      </item>
      <item row="2" column="0">
+      <widget class="QLabel" name="label_without_geom">
+       <property name="text">
+        <string>Allow without geometry</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="without_geom">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
       <widget class="QLabel" name="label_edit_attributes">
        <property name="text">
         <string>Edit attributes</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QCheckBox" name="edit_attributes">
        <property name="text">
         <string/>
@@ -63,24 +77,10 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_edit_geometry">
        <property name="text">
         <string>Edit geometry</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="edit_geometry">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_delete">
-       <property name="text">
-        <string>Delete</string>
        </property>
       </widget>
      </item>
@@ -92,14 +92,28 @@
       </widget>
      </item>
      <item row="5" column="0">
+      <widget class="QLabel" name="label_delete">
+       <property name="text">
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="edit_geometry">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="allowed_groups"/>
+     </item>
+     <item row="6" column="0">
       <widget class="QLabel" name="label_allowed_groups">
        <property name="text">
         <string>Allowed groups</string>
        </property>
       </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="allowed_groups"/>
      </item>
     </layout>
    </item>
