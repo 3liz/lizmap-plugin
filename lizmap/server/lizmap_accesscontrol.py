@@ -288,7 +288,8 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return layer_filter
 
         # Layer login fliter only for edition does not filter layer
-        if 'edition_only' in cfg_layer_login_filter and config_value_to_boolean(cfg_layer_login_filter['edition_only']):
+        is_edition_only = 'edition_only' in cfg_layer_login_filter
+        if is_edition_only and config_value_to_boolean(cfg_layer_login_filter['edition_only']):
             return layer_filter
 
         # Get Lizmap user groups provided by the request
@@ -302,13 +303,13 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         # Override filter
         override_filter = self.get_lizmap_override_filter()
-        if override_filter :
+        if override_filter:
             return layer_filter
 
         attribute = cfg_layer_login_filter['filterAttribute']
 
         # Default filter for no user connected
-        # we use expression tools also for subsetstring
+        # we use expression tools also for subset string
         layer_filter = QgsExpression.createFieldEqualityExpression(attribute, 'all')
 
         # If groups is not empty but the only group like user login has no name
@@ -317,20 +318,20 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return layer_filter
 
         # List of quoted values for expression
-        quotedValues = []
+        quoted_values = []
         if config_value_to_boolean(cfg_layer_login_filter['filterPrivate']):
             # If filter is private use user_login
-            quotedValues.append(QgsExpression.quotedString(user_login))
+            quoted_values.append(QgsExpression.quotedString(user_login))
         else:
             # Else use user groups
-            quotedValues = [QgsExpression.quotedString(g) for g in groups]
+            quoted_values = [QgsExpression.quotedString(g) for g in groups]
         # Add all to quoted values
-        quotedValues.append(QgsExpression.quotedString('all'))
+        quoted_values.append(QgsExpression.quotedString('all'))
 
         # Build filter
         layer_filter = '{} IN ({})'.format(
             QgsExpression.quotedColumnRef(attribute),
-            ', '.join(quotedValues)
+            ', '.join(quoted_values)
         )
 
         # Return build filter
