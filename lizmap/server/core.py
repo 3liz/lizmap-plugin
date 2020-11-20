@@ -235,6 +235,43 @@ def get_lizmap_user_login(handler: 'QgsRequestHandler') -> str:
     return login
 
 
+def get_lizmap_override_filter(handler: 'QgsRequestHandler') -> bool:
+    """ Get Lizmap user login provided by the request """
+    # Defined override
+    override = None
+
+    # Get Lizmap User Login in request headers
+    headers = handler.requestHeaders()
+    if headers:
+        QgsMessageLog.logMessage("Request headers provided", "lizmap", Qgis.Info)
+        # Get Lizmap user login defined in request headers
+        override_filter = headers.get('X-Lizmap-Override-Filter')
+        if override_filter is not None:
+            override = override_filter.lower() in ['true', '1', 't', 'y', 'yes']
+            QgsMessageLog.logMessage("Lizmap override filter in request headers", "lizmap", Qgis.Info)
+    else:
+        QgsMessageLog.logMessage("No request headers provided", "lizmap", Qgis.Info)
+
+    if override is not None:
+        return override
+    else:
+        QgsMessageLog.logMessage("No lizmap override filter in request headers", "lizmap", Qgis.Info)
+
+    # Get login in parameters
+    params = handler.parameterMap()
+    if params:
+        # Get Lizmap user login defined in parameters
+        override_filter = params.get('LIZMAP_OVERRIDE_FILTER')
+        if override_filter is not None:
+            override = override_filter.lower() in ['true', '1', 't', 'y', 'yes']
+            QgsMessageLog.logMessage("Lizmap override filter in parameters", "lizmap", Qgis.Info)
+        else:
+            override = False
+            QgsMessageLog.logMessage("No lizmap override filter in parameters", "lizmap", Qgis.Info)
+
+    return override
+
+
 class ServiceError(Exception):
 
     def __init__(self, code: str, msg: str, response_code: int = 500) -> None:

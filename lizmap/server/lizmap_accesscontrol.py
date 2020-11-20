@@ -24,6 +24,7 @@ from .core import (
     get_lizmap_layer_login_filter,
     get_lizmap_groups,
     get_lizmap_user_login,
+    get_lizmap_override_filter,
 )
 
 
@@ -252,6 +253,11 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return get_lizmap_user_login(self.iface.requestHandler())
 
+    def get_lizmap_override_filter(self) -> str:
+        """ Get Lizmap user login provided by the request """
+
+        return get_lizmap_override_filter(self.iface.requestHandler())
+
     def get_lizmap_layer_filter(self, layer: 'QgsVectorLayer') -> str:
         """ Get lizmap layer filter based on login filter """
         layer_filter = ''
@@ -292,6 +298,11 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # If groups is empty, no Lizmap user groups provided by the request
         # Return empty filter
         if len(groups) == 0 and not user_login:
+            return layer_filter
+
+        # Override filter
+        override_filter = self.get_lizmap_override_filter()
+        if override_filter :
             return layer_filter
 
         attribute = cfg_layer_login_filter['filterAttribute']
