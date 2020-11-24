@@ -175,13 +175,7 @@ class Lizmap:
             self.dlg.activate_first_maptheme,
             self.dlg.activate_drawing_tools,
         ]
-        next_release = False
-        for lwc_version in LwcVersions:
-            if not next_release:
-                self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
-                if lwc_version == DEFAULT_LWC_VERSION:
-                    next_release = not self.is_dev_version
-
+        self.populate_lwc_combo()
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
             self.dlg.list_group_visiblity,
@@ -544,6 +538,15 @@ class Lizmap:
         self.isok = None
         self.embeddedGroups = None
         self.myDic = None
+
+    def populate_lwc_combo(self):
+        self.dlg.combo_lwc_version.clear()
+        display_next_release = False
+        for lwc_version in LwcVersions:
+            if not display_next_release:
+                self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
+                if lwc_version == DEFAULT_LWC_VERSION:
+                    display_next_release = self.version != 'dev'
 
     def lwc_version_changed(self):
         current_version = self.dlg.combo_lwc_version.currentData()
@@ -2235,6 +2238,7 @@ class Lizmap:
                     QMessageBox.Ok)
                 return False
 
+            self.populate_lwc_combo()
             version_checker = VersionChecker(self.dlg, VERSION_URL)
             version_checker.fetch()
 
