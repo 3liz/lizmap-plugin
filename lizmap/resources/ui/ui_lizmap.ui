@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>984</width>
-    <height>709</height>
+    <width>1121</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -320,7 +320,7 @@ QListWidget::item::selected {
                 <x>0</x>
                 <y>0</y>
                 <width>789</width>
-                <height>822</height>
+                <height>851</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -871,8 +871,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>647</width>
-                <height>660</height>
+                <width>497</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -957,8 +957,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>426</width>
-                       <height>945</height>
+                       <width>379</width>
+                       <height>972</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2822,7 +2822,7 @@ border-radius: 0px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>618</width>
-                <height>443</height>
+                <height>474</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
