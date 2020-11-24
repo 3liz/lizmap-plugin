@@ -117,10 +117,12 @@ from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.version import version, format_version_integer
 from lizmap.tooltip import Tooltip
 from lizmap.tools import get_layer_wms_parameters, layer_property
+from lizmap.version_checker import VersionChecker
 
 
 LOGGER = logging.getLogger(plugin_name())
 DOC_URL = 'https://docs.lizmap.com/next/'
+VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
 
 
 class Lizmap:
@@ -2179,6 +2181,9 @@ class Lizmap:
                     message,
                     QMessageBox.Ok)
                 return False
+
+            version_checker = VersionChecker(self.dlg, VERSION_URL)
+            version_checker.fetch()
 
             self.dlg.show()
 
