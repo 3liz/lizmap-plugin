@@ -167,6 +167,12 @@ QListWidget::item::selected {
        </item>
        <item>
         <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>Latest releases :</string>
          </property>
@@ -197,17 +203,30 @@ QListWidget::item::selected {
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_lizmap_server">
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <italic>true</italic>
+          </font>
+         </property>
+         <property name="text">
+          <string>Options with underline need the Lizmap QGIS Server plugin.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_lwc_version">
          <property name="font">
           <font>
            <italic>true</italic>
           </font>
          </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
          <property name="text">
-          <string>Options in blue background are only usable with higher version of Lizmap Web Client.</string>
+          <string>Options in light blue background are only usable with higher version of Lizmap Web Client.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -392,11 +411,11 @@ QListWidget::item::selected {
                     </item>
                     <item row="2" column="0">
                      <widget class="QCheckBox" name="activate_drawing_tools">
-                      <property name="text">
-                       <string>Draw</string>
-                      </property>
                       <property name="toolTip">
                        <string>If drawing tools are activated or not</string>
+                      </property>
+                      <property name="text">
+                       <string>Draw</string>
                       </property>
                      </widget>
                     </item>
@@ -1110,6 +1129,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           <layout class="QHBoxLayout" name="horizontalLayout_3">
                            <item>
                             <widget class="QLabel" name="label_group_visibility">
+                             <property name="styleSheet">
+                              <string notr="true">border-bottom-width: 1px;
+border-bottom-style: solid;
+border-radius: 0px;</string>
+                             </property>
                              <property name="text">
                               <string>Group visibility</string>
                              </property>

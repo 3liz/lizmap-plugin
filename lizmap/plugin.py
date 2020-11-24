@@ -171,7 +171,6 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
             self.dlg.label_atlas_34,
-            self.dlg.label_group_visibility,
             self.dlg.list_group_visiblity,
             self.dlg.activate_first_maptheme,
             self.dlg.activate_drawing_tools,
@@ -182,6 +181,11 @@ class Lizmap:
                 self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
                 if lwc_version == DEFAULT_LWC_VERSION:
                     next_release = not self.is_dev_version
+
+        self.lizmap_server_plugin = [
+            self.dlg.label_group_visibility,
+            self.dlg.list_group_visiblity,
+        ]
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         lwc_version = LwcVersions(lwc_version)
