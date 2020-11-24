@@ -34,7 +34,6 @@ class TestCodeLayout(unittest.TestCase):
                     expression, ui_file.read(), re.MULTILINE)
                 if len(matches):
                     list_files.append(ui)
-                    print(matches)
 
         self.assertListEqual(list_files, [], 'Some imports are wrong : {}'.format(', '.join(list_files)))
 
@@ -48,6 +47,5 @@ class TestCodeLayout(unittest.TestCase):
                     expression, ui_file.read(), re.MULTILINE)
                 if len(matches):
                     list_files.append(ui)
-                    print(matches)
 
         self.assertListEqual(list_files, [], 'Use PyQt connect in Python files, not UI : {}'.format(', '.join(list_files)))
