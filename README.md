@@ -1,6 +1,8 @@
 ## [![logo](lizmap/resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
 
-[![Build Status](https://api.travis-ci.org/3liz/lizmap-plugin.svg?branch=master)](https://travis-ci.org/3liz/lizmap-plugin)
+![Server](https://github.com/3liz/lizmap-plugin/workflows/Server%20%F0%9F%8E%B3/badge.svg)
+![Desktop](https://github.com/3liz/lizmap-plugin/workflows/Desktop%20%F0%9F%8E%B3/badge.svg)
+![Lint](https://github.com/3liz/lizmap-plugin/workflows/Lint%20%F0%9F%8E%B3/badge.svg)
 
 * Latest download link: https://github.com/3liz/lizmap-plugin/releases/latest/download/lizmap.zip
 * All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
