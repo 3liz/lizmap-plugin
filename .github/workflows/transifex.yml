@@ -2,9 +2,9 @@ name: Transifex 🗺
 
 on:
   push:
-    paths:
-      - '**.py'
-      - '**.ui'
+#    paths:
+#      - '**.py'
+#      - '**.ui'
     branch:
       - master
 #      - dev

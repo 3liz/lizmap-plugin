@@ -1,9 +1,15 @@
-name: Flake8
+name: Tests 🎳
 
-on: [push, pull_request]
+on:
+  push:
+#    paths:
+#      - '**.py'
+  pull_request:
+#    paths:
+#      - '**.py'
 
 jobs:
-  flake8_py3:
+  test-flake8:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
@@ -11,7 +17,19 @@ jobs:
         with:
           python-version: 3.7
           architecture: x64
+
       - name: Checkout
         uses: actions/checkout@master
-      - name: PyCharm Python Security Scanner
-        uses: tonybaloney/pycharm-security@1.20.1
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python requirements
+        run: pip install -r requirements-dev.txt
+
+      - name: Run flake8
+        run: flake8

@@ -525,12 +525,17 @@ class TestTableManager(unittest.TestCase):
                 'type': 'box',
                 'x_field': 'id',
                 'aggregation': '',  # It must stay empty
-                'y_field': 'name',
-                'color': '#00aaff',
-                'y2_field': 'name',
-                'color2': '#ffaa00',
-                'colorfield': '',
-                'colorfield2': '',
+                'traces': [
+                    {
+                        'color': '#00aaff',
+                        'colorfield': '',
+                        'y_field': 'name'
+                    }, {
+                        'color': '#ffaa00',
+                        'colorfield': '',
+                        'y_field': 'name'
+                    }
+                ],
                 'display_legend': 'True',
                 'display_when_layer_visible': 'False',
                 'horizontal': 'False',
