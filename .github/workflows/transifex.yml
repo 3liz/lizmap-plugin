@@ -4,8 +4,10 @@ on:
   push:
     paths:
       - '**.py'
+      - '**.ui'
     branch:
-      - dev
+      - master
+#      - dev
 
 jobs:
   build:
