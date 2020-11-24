@@ -4,9 +4,9 @@ __email__ = 'info@3liz.org'
 
 import json
 
+from qgis.core import QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
 from qgis.PyQt.QtWidgets import QDialog
-from qgis.core import QgsNetworkContentFetcher
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr

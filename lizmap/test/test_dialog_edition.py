@@ -1,12 +1,8 @@
 """Test Lizmap dialog form edition."""
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
-)
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
@@ -16,7 +12,7 @@ from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-
+from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

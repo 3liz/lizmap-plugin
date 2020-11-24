@@ -1,7 +1,7 @@
 """Test Traces."""
 from collections import OrderedDict
 
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 
 from lizmap.definitions.dataviz import GraphType

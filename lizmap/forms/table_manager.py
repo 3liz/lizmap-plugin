@@ -5,18 +5,14 @@ import logging
 
 from typing import Type
 
-from qgis.core import (
-    QgsMapLayerModel,
-    QgsProject,
-    QgsSettings,
-)
+from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
-    QTableWidgetItem,
-    QDialog,
     QAbstractItemView,
+    QDialog,
     QMessageBox,
+    QTableWidgetItem,
 )
 
 from lizmap import DEFAULT_LWC_VERSION

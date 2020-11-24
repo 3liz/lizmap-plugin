@@ -3,7 +3,6 @@
 import logging
 import re
 
-from qgis.gui import QgsExternalResourceWidget
 from qgis.core import (
     QgsAttributeEditorContainer,
     QgsAttributeEditorElement,
@@ -12,6 +11,7 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
+from qgis.gui import QgsExternalResourceWidget
 
 from lizmap.qgis_plugin_tools.tools.custom_logging import plugin_name
 

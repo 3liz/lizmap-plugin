@@ -10,24 +10,15 @@ from os.path import dirname, join
 from typing import Dict
 
 from osgeo import gdal
-
-from qgis.core import (
-    Qgis,
-    QgsMessageLog,
-    QgsProject,
-)
-
+from qgis.core import Qgis, QgsMessageLog, QgsProject
 from qgis.server import (
-    QgsService,
+    QgsServerInterface,
     QgsServerRequest,
     QgsServerResponse,
-    QgsServerInterface,
+    QgsService,
 )
 
-from .core import (
-    write_json_response,
-    ServiceError,
-)
+from .core import ServiceError, write_json_response
 
 
 class LizmapServiceError(ServiceError):

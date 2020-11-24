@@ -3,28 +3,25 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
 
-from typing import List, Dict, Union
+from typing import Dict, List, Union
 
 from qgis.core import (
     Qgis,
-    QgsMessageLog,
-    QgsMapLayer,
-    QgsVectorLayer,
     QgsExpression,
+    QgsMapLayer,
+    QgsMessageLog,
+    QgsVectorLayer,
 )
-from qgis.server import (
-    QgsServerInterface,
-    QgsAccessControlFilter,
-)
+from qgis.server import QgsAccessControlFilter, QgsServerInterface
 
 from .core import (
     config_value_to_boolean,
     get_lizmap_config,
-    get_lizmap_layers_config,
-    get_lizmap_layer_login_filter,
     get_lizmap_groups,
-    get_lizmap_user_login,
+    get_lizmap_layer_login_filter,
+    get_lizmap_layers_config,
     get_lizmap_override_filter,
+    get_lizmap_user_login,
 )
 
 

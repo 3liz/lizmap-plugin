@@ -5,19 +5,15 @@ import re
 
 from collections import OrderedDict
 
-from qgis.PyQt.QtGui import QColor, QIcon
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QPlainTextEdit,
-)
 from qgis.core import QgsProject, QgsSettings
+from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QPlainTextEdit
 
 from lizmap import DEFAULT_LWC_VERSION
-from lizmap.qt_style_sheets import NEW_FEATURE
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.base import InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qt_style_sheets import NEW_FEATURE
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

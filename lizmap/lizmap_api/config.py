@@ -44,17 +44,17 @@
  ***** END LICENSE BLOCK ***** */
 """
 
-import os
-import json
 import collections
+import json
+import os
 
-from qgis.core import (
-    QgsProject,
-    QgsMapLayer,
-)
+from qgis.core import QgsMapLayer, QgsProject
 
 from lizmap import DEFAULT_LWC_VERSION
-from lizmap.qgis_plugin_tools.tools.version import format_version_integer, version
+from lizmap.qgis_plugin_tools.tools.version import (
+    format_version_integer,
+    version,
+)
 
 
 class LizmapConfigError(Exception):

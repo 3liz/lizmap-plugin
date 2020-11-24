@@ -1,13 +1,13 @@
 """Test tools."""
 
-import unittest
 import os
+import unittest
 
 from lizmap.server.core import (
     config_value_to_boolean,
     get_lizmap_config,
-    get_lizmap_layers_config,
     get_lizmap_layer_login_filter,
+    get_lizmap_layers_config,
 )
 
 __copyright__ = 'Copyright 2020, 3Liz'

@@ -2,13 +2,12 @@
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
 from lizmap.plugin import Lizmap
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
-
 
 __copyright__ = 'Copyright 2019, 3Liz'
 __license__ = 'GPL version 3'

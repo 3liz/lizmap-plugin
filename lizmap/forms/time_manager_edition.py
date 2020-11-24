@@ -8,8 +8,8 @@ from qgis.core import (
     QgsProject,
 )
 
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.definitions.time_manager import TimeManagerDefinitions
+from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 from lizmap.tools import is_database_layer

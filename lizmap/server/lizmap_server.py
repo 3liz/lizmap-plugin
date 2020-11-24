@@ -9,9 +9,9 @@ from qgis.core import Qgis, QgsMessageLog
 from qgis.server import QgsServerInterface
 
 from .expression_service import ExpressionService
-from .lizmap_service import LizmapService
-from .lizmap_filter import LizmapFilter
 from .lizmap_accesscontrol import LizmapAccessControlFilter
+from .lizmap_filter import LizmapFilter
+from .lizmap_service import LizmapService
 
 
 class LizmapServer:

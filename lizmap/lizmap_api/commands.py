@@ -43,9 +43,10 @@
 
  ***** END LICENSE BLOCK ***** */
 """
+import atexit
 import os
 import sys
-import atexit
+
 import pkg_resources
 
 from .config import LizmapConfig
@@ -94,6 +95,7 @@ def install_message_hook( verbose=False ):
     """ Install message log hook
     """
     from qgis.core import Qgis, QgsApplication, QgsMessageLog
+
     # Add a hook to qgis  message log
     def writelogmessage(message, tag, level):
         arg = '{}: {}'.format( tag, message )
@@ -157,7 +159,7 @@ def create_config(argv=None):
 
     if args.template:
         try:
-            from  jinja2 import Template
+            from jinja2 import Template
         except ImportError:
             print("Templates requires Jinja2 package", file=sys.stderr)
             sys.exit(1)

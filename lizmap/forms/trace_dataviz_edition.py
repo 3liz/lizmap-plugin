@@ -1,11 +1,8 @@
 """Dialog for editing a trace in the dataviz window."""
 from collections import OrderedDict
 
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-)
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType

@@ -54,42 +54,34 @@ from functools import partial
 from shutil import copyfile
 from typing import Optional
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QTranslator,
-    QUrl,
-    Qt,
-)
-from qgis.PyQt.QtGui import (
-    QDesktopServices,
-    QIcon
-)
-from qgis.PyQt.QtWidgets import (
-    QTableWidgetItem,
-    QTreeWidgetItem,
-    QAction,
-    QDialogButtonBox,
-    QMessageBox,
-)
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsEditFormConfig,
-    QgsProject,
-    QgsMapLayerModel,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
-    QgsApplication,
     QgsMapLayer,
+    QgsMapLayerModel,
+    QgsProject,
     QgsSettings,
     QgsVectorLayer,
     QgsWkbTypes,
+)
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
+from qgis.PyQt.QtGui import QDesktopServices, QIcon
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QDialogButtonBox,
+    QMessageBox,
+    QTableWidgetItem,
+    QTreeWidgetItem,
 )
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
-from lizmap.definitions.definitions import LwcVersions, LayerProperties
+from lizmap.definitions.definitions import LayerProperties, LwcVersions
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
@@ -106,19 +98,25 @@ from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.table_manager import TableManager
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-from lizmap.qt_style_sheets import STYLESHEET, NEW_FEATURE
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
 from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
-from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
-from lizmap.qgis_plugin_tools.tools.resources import resources_path, plugin_path, plugin_name
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
-from lizmap.qgis_plugin_tools.tools.version import version, format_version_integer
-from lizmap.tooltip import Tooltip
+from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
+from lizmap.qgis_plugin_tools.tools.resources import (
+    plugin_name,
+    plugin_path,
+    resources_path,
+)
+from lizmap.qgis_plugin_tools.tools.version import (
+    format_version_integer,
+    version,
+)
+from lizmap.qt_style_sheets import NEW_FEATURE, STYLESHEET
 from lizmap.tools import get_layer_wms_parameters, layer_property
+from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
-
 
 LOGGER = logging.getLogger(plugin_name())
 DOC_URL = 'https://docs.lizmap.com/next/'

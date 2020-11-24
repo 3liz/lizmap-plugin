@@ -3,23 +3,20 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
 
-import os
 import json
+import os
 
-from typing import List, Dict, Union
+from typing import Dict, List, Union
 
 from qgis.core import (
     Qgis,
+    QgsFeature,
+    QgsMapLayer,
     QgsMessageLog,
     QgsProject,
-    QgsMapLayer,
     QgsVectorLayer,
-    QgsFeature,
 )
-from qgis.server import (
-    QgsServerResponse,
-    QgsRequestHandler,
-)
+from qgis.server import QgsRequestHandler, QgsServerResponse
 
 
 def write_json_response(data: Dict[str, str], response: QgsServerResponse, code: int = 200) -> None:

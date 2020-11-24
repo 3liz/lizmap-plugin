@@ -1,6 +1,6 @@
 """Test layer information."""
 
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 

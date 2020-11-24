@@ -1,20 +1,20 @@
 """Dialog for dataviz edition."""
 
+from qgis.core import (
+    QgsApplication,
+    QgsMapLayerProxyModel,
+    QgsProject,
+    QgsSettings,
+)
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
-    QTableWidgetItem,
     QAbstractItemView,
     QDialog,
     QHeaderView,
+    QTableWidgetItem,
 )
-from qgis.core import (
-    QgsMapLayerProxyModel,
-    QgsProject,
-    QgsApplication,
-    QgsSettings)
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QIcon, QColor
 
-from lizmap.qt_style_sheets import NEW_FEATURE
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
@@ -23,6 +23,7 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.qt_style_sheets import NEW_FEATURE
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

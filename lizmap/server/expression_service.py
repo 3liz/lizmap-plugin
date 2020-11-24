@@ -1,36 +1,30 @@
-import traceback
 import json
+import traceback
 
 from typing import Dict
 
 from qgis.core import (
     Qgis,
-    QgsMessageLog,
-    QgsProject,
-    QgsJsonUtils,
+    QgsDistanceArea,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
-    QgsDistanceArea,
     QgsFeature,
-    QgsFields,
     QgsFeatureRequest,
+    QgsFields,
     QgsJsonExporter,
+    QgsJsonUtils,
+    QgsMessageLog,
+    QgsProject,
 )
-
-from qgis.server import (
-    QgsService,
-    QgsServerRequest,
-    QgsServerResponse,
-)
-
 from qgis.PyQt.QtCore import QTextCodec
+from qgis.server import QgsServerRequest, QgsServerResponse, QgsService
 
 from .core import (
-    write_json_response,
+    ServiceError,
     find_vector_layer,
     get_server_fid,
-    ServiceError,
+    write_json_response,
 )
 
 

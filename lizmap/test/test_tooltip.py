@@ -1,20 +1,20 @@
 """Test tooltip."""
-from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
+    Qgis,
+    QgsAttributeEditorContainer,
+    QgsAttributeEditorField,
     QgsEditFormConfig,
     QgsExpression,
-    QgsFeature,
     QgsExpressionContext,
     QgsExpressionContextUtils,
-    QgsAttributeEditorContainer,
-    QgsOptionalExpression,
-    QgsAttributeEditorField,
+    QgsFeature,
     QgsField,
-    Qgis,
+    QgsOptionalExpression,
+    QgsProject,
+    QgsVectorLayer,
 )
 from qgis.gui import QgsExternalResourceWidget
+from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path

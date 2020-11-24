@@ -2,10 +2,9 @@
 
 import copy
 
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QTableWidget
-from qgis.core import QgsVectorLayer, QgsProject
 from qgis.testing import unittest
-
 
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
@@ -15,12 +14,11 @@ from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
-from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
-from lizmap.forms.table_manager import TableManager
+from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.forms.atlas_edition import AtlasEditionDialog
+from lizmap.forms.table_manager import TableManager
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
-
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

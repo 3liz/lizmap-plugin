@@ -3,16 +3,16 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
 
-import os
 import json
+import os
 import traceback
 
 from typing import List
 
 from qgis.core import Qgis, QgsMessageLog
-from qgis.server import QgsServerInterface, QgsServerException, QgsServerFilter
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.server import QgsServerException, QgsServerFilter, QgsServerInterface
 
 
 class LizmapFilterException(QgsServerException):

@@ -2,8 +2,8 @@
 
 from qgis.core import QgsMapLayerProxyModel
 
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
+from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 

@@ -2,8 +2,8 @@
 
 from qgis.core import QgsMapLayerProxyModel, QgsProject
 
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
+from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
