@@ -8,12 +8,7 @@ from typing import Type
 from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
-from qgis.PyQt.QtWidgets import (
-    QAbstractItemView,
-    QDialog,
-    QMessageBox,
-    QTableWidgetItem,
-)
+from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QTableWidgetItem
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
@@ -21,7 +16,6 @@ from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
-from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.qt_style_sheets import NEW_FEATURE
 
 LOGGER = logging.getLogger(plugin_name())
@@ -149,11 +143,6 @@ class TableManager:
     def add_new_row(self):
         # noinspection PyCallingNonCallable
         row = self.table.rowCount()
-        is_dev = version() not in ['master', 'dev'] or 'beta' in version()
-        if row >= 1 and self.definitions.key() == 'atlas' and is_dev:
-            message = tr('The multi-atlas is coming soon in Lizmap 3.4.')
-            QMessageBox.warning(self.parent, tr('Lizmap'), message, QMessageBox.Ok)
-            return
 
         dialog = self.edition(self.parent, self._primary_keys())
         result = dialog.exec_()
