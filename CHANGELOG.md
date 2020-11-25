@@ -2,20 +2,40 @@
 
 ### 3.3.0 - 25/11/2020
 
-* Add support for Lizmap Web Client 3.4
-* Add Lizmap as a QGIS Server side plugin as well to evaluate QGIS Expression from Lizmap Web Client
-* Allow multiple Lizmap atlas
-* Layer visibility according to a Lizmap group
-* Add option to activate the first map theme defined in QGIS
-* Add dataviz description
-* Add Sunburst chart (and Z field) in Dataviz
-* Add HTML template chart in Dataviz
-* Add stacked and horizontal options for a bar chart in Dataviz
-* Add option to display the legend in Dataviz
-* Add option to display the chart only of the layer is visible
-* Add many options to snap on a list of layers when editing a vector layer geometry
-* Refactor the time manager panel
-* Add option to allow or not geometry less when editing a layer
+* Add support for Lizmap Web Client 3.4 :
+  * Add Lizmap as a QGIS Server side plugin to evaluate QGIS Expression from Lizmap Web Client
+    * Group visibility
+    * Default value
+    * Constraint
+    * Form drilldown using Value Relation widget
+  * Allow multiple Lizmap atlas
+  * Add option for layer visibility according to a Lizmap group
+  * Add option to activate the first map theme defined in QGIS
+  * Improvements about the Dataviz
+    * Add description
+    * A chart can now have a multiple Y fields
+    * Add Sunburst chart (and Z field)
+    * Add HTML template chart
+    * Add stacked and horizontal options for a bar chart
+    * Add option to display the legend
+    * Add black/light theme
+    * Add option to display the chart only if the layer is visible
+    * Dataviz can be customized with a JSON object
+  * Improvements about the Time Manager
+    * Review the settings
+    * Add buttons to compute min/max values
+  * Improvements about the Edition
+    * Add options to snap on layers
+    * Set tolerance for snapping
+    * Add option to allow geometryless feature
+  * Access rights
+    * Add option to filter by user for edition only
+    * Add option to hide a layer for some groups
+  * Map tools
+    * Add option to enable or not drawing tools
+* User experience :
+  * Disable the "toggled" option for groups
+  * Add a version feed to be aware of new versions of Lizmap Web Client
 
 ### 3.2.18 - 07/09/2020
 
