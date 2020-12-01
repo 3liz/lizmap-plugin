@@ -58,6 +58,7 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsEditFormConfig,
+    QgsLayerTree,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsMapLayer,
@@ -67,6 +68,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import (
@@ -1297,12 +1299,18 @@ class Lizmap:
         Process a single node of the QGIS layer tree and adds it to Lizmap layer tree.
         """
         for child in node.children():
-            if isinstance(child, QgsLayerTreeGroup):
+            if QgsLayerTree.isGroup(child):
+                if not isinstance(child, QgsLayerTreeGroup):
+                    # Sip cast issue , Lizmap plugin #299
+                    child = sip.cast(child, QgsLayerTreeGroup)
                 child_id = child.name()
                 child_type = 'group'
                 # noinspection PyCallByClass,PyArgumentList
                 child_icon = QIcon(QgsApplication.iconPath('mActionFolder.svg'))
-            elif isinstance(child, QgsLayerTreeLayer):
+            elif QgsLayerTree.isLayer(child):
+                if not isinstance(child, QgsLayerTreeLayer):
+                    # Sip cast issue , Lizmap plugin #299
+                    child = sip.cast(child, QgsLayerTreeLayer)
                 child_id = child.layerId()
                 child_type = 'layer'
                 # noinspection PyArgumentList
