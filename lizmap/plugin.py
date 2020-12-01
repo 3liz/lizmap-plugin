@@ -175,17 +175,12 @@ class Lizmap:
             self.dlg.activate_first_maptheme,
             self.dlg.activate_drawing_tools,
         ]
-        self.populate_lwc_combo()
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
             self.dlg.list_group_visiblity,
         ]
 
-        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        lwc_version = LwcVersions(lwc_version)
-        index = self.dlg.combo_lwc_version.findData(lwc_version)
-        self.dlg.combo_lwc_version.setCurrentIndex(index)
-        self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
+        self.populate_lwc_combo()
         self.lwc_version_changed()
 
         # Map options
@@ -540,6 +535,13 @@ class Lizmap:
         self.myDic = None
 
     def populate_lwc_combo(self):
+        """ Fill the LWC selector about all versions. """
+        try:
+            # First disconnect all signals from the combobox
+            self.dlg.combo_lwc_version.currentIndexChanged.disconnect()
+        except TypeError:
+            pass
+
         self.dlg.combo_lwc_version.clear()
         display_next_release = False
         for lwc_version in LwcVersions:
@@ -548,11 +550,20 @@ class Lizmap:
                 if lwc_version == DEFAULT_LWC_VERSION:
                     display_next_release = self.version != 'dev'
 
+        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        lwc_version = LwcVersions(lwc_version)
+        index = self.dlg.combo_lwc_version.findData(lwc_version)
+        self.dlg.combo_lwc_version.setCurrentIndex(index)
+
+        # Restore connection
+        self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
+
     def lwc_version_changed(self):
+        """When the version has changed in the selector."""
         current_version = self.dlg.combo_lwc_version.currentData()
 
         if current_version is None:
-            # We come from a higher version of Lizmap
+            # We come from a higher version of Lizmap (from dev to master)
             current_version = DEFAULT_LWC_VERSION
 
         found = False
