@@ -1,5 +1,11 @@
 # CHANGELOG
 
+### 3.3.1 - 02/12/2020
+
+* Fix issue when reading the legend
+* Fix issue about the Lizmap version selector
+* Fix reading UTF8 in the metadata.txt
+
 ### 3.3.0 - 25/11/2020
 
 * Add support for Lizmap Web Client 3.4 :
