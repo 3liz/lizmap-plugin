@@ -821,6 +821,7 @@ class TestTableManager(unittest.TestCase):
                 'snap_vertices_tolerance': 10,
                 'snap_segments_tolerance': 10,
                 'snap_intersections_tolerance': 10,
+                'provider': 'ogr',
                 'order': 0
             }
         }

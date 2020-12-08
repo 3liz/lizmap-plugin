@@ -92,6 +92,13 @@ class BaseEditionDialog(QDialog):
                     if widget is not None:
                         widget.setReadOnly(True)
 
+            if not layer_config.get('visible', True):
+                if widget is not None:
+                    widget.setVisible(False)
+                label = layer_config.get('label')
+                if label is not None:
+                    label.setVisible(False)
+
         self.version_lwc()
 
     def version_lwc(self):

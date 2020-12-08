@@ -10,6 +10,10 @@ __email__ = 'info@3liz.org'
 __revision__ = '$Format:%H$'
 
 
+def layer_provider(layer):
+    return layer.dataProvider().name()
+
+
 class EditionDefinitions(BaseDefinitions):
 
     def __init__(self):
@@ -110,6 +114,14 @@ class EditionDefinitions(BaseDefinitions):
             'unit': ' px',
             'tooltip': tr('Snapping tolerance for intersections.'),
             'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['provider'] = {
+            'type': InputType.Text,
+            'visible': False,
+            'default': layer_provider,
+            'header': tr('Provider name'),
+            'tooltip': tr('Provider name'),
+            'version': LwcVersions.Lizmap_3_3,
         }
 
     @staticmethod

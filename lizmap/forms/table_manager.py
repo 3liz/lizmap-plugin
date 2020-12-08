@@ -184,6 +184,10 @@ class TableManager:
 
             input_type = self.definitions.layer_config[key]['type']
 
+            if self._layer and hasattr(value, '__call__'):
+                # Value is a for now a function, we need to evaluate it
+                value = value(self._layer)
+
             if input_type == InputType.Layer:
                 layer = QgsProject.instance().mapLayer(value)
                 self._layer = layer
@@ -685,13 +689,16 @@ class TableManager:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))
                 else:
                     default_value = definition.get('default')
-                    if default_value is not None:
+                    if default_value is not None and not hasattr(default_value, '__call__'):
                         if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box' and key == 'aggregation':
                             layer_data[key] = AggregationType.No.value['data']
                         elif definition['type'] == InputType.List and default_value != '':
                             layer_data[key] = default_value.value['data']
                         else:
                             layer_data[key] = default_value
+                    elif default_value is not None and hasattr(default_value, '__call__'):
+                        # The function will evaluated layer, with the layer context
+                        layer_data[key] = default_value
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(

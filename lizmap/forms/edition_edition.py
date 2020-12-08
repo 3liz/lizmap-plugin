@@ -4,7 +4,7 @@ from qgis.core import QgsMapLayerProxyModel, QgsProject, QgsWkbTypes
 from qgis.PyQt.QtWidgets import QMessageBox
 
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.definitions.edition import EditionDefinitions
+from lizmap.definitions.edition import EditionDefinitions, layer_provider
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
@@ -39,6 +39,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('snap_vertices_tolerance', self.vertices_tolerance)
         self.config.add_layer_widget('snap_segments_tolerance', self.segments_tolerance)
         self.config.add_layer_widget('snap_intersections_tolerance', self.intersections_tolerance)
+        self.config.add_layer_widget('provider', self.provider)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('createFeature', self.label_create)
@@ -48,6 +49,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('deleteFeature', self.label_delete)
         self.config.add_layer_label('acl', self.label_allowed_groups)
         self.config.add_layer_label('snap_layers', self.label_layers_snapping)
+        self.config.add_layer_label('provider', self.label_provider)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.setExcludedProviders(excluded_providers())
@@ -77,6 +79,8 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
                 'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
                 ' option of the QGIS Server tab in the "Project Properties" dialog.')
             return msg
+
+        self.provider.setText(layer_provider(layer))
 
         create_feature = self.create_feature.isChecked()
         modify_attribute = self.edit_attributes.isChecked()
