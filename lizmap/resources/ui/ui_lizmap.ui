@@ -1257,7 +1257,7 @@ border-radius: 0px;</string>
                               <number>1</number>
                              </property>
                              <property name="maximum">
-                              <number>199</number>
+                              <number>999</number>
                              </property>
                              <property name="value">
                               <number>10</number>
