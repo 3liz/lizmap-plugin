@@ -183,12 +183,18 @@ QListWidget::item::selected {
          <property name="text">
           <string>Unknown</string>
          </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="lwc_version_oldest">
          <property name="text">
           <string>Unknown</string>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

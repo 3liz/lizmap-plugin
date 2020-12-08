@@ -53,7 +53,10 @@ class VersionChecker:
 
     def update_lwc_releases(self, released_versions: dict):
         """ Update labels about latest releases. """
-        template = '{}   -    {}'
+        template = (
+            '<a href="https://github.com/3liz/lizmap-web-client/releases/tag/{tag}">'
+            '{tag}   -    {date}'
+            '</a>')
 
         i = 0
         for json_version in released_versions:
@@ -64,14 +67,14 @@ class VersionChecker:
             if json_version['maintained']:
                 if i == 0:
                     text = template.format(
-                        json_version['latest_release_version'],
-                        date_string,
+                        tag=json_version['latest_release_version'],
+                        date=date_string,
                     )
                     self.dialog.lwc_version_latest.setText(text)
                 elif i == 1:
                     text = template.format(
-                        json_version['latest_release_version'],
-                        date_string,
+                        tag=json_version['latest_release_version'],
+                        date=date_string,
                     )
                     self.dialog.lwc_version_oldest.setText(text)
                 i += 1
