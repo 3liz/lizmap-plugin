@@ -117,10 +117,10 @@ class EditionDefinitions(BaseDefinitions):
         }
         self._layer_config['provider'] = {
             'type': InputType.Text,
-            'visible': False,
+            'read_only': True,
             'default': layer_provider,
             'header': tr('Provider name'),
-            'tooltip': tr('Provider name'),
+            'tooltip': tr('Provider name, read only configuration.'),
             'version': LwcVersions.Lizmap_3_3,
         }
 

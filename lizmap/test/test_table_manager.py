@@ -679,6 +679,10 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
         data = table_manager.to_json()
+
+        # Automatically added, so we add it manually for the comparaison
+        json['lines']['custom_config'] = 'False'
+
         self.assertDictEqual(data, json)
 
     def test_time_manager_table(self):
