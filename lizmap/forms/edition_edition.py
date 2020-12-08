@@ -51,6 +51,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('snap_layers', self.label_layers_snapping)
         self.config.add_layer_label('provider', self.label_provider)
 
+        self.layer.layerChanged.connect(self.layer_changed)
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.setExcludedProviders(excluded_providers())
         self.layers.set_project(QgsProject.instance())
@@ -60,6 +61,13 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         ]
 
         self.setup_ui()
+
+    def post_load_form(self):
+        self.layer_changed()
+
+    def layer_changed(self):
+        layer = self.layer.currentLayer()
+        self.provider.setText(layer_provider(layer))
 
     def validate(self) -> str:
         layer = self.layer.currentLayer()
@@ -79,8 +87,6 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
                 'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
                 ' option of the QGIS Server tab in the "Project Properties" dialog.')
             return msg
-
-        self.provider.setText(layer_provider(layer))
 
         create_feature = self.create_feature.isChecked()
         modify_attribute = self.edit_attributes.isChecked()

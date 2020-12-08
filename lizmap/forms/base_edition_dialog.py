@@ -6,6 +6,7 @@ import re
 from collections import OrderedDict
 
 from qgis.core import QgsProject, QgsSettings
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QPlainTextEdit
 
@@ -65,8 +66,9 @@ class BaseEditionDialog(QDialog):
                             widget.setCurrentIndex(index)
 
             if layer_config['type'] == InputType.CheckBox:
-                if widget is not None:
-                    widget.setChecked(layer_config['default'])
+                default_value = layer_config['default']
+                if widget is not None and not hasattr(default_value, '__call__'):
+                    widget.setChecked(default_value)
 
             if layer_config['type'] == InputType.SpinBox:
                 if widget is not None:
@@ -87,10 +89,13 @@ class BaseEditionDialog(QDialog):
                         widget.setDefaultColor(QColor(layer_config['default']))
                         widget.setToDefaultColor()
 
-            if layer_config['type'] == InputType.Text:
-                if layer_config.get('read_only'):
-                    if widget is not None:
+            if layer_config.get('read_only'):
+                if widget is not None:
+                    if layer_config['type'] == InputType.Text:
                         widget.setReadOnly(True)
+                    elif layer_config['type'] == InputType.CheckBox:
+                        widget.setAttribute(Qt.WA_TransparentForMouseEvents)
+                        widget.setFocusPolicy(Qt.NoFocus)
 
             if not layer_config.get('visible', True):
                 if widget is not None:
@@ -198,6 +203,11 @@ class BaseEditionDialog(QDialog):
         # This function is implemented in child class.
         pass
 
+    def post_load_form(self):
+        """Function executed after the form with data has been loaded."""
+        # This function is implemented in child class.
+        pass
+
     def load_form(self, data: OrderedDict) -> None:
         """A dictionary to load in the UI."""
         layer_properties = OrderedDict()
@@ -246,6 +256,8 @@ class BaseEditionDialog(QDialog):
                 self.load_collection(value)
             else:
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
+
+        self.post_load_form()
 
     def save_form(self) -> OrderedDict:
         """Save the UI in the dictionary with QGIS objects"""

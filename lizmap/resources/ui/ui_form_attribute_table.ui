@@ -91,6 +91,20 @@
      <item row="2" column="1">
       <widget class="ListFieldsSelection" name="fields_to_hide"/>
      </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="has_custom_config">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_has_custom_config">
+       <property name="text">
+        <string notr="true">Has a custom config</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
