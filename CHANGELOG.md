@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### 3.3.2 - 10/12/2020
+
+* Server, fix an issue about layer filtering with access control
+* Make links clickable to open a Lizmap Web Client release
+* Increase the limit of max children features in a parent popup
+* Add layer provider name automatically for the edition tool (LWC >= 3.3.13)
+
 ### 3.3.1 - 02/12/2020
 
 * Fix issue when reading the legend
