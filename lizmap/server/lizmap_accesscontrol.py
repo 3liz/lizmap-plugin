@@ -34,14 +34,21 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
     def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
         """ Return an additional expression filter """
-        # Disable lizmap layer filter expression while fixing an issue in QGIS Server
-        return ''
-        # QgsMessageLog.logMessage("Lizmap layerFilterExpression", "lizmap", Qgis.Info)
-        # filter_exp = self.get_lizmap_layer_filter(layer)
-        # if filter_exp:
-        #     return filter_exp
-        #
-        # return super().layerFilterExpression(layer)
+        # Disabling Lizmap layer filter expression for QGIS Server <= 3.16.1 and <= 3.10.12
+        # Fix in QGIS Server https://github.com/qgis/QGIS/pull/40556 3.18.0, 3.16.2, 3.10.13
+        if 31013 <= Qgis.QGIS_VERSION_INT < 31099 or 31602 <= Qgis.QGIS_VERSION_INT:
+            QgsMessageLog.logMessage("Lizmap layerFilterExpression", "lizmap", Qgis.Info)
+            filter_exp = self.get_lizmap_layer_filter(layer)
+            if filter_exp:
+                return filter_exp
+
+            return super().layerFilterExpression(layer)
+        else:
+            message = (
+                "Lizmap layerFilterExpression disabled, you should consider upgrading QGIS Server to >= "
+                "3.10.13 or >= 3.16.2")
+            QgsMessageLog.logMessage(message, "lizmap", Qgis.Critical)
+            return ''
 
     def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
         """ Return an additional subset string (typically SQL) filter """
