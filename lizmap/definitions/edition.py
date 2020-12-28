@@ -34,7 +34,7 @@ class EditionDefinitions(BaseDefinitions):
             'type': InputType.CheckBox,
             'header': tr('Allow feature without geometry'),
             'default': False,
-            'tooltip': tr('If a feature is valid without a geometry.'),
+            'tooltip': tr('If a feature can be geometry less.'),
             'version': LwcVersions.Lizmap_3_3,
         }
         self._layer_config['modifyAttribute'] = {
