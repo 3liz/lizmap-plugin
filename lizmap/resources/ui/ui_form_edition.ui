@@ -85,7 +85,7 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QCheckBox" name="delete_feature">
+      <widget class="QCheckBox" name="edit_geometry">
        <property name="text">
         <string/>
        </property>
@@ -99,7 +99,7 @@
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QCheckBox" name="edit_geometry">
+      <widget class="QCheckBox" name="delete_feature">
        <property name="text">
         <string/>
        </property>
