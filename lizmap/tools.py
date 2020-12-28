@@ -47,7 +47,10 @@
 import os
 import urllib.parse
 
-from qgis.core import QgsProviderRegistry, QgsVectorLayer
+from os.path import abspath, join
+
+from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
+from qgis.PyQt.QtCore import QDir
 
 from lizmap.definitions.definitions import LayerProperties
 
@@ -103,3 +106,21 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
         return layer.dataUrl()
     else:
         raise NotImplementedError
+
+
+def lizmap_user_folder():
+    """ Get the Lizmap user folder.
+
+    If the folder does not exist, it will create it.
+
+    On Linux: .local/share/QGIS/QGIS3/profiles/default/Lizmap
+
+    :rtype: str
+    :return: path
+    """
+    path = abspath(join(QgsApplication.qgisSettingsDirPath(), 'Lizmap'))
+
+    if not QDir(path).exists():
+        QDir().mkdir(path)
+
+    return path

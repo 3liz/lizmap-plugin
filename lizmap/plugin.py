@@ -70,7 +70,7 @@ from qgis.core import (
 )
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
-from qgis.PyQt.QtGui import QDesktopServices, QIcon
+from qgis.PyQt.QtGui import QDesktopServices, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
@@ -116,6 +116,7 @@ from lizmap.qgis_plugin_tools.tools.version import (
     version,
 )
 from lizmap.qt_style_sheets import NEW_FEATURE, STYLESHEET
+from lizmap.server_lwc import ServerManager
 from lizmap.tools import get_layer_wms_parameters, layer_property
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
@@ -177,6 +178,8 @@ class Lizmap:
             self.dlg.activate_first_maptheme,
             self.dlg.activate_drawing_tools,
         ]
+        self.lwc_versions[LwcVersions.Lizmap_3_5] = [
+        ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
             self.dlg.list_group_visiblity,
@@ -185,82 +188,93 @@ class Lizmap:
         self.populate_lwc_combo()
         self.lwc_version_changed()
 
+        self.dlg.label_lizmap_logo.setText('')
+        pixmap = QPixmap(resources_path('icons', 'logo.png'))
+        pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
+        self.dlg.label_lizmap_logo.setPixmap(pixmap)
+
+        # Information
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(0).setIcon(icon)
+
         # Map options
         icon = QIcon()
         icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(0).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(1).setIcon(icon)
 
         # Layers
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(1).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(2).setIcon(icon)
 
         # Base layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(2).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(3).setIcon(icon)
 
         # Locate by layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(3).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(4).setIcon(icon)
 
         # Attribute table
         icon = QIcon()
         icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(4).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(5).setIcon(icon)
 
         # Layer editing
         icon = QIcon()
         icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(5).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(6).setIcon(icon)
 
         # Tooltip layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(6).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(7).setIcon(icon)
 
         # Filter layer by user
         icon = QIcon()
         icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(7).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(8).setIcon(icon)
 
         # Dataviz
         icon = QIcon()
         icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(8).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(9).setIcon(icon)
 
         # Time manager
         icon = QIcon()
         icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(9).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(10).setIcon(icon)
 
         # Atlas
         icon = QIcon()
         icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(10).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(11).setIcon(icon)
 
         # Filter data with form
         icon = QIcon()
         icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(11).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(12).setIcon(icon)
 
         # Log
         # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
-        self.dlg.mOptionsListWidget.item(12).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(13).setIcon(icon)
 
         # Set stylesheet for QGroupBox
         if sys.platform.startswith('win'):
@@ -430,6 +444,15 @@ class Lizmap:
             slot = self.onBaselayerCheckboxChange
             item.stateChanged.connect(slot)
 
+        self.server_manager = ServerManager(
+            self.dlg,
+            self.dlg.table_server,
+            self.dlg.add_server_button,
+            self.dlg.remove_server_button,
+            self.dlg.edit_server_button,
+            self.dlg.label_no_server,
+        )
+
         # tables of layers
         # Todo Lizmap 3.4, remove dict init here
         self.layers_table = {
@@ -550,7 +573,7 @@ class Lizmap:
             if not display_next_release:
                 self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
                 if lwc_version == DEFAULT_LWC_VERSION:
-                    display_next_release = self.version != 'dev'
+                    display_next_release = self.version not in ['dev', 'master']
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         lwc_version = LwcVersions(lwc_version)
