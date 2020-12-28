@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import json
+import os
 
 from qgis.core import QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
@@ -10,6 +11,7 @@ from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.tools import lizmap_user_folder
 
 
 class VersionChecker:
@@ -33,9 +35,15 @@ class VersionChecker:
         if not content:
             return
 
+        # Update the UI
         released_versions = json.loads(content)
         self.update_lwc_releases(released_versions)
         self.update_lwc_selector(released_versions)
+
+        # Cache the file
+        folder = lizmap_user_folder()
+        with open(os.path.join(folder, "released_versions.json"), "w") as output:
+            output.write(content)
 
     def update_lwc_selector(self, released_versions: dict):
         """ Update LWC selector showing outdated versions. """
