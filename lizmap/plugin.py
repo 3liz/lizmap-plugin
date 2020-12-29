@@ -1493,14 +1493,22 @@ class Lizmap:
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
             # For a group, there isn't the toggle option, #298
+            try:
+                # We always disconnect everything
+                self.layer_options_list['groupAsLayer']['widget'].disconnect()
+            except TypeError:
+                pass
+
             if isinstance(layer, QgsMapLayer):
+                # Always enabled
                 self.layer_options_list['toggled']['widget'].setEnabled(True)
                 tooltip = tr("If the layer is displayed by default")
+                self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
             else:
-                self.layer_options_list['toggled']['widget'].setEnabled(False)
-                self.layer_options_list['toggled']['widget'].setChecked(False)
-                tooltip = tr("For a group, it depends of layers inside the group")
-            self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+                # It depends of the "Group as layer" checked or not, so it's has a signal
+                self.layer_options_list['groupAsLayer']['widget'].stateChanged.connect(
+                    self.enable_or_not_toggle_checkbox)
+                self.enable_or_not_toggle_checkbox()
 
             # Max feature per popup
             self.dlg.label_max_feature_popup.setEnabled(is_vector)
@@ -1529,6 +1537,17 @@ class Lizmap:
                         val['widget'].setCurrentIndex(listDic[val['default']])
 
         self.enable_popup_source_button()
+
+    def enable_or_not_toggle_checkbox(self):
+        """ Only for groups, to determine the state of the "toggled" option. """
+        if self.layer_options_list['groupAsLayer']['widget'].isChecked():
+            self.layer_options_list['toggled']['widget'].setEnabled(True)
+            tooltip = tr("All layers are considered as a unique layer. It can be displayed or not.")
+        else:
+            self.layer_options_list['toggled']['widget'].setEnabled(False)
+            self.layer_options_list['toggled']['widget'].setChecked(False)
+            tooltip = tr("For a group, it depends of layers inside the group")
+        self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
 
     def get_item_wms_capability(self, selectedItem) -> Optional[bool]:
         """
