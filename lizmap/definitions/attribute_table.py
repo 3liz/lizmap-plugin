@@ -63,7 +63,7 @@ class AttributeTableDefinitions(BaseDefinitions):
             'type': InputType.CheckBox,
             'header': tr('Custom configuration'),
             'default': layer_has_custom_attribute_table,
-            'tooltip': tr('If the attribute table has a custom order. Read-only field.'),
+            'tooltip': tr('If the attribute table has a custom order. Read only field.'),
             'read_only': True,
         }
 

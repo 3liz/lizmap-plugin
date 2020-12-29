@@ -79,7 +79,7 @@ class TimeManagerDefinitions(BaseDefinitions):
             'type': InputType.Text,
             'header': tr('Minimum timestamp'),
             'default': '',
-            'tooltip': tr('The minimum value from the data'),
+            'tooltip': tr('The minimum value from the data. Read only field.'),
             'read_only': True,
             'version': LwcVersions.Lizmap_3_4,
         }
@@ -87,7 +87,7 @@ class TimeManagerDefinitions(BaseDefinitions):
             'type': InputType.Text,
             'header': tr('Maximum timestamp'),
             'default': '',
-            'tooltip': tr('The maximum value from the data'),
+            'tooltip': tr('The maximum value from the data. Read only field.'),
             'read_only': True,
             'version': LwcVersions.Lizmap_3_4,
         }

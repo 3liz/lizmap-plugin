@@ -1542,7 +1542,9 @@ class Lizmap:
         """ Only for groups, to determine the state of the "toggled" option. """
         if self.layer_options_list['groupAsLayer']['widget'].isChecked():
             self.layer_options_list['toggled']['widget'].setEnabled(True)
-            tooltip = tr("All layers are considered as a unique layer. It can be displayed or not.")
+            tooltip = tr(
+                "All layers in this group are considered as a unique layer. This new layer can be displayed "
+                "or not.")
         else:
             self.layer_options_list['toggled']['widget'].setEnabled(False)
             self.layer_options_list['toggled']['widget'].setChecked(False)

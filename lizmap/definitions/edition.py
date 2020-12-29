@@ -120,7 +120,7 @@ class EditionDefinitions(BaseDefinitions):
             'read_only': True,
             'default': layer_provider,
             'header': tr('Provider name'),
-            'tooltip': tr('Provider name, read only configuration.'),
+            'tooltip': tr('Provider name, read only field.'),
             'version': LwcVersions.Lizmap_3_3,
         }
 
