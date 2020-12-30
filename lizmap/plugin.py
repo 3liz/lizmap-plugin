@@ -1493,23 +1493,25 @@ class Lizmap:
             self.dlg.label_drag_drop_form.setEnabled(has_geom)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
-            # For a group, there isn't the toggle option, #298
-            try:
-                # We always disconnect everything
-                self.layer_options_list['groupAsLayer']['widget'].disconnect()
-            except TypeError:
-                pass
-
-            if isinstance(layer, QgsMapLayer):
-                # Always enabled
-                self.layer_options_list['toggled']['widget'].setEnabled(True)
-                tooltip = tr("If the layer is displayed by default")
-                self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
-            else:
-                # It depends of the "Group as layer" checked or not, so it's has a signal
-                self.layer_options_list['groupAsLayer']['widget'].stateChanged.connect(
-                    self.enable_or_not_toggle_checkbox)
-                self.enable_or_not_toggle_checkbox()
+            # For a group, there isn't the toggle option, #298, TEMPORARY DISABLED
+            tooltip = tr("If the layer is displayed by default")
+            self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+            # try:
+            #     # We always disconnect everything
+            #     self.layer_options_list['groupAsLayer']['widget'].disconnect()
+            # except TypeError:
+            #     pass
+            #
+            # if isinstance(layer, QgsMapLayer):
+            #     # Always enabled
+            #     self.layer_options_list['toggled']['widget'].setEnabled(True)
+            #     tooltip = tr("If the layer is displayed by default")
+            #     self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+            # else:
+            #     # It depends of the "Group as layer" checked or not, so it's has a signal
+            #     self.layer_options_list['groupAsLayer']['widget'].stateChanged.connect(
+            #         self.enable_or_not_toggle_checkbox)
+            #     self.enable_or_not_toggle_checkbox()
 
             # Max feature per popup
             self.dlg.label_max_feature_popup.setEnabled(is_vector)
@@ -1539,18 +1541,18 @@ class Lizmap:
 
         self.enable_popup_source_button()
 
-    def enable_or_not_toggle_checkbox(self):
-        """ Only for groups, to determine the state of the "toggled" option. """
-        if self.layer_options_list['groupAsLayer']['widget'].isChecked():
-            self.layer_options_list['toggled']['widget'].setEnabled(True)
-            tooltip = tr(
-                "All layers in this group are considered as a unique layer. This new layer can be displayed "
-                "or not.")
-        else:
-            self.layer_options_list['toggled']['widget'].setEnabled(False)
-            self.layer_options_list['toggled']['widget'].setChecked(False)
-            tooltip = tr("For a group, it depends of layers inside the group")
-        self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+    # def enable_or_not_toggle_checkbox(self):
+    #     """ Only for groups, to determine the state of the "toggled" option. """
+    #     if self.layer_options_list['groupAsLayer']['widget'].isChecked():
+    #         self.layer_options_list['toggled']['widget'].setEnabled(True)
+    #         tooltip = tr(
+    #             "All layers in this group are considered as a unique layer. This new layer can be displayed "
+    #             "or not.")
+    #     else:
+    #         self.layer_options_list['toggled']['widget'].setEnabled(False)
+    #         self.layer_options_list['toggled']['widget'].setChecked(False)
+    #         tooltip = tr("For a group, it depends of layers inside the group")
+    #     self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
 
     def get_item_wms_capability(self, selectedItem) -> Optional[bool]:
         """
