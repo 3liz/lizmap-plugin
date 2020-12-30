@@ -1,5 +1,16 @@
 # CHANGELOG
 
+### 3.4.0 - 30/12/2020
+
+* Server - Re-enable Lizmap expression filtering on server, follow up #321
+* UX - Review tooltip sentence in edition 
+* Fix #323 inverted checkbox in layer edition 
+* CFG - Increase performance if using Lizmap Web Client >= 3.4.0. 
+  You should re-generate the Lizmap configuration for (by clicking the edit button to add these new keys)
+  * layer edition capabilities
+  * layer attribute table
+* Feature - Add new information panel about user server
+
 ### 3.3.2 - 10/12/2020
 
 * Server, fix an issue about layer filtering with access control
