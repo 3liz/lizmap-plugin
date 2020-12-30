@@ -122,7 +122,7 @@ from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
 LOGGER = logging.getLogger(plugin_name())
-DOC_URL = 'https://docs.lizmap.com/next/'
+DOC_URL = 'https://docs.lizmap.com/current/'
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
 
 
@@ -450,6 +450,7 @@ class Lizmap:
             self.dlg.add_server_button,
             self.dlg.remove_server_button,
             self.dlg.edit_server_button,
+            self.dlg.refresh_versions_button,
             self.dlg.label_no_server,
         )
 

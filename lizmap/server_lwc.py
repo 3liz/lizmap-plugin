@@ -15,6 +15,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import Qt, QUrl, QVariant
 from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtNetwork import QNetworkReply
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
@@ -29,12 +30,16 @@ from lizmap.tools import lizmap_user_folder
 
 class ServerManager:
 
-    def __init__(self, parent, table, add_button, remove_button, edit_button, label_no_server):
+    """ Fetch the Lizmap server version for a list of server. """
+
+    def __init__(
+            self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server):
         self.parent = parent
         self.table = table
         self.add_button = add_button
         self.remove_button = remove_button
         self.edit_button = edit_button
+        self.refresh_button = refresh_button
         self.label_no_server = label_no_server
 
         # Network
@@ -53,6 +58,10 @@ class ServerManager:
         self.edit_button.setText('')
         self.edit_button.setToolTip(tr('Edit the selected server in the list'))
 
+        self.refresh_button.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.refresh_button.setText('')
+        self.refresh_button.setToolTip(tr('Refresh all servers'))
+
         # Table
         self.table.setColumnCount(3)
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -64,7 +73,6 @@ class ServerManager:
         # Headers
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
 
         item = QTableWidgetItem(tr('URL'))
         item.setToolTip(tr('URL of the server.'))
@@ -82,11 +90,13 @@ class ServerManager:
         self.add_button.clicked.connect(self.add_row)
         self.remove_button.clicked.connect(self.remove_row)
         self.edit_button.clicked.connect(self.edit_row)
+        self.refresh_button.clicked.connect(self.refresh_table)
 
         # Actions
         self.load_table()
 
     def add_row(self):
+        """ Add a new row in the table, asking the URL to the user. """
         server_url, result = QInputDialog.getText(
             self.parent,
             tr("New Lizmap Server"),
@@ -103,6 +113,7 @@ class ServerManager:
         self.check_display_warning_no_server()
 
     def edit_row(self):
+        """ Edit the selected row in the table. """
         selection = self.table.selectedIndexes()
 
         if len(selection) <= 0:
@@ -124,10 +135,10 @@ class ServerManager:
 
         self._edit_row(row, server_url)
         self.save_table()
-        self.fetch(server_url, row)
         self.check_display_warning_no_server()
 
     def remove_row(self):
+        """ Remove the selected row from the table. """
         selection = self.table.selectedIndexes()
 
         if len(selection) <= 0:
@@ -141,6 +152,7 @@ class ServerManager:
         self.check_display_warning_no_server()
 
     def _edit_row(self, row, server_url):
+        """ Internal function to edit a row. """
         # URL
         cell = QTableWidgetItem()
         cell.setText(server_url)
@@ -161,10 +173,17 @@ class ServerManager:
 
         self.table.clearSelection()
         self.fetch(server_url, row)
-        self.display_action(row, False, 'Wrong URL or the server is unreachable or too old.')
+
+    def refresh_table(self):
+        """ Refresh all rows with the server status. """
+        for row in range(self.table.rowCount()):
+            item = self.table.item(row, 0)
+            url = item.data(Qt.UserRole)
+            self.fetch(url, row)
 
     def fetch(self, url, row):
         """ Fetch the JSON file and call the function when it's finished. """
+        self.display_action(row, False, 'Fetching…')
         self.fetchers[row] = QgsNetworkContentFetcher()
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
 
@@ -176,22 +195,55 @@ class ServerManager:
 
     def request_finished(self, row):
         """ Dispatch the answer to update the GUI. """
-        content = self.fetchers[row].contentAsString()
-        if not content:
-            return
-
-        try:
-            version = json.loads(content)['info']['version']
-        except json.JSONDecodeError:
-            QgsMessageLog.logMessage("The URL for the Lizmap server is not correct.", "Lizmap", Qgis.Critical)
-            return
-
         cell = QTableWidgetItem()
-        cell.setText(version)
+
+        reply = self.fetchers[row].reply()
+
+        if not reply:
+            cell.setText(tr('Error'))
+            self.display_action(row, Qgis.Warning, 'Temporary not available')
+
+        if reply.error() != QNetworkReply.NoError:
+            if reply.error() == QNetworkReply.HostNotFoundError:
+                self.display_action(row, Qgis.Warning, 'Host can not be found. Is-it an intranet server ?')
+            if reply.error() == QNetworkReply.ContentNotFoundError:
+                self.display_action(
+                    row,
+                    Qgis.Critical,
+                    'Not a valid Lizmap URL or this version is already not maintained < 3.2')
+            else:
+                self.display_action(row, Qgis.Critical, reply.errorString())
+            cell.setText(tr('Error'))
+        else:
+
+            content = self.fetchers[row].contentAsString()
+            if not content:
+                self.display_action(row, Qgis.Critical, 'Not a valid Lizmap URL')
+                return
+
+            try:
+                content = json.loads(content)
+            except json.JSONDecodeError:
+                self.display_action(row, Qgis.Critical, 'Not a JSON document.')
+                return
+
+            info = content.get('info')
+            if not info:
+                self.display_action(row, Qgis.Critical, 'No "info" in the JSON document')
+                return
+
+            version = info.get('version')
+            if not info:
+                self.display_action(row, Qgis.Critical, 'No "version" in the JSON document')
+                return
+
+            cell.setText(version)
+            self.update_action_version(version, row)
+
         self.table.setItem(row, 1, cell)
-        self.update_action_version(version, row)
 
     def load_table(self):
+        """ Load the table by reading the user configuration file. """
         user_file = self.user_settings()
         if not os.path.exists(user_file):
             return
@@ -207,7 +259,7 @@ class ServerManager:
         self.check_display_warning_no_server()
 
     def save_table(self):
-        """ Save the table as JSON. """
+        """ Save the table as JSON in the user configuration file. """
         rows = self.table.rowCount()
         data = []
         for row in range(rows):
@@ -224,9 +276,11 @@ class ServerManager:
             json_file.write(json_file_content)
 
     def check_display_warning_no_server(self):
+        """ If we should display or not if there isn't server configured. """
         self.label_no_server.setVisible(self.table.rowCount() == 0)
 
     def update_action_version(self, server_version, row):
+        """ When we know the version, we can check the latest release from LWC with the file in cache. """
         version_file = os.path.join(lizmap_user_folder(), 'released_versions.json')
         if not os.path.exists(version_file):
             return
@@ -249,19 +303,23 @@ class ServerManager:
             if version['branch'] == branch:
                 if not version['maintained']:
                     if i == 0:
-                        messages.append('Warrior ! 👍')
+                        messages.append(tr('A dev version, warrior !') + ' 👍')
                         level = Qgis.Success
                     else:
-                        messages.append(tr('Version not maintained anymore'))
+                        messages.append(tr('Version {version} not maintained anymore').format(version=branch))
                         level = Qgis.Critical
 
                 if version['latest_release_version'] != full_version:
                     messages.append(tr('Not latest bugfix release'))
 
                 self.display_action(row, level, ', '.join(messages))
-                return
+                break
+        else:
+            self.display_action(
+                row, Qgis.Critical, f"Version {branch} has not been detected has a known version.")
 
     def display_action(self, row, level, message):
+        """ Display the action if needed to the user with a color. """
         cell = QTableWidgetItem()
         cell.setText(message)
         cell.setToolTip(message)
@@ -276,8 +334,10 @@ class ServerManager:
 
     @staticmethod
     def released_versions():
+        """ Path to the release file from LWC. """
         return os.path.join(lizmap_user_folder(), 'released_versions.json')
 
     @staticmethod
     def user_settings():
+        """ Path to the user file configuration. """
         return os.path.join(lizmap_user_folder(), 'user_servers.json')

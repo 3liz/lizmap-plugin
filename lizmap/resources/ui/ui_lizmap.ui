@@ -480,6 +480,13 @@ QListWidget::item::selected {
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="refresh_versions_button">
+               <property name="text">
+                <string notr="true">refresh</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer_39">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
