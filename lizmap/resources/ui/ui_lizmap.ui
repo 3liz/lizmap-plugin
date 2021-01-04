@@ -441,6 +441,9 @@ QListWidget::item::selected {
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Read the &lt;a href=&quot;https://docs.lizmap.com/current/en/publish/lizmap_plugin/information.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;documentation&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
+             <property name="openExternalLinks">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
