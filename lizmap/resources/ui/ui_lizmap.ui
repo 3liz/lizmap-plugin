@@ -179,9 +179,12 @@ QListWidget::item::selected {
           </font>
          </property>
          <property name="text">
-          <string>Options with underline need the Lizmap QGIS Server plugin.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Options with underline need the &lt;a href=&quot;https://docs.lizmap.com/current/install/linux.html#qgis-server-plugins&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Lizmap QGIS Server plugin&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="openExternalLinks">
           <bool>true</bool>
          </property>
         </widget>
