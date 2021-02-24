@@ -1954,12 +1954,12 @@ class Lizmap:
             sort_keys=False,
             indent=4
         )
+        json_file_content += '\n'
 
         # Get the project data
         json_file = '{}.cfg'.format(self.project.fileName())
-        cfg_file = open(json_file, 'w')
-        cfg_file.write(json_file_content)
-        cfg_file.close()
+        with open(json_file, 'w') as cfg_file:
+            cfg_file.write(json_file_content)
 
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
         self.clean_project()
