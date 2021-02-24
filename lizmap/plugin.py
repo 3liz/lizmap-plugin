@@ -68,6 +68,10 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+
+if Qgis.QGIS_VERSION_INT >= 31400:
+    from qgis.core import QgsProjectServerValidator
+
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon, QPixmap
@@ -1732,11 +1736,16 @@ class Lizmap:
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
+
+        valid, _ = self.check_project_validity()
+
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         metadata = {
             'lizmap_plugin_version': self.global_options['metadata']['lizmap_plugin_version']['default'],
             'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
         }
+        if valid is not None:
+            metadata['project_valid'] = valid
 
         liz2json = dict()
         liz2json['metadata'] = metadata
@@ -1978,20 +1987,24 @@ class Lizmap:
                 'Lizmap', message, level=Qgis.Warning, duration=30
             )
 
-    def check_project(self):
+    def check_project_validity(self):
         """Project checker about issues that the user might hae when running in LWC."""
-        if Qgis.QGIS_VERSION_INT >= 31400:
-            from qgis.core import QgsProjectServerValidator
-            validator = QgsProjectServerValidator()
-            valid, results = validator.validate(QgsProject.instance())
-            if not valid:
-                message = tr(
-                    'The QGIS project is not valid according to OGC standards. You should check '
-                    'messages in the Project properties -> QGIS Server tab then Test configuration. '
-                    '{} error(s) have been found').format(len(results))
-                self.iface.messageBar().pushMessage(
-                    'Lizmap', message, level=Qgis.Warning, duration=15
-                )
+        if Qgis.QGIS_VERSION_INT < 31400:
+            return None, None
+
+        validator = QgsProjectServerValidator()
+        valid, results = validator.validate(QgsProject.instance())
+
+        if not valid:
+            message = tr(
+                'The QGIS project is not valid according to OGC standards. You should check '
+                'messages in the Project properties -> QGIS Server tab then Test configuration. '
+                '{} error(s) have been found').format(len(results))
+            self.iface.messageBar().pushMessage(
+                'Lizmap', message, level=Qgis.Warning, duration=15
+            )
+
+        return valid, results
 
     def check_global_project_options(self):
         """Checks that the needed options are correctly set : relative path, project saved, etc.
