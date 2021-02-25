@@ -1,6 +1,12 @@
 # CHANGELOG
 
-### 3.4.0 - 30/12/2020
+## 3.4.1 - 2021-02-25
+
+* Fix time manager widgets behavior
+* Add project validity and QGIS desktop version in the metadata section
+* Fix open in web browser external links
+
+## 3.4.0 - 2020-12-30
 
 * Server - Re-enable Lizmap expression filtering on server, follow up #321
 * UX - Review tooltip sentence in edition 
@@ -11,20 +17,20 @@
   * layer attribute table
 * Feature - Add new information panel about user server
 
-### 3.3.2 - 10/12/2020
+## 3.3.2 - 2020-12-10
 
 * Server, fix an issue about layer filtering with access control
 * Make links clickable to open a Lizmap Web Client release
 * Increase the limit of max children features in a parent popup
 * Add layer provider name automatically for the edition tool (LWC >= 3.3.13)
 
-### 3.3.1 - 02/12/2020
+## 3.3.1 - 2020-12-02
 
 * Fix issue when reading the legend
 * Fix issue about the Lizmap version selector
 * Fix reading UTF8 in the metadata.txt
 
-### 3.3.0 - 25/11/2020
+## 3.3.0 - 2020-11-25
 
 * Add support for Lizmap Web Client 3.4 :
   * Add Lizmap as a QGIS Server side plugin to evaluate QGIS Expression from Lizmap Web Client
@@ -61,46 +67,46 @@
   * Disable the "toggled" option for groups
   * Add a version feed to be aware of new versions of Lizmap Web Client
 
-### 3.2.18 - 07/09/2020
+## 3.2.18 - 2020-09-07
 
 * Add missing translations coming from UI files
 * Enable QGIS Popup if QGIS ⩾ 3.10
 * Do not generate the QGIS Popup if the form contains an invalid input widget
 * Fix display of the Drag&Drop form button
 
-### 3.2.17 - 14/08/2020
+## 3.2.17 - 2020-08-14
 
 * Fix and improve the UX when setting up a popup
 
-### 3.2.16 - 28/07/2020
+## 3.2.16 - 2020-07-28
 
 * Fix an issue about copying Drag&Drop from to the maptip
 
-### 3.2.15 - 27/07/2020
+## 3.2.15 - 2020-07-27
 
 * Fix bug when the user set a link on a layer
 * Add a button to fetch the dataUrl in the layer properties and fill the link
 * Add some checks about the layer geometry type
 
-### 3.2.14 - 01/07/2020
+## 3.2.14 - 2020-07-01
 
 * Check project validity when running with QGIS 3.14
 * Change icon for group in the layer tree
 * Review some HIG guidelines
 * Some small code cleanup
 
-### 3.2.13 - 06/05/2020
+## 3.2.13 - 2020-05-06
 
 * Fix bug about Box chart without aggregation
 * Fix bug when removing a layer from the legend and the layer was in the Lizmap configuration too
 * Improve continuous integration
 
-### 3.2.12 - 03/04/2020
+## 3.2.12 - 2020-04-03
 
 * Fix bug about popup QGIS using the drag&drop layout
 * Improve the plugin management for releasing the plugin
 
-### 3.2.11 - 19/03/2020
+## 3.2.11 - 2020-03-19
 
 * Escape characters in tooltips (drag and drop form)
 * Fix horizontal expanding of the layer list
@@ -108,7 +114,7 @@
 * Improve UI for Histogram 2D in Dataviz
 * Improve continuous integration
 
-### 3.2.10 - 09/03/2020
+## 3.2.10 - 2020-03-09
 
 * Conditional display expression for tabs in drag&drop tooltip
 * Improve form validation when a field is required
@@ -118,25 +124,25 @@
 * Fix inverted HStore in valuemap when using drag&drop tooltip
 * Allow double click in table for editing
 
-### 3.2.9 - 03/03/2020
+## 3.2.9 - 2020-03-03
 
 * Work on ValueMap widget
 
-### 3.2.8 - 03/03/2020
+## 3.2.8 - 2020-03-03
 
 * Fix using the plugin with QGIS 3.10
 * Refactoring the code about drag&drop forms layout
 * Move up/down tooltip layers
 * Alternate row colors in all tables
 
-### 3.2.7 - 24/02/2020
+## 3.2.7 - 2020-02-24
 
 * Refactor dataviz to be editable
 * Warn the user if there is an existing tooltip when using drap/drop layout
 * Add a Lizmap Web Client version combobox
 * Use icons in enums when possible
 
-### 3.2.6
+## 3.2.6
 
 * Refactor form filter to be editable
 * Some UX issues with table headers
@@ -144,22 +150,22 @@
 * Display field alias when possible
 * Disable color in tooltip if disabled
 
-### 3.2.5
+## 3.2.5
 
 * Fix Python syntax
 * Refactor Time Manager panel to be editable
 
-### 3.2.4
+## 3.2.4
 
 * Display color in table
 * Re-enable color button
 * Switch to a list to select fields
 
-### 3.2.3
+## 3.2.3
 
 * Fix crash about color button
 
-### 3.2.2:
+## 3.2.2:
 
 * Fix bug about the new form with locate by layer #210
 * Refactor Edition panel to be editable
@@ -167,21 +173,21 @@
 * Refactor Tooltip panel to be editable
 * Fix compulsory field in Filter by login
 
-### 3.2.1
+## 3.2.1
 
 * Remove experimental from 3.2.0
 * Refactor Locate by layer to be editable
 * Refactor Filter by login to be editable
 * Remove Lizmap submenu for help and about
 
-### 3.2.0
+## 3.2.0
 
 * Version experimental
 * Add tooltip about the layer name
 * Add support for editing existing rows in atlas panel
 * Some code cleanup about UI connections
 
-### 3.1.8
+## 3.1.8
 
 * Review button box
 * Add apply and close button
@@ -193,22 +199,22 @@
 * Fix typo
 * Some code cleanup
 
-### 3.1.7
+## 3.1.7
 
 * Fix some tooltips
 * Fix allow empty field X in dataviz
 
-### 3.1.6
+## 3.1.6
 
 * Add a lot of tooltips in forms
 * Fix icon in the menu about logs and form filtering
 * Add icons to plots in combobox
 
-### 3.1.5
+## 3.1.5
 
 * Improve UX when editing layer with a form filter
 
-### 3.1.4
+## 3.1.4
 
 * [Bugfix] In build tooltip from Drag and Drop form, outside fields are not outside tabs
 * [Bugfix] With QgsFieldComboBox use currentField instead of currentText
@@ -223,22 +229,22 @@
 * Remove ghost layer
 * Remove Qt resource file
 
-### 3.1.3
+## 3.1.3
 
 * Remove limitation of two layers in the locate tool
 * Add icons for layers
 * Remove legacy code
 
-### 3.1.2
+## 3.1.2
 
 * Fix adding more than one layer into the edition tool
 * Disable edit triggers in all tables
 
-### 3.1.1
+## 3.1.1
 
 * Fix Python error #153
 
-### 3.1.0
+## 3.1.0
 
 
 * [FEATURE] Improve Lizmap API
@@ -251,20 +257,20 @@
 * Code refactoring
 * Update locales
 
-### 3.0.3
+## 3.0.3
 
 * [FEATURE] Add new tool to configure Form filtering based on db layers
 * automatic fix from PyCharm about PEP8
 * review TAB order in QtDesigner
 
-### 3.0.2
+## 3.0.2
 
 * Update Czech, Finnish, Hungarian, Spanish and Italian locales
 * [Bugfix] dataviz plot aggregation localize list
 * [Bugfix] support wms urls thet have parameters with no =
 * [Bugfix] fix #122 with reversed min and maxscales
 
-### 3.0.1
+## 3.0.1
 
 * [FEATURE] auto add the link from metadataUrl in QGIS
 * [FEATURE] Api: new class to get lizmap JSON config from project
@@ -278,11 +284,11 @@
 * Add Brazilian, Dutch, Hungarian, Norwegian, Romanian, Czech and Slovenian locales
 * Update locales German, French, Italian, Polish, Swedish and Hungarian
 
-### 3.0.0
+## 3.0.0
 
 * First version of lizmap plugin for QGIS 3 created from the version 2.4.1 for QGIS 2
 
-### 2.4.1
+## 2.4.1
 
 * Do not save project from lizmap plugin but let the user do it
 * Fix icons in plugin manager, remove unused imports
@@ -291,7 +297,7 @@
 * Change of default mode of popup source to 'auto'
 * Dataviz - add of a button in Dataviz who permit you to hide parent plot
 
-### 2.4.0
+## 2.4.0
 
 This version add new features which are only usable with upcoming Lizmap Web Client 3.2.*
 
@@ -311,11 +317,11 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 
 
-### 2.3.0
+## 2.3.0
 
 * Interface - Improve look & feel
 
-### 2.2.0
+## 2.2.0
 
 This version add new features which are only usable with upcoming Lizmap Web Client 3.1
 
@@ -333,13 +339,13 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Add an option to restrict access to project for given groups
 * Interface - Reorganize layers options
 
-### 2.1.2
+## 2.1.2
 
 * Add locales: Finnish, Galician
 * Update locales: Portuguese, Russian
 
 
-### 2.1.1
+## 2.1.1
 
 * Add and update locales: English, Spanish, German, French, Russian, Polish, Italian, Portuguese, Greek
 * Menu - Change menu label from LizMap to Lizmap
@@ -347,7 +353,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Layers - Enable WMS checkbox only for WMS layers
 * Remove option to transform groups as legend blocks #57
 
-### 2.1.0
+## 2.1.0
 
 This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
 
@@ -357,7 +363,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
   * Map - New map option to choose info popup container: dock, mini-dock or map
   * Tools - Allow virtual fields in layer fields comboboxes
 
-### 2.0.0
+## 2.0.0
 
 * Add more options to Attribute layer tools ( compatible with Limap Web Client >= 3.0 : QGIS relations support, filter, export, search, selection
 * Add new Tooltip tool (compatible with LWC >= 3.0 )
@@ -370,7 +376,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Handle layers with no geometry to be used for attribute table and edition tools
 * Minor UI improvements
 
-### 1.9.10
+## 1.9.10
 
 * Close Lizmap plugin when a new project is loaded - fixes #35
 * Feature - add option to filter layers and data by authenticated user login (and not only by group as previously)
@@ -379,21 +385,21 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Layers - Option to hide groups checkboxes in legend - funded by CIRAD - Environnements et Sociétés
 * Translation - Add Greek language file thanks to Arnaud Deleurme
 
-### 1.9.9
+## 1.9.9
 
 * [BUGFIX] #22 Ask the user to deactivate Layer name capitalization in QGIS option
 * Improve management of layers option tables such as "Locate by Layers" (remove layers from table if not in the project anymore or if removed during work session, rename layer in the table when renamed from the project)
 * Minor GUI modifications in the Layers tab to improve readibility
 * Add minLength option for Locate by layer
 
-### 1.9.8
+## 1.9.8
 
 * Speed up lizmap start (was bad since embedded layers feature)
 * New feature - hide layer in Legend but displayed in map
 * External baselayer - Add Osm Cyclemap
 * Lizmap external baselayers - add image format option
 
-### 1.9.7
+## 1.9.7
 
 * Baselayers - option to add an empty baselayer with project background color - #25
 * Change default scales list in Map tab (add 10k and 50k)
@@ -409,7 +415,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Configuration file - do not order alphabetically to keep layers order
 * Avoid error when layer has no provider type (e.g. OpenLayers plugin)
 
-### 1.9.6
+## 1.9.6
 
 * Tools - Add "time manager" optional tool to animate vector layers based on date/time attribute
 * Map - add option to hide the project in LizmapWebClient
@@ -417,50 +423,50 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Table widgets - refactor code to retrieve options from json config
 * Baselayers - Add OpenCycleMap, IGN (plan, aerial, scans), Bing Maps
 
-### 1.9.5.1
+## 1.9.5.1
 
 * Locate by layer - debug : Do not save filterFieldName if not set ( "--" )
 
-### 1.9.5
+## 1.9.5
 
 * Locate by layer - add optional group field to create parent category filter
 * New option : set the initial map extent at map loading
 * Debug: remove old sip api translation methods
 * Translation : corrections for english translation (by @ewsterrenburg )
 
-### 1.9.4.1
+## 1.9.4.1
 
 * Debug filterByLogin configuration reading
 
-### 1.9.4
+## 1.9.4
 
 * Remove python module simplejson dependancy (replaced by module json)
 * New tool : filter layer data based on authenticated user
 
-### 1.9.3
+## 1.9.3
 
 * Minor fixes after new SIP api migration
 
-### 1.9.2
+## 1.9.2
 
 * Complete migration to QGIS 2.0. The plugin is not compatible with QGIS version < 2.0 anymore
 * Remove message box for Linux users when lftp not installed
 * Help button and menu item now lead to an external web help page
 
-### 1.9.1
+## 1.9.1
 
 * Save the FTP remote dir per each QGIS project, not globally
 * Force toggle between Single Tile and Server cache
 * Debug inactive dialog tab when no FTP sync possibility: deactivate FTP, not Tools
 * Italian translation update
 
-### 1.9.0
+## 1.9.0
 
 * New feature : edition tool which replaces the annotation tool.
 * Update translations
 * Design: add scroll areas to allow users to resize the dialog for small screens
 
-### 1.8.0
+## 1.8.0
 
 * New tools : annotations, locate by layer, simple print, address search, zoom history, measure, etc.
 * New layer option - Configure Client browser Cache expiration
@@ -471,59 +477,59 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Change needed projection 4 external layers: 900913(deprecated)->3857
 * Bug fix : error handling when using lizmap on windows with multiple drives
 
-### 1.7.2
+## 1.7.2
 
 * Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder. Can be used to have a Data folder at the same level of the repositories.
 * Bug Fix: Fix the toggled option for layers wich was always on
 * Bug Fix: Winscp - a password can be empty if the winScp session field is filled.
 
-### 1.7.1
+## 1.7.1
 
 * Improvement: Allow the user to choose a WinSCP pre-saved session. Can be used to deal with TLS connections.
 * Improvement: Allow the user to choose the winSCP mirror criteria : between 'size' and 'time'
 * Improvement: LFTP (linux only) automatically accepts SSL certificate
 
-### 1.7.0
+## 1.7.0
 
 * New feature: Popup - add a checkbox to enable/disable popup for each layer
 * New feature: Ability to write templates for popup
 * Bug fix:  Project properties - checks the BBOX is really set in the OWS tab.
 * Bug fix: FTP windows sync - protect the winscp path with double quote when running the sync
 
-### 1.6.1
+## 1.6.1
 
 * Bug fix : correctlu use layer.setAbstract instead of setTitle to set back the abstract
 
-### 1.6.0
+## 1.6.0
 
 * New : addition of more cache parameters : cache expiration and metatile
 * Enhancement : Heavy refactoring of the code ("data driven") to easy addition of new layers properties.
 
-### 1.5.0
+## 1.5.0
 
 * New : translation into Italian, thanks to Salvatore Larosa (@lrssvt)
 * Debug : Groups as layer was not remembered since v1.4.0
 
-### 1.4.0
+## 1.4.0
 
 * New : check that the project title is correctly defined in the project properties dialog, tab OWS
 * Improvement : Interface - automatic widgets resizing thanks to Salvatore Larosa @lrssvt
 
-### 1.3.0
+## 1.3.0
 
 * New feature : Choose the image type (png, png 8bit or jpeg) for each layer and not globally anymore
 
-### 1.2.2
+## 1.2.2
 
 * Bug fix : type which prevented from synchronizing over FTP
 
-### 1.2.1
+## 1.2.1
 
 * New : Get layer title and abstract from Qgis layer properties (for qgis >= 1.8)
 * Refactoring : method to populate the plugin layer tree
 * Bug fix : add missing i18n *.qm translation files
 
-### 1.2.0
+## 1.2.0
 
 * New : support for plugin internationalization : english and french languages available
 * Modify : integrate Lizmap in the Qgis Web menu
@@ -531,14 +537,14 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * Modify : move help and about dialogs to the plugin Menu
 * Bug fix : error when the sync button is pressed and no sync was running
 
-### 1.1.1
+## 1.1.1
 
 * bug correction : closing window and reopening it led to plugin actions launched several times (e.g. save button)
 * check if lizmap window is hidden and warn the user (which put lizmap window in the front)
 * add a question to save lizmap configuration when closing the window
 * clean the json export of lizmap project configuration (e.g. escaping double quotes) : use of simplejson.dumps() method
 
-### 1.1
+## 1.1
 
 * addition of Google and OpenStreetMap public baselayers option in the "Map" tab
 * ignore non-geometric vector layers
