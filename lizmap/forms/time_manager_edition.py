@@ -95,14 +95,18 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         return value
 
     def set_visible_min_max(self):
+        """ Some widgets are hidden when the layer is stored in a database.
+
+        For PostgreSQL, GPKG and Sqlite, we don't display these widgets.
+        """
         layer = self.layer.currentLayer()
-        hidden = is_database_layer(layer)
-        self.label_min_value.setVisible(hidden)
-        self.label_max_value.setVisible(hidden)
-        self.set_min_value.setVisible(hidden)
-        self.set_max_value.setVisible(hidden)
-        self.edit_min_value.setVisible(hidden)
-        self.edit_max_value.setVisible(hidden)
+        is_file_based = not is_database_layer(layer)
+        self.label_min_value.setVisible(is_file_based)
+        self.label_max_value.setVisible(is_file_based)
+        self.set_min_value.setVisible(is_file_based)
+        self.set_max_value.setVisible(is_file_based)
+        self.edit_min_value.setVisible(is_file_based)
+        self.edit_max_value.setVisible(is_file_based)
         self.edit_min_value.setText('')
         self.edit_max_value.setText('')
 
