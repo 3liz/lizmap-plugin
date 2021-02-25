@@ -1741,6 +1741,7 @@ class Lizmap:
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         metadata = {
+            'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version': self.global_options['metadata']['lizmap_plugin_version']['default'],
             'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
         }
