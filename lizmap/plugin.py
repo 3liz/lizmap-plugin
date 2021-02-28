@@ -799,6 +799,9 @@ class Lizmap:
         self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
 
+        # IGN
+        self.global_options['ignKey']['widget'].textChanged.connect(self.check_ign_french_free_key)
+
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
@@ -818,6 +821,21 @@ class Lizmap:
         """Remove the plugin menu item and icon."""
         self.iface.databaseMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
+
+    def check_ign_french_free_key(self):
+        """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
+        key = self.global_options['ignKey']['widget'].text()
+        if key in ['choisirgeoportail', 'pratique']:
+            self.global_options['ignTerrain']['widget'].setEnabled(False)
+            self.global_options['ignTerrain']['widget'].setChecked(False)
+        else:
+            self.global_options['ignTerrain']['widget'].setEnabled(True)
+
+        if key in ['pratique']:
+            self.global_options['ignCadastral']['widget'].setEnabled(False)
+            self.global_options['ignCadastral']['widget'].setChecked(False)
+        else:
+            self.global_options['ignCadastral']['widget'].setEnabled(True)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
@@ -1022,6 +1040,7 @@ class Lizmap:
         for key, item in self.layers_table.items():
             self.load_config_into_table_widget(key)
 
+        self.check_ign_french_free_key()
         LOGGER.info('CFG file has been loaded')
 
     def set_previous_qgis_version(self, qgis_version):
