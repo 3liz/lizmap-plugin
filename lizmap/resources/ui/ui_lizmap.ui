@@ -486,6 +486,20 @@ QListWidget::item::selected {
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="move_up_server_button">
+               <property name="text">
+                <string notr="true">up</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="move_down_server_button">
+               <property name="text">
+                <string notr="true">down</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="refresh_versions_button">
                <property name="text">
                 <string notr="true">refresh</string>

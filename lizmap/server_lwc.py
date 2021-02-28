@@ -33,13 +33,17 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server):
+            self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server,
+            up_button, down_button
+    ):
         self.parent = parent
         self.table = table
         self.add_button = add_button
         self.remove_button = remove_button
         self.edit_button = edit_button
         self.refresh_button = refresh_button
+        self.up_button = up_button
+        self.down_button = down_button
         self.label_no_server = label_no_server
 
         # Network
@@ -61,6 +65,14 @@ class ServerManager:
         self.refresh_button.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.refresh_button.setText('')
         self.refresh_button.setToolTip(tr('Refresh all servers'))
+
+        self.up_button.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
+        self.up_button.setText('')
+        self.up_button.setToolTip(tr('Move the server up'))
+
+        self.down_button.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
+        self.down_button.setText('')
+        self.down_button.setToolTip(tr('Move the server down'))
 
         # Table
         self.table.setColumnCount(3)
@@ -91,6 +103,8 @@ class ServerManager:
         self.remove_button.clicked.connect(self.remove_row)
         self.edit_button.clicked.connect(self.edit_row)
         self.refresh_button.clicked.connect(self.refresh_table)
+        self.up_button.clicked.connect(self.move_server_up)
+        self.down_button.clicked.connect(self.move_server_down)
 
         # Actions
         self.load_table()
@@ -173,6 +187,30 @@ class ServerManager:
 
         self.table.clearSelection()
         self.fetch(server_url, row)
+
+    def move_server_up(self):
+        """Move the selected server up."""
+        row = self.table.currentRow()
+        if row <= 0:
+            return
+        column = self.table.currentColumn()
+        self.table.insertRow(row - 1)
+        for i in range(self.table.columnCount()):
+            self.table.setItem(row - 1, i, self.table.takeItem(row + 1, i))
+            self.table.setCurrentCell(row - 1, column)
+        self.table.removeRow(row + 1)
+
+    def move_server_down(self):
+        """Move the selected server down."""
+        row = self.table.currentRow()
+        if row == self.table.rowCount() - 1 or row < 0:
+            return
+        column = self.table.currentColumn()
+        self.table.insertRow(row + 2)
+        for i in range(self.table.columnCount()):
+            self.table.setItem(row + 2, i, self.table.takeItem(row, i))
+            self.table.setCurrentCell(row + 2, column)
+        self.table.removeRow(row)
 
     def refresh_table(self):
         """ Refresh all rows with the server status. """

@@ -456,6 +456,8 @@ class Lizmap:
             self.dlg.edit_server_button,
             self.dlg.refresh_versions_button,
             self.dlg.label_no_server,
+            self.dlg.move_up_server_button,
+            self.dlg.move_down_server_button,
         )
 
         # tables of layers
