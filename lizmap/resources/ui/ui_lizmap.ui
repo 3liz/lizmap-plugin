@@ -430,6 +430,41 @@ QListWidget::item::selected {
             </widget>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QLabel" name="label_48">
+               <property name="text">
+                <string>Current QGIS Desktop version</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_current_qgis">
+               <property name="text">
+                <string notr="true">SET IN PYTHON CODE</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_53">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check that your QGIS Server is running the &lt;span style=&quot; font-weight:600;&quot;&gt;same&lt;/span&gt; version as this QGIS Desktop.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_qgis_different_version">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;This project has been saved previously with {previous_version} which is different than {current_version}. Please check the version on QGIS server.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="label_4">
              <property name="text">
               <string>You can add our Lizmap server URL to keep track of the its version number.</string>

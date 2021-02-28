@@ -108,6 +108,20 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
         raise NotImplementedError
 
 
+def format_qgis_version(qgis_version) -> tuple:
+    """ Split a QGIS int version number into major, minor, bugfix.
+
+     If the minor version is a dev version, the next stable minor version is set.
+     """
+    qgis_version = str(qgis_version)
+    major = int(qgis_version[0])
+    minor = int(qgis_version[1:3])
+    if minor % 2:
+        minor += 1
+    bug_fix = int(qgis_version[3:])
+    return major, minor, bug_fix
+
+
 def lizmap_user_folder():
     """ Get the Lizmap user folder.
 
