@@ -5,7 +5,7 @@ import unittest
 from qgis.core import QgsVectorLayer
 
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
-from lizmap.tools import is_database_layer, format_qgis_version
+from lizmap.tools import format_qgis_version, is_database_layer
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

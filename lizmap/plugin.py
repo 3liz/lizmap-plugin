@@ -121,7 +121,12 @@ from lizmap.qgis_plugin_tools.tools.version import (
 )
 from lizmap.qt_style_sheets import NEW_FEATURE, STYLESHEET
 from lizmap.server_lwc import ServerManager
-from lizmap.tools import get_layer_wms_parameters, layer_property, format_qgis_version
+from lizmap.tools import (
+    format_qgis_version,
+    get_layer_wms_parameters,
+    layer_property,
+    lizmap_user_folder,
+)
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
@@ -461,7 +466,10 @@ class Lizmap:
         )
 
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
-        self.dlg.label_current_qgis.setText('<b>{}.{}</b>'.format(current[0], current[1]))
+        current = '{}.{}'.format(current[0], current[1])
+        self.dlg.label_current_qgis.setText('<b>{}</b>'.format(current))
+        text = self.dlg.qgis_and_lwc_versions_issue.text()
+        self.dlg.qgis_and_lwc_versions_issue.setText(text.format(version=current))
 
         # tables of layers
         # Todo Lizmap 3.4, remove dict init here
@@ -620,6 +628,28 @@ class Lizmap:
                 manager.set_lwc_version(current_version)
 
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+
+        # Compare the LWC version with the current QGIS Desktop version and the release JSON file
+        version_file = os.path.join(lizmap_user_folder(), 'released_versions.json')
+        if not os.path.exists(version_file):
+            return
+
+        with open(version_file, 'r') as json_file:
+            json_content = json.loads(json_file.read())
+
+        for lzm_version in json_content:
+            if lzm_version['branch'] != current_version.value:
+                continue
+
+            qgis_min = lzm_version.get('qgis_min_version_recommended')
+            qgis_max = lzm_version.get('qgis_max_version_recommended')
+            if not (qgis_min or qgis_max):
+                break
+
+            if qgis_min <= Qgis.QGIS_VERSION_INT < qgis_max:
+                self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
+            else:
+                self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -1006,7 +1036,7 @@ class Lizmap:
             text = text.format(previous_version=previous, current_version=current)
             self.dlg.label_qgis_different_version.setText(text)
             LOGGER.warning(
-                'New QGIS version detected from the Lizmap CFG file. You should check QGIS Server version as'
+                'New QGIS version detected from the Lizmap CFG file. You should check QGIS Server version as '
                 'well.')
         else:
             self.dlg.label_qgis_different_version.setVisible(False)

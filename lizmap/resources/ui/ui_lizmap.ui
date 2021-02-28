@@ -383,6 +383,16 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
+            <widget class="QLabel" name="qgis_and_lwc_versions_issue">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;There is some known issues using this version of Lizmap Web Client and this QGIS Desktop and QGIS Server {version}. &lt;/span&gt;Check the &lt;a href=&quot;https://github.com/3liz/lizmap-web-client/wiki/Versions&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;version compatibility.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
