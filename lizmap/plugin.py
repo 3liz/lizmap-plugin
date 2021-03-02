@@ -576,6 +576,7 @@ class Lizmap:
         self.isok = None
         self.embeddedGroups = None
         self.myDic = None
+        self.help_action = None
 
     def populate_lwc_combo(self):
         """ Fill the LWC selector about all versions. """
@@ -654,13 +655,17 @@ class Lizmap:
     # noinspection PyPep8Naming
     def initGui(self):
         """Create action that will start plugin configuration"""
-        self.action = QAction(
-            QIcon(resources_path('icons', 'icon.png')),
-            'Lizmap', self.iface.mainWindow())
+        icon = QIcon(resources_path('icons', 'icon.png'))
+        self.action = QAction(icon, 'Lizmap', self.iface.mainWindow())
 
         # connect the action to the run method
         # noinspection PyUnresolvedReferences
         self.action.triggered.connect(self.run)
+
+        # Open the online help
+        self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
+        self.iface.pluginHelpMenu().addAction(self.help_action)
+        self.help_action.triggered.connect(self.show_help)
 
         # connect Lizmap signals and functions
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
@@ -821,6 +826,10 @@ class Lizmap:
         """Remove the plugin menu item and icon."""
         self.iface.databaseMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
+
+        if self.help_action:
+            self.iface.pluginHelpMenu().removeAction(self.help_action)
+            del self.help_action
 
     def check_ign_french_free_key(self):
         """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
