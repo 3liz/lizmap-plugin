@@ -11,7 +11,7 @@ version=master
 changelog=changelog
 tags=online,server,web,webgis,webservice,webmapping,mobile,publication,wms,wfs,wps,internet,cloud,dashboard
 
-homepage=https://docs.lizmap.com
+homepage=https://github.com/3liz/lizmap-web-client/
 tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
 

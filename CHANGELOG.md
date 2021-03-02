@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 3.4.2 - 2021-03-02
+
+* Disable some French IGN layers if some API keys are provided
+* Add a warning according to :
+  * the QGIS Desktop version and LWC target version if needed
+  * the previous QGIS Desktop version which was used and ask to check QGIS Server if necessary
+* Add a button to have the online help from the QGIS native help menu
+
 ## 3.4.1 - 2021-02-25
 
 * Fix time manager widgets behavior
