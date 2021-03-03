@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.4.3 - 2021-03-03
+
+* Fix loading the plugin on QGIS < 3.10
+
 ## 3.4.2 - 2021-03-02
 
 * Disable some French IGN layers if some API keys are provided
