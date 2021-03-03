@@ -663,9 +663,10 @@ class Lizmap:
         self.action.triggered.connect(self.run)
 
         # Open the online help
-        self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
-        self.iface.pluginHelpMenu().addAction(self.help_action)
-        self.help_action.triggered.connect(self.show_help)
+        if Qgis.QGIS_VERSION_INT >= 31000:
+            self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
+            self.iface.pluginHelpMenu().addAction(self.help_action)
+            self.help_action.triggered.connect(self.show_help)
 
         # connect Lizmap signals and functions
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
@@ -827,7 +828,7 @@ class Lizmap:
         self.iface.databaseMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
 
-        if self.help_action:
+        if Qgis.QGIS_VERSION_INT >= 31000 and self.help_action:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
 
