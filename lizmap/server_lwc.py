@@ -347,8 +347,14 @@ class ServerManager:
                         messages.append(tr('Version {version} not maintained anymore').format(version=branch))
                         level = Qgis.Critical
 
+                bugfix = int(split_version[2].split('-')[0])
+                latest_bugfix = int(version['latest_release_version'].split('.')[2])
                 if version['latest_release_version'] != full_version:
-                    messages.append(tr('Not latest bugfix release'))
+                    if bugfix > latest_bugfix:
+                        messages.append(tr('Higher than a public release') + ' 👍')
+
+                    elif bugfix < latest_bugfix:
+                        messages.append(tr('Not latest bugfix release'))
 
                 self.display_action(row, level, ', '.join(messages))
                 break
