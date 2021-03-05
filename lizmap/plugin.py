@@ -941,6 +941,8 @@ class Lizmap:
                     qgis_version = meta.get('qgis_desktop_version')
                     if qgis_version:
                         self.set_previous_qgis_version(qgis_version)
+                    else:
+                        self.dlg.label_qgis_different_version.setVisible(False)
 
                 json_options = sjson['options']
                 for key in self.layers_table.keys():
