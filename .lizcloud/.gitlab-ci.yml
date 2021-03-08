@@ -16,7 +16,7 @@ build:infrav3:
   only:
     refs:
       - tags
-      - dev
+      - master
   tags:
     - infrav3
 
@@ -31,7 +31,7 @@ deploy:infrav3:
   only:
     refs:
       - tags
-      - dev
+      - master
   tags:
     - infrav3
 
