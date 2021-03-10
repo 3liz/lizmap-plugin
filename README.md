@@ -68,8 +68,11 @@ If it's from a previous GitHub repository:
 
 Lizmap is also a QGIS Server plugin.
 
+Starting from Lizmap 3.6, the plugin is required.
+
+* lizmap/server.json
 * SERVICE=LIZMAP
-    * REQUEST=GetServerSettings
+    * ~REQUEST=GetServerSettings~ deprecated for the JSON URL above
     * REQUEST=GetSubsetString
       * LAYER=
       * LIZMAP_USER_GROUPS=

@@ -81,6 +81,7 @@ jobs:
           -e PIP_CACHE_DIR=/.cache
           -w /src/test/server
           -e PYTEST_ADDOPTS=""
+          -e QGIS_SERVER_LIZMAP_REVEAL_SETTINGS=TRUE
           -v ${GITHUB_WORKSPACE}:/src
           -v ${GITHUB_WORKSPACE}/.local:/.local
           3liz/qgis-platform:3.10
