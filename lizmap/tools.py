@@ -152,7 +152,7 @@ def current_git_hash() -> str:
     )
     hash_number = git_show.communicate()[0].partition('\n')[0]
     if hash_number == '':
-        hash_number = None
+        hash_number = 'unknown'
     return hash_number
 
 
@@ -169,5 +169,8 @@ def next_git_tag():
         encoding='utf8'
     )
     tag = git_show.communicate()[0].partition('\n')[0]
+    if not tag:
+        return 'next'
     versions = tag.split('.')
-    return '{}.{}.{}-pre'.format(versions[0], versions[1], int(versions[2]) + 1)
+    text = '{}.{}.{}-pre'.format(versions[0], versions[1], int(versions[2]) + 1)
+    return text
