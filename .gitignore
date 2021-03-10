@@ -8,10 +8,14 @@
 
 lizmap.cfg
 
+# IDE
 .idea/
 .vscode/
 
 *.egg-info
+
+# Python
+.venv/
 
 build/
 build2/

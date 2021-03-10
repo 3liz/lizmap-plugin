@@ -45,6 +45,7 @@
 """
 
 import os
+import subprocess
 import urllib.parse
 
 from os.path import abspath, join
@@ -122,15 +123,12 @@ def format_qgis_version(qgis_version) -> tuple:
     return major, minor, bug_fix
 
 
-def lizmap_user_folder():
+def lizmap_user_folder() -> str:
     """ Get the Lizmap user folder.
 
     If the folder does not exist, it will create it.
 
     On Linux: .local/share/QGIS/QGIS3/profiles/default/Lizmap
-
-    :rtype: str
-    :return: path
     """
     path = abspath(join(QgsApplication.qgisSettingsDirPath(), 'Lizmap'))
 
@@ -138,3 +136,38 @@ def lizmap_user_folder():
         QDir().mkdir(path)
 
     return path
+
+
+def current_git_hash() -> str:
+    """ Retrieve the current git hash number of the git repo (first 6 digit). """
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+    git_show = subprocess.Popen(
+        'git rev-parse --short=6 HEAD',
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+        cwd=repo_dir,
+        universal_newlines=True,
+        encoding='utf8'
+    )
+    hash_number = git_show.communicate()[0].partition('\n')[0]
+    if hash_number == '':
+        hash_number = None
+    return hash_number
+
+
+def next_git_tag():
+    """ Using Git command, trying to guess the next tag. """
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+    git_show = subprocess.Popen(
+        'git describe --tags $(git rev-list --tags --max-count=1)',
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+        cwd=repo_dir,
+        universal_newlines=True,
+        encoding='utf8'
+    )
+    tag = git_show.communicate()[0].partition('\n')[0]
+    versions = tag.split('.')
+    return '{}.{}.{}-pre'.format(versions[0], versions[1], int(versions[2]) + 1)

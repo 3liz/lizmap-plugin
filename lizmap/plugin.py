@@ -122,10 +122,12 @@ from lizmap.qgis_plugin_tools.tools.version import (
 from lizmap.qt_style_sheets import NEW_FEATURE, STYLESHEET
 from lizmap.server_lwc import ServerManager
 from lizmap.tools import (
+    current_git_hash,
     format_qgis_version,
     get_layer_wms_parameters,
     layer_property,
     lizmap_user_folder,
+    next_git_tag,
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
@@ -158,7 +160,8 @@ class Lizmap:
         self.version = version()
         self.is_dev_version = self.version in ['master', 'dev'] or 'beta' in self.version
         if self.is_dev_version:
-            self.dlg.setWindowTitle('Lizmap branch {}'.format(self.version))
+            self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
+                self.version, current_git_hash(), next_git_tag()))
             text = self.dlg.label_dev_version.text().format(self.version)
             self.dlg.label_dev_version.setText(text)
         else:
