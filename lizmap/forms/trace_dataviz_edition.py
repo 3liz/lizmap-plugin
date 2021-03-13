@@ -12,7 +12,6 @@ from lizmap.qgis_plugin_tools.tools.resources import load_ui
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-__revision__ = '$Format:%H$'
 
 
 CLASS = load_ui('ui_trace.ui')

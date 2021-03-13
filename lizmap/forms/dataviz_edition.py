@@ -28,7 +28,6 @@ from lizmap.qt_style_sheets import NEW_FEATURE
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-__revision__ = '$Format:%H$'
 
 
 CLASS = load_ui('ui_form_dataviz.ui')
