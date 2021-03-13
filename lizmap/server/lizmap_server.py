@@ -4,13 +4,13 @@ __email__ = 'info@3liz.org'
 
 import os
 
-from qgis.core import Qgis, QgsMessageLog
 from qgis.server import QgsServerInterface
 
 from .expression_service import ExpressionService
 from .lizmap_accesscontrol import LizmapAccessControlFilter
 from .lizmap_filter import LizmapFilter
 from .lizmap_service import LizmapService
+from .logging import Logger
 
 
 class LizmapServer:
@@ -19,7 +19,8 @@ class LizmapServer:
 
     def __init__(self, server_iface: 'QgsServerInterface') -> None:
         self.server_iface = server_iface
-        QgsMessageLog.logMessage('SUCCESS - init', 'Lizmap Server', Qgis.Info)
+        self.logger = Logger()
+        self.logger.info('Init server')
 
         # debug
         debug = os.getenv('QGIS_SERVER_LIZMAP_DEBUG', '').lower() in ('1', 'yes', 'y', 'true')
@@ -30,19 +31,19 @@ class LizmapServer:
             reg.registerService(ExpressionService(debug=debug))
             reg.registerService(LizmapService(self.server_iface, debug=debug))
         except Exception as e:
-            QgsMessageLog.logMessage('Error loading Service Lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
+            self.logger.critical('Error loading Service Lizmap : {}'.format(e))
             raise
 
-        # Add filter
+        # Register filter
         try:
             server_iface.registerFilter(LizmapFilter(self.server_iface), 50)
         except Exception as e:
-            QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
+            self.logger.critical('Error loading filter lizmap : {}'.format(e))
             raise
 
-        # Add Access Control
+        # Register access control
         try:
             server_iface.registerAccessControl(LizmapAccessControlFilter(self.server_iface), 100)
         except Exception as e:
-            QgsMessageLog.logMessage('Error loading filter lizmap : {}'.format(e), 'lizmap', Qgis.Critical)
+            self.logger.critical('Error loading access control : {}'.format(e))
             raise
