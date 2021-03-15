@@ -10,7 +10,7 @@ from os.path import dirname, join
 from typing import Dict
 
 from osgeo import gdal
-from qgis.core import Qgis, QgsMessageLog, QgsProject
+from qgis.core import Qgis, QgsProject
 from qgis.server import (
     QgsServerInterface,
     QgsServerRequest,
@@ -19,6 +19,7 @@ from qgis.server import (
 )
 
 from .core import ServiceError, write_json_response
+from .logging import Logger
 
 
 class LizmapServiceError(ServiceError):
@@ -33,6 +34,7 @@ class LizmapService(QgsService):
         super().__init__()
         self.server_iface = server_iface
         self.debugMode = debug
+        self.logger = Logger()
 
     # QgsService inherited
 
@@ -82,7 +84,7 @@ class LizmapService(QgsService):
         except LizmapServiceError as err:
             err.formatResponse(response)
         except Exception:
-            QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
+            self.logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
             err = LizmapServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
@@ -124,11 +126,9 @@ class LizmapService(QgsService):
         except UnicodeDecodeError:
             # Issue LWC https://github.com/3liz/lizmap-web-client/issues/1908
             # Maybe a locale issue ?
-            QgsMessageLog.logMessage((
+            self.logger.critical(
                 "Error, an UnicodeDecodeError occurred while reading the metadata.txt. Is the locale "
-                "correctly set on the server ?"),
-                "lizmap",
-                Qgis.Critical)
+                "correctly set on the server ?")
             version = 'NULL'
         else:
             version = config["general"]["version"]
