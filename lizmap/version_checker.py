@@ -41,6 +41,7 @@ class VersionChecker:
         self.update_lwc_selector(released_versions)
 
         # Cache the file
+        content += '\n'
         folder = lizmap_user_folder()
         with open(os.path.join(folder, "released_versions.json"), "w") as output:
             output.write(content)

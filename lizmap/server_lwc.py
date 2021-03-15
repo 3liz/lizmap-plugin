@@ -309,6 +309,7 @@ class ServerManager:
             sort_keys=False,
             indent=4
         )
+        json_file_content += '\n'
 
         with open(self.user_settings(), 'w') as json_file:
             json_file.write(json_file_content)
