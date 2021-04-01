@@ -62,7 +62,9 @@ class AttributeTableDefinitions(BaseDefinitions):
             'type': InputType.CheckBox,
             'header': tr('Custom configuration'),
             'default': layer_has_custom_attribute_table,
-            'tooltip': tr('If the attribute table has a custom order. Read only field.'),
+            'tooltip': tr(
+                'Read only field. If the attribute table has a custom order and/or some fields are hidden. '
+                'This configuration is in the attribute table, not in the Layer Properties.'),
             'read_only': True,
         }
 

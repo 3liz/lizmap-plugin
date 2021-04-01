@@ -101,6 +101,11 @@ class BaseEditionDialog(QDialog):
                     if layer_config['type'] == InputType.Text:
                         widget.setReadOnly(True)
                     elif layer_config['type'] == InputType.CheckBox:
+                        # Some UX issues #338
+                        # The disabled is not possible somehow ?
+                        # The tooltip is not showing
+                        widget.setText(tr('Read only, check the tooltip on the label'))
+                        widget.setStyleSheet("font: italic;")
                         widget.setAttribute(Qt.WA_TransparentForMouseEvents)
                         widget.setFocusPolicy(Qt.NoFocus)
 
