@@ -77,3 +77,6 @@ class AttributeTableDefinitions(BaseDefinitions):
 
     def key(self) -> str:
         return 'attributeLayers'
+
+    def help(self) -> str:
+        return 'publish/lizmap_plugin/attribute_table.html'

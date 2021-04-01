@@ -35,6 +35,10 @@ class BaseDefinitions:
         raise NotImplementedError
 
     @property
+    def help(self) -> str:
+        raise NotImplementedError
+
+    @property
     def use_single_row(self) -> bool:
         return self._use_single_row
 

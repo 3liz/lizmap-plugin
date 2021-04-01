@@ -313,3 +313,6 @@ class DatavizDefinitions(BaseDefinitions):
 
     def key(self) -> str:
         return 'datavizLayers'
+
+    def help(self) -> str:
+        return 'publish/lizmap_plugin/dataviz.html'

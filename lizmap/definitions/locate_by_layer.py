@@ -62,3 +62,6 @@ class LocateByLayerDefinitions(BaseDefinitions):
 
     def key(self) -> str:
         return 'locateByLayer'
+
+    def help(self) -> str:
+        return 'publish/lizmap_plugin/locate_by_layer.html'

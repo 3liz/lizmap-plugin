@@ -6,13 +6,17 @@ import re
 from collections import OrderedDict
 
 from qgis.core import QgsProject, QgsSettings
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtCore import QLocale, Qt, QUrl
+from qgis.PyQt.QtGui import QColor, QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QPlainTextEdit
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
-from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.definitions import (
+    DOC_URL,
+    ONLINE_HELP_LANGUAGES,
+    LwcVersions,
+)
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE
 
@@ -34,6 +38,10 @@ class BaseEditionDialog(QDialog):
         self.lwc_versions[LwcVersions.Lizmap_3_4] = []
 
     def setup_ui(self):
+        self.button_box.button(QDialogButtonBox.Help).setToolTip(
+            tr('Open the online documentation for this feature.'))
+
+        self.button_box.button(QDialogButtonBox.Help).clicked.connect(self.open_help)
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.error.setVisible(False)
@@ -104,6 +112,17 @@ class BaseEditionDialog(QDialog):
                     label.setVisible(False)
 
         self.version_lwc()
+
+    def open_help(self):
+        """ Open the online documentation for the panel. """
+        locale = QgsSettings().value("locale/userLocale", QLocale().name())
+        locale = locale[0:2]
+
+        if locale not in ONLINE_HELP_LANGUAGES:
+            locale = 'en'
+
+        url = '{url}/{lang}/{page}'.format(url=DOC_URL, lang=locale, page=self.config.help())
+        QDesktopServices.openUrl(QUrl(url))
 
     def version_lwc(self):
         current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)

@@ -19,3 +19,9 @@ class LwcVersions(Enum):
 @unique
 class LayerProperties(Enum):
     DataUrl = 'DataUrl'
+
+
+DOMAIN = 'https://docs.lizmap.com'
+VERSION = 'current'
+DOC_URL = '{domain}/{version}/'.format(domain=DOMAIN, version=VERSION)
+ONLINE_HELP_LANGUAGES = ('en', 'es', 'it', 'pt', 'fi', 'fr')

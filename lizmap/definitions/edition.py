@@ -132,3 +132,6 @@ class EditionDefinitions(BaseDefinitions):
 
     def key(self) -> str:
         return 'editionLayers'
+
+    def help(self) -> str:
+        return 'publish/lizmap_plugin/edition.html'

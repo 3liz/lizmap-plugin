@@ -87,7 +87,12 @@ from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
-from lizmap.definitions.definitions import LayerProperties, LwcVersions
+from lizmap.definitions.definitions import (
+    DOC_URL,
+    ONLINE_HELP_LANGUAGES,
+    LayerProperties,
+    LwcVersions,
+)
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
@@ -133,7 +138,6 @@ from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
 LOGGER = logging.getLogger(plugin_name())
-DOC_URL = 'https://docs.lizmap.com/current/'
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
 
 
@@ -871,13 +875,13 @@ class Lizmap:
 
     def show_help(self):
         """Opens the html help file content with default browser."""
-        if self.locale in ('en', 'es', 'it', 'pt', 'fi', 'fr'):
-            local_help_url = '{url}{lang}/'.format(url=DOC_URL, lang=self.locale)
+        if self.locale in ONLINE_HELP_LANGUAGES:
+            locale = self.locale
         else:
-            local_help_url = (
-                'https://translate.google.fr/translate?'
-                'sl=fr&tl={lang}&js=n&prev=_t&hl=fr&ie=UTF-8&eotf=1&u={url}').format(lang=self.locale, url=DOC_URL)
-        QDesktopServices.openUrl(QUrl(local_help_url))
+            locale = 'en'
+
+        url = '{url}/{lang}/'.format(url=DOC_URL, lang=locale)
+        QDesktopServices.openUrl(QUrl(url))
 
     def log(self, msg, abort=None, textarea=None):
         """Log the actions and errors and optionally show them in given text area."""

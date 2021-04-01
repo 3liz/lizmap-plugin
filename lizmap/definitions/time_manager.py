@@ -110,3 +110,6 @@ class TimeManagerDefinitions(BaseDefinitions):
 
     def key(self) -> str:
         return 'timemanagerLayers'
+
+    def help(self) -> str:
+        return 'publish/lizmap_plugin/time_manager.html'
