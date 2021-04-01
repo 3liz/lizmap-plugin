@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 3.4.4 - 2021-04-01
+
+* Add a link to open the online help for each edition form
+* Fix some users experience issues
+  * Read only checkbox was not obvious
+  * Wrong warning about QGIS Desktop version in the CFG file
+* Fix a Python exception if no layer was compatible for the edition capabilities
+* Some minor updates on the Lizmap plugin server side
+
 ## 3.4.3 - 2021-03-03
 
 * Fix loading the plugin on QGIS < 3.10
