@@ -10,6 +10,9 @@ __email__ = 'info@3liz.org'
 
 
 def layer_provider(layer):
+    if not layer:
+        return ''
+
     return layer.dataProvider().name()
 
 
