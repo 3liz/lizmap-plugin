@@ -57,6 +57,16 @@ jobs:
       - name: Running tests
         run: ./exec.sh
 
+  test-pycharm:
+    runs-on: ubuntu-latest
+    name: Execute the pycharm-security action
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run PyCharm Security
+        uses: tonybaloney/pycharm-security@master
+        with:
+          path: lizmap/
+
   test-server:
     runs-on: ubuntu-latest
     steps:
