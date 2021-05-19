@@ -332,6 +332,8 @@ class ServerManager:
             QgsMessageLog.logMessage(
                 "The version '{}' is not correct.".format(server_version), "Lizmap", Qgis.Critical)
 
+        # Debug
+        # split_version = ['3', '4', '2-pre']
         branch = '{}.{}'.format(split_version[0], split_version[1])
         full_version = '{}.{}'.format(branch, split_version[2].split('-')[0])
 
@@ -348,7 +350,9 @@ class ServerManager:
                         messages.append(tr('Version {version} not maintained anymore').format(version=branch))
                         level = Qgis.Critical
 
-                bugfix = int(split_version[2].split('-')[0])
+                # Remember a version can be 3.4.2-pre
+                items_bugfix = split_version[2].split('-')
+                bugfix = int(items_bugfix[0])
                 latest_bugfix = int(version['latest_release_version'].split('.')[2])
                 if version['latest_release_version'] != full_version:
                     if bugfix > latest_bugfix:
@@ -356,6 +360,9 @@ class ServerManager:
 
                     elif bugfix < latest_bugfix:
                         messages.append(tr('Not latest bugfix release'))
+                        if len(items_bugfix) > 1:
+                            # Pre release
+                            messages.append(' ' + tr('and not a production package'))
 
                 self.display_action(row, level, ', '.join(messages))
                 break
