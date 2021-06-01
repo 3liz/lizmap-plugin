@@ -16,7 +16,7 @@ from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
-from lizmap.qt_style_sheets import NEW_FEATURE
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -103,7 +103,7 @@ class TableManager:
                     if version == lwc_version:
                         label = general_config.get('label')
                         if label:
-                            label.setStyleSheet(NEW_FEATURE)
+                            label.setStyleSheet(NEW_FEATURE_CSS)
             else:
                 for general_config in self.definitions.general_config.values():
                     version = general_config.get('version')

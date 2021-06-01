@@ -18,7 +18,7 @@ from lizmap.definitions.definitions import (
     LwcVersions,
 )
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qt_style_sheets import NEW_FEATURE
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -138,7 +138,7 @@ class BaseEditionDialog(QDialog):
         for lwc_version, items in self.lwc_versions.items():
             if found:
                 for item in items:
-                    item.setStyleSheet(NEW_FEATURE)
+                    item.setStyleSheet(NEW_FEATURE_CSS)
 
             else:
                 for item in items:
@@ -156,9 +156,9 @@ class BaseEditionDialog(QDialog):
                     if version == lwc_version:
                         label = layer_config.get('label')
                         if label:
-                            label.setStyleSheet(NEW_FEATURE)
+                            label.setStyleSheet(NEW_FEATURE_CSS)
                         if layer_config['type'] == InputType.CheckBox:
-                            layer_config.get('widget').setStyleSheet(NEW_FEATURE)
+                            layer_config.get('widget').setStyleSheet(NEW_FEATURE_CSS)
             else:
                 for layer_config in self.config.layer_config.values():
                     version = layer_config.get('version')
