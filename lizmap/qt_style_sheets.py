@@ -1,4 +1,6 @@
-NEW_FEATURE = 'background-color:rgb(170, 255, 255);'
+# Both colors MUST be synchronized
+NEW_FEATURE_COLOR = '#aaffff'
+NEW_FEATURE_CSS = 'background-color:rgb(170, 255, 255);'
 
 STYLESHEET = (
     '''

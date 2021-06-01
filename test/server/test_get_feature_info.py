@@ -1,4 +1,7 @@
 import logging
+import xml.etree.ElementTree as ET
+
+from xmldiff import main as xml_diff
 
 LOGGER = logging.getLogger('server')
 
@@ -24,7 +27,7 @@ BASE_QUERY = (
     f"WIDTH=1838&"
     f"FORMAT=image%2Fpng&"
     f"CRS=EPSG%3A4326&"
-    f"INFO_FORMAT=text%2Fhtml&"
+    f"INFO_FORMAT=text%2Fxml&"
 )
 
 # Points
@@ -38,25 +41,22 @@ DEFAULT_POPUP = f"LAYERS={LAYER_DEFAULT_POPUP}&QUERY_LAYERS={LAYER_DEFAULT_POPUP
 LAYER_QGIS_POPUP = "qgis_popup"
 QGIS_POPUP = f"LAYERS={LAYER_QGIS_POPUP}&QUERY_LAYERS={LAYER_QGIS_POPUP}&"
 
+LAYER_QGIS_FORM = "qgis_form"
+QGIS_FORM = f"LAYERS={LAYER_QGIS_FORM}&QUERY_LAYERS={LAYER_QGIS_FORM}&"
+
 
 def test_no_get_feature_info_default_popup(client):
     """ Test the get feature info without a feature with default layer. """
     qs = BASE_QUERY + NO_FEATURE + DEFAULT_POPUP
     rv = client.get(qs, PROJECT)
     assert rv.status_code == 200
-    assert rv.headers.get('Content-Type', '').find('text/html') == 0
-    expected = f'''<HEAD>
-<TITLE> GetFeatureInfo results </TITLE>
-<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-</HEAD>
-<BODY>
-<TABLE border=1 width=100%>
-<TR><TH width=25%>Layer</TH><TD>{LAYER_DEFAULT_POPUP}</TD></TR>
-</BR></TABLE>
-<BR></BR>
-</BODY>
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+    expected = f'''<GetFeatureInfoResponse>
+ <Layer name="{LAYER_DEFAULT_POPUP}"/>
+</GetFeatureInfoResponse>
 '''
-    assert rv.content.decode('utf-8') == expected
+    diff = xml_diff.diff_texts(expected, rv.content.decode('utf-8'))
+    assert diff == [], diff
 
 
 def test_single_get_feature_info_default_popup(client):
@@ -64,29 +64,22 @@ def test_single_get_feature_info_default_popup(client):
     qs = BASE_QUERY + SINGLE_FEATURE + DEFAULT_POPUP
     rv = client.get(qs, PROJECT)
     assert rv.status_code == 200
-    assert rv.headers.get('Content-Type', '').find('text/html') == 0
-    expected = f'''<HEAD>
-<TITLE> GetFeatureInfo results </TITLE>
-<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-</HEAD>
-<BODY>
-<TABLE border=1 width=100%>
-<TR><TH width=25%>Layer</TH><TD>{LAYER_DEFAULT_POPUP}</TD></TR>
-</BR><TABLE border=1 width=100%>
-<TR><TH>Feature</TH><TD>1</TD></TR>
-<TR><TH>OBJECTID</TH><TD>2662</TD></TR>
-<TR><TH>NAME_0</TH><TD>France</TD></TR>
-<TR><TH>VARNAME_1</TH><TD>Bretaa|Brittany</TD></TR>
-<TR><TH>Region</TH><TD>Bretagne</TD></TR>
-<TR><TH>Shape_Leng</TH><TD>18.39336934850</TD></TR>
-<TR><TH>Shape_Area</TH><TD>3.30646936365</TD></TR>
-</TABLE>
-</BR>
-</TABLE>
-<BR></BR>
-</BODY>
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+    expected = f'''<GetFeatureInfoResponse>
+ <Layer name="{LAYER_DEFAULT_POPUP}">
+  <Feature id="1">
+   <Attribute name="OBJECTID" value="2662"/>
+   <Attribute name="NAME_0" value="France"/>
+   <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+   <Attribute name="Region" value="Bretagne"/>
+   <Attribute name="Shape_Leng" value="18.39336934850"/>
+   <Attribute name="Shape_Area" value="3.30646936365"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>
 '''
-    assert rv.content.decode('utf-8') == expected
+    diff = xml_diff.diff_texts(expected, rv.content.decode('utf-8'))
+    assert diff == [], diff
 
 
 def test_single_get_feature_info_qgis_popup(client):
@@ -94,29 +87,62 @@ def test_single_get_feature_info_qgis_popup(client):
     qs = BASE_QUERY + SINGLE_FEATURE + QGIS_POPUP + "WITH_MAPTIP=true&"
     rv = client.get(qs, PROJECT)
     assert rv.status_code == 200
-    assert rv.headers.get('Content-Type', '').find('text/html') == 0
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
 
     # Note the line <TH>maptip</TH>
-    expected = f'''<HEAD>
-<TITLE> GetFeatureInfo results </TITLE>
-<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-</HEAD>
-<BODY>
-<TABLE border=1 width=100%>
-<TR><TH width=25%>Layer</TH><TD>{LAYER_QGIS_POPUP}</TD></TR>
-</BR><TABLE border=1 width=100%>
-<TR><TH>Feature</TH><TD>1</TD></TR>
-<TR><TH>OBJECTID</TH><TD>2662</TD></TR>
-<TR><TH>NAME_0</TH><TD>France</TD></TR>
-<TR><TH>VARNAME_1</TH><TD>Bretaa|Brittany</TD></TR>
-<TR><TH>Region</TH><TD>Bretagne</TD></TR>
-<TR><TH>Shape_Leng</TH><TD>18.39336934850</TD></TR>
-<TR><TH>Shape_Area</TH><TD>3.30646936365</TD></TR>
-<TR><TH>maptip</TH><TD><p>France</p></TD></TR>
-</TABLE>
-</BR>
-</TABLE>
-<BR></BR>
-</BODY>
+    expected = f'''<GetFeatureInfoResponse>
+ <Layer name="{LAYER_QGIS_POPUP}">
+  <Feature id="1">
+   <Attribute name="OBJECTID" value="2662"/>
+   <Attribute name="NAME_0" value="France"/>
+   <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+   <Attribute name="Region" value="Bretagne"/>
+   <Attribute name="Shape_Leng" value="18.39336934850"/>
+   <Attribute name="Shape_Area" value="3.30646936365"/>
+   <Attribute name="maptip" value="&lt;p>France&lt;/p>"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>
 '''
-    assert rv.content.decode('utf-8') == expected
+    diff = xml_diff.diff_texts(expected, rv.content.decode('utf-8'))
+    assert diff == [], diff
+
+
+def test_single_get_feature_info_form_popup(client):
+    """ Test the get feature info with a single feature with QGIS form. """
+    qs = BASE_QUERY + SINGLE_FEATURE + QGIS_FORM
+    rv = client.get(qs, PROJECT)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    # Let's check only the XML first
+
+    expected = f'''<GetFeatureInfoResponse>
+ <Layer name="{LAYER_QGIS_FORM}">
+  <Feature id="1">
+   <Attribute name="OBJECTID" value="2662"/>
+   <Attribute name="NAME_0" value="France"/>
+   <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+   <Attribute name="Region" value="Bretagne"/>
+   <Attribute name="Shape_Leng" value="18.39336934850"/>
+   <Attribute name="Shape_Area" value="3.30646936365"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>
+'''
+    root = ET.fromstring(rv.content.decode('utf-8'))
+    map_tip = ''
+    for layer in root:
+        for feature in layer:
+            item = root.find(".//Attribute[@name='maptip']")
+            map_tip = item.attrib.get("value")
+            feature.remove(item)
+
+    xml_lines = ET.tostring(root, encoding='utf8', method='xml').decode("utf-8").split('\n')
+    xml_string = '\n'.join(xml_lines[1:])
+
+    diff = xml_diff.diff_texts(expected, xml_string.strip())
+    assert diff == [], diff
+
+    # Let's check the maptip content
+    assert '<div class="container popup_lizmap_dd" style="width:100%;">' in map_tip

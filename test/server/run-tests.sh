@@ -15,5 +15,5 @@ export QT_LOGGING_RULES="*.debug=false;*.warning=false"
 export QGIS_DISABLE_MESSAGE_HOOKS=1
 export QGIS_NO_OVERRIDE_IMPORT=1
 
-pytest -v --qgis-plugins=/src $@
+pytest -vv --qgis-plugins=/src $@
 exit $?

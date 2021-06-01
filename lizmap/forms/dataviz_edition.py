@@ -23,7 +23,7 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
-from lizmap.qt_style_sheets import NEW_FEATURE
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -253,7 +253,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
         if version in [LwcVersions.Lizmap_3_1, LwcVersions.Lizmap_3_2, LwcVersions.Lizmap_3_3]:
             if self.traces.rowCount() >= 2:
-                self.add_trace.setStyleSheet(NEW_FEATURE)
+                self.add_trace.setStyleSheet(NEW_FEATURE_CSS)
             else:
                 self.add_trace.setStyleSheet('')
         else:

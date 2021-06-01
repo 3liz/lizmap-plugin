@@ -2,6 +2,7 @@
 
 import os
 import unittest
+import xml.etree.ElementTree as ET
 
 from lizmap.server.core import (
     config_value_to_boolean,
@@ -9,6 +10,7 @@ from lizmap.server.core import (
     get_lizmap_layer_login_filter,
     get_lizmap_layers_config,
 )
+from lizmap.server.get_feature_info import GetFeatureInfoFilter
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -134,3 +136,100 @@ class TestTools(unittest.TestCase):
                 'filterPrivate': 'False',
                 'order': 0
             })
+
+    def test_parse_xml_get_feature_info(self):
+        """ Test to GetFeatureInfo XML. """
+        string = '''<GetFeatureInfoResponse>
+         <Layer name="qgis_popup">
+          <Feature id="1">
+           <Attribute name="OBJECTID" value="2662"/>
+           <Attribute name="NAME_0" value="France"/>
+           <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+           <Attribute name="Region" value="Bretagne"/>
+           <Attribute name="Shape_Leng" value="18.39336934850"/>
+           <Attribute name="Shape_Area" value="3.30646936365"/>
+           <Attribute name="maptip" value="&lt;p>France&lt;/p>"/>
+          </Feature>
+         </Layer>
+        </GetFeatureInfoResponse>
+        '''
+
+        for layer, feature in GetFeatureInfoFilter.parse_xml(string):
+            self.assertEqual(layer, 'qgis_popup')
+            self.assertEqual(feature, 1)
+
+    def test_edit_xml_get_feature_info_without_maptip(self):
+        """ Test to edit a GetFeatureInfo xml without maptip. """
+        string = '''<GetFeatureInfoResponse>
+         <Layer name="qgis_popup">
+          <Feature id="1">
+           <Attribute name="OBJECTID" value="2662"/>
+           <Attribute name="NAME_0" value="France"/>
+           <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+           <Attribute name="Region" value="Bretagne"/>
+           <Attribute name="Shape_Leng" value="18.39336934850"/>
+           <Attribute name="Shape_Area" value="3.30646936365"/>
+          </Feature>
+         </Layer>
+        </GetFeatureInfoResponse>
+        '''
+
+        response = GetFeatureInfoFilter.append_maptip(string, "qgis_popup", 1, "<b>foo</b>")
+
+        # ElementTree adds a space at the end " />" instead of "/>"
+        # maptip line is un-indented from 1 space, with feature on the same line. !!
+        expected = '''<GetFeatureInfoResponse>
+         <Layer name="qgis_popup">
+          <Feature id="1">
+           <Attribute name="OBJECTID" value="2662" />
+           <Attribute name="NAME_0" value="France" />
+           <Attribute name="VARNAME_1" value="Bretaa|Brittany" />
+           <Attribute name="Region" value="Bretagne" />
+           <Attribute name="Shape_Leng" value="18.39336934850" />
+           <Attribute name="Shape_Area" value="3.30646936365" />
+          <Attribute name="maptip" value="&lt;b&gt;foo&lt;/b&gt;" /></Feature>
+         </Layer>
+        </GetFeatureInfoResponse>
+        '''
+        self.assertEqual(
+            ET.tostring(ET.fromstring(expected)).decode("utf-8"),
+            ET.tostring(ET.fromstring(response)).decode("utf-8")
+        )
+
+    def test_edit_xml_get_feature_info_with_maptip(self):
+        """ Test to edit a GetFeatureInfo xml with maptip. """
+        string = '''<GetFeatureInfoResponse>
+         <Layer name="qgis_popup">
+          <Feature id="1">
+           <Attribute name="OBJECTID" value="2662"/>
+           <Attribute name="NAME_0" value="France"/>
+           <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+           <Attribute name="Region" value="Bretagne"/>
+           <Attribute name="Shape_Leng" value="18.39336934850"/>
+           <Attribute name="Shape_Area" value="3.30646936365"/>
+           <Attribute name="maptip" value="Hello"/>
+          </Feature>
+         </Layer>
+        </GetFeatureInfoResponse>
+        '''
+
+        response = GetFeatureInfoFilter.append_maptip(string, "qgis_popup", 1, "<b>foo</b>")
+
+        expected = '''<GetFeatureInfoResponse>
+         <Layer name="qgis_popup">
+          <Feature id="1">
+           <Attribute name="OBJECTID" value="2662" />
+           <Attribute name="NAME_0" value="France" />
+           <Attribute name="VARNAME_1" value="Bretaa|Brittany" />
+           <Attribute name="Region" value="Bretagne" />
+           <Attribute name="Shape_Leng" value="18.39336934850" />
+           <Attribute name="Shape_Area" value="3.30646936365" />
+           <Attribute name="maptip" value="&lt;b&gt;foo&lt;/b&gt;" />
+          </Feature>
+         </Layer>
+        </GetFeatureInfoResponse>
+        '''
+        self.assertEqual(
+            ET.tostring(ET.fromstring(expected)).decode("utf-8"),
+            ET.tostring(ET.fromstring(response)).decode("utf-8")
+        )

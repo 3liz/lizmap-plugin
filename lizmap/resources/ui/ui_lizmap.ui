@@ -1480,6 +1480,11 @@ border-radius: 0px;</string>
                                <string>qgis</string>
                               </property>
                              </item>
+                             <item>
+                              <property name="text">
+                               <string>form</string>
+                              </property>
+                             </item>
                             </widget>
                            </item>
                            <item>
