@@ -74,7 +74,14 @@ if Qgis.QGIS_VERSION_INT >= 31400:
 
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
-from qgis.PyQt.QtGui import QDesktopServices, QIcon, QPixmap
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor,
+    QDesktopServices,
+    QIcon,
+    QPixmap,
+    QStandardItem,
+)
 from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
@@ -124,7 +131,11 @@ from lizmap.qgis_plugin_tools.tools.version import (
     format_version_integer,
     version,
 )
-from lizmap.qt_style_sheets import NEW_FEATURE, STYLESHEET
+from lizmap.qt_style_sheets import (
+    NEW_FEATURE_COLOR,
+    NEW_FEATURE_CSS,
+    STYLESHEET,
+)
 from lizmap.server_lwc import ServerManager
 from lizmap.tools import (
     current_git_hash,
@@ -174,7 +185,7 @@ class Lizmap:
         self.layers_table = dict()
 
         # Manage LWC versions combo
-        self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE)
+        self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
         self.lwc_versions = OrderedDict()
         self.lwc_versions[LwcVersions.Lizmap_3_1] = []
         self.lwc_versions[LwcVersions.Lizmap_3_2] = [
@@ -195,6 +206,9 @@ class Lizmap:
             self.dlg.activate_drawing_tools,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_5] = [
+            self.dlg.liPopupSource.model().item(
+                self.dlg.liPopupSource.findText('form')
+            ),
         ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
@@ -418,7 +432,14 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
-        self.layer_options_list['popupSource']['widget'].currentIndexChanged.connect(self.enable_popup_source_button)
+        # Popup configuration
+        widget = self.layer_options_list['popupSource']['widget']
+        widget.currentIndexChanged.connect(self.enable_popup_source_button)
+        index = widget.findText('form')
+        form_popup = widget.model().item(index)
+        font = form_popup.font()
+        font.setUnderline(True)
+        form_popup.setFont(font)
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
@@ -621,10 +642,19 @@ class Lizmap:
         for lwc_version, items in self.lwc_versions.items():
             if found:
                 for item in items:
-                    item.setStyleSheet(NEW_FEATURE)
+                    if hasattr(item, 'setStyleSheet'):
+                        item.setStyleSheet(NEW_FEATURE_CSS)
+                    elif isinstance(item, QStandardItem):
+                        brush = QBrush()
+                        brush.setStyle(Qt.SolidPattern)
+                        brush.setColor(QColor(NEW_FEATURE_COLOR))
+                        item.setBackground(brush)
             else:
                 for item in items:
-                    item.setStyleSheet('')
+                    if hasattr(item, 'setStyleSheet'):
+                        item.setStyleSheet('')
+                    elif isinstance(item, QStandardItem):
+                        item.setBackground(QBrush())
 
             if lwc_version == current_version:
                 found = True
@@ -857,7 +887,7 @@ class Lizmap:
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
         data = self.layer_options_list['popupSource']['widget'].currentText()
-        self.dlg.btConfigurePopup.setEnabled(data not in ['auto', 'qgis'])
+        self.dlg.btConfigurePopup.setEnabled(data == 'lizmap')
         self.dlg.btQgisPopupFromForm.setEnabled(data == 'qgis')
 
         layer = self._current_selected_layer()

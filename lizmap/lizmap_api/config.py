@@ -267,7 +267,7 @@ class LizmapConfig:
         },
         'popupSource': {
             'wType': 'list', 'type': 'string', 'default': 'auto',
-            'list': ["auto", "lizmap", "qgis"]
+            'list': ["auto", "lizmap", "qgis", "form", ]
         },
         'popupTemplate': {
             'wType': 'text', 'type': 'string', 'default': ''

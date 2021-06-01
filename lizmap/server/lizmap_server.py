@@ -7,6 +7,7 @@ import os
 from qgis.server import QgsServerInterface
 
 from .expression_service import ExpressionService
+from .get_feature_info import GetFeatureInfoFilter
 from .lizmap_accesscontrol import LizmapAccessControlFilter
 from .lizmap_filter import LizmapFilter
 from .lizmap_service import LizmapService
@@ -47,3 +48,5 @@ class LizmapServer:
         except Exception as e:
             self.logger.critical('Error loading access control : {}'.format(e))
             raise
+
+        server_iface.registerFilter(GetFeatureInfoFilter(self.server_iface), 150)
