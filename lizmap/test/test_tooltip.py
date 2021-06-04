@@ -64,7 +64,7 @@ class TestToolTip(unittest.TestCase):
                         WHEN "field_a" IS NOT NULL OR trim("field_a") != ''
                         THEN concat(
                             '<p>', '<b>Field Name</b>',
-                            '<div class="field">', 'foo', '</div>',
+                            '<span class="field">', 'foo', '</span>',
                             '</p>'
                         )
                         ELSE ''
@@ -80,7 +80,7 @@ class TestToolTip(unittest.TestCase):
         layer.dataProvider().addFeatures([feature])
         sub_context.setFeature(next(layer.getFeatures()))
         expression = QgsExpression().replaceExpressionText(template, sub_context)
-        self.assertEqual('\n                    <p><b>Field Name</b><div class="field">foo</div></p>', expression)
+        self.assertEqual('\n                    <p><b>Field Name</b><span class="field">foo</span></p>', expression)
 
     def test_visibility_expression(self):
         """Test the visibility expression."""
@@ -121,7 +121,7 @@ class TestToolTip(unittest.TestCase):
                         WHEN "is_ok" IS NOT NULL OR trim("is_ok") != ''
                         THEN concat(
                             '<p>', '<b>Is ok ?</b>',
-                            '<div class="field">', "is_ok", '</div>',
+                            '<span class="field">', "is_ok", '</span>',
                             '</p>'
                         )
                         ELSE ''
@@ -140,7 +140,7 @@ class TestToolTip(unittest.TestCase):
         layer.dataProvider().addFeatures([feature])
         sub_context.setFeature(next(layer.getFeatures()))
         expression = QgsExpression().replaceExpressionText(template, sub_context)
-        self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
+        self.assertEqual('\n                    <p><b>Is ok ?</b><span class="field">true</span></p>', expression, expression)
 
         # FIXME On memory layers, we can't custom config on checkbox widget
         # config = {
@@ -150,7 +150,7 @@ class TestToolTip(unittest.TestCase):
         # layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('CheckBox', config))
         # sub_context.setFeature(next(layer.getFeatures()))
         # expression = QgsExpression().replaceExpressionText(template, sub_context)
-        # self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
+        # self.assertEqual('\n                    <p><b>Is ok ?</b><span class="field">true</span></p>', expression, expression)
 
     def test_value_map(self):
         """Test we can generate value map."""
@@ -450,11 +450,11 @@ class TestToolTip(unittest.TestCase):
                         WHEN "name" IS NOT NULL OR trim("name") != ''
                         THEN concat(
                             '<p>', '<b>name</b>',
-                            '<div class="field">', 
+                            '<span class="field">', 
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         "name"
-                    ), '</div>',
+                    ), '</span>',
                             '</p>'
                         )
                         ELSE ''
@@ -470,11 +470,11 @@ class TestToolTip(unittest.TestCase):
                         WHEN "name" IS NOT NULL OR trim("name") != ''
                         THEN concat(
                             '<p>', '<b>name</b>',
-                            '<div class="field">', 
+                            '<span class="field">', 
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         "name"
-                    ), '</div>',
+                    ), '</span>',
                             '</p>'
                         )
                         ELSE ''

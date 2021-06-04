@@ -213,7 +213,7 @@ class Tooltip:
                         WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
                         THEN concat(
                             '<p>', '<b>{1}</b>',
-                            '<div class="field">', {2}, '</div>',
+                            '<span class="field">', {2}, '</span>',
                             '</p>'
                         )
                         ELSE ''
@@ -356,9 +356,9 @@ class Tooltip:
         border-radius: 5px;
         background-color: rgba(150,150,150,0.5);
     }
-    div.popup_lizmap_dd div.tab-content div.tab-pane div.field,
-    div.popup_lizmap_dd div.field,
-    div.popup_lizmap_dd div.tab-content div.field {
+    div.popup_lizmap_dd div.tab-content div.tab-pane span.field,
+    div.popup_lizmap_dd span.field,
+    div.popup_lizmap_dd div.tab-content span.field {
         background-color: white;
         border: 1px solid white;
     }
