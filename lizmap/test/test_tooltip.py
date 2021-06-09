@@ -4,6 +4,7 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsAttributeEditorField,
     QgsEditFormConfig,
+    QgsEditorWidgetSetup,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -135,22 +136,52 @@ class TestToolTip(unittest.TestCase):
         sub_context = QgsExpressionContext()
         # noinspection PyCallByClass,PyArgumentList
         sub_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
-        feature = QgsFeature()
-        feature.setAttributes([True])
-        layer.dataProvider().addFeatures([feature])
-        sub_context.setFeature(next(layer.getFeatures()))
+        for value in [True, False]:
+            feature = QgsFeature()
+            feature.setAttributes([value])
+            layer.dataProvider().addFeatures([feature])
+
+        iterator = layer.getFeatures()
+
+        # First
+        sub_context.setFeature(next(iterator))
         expression = QgsExpression().replaceExpressionText(template, sub_context)
         self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
 
-        # FIXME On memory layers, we can't custom config on checkbox widget
+        # Second
+        sub_context.setFeature(next(iterator))
+        expression = QgsExpression().replaceExpressionText(template, sub_context)
+        self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">false</div></p>', expression, expression)
+
+        # Let's set the checkbox form widget.
+
+        template = Tooltip._generate_check_box('is_ok')
+        expected = '''
+                    represent_value("is_ok")
+                    '''
+        self.assertEqual(expected, template, template)
+
+        # On memory/postgis layers, we can't customize tge  config on checkbox widget
+        # It will default to true/false for now using represent value
+        # QGIS 3.18 added QgsCheckBoxFieldFormatter::TextDisplayMethod
         # config = {
         #     'CheckedState': 'Good',
         #     'UncheckedState': 'Not good',
+        #     'TextDisplayMethod': 1,
         # }
         # layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('CheckBox', config))
-        # sub_context.setFeature(next(layer.getFeatures()))
-        # expression = QgsExpression().replaceExpressionText(template, sub_context)
-        # self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
+
+        iterator = layer.getFeatures()
+
+        # First
+        sub_context.setFeature(next(iterator))
+        expression = QgsExpression().replaceExpressionText(template, sub_context)
+        self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
+
+        # Second
+        sub_context.setFeature(next(iterator))
+        expression = QgsExpression().replaceExpressionText(template, sub_context)
+        self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">false</div></p>', expression, expression)
 
     def test_value_map(self):
         """Test we can generate value map."""

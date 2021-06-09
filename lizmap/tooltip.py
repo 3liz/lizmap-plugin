@@ -100,6 +100,9 @@ class Tooltip:
             if widget_type == 'DateTime':
                 field_view = Tooltip._generate_date(widget_config, name)
 
+            if widget_type == 'CheckBox':
+                field_view = Tooltip._generate_check_box(name)
+
             a += '\n' + SPACES * level
             a += Tooltip._generate_field_name(name, fname, field_view)
 
@@ -312,6 +315,13 @@ class Tooltip:
                         "{}",
                         '{}'
                     )'''.format(name, dfor)
+        return field_view
+
+    @staticmethod
+    def _generate_check_box(name):
+        field_view = '''
+                    represent_value("{}")
+                    '''.format(name)
         return field_view
 
     @staticmethod
