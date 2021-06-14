@@ -6,7 +6,7 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
-    if: github.repository == '3liz/lizmap-plugin'
+    if: github.repository_owner == '3liz'
     steps:
     - uses: actions/stale@v3.0.13
       with:
