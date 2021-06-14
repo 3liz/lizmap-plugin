@@ -1,4 +1,8 @@
-# CHANGELOG
+# Changelog
+
+## Unreleased
+
+* New "form" popup type for a vector layer using straight the Drag&Drop form layout (LWC 3.5 needed)
 
 ## 3.4.4 - 2021-04-01
 
