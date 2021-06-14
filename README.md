@@ -1,12 +1,11 @@
 ## [![logo](lizmap/resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
 
-![Server](https://github.com/3liz/lizmap-plugin/workflows/Server%20%F0%9F%8E%B3/badge.svg)
-![Desktop](https://github.com/3liz/lizmap-plugin/workflows/Desktop%20%F0%9F%8E%B3/badge.svg)
-![Lint](https://github.com/3liz/lizmap-plugin/workflows/Lint%20%F0%9F%8E%B3/badge.svg)
+[![Tests 🎳](https://github.com/3liz/lizmap-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/3liz/lizmap-plugin/actions/workflows/ci.yml)
+[![Transifex 🗺](https://github.com/3liz/lizmap-plugin/actions/workflows/transifex.yml/badge.svg)](https://github.com/3liz/lizmap-plugin/actions/workflows/transifex.yml)
 
 * Latest download link: https://github.com/3liz/lizmap-plugin/releases/latest/download/lizmap.zip
-* All versions are available [here](https://plugins.qgis.org/plugins/lizmap/)
-* Do not use the link provided by GitHub by default.
+* All versions are available [plugins.qgis.org](https://plugins.qgis.org/plugins/lizmap/).
+* Do not use the link provided by GitHub by default on the top right corner.
 * The `dev` branch can be found on https://packages.3liz.org/
 
 ### Branches
