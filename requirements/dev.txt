@@ -1,0 +1,15 @@
+flake8
+flake8-absolute-import
+# flake8-bugbear
+flake8-builtins
+flake8-isort
+# flake8-multiline-containers
+# flake8-mutable
+# flake8-pep3101
+flake8-print
+# flake8-variables-names
+isort
+pylint
+# pycodestyle
+PyQt5
+PyQt5-stubs

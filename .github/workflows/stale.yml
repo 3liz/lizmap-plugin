@@ -6,9 +6,9 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
-    if: github.repository == '3liz/lizmap-plugin'
+    if: github.repository_owner == '3liz'
     steps:
-    - uses: actions/stale@v3.0.13
+    - uses: actions/stale@v3.0.19
       with:
         repo-token: ${{ secrets.GH_TOKEN }}
         days-before-stale: 60

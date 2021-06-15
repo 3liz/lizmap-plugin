@@ -20,7 +20,7 @@ FACTORY_PRODUCT_NAME ?= lizmap
 
 PACKAGE=$(FACTORY_PACKAGE_NAME)
 PACKAGEDIR=$(FACTORY_PRODUCT_NAME)
-FILES = ../lizmap/__init__.py ../lizmap/server ../README.md
+FILES = ../lizmap/__init__.py ../lizmap/server ../lizmap/tooltip.py ../README.md
 
 build/$(PACKAGEDIR):
 	@echo "Packaging version '$(VERSION)'"
@@ -37,4 +37,3 @@ package: dist
 
 clean:
 	@rm -r build
-
