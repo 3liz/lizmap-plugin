@@ -13,9 +13,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsExternalResourceWidget
 
-from lizmap.qgis_plugin_tools.tools.custom_logging import plugin_name
-
-LOGGER = logging.getLogger(plugin_name())
+LOGGER = logging.getLogger('Lizmap')
 
 
 __copyright__ = 'Copyright 2020, 3Liz'

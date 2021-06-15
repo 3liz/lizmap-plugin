@@ -23,7 +23,7 @@ main:
 
 PACKAGE=qgis310_lizmap
 PACKAGEDIR=lizmap
-FILES = ../lizmap/__init__.py ../lizmap/server ../README.md
+FILES = ../lizmap/__init__.py ../lizmap/server ../lizmap/tooltip.py ../README.md
 
 build2/$(PACKAGEDIR):
 	@echo "Packaging version '$(VERSION)'"
