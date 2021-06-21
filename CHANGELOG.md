@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-* New "form" popup type for a vector layer using straight the Drag&Drop form layout (LWC 3.5 needed)
+## 3.5.0 - 2021-06-21
+
+* New "form" popup type for a vector layer using straight the Drag&Drop form layout 
+  (Lizmap Web Client 3.5 and Lizmap plugin on the server side are needed)
+* Files have chmod 755 by default to make it easier to deploy on a server
 
 ## 3.4.4 - 2021-04-01
 
