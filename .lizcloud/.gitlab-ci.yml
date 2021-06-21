@@ -7,6 +7,7 @@ variables:
 build:infrav3:
   stage: build
   script:
+    - sed -i "s/^version=.*$/version=${CI_COMMIT_REF_NAME}/g" lizmap/metadata.txt
     - make -C .lizcloud -f factory.mk package
   environment:
     name: snap
@@ -52,13 +53,14 @@ release:infrav3:
 build:infrav2:
   stage: build
   script:
+    - sed -i "s/^version=.*$/version=${CI_COMMIT_REF_NAME}/g" lizmap/metadata.txt
     - make -C .lizcloud -f fabric.mk package
   environment:
     name: snap
   only:
     refs:
       - tags
-      - dev
+      - master
   tags:
     - fabric
 
@@ -73,7 +75,7 @@ deploy:infrav2:
   only:
     refs:
       - tags
-      - dev
+      - master
   tags:
     - fabric
 
@@ -92,7 +94,7 @@ release:infrav2:
     - fabric
 
 tickets:
-  stage: deploy 🚀
+  stage: release
   when: manual
   only:
     - tags
