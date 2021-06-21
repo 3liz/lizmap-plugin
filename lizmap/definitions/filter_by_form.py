@@ -81,5 +81,5 @@ class FilterByFormDefinitions(BaseDefinitions):
     def key(self) -> str:
         return 'formFilterLayers'
 
-    def help(self) -> str:
+    def help_path(self) -> str:
         return 'publish/lizmap_plugin/form_filtering.html'

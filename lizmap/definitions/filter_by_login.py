@@ -46,5 +46,5 @@ class FilterByLoginDefinitions(BaseDefinitions):
     def key(self) -> str:
         return 'loginFilteredLayers'
 
-    def help(self) -> str:
+    def help_path(self) -> str:
         return 'publish/lizmap_plugin/filtered_layers_login.html'
