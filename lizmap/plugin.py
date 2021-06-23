@@ -436,7 +436,8 @@ class Lizmap:
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
         index = widget_source_popup.findText('form')
-        if not index:
+        form_popup = widget_source_popup.model().item(index)
+        if form_popup is None:
             # Random bug I need to find why
             # The "form" is not found
             # But it's not critical so let's skip
@@ -446,7 +447,6 @@ class Lizmap:
             LOGGER.warning(
                 "Element 'form' was not found in the Lizmap dialog. Only {}".format(','.join(form_type)))
         else:
-            form_popup = widget_source_popup.model().item(index)
             font = form_popup.font()
             font.setUnderline(True)
             form_popup.setFont(font)
