@@ -137,7 +137,16 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
         xml = request.body().data().decode("utf-8")
 
-        features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
+        # noinspection PyBroadException
+        try:
+            features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
+        except Exception:
+            QgsMessageLog.logMessage(
+                "Error while reading the XML response GetFeatureInfo, returning default response",
+                'lizmap',
+                Qgis.Critical
+            )
+            return
 
         if not features:
             return
@@ -154,29 +163,39 @@ class GetFeatureInfoFilter(QgsServerFilter):
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(project))
 
-        for result in features:
-            distance_area = QgsDistanceArea()
-            distance_area.setSourceCrs(result.layer.crs(), project.transformContext())
-            distance_area.setEllipsoid(project.ellipsoid())
-            exp_context.appendScope(QgsExpressionContextUtils.layerScope(result.layer))
+        # noinspection PyBroadException
+        try:
+            for result in features:
+                distance_area = QgsDistanceArea()
+                distance_area.setSourceCrs(result.layer.crs(), project.transformContext())
+                distance_area.setEllipsoid(project.ellipsoid())
+                exp_context.appendScope(QgsExpressionContextUtils.layerScope(result.layer))
 
-            expression = server_feature_id_expression(
-                result.feature_id, result.layer.primaryKeyAttributes(), result.layer.fields())
-            if expression:
-                request = QgsFeatureRequest(QgsExpression(expression))
-                request.setFlags(QgsFeatureRequest.NoGeometry)
-                feature = QgsFeature()
-                result.layer.getFeatures(request).nextFeature(feature)
-            else:
-                # If not expression, the feature ID must be integer
-                feature = result.layer.getFeature(int(result.feature_id))
+                expression = server_feature_id_expression(
+                    result.feature_id, result.layer.primaryKeyAttributes(), result.layer.fields())
+                if expression:
+                    request = QgsFeatureRequest(QgsExpression(expression))
+                    request.setFlags(QgsFeatureRequest.NoGeometry)
+                    feature = QgsFeature()
+                    result.layer.getFeatures(request).nextFeature(feature)
+                else:
+                    # If not expression, the feature ID must be integer
+                    feature = result.layer.getFeature(int(result.feature_id))
 
-            exp_context.setFeature(feature)
-            exp_context.setFields(feature.fields())
+                exp_context.setFeature(feature)
+                exp_context.setFields(feature.fields())
 
-            value = QgsExpression.replaceExpressionText(result.expression, exp_context, distance_area)
-            xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
+                value = QgsExpression.replaceExpressionText(result.expression, exp_context, distance_area)
+                xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
 
-        request.clear()
-        request.setResponseHeader('Content-Type', 'text/xml')
-        request.appendBody(bytes(xml, 'utf-8'))
+            request.clear()
+            request.setResponseHeader('Content-Type', 'text/xml')
+            request.appendBody(bytes(xml, 'utf-8'))
+
+        except Exception:
+            QgsMessageLog.logMessage(
+                "Error while rewriting the XML response GetFeatureInfo, returning default response",
+                'lizmap',
+                Qgis.Critical
+            )
+            return
