@@ -328,7 +328,8 @@ class ServerManager:
             json_content = json.loads(json_file.read())
 
         split_version = server_version.split('.')
-        if len(split_version) != 3:
+        if len(split_version) not in [3, 4]:
+            # 3.4.0-pre but also 3.4.0-rc.1
             QgsMessageLog.logMessage(
                 "The version '{}' is not correct.".format(server_version), "Lizmap", Qgis.Critical)
 
