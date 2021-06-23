@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.5.2 - 2010-06-23
+
+* Fix an issue on QGIS Desktop about a Python exception again
+
 ## 3.5.1 - 2021-06-23
 
 * Fix an issue on QGIS Desktop about a Python exception
