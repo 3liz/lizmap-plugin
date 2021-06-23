@@ -9,7 +9,9 @@ from typing import Dict, List, Union
 
 from qgis.core import (
     Qgis,
+    QgsExpression,
     QgsFeature,
+    QgsFields,
     QgsMapLayer,
     QgsMessageLog,
     QgsProject,
@@ -266,6 +268,28 @@ def get_lizmap_override_filter(handler: 'QgsRequestHandler') -> bool:
             QgsMessageLog.logMessage("No lizmap override filter in parameters", "lizmap", Qgis.Info)
 
     return override
+
+
+def server_feature_id_expression(feature_id, pk_attributes: list, fields: QgsFields) -> str:
+    """ Port of QgsServerFeatureId::getExpressionFromServerFid.
+
+    The value "@@" is hardcoded in the CPP file.
+    """
+    if len(pk_attributes) == 0:
+        return ""
+
+    expression = ""
+    pk_values = feature_id.split("@@")
+
+    for i, pk_value in enumerate(pk_values):
+
+        if i > 0:
+            expression += ' AND '
+
+        field_name = fields.at(i).name()
+        expression += QgsExpression.createFieldEqualityExpression(field_name, pk_values[i])
+
+    return expression
 
 
 class ServiceError(Exception):

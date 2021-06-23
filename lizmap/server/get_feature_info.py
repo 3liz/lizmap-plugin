@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 from collections import namedtuple
 from pathlib import Path
-from typing import Generator, List, Tuple
+from typing import Generator, List, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -16,18 +16,20 @@ from qgis.core import (
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsMessageLog,
 )
 from qgis.server import QgsConfigCache, QgsServerFilter
 
-from lizmap.server.core import find_vector_layer
+from lizmap.server.core import find_vector_layer, server_feature_id_expression
 from lizmap.tooltip import Tooltip
 
 """
 QGIS Server filter for the GetFeatureInfo according to CFG config.
 """
 
-Result = namedtuple('Result', ['layer', 'feature', 'expression'])
+Result = namedtuple('Result', ['layer', 'feature_id', 'expression'])
 
 
 class GetFeatureInfoFilter(QgsServerFilter):
@@ -38,10 +40,10 @@ class GetFeatureInfoFilter(QgsServerFilter):
         root = ET.fromstring(string)
         for layer in root:
             for feature in layer:
-                yield layer.attrib['name'], int(feature.attrib['id'])
+                yield layer.attrib['name'], feature.attrib['id']
 
     @classmethod
-    def append_maptip(cls, string: str, layer_name: str, feature_id: int, maptip: str) -> str:
+    def append_maptip(cls, string: str, layer_name: str, feature_id: Union[str, int], maptip: str) -> str:
         """ Edit the XML GetFeatureInfo by adding a maptip for a given layer and feature ID. """
         root = ET.fromstring(string)
         for layer in root:
@@ -49,7 +51,9 @@ class GetFeatureInfoFilter(QgsServerFilter):
                 continue
 
             for feature in layer:
-                if int(feature.attrib['id']) != feature_id:
+                # feature_id can be int if QgsFeature.id() is used
+                # Otherwise it's string from QgsServerFeatureId
+                if feature.attrib['id'] != str(feature_id):
                     continue
 
                 item = feature.find("Attribute[@name='maptip']")
@@ -69,7 +73,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
     def feature_list_to_replace(cls, cfg, project, relation_manager, xml) -> List[Result]:
         """ Parse the XML and check for each layer according to the Lizmap CFG file. """
         features = []
-        for layer_name, feature in GetFeatureInfoFilter.parse_xml(xml):
+        for layer_name, feature_id in GetFeatureInfoFilter.parse_xml(xml):
             layer = find_vector_layer(layer_name, project)
 
             layer_config = cfg.get('layers').get(layer_name)
@@ -97,7 +101,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
             # Maybe we can avoid the CSS on all features ?
             html_content += Tooltip.css()
 
-            features.append(Result(layer, feature, html_content))
+            features.append(Result(layer, feature_id, html_content))
         return features
 
     def responseComplete(self):
@@ -156,12 +160,22 @@ class GetFeatureInfoFilter(QgsServerFilter):
             distance_area.setEllipsoid(project.ellipsoid())
             exp_context.appendScope(QgsExpressionContextUtils.layerScope(result.layer))
 
-            feature = result.layer.getFeature(int(result.feature))
+            expression = server_feature_id_expression(
+                result.feature_id, result.layer.primaryKeyAttributes(), result.layer.fields())
+            if expression:
+                request = QgsFeatureRequest(QgsExpression(expression))
+                request.setFlags(QgsFeatureRequest.NoGeometry)
+                feature = QgsFeature()
+                result.layer.getFeatures(request).nextFeature(feature)
+            else:
+                # If not expression, the feature ID must be integer
+                feature = result.layer.getFeature(int(result.feature_id))
+
             exp_context.setFeature(feature)
             exp_context.setFields(feature.fields())
 
             value = QgsExpression.replaceExpressionText(result.expression, exp_context, distance_area)
-            xml = self.append_maptip(xml, result.layer.name(), feature.id(), value)
+            xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
 
         request.clear()
         request.setResponseHeader('Content-Type', 'text/xml')
