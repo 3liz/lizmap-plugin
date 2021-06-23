@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 from collections import namedtuple
 from pathlib import Path
-from typing import Generator, Tuple
+from typing import Generator, List, Tuple
 
 from qgis.core import (
     Qgis,
@@ -26,6 +26,8 @@ from lizmap.tooltip import Tooltip
 """
 QGIS Server filter for the GetFeatureInfo according to CFG config.
 """
+
+Result = namedtuple('Result', ['layer', 'feature', 'expression'])
 
 
 class GetFeatureInfoFilter(QgsServerFilter):
@@ -63,6 +65,41 @@ class GetFeatureInfoFilter(QgsServerFilter):
         xml_string = '\n'.join(xml_lines[1:])
         return xml_string.strip()
 
+    @classmethod
+    def feature_list_to_replace(cls, cfg, project, relation_manager, xml) -> List[Result]:
+        """ Parse the XML and check for each layer according to the Lizmap CFG file. """
+        features = []
+        for layer_name, feature in GetFeatureInfoFilter.parse_xml(xml):
+            layer = find_vector_layer(layer_name, project)
+
+            layer_config = cfg.get('layers').get(layer_name)
+            if layer_config.get('popup') not in ['True', True]:
+                continue
+
+            if layer_config.get('popupSource') != 'form':
+                continue
+
+            config = layer.editFormConfig()
+            if config.layout() != QgsEditFormConfig.TabLayout:
+                QgsMessageLog.logMessage(
+                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout',
+                    'lizmap',
+                    Qgis.Warning
+                )
+                continue
+
+            root = config.invisibleRootContainer()
+
+            # Need to eval the html_content
+            html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
+            html_content = Tooltip.create_popup(html_content)
+
+            # Maybe we can avoid the CSS on all features ?
+            html_content += Tooltip.css()
+
+            features.append(Result(layer, feature, html_content))
+        return features
+
     def responseComplete(self):
         """ Intercept the GetFeatureInfo and add the form maptip if needed. """
         request = self.serverInterface().requestHandler()
@@ -96,45 +133,14 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
         xml = request.body().data().decode("utf-8")
 
-        output = []
-        Result = namedtuple('Result', ['layer', 'feature', 'expression'])
+        features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
 
-        for layer_name, feature in self.parse_xml(xml):
-            layer = find_vector_layer(layer_name, project)
-
-            layer_config = cfg.get('layers').get(layer_name)
-            if layer_config.get('popup') not in ['True', True]:
-                continue
-
-            if layer_config.get('popupSource') != 'form':
-                continue
-
-            config = layer.editFormConfig()
-            if config.layout() != QgsEditFormConfig.TabLayout:
-                QgsMessageLog.logMessage(
-                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout',
-                    'lizmap',
-                    Qgis.Warning
-                )
-                continue
-
-            root = config.invisibleRootContainer()
-
-            # Need to eval the html_content
-            html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
-            html_content = Tooltip.create_popup(html_content)
-
-            # Maybe we can avoid the CSS on all features ?
-            html_content += Tooltip.css()
-
-            output.append(Result(layer, feature, html_content))
-
-        if not output:
+        if not features:
             return
 
         QgsMessageLog.logMessage(
             "Replacing the maptip from QGIS by the drag and drop expression for {} features on {}".format(
-                len(output), ','.join([result.layer.name() for result in output])),
+                len(features), ','.join([result.layer.name() for result in features])),
             'lizmap',
             Qgis.Info
         )
@@ -144,7 +150,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(project))
 
-        for result in output:
+        for result in features:
             distance_area = QgsDistanceArea()
             distance_area.setSourceCrs(result.layer.crs(), project.transformContext())
             distance_area.setEllipsoid(project.ellipsoid())
