@@ -433,13 +433,23 @@ class Lizmap:
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
         # Popup configuration
-        widget = self.layer_options_list['popupSource']['widget']
-        widget.currentIndexChanged.connect(self.enable_popup_source_button)
-        index = widget.findText('form')
-        form_popup = widget.model().item(index)
-        font = form_popup.font()
-        font.setUnderline(True)
-        form_popup.setFont(font)
+        widget_source_popup = self.layer_options_list['popupSource']['widget']
+        widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
+        index = widget_source_popup.findText('form')
+        if not index:
+            # Random bug I need to find why
+            # The "form" is not found
+            # But it's not critical so let's skip
+            form_type = [
+                widget_source_popup.itemText(i) for i in range(widget_source_popup.count())
+            ]
+            LOGGER.warning(
+                "Element 'form' was not found in the Lizmap dialog. Only {}".format(','.join(form_type)))
+        else:
+            form_popup = widget_source_popup.model().item(index)
+            font = form_popup.font()
+            font.setUnderline(True)
+            form_popup.setFont(font)
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
