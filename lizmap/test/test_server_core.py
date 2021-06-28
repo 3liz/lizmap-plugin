@@ -4,11 +4,15 @@ import os
 import unittest
 import xml.etree.ElementTree as ET
 
+from qgis.core import QgsField, QgsFields
+from qgis.PyQt.QtCore import QVariant
+
 from lizmap.server.core import (
     config_value_to_boolean,
     get_lizmap_config,
     get_lizmap_layer_login_filter,
     get_lizmap_layers_config,
+    server_feature_id_expression,
 )
 from lizmap.server.get_feature_info import GetFeatureInfoFilter
 
@@ -156,7 +160,7 @@ class TestTools(unittest.TestCase):
 
         for layer, feature in GetFeatureInfoFilter.parse_xml(string):
             self.assertEqual(layer, 'qgis_popup')
-            self.assertEqual(feature, 1)
+            self.assertEqual(feature, '1')
 
     def test_edit_xml_get_feature_info_without_maptip(self):
         """ Test to edit a GetFeatureInfo xml without maptip. """
@@ -232,4 +236,23 @@ class TestTools(unittest.TestCase):
         self.assertEqual(
             ET.tostring(ET.fromstring(expected)).decode("utf-8"),
             ET.tostring(ET.fromstring(response)).decode("utf-8")
+        )
+
+    def test_feature_id_expression(self):
+        """ Test the QgsServerFeatureId port from CPP into Python. """
+        fields = QgsFields()
+        fields.append(QgsField('field_1', type=QVariant.Double))
+        fields.append(QgsField('field_2', type=QVariant.Double))
+
+        self.assertEqual(
+            "",
+            server_feature_id_expression("1", [], fields)
+        )
+        self.assertEqual(
+            "\"field_1\" = '1'",
+            server_feature_id_expression("1", ['field_1'], fields)
+        )
+        self.assertEqual(
+            "\"field_1\" = '1' AND \"field_2\" = '2'",
+            server_feature_id_expression("1@@2", ['field_1', 'field_2'], fields)
         )

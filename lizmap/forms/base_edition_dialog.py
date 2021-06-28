@@ -126,7 +126,7 @@ class BaseEditionDialog(QDialog):
         if locale not in ONLINE_HELP_LANGUAGES:
             locale = 'en'
 
-        url = '{url}/{lang}/{page}'.format(url=DOC_URL, lang=locale, page=self.config.help())
+        url = '{url}/{lang}/{page}'.format(url=DOC_URL, lang=locale, page=self.config.help_path())
         QDesktopServices.openUrl(QUrl(url))
 
     def version_lwc(self):

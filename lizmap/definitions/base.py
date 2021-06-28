@@ -35,7 +35,8 @@ class BaseDefinitions:
         raise NotImplementedError
 
     @property
-    def help(self) -> str:
+    def help_path(self) -> str:
+        """ The online help path. """
         raise NotImplementedError
 
     @property

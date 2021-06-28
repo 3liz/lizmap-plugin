@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 from collections import namedtuple
 from pathlib import Path
-from typing import Generator, Tuple
+from typing import Generator, List, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -16,16 +16,20 @@ from qgis.core import (
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsMessageLog,
 )
 from qgis.server import QgsConfigCache, QgsServerFilter
 
-from lizmap.server.core import find_vector_layer
+from lizmap.server.core import find_vector_layer, server_feature_id_expression
 from lizmap.tooltip import Tooltip
 
 """
 QGIS Server filter for the GetFeatureInfo according to CFG config.
 """
+
+Result = namedtuple('Result', ['layer', 'feature_id', 'expression'])
 
 
 class GetFeatureInfoFilter(QgsServerFilter):
@@ -36,10 +40,10 @@ class GetFeatureInfoFilter(QgsServerFilter):
         root = ET.fromstring(string)
         for layer in root:
             for feature in layer:
-                yield layer.attrib['name'], int(feature.attrib['id'])
+                yield layer.attrib['name'], feature.attrib['id']
 
     @classmethod
-    def append_maptip(cls, string: str, layer_name: str, feature_id: int, maptip: str) -> str:
+    def append_maptip(cls, string: str, layer_name: str, feature_id: Union[str, int], maptip: str) -> str:
         """ Edit the XML GetFeatureInfo by adding a maptip for a given layer and feature ID. """
         root = ET.fromstring(string)
         for layer in root:
@@ -47,7 +51,9 @@ class GetFeatureInfoFilter(QgsServerFilter):
                 continue
 
             for feature in layer:
-                if int(feature.attrib['id']) != feature_id:
+                # feature_id can be int if QgsFeature.id() is used
+                # Otherwise it's string from QgsServerFeatureId
+                if feature.attrib['id'] != str(feature_id):
                     continue
 
                 item = feature.find("Attribute[@name='maptip']")
@@ -62,6 +68,41 @@ class GetFeatureInfoFilter(QgsServerFilter):
         xml_lines = ET.tostring(root, encoding='utf8', method='xml').decode("utf-8").split('\n')
         xml_string = '\n'.join(xml_lines[1:])
         return xml_string.strip()
+
+    @classmethod
+    def feature_list_to_replace(cls, cfg, project, relation_manager, xml) -> List[Result]:
+        """ Parse the XML and check for each layer according to the Lizmap CFG file. """
+        features = []
+        for layer_name, feature_id in GetFeatureInfoFilter.parse_xml(xml):
+            layer = find_vector_layer(layer_name, project)
+
+            layer_config = cfg.get('layers').get(layer_name)
+            if layer_config.get('popup') not in ['True', True]:
+                continue
+
+            if layer_config.get('popupSource') != 'form':
+                continue
+
+            config = layer.editFormConfig()
+            if config.layout() != QgsEditFormConfig.TabLayout:
+                QgsMessageLog.logMessage(
+                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout',
+                    'lizmap',
+                    Qgis.Warning
+                )
+                continue
+
+            root = config.invisibleRootContainer()
+
+            # Need to eval the html_content
+            html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
+            html_content = Tooltip.create_popup(html_content)
+
+            # Maybe we can avoid the CSS on all features ?
+            html_content += Tooltip.css()
+
+            features.append(Result(layer, feature_id, html_content))
+        return features
 
     def responseComplete(self):
         """ Intercept the GetFeatureInfo and add the form maptip if needed. """
@@ -96,45 +137,23 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
         xml = request.body().data().decode("utf-8")
 
-        output = []
-        Result = namedtuple('Result', ['layer', 'feature', 'expression'])
+        # noinspection PyBroadException
+        try:
+            features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
+        except Exception:
+            QgsMessageLog.logMessage(
+                "Error while reading the XML response GetFeatureInfo, returning default response",
+                'lizmap',
+                Qgis.Critical
+            )
+            return
 
-        for layer_name, feature in self.parse_xml(xml):
-            layer = find_vector_layer(layer_name, project)
-
-            layer_config = cfg.get('layers').get(layer_name)
-            if layer_config.get('popup') not in ['True', True]:
-                continue
-
-            if layer_config.get('popupSource') != 'form':
-                continue
-
-            config = layer.editFormConfig()
-            if config.layout() != QgsEditFormConfig.TabLayout:
-                QgsMessageLog.logMessage(
-                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout',
-                    'lizmap',
-                    Qgis.Warning
-                )
-                continue
-
-            root = config.invisibleRootContainer()
-
-            # Need to eval the html_content
-            html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
-            html_content = Tooltip.create_popup(html_content)
-
-            # Maybe we can avoid the CSS on all features ?
-            html_content += Tooltip.css()
-
-            output.append(Result(layer, feature, html_content))
-
-        if not output:
+        if not features:
             return
 
         QgsMessageLog.logMessage(
             "Replacing the maptip from QGIS by the drag and drop expression for {} features on {}".format(
-                len(output), ','.join([result.layer.name() for result in output])),
+                len(features), ','.join([result.layer.name() for result in features])),
             'lizmap',
             Qgis.Info
         )
@@ -144,19 +163,39 @@ class GetFeatureInfoFilter(QgsServerFilter):
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(project))
 
-        for result in output:
-            distance_area = QgsDistanceArea()
-            distance_area.setSourceCrs(result.layer.crs(), project.transformContext())
-            distance_area.setEllipsoid(project.ellipsoid())
-            exp_context.appendScope(QgsExpressionContextUtils.layerScope(result.layer))
+        # noinspection PyBroadException
+        try:
+            for result in features:
+                distance_area = QgsDistanceArea()
+                distance_area.setSourceCrs(result.layer.crs(), project.transformContext())
+                distance_area.setEllipsoid(project.ellipsoid())
+                exp_context.appendScope(QgsExpressionContextUtils.layerScope(result.layer))
 
-            feature = result.layer.getFeature(int(result.feature))
-            exp_context.setFeature(feature)
-            exp_context.setFields(feature.fields())
+                expression = server_feature_id_expression(
+                    result.feature_id, result.layer.primaryKeyAttributes(), result.layer.fields())
+                if expression:
+                    request = QgsFeatureRequest(QgsExpression(expression))
+                    request.setFlags(QgsFeatureRequest.NoGeometry)
+                    feature = QgsFeature()
+                    result.layer.getFeatures(request).nextFeature(feature)
+                else:
+                    # If not expression, the feature ID must be integer
+                    feature = result.layer.getFeature(int(result.feature_id))
 
-            value = QgsExpression.replaceExpressionText(result.expression, exp_context, distance_area)
-            xml = self.append_maptip(xml, result.layer.name(), feature.id(), value)
+                exp_context.setFeature(feature)
+                exp_context.setFields(feature.fields())
 
-        request.clear()
-        request.setResponseHeader('Content-Type', 'text/xml')
-        request.appendBody(bytes(xml, 'utf-8'))
+                value = QgsExpression.replaceExpressionText(result.expression, exp_context, distance_area)
+                xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
+
+            request.clear()
+            request.setResponseHeader('Content-Type', 'text/xml')
+            request.appendBody(bytes(xml, 'utf-8'))
+
+        except Exception:
+            QgsMessageLog.logMessage(
+                "Error while rewriting the XML response GetFeatureInfo, returning default response",
+                'lizmap',
+                Qgis.Critical
+            )
+            return

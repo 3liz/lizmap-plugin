@@ -44,5 +44,5 @@ class ToolTipDefinitions(BaseDefinitions):
     def key(self) -> str:
         return 'tooltipLayers'
 
-    def help(self) -> str:
+    def help_path(self) -> str:
         return 'publish/lizmap_plugin/tooltip.html'
