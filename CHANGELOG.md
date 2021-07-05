@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.5.3 - 2010-07-05
+
+* Refactor some imports and class names in the server part
+
 ## 3.5.2 - 2010-06-23
 
 * Fix an issue on QGIS Desktop about a Python exception again
