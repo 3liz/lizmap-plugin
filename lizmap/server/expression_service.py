@@ -20,7 +20,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QTextCodec
 from qgis.server import QgsServerRequest, QgsServerResponse, QgsService
 
-from .core import (
+from lizmap.server.core import (
     ServiceError,
     find_vector_layer,
     get_server_fid,

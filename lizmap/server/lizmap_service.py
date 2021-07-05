@@ -18,8 +18,8 @@ from qgis.server import (
     QgsService,
 )
 
-from .core import ServiceError, write_json_response
-from .logging import Logger
+from lizmap.server.core import ServiceError, write_json_response
+from lizmap.server.logger import Logger
 
 
 class LizmapServiceError(ServiceError):

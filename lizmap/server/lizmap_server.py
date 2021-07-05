@@ -6,12 +6,12 @@ import os
 
 from qgis.server import QgsServerInterface
 
-from .expression_service import ExpressionService
-from .get_feature_info import GetFeatureInfoFilter
-from .lizmap_accesscontrol import LizmapAccessControlFilter
-from .lizmap_filter import LizmapFilter
-from .lizmap_service import LizmapService
-from .logging import Logger
+from lizmap.server.expression_service import ExpressionService
+from lizmap.server.get_feature_info import GetFeatureInfoFilter
+from lizmap.server.lizmap_accesscontrol import LizmapAccessControlFilter
+from lizmap.server.lizmap_filter import LizmapFilter
+from lizmap.server.lizmap_service import LizmapService
+from lizmap.server.logger import Logger
 
 
 class LizmapServer:

@@ -13,7 +13,7 @@ from qgis.core import (
 )
 from qgis.server import QgsAccessControlFilter, QgsServerInterface
 
-from .core import (
+from lizmap.server.core import (
     config_value_to_boolean,
     get_lizmap_config,
     get_lizmap_groups,
