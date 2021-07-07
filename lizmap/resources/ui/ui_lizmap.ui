@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1009</width>
+    <width>1033</width>
     <height>756</height>
    </rect>
   </property>
@@ -1155,8 +1155,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>638</width>
-                <height>707</height>
+                <width>497</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1241,7 +1241,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>375</width>
+                       <width>379</width>
                        <height>972</height>
                       </rect>
                      </property>
@@ -1886,7 +1886,7 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>624</width>
+                <width>561</width>
                 <height>879</height>
                </rect>
               </property>
@@ -2586,8 +2586,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>638</width>
-                <height>707</height>
+                <width>450</width>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2692,8 +2692,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>638</width>
-                <height>707</height>
+                <width>497</width>
+                <height>373</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2817,8 +2817,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>638</width>
-                <height>707</height>
+                <width>450</width>
+                <height>283</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2927,8 +2927,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>638</width>
-                <height>707</height>
+                <width>450</width>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3033,8 +3033,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>638</width>
-                <height>707</height>
+                <width>278</width>
+                <height>334</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3136,10 +3136,7 @@ border-radius: 0px;</string>
                    <property name="toolTip">
                     <string>The vector layer containing the polygons used for the spatial filter</string>
                    </property>
-                   <property name="filters">
-                    <set>QgsMapLayerProxyModel::PolygonLayer</set>
-                   </property>
-                   <property name="showCrs">
+                   <property name="showCrs" stdset="0">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -3158,9 +3155,6 @@ border-radius: 0px;</string>
                   <widget class="QgsFieldComboBox" name="polygon_filter_source_field_for_visibility">
                    <property name="toolTip">
                     <string>A text field containing the Lizmap Web Client groups of users used to find the corresponding polygons. The authenticated user will only see the features contained in the polygons corresponding to its groups. Separate the groups with a comma.</string>
-                   </property>
-                   <property name="filters">
-                    <set>QgsFieldProxyModel::String</set>
                    </property>
                   </widget>
                  </item>
@@ -3251,8 +3245,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>620</width>
-                <height>689</height>
+                <width>618</width>
+                <height>474</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3440,8 +3434,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>707</height>
+                <width>450</width>
+                <height>439</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3623,8 +3617,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>642</width>
-                <height>687</height>
+                <width>450</width>
+                <height>499</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -3757,8 +3751,8 @@ border-radius: 0px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>642</width>
-                <height>687</height>
+                <width>450</width>
+                <height>300</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -3895,18 +3889,18 @@ border-radius: 0px;</string>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
@@ -4096,22 +4090,5 @@ border-radius: 0px;</string>
   <tabstop>combo_theme</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>polygon_filter_source_layer</sender>
-   <signal>layerChanged(QgsMapLayer*)</signal>
-   <receiver>polygon_filter_source_field_for_visibility</receiver>
-   <slot>setLayer(QgsMapLayer*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>729</x>
-     <y>112</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>870</x>
-     <y>145</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

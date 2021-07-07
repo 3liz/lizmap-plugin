@@ -109,6 +109,15 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
         raise NotImplementedError
 
 
+def filter_by_polygon_to_json(polygon_layer, field_visibility, field_edition, visibility_layers, edition_layers) -> list:
+    """ Return the python list for the JSON configuration of the filter by polygon. """
+    data = [
+
+    ]
+
+    return data
+
+
 def format_qgis_version(qgis_version) -> tuple:
     """ Split a QGIS int version number into major, minor, bugfix.
 

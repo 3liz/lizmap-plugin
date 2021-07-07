@@ -209,6 +209,7 @@ class Lizmap:
             self.dlg.liPopupSource.model().item(
                 self.dlg.liPopupSource.findText('form')
             ),
+            self.dlg.label_polygon_filter,
         ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
@@ -450,6 +451,22 @@ class Lizmap:
             font = form_popup.font()
             font.setUnderline(True)
             form_popup.setFont(font)
+
+        # Filter by login and polygons
+        self.dlg.polygon_filter_source_layer.setAllowEmptyLayer(True)
+        self.dlg.polygon_filter_source_layer.setCurrentIndex(0)
+
+        self.dlg.polygon_filter_source_layer.layerChanged.connect(
+            self.dlg.polygon_filter_source_field_for_visibility.setLayer)
+        self.dlg.polygon_filter_source_layer.layerChanged.connect(
+            self.dlg.polygon_filter_source_field_for_editing.setLayer)
+
+        current_layer = self.dlg.polygon_filter_source_layer.currentLayer()
+        self.dlg.polygon_filter_source_field_for_editing.setLayer(current_layer)
+        self.dlg.polygon_filter_source_field_for_editing.setLayer(current_layer)
+
+        self.dlg.polygon_filter_layers_for_visibility.set_project(self.project)
+        self.dlg.polygon_filter_layers_for_editing.set_project(self.project)
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
@@ -733,7 +750,7 @@ class Lizmap:
         # Link button
         self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.dlg.button_refresh_link.setText('')
-        self.dlg.button_refresh_link.setToolTip('Set the link from the dataUrl property in the layer properties.')
+        self.dlg.button_refresh_link.setToolTip(tr('Set the link from the dataUrl property in the layer properties.'))
         self.dlg.button_refresh_link.clicked.connect(self.link_from_properties)
 
         # detect project closed
@@ -1005,6 +1022,8 @@ class Lizmap:
                             data = {k: json_options[k] for k in json_options if k.startswith(manager.definitions.key())}
                             if data:
                                 manager.from_json(data)
+
+                # Read filter by polygon TODO
 
             except Exception as e:
                 if self.is_dev_version:
@@ -1973,6 +1992,9 @@ class Lizmap:
                     liz2json['options'].update(data)
                 else:
                     liz2json[key] = data
+
+        # Add configuration from layers filtered by polygons and users
+        # liz2json['layers_filtered_by_polygons'] =
 
         # list of Lizmap external baselayers
         eblTableWidget = self.dlg.twLizmapBaselayers
