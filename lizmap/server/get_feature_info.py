@@ -129,7 +129,8 @@ class GetFeatureInfoFilter(QgsServerFilter):
         if not config_path.exists():
             return
 
-        with open(config_path, 'r', encoding='utf-8') as cfg_file:
+        # str() because the plugin must be compatible Python 3.5
+        with open(str(config_path), 'r', encoding='utf-8') as cfg_file:
             cfg = json.loads(cfg_file.read())
 
         project = QgsConfigCache.instance().project(str(project_path))
