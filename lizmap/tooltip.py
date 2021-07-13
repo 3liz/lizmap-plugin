@@ -127,7 +127,7 @@ class Tooltip:
                 headers.append(h)
 
             if l > 1:
-                a += '\n' + SPACES * l + '<fieldset>'
+                a += '\n' + SPACES * l + '<fieldset class="{}">'.format(visibility)
                 a += '\n' + SPACES * l + '<legend>{}</legend>'.format(node.name())
                 a += '\n' + SPACES * l + '<div>'
 
