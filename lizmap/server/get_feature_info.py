@@ -174,10 +174,10 @@ class GetFeatureInfoFilter(QgsServerFilter):
                 expression = server_feature_id_expression(
                     result.feature_id, result.layer.primaryKeyAttributes(), result.layer.fields())
                 if expression:
-                    request = QgsFeatureRequest(QgsExpression(expression))
-                    request.setFlags(QgsFeatureRequest.NoGeometry)
+                    expression_request = QgsFeatureRequest(QgsExpression(expression))
+                    expression_request.setFlags(QgsFeatureRequest.NoGeometry)
                     feature = QgsFeature()
-                    result.layer.getFeatures(request).nextFeature(feature)
+                    result.layer.getFeatures(expression_request).nextFeature(feature)
                 else:
                     # If not expression, the feature ID must be integer
                     feature = result.layer.getFeature(int(result.feature_id))
