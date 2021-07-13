@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.5.4 - 2010-07-13
+
+* Fix the visibility used on container in QGIS Form with level upper than 1
+* Server - Always log when there is a Python exception
+* Server - Make the plugin compatible Python 3.5
+* Server - Rename variable about conflict
+
 ## 3.5.3 - 2010-07-05
 
 * Refactor some imports and class names in the server part
