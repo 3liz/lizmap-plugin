@@ -10,7 +10,7 @@ from os.path import dirname, join
 from typing import Dict
 
 from osgeo import gdal
-from qgis.core import Qgis, QgsProject
+from qgis.core import Qgis, QgsMessageLog, QgsProject
 from qgis.server import (
     QgsServerInterface,
     QgsServerRequest,
@@ -83,8 +83,9 @@ class LizmapService(QgsService):
 
         except LizmapServiceError as err:
             err.formatResponse(response)
-        except Exception:
+        except Exception as e:
             self.logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
+            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
             err = LizmapServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 

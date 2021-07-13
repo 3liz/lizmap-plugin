@@ -92,9 +92,10 @@ def get_lizmap_config(qgis_project_path: str) -> Union[Dict, None]:
                 QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
                 return None
             return cfg
-        except Exception:
+        except Exception as e:
             # Lizmap config is not a valid JSON file
             QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Critical)
+            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
             return None
 
 

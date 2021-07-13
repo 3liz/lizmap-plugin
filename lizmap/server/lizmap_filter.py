@@ -129,8 +129,9 @@ class LizmapFilter(QgsServerFilter):
             # use setServiceException to be sure to stop the request
             handler.setServiceException(exc)
 
-        except Exception:
+        except Exception as e:
             QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
+            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
 
     def getLizmapGroups(self) -> 'List[str]':
         """ Get Lizmap user groups provided by the request """

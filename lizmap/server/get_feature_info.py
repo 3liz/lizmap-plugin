@@ -141,12 +141,13 @@ class GetFeatureInfoFilter(QgsServerFilter):
         # noinspection PyBroadException
         try:
             features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
-        except Exception:
+        except Exception as e:
             QgsMessageLog.logMessage(
                 "Error while reading the XML response GetFeatureInfo, returning default response",
                 'lizmap',
                 Qgis.Critical
             )
+            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
             return
 
         if not features:
@@ -193,10 +194,11 @@ class GetFeatureInfoFilter(QgsServerFilter):
             request.setResponseHeader('Content-Type', 'text/xml')
             request.appendBody(bytes(xml, 'utf-8'))
 
-        except Exception:
+        except Exception as e:
             QgsMessageLog.logMessage(
                 "Error while rewriting the XML response GetFeatureInfo, returning default response",
                 'lizmap',
                 Qgis.Critical
             )
+            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
             return
