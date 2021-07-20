@@ -54,6 +54,15 @@ class LizmapFilter(QgsServerFilter):
     def requestReady(self):
         # noinspection PyBroadException
         try:
+            # Check first the headers to avoid unnecessary config file reading
+            # Get Lizmap user groups defined in request headers
+            groups = self.getLizmapGroups()
+
+            # If groups is empty, no Lizmap user groups provided by the request
+            # The request can be evaluated by QGIS Server
+            if len(groups) == 0:
+                return
+
             # Get QGIS Project path
             config_path = self.iface.configFilePath()
             if not os.path.exists(config_path):
@@ -67,14 +76,6 @@ class LizmapFilter(QgsServerFilter):
                 # Lizmap config path does not exist
                 QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
                 # The request can be evaluated by QGIS Server
-                return
-
-            # Get Lizmap user groups defined in request headers
-            groups = self.getLizmapGroups()
-
-            # If groups is empty, no Lizmap user groups provided by the request
-            # The request can be evaluated by QGIS Server
-            if len(groups) == 0:
                 return
 
             # Get Lizmap config

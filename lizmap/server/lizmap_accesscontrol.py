@@ -267,6 +267,23 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         """ Get lizmap layer filter based on login filter """
         layer_filter = ''
 
+        # Check first the headers to avoid unnecessary config file reading
+        # Override filter
+        override_filter = self.get_lizmap_override_filter()
+        if override_filter:
+            # Return empty filter
+            return layer_filter
+
+        # Get Lizmap user groups provided by the request
+        groups = self.get_lizmap_groups()
+        user_login = self.get_lizmap_user_login()
+
+        # If groups is empty, no Lizmap user groups provided by the request
+        # Return empty filter
+        if len(groups) == 0 and not user_login:
+            return layer_filter
+
+        # If headers content implies to check for filter, read the Lizmap config
         # Get Lizmap config
         cfg = self.get_lizmap_config()
         if not cfg:
@@ -295,20 +312,6 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Layer login fliter only for edition does not filter layer
         is_edition_only = 'edition_only' in cfg_layer_login_filter
         if is_edition_only and config_value_to_boolean(cfg_layer_login_filter['edition_only']):
-            return layer_filter
-
-        # Get Lizmap user groups provided by the request
-        groups = self.get_lizmap_groups()
-        user_login = self.get_lizmap_user_login()
-
-        # If groups is empty, no Lizmap user groups provided by the request
-        # Return empty filter
-        if len(groups) == 0 and not user_login:
-            return layer_filter
-
-        # Override filter
-        override_filter = self.get_lizmap_override_filter()
-        if override_filter:
             return layer_filter
 
         attribute = cfg_layer_login_filter['filterAttribute']
