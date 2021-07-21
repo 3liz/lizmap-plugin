@@ -2440,11 +2440,9 @@ class Lizmap:
     def run(self):
         """Plugin run method : launch the GUI."""
         if self.dlg.isVisible():
-            QMessageBox.warning(
-                self.dlg,
-                tr("Lizmap - Warning"),
-                tr("A Lizmap window is already opened"),
-                QMessageBox.Ok)
+            # show dialog in front of QGIS
+            self.dlg.raise_()
+            self.dlg.activateWindow()
             return False
 
         # show the dialog only if checkGlobalProjectOptions is true
