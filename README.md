@@ -3,10 +3,10 @@
 [![Tests 🎳](https://github.com/3liz/lizmap-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/3liz/lizmap-plugin/actions/workflows/ci.yml)
 [![Transifex 🗺](https://github.com/3liz/lizmap-plugin/actions/workflows/transifex.yml/badge.svg)](https://github.com/3liz/lizmap-plugin/actions/workflows/transifex.yml)
 
-* Latest download link: https://github.com/3liz/lizmap-plugin/releases/latest/download/lizmap.zip
-* All versions are available [plugins.qgis.org](https://plugins.qgis.org/plugins/lizmap/).
+* Latest release link: https://github.com/3liz/lizmap-plugin/releases
+* The `master` and `dev` branch can be found on https://packages.3liz.org/ after each commits with a stable link.
+* All published versions are available [plugins.qgis.org](https://plugins.qgis.org/plugins/lizmap/).
 * Do not use the link provided by GitHub by default on the top right corner.
-* The `dev` branch can be found on https://packages.3liz.org/
 
 ### Branches
 
