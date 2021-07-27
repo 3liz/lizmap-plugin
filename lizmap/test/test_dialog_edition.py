@@ -9,6 +9,7 @@ from lizmap.forms.dataviz_edition import DatavizEditionDialog
 from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
+from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
@@ -39,6 +40,7 @@ class TestEditionDialog(unittest.TestCase):
             EditionLayerDialog,
             FilterByFormEditionDialog,
             FilterByLoginEditionDialog,
+            FilterByPolygonEditionDialog,
             LocateLayerEditionDialog,
             TimeManagerEditionDialog,
             ToolTipEditionDialog,
