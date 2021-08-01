@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == '3liz'
     steps:
-    - uses: actions/stale@v3.0.19
+    - uses: actions/stale@v4
       with:
         repo-token: ${{ secrets.GH_TOKEN }}
         days-before-stale: 60
