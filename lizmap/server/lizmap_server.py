@@ -27,26 +27,36 @@ class LizmapServer:
         debug = os.getenv('QGIS_SERVER_LIZMAP_DEBUG', '').lower() in ('1', 'yes', 'y', 'true')
 
         # Register service
+        reg = server_iface.serviceRegistry()
         try:
-            reg = server_iface.serviceRegistry()
             reg.registerService(ExpressionService(debug=debug))
             reg.registerService(LizmapService(self.server_iface, debug=debug))
         except Exception as e:
-            self.logger.critical('Error loading Service Lizmap : {}'.format(e))
+            self.logger.critical('Error loading service "expression" : {}'.format(e))
+            raise
+
+        try:
+            reg.registerService(LizmapService(self.server_iface, debug=debug))
+        except Exception as e:
+            self.logger.critical('Error loading service "lizmap" : {}'.format(e))
             raise
 
         # Register filter
         try:
             server_iface.registerFilter(LizmapFilter(self.server_iface), 50)
         except Exception as e:
-            self.logger.critical('Error loading filter lizmap : {}'.format(e))
+            self.logger.critical('Error loading filter "lizmap" : {}'.format(e))
             raise
 
         # Register access control
         try:
             server_iface.registerAccessControl(LizmapAccessControlFilter(self.server_iface), 100)
         except Exception as e:
-            self.logger.critical('Error loading access control : {}'.format(e))
+            self.logger.critical('Error loading access control "lizmap" : {}'.format(e))
             raise
 
-        server_iface.registerFilter(GetFeatureInfoFilter(self.server_iface), 150)
+        try:
+            server_iface.registerFilter(GetFeatureInfoFilter(self.server_iface), 150)
+        except Exception as e:
+            self.logger.critical('Error loading filter "get feature info" : {}'.format(e))
+            raise

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Server - Improve debug for GetFeatureInfo on the server side
+
 ## 3.5.4 - 2010-07-13
 
 * Fix the visibility used on container in QGIS Form with level upper than 1
