@@ -30,7 +30,6 @@ class LizmapServer:
         reg = server_iface.serviceRegistry()
         try:
             reg.registerService(ExpressionService(debug=debug))
-            reg.registerService(LizmapService(self.server_iface, debug=debug))
         except Exception as e:
             self.logger.critical('Error loading service "expression" : {}'.format(e))
             raise
