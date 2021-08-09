@@ -2,20 +2,24 @@
 
 ## Unreleased
 
-* Server - Improve debug for GetFeatureInfo on the server side
+## 3.5.5 - 2021-08-09
 
-## 3.5.4 - 2010-07-13
+* Desktop - Show dialog in front of QGIS Desktop if a dialog is already opened (contribution from @Kanahiro)
+* Server - Improve debug for GetFeatureInfo on the server side
+* Server - Check headers content before reading config file to improve performance
+
+## 3.5.4 - 2021-07-13
 
 * Fix the visibility used on container in QGIS Form with level upper than 1
 * Server - Always log when there is a Python exception
 * Server - Make the plugin compatible Python 3.5
 * Server - Rename variable about conflict
 
-## 3.5.3 - 2010-07-05
+## 3.5.3 - 2021-07-05
 
 * Refactor some imports and class names in the server part
 
-## 3.5.2 - 2010-06-23
+## 3.5.2 - 2021-06-23
 
 * Fix an issue on QGIS Desktop about a Python exception again
 
