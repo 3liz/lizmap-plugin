@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Generator, List, Tuple, Union
 
 from qgis.core import (
-    Qgis,
     QgsDistanceArea,
     QgsEditFormConfig,
     QgsExpression,
@@ -18,7 +17,6 @@ from qgis.core import (
     QgsExpressionContextUtils,
     QgsFeature,
     QgsFeatureRequest,
-    QgsMessageLog,
 )
 from qgis.server import QgsConfigCache, QgsServerFilter
 
@@ -86,11 +84,8 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
             config = layer.editFormConfig()
             if config.layout() != QgsEditFormConfig.TabLayout:
-                QgsMessageLog.logMessage(
-                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout',
-                    'lizmap',
-                    Qgis.Warning
-                )
+                Logger.warning(
+                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout')
                 continue
 
             root = config.invisibleRootContainer()
@@ -119,16 +114,23 @@ class GetFeatureInfoFilter(QgsServerFilter):
             return
 
         if params.get('INFO_FORMAT', '').upper() != 'TEXT/XML':
-            # Better to log something
+            logger.info(
+                "Lizmap is not only processing TEXT/XML INFO_FORMAT, not {}".format(
+                    params.get('INFO_FORMAT', '').upper()))
             return
 
         project_path = Path(self.serverInterface().configFilePath())
         if not project_path.exists():
-            # QGIS Project path does not exist as a file
+            logger.info(
+                'The QGIS project {} does not exist as a file, not possible to process with Lizmap this '
+                'request GetFeatureInfo'.format(self.serverInterface().configFilePath()))
             return
 
         config_path = Path(self.serverInterface().configFilePath() + '.cfg')
         if not config_path.exists():
+            logger.info(
+                'The QGIS project {} is not a Lizmap project, not possible to process with Lizmap this '
+                'request GetFeatureInfo'.format(self.serverInterface().configFilePath()))
             return
 
         # str() because the plugin must be compatible Python 3.5
@@ -145,11 +147,16 @@ class GetFeatureInfoFilter(QgsServerFilter):
             features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
         except Exception as e:
             logger.critical(
-                "Error while reading the XML response GetFeatureInfo, returning default response")
+                "Error while reading the XML response GetFeatureInfo for project {}, returning default "
+                "response".format(project_path))
             logger.critical(str(e))
             return
 
         if not features:
+            # This is not normal ...
+            logger.warning(
+                "No features found in the XML from QGIS Server for project {}".format(project_path)
+            )
             return
 
         logger.info(
@@ -201,6 +208,8 @@ class GetFeatureInfoFilter(QgsServerFilter):
                     )
                     continue
 
+                logger.info("Replacing feature {} in layer {} for the GetFeatureInfo by the drag&drop form".format(
+                    result.feature_id, result.layer.name()))
                 xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
 
             # Safe guard, it shouldn't happen
@@ -213,6 +222,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
             request.clear()
             request.setResponseHeader('Content-Type', 'text/xml')
             request.appendBody(bytes(xml, 'utf-8'))
+            logger.info("GetFeatureInfo replaced for project {}".format(project_path))
 
         except Exception as e:
             logger.critical(

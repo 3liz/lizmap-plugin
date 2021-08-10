@@ -1,16 +1,10 @@
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 from typing import Dict, List, Union
 
-from qgis.core import (
-    Qgis,
-    QgsExpression,
-    QgsMapLayer,
-    QgsMessageLog,
-    QgsVectorLayer,
-)
+from qgis.core import Qgis, QgsExpression, QgsMapLayer, QgsVectorLayer
 from qgis.server import QgsAccessControlFilter, QgsServerInterface
 
 from lizmap.server.core import (
@@ -22,6 +16,7 @@ from lizmap.server.core import (
     get_lizmap_override_filter,
     get_lizmap_user_login,
 )
+from lizmap.server.logger import Logger
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):
@@ -36,7 +31,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Disabling Lizmap layer filter expression for QGIS Server <= 3.16.1 and <= 3.10.12
         # Fix in QGIS Server https://github.com/qgis/QGIS/pull/40556 3.18.0, 3.16.2, 3.10.13
         if 31013 <= Qgis.QGIS_VERSION_INT < 31099 or 31602 <= Qgis.QGIS_VERSION_INT:
-            QgsMessageLog.logMessage("Lizmap layerFilterExpression", "lizmap", Qgis.Info)
+            Logger.info("Lizmap layerFilterExpression")
             filter_exp = self.get_lizmap_layer_filter(layer)
             if filter_exp:
                 return filter_exp
@@ -46,12 +41,12 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             message = (
                 "Lizmap layerFilterExpression disabled, you should consider upgrading QGIS Server to >= "
                 "3.10.13 or >= 3.16.2")
-            QgsMessageLog.logMessage(message, "lizmap", Qgis.Critical)
+            Logger.critical(message)
             return ''
 
     def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
         """ Return an additional subset string (typically SQL) filter """
-        QgsMessageLog.logMessage("Lizmap layerFilterSubsetString", "lizmap", Qgis.Info)
+        Logger.info("Lizmap layerFilterSubsetString")
         filter_exp = self.get_lizmap_layer_filter(layer)
         if filter_exp:
             return filter_exp
@@ -138,19 +133,19 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             else:
                 # The layer has no editionLayers config defined
                 # Reset edition rights
-                QgsMessageLog.logMessage(
-                    "No edition config defined for layer: %s (%s)" % (layer_name, layer_id), "lizmap", Qgis.Info)
+                Logger.info(
+                    "No edition config defined for layer: %s (%s)" % (layer_name, layer_id))
                 rights.canInsert = rights.canUpdate = rights.canDelete = False
         else:
             # No editionLayers defined
             # Reset edition rights
-            QgsMessageLog.logMessage("Lizmap config has no editionLayers", "lizmap", Qgis.Info)
+            Logger.info("Lizmap config has no editionLayers")
             rights.canInsert = rights.canUpdate = rights.canDelete = False
 
         # Check Lizmap layer config
         if layer_name not in cfg_layers or not cfg_layers[layer_name]:
             # Lizmap layer config not defined
-            QgsMessageLog.logMessage("Lizmap config has no layer: %s" % layer_name, "lizmap", Qgis.Warning)
+            Logger.info("Lizmap config has no layer: %s" % layer_name)
             # Default layer rights applied
             return rights
 
@@ -158,7 +153,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         cfg_layer = cfg_layers[layer_name]
         if 'group_visibility' not in cfg_layer or not cfg_layer['group_visibility']:
             # Lizmap config has no options
-            QgsMessageLog.logMessage("No Lizmap layer group visibility for: %s" % layer_name, "lizmap", Qgis.Info)
+            Logger.info("No Lizmap layer group visibility for: %s" % layer_name)
             # Default layer rights applied
             return rights
 
@@ -170,16 +165,14 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # rights is applied
         for g in groups:
             if g in group_visibility:
-                QgsMessageLog.logMessage(
-                    "Group %s is in Lizmap layer group visibility for: %s" % (g, layer_name),
-                    "lizmap", Qgis.Info)
+                Logger.info(
+                    "Group %s is in Lizmap layer group visibility for: %s" % (g, layer_name))
                 return rights
 
         # The lizmap user groups provided gy the request are not
         # authorized to get access to the layer
-        QgsMessageLog.logMessage(
-            "Groups %s is in Lizmap layer group visibility for: %s" % (', '.join(groups), layer_name),
-            "lizmap", Qgis.Info)
+        Logger.info(
+            "Groups %s is in Lizmap layer group visibility for: %s" % (', '.join(groups), layer_name))
         rights.canRead = False
         rights.canInsert = rights.canUpdate = rights.canDelete = False
         return rights

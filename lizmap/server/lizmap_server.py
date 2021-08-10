@@ -1,8 +1,6 @@
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-
-import os
 
 from qgis.server import QgsServerInterface
 
@@ -23,39 +21,38 @@ class LizmapServer:
         self.logger = Logger()
         self.logger.info('Init server')
 
-        # debug
-        debug = os.getenv('QGIS_SERVER_LIZMAP_DEBUG', '').lower() in ('1', 'yes', 'y', 'true')
-
-        # Register service
         reg = server_iface.serviceRegistry()
         try:
-            reg.registerService(ExpressionService(debug=debug))
+            reg.registerService(ExpressionService())
         except Exception as e:
             self.logger.critical('Error loading service "expression" : {}'.format(e))
             raise
+        self.logger.info('Service "expression" loaded')
 
         try:
-            reg.registerService(LizmapService(self.server_iface, debug=debug))
+            reg.registerService(LizmapService(self.server_iface))
         except Exception as e:
             self.logger.critical('Error loading service "lizmap" : {}'.format(e))
             raise
+        self.logger.info('Service "lizmap" loaded')
 
-        # Register filter
         try:
             server_iface.registerFilter(LizmapFilter(self.server_iface), 50)
         except Exception as e:
             self.logger.critical('Error loading filter "lizmap" : {}'.format(e))
             raise
+        self.logger.info('Filter "lizmap" loaded')
 
-        # Register access control
         try:
             server_iface.registerAccessControl(LizmapAccessControlFilter(self.server_iface), 100)
         except Exception as e:
             self.logger.critical('Error loading access control "lizmap" : {}'.format(e))
             raise
+        self.logger.info('Access control "lizmap" loaded')
 
         try:
             server_iface.registerFilter(GetFeatureInfoFilter(self.server_iface), 150)
         except Exception as e:
             self.logger.critical('Error loading filter "get feature info" : {}'.format(e))
             raise
+        self.logger.info('Filter "get feature info" loaded')

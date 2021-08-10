@@ -1,4 +1,4 @@
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -8,10 +8,11 @@ import traceback
 
 from typing import List
 
-from qgis.core import Qgis, QgsMessageLog
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.server import QgsServerException, QgsServerFilter, QgsServerInterface
+
+from lizmap.server.logger import Logger
 
 
 class LizmapFilterException(QgsServerException):
@@ -46,12 +47,13 @@ class LizmapFilterException(QgsServerException):
 class LizmapFilter(QgsServerFilter):
 
     def __init__(self, server_iface: 'QgsServerInterface') -> None:
-        QgsMessageLog.logMessage('LizmapFilter.init', 'lizmap', Qgis.Info)
+        Logger.info('LizmapFilter.init')
         super().__init__(server_iface)
 
         self.iface = server_iface
 
     def requestReady(self):
+        logger = Logger()
         # noinspection PyBroadException
         try:
             # Check first the headers to avoid unnecessary config file reading
@@ -74,7 +76,7 @@ class LizmapFilter(QgsServerFilter):
             config_path += '.cfg'
             if not os.path.exists(config_path):
                 # Lizmap config path does not exist
-                QgsMessageLog.logMessage("Lizmap config does not exist", "lizmap", Qgis.Info)
+                logger.info("Lizmap config does not exist")
                 # The request can be evaluated by QGIS Server
                 return
 
@@ -85,20 +87,20 @@ class LizmapFilter(QgsServerFilter):
                     cfg = json.loads(cfg_file.read())
                 except Exception:
                     # Lizmap config is not a valid JSON file
-                    QgsMessageLog.logMessage("Lizmap config not well formed", "lizmap", Qgis.Critical)
+                    logger.critical("Lizmap config not well formed")
                     # The request can be evaluated by QGIS Server
                     return
 
             if not cfg:
                 # Lizmap config is empty
-                QgsMessageLog.logMessage("Lizmap config is empty", "lizmap", Qgis.Warning)
+                logger.warning("Lizmap config is empty")
                 # The request can be evaluated by QGIS Server
                 return
 
             # Check Lizmap config options
             if 'options' not in cfg or not cfg['options']:
                 # Lizmap config has no options
-                QgsMessageLog.logMessage("Lizmap config has no options", "lizmap", Qgis.Warning)
+                logger.warning("Lizmap config has no options")
                 # The request can be evaluated by QGIS Server
                 return
 
@@ -106,13 +108,13 @@ class LizmapFilter(QgsServerFilter):
             cfg_options = cfg['options']
             if 'acl' not in cfg_options or not cfg_options['acl']:
                 # No acl defined
-                QgsMessageLog.logMessage("No acl defined in Lizmap config", "lizmap", Qgis.Info)
+                logger.info("No acl defined in Lizmap config")
                 # The request can be evaluated by QGIS Server
                 return
 
             # Get project acl option
             cfg_acl = cfg_options['acl']
-            QgsMessageLog.logMessage("Acl defined in Lizmap config", "lizmap", Qgis.Info)
+            logger.info("Acl defined in Lizmap config")
 
             # If one Lizmap user group provided in request headers is
             # defined in project acl option, the request can be evaluated
@@ -131,8 +133,8 @@ class LizmapFilter(QgsServerFilter):
             handler.setServiceException(exc)
 
         except Exception as e:
-            QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
-            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
+            logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
+            logger.critical(str(e))
 
     def getLizmapGroups(self) -> 'List[str]':
         """ Get Lizmap user groups provided by the request """
@@ -142,22 +144,24 @@ class LizmapFilter(QgsServerFilter):
         # Get request handler
         handler = self.iface.requestHandler()
 
+        logger = Logger()
+
         # Get Lizmap User Groups in request headers
         headers = handler.requestHeaders()
         if headers:
-            QgsMessageLog.logMessage("Request headers provided", "lizmap", Qgis.Info)
+            logger.info("Request headers provided")
             # Get Lizmap user groups defined in request headers
             user_groups = headers.get('X-Lizmap-User-Groups')
             if user_groups is not None:
                 groups = [g.strip() for g in user_groups.split(',')]
-                QgsMessageLog.logMessage("Lizmap user groups in request headers", "lizmap", Qgis.Info)
+                logger.info("Lizmap user groups in request headers")
         else:
-            QgsMessageLog.logMessage("No request headers provided", "lizmap", Qgis.Info)
+            logger.info("No request headers provided")
 
         if len(groups) != 0:
             return groups
         else:
-            QgsMessageLog.logMessage("No lizmap user groups in request headers", "lizmap", Qgis.Info)
+            logger.info("No lizmap user groups in request headers")
 
         # Get group in parameters
         params = handler.parameterMap()
@@ -166,6 +170,6 @@ class LizmapFilter(QgsServerFilter):
             user_groups = params.get('LIZMAP_USER_GROUPS')
             if user_groups is not None:
                 groups = [g.strip() for g in user_groups.split(',')]
-                QgsMessageLog.logMessage("Lizmap user groups in parameters", "lizmap", Qgis.Info)
+                logger.info("Lizmap user groups in parameters")
 
         return groups

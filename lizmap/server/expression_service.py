@@ -1,10 +1,13 @@
+__copyright__ = 'Copyright 2021, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+
 import json
 import traceback
 
 from typing import Dict
 
 from qgis.core import (
-    Qgis,
     QgsDistanceArea,
     QgsExpression,
     QgsExpressionContext,
@@ -14,7 +17,6 @@ from qgis.core import (
     QgsFields,
     QgsJsonExporter,
     QgsJsonUtils,
-    QgsMessageLog,
     QgsProject,
 )
 from qgis.PyQt.QtCore import QTextCodec
@@ -26,6 +28,7 @@ from lizmap.server.core import (
     get_server_fid,
     write_json_response,
 )
+from lizmap.server.logger import Logger
 
 
 class ExpressionServiceError(ServiceError):
@@ -36,12 +39,6 @@ class ExpressionServiceError(ServiceError):
 
 
 class ExpressionService(QgsService):
-
-    def __init__(self, debug: bool = False) -> None:
-        super().__init__()
-        self.debugMode = debug
-
-    # QgsService inherited
 
     def name(self) -> str:
         """ Service name
@@ -96,8 +93,8 @@ class ExpressionService(QgsService):
         except ExpressionServiceError as err:
             err.formatResponse(response)
         except Exception as e:
-            QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
-            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
+            Logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
+            Logger.critical(str(e))
             err = ExpressionServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
@@ -120,6 +117,7 @@ class ExpressionService(QgsService):
             FORM_SCOPE=boolean to add formScope based on provided features
         """
 
+        logger = Logger()
         layername = params.get('LAYER', '')
         if not layername:
             raise ExpressionServiceError(
@@ -151,9 +149,8 @@ class ExpressionService(QgsService):
         try:
             exp_json = json.loads(expressions)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads expressions '{}' exception:\n{}".format(expressions, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads expressions '{}' exception:\n{}".format(expressions, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: EXPRESSIONS '{}' are not well formed".format(expressions),
@@ -237,9 +234,8 @@ class ExpressionService(QgsService):
         try:
             geojson = json.loads(features)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed".format(features),
@@ -338,6 +334,7 @@ class ExpressionService(QgsService):
             "properties": {}}]
             FORM_SCOPE=boolean to add formScope based on provided features
         """
+        logger = Logger()
         layername = params.get('LAYER', '')
         if not layername:
             raise ExpressionServiceError(
@@ -369,9 +366,8 @@ class ExpressionService(QgsService):
         try:
             str_json = json.loads(strings)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads strings '{}' exception:\n{}".format(strings, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads strings '{}' exception:\n{}".format(strings, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'ReplaceExpressionText' REQUEST: STRINGS '{}' are not well formed".format(strings),
@@ -427,9 +423,8 @@ class ExpressionService(QgsService):
         try:
             geojson = json.loads(features)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed".format(features),
@@ -513,6 +508,7 @@ class ExpressionService(QgsService):
             FIELDS=list of requested field separated by comma
             WITH_GEOMETRY=False
         """
+        logger = Logger()
         layer_name = params.get('LAYER', '')
         if not layer_name:
             raise ExpressionServiceError(
@@ -549,9 +545,8 @@ class ExpressionService(QgsService):
         try:
             geojson = json.loads(form_feature)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads form feature '{}' exception:\n{}".format(form_feature, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads form feature '{}' exception:\n{}".format(form_feature, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed".format(form_feature),
@@ -677,6 +672,7 @@ class ExpressionService(QgsService):
             FIELDS=list of requested field separated by comma
             WITH_GEOMETRY=False
         """
+        logger = Logger()
         layer_name = params.get('LAYER', '')
         if not layer_name:
             raise ExpressionServiceError(
@@ -705,9 +701,8 @@ class ExpressionService(QgsService):
         try:
             vir_json = json.loads(virtuals)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads virtuals '{}' exception:\n{}".format(virtuals, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads virtuals '{}' exception:\n{}".format(virtuals, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'VirtualFields' REQUEST: VIRTUALS '{}' are not well formed".format(virtuals),

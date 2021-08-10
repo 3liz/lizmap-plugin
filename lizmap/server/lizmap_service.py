@@ -1,7 +1,6 @@
-__copyright__ = "Copyright 2020, 3Liz"
-__license__ = "GPL version 3"
-__email__ = "info@3liz.org"
-__revision__ = "$Format:%H$"
+__copyright__ = 'Copyright 2021, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
 
 import configparser
 import traceback
@@ -10,7 +9,7 @@ from os.path import dirname, join
 from typing import Dict
 
 from osgeo import gdal
-from qgis.core import Qgis, QgsMessageLog, QgsProject
+from qgis.core import Qgis, QgsProject
 from qgis.server import (
     QgsServerInterface,
     QgsServerRequest,
@@ -30,10 +29,9 @@ class LizmapServiceError(ServiceError):
 
 class LizmapService(QgsService):
 
-    def __init__(self, server_iface: 'QgsServerInterface', debug: bool = False) -> None:
+    def __init__(self, server_iface: 'QgsServerInterface') -> None:
         super().__init__()
         self.server_iface = server_iface
-        self.debugMode = debug
         self.logger = Logger()
 
     # QgsService inherited
@@ -85,7 +83,7 @@ class LizmapService(QgsService):
             err.formatResponse(response)
         except Exception as e:
             self.logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
-            QgsMessageLog.logMessage(str(e), "lizmap", Qgis.Critical)
+            self.logger.critical(str(e))
             err = LizmapServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
