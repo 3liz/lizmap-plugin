@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 3.5.6 - 2021-08-10
+
+* Server - Avoid registering twice the Lizmap service
+* Server - Add some more info level message in the server
+
 ## 3.5.5 - 2021-08-09
 
 * Desktop - Show dialog in front of QGIS Desktop if a dialog is already opened (contribution from @Kanahiro)
