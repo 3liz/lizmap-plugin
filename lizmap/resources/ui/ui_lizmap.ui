@@ -3724,6 +3724,9 @@ border-radius: 0px;</string>
                  <property name="text">
                   <string>It is possible to filter one or many layers thanks to another spatial layer. You need to define the layer filter and at least one filtered layer.</string>
                  </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item>

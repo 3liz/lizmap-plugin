@@ -69,6 +69,4 @@ class FilterByPolygonDefinitions(BaseDefinitions):
         return 'filter_by_polygon'
 
     def help_path(self) -> str:
-        # fixme as soon as we have the documentation
-        # return 'publish/lizmap_plugin/layer_filtering.html'
-        return ''
+        return 'publish/lizmap_plugin/spatial_filtering.html'

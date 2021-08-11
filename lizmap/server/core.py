@@ -262,8 +262,8 @@ def get_lizmap_override_filter(handler: QgsRequestHandler) -> bool:
 
     if override is not None:
         return override
-    else:
-        logger.info("No lizmap override filter in request headers")
+
+    logger.info("No lizmap override filter in request headers")
 
     # Get login in parameters
     params = handler.parameterMap()
@@ -278,6 +278,15 @@ def get_lizmap_override_filter(handler: QgsRequestHandler) -> bool:
             logger.info("No lizmap override filter in parameters")
 
     return override
+
+
+def is_editing_context(handler: QgsRequestHandler) -> bool:
+    """ Check if headers are defining an editing context. """
+    headers = handler.requestHeaders()
+    if not headers:
+        return False
+
+    return to_bool(headers.get('X-Lizmap-Edition-Context'))
 
 
 def server_feature_id_expression(feature_id, pk_attributes: list, fields: QgsFields) -> str:

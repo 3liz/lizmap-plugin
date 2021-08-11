@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import functools
+import time
 import traceback
 
 from contextlib import contextmanager
@@ -68,3 +69,17 @@ def log_function(func):
         return value
 
     return log_function_core
+
+
+def profiling(func):
+    """ Decorator to make some profiling. """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        Logger.info("{}.{} ran in {}s".format(PLUGIN, func.__name__, round(end - start, 2)))
+        return result
+
+    return wrapper
