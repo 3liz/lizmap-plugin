@@ -116,20 +116,6 @@ def test_single_get_feature_info_form_popup(client):
     assert rv.headers.get('Content-Type', '').find('text/xml') == 0
 
     # Let's check only the XML first
-
-    expected = f'''<GetFeatureInfoResponse>
- <Layer name="{LAYER_QGIS_FORM}">
-  <Feature id="1">
-   <Attribute name="OBJECTID" value="2662"/>
-   <Attribute name="NAME_0" value="France"/>
-   <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
-   <Attribute name="Region" value="Bretagne"/>
-   <Attribute name="Shape_Leng" value="18.39336934850"/>
-   <Attribute name="Shape_Area" value="3.30646936365"/>
-  </Feature>
- </Layer>
-</GetFeatureInfoResponse>
-'''
     root = ET.fromstring(rv.content.decode('utf-8'))
     map_tip = ''
     for layer in root:
@@ -141,6 +127,19 @@ def test_single_get_feature_info_form_popup(client):
     xml_lines = ET.tostring(root, encoding='utf8', method='xml').decode("utf-8").split('\n')
     xml_string = '\n'.join(xml_lines[1:])
 
+    expected = f'''<GetFeatureInfoResponse>
+     <Layer name="{LAYER_QGIS_FORM}">
+      <Feature id="1">
+       <Attribute name="OBJECTID" value="2662"/>
+       <Attribute name="NAME_0" value="France"/>
+       <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+       <Attribute name="Region" value="Bretagne"/>
+       <Attribute name="Shape_Leng" value="18.39336934850"/>
+       <Attribute name="Shape_Area" value="3.30646936365"/>
+      </Feature>
+     </Layer>
+    </GetFeatureInfoResponse>
+    '''
     diff = xml_diff.diff_texts(expected, xml_string.strip())
     assert diff == [], diff
 

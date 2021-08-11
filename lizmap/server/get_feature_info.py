@@ -25,7 +25,7 @@ from lizmap.server.core import (
     server_feature_id_expression,
     to_bool,
 )
-from lizmap.server.logger import Logger
+from lizmap.server.logger import Logger, exception_handler
 from lizmap.tooltip import Tooltip
 
 """
@@ -104,6 +104,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
             features.append(Result(layer, feature_id, html_content))
         return features
 
+    @exception_handler
     def responseComplete(self):
         """ Intercept the GetFeatureInfo and add the form maptip if needed. """
         logger = Logger()
@@ -153,7 +154,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
             logger.critical(
                 "Error while reading the XML response GetFeatureInfo for project {}, returning default "
                 "response".format(project_path))
-            logger.critical(str(e))
+            logger.log_exception(e)
             return
 
         if not features:
@@ -232,5 +233,5 @@ class GetFeatureInfoFilter(QgsServerFilter):
         except Exception as e:
             logger.critical(
                 "Error while rewriting the XML response GetFeatureInfo, returning default response")
-            logger.critical(str(e))
+            logger.log_exception(e)
             return
