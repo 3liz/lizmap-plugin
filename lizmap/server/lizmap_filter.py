@@ -4,7 +4,6 @@ __email__ = 'info@3liz.org'
 
 import json
 import os
-import traceback
 
 from typing import List
 
@@ -103,8 +102,7 @@ class LizmapFilter(QgsServerFilter):
             handler.setServiceException(exc)
 
         except Exception as e:
-            logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
-            logger.critical(str(e))
+            logger.log_exception(e)
 
     def getLizmapGroups(self) -> List[str]:
         """ Get Lizmap user groups provided by the request """

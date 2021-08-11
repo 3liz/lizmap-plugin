@@ -97,7 +97,7 @@ def get_lizmap_config(qgis_project_path: str) -> Union[Dict, None]:
         except Exception as e:
             # Lizmap config is not a valid JSON file
             logger.critical("Lizmap config not well formed")
-            logger.critical(str(e))
+            logger.log_exception(e)
             return None
 
 

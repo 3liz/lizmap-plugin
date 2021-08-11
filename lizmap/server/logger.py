@@ -3,6 +3,9 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import functools
+import traceback
+
+from contextlib import contextmanager
 
 from qgis.core import Qgis, QgsMessageLog
 
@@ -22,6 +25,38 @@ class Logger:
     @staticmethod
     def critical(message):
         QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Critical)
+
+    @staticmethod
+    def log_exception(e):
+        """ Log a Python exception. """
+        QgsMessageLog.logMessage(
+            "Exception: {plugin}\n{e}\n{traceback}".format(
+                plugin=PLUGIN,
+                e=e,
+                traceback=traceback.format_exc()
+            ),
+            PLUGIN,
+            Qgis.Critical
+        )
+
+
+def exception_handler(func):
+    """ Decorator to catch all exceptions. """
+    def inner_function(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            Logger.log_exception(e)
+    return inner_function
+
+
+@contextmanager
+def trap():
+    """ Define a trap context for catching all exceptions """
+    try:
+        yield
+    except Exception as e:
+        Logger.log_exception(e)
 
 
 def log_function(func):

@@ -87,8 +87,7 @@ class ExpressionService(QgsService):
         except ExpressionServiceError as err:
             err.formatResponse(response)
         except Exception as e:
-            Logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
-            Logger.critical(str(e))
+            Logger.log_exception(e)
             err = ExpressionServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
