@@ -53,9 +53,9 @@ def get_server_fid(feature: QgsFeature, pk_attributes: []) -> str:
     return '@@'.join([str(feature.attribute(pk)) for pk in pk_attributes])
 
 
-def config_value_to_boolean(val: Union[str, int, float, bool]) -> bool:
+def to_bool(val: Union[str, int, float, bool]) -> bool:
     """ Convert lizmap config value to boolean """
-    if type(val) == str:
+    if isinstance(val, str):
         # For string, compare lower value to True string
         return val.lower() in ('yes', 'true', 't', '1')
     elif not val:
@@ -127,12 +127,12 @@ def get_lizmap_layers_config(config: Dict) -> Union[Dict, None]:
     return cfg_layers
 
 
-def get_lizmap_layer_login_filter(config: Dict, layerName: str) -> Union[Dict, None]:
+def get_lizmap_layer_login_filter(config: Dict, layer_name: str) -> Union[Dict, None]:
     """ Get loginFilteredLayers for layer """
 
-    if not config or type(config) != dict:
+    if not config or not isinstance(config, dict):
         return None
-    if not layerName or type(layerName) != str:
+    if not layer_name or not isinstance(layer_name, str):
         return None
 
     logger = Logger()
@@ -143,33 +143,33 @@ def get_lizmap_layer_login_filter(config: Dict, layerName: str) -> Union[Dict, N
         logger.info("Lizmap config has no loginFilteredLayers")
         return None
 
-    loginFilteredLayers = config['loginFilteredLayers']
+    login_filtered_layers = config['loginFilteredLayers']
 
     # Check loginFilteredLayers for layer
-    if layerName not in loginFilteredLayers or not loginFilteredLayers[layerName]:
+    if layer_name not in login_filtered_layers or not login_filtered_layers[layer_name]:
         # Lizmap config has no options
-        logger.info("Layer {} has no loginFilteredLayers".format(layerName))
+        logger.info("Layer {} has no loginFilteredLayers".format(layer_name))
         return None
 
     # get loginFilteredLayers for layer to check it
-    cfg_layer_login_filter = loginFilteredLayers[layerName]
+    cfg_layer_login_filter = login_filtered_layers[layer_name]
 
     # Check loginFilteredLayers for layer is dict
     if not isinstance(cfg_layer_login_filter, dict):
-        logger.warning("loginFilteredLayers for layer {} is not dict".format(layerName))
+        logger.warning("loginFilteredLayers for layer {} is not dict".format(layer_name))
         return None
 
     if 'layerId' not in cfg_layer_login_filter or \
             'filterAttribute' not in cfg_layer_login_filter or \
             'filterPrivate' not in cfg_layer_login_filter:
         # loginFilteredLayers for layer not well formed
-        logger.warning("loginFilteredLayers for layer {} not well formed".format(layerName))
+        logger.warning("loginFilteredLayers for layer {} not well formed".format(layer_name))
         return None
 
     return cfg_layer_login_filter
 
 
-def get_lizmap_groups(handler: 'QgsRequestHandler') -> 'List[str]':
+def get_lizmap_groups(handler: QgsRequestHandler) -> List[str]:
     """ Get Lizmap user groups provided by the request """
 
     # Defined groups
@@ -205,7 +205,7 @@ def get_lizmap_groups(handler: 'QgsRequestHandler') -> 'List[str]':
     return groups
 
 
-def get_lizmap_user_login(handler: 'QgsRequestHandler') -> str:
+def get_lizmap_user_login(handler: QgsRequestHandler) -> str:
     """ Get Lizmap user login provided by the request """
     # Defined login
     login = ''
@@ -241,7 +241,7 @@ def get_lizmap_user_login(handler: 'QgsRequestHandler') -> str:
     return login
 
 
-def get_lizmap_override_filter(handler: 'QgsRequestHandler') -> bool:
+def get_lizmap_override_filter(handler: QgsRequestHandler) -> bool:
     """ Get Lizmap user login provided by the request """
     # Defined override
     override = None
@@ -255,7 +255,7 @@ def get_lizmap_override_filter(handler: 'QgsRequestHandler') -> bool:
         # Get Lizmap user login defined in request headers
         override_filter = headers.get('X-Lizmap-Override-Filter')
         if override_filter is not None:
-            override = override_filter.lower() in ['true', '1', 't', 'y', 'yes']
+            override = to_bool(override_filter)
             logger.info("Lizmap override filter in request headers")
     else:
         logger.info("No request headers provided")
@@ -271,7 +271,7 @@ def get_lizmap_override_filter(handler: 'QgsRequestHandler') -> bool:
         # Get Lizmap user login defined in parameters
         override_filter = params.get('LIZMAP_OVERRIDE_FILTER')
         if override_filter is not None:
-            override = override_filter.lower() in ['true', '1', 't', 'y', 'yes']
+            override = to_bool(override_filter)
             logger.info("Lizmap override filter in parameters")
         else:
             override = False
@@ -300,21 +300,3 @@ def server_feature_id_expression(feature_id, pk_attributes: list, fields: QgsFie
         expression += QgsExpression.createFieldEqualityExpression(field_name, pk_values[i])
 
     return expression
-
-
-class ServiceError(Exception):
-
-    def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
-        super().__init__(msg)
-        self.service = 'Lizmap'
-        self.msg = msg
-        self.code = code
-        self.response_code = response_code
-        Logger.critical("{} request error {}: {}".format(self.service, code, msg))
-
-    def formatResponse(self, response: QgsServerResponse) -> None:
-        """ Format error response
-        """
-        body = {'status': 'fail', 'code': self.code, 'message': self.msg}
-        response.clear()
-        write_json_response(body, response, self.response_code)

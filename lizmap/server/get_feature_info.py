@@ -20,7 +20,11 @@ from qgis.core import (
 )
 from qgis.server import QgsConfigCache, QgsServerFilter
 
-from lizmap.server.core import find_vector_layer, server_feature_id_expression
+from lizmap.server.core import (
+    find_vector_layer,
+    server_feature_id_expression,
+    to_bool,
+)
 from lizmap.server.logger import Logger
 from lizmap.tooltip import Tooltip
 
@@ -76,7 +80,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
             layer = find_vector_layer(layer_name, project)
 
             layer_config = cfg.get('layers').get(layer_name)
-            if layer_config.get('popup') not in ['True', True]:
+            if not to_bool(layer_config.get('popup')):
                 continue
 
             if layer_config.get('popupSource') != 'form':
@@ -208,8 +212,9 @@ class GetFeatureInfoFilter(QgsServerFilter):
                     )
                     continue
 
-                logger.info("Replacing feature {} in layer {} for the GetFeatureInfo by the drag&drop form".format(
-                    result.feature_id, result.layer.name()))
+                logger.info(
+                    "Replacing feature {} in layer {} for the GetFeatureInfo by the drag&drop form".format(
+                        result.feature_id, result.layer.name()))
                 xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
 
             # Safe guard, it shouldn't happen

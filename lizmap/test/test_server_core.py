@@ -8,11 +8,11 @@ from qgis.core import QgsField, QgsFields
 from qgis.PyQt.QtCore import QVariant
 
 from lizmap.server.core import (
-    config_value_to_boolean,
     get_lizmap_config,
     get_lizmap_layer_login_filter,
     get_lizmap_layers_config,
     server_feature_id_expression,
+    to_bool,
 )
 from lizmap.server.get_feature_info import GetFeatureInfoFilter
 
@@ -21,20 +21,19 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 
-class TestTools(unittest.TestCase):
+class TestServerCore(unittest.TestCase):
 
     def test_config_value_to_boolean(self):
         """ Test convert lizmap config value to boolean """
+        true_values = [
+            'True', 'true', 'Yes', 'yes', 'T', 't', '1', 1, 1.0, [''], {'a': 'b'}]
+        for v in true_values:
+            self.assertTrue(to_bool(v), v)
 
-        trueValues = ['True', 'true', 'Yes', 'yes', 'T', 't', '1',
-                      1, 1.0, [''], {'a': 'b'}]
-        for v in trueValues:
-            self.assertTrue(config_value_to_boolean(v))
-
-        falseValues = ['False', 'false', 'NO', 'no', 'F', 'f', '0', 'foobar',
-                       0, 0.0, None, [], {}]
-        for v in falseValues:
-            self.assertFalse(config_value_to_boolean(v))
+        false_values = [
+            'False', 'false', 'NO', 'no', 'F', 'f', '0', 'foobar', 0, 0.0, None, [], {}]
+        for v in false_values:
+            self.assertFalse(to_bool(v), v)
 
     def test_get_lizmap_config(self):
         """ Test get the lizmap config based on QGIS project path """

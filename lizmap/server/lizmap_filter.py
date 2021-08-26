@@ -16,7 +16,7 @@ from lizmap.server.logger import Logger
 
 class LizmapFilter(QgsServerFilter):
 
-    def __init__(self, server_iface: 'QgsServerInterface') -> None:
+    def __init__(self, server_iface: QgsServerInterface) -> None:
         Logger.info('LizmapFilter.init')
         super().__init__(server_iface)
 
@@ -106,7 +106,7 @@ class LizmapFilter(QgsServerFilter):
             logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
             logger.critical(str(e))
 
-    def getLizmapGroups(self) -> 'List[str]':
+    def getLizmapGroups(self) -> List[str]:
         """ Get Lizmap user groups provided by the request """
         # Defined groups
         groups = []

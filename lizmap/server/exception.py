@@ -4,13 +4,43 @@ __email__ = 'info@3liz.org'
 
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.server import QgsServerException
+from qgis.server import QgsServerException, QgsServerResponse
+
+from lizmap.server.core import write_json_response
+from lizmap.server.logger import Logger
+
+
+class ServiceError(Exception):
+
+    def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
+        super().__init__(msg)
+        self.service = 'Lizmap'
+        self.msg = msg
+        self.code = code
+        self.response_code = response_code
+        Logger.critical("{} request error {}: {}".format(self.service, code, msg))
+
+    def formatResponse(self, response: QgsServerResponse) -> None:
+        """ Format error response
+        """
+        body = {'status': 'fail', 'code': self.code, 'message': self.msg}
+        response.clear()
+        write_json_response(body, response, self.response_code)
+
+
+class ExpressionServiceError(ServiceError):
+
+    def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
+        super().__init__(code, msg, response_code)
+        self.service = 'Expression'
 
 
 class LizmapFilterException(QgsServerException):
 
     def __init__(
-            self, code: str, message: str, locator: str = '', response_code: int = 500, version: str = '1.3.0') -> None:
+            self,
+            code: str,
+            message: str, locator: str = '', response_code: int = 500, version: str = '1.3.0') -> None:
         super(QgsServerException, self).__init__(message, response_code)
         self.code = code
         self.message = message

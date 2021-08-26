@@ -16,7 +16,7 @@ class LizmapServer:
     """Plugin for QGIS server
     this plugin loads Lizmap filter"""
 
-    def __init__(self, server_iface: 'QgsServerInterface') -> None:
+    def __init__(self, server_iface: QgsServerInterface) -> None:
         self.server_iface = server_iface
         self.logger = Logger()
         self.logger.info('Init server')

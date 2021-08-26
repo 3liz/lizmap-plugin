@@ -8,25 +8,25 @@ from qgis.core import Qgis, QgsExpression, QgsMapLayer, QgsVectorLayer
 from qgis.server import QgsAccessControlFilter, QgsServerInterface
 
 from lizmap.server.core import (
-    config_value_to_boolean,
     get_lizmap_config,
     get_lizmap_groups,
     get_lizmap_layer_login_filter,
     get_lizmap_layers_config,
     get_lizmap_override_filter,
     get_lizmap_user_login,
+    to_bool,
 )
 from lizmap.server.logger import Logger
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):
 
-    def __init__(self, server_iface: 'QgsServerInterface') -> None:
+    def __init__(self, server_iface: QgsServerInterface) -> None:
         super().__init__(server_iface)
 
         self.iface = server_iface
 
-    def layerFilterExpression(self, layer: 'QgsVectorLayer') -> str:
+    def layerFilterExpression(self, layer: QgsVectorLayer) -> str:
         """ Return an additional expression filter """
         # Disabling Lizmap layer filter expression for QGIS Server <= 3.16.1 and <= 3.10.12
         # Fix in QGIS Server https://github.com/qgis/QGIS/pull/40556 3.18.0, 3.16.2, 3.10.13
@@ -44,7 +44,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             Logger.critical(message)
             return ''
 
-    def layerFilterSubsetString(self, layer: 'QgsVectorLayer') -> str:
+    def layerFilterSubsetString(self, layer: QgsVectorLayer) -> str:
         """ Return an additional subset string (typically SQL) filter """
         Logger.info("Lizmap layerFilterSubsetString")
         filter_exp = self.get_lizmap_layer_filter(layer)
@@ -53,7 +53,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return super().layerFilterSubsetString(layer)
 
-    def layerPermissions(self, layer: 'QgsMapLayer') -> QgsAccessControlFilter.LayerPermissions:
+    def layerPermissions(self, layer: QgsMapLayer) -> QgsAccessControlFilter.LayerPermissions:
         """ Return the layer rights """
         # Get default layer rights
         rights = super().layerPermissions(layer)
@@ -112,18 +112,14 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
                     # A user group can edit the layer and capabilities
                     # edition for the layer is defined in Lizmap edition config
                     edit_layer_cap = cfg['editionLayers'][layer_id]['capabilities']
-                    if edit_layer_cap['createFeature'] == 'True':
-                        rights.canInsert = True
-                    else:
-                        rights.canInsert = False
-                    if edit_layer_cap['modifyAttribute'] == 'True' or edit_layer_cap['modifyGeometry'] == 'True':
-                        rights.canUpdate = True
-                    else:
-                        rights.canUpdate = False
-                    if edit_layer_cap['deleteFeature'] == 'True':
-                        rights.canDelete = True
-                    else:
-                        rights.canDelete = False
+
+                    rights.canInsert = to_bool(edit_layer_cap['createFeature'])
+                    rights.canDelete = to_bool(edit_layer_cap['deleteFeature'])
+                    rights.canUpdate = any([
+                        to_bool(edit_layer_cap['modifyAttribute']),
+                        to_bool(edit_layer_cap['modifyGeometry']),
+                    ])
+
                 else:
                     # Any user groups can edit the layer or capabilities
                     # edition for the layer is not defined in Lizmap
@@ -177,7 +173,8 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         rights.canInsert = rights.canUpdate = rights.canDelete = False
         return rights
 
-    # def authorizedLayerAttributes(self, layer: 'QgsVectorLayer', attributes: 'Iterable[str]') -> 'List[str]':
+    # def authorizedLayerAttributes(
+    #         self, layer: 'QgsVectorLayer', attributes: 'Iterable[str]') -> 'List[str]':
     #     """ Return the authorised layer attributes """
     #     return super().authorizedLayerAttributes(layer, attributes)
     #
@@ -241,7 +238,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return get_lizmap_config(self.iface.configFilePath())
 
-    def get_lizmap_groups(self) -> 'List[str]':
+    def get_lizmap_groups(self) -> List[str]:
         """ Get Lizmap user groups provided by the request """
 
         return get_lizmap_groups(self.iface.requestHandler())
@@ -256,7 +253,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return get_lizmap_override_filter(self.iface.requestHandler())
 
-    def get_lizmap_layer_filter(self, layer: 'QgsVectorLayer') -> str:
+    def get_lizmap_layer_filter(self, layer: QgsVectorLayer) -> str:
         """ Get lizmap layer filter based on login filter """
         layer_filter = ''
 
@@ -304,7 +301,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         # Layer login fliter only for edition does not filter layer
         is_edition_only = 'edition_only' in cfg_layer_login_filter
-        if is_edition_only and config_value_to_boolean(cfg_layer_login_filter['edition_only']):
+        if is_edition_only and to_bool(cfg_layer_login_filter['edition_only']):
             return layer_filter
 
         attribute = cfg_layer_login_filter['filterAttribute']
@@ -320,7 +317,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         # List of quoted values for expression
         quoted_values = []
-        if config_value_to_boolean(cfg_layer_login_filter['filterPrivate']):
+        if to_bool(cfg_layer_login_filter['filterPrivate']):
             # If filter is private use user_login
             quoted_values.append(QgsExpression.quotedString(user_login))
         else:
