@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 3.5.7 - 2021-08-31
+
+* Server - Avoid issue about GetFeatureInfo
+* Server - Refactor some code about logging
+
 ## 3.5.6 - 2021-08-10
 
 * Server - Avoid registering twice the Lizmap service
