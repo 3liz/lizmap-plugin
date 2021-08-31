@@ -17,8 +17,9 @@ from qgis.core import (
     QgsExpressionContextUtils,
     QgsFeature,
     QgsFeatureRequest,
+    QgsProject,
 )
-from qgis.server import QgsConfigCache, QgsServerFilter
+from qgis.server import QgsServerFilter
 
 from lizmap.server.core import (
     find_vector_layer,
@@ -142,7 +143,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
         with open(str(config_path), 'r', encoding='utf-8') as cfg_file:
             cfg = json.loads(cfg_file.read())
 
-        project = QgsConfigCache.instance().project(str(project_path))
+        project = QgsProject.instance()
         relation_manager = project.relationManager()
 
         xml = request.body().data().decode("utf-8")
