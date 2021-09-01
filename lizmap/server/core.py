@@ -45,7 +45,7 @@ def find_vector_layer(layer_name: str, project: QgsProject) -> Union[None, QgsVe
     return None
 
 
-def get_server_fid(feature: QgsFeature, pk_attributes: []) -> str:
+def get_server_fid(feature: QgsFeature, pk_attributes: list) -> str:
     """ Build server feature ID. """
     if not pk_attributes:
         return str(feature.id())

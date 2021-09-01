@@ -15,19 +15,19 @@ PLUGIN = 'Lizmap'
 class Logger:
 
     @staticmethod
-    def info(message):
+    def info(message: str):
         QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Info)
 
     @staticmethod
-    def warning(message):
+    def warning(message: str):
         QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Warning)
 
     @staticmethod
-    def critical(message):
+    def critical(message: str):
         QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Critical)
 
     @staticmethod
-    def log_exception(e):
+    def log_exception(e: BaseException):
         """ Log a Python exception. """
         QgsMessageLog.logMessage(
             "Exception: {plugin}\n{e}\n{traceback}".format(
