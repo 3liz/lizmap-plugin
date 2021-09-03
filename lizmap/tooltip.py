@@ -4,6 +4,7 @@ import logging
 import re
 
 from qgis.core import (
+    Qgis,
     QgsAttributeEditorContainer,
     QgsAttributeEditorElement,
     QgsAttributeEditorField,
@@ -127,7 +128,7 @@ class Tooltip:
                 headers.append(h)
 
             if l > 1:
-                a += '\n' + SPACES * l + '<fieldset>'
+                a += '\n' + SPACES * l + '<fieldset class="{}">'.format(visibility)
                 a += '\n' + SPACES * l + '<legend>{}</legend>'.format(node.name())
                 a += '\n' + SPACES * l + '<div>'
 
@@ -281,7 +282,17 @@ class Tooltip:
                     )'''.format(name, fname)
 
         elif dview == QgsExternalResourceWidget.NoContent:
-            field_view = '''
+            if Qgis.QGIS_VERSION_INT >= 30800:
+                field_view = '''
+                    concat(
+                        '<a href="',
+                        "{0}",
+                        '" target="_blank">',
+                        base_file_name({0}),
+                        '</a>'
+                    )'''.format(name)
+            else:
+                field_view = '''
                     concat(
                         '<a href="',
                         "{}",

@@ -19,7 +19,8 @@ class TestTools(unittest.TestCase):
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         self.assertFalse(is_database_layer(layer))
 
-        layer = QgsVectorLayer(plugin_test_data_path('points_lines.gpkg|layername=lines'), 'lines', 'ogr')
+        path = plugin_test_data_path('points_lines.gpkg', copy=True)
+        layer = QgsVectorLayer(path + '|layername=lines', 'lines', 'ogr')
         self.assertTrue(is_database_layer(layer))
 
     def test_format_qgis_version(self):

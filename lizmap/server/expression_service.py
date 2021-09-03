@@ -1,10 +1,13 @@
+__copyright__ = 'Copyright 2021, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+
 import json
 import traceback
 
 from typing import Dict
 
 from qgis.core import (
-    Qgis,
     QgsDistanceArea,
     QgsExpression,
     QgsExpressionContext,
@@ -14,34 +17,22 @@ from qgis.core import (
     QgsFields,
     QgsJsonExporter,
     QgsJsonUtils,
-    QgsMessageLog,
     QgsProject,
 )
 from qgis.PyQt.QtCore import QTextCodec
 from qgis.server import QgsServerRequest, QgsServerResponse, QgsService
 
-from .core import (
-    ServiceError,
+from lizmap.server.core import (
     find_vector_layer,
     get_server_fid,
+    to_bool,
     write_json_response,
 )
-
-
-class ExpressionServiceError(ServiceError):
-
-    def __init__(self, code: str, msg: str, response_code: int = 500) -> None:
-        super().__init__(code, msg, response_code)
-        self.service = 'Expression'
+from lizmap.server.exception import ExpressionServiceError
+from lizmap.server.logger import Logger
 
 
 class ExpressionService(QgsService):
-
-    def __init__(self, debug: bool = False) -> None:
-        super().__init__()
-        self.debugMode = debug
-
-    # QgsService inherited
 
     def name(self) -> str:
         """ Service name
@@ -95,8 +86,8 @@ class ExpressionService(QgsService):
 
         except ExpressionServiceError as err:
             err.formatResponse(response)
-        except Exception:
-            QgsMessageLog.logMessage("Unhandled exception:\n{}".format(traceback.format_exc()), "lizmap", Qgis.Critical)
+        except Exception as e:
+            Logger.log_exception(e)
             err = ExpressionServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
@@ -119,20 +110,21 @@ class ExpressionService(QgsService):
             FORM_SCOPE=boolean to add formScope based on provided features
         """
 
-        layername = params.get('LAYER', '')
-        if not layername:
+        logger = Logger()
+        layer_name = params.get('LAYER', '')
+        if not layer_name:
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: LAYER parameter is mandatory",
                 400)
 
         # get layer
-        layer = find_vector_layer(layername, project)
+        layer = find_vector_layer(layer_name, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid LAYER parameter for 'Evaluate': {} provided".format(layername),
+                "Invalid LAYER parameter for 'Evaluate': {} provided".format(layer_name),
                 400)
 
         # get expressions
@@ -150,9 +142,8 @@ class ExpressionService(QgsService):
         try:
             exp_json = json.loads(expressions)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads expressions '{}' exception:\n{}".format(expressions, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads expressions '{}' exception:\n{}".format(expressions, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: EXPRESSIONS '{}' are not well formed".format(expressions),
@@ -236,9 +227,8 @@ class ExpressionService(QgsService):
         try:
             geojson = json.loads(features)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed".format(features),
@@ -280,7 +270,7 @@ class ExpressionService(QgsService):
         feat_fields.extend(feature_fields)
 
         # form scope
-        add_form_scope = params.get('FORM_SCOPE', '').lower() in ['true', '1', 't']
+        add_form_scope = to_bool(params.get('FORM_SCOPE'))
 
         # loop through provided features to evaluate expressions
         for f in feature_list:
@@ -289,9 +279,9 @@ class ExpressionService(QgsService):
             feat = QgsFeature(feat_fields)
             feat.setGeometry(f.geometry())
             for field in f.fields():
-                fname = field.name()
-                if feat_fields.indexOf(fname) != -1:
-                    feat.setAttribute(fname, f[fname])
+                field_name = field.name()
+                if feat_fields.indexOf(field_name) != -1:
+                    feat.setAttribute(field_name, f[field_name])
 
             # Add form scope to expression context
             if add_form_scope:
@@ -321,8 +311,10 @@ class ExpressionService(QgsService):
         return
 
     @staticmethod
-    def replace_expression_text(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    def replace_expression_text(
+            params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Replace expression texts against layer or features
+
         In parameters:
             LAYER=wms-layer-name
             STRING=A string with expression between [% and %]
@@ -337,20 +329,21 @@ class ExpressionService(QgsService):
             "properties": {}}]
             FORM_SCOPE=boolean to add formScope based on provided features
         """
-        layername = params.get('LAYER', '')
-        if not layername:
+        logger = Logger()
+        layer_name = params.get('LAYER', '')
+        if not layer_name:
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'ReplaceExpressionText' REQUEST: LAYER parameter is mandatory",
                 400)
 
         # get layer
-        layer = find_vector_layer(layername, project)
+        layer = find_vector_layer(layer_name, project)
         # layer not found
         if not layer:
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid LAYER parameter for 'ReplaceExpressionText': {} provided".format(layername),
+                "Invalid LAYER parameter for 'ReplaceExpressionText': {} provided".format(layer_name),
                 400)
 
         # get strings
@@ -368,9 +361,8 @@ class ExpressionService(QgsService):
         try:
             str_json = json.loads(strings)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads strings '{}' exception:\n{}".format(strings, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads strings '{}' exception:\n{}".format(strings, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'ReplaceExpressionText' REQUEST: STRINGS '{}' are not well formed".format(strings),
@@ -426,9 +418,8 @@ class ExpressionService(QgsService):
         try:
             geojson = json.loads(features)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads features '{}' exception:\n{}".format(features, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'Evaluate' REQUEST: FEATURES '{}' are not well formed".format(features),
@@ -471,7 +462,7 @@ class ExpressionService(QgsService):
         feat_fields.extend(feature_fields)
 
         # form scope
-        add_form_scope = params.get('FORM_SCOPE', '').lower() in ['true', '1', 't']
+        add_form_scope = to_bool(params.get('FORM_SCOPE'))
 
         # loop through provided features to replace expression strings
         for f in feature_list:
@@ -502,8 +493,10 @@ class ExpressionService(QgsService):
         return
 
     @staticmethod
-    def get_feature_with_form_scope(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    def get_feature_with_form_scope(
+            params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get filtered features with a form scope
+
         In parameters:
             LAYER=wms-layer-name
             FILTER=An expression to filter layer
@@ -512,6 +505,7 @@ class ExpressionService(QgsService):
             FIELDS=list of requested field separated by comma
             WITH_GEOMETRY=False
         """
+        logger = Logger()
         layer_name = params.get('LAYER', '')
         if not layer_name:
             raise ExpressionServiceError(
@@ -548,25 +542,26 @@ class ExpressionService(QgsService):
         try:
             geojson = json.loads(form_feature)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads form feature '{}' exception:\n{}".format(form_feature, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads form feature '{}' exception:\n{}".format(form_feature, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed".format(form_feature),
+                "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed".format(
+                    form_feature),
                 400)
 
         if not geojson or not isinstance(geojson, dict):
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed".format(form_feature),
+                "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed".format(
+                    form_feature),
                 400)
 
         if ('type' not in geojson) or geojson['type'] != 'Feature':
             raise ExpressionServiceError(
-                "Bad request error",
-                ("Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed: type not defined "
-                 "or not Feature.").format(form_feature),
+                "Bad request error", (
+                    "Invalid 'GetFeatureWithFormScope' REQUEST: FORM_FEATURE '{}' are not well formed: type "
+                    "not defined or not Feature.").format(form_feature),
                 400)
 
         # try to load form feature
@@ -626,7 +621,8 @@ class ExpressionService(QgsService):
         if not exp_f.isValid():
             raise ExpressionServiceError(
                 "Bad request error",
-                "Invalid FILTER for 'GetFeatureWithFormScope': Expression not valid \"{}\"".format(exp_filter),
+                "Invalid FILTER for 'GetFeatureWithFormScope': Expression not valid \"{}\"".format(
+                    exp_filter),
                 400)
 
         exp_f.prepare(exp_context)
@@ -634,7 +630,7 @@ class ExpressionService(QgsService):
         req = QgsFeatureRequest(exp_f, exp_context)
 
         # With geometry
-        with_geom = params.get('WITH_GEOMETRY', '').lower() in ['true', '1', 't']
+        with_geom = to_bool(params.get('WITH_GEOMETRY'))
         if not with_geom:
             req.setFlags(QgsFeatureRequest.NoGeometry)
 
@@ -668,6 +664,7 @@ class ExpressionService(QgsService):
     @staticmethod
     def virtualFields(params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get virtual fields for features
+
         In parameters:
             LAYER=wms-layer-name
             VIRTUALS={"key1": "first expression", "key2": "second expression"}
@@ -676,6 +673,7 @@ class ExpressionService(QgsService):
             FIELDS=list of requested field separated by comma
             WITH_GEOMETRY=False
         """
+        logger = Logger()
         layer_name = params.get('LAYER', '')
         if not layer_name:
             raise ExpressionServiceError(
@@ -704,9 +702,8 @@ class ExpressionService(QgsService):
         try:
             vir_json = json.loads(virtuals)
         except Exception:
-            QgsMessageLog.logMessage(
-                "JSON loads virtuals '{}' exception:\n{}".format(virtuals, traceback.format_exc()),
-                "lizmap", Qgis.Critical)
+            logger.critical(
+                "JSON loads virtuals '{}' exception:\n{}".format(virtuals, traceback.format_exc()))
             raise ExpressionServiceError(
                 "Bad request error",
                 "Invalid 'VirtualFields' REQUEST: VIRTUALS '{}' are not well formed".format(virtuals),
@@ -783,7 +780,7 @@ class ExpressionService(QgsService):
             req = QgsFeatureRequest(req_exp, exp_context)
 
         # With geometry
-        with_geom = params.get('WITH_GEOMETRY', '').lower() in ['true', '1', 't']
+        with_geom = to_bool(params.get('WITH_GEOMETRY'))
         if not with_geom:
             req.setFlags(QgsFeatureRequest.NoGeometry)
 

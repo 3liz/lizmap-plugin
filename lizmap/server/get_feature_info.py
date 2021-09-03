@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Generator, List, Tuple, Union
 
 from qgis.core import (
-    Qgis,
     QgsDistanceArea,
     QgsEditFormConfig,
     QgsExpression,
@@ -18,11 +17,16 @@ from qgis.core import (
     QgsExpressionContextUtils,
     QgsFeature,
     QgsFeatureRequest,
-    QgsMessageLog,
+    QgsProject,
 )
-from qgis.server import QgsConfigCache, QgsServerFilter
+from qgis.server import QgsServerFilter
 
-from lizmap.server.core import find_vector_layer, server_feature_id_expression
+from lizmap.server.core import (
+    find_vector_layer,
+    server_feature_id_expression,
+    to_bool,
+)
+from lizmap.server.logger import Logger, exception_handler
 from lizmap.tooltip import Tooltip
 
 """
@@ -77,7 +81,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
             layer = find_vector_layer(layer_name, project)
 
             layer_config = cfg.get('layers').get(layer_name)
-            if layer_config.get('popup') not in ['True', True]:
+            if not to_bool(layer_config.get('popup')):
                 continue
 
             if layer_config.get('popupSource') != 'form':
@@ -85,11 +89,8 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
             config = layer.editFormConfig()
             if config.layout() != QgsEditFormConfig.TabLayout:
-                QgsMessageLog.logMessage(
-                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout',
-                    'lizmap',
-                    Qgis.Warning
-                )
+                Logger.warning(
+                    'The CFG is requesting a form popup, but the layer is not a form drag&drop layout')
                 continue
 
             root = config.invisibleRootContainer()
@@ -104,8 +105,10 @@ class GetFeatureInfoFilter(QgsServerFilter):
             features.append(Result(layer, feature_id, html_content))
         return features
 
+    @exception_handler
     def responseComplete(self):
         """ Intercept the GetFeatureInfo and add the form maptip if needed. """
+        logger = Logger()
         request = self.serverInterface().requestHandler()
         # request: QgsRequestHandler
         params = request.parameterMap()
@@ -117,22 +120,30 @@ class GetFeatureInfoFilter(QgsServerFilter):
             return
 
         if params.get('INFO_FORMAT', '').upper() != 'TEXT/XML':
-            # Better to log something
+            logger.info(
+                "Lizmap is not only processing TEXT/XML INFO_FORMAT, not {}".format(
+                    params.get('INFO_FORMAT', '').upper()))
             return
 
         project_path = Path(self.serverInterface().configFilePath())
         if not project_path.exists():
-            # QGIS Project path does not exist as a file
+            logger.info(
+                'The QGIS project {} does not exist as a file, not possible to process with Lizmap this '
+                'request GetFeatureInfo'.format(self.serverInterface().configFilePath()))
             return
 
         config_path = Path(self.serverInterface().configFilePath() + '.cfg')
         if not config_path.exists():
+            logger.info(
+                'The QGIS project {} is not a Lizmap project, not possible to process with Lizmap this '
+                'request GetFeatureInfo'.format(self.serverInterface().configFilePath()))
             return
 
-        with open(config_path, 'r', encoding='utf-8') as cfg_file:
+        # str() because the plugin must be compatible Python 3.5
+        with open(str(config_path), 'r', encoding='utf-8') as cfg_file:
             cfg = json.loads(cfg_file.read())
 
-        project = QgsConfigCache.instance().project(str(project_path))
+        project = QgsProject.instance()
         relation_manager = project.relationManager()
 
         xml = request.body().data().decode("utf-8")
@@ -140,22 +151,23 @@ class GetFeatureInfoFilter(QgsServerFilter):
         # noinspection PyBroadException
         try:
             features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
-        except Exception:
-            QgsMessageLog.logMessage(
-                "Error while reading the XML response GetFeatureInfo, returning default response",
-                'lizmap',
-                Qgis.Critical
-            )
+        except Exception as e:
+            logger.critical(
+                "Error while reading the XML response GetFeatureInfo for project {}, returning default "
+                "response".format(project_path))
+            logger.log_exception(e)
             return
 
         if not features:
+            # This is not normal ...
+            logger.warning(
+                "No features found in the XML from QGIS Server for project {}".format(project_path)
+            )
             return
 
-        QgsMessageLog.logMessage(
+        logger.info(
             "Replacing the maptip from QGIS by the drag and drop expression for {} features on {}".format(
-                len(features), ','.join([result.layer.name() for result in features])),
-            'lizmap',
-            Qgis.Info
+                len(features), ','.join([result.layer.name() for result in features]))
         )
 
         # Let's evaluate each expression popup
@@ -174,28 +186,53 @@ class GetFeatureInfoFilter(QgsServerFilter):
                 expression = server_feature_id_expression(
                     result.feature_id, result.layer.primaryKeyAttributes(), result.layer.fields())
                 if expression:
-                    request = QgsFeatureRequest(QgsExpression(expression))
-                    request.setFlags(QgsFeatureRequest.NoGeometry)
+                    expression_request = QgsFeatureRequest(QgsExpression(expression))
+                    expression_request.setFlags(QgsFeatureRequest.NoGeometry)
                     feature = QgsFeature()
-                    result.layer.getFeatures(request).nextFeature(feature)
+                    result.layer.getFeatures(expression_request).nextFeature(feature)
                 else:
                     # If not expression, the feature ID must be integer
                     feature = result.layer.getFeature(int(result.feature_id))
+
+                if not feature.isValid():
+                    logger.warning(
+                        "The feature {} for layer {} is not valid, skip replacing this XML "
+                        "GetFeatureInfo, continue to the next feature".format(
+                            result.feature_id, result.layer.id())
+                    )
+                    continue
 
                 exp_context.setFeature(feature)
                 exp_context.setFields(feature.fields())
 
                 value = QgsExpression.replaceExpressionText(result.expression, exp_context, distance_area)
+                if not value:
+                    logger.warning(
+                        "The GetFeatureInfo result for feature {} in layer {} is not valid, skip replacing "
+                        "this XML GetFeatureInfo, , continue to the next feature".format(
+                            result.feature_id, result.layer.id())
+                    )
+                    continue
+
+                logger.info(
+                    "Replacing feature {} in layer {} for the GetFeatureInfo by the drag&drop form".format(
+                        result.feature_id, result.layer.name()))
                 xml = self.append_maptip(xml, result.layer.name(), result.feature_id, value)
 
+            # Safe guard, it shouldn't happen
+            if not xml:
+                logger.critical(
+                    "The new XML for the GetFeatureInfo is empty. Let's return the default previous XML")
+                return
+
+            # When we are fine, we really replace the XML of the response
             request.clear()
             request.setResponseHeader('Content-Type', 'text/xml')
             request.appendBody(bytes(xml, 'utf-8'))
+            logger.info("GetFeatureInfo replaced for project {}".format(project_path))
 
-        except Exception:
-            QgsMessageLog.logMessage(
-                "Error while rewriting the XML response GetFeatureInfo, returning default response",
-                'lizmap',
-                Qgis.Critical
-            )
+        except Exception as e:
+            logger.critical(
+                "Error while rewriting the XML response GetFeatureInfo, returning default response")
+            logger.log_exception(e)
             return

@@ -1,7 +1,6 @@
-__copyright__ = "Copyright 2020, 3Liz"
-__license__ = "GPL version 3"
-__email__ = "info@3liz.org"
-__revision__ = "$Format:%H$"
+__copyright__ = 'Copyright 2021, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
 
 import configparser
 import traceback
@@ -18,8 +17,9 @@ from qgis.server import (
     QgsService,
 )
 
-from .core import ServiceError, write_json_response
-from .logging import Logger
+from lizmap.server.core import write_json_response
+from lizmap.server.exception import ServiceError
+from lizmap.server.logger import Logger
 
 
 class LizmapServiceError(ServiceError):
@@ -30,19 +30,20 @@ class LizmapServiceError(ServiceError):
 
 class LizmapService(QgsService):
 
-    def __init__(self, server_iface: 'QgsServerInterface', debug: bool = False) -> None:
+    def __init__(self, server_iface: QgsServerInterface) -> None:
         super().__init__()
         self.server_iface = server_iface
-        self.debugMode = debug
         self.logger = Logger()
 
     # QgsService inherited
 
+    # noinspection PyMethodMayBeStatic
     def name(self) -> str:
         """ Service name
         """
         return 'LIZMAP'
 
+    # noinspection PyMethodMayBeStatic
     def version(self) -> str:
         """ Service version
         """
@@ -74,21 +75,24 @@ class LizmapService(QgsService):
                     400)
 
             if req_param == 'GETSERVERSETTINGS':
-                self.getserversettings(params, response, project)
+                self.get_server_settings(params, response, project)
             else:
                 raise LizmapServiceError(
                     "Bad request error",
-                    "Invalid REQUEST parameter: must be one of GETSERVERSETTINGS, found '{}'".format(req_param),
+                    "Invalid REQUEST parameter: must be one of GETSERVERSETTINGS, found '{}'".format(
+                        req_param),
                     400)
 
         except LizmapServiceError as err:
             err.formatResponse(response)
-        except Exception:
+        except Exception as e:
             self.logger.critical("Unhandled exception:\n{}".format(traceback.format_exc()))
+            self.logger.critical(str(e))
             err = LizmapServiceError("Internal server error", "Internal 'lizmap' service error")
             err.formatResponse(response)
 
-    def getserversettings(self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
+    def get_server_settings(
+            self, params: Dict[str, str], response: QgsServerResponse, project: QgsProject) -> None:
         """ Get Lizmap Server settings
         """
         _ = params
