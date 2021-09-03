@@ -2,8 +2,6 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from typing import Dict, List, Union
-
 from qgis.core import Qgis, QgsExpression, QgsMapLayer, QgsVectorLayer
 from qgis.server import QgsAccessControlFilter, QgsServerInterface
 
@@ -59,7 +57,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         rights = super().layerPermissions(layer)
 
         # Get Lizmap user groups provided by the request
-        groups = self.get_lizmap_groups()
+        groups = get_lizmap_groups(self.iface.requestHandler())
 
         # If groups is empty, no Lizmap user groups provided by the request
         # The default layer rights is applied
@@ -67,7 +65,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return rights
 
         # Get Lizmap config
-        cfg = self.get_lizmap_config()
+        cfg = get_lizmap_config(self.iface.configFilePath())
         if not cfg:
             # Default layer rights applied
             return rights
@@ -187,7 +185,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         default_cache_key = super().cacheKey()
 
         # Get Lizmap user groups provided by the request
-        groups = self.get_lizmap_groups()
+        groups = get_lizmap_groups(self.iface.requestHandler())
 
         # If groups is empty, no Lizmap user groups provided by the request
         # The default cache key is returned
@@ -195,7 +193,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return default_cache_key
 
         # Get Lizmap config
-        cfg = self.get_lizmap_config()
+        cfg = get_lizmap_config(self.iface.configFilePath())
         if not cfg:
             # The default cache key is returned
             return default_cache_key
@@ -233,76 +231,48 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return default_cache_key
 
-    def get_lizmap_config(self) -> Union[Dict, None]:
-        """ Get Lizmap config """
-
-        return get_lizmap_config(self.iface.configFilePath())
-
-    def get_lizmap_groups(self) -> List[str]:
-        """ Get Lizmap user groups provided by the request """
-
-        return get_lizmap_groups(self.iface.requestHandler())
-
-    def get_lizmap_user_login(self) -> str:
-        """ Get Lizmap user login provided by the request """
-
-        return get_lizmap_user_login(self.iface.requestHandler())
-
-    def get_lizmap_override_filter(self) -> str:
-        """ Get Lizmap user login provided by the request """
-
-        return get_lizmap_override_filter(self.iface.requestHandler())
-
     def get_lizmap_layer_filter(self, layer: QgsVectorLayer) -> str:
         """ Get lizmap layer filter based on login filter """
-        layer_filter = ''
 
         # Check first the headers to avoid unnecessary config file reading
         # Override filter
-        override_filter = self.get_lizmap_override_filter()
-        if override_filter:
-            # Return empty filter
-            return layer_filter
+        if get_lizmap_override_filter(self.iface.requestHandler()):
+            return ''
 
         # Get Lizmap user groups provided by the request
-        groups = self.get_lizmap_groups()
-        user_login = self.get_lizmap_user_login()
+        groups = get_lizmap_groups(self.iface.requestHandler())
+        user_login = get_lizmap_user_login(self.iface.requestHandler())
 
         # If groups is empty, no Lizmap user groups provided by the request
-        # Return empty filter
         if len(groups) == 0 and not user_login:
-            return layer_filter
+            return ''
 
         # If headers content implies to check for filter, read the Lizmap config
         # Get Lizmap config
-        cfg = self.get_lizmap_config()
+        cfg = get_lizmap_config(self.iface.configFilePath())
         if not cfg:
-            # Return empty filter
-            return layer_filter
+            return ''
 
         # Get layers config
         cfg_layers = get_lizmap_layers_config(cfg)
         if not cfg_layers:
-            # Return empty filter
-            return layer_filter
+            return ''
 
         # Get layer name
         layer_name = layer.name()
-        # Check that
+        # Check the layer in the CFG
         if layer_name not in cfg_layers:
-            # Return empty filter
-            return layer_filter
+            return ''
 
         # Get layer login filter
         cfg_layer_login_filter = get_lizmap_layer_login_filter(cfg, layer_name)
         if not cfg_layer_login_filter:
-            # Return empty filter
-            return layer_filter
+            return ''
 
-        # Layer login fliter only for edition does not filter layer
+        # Layer login filter only for edition does not filter layer
         is_edition_only = 'edition_only' in cfg_layer_login_filter
         if is_edition_only and to_bool(cfg_layer_login_filter['edition_only']):
-            return layer_filter
+            return ''
 
         attribute = cfg_layer_login_filter['filterAttribute']
 
