@@ -282,15 +282,28 @@ class TestToolTip(unittest.TestCase):
             'DocumentViewer': QgsExternalResourceWidget.NoContent,
         }
         expression = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
-        expected = '''
+        if Qgis.QGIS_VERSION_INT < 30800:
+            expected = '''
                     concat(
                         '<a href="',
                         "field_a",
                         '" target="_blank">fname</a>'
                     )'''
+        else:
+            expected = '''
+                    concat(
+                        '<a href="',
+                        "field_a",
+                        '" target="_blank">',
+                        base_file_name(field_a),
+                        '</a>'
+                    )'''
         self.assertEqual(expected, expression)
 
-        expected = '<a href="test.png" target="_blank">fname</a>'
+        if Qgis.QGIS_VERSION_INT < 30800:
+            expected = '<a href="test.png" target="_blank">fname</a>'
+        else:
+            expected = '<a href="test.png" target="_blank">test</a>'
         self.check_layer_context('test.png', expression, expected)
 
     def test_value_relation(self):
