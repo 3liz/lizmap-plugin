@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* If running QGIS 3.10 or newer, display the file name when using a drag&drop layout with an attachement widget
+* Refactor some code on the server side
+
 ## 3.5.7 - 2021-08-31
 
 * Server - Avoid issue about GetFeatureInfo
