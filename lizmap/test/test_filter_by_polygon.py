@@ -101,13 +101,13 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertTrue(FilterByPolygon(json, points).is_valid())
 
         # For unknown
-        groups = ['unknown']
+        groups = ('unknown',)
         geom = config._polygon_for_groups(groups)
         self.assertTrue(geom.isEmpty())
         self.assertEqual('', config.subset_sql(groups))
 
         # For admins, they see everything inside, not the one outside
-        groups = ['admins']
+        groups = ('admins',)
         geom = config._polygon_for_groups(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
@@ -115,7 +115,7 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual('"id" IN (1, 3)', config.subset_sql(groups))
 
         # For east
-        groups = ['east']
+        groups = ('east',)
         geom = config._polygon_for_groups(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)))',
@@ -123,7 +123,7 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual('"id" IN (1)', config.subset_sql(groups))
 
         # For west
-        groups = ['west']
+        groups = ('west',)
         geom = config._polygon_for_groups(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
@@ -149,14 +149,14 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertTrue(config.is_filtered())
         self.assertTrue(FilterByPolygon(json, points).is_valid())
 
-        groups = ['admins']
+        groups = ('admins',)
         self.assertEqual('', config.subset_sql(groups))
 
         config = FilterByPolygon(json, points, editing=True)
         self.assertTrue(config.is_filtered())
         self.assertTrue(FilterByPolygon(json, points).is_valid())
 
-        groups = ['admins']
+        groups = ('admins',)
         geom = config._polygon_for_groups(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))',

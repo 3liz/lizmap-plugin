@@ -5,7 +5,7 @@ __email__ = 'info@3liz.org'
 import json
 import os
 
-from typing import Dict, List, Union, Tuple
+from typing import Dict, Tuple, Union
 
 from qgis.core import (
     QgsExpression,
@@ -25,6 +25,22 @@ def write_json_response(data: Dict[str, str], response: QgsServerResponse, code:
     response.setStatusCode(code)
     response.setHeader("Content-Type", "application/json")
     response.write(json.dumps(data))
+
+
+def find_vector_layer_from_params(params, project):
+    """ Trying to find the layer in the URL in the given project. """
+#         params: Dict[str, str], project: QgsProject) -> tuple[bool, Union[QgsMapLayer, None]]:
+    layer_name = params.get('LAYER', params.get('layer', ''))
+
+    if not layer_name:
+        return False, None
+
+    layer = find_vector_layer(layer_name, project)
+
+    if not layer:
+        return False, None
+
+    return True, layer
 
 
 def find_vector_layer(layer_name: str, project: QgsProject) -> Union[None, QgsVectorLayer]:
@@ -119,7 +135,7 @@ def get_lizmap_layers_config(config: Dict) -> Union[Dict, None]:
     cfg_layers = config['layers']
 
     # Check that layers lizmap config is dict
-    if type(cfg_layers) != dict:
+    if not isinstance(cfg_layers, dict):
         logger.warning("Layers lizmap config is not dict")
         return None
 

@@ -58,3 +58,25 @@ def test_lizmap_getserversettings(client):
     assert 'WMS' in b['services']
     assert 'LIZMAP' in b['services']
     assert 'EXPRESSION' in b['services']
+
+
+def test_lizmap_service_filter_polygon(client):
+    """  Test get polygon filter with the Lizmap service. """
+    project_file = "test_filter_layer_data_by_polygon_for_groups.qgs"
+
+    qs = (
+        "?"
+        "SERVICE=LIZMAP&"
+        "REQUEST=GETSUBSETSTRING&"
+        "MAP=france_parts.qgs&"
+        "LAYER=shop_bakery&"
+        "LIZMAP_USER_GROUPS=montferrier-sur-lez"
+    )
+    rv = client.get(qs, project_file)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('application/json') == 0
+
+    b = json.loads(rv.content.decode('utf-8'))
+
+    assert b == {'filter': '"id" IN (68)'}
