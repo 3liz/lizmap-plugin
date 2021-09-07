@@ -322,7 +322,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         return login_filter
 
     @staticmethod
-    def _filter_by_login(cfg_layer_login_filter: dict, groups: list, login: str) -> str:
+    def _filter_by_login(cfg_layer_login_filter: dict, groups: tuple, login: str) -> str:
         """ Build the string according to the filter by login configuration.
 
         :param cfg_layer_login_filter: The Lizmap Filter by login configuration.

@@ -2,6 +2,8 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from functools import lru_cache
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -108,7 +110,7 @@ class FilterByPolygon:
         return True
 
     @profiling
-    def subset_sql(self, groups: list) -> str:
+    def subset_sql(self, groups: tuple) -> str:
         """ Get the SQL subset string for the current groups of the user.
 
         :param groups: List of groups belongings to the user.
@@ -120,6 +122,7 @@ class FilterByPolygon:
         # We need to have a cache for this, valid for the combo polygon layer id & user_groups
         # as it will be done for each WMS or WFS query
         polygon = self._polygon_for_groups(groups)
+        # Logger.info("LRU Cache _polygon_for_groups : {}".format(self._polygon_for_groups.cache_info()))
 
         if polygon.isEmpty():
             return ''
@@ -135,10 +138,13 @@ class FilterByPolygon:
             return sql
 
         else:
-            return self._layer_not_postgres(polygon)
+            subset = self._layer_not_postgres(polygon)
+            # Logger.info("LRU Cache _layer_not_postgres : {}".format(self._layer_not_postgres.cache_info()))
+            return subset
 
     @profiling
-    def _polygon_for_groups(self, groups) -> QgsGeometry:
+    @lru_cache(maxsize=CACHE_MAX_SIZE)
+    def _polygon_for_groups(self, groups: tuple) -> QgsGeometry:
         """ All features from the polygon layer corresponding to the user groups """
         expression = """
 array_intersect(
@@ -158,7 +164,6 @@ array_intersect(
         # Create request
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes([])
-        # request.setFlags(QgsFeatureRequest.NoGeometry)  # TODO How does that work ??
         request.setFilterExpression(expression)
 
         polygon_geoms = []
@@ -168,6 +173,7 @@ array_intersect(
         return QgsGeometry().collectGeometry(polygon_geoms)
 
     @profiling
+    @lru_cache(maxsize=CACHE_MAX_SIZE)
     def _layer_not_postgres(self, polygons: QgsGeometry) -> str:
         """ When the layer is not a postgres based layer.
 

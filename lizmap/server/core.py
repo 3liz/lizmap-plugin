@@ -5,7 +5,7 @@ __email__ = 'info@3liz.org'
 import json
 import os
 
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 
 from qgis.core import (
     QgsExpression,
@@ -169,7 +169,7 @@ def get_lizmap_layer_login_filter(config: Dict, layer_name: str) -> Union[Dict, 
     return cfg_layer_login_filter
 
 
-def get_lizmap_groups(handler: QgsRequestHandler) -> List[str]:
+def get_lizmap_groups(handler: QgsRequestHandler) -> Tuple[str]:
     """ Get Lizmap user groups provided by the request """
 
     # Defined groups
@@ -189,9 +189,10 @@ def get_lizmap_groups(handler: QgsRequestHandler) -> List[str]:
         logger.info("No request headers provided")
 
     if len(groups) != 0:
-        return groups
-    else:
-        logger.info("No lizmap user groups in request headers")
+        # noinspection PyTypeChecker
+        return tuple(groups)
+
+    logger.info("No lizmap user groups in request headers")
 
     # Get group in parameters
     params = handler.parameterMap()
@@ -202,7 +203,8 @@ def get_lizmap_groups(handler: QgsRequestHandler) -> List[str]:
             groups = [g.strip() for g in user_groups.split(',')]
             logger.info("Lizmap user groups in parameters")
 
-    return groups
+    # noinspection PyTypeChecker
+    return tuple(groups)
 
 
 def get_lizmap_user_login(handler: QgsRequestHandler) -> str:
