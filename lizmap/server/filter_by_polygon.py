@@ -123,14 +123,15 @@ class FilterByPolygon:
         :returns: The subset SQL string to use
         """
         if self.filter_mode == 'editing':
-            if not self.editing:
-                Logger.info(
-                    "Layer is editing only but we are not in an editing session. Return all features.")
-                return ''
-            else:
-                Logger.info(
-                    "Layer is editing only and we are in an editing session. Continue to find the subset "
-                    "string")
+            return ''
+            # if not self.editing:
+            #     Logger.info(
+            #         "Layer is editing only but we are not in an editing session. Return all features.")
+            #     return ''
+            # else:
+            #     Logger.info(
+            #         "Layer is editing only and we are in an editing session. Continue to find the subset "
+            #         "string")
 
         # We need to have a cache for this, valid for the combo polygon layer id & user_groups
         # as it will be done for each WMS or WFS query
