@@ -20,15 +20,21 @@ from lizmap.server.logger import Logger, profiling
 # TODO implement LRU cache with this variable
 CACHE_MAX_SIZE = 100
 
+# 1 = 0 results in a "false" in OGR/PostGIS
+# ET : I didn't find a proper false value in OGR
+NO_FEATURES = '1 = 0'
+
 
 class FilterByPolygon:
 
-    def __init__(self, config: dict, layer: QgsVectorLayer, editing: bool = False):
+    def __init__(
+            self, config: dict, layer: QgsVectorLayer, editing: bool = False, use_st_intersect: bool = False):
         """Constructor for the filter by polygon.
 
         :param config: The filter by polygon configuration as dictionary
         :param layer: The vector layer to filter
         """
+        self.use_st_intersect = use_st_intersect
         self.config = config
         self.editing = editing
         # noinspection PyArgumentList
@@ -116,8 +122,15 @@ class FilterByPolygon:
         :param groups: List of groups belongings to the user.
         :returns: The subset SQL string to use
         """
-        if self.filter_mode == 'editing' and not self.editing:
-            return ''
+        if self.filter_mode == 'editing':
+            if not self.editing:
+                Logger.info(
+                    "Layer is editing only but we are not in an editing session. Return all features.")
+                return ''
+            else:
+                Logger.info(
+                    "Layer is editing only and we are in an editing session. Continue to find the subset "
+                    "string")
 
         # We need to have a cache for this, valid for the combo polygon layer id & user_groups
         # as it will be done for each WMS or WFS query
@@ -125,22 +138,24 @@ class FilterByPolygon:
         # Logger.info("LRU Cache _polygon_for_groups : {}".format(self._polygon_for_groups.cache_info()))
 
         if polygon.isEmpty():
-            return ''
+            return NO_FEATURES
 
         if self.layer.providerType() == 'postgres':
+            if self.use_st_intersect:
+                uri = QgsDataSourceUri(self.layer.source())
+                sql = self._layer_postgres(
+                    self.layer.sourceCrs(),
+                    self.polygon.sourceCrs(),
+                    uri.geometryColumn(),
+                    polygon)
+                return sql
 
-            uri = QgsDataSourceUri(self.layer.source())
-            sql = self._layer_postgres(
-                self.layer.sourceCrs(),
-                self.polygon.sourceCrs(),
-                uri.geometryColumn(),
-                polygon)
-            return sql
+            else:
+                Logger.info("Layer is postgres, but not using ST_Intersect")
 
-        else:
-            subset = self._layer_not_postgres(polygon)
-            # Logger.info("LRU Cache _layer_not_postgres : {}".format(self._layer_not_postgres.cache_info()))
-            return subset
+        subset = self._layer_not_postgres(polygon)
+        # Logger.info("LRU Cache _layer_not_postgres : {}".format(self._layer_not_postgres.cache_info()))
+        return subset
 
     @profiling
     @lru_cache(maxsize=CACHE_MAX_SIZE)
@@ -199,7 +214,7 @@ array_intersect(
                 unique_ids.append(str(feature[self.primary_key]))
 
         if not unique_ids:
-            return ''
+            return NO_FEATURES
 
         return '"{}" IN ({})'.format(self.primary_key, ', '.join(unique_ids))
 
@@ -215,12 +230,17 @@ array_intersect(
 
         :returns: The subset SQL string.
         """
+        if filtering_crs.isGeographic():
+            decimals = 6
+        else:
+            decimals = 2
+
         sql = """ST_Intersects(
     "{geom_field}",
     ST_Transform(ST_GeomFromText('{wkt}', {from_crs}), {to_crs})
 )""".format(
             geom_field=geom_field,
-            wkt=polygons.asWkt(6),
+            wkt=polygons.asWkt(decimals),
             from_crs=filtering_crs.postgisSrid(),
             to_crs=filtered_crs.postgisSrid()
         )

@@ -15,8 +15,8 @@ from lizmap.server.core import (
     is_editing_context,
     to_bool,
 )
-from lizmap.server.filter_by_polygon import FilterByPolygon
-from lizmap.server.logger import Logger
+from lizmap.server.filter_by_polygon import NO_FEATURES, FilterByPolygon
+from lizmap.server.logger import Logger, log_output_value, profiling
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):
@@ -233,6 +233,8 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return default_cache_key
 
+    @profiling
+    @log_output_value
     def get_lizmap_layer_filter(self, layer: QgsVectorLayer) -> str:
         """ Get lizmap layer filter based on login filter """
 
@@ -267,16 +269,16 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
             return ''
 
         try:
-            # 1 = 0 results in a "false" in OGR/PostGIS
-            # ET : I didn't find a proper false value in OGR
             edition_context = is_editing_context(self.iface.requestHandler())
-            filter_polygon_config = FilterByPolygon(cfg.get("filter_by_polygon"), layer, edition_context)
+            filter_polygon_config = FilterByPolygon(
+                cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=False)
             polygon_filter = ''
             if filter_polygon_config.is_filtered():
                 if not filter_polygon_config.is_valid():
                     Logger.critical(
-                        "The filter by polygon configuration is not valid.\n All features are hidden.")
-                    return '1 = 0'
+                        "The filter by polygon configuration is not valid.\n All features are hidden : "
+                        "{}".format(NO_FEATURES))
+                    return NO_FEATURES
 
                 # polygon_filter is set, we have a value to filter
                 polygon_filter = filter_polygon_config.subset_sql(groups)
@@ -284,8 +286,12 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         except Exception as e:
             Logger.log_exception(e)
             Logger.critical(
-                "An error occurred when trying to read the filtering by polygon.\nAll features are hidden.")
-            return '1 = 0'
+                "An error occurred when trying to read the filtering by polygon.\nAll features are hidden : "
+                "{}".format(NO_FEATURES))
+            return NO_FEATURES
+
+        if polygon_filter:
+            Logger.info("The polygon filter subset string is not null : {}".format(polygon_filter))
 
         # Get layer login filter
         cfg_layer_login_filter = get_lizmap_layer_login_filter(cfg, layer_name)

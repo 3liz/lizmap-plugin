@@ -188,7 +188,6 @@ def test_filter_by_polygon(client):
     assert len(layers) == 1
 
     # Filter the layer with montferrier-sur-lez with a single town hall
-
     file_path = Path(__file__).parent.joinpath(
         'data', 'test_filter_layer_data_by_polygon_for_groups', 'townhalls_EPSG2154.shp')
     layer = QgsVectorLayer(str(file_path), 'test', 'ogr')

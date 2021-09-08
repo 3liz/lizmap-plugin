@@ -104,7 +104,7 @@ class TestFilterByPolygon(unittest.TestCase):
         groups = ('unknown',)
         geom = config._polygon_for_groups(groups)
         self.assertTrue(geom.isEmpty())
-        self.assertEqual('', config.subset_sql(groups))
+        self.assertEqual('1 = 0', config.subset_sql(groups))
 
         # For admins, they see everything inside, not the one outside
         groups = ('admins',)

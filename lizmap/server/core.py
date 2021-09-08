@@ -24,6 +24,7 @@ def write_json_response(data: Dict[str, str], response: QgsServerResponse, code:
     """ Write data as JSON response. """
     response.setStatusCode(code)
     response.setHeader("Content-Type", "application/json")
+    Logger.info("Sending JSON response : {}".format(data))
     response.write(json.dumps(data))
 
 
@@ -200,7 +201,7 @@ def get_lizmap_groups(handler: QgsRequestHandler) -> Tuple[str]:
         user_groups = headers.get('X-Lizmap-User-Groups')
         if user_groups is not None:
             groups = [g.strip() for g in user_groups.split(',')]
-            logger.info("Lizmap user groups in request headers")
+            logger.info("Lizmap user groups in request headers : {}".format(','.join(groups)))
     else:
         logger.info("No request headers provided")
 
@@ -217,7 +218,7 @@ def get_lizmap_groups(handler: QgsRequestHandler) -> Tuple[str]:
         user_groups = params.get('LIZMAP_USER_GROUPS')
         if user_groups is not None:
             groups = [g.strip() for g in user_groups.split(',')]
-            logger.info("Lizmap user groups in parameters")
+            logger.info("Lizmap user groups in parameters : {}".format(','.join(groups)))
 
     # noinspection PyTypeChecker
     return tuple(groups)
@@ -238,14 +239,14 @@ def get_lizmap_user_login(handler: QgsRequestHandler) -> str:
         user_login = headers.get('X-Lizmap-User')
         if user_login is not None:
             login = user_login
-            logger.info("Lizmap user login in request headers")
+            logger.info("Lizmap user login in request headers : {}".format(login))
     else:
         logger.info("No request headers provided")
 
     if login:
         return login
-    else:
-        logger.info("No lizmap user login in request headers")
+
+    logger.info("No lizmap user login in request headers")
 
     # Get login in parameters
     params = handler.parameterMap()
@@ -254,7 +255,7 @@ def get_lizmap_user_login(handler: QgsRequestHandler) -> str:
         user_login = params.get('LIZMAP_USER')
         if user_login is not None:
             login = user_login
-            logger.info("Lizmap user login in parameters")
+            logger.info("Lizmap user login in parameters : {}".format(login))
 
     return login
 
@@ -300,11 +301,28 @@ def get_lizmap_override_filter(handler: QgsRequestHandler) -> bool:
 
 def is_editing_context(handler: QgsRequestHandler) -> bool:
     """ Check if headers are defining an editing context. """
-    headers = handler.requestHeaders()
-    if not headers:
-        return False
+    logger = Logger()
 
-    return to_bool(headers.get('X-Lizmap-Edition-Context'))
+    headers = handler.requestHeaders()
+    if headers:
+        editing_context = headers.get('X-Lizmap-Edition-Context')
+        if editing_context is not None:
+            result = to_bool(editing_context)
+            logger.info("Lizmap editing context is found in request headers : {}".format(result))
+            return result
+
+    logger.info("No editing context found in request headers")
+
+    params = handler.parameterMap()
+    if params:
+        result = params.get('LIZMAP_EDITION_CONTEXT')
+        if result is not None:
+            result = to_bool(result)
+            logger.info("Lizmap editing context is found in parameters : {}".format(result))
+            return result
+
+    logger.info("No lizmap editing context filter in parameters : default value false")
+    return False
 
 
 def server_feature_id_expression(feature_id, pk_attributes: list, fields: QgsFields) -> str:

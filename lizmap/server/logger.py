@@ -3,10 +3,12 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import functools
+import inspect
 import time
 import traceback
 
 from contextlib import contextmanager
+from pathlib import Path
 
 from qgis.core import Qgis, QgsMessageLog
 
@@ -79,7 +81,23 @@ def profiling(func):
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        Logger.info("{}.{} ran in {}s".format(PLUGIN, func.__name__, round(end - start, 2)))
+        Logger.info(
+            "{}.{}.{} ran in {}s".format(
+                PLUGIN, Path(inspect.stack()[1].filename).stem, func.__name__, round(end - start, 2)))
+        return result
+
+    return wrapper
+
+
+def log_output_value(func):
+    """ Decorator to log the output of the function. """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        Logger.info(
+            "{}.{}.{} output is {} for parameter {}".format(
+                PLUGIN, Path(inspect.stack()[1].filename).stem, func.__name__, result, str(args)))
         return result
 
     return wrapper
