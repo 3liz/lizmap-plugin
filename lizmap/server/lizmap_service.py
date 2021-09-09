@@ -26,7 +26,11 @@ from lizmap.server.core import (
     write_json_response,
 )
 from lizmap.server.exception import ServiceError
-from lizmap.server.filter_by_polygon import NO_FEATURES, FilterByPolygon
+from lizmap.server.filter_by_polygon import (
+    ALL_FEATURES,
+    NO_FEATURES,
+    FilterByPolygon,
+)
 from lizmap.server.logger import Logger, profiling
 
 
@@ -111,7 +115,7 @@ class LizmapService(QgsService):
 
         body = {
             'status': 'success',
-            'filter': '',
+            'filter': ALL_FEATURES,
         }
 
         # If headers content implies to check for filter, read the Lizmap config
@@ -137,7 +141,7 @@ class LizmapService(QgsService):
         try:
             edition_context = is_editing_context(self.server_iface.requestHandler())
             filter_polygon_config = FilterByPolygon(
-                cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=True)
+                cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=False)
             if filter_polygon_config.is_filtered():
                 if not filter_polygon_config.is_valid():
                     Logger.critical(

@@ -15,7 +15,11 @@ from lizmap.server.core import (
     is_editing_context,
     to_bool,
 )
-from lizmap.server.filter_by_polygon import NO_FEATURES, FilterByPolygon
+from lizmap.server.filter_by_polygon import (
+    ALL_FEATURES,
+    NO_FEATURES,
+    FilterByPolygon,
+)
 from lizmap.server.logger import Logger, log_output_value, profiling
 
 
@@ -42,7 +46,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
                 "Lizmap layerFilterExpression disabled, you should consider upgrading QGIS Server to >= "
                 "3.10.13 or >= 3.16.2")
             Logger.critical(message)
-            return ''
+            return ALL_FEATURES
 
     def layerFilterSubsetString(self, layer: QgsVectorLayer) -> str:
         """ Return an additional subset string (typically SQL) filter """
@@ -241,7 +245,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         # Check first the headers to avoid unnecessary config file reading
         # Override filter
         if get_lizmap_override_filter(self.iface.requestHandler()):
-            return ''
+            return ALL_FEATURES
 
         # Get Lizmap user groups provided by the request
         groups = get_lizmap_groups(self.iface.requestHandler())
@@ -249,30 +253,30 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         # If groups is empty, no Lizmap user groups provided by the request
         if len(groups) == 0 and not user_login:
-            return ''
+            return ALL_FEATURES
 
         # If headers content implies to check for filter, read the Lizmap config
         # Get Lizmap config
         cfg = get_lizmap_config(self.iface.configFilePath())
         if not cfg:
-            return ''
+            return ALL_FEATURES
 
         # Get layers config
         cfg_layers = get_lizmap_layers_config(cfg)
         if not cfg_layers:
-            return ''
+            return ALL_FEATURES
 
         # Get layer name
         layer_name = layer.name()
         # Check the layer in the CFG
         if layer_name not in cfg_layers:
-            return ''
+            return ALL_FEATURES
 
         try:
             edition_context = is_editing_context(self.iface.requestHandler())
             filter_polygon_config = FilterByPolygon(
                 cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=False)
-            polygon_filter = ''
+            polygon_filter = ALL_FEATURES
             if filter_polygon_config.is_filtered():
                 if not filter_polygon_config.is_valid():
                     Logger.critical(
@@ -298,14 +302,14 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         if not cfg_layer_login_filter:
             if polygon_filter:
                 return polygon_filter
-            return ''
+            return ALL_FEATURES
 
         # Layer login filter only for edition does not filter layer
         is_edition_only = 'edition_only' in cfg_layer_login_filter
         if is_edition_only and to_bool(cfg_layer_login_filter['edition_only']):
             if polygon_filter:
                 return polygon_filter
-            return ''
+            return ALL_FEATURES
 
         attribute = cfg_layer_login_filter['filterAttribute']
 

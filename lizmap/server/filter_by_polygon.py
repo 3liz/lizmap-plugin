@@ -5,6 +5,7 @@ __email__ = 'info@3liz.org'
 from functools import lru_cache
 
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsDataSourceUri,
@@ -23,6 +24,7 @@ CACHE_MAX_SIZE = 100
 # 1 = 0 results in a "false" in OGR/PostGIS
 # ET : I didn't find a proper false value in OGR
 NO_FEATURES = '1 = 0'
+ALL_FEATURES = ''
 
 
 class FilterByPolygon:
@@ -34,6 +36,9 @@ class FilterByPolygon:
         :param config: The filter by polygon configuration as dictionary
         :param layer: The vector layer to filter
         """
+        # QGIS Server can consider the ST_Intersect not safe regarding SQL injection.
+        # Using this flag will transform or not the ST_Intersect into an IN by making the query straight to
+        # PostGIS.
         self.use_st_intersect = use_st_intersect
         self.config = config
         self.editing = editing
@@ -61,7 +66,7 @@ class FilterByPolygon:
     @profiling
     def _parse(self) -> None:
         """Read the configuration and fill variables"""
-        # Leave as quick it's possible
+        # Leave as quick as possible
         if not self.layer.isSpatial():
             return None
 
@@ -85,7 +90,6 @@ class FilterByPolygon:
         self.polygon = self.project.mapLayer(config['polygon_layer_id'])
         self.group_field = config.get("group_field")
 
-    @profiling
     def is_valid(self) -> bool:
         """ If the configuration is valid or not."""
         if not self.polygon:
@@ -123,7 +127,9 @@ class FilterByPolygon:
         :returns: The subset SQL string to use
         """
         if self.filter_mode == 'editing':
-            return ''
+            # We return all features in this situation
+            return ALL_FEATURES
+
             # if not self.editing:
             #     Logger.info(
             #         "Layer is editing only but we are not in an editing session. Return all features.")
@@ -142,19 +148,21 @@ class FilterByPolygon:
             return NO_FEATURES
 
         if self.layer.providerType() == 'postgres':
-            if self.use_st_intersect:
+            if self.use_st_intersect or Qgis.QGIS_VERSION_INT > 31000:
                 uri = QgsDataSourceUri(self.layer.source())
-                sql = self._layer_postgres(
+                st_intersect = self._format_sql_st_intersects(
                     self.layer.sourceCrs(),
                     self.polygon.sourceCrs(),
                     uri.geometryColumn(),
                     polygon)
-                return sql
 
-            else:
-                Logger.info("Layer is postgres, but not using ST_Intersect")
+                if self.use_st_intersect:
+                    return st_intersect
 
-        subset = self._layer_not_postgres(polygon)
+                return self._features_ids_with_sql_query(st_intersect)
+
+        # Still here ? So we use the slow method with QGIS API
+        subset = self._features_ids_with_qgis_api(polygon)
         # Logger.info("LRU Cache _layer_not_postgres : {}".format(self._layer_not_postgres.cache_info()))
         return subset
 
@@ -190,8 +198,8 @@ array_intersect(
 
     @profiling
     @lru_cache(maxsize=CACHE_MAX_SIZE)
-    def _layer_not_postgres(self, polygons: QgsGeometry) -> str:
-        """ When the layer is not a postgres based layer.
+    def _features_ids_with_qgis_api(self, polygons: QgsGeometry) -> str:
+        """ List all features using the QGIS API.
 
         :returns: The subset SQL string.
         """
@@ -214,14 +222,48 @@ array_intersect(
             if feature.geometry().intersects(polygons):
                 unique_ids.append(str(feature[self.primary_key]))
 
-        if not unique_ids:
-            return NO_FEATURES
+        return self._format_sql_in(self.primary_key, unique_ids)
 
-        return '"{}" IN ({})'.format(self.primary_key, ', '.join(unique_ids))
+    @profiling
+    @lru_cache(maxsize=CACHE_MAX_SIZE)
+    def _features_ids_with_sql_query(self, st_intersect: str) -> str:
+        """ List all features using a SQL query.
+
+        Only for QGIS >= 3.10
+
+        :returns: The subset SQL string.
+        """
+        uri = QgsDataSourceUri(self.layer.source())
+
+        sql = 'SELECT {pk} FROM {schema}.{table} WHERE {st_intersect}'.format(
+            pk=self.primary_key,
+            schema=uri.schema(),
+            table=uri.table(),
+            st_intersect=st_intersect,
+        )
+        Logger.info(
+            "Requesting the database about IDs to filter with {}...".format(sql[0:90]))
+        from qgis.core import QgsProviderRegistry
+
+        # noinspection PyArgumentList
+        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+        connection = metadata.createConnection(uri.uri(), {})
+        results = connection.executeSql(sql)
+
+        unique_ids = [str(row[0]) for row in results]
+
+        return self._format_sql_in(self.primary_key, unique_ids)
 
     @classmethod
-    @profiling
-    def _layer_postgres(
+    def _format_sql_in(cls, primary_key: str, values: list) -> str:
+        """Format the SQL IN statement."""
+        if not values:
+            return NO_FEATURES
+
+        return '"{pk}" IN ( {values} )'.format(pk=primary_key, values=' , '.join(values))
+
+    @classmethod
+    def _format_sql_st_intersects(
             cls,
             filtered_crs: QgsCoordinateReferenceSystem,
             filtering_crs: QgsCoordinateReferenceSystem,
@@ -231,17 +273,12 @@ array_intersect(
 
         :returns: The subset SQL string.
         """
-        if filtering_crs.isGeographic():
-            decimals = 6
-        else:
-            decimals = 2
-
         sql = """ST_Intersects(
     "{geom_field}",
     ST_Transform(ST_GeomFromText('{wkt}', {from_crs}), {to_crs})
 )""".format(
             geom_field=geom_field,
-            wkt=polygons.asWkt(decimals),
+            wkt=polygons.asWkt(6 if filtering_crs.isGeographic() else 2),
             from_crs=filtering_crs.postgisSrid(),
             to_crs=filtered_crs.postgisSrid()
         )

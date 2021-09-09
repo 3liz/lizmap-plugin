@@ -112,7 +112,7 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
-        self.assertEqual('"id" IN (1, 3)', config.subset_sql(groups))
+        self.assertEqual('"id" IN ( 1 , 3 )', config.subset_sql(groups))
 
         # For east
         groups = ('east',)
@@ -120,7 +120,7 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)))',
             geom.asWkt(0))
-        self.assertEqual('"id" IN (1)', config.subset_sql(groups))
+        self.assertEqual('"id" IN ( 1 )', config.subset_sql(groups))
 
         # For west
         groups = ('west',)
@@ -128,7 +128,7 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual(
             'MultiPolygon (((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
-        self.assertEqual('"id" IN (3)', config.subset_sql(groups))
+        self.assertEqual('"id" IN ( 3 )', config.subset_sql(groups))
 
         # The only layer is editing only
         json = {
@@ -167,7 +167,7 @@ class TestFilterByPolygon(unittest.TestCase):
 
     def test_subset_string_postgres(self):
         """ Test building a postgresql string for filter by polygon. """
-        sql = FilterByPolygon._layer_postgres(
+        sql = FilterByPolygon._format_sql_st_intersects(
             QgsCoordinateReferenceSystem(2154),
             QgsCoordinateReferenceSystem(4326),
             'geom',

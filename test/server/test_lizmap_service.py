@@ -79,7 +79,7 @@ def test_lizmap_service_filter_polygon_with_user(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert b == {'filter': '"id" IN (68)', 'status': 'success'}
+    assert b == {'filter': '"id" IN ( 68 )', 'status': 'success'}
 
 
 def test_lizmap_service_filter_polygon_without_user(client):
