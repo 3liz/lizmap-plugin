@@ -221,8 +221,7 @@ def test_filter_by_polygon(client):
 
     layers = rv.xpath('//gml:featureMember')
     assert layers is not None
-    # assert len(layers) == 1
-    assert len(layers) == expected_source
+    assert len(layers) == 1
 
 
 def test_group_visibility_headers(client):
