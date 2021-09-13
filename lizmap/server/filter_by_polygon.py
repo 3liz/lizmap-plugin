@@ -16,6 +16,11 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+if Qgis.QGIS_VERSION_INT > 31000:
+    import binascii
+
+    from qgis.core import QgsProviderRegistry
+
 from lizmap.server.logger import Logger, profiling
 
 # TODO implement LRU cache with this variable
@@ -138,7 +143,10 @@ class FilterByPolygon:
 
         # We need to have a cache for this, valid for the combo polygon layer id & user_groups
         # as it will be done for each WMS or WFS query
-        polygon = self._polygon_for_groups(groups)
+        if self.polygon.providerType() == 'postgres' and Qgis.QGIS_VERSION_INT > 31000:
+            polygon = self._polygon_for_groups_with_sql_query(groups)
+        else:
+            polygon = self._polygon_for_groups_with_qgis_api(groups)
         # Logger.info("LRU Cache _polygon_for_groups : {}".format(self._polygon_for_groups.cache_info()))
 
         if polygon.isEmpty():
@@ -165,7 +173,7 @@ class FilterByPolygon:
 
     @profiling
     @lru_cache(maxsize=CACHE_MAX_SIZE)
-    def _polygon_for_groups(self, groups: tuple) -> QgsGeometry:
+    def _polygon_for_groups_with_qgis_api(self, groups: tuple) -> QgsGeometry:
         """ All features from the polygon layer corresponding to the user groups """
         expression = """
 array_intersect(
@@ -192,6 +200,64 @@ array_intersect(
             polygon_geoms.append(feature.geometry())
 
         return QgsGeometry().collectGeometry(polygon_geoms)
+
+    @profiling
+    @lru_cache(maxsize=CACHE_MAX_SIZE)
+    def _polygon_for_groups_with_sql_query(self, groups: tuple) -> QgsGeometry:
+        """ All features from the polygon layer corresponding to the user groups for a Postgresql layer.
+
+        Only for QGIS >= 3.10
+        """
+        uri = QgsDataSourceUri(self.polygon.source())
+        try:
+            sql = r"""
+WITH current_groups AS (
+    SELECT STRING_TO_ARRAY(
+        TRIM(BOTH ' ' FROM regexp_replace('{groups}', '\s*,\s*', ',')),
+        ',','g'
+    ) AS user_group
+),
+polygons AS (
+    SELECT
+        id, geom,
+        STRING_TO_ARRAY(
+            TRIM(BOTH ' ' FROM regexp_replace("{polygon_field}", '\s*,\s*', ',')),
+            ',','g'
+    ) as polygon_groups
+    FROM {schema}.{table}
+)
+SELECT '1' AS id, ST_AsBinary(ST_Union(geom)) AS geom
+FROM
+    current_groups c,
+    polygons p
+WHERE c.user_group && p.polygon_groups
+""".format(
+                polygon_field=self.group_field,
+                groups=','.join(groups),
+                schema=uri.schema(),
+                table=uri.table(),
+            )
+            Logger.info(
+                "Requesting the database about polygons for the current groups with : \n{}".format(sql))
+
+            # noinspection PyArgumentList
+            metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+            connection = metadata.createConnection(uri.uri(), {})
+            results = connection.executeSql(sql)
+            wkb = results[0][1]
+
+            geom = QgsGeometry()
+            # Remove \x from string
+            # Related to https://gis.stackexchange.com/questions/411545/use-st-asbinary-from-postgis-in-pyqgis
+            geom.fromWkb(binascii.a2b_hex(wkb[2:]))
+            return geom
+        except Exception as e:
+            # Let's be safe
+            Logger.log_exception(e)
+            Logger.critical(
+                "The filter_by_polygon._polygon_for_groups_with_sql_query failed when requesting PostGIS.\n"
+                "Using the QGIS API")
+            return self._polygon_for_groups_with_qgis_api(groups)
 
     @profiling
     @lru_cache(maxsize=CACHE_MAX_SIZE)
@@ -240,7 +306,6 @@ array_intersect(
         )
         Logger.info(
             "Requesting the database about IDs to filter with {}...".format(sql[0:90]))
-        from qgis.core import QgsProviderRegistry
 
         # noinspection PyArgumentList
         metadata = QgsProviderRegistry.instance().providerMetadata('postgres')

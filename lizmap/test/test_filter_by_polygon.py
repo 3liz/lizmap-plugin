@@ -102,13 +102,13 @@ class TestFilterByPolygon(unittest.TestCase):
 
         # For unknown
         groups = ('unknown',)
-        geom = config._polygon_for_groups(groups)
+        geom = config._polygon_for_groups_with_qgis_api(groups)
         self.assertTrue(geom.isEmpty())
         self.assertEqual('1 = 0', config.subset_sql(groups))
 
         # For admins, they see everything inside, not the one outside
         groups = ('admins',)
-        geom = config._polygon_for_groups(groups)
+        geom = config._polygon_for_groups_with_qgis_api(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
@@ -116,7 +116,7 @@ class TestFilterByPolygon(unittest.TestCase):
 
         # For east
         groups = ('east',)
-        geom = config._polygon_for_groups(groups)
+        geom = config._polygon_for_groups_with_qgis_api(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)))',
             geom.asWkt(0))
@@ -124,7 +124,7 @@ class TestFilterByPolygon(unittest.TestCase):
 
         # For west
         groups = ('west',)
-        geom = config._polygon_for_groups(groups)
+        geom = config._polygon_for_groups_with_qgis_api(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
@@ -157,7 +157,7 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertTrue(FilterByPolygon(json, points).is_valid())
 
         groups = ('admins',)
-        geom = config._polygon_for_groups(groups)
+        geom = config._polygon_for_groups_with_qgis_api(groups)
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
