@@ -22,6 +22,7 @@ from lizmap.server.core import (
     get_lizmap_config,
     get_lizmap_groups,
     get_lizmap_layers_config,
+    get_lizmap_override_filter,
     is_editing_context,
     write_json_response,
 )
@@ -117,6 +118,12 @@ class LizmapService(QgsService):
             'status': 'success',
             'filter': ALL_FEATURES,
         }
+
+        # Check first the headers to avoid unnecessary config file reading
+        # Override filter
+        if get_lizmap_override_filter(self.server_iface.requestHandler()):
+            write_json_response(body, response)
+            return
 
         # If headers content implies to check for filter, read the Lizmap config
         # Get Lizmap config
