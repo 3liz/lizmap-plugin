@@ -12,9 +12,15 @@ from lizmap.server.core import (
     get_lizmap_layers_config,
     get_lizmap_override_filter,
     get_lizmap_user_login,
+    is_editing_context,
     to_bool,
 )
-from lizmap.server.logger import Logger
+from lizmap.server.filter_by_polygon import (
+    ALL_FEATURES,
+    NO_FEATURES,
+    FilterByPolygon,
+)
+from lizmap.server.logger import Logger, log_output_value, profiling
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):
@@ -40,7 +46,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
                 "Lizmap layerFilterExpression disabled, you should consider upgrading QGIS Server to >= "
                 "3.10.13 or >= 3.16.2")
             Logger.critical(message)
-            return ''
+            return ALL_FEATURES
 
     def layerFilterSubsetString(self, layer: QgsVectorLayer) -> str:
         """ Return an additional subset string (typically SQL) filter """
@@ -231,13 +237,15 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         return default_cache_key
 
+    @profiling
+    @log_output_value
     def get_lizmap_layer_filter(self, layer: QgsVectorLayer) -> str:
         """ Get lizmap layer filter based on login filter """
 
         # Check first the headers to avoid unnecessary config file reading
         # Override filter
         if get_lizmap_override_filter(self.iface.requestHandler()):
-            return ''
+            return ALL_FEATURES
 
         # Get Lizmap user groups provided by the request
         groups = get_lizmap_groups(self.iface.requestHandler())
@@ -245,62 +253,109 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         # If groups is empty, no Lizmap user groups provided by the request
         if len(groups) == 0 and not user_login:
-            return ''
+            return ALL_FEATURES
 
         # If headers content implies to check for filter, read the Lizmap config
         # Get Lizmap config
         cfg = get_lizmap_config(self.iface.configFilePath())
         if not cfg:
-            return ''
+            return ALL_FEATURES
 
         # Get layers config
         cfg_layers = get_lizmap_layers_config(cfg)
         if not cfg_layers:
-            return ''
+            return ALL_FEATURES
 
         # Get layer name
         layer_name = layer.name()
         # Check the layer in the CFG
         if layer_name not in cfg_layers:
-            return ''
+            return ALL_FEATURES
+
+        try:
+            edition_context = is_editing_context(self.iface.requestHandler())
+            filter_polygon_config = FilterByPolygon(
+                cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=False)
+            polygon_filter = ALL_FEATURES
+            if filter_polygon_config.is_filtered():
+                if not filter_polygon_config.is_valid():
+                    Logger.critical(
+                        "The filter by polygon configuration is not valid.\n All features are hidden : "
+                        "{}".format(NO_FEATURES))
+                    return NO_FEATURES
+
+                # polygon_filter is set, we have a value to filter
+                polygon_filter, _ = filter_polygon_config.subset_sql(groups)
+
+        except Exception as e:
+            Logger.log_exception(e)
+            Logger.critical(
+                "An error occurred when trying to read the filtering by polygon.\nAll features are hidden : "
+                "{}".format(NO_FEATURES))
+            return NO_FEATURES
+
+        if polygon_filter:
+            Logger.info("The polygon filter subset string is not null : {}".format(polygon_filter))
 
         # Get layer login filter
         cfg_layer_login_filter = get_lizmap_layer_login_filter(cfg, layer_name)
         if not cfg_layer_login_filter:
-            return ''
+            if polygon_filter:
+                return polygon_filter
+            return ALL_FEATURES
 
         # Layer login filter only for edition does not filter layer
         is_edition_only = 'edition_only' in cfg_layer_login_filter
         if is_edition_only and to_bool(cfg_layer_login_filter['edition_only']):
-            return ''
+            if polygon_filter:
+                return polygon_filter
+            return ALL_FEATURES
 
         attribute = cfg_layer_login_filter['filterAttribute']
-
-        # Default filter for no user connected
-        # we use expression tools also for subset string
-        layer_filter = QgsExpression.createFieldEqualityExpression(attribute, 'all')
 
         # If groups is not empty but the only group like user login has no name
         # Return the filter for no user connected
         if len(groups) == 1 and groups[0] == '' and user_login == '':
-            return layer_filter
 
+            # Default filter for no user connected
+            # we use expression tools also for subset string
+            login_filter = QgsExpression.createFieldEqualityExpression(attribute, 'all')
+            if polygon_filter:
+                return '{} AND {}'.format(polygon_filter, login_filter)
+
+            return login_filter
+
+        login_filter = self._filter_by_login(cfg_layer_login_filter, groups, user_login)
+        if polygon_filter:
+            return '{} AND {}'.format(polygon_filter, login_filter)
+
+        return login_filter
+
+    @staticmethod
+    def _filter_by_login(cfg_layer_login_filter: dict, groups: tuple, login: str) -> str:
+        """ Build the string according to the filter by login configuration.
+
+        :param cfg_layer_login_filter: The Lizmap Filter by login configuration.
+        :param groups: List of groups for the current user
+        :param login: The current user
+        """
         # List of quoted values for expression
         quoted_values = []
+
         if to_bool(cfg_layer_login_filter['filterPrivate']):
             # If filter is private use user_login
-            quoted_values.append(QgsExpression.quotedString(user_login))
+            quoted_values.append(QgsExpression.quotedString(login))
         else:
             # Else use user groups
             quoted_values = [QgsExpression.quotedString(g) for g in groups]
+
         # Add all to quoted values
         quoted_values.append(QgsExpression.quotedString('all'))
 
         # Build filter
         layer_filter = '{} IN ({})'.format(
-            QgsExpression.quotedColumnRef(attribute),
+            QgsExpression.quotedColumnRef(cfg_layer_login_filter['filterAttribute']),
             ', '.join(quoted_values)
         )
 
-        # Return build filter
         return layer_filter

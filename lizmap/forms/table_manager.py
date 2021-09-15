@@ -3,6 +3,7 @@
 import json
 import logging
 
+from collections import namedtuple
 from typing import Type
 
 from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
@@ -76,6 +77,13 @@ class TableManager:
             self.definitions.add_general_label('datavizLocation', self.parent.label_dataviz_location)
             self.definitions.add_general_label('datavizTemplate', self.parent.label_dataviz_template)
             self.definitions.add_general_label('theme', self.parent.label_dataviz_theme)
+
+        elif self.definitions.key() == 'filter_by_polygon' and self.parent:
+            self.definitions.add_general_widget('polygon_layer_id', self.parent.layer_filter_polygon)
+            self.definitions.add_general_widget('group_field', self.parent.field_filter_polygon)
+
+            self.definitions.add_general_label('polygon_layer_id', self.parent.label_layer_filter_polygon)
+            self.definitions.add_general_label('group_field', self.parent.label_field_filter_polygon)
 
         # Set tooltips
         for general_config in self.definitions.general_config.values():
@@ -367,8 +375,21 @@ class TableManager:
 
         data = dict()
 
-        # TODO Lizmap 4
-        # data['config'] = dict()
+        if self.definitions.key() in ['filter_by_polygon']:
+            data['config'] = dict()
+            for config_key, general_config in self.definitions.general_config.items():
+                widget = general_config.get('widget')
+                if not widget:
+                    continue
+
+                input_type = general_config['type']
+
+                if input_type == InputType.Layer:
+                    data['config'][config_key] = widget.currentLayer().id()
+                elif input_type == InputType.Field:
+                    data['config'][config_key] = widget.currentField()
+                else:
+                    raise Exception('InputType global "{}" not implemented'.format(input_type))
 
         data['layers'] = list()
 
@@ -626,6 +647,39 @@ class TableManager:
 
         if self.definitions.key() == 'datavizLayers':
             data = self._from_json_legacy_dataviz(data)
+
+        config = data.get('config')
+        if config:
+            settings = []
+            Setting = namedtuple('Setting', ['widget', 'type', 'value'])
+            for config_key, value in config.items():
+                widget = self.definitions.general_config[config_key].get('widget')
+                if not widget:
+                    # In tests, we don't have this dialog with general config
+                    continue
+                widget_type = self.definitions.general_config[config_key]['type']
+                if widget_type == InputType.Layer:
+                    vector_layer = QgsProject.instance().mapLayer(value)
+                    if not vector_layer or not vector_layer.isValid():
+                        LOGGER.warning(
+                            'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not exist.'
+                            ' Skipping that layer.'.format(
+                                self.definitions.key(), config_key, value))
+                    else:
+                        settings.insert(0, Setting(widget, widget_type, vector_layer))
+                elif widget_type == InputType.Field:
+                    settings.append(Setting(widget, widget_type, value))
+                else:
+                    raise Exception('InputType global "{}" not implemented'.format(widget_type))
+
+            # Now in correct order, because the field depends of the layer
+            for setting in settings:
+                if setting.type == InputType.Layer:
+                    setting.widget.setLayer(setting.value)
+                elif setting.type == InputType.Field:
+                    setting.widget.setField(setting.value)
+                else:
+                    raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
         layers = data.get('layers')
 

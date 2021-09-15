@@ -1,11 +1,14 @@
-import logging
-
-LOGGER = logging.getLogger('server')
-
-__copyright__ = 'Copyright 2019, 3Liz'
+__copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-__revision__ = '$Format:%H$'
+
+import logging
+
+from pathlib import Path
+
+from qgis.core import QgsVectorLayer
+
+LOGGER = logging.getLogger('server')
 
 
 def test_no_lizmap_config(client):
@@ -149,6 +152,74 @@ def test_group_visibility(client):
     assert rv.headers.get('Content-Type', '').find('text/xml') == 0
 
     layers = rv.xpath('//wms:Layer')
+    assert layers is not None
+    assert len(layers) == 1
+
+
+def test_filter_by_polygon(client):
+    """ Test the filter by polygon access right. """
+    # Check the layer itself about the number of features
+    file_path = Path(__file__).parent.joinpath(
+        'data', 'test_filter_layer_data_by_polygon_for_groups', 'bakeries.shp')
+    layer = QgsVectorLayer(str(file_path), 'test', 'ogr')
+    expected_source = 178
+    assert expected_source == layer.featureCount()
+
+    # Check now with the project and the Lizmap config and no groups
+    project = "test_filter_layer_data_by_polygon_for_groups.qgs"
+    qs = f"?SERVICE=WFS&REQUEST=GetFeature&MAP={project}&TYPENAME=shop_bakery"
+    rv = client.get(qs, project)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == expected_source
+
+    # Filter the layer with montferrier-sur-lez with a single bakery
+    # display_and_editing
+    qs += "&LIZMAP_USER_GROUPS=montferrier-sur-lez"
+    rv = client.get(qs, project)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == 1
+
+    # Filter the layer with montferrier-sur-lez with a single town hall
+    file_path = Path(__file__).parent.joinpath(
+        'data', 'test_filter_layer_data_by_polygon_for_groups', 'townhalls_EPSG2154.shp')
+    layer = QgsVectorLayer(str(file_path), 'test', 'ogr')
+    expected_source = 27
+    assert expected_source == layer.featureCount()
+
+    # editing only
+    qs = f"?SERVICE=WFS&REQUEST=GetFeature&MAP={project}&TYPENAME=townhalls_EPSG2154"
+    rv = client.get(qs, project)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == expected_source
+
+    # with groups, still all features because editing only
+    qs += "&LIZMAP_USER_GROUPS=montferrier-sur-lez"
+    rv = client.get(qs, project)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
+    assert layers is not None
+    assert len(layers) == expected_source
+
+    # with groups and edition
+    rv = client.get(qs, project, headers={'X-Lizmap-Edition-Context': 'TRUE'})
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+
+    layers = rv.xpath('//gml:featureMember')
     assert layers is not None
     assert len(layers) == 1
 

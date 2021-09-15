@@ -70,6 +70,9 @@ Lizmap is also a QGIS Server plugin.
 
 * SERVICE=LIZMAP
     * REQUEST=GetServerSettings
+    * REQUEST=GetSubsetString
+      * LAYER=
+      * LIZMAP_USER_GROUPS=
 * SERVICE=EXPRESSION
     * REQUEST=VirtualFields
         * VIRTUALS=

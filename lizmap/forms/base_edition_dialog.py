@@ -41,6 +41,9 @@ class BaseEditionDialog(QDialog):
         self.button_box.button(QDialogButtonBox.Help).setToolTip(
             tr('Open the online documentation for this feature.'))
 
+        if not self.config.help_path():
+            self.button_box.button(QDialogButtonBox.Help).setVisible(False)
+
         self.button_box.button(QDialogButtonBox.Help).clicked.connect(self.open_help)
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
