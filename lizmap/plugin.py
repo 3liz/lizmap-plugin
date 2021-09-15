@@ -141,6 +141,7 @@ from lizmap.tools import (
     current_git_hash,
     format_qgis_version,
     get_layer_wms_parameters,
+    has_git,
     layer_property,
     lizmap_user_folder,
     next_git_tag,
@@ -174,13 +175,16 @@ class Lizmap:
         self.dlg = LizmapDialog()
         self.version = version()
         self.is_dev_version = self.version in ['master', 'dev'] or 'beta' in self.version
+        self.dlg.label_dev_version.setVisible(False)
         if self.is_dev_version:
             self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
                 self.version, current_git_hash(), next_git_tag()))
-            text = self.dlg.label_dev_version.text().format(self.version)
-            self.dlg.label_dev_version.setText(text)
-        else:
-            self.dlg.label_dev_version.setVisible(False)
+
+            if not has_git():
+                text = self.dlg.label_dev_version.text().format(self.version)
+                self.dlg.label_dev_version.setText(text)
+                self.dlg.label_dev_version.setVisible(True)
+
         self.popup_dialog = None
         self.layers_table = dict()
 

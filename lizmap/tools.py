@@ -156,6 +156,22 @@ def current_git_hash() -> str:
     return hash_number
 
 
+def has_git() -> bool:
+    """ Using Git command, trying to know if we are in a git directory. """
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+    git_show = subprocess.Popen(
+        'git rev-parse --git-dir',
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        shell=True,
+        cwd=repo_dir,
+        universal_newlines=True,
+        encoding='utf8'
+    )
+    output = git_show.communicate()[0].partition('\n')[0]
+    return output != ''
+
+
 def next_git_tag():
     """ Using Git command, trying to guess the next tag. """
     repo_dir = os.path.dirname(os.path.abspath(__file__))
