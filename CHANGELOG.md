@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* New feature about the filtering by polygon coming in Lizmap Web Client 3.5
 * If running QGIS 3.10 or newer, display the file name when using a drag&drop layout with an attachement widget
 * Refactor some code on the server side
 

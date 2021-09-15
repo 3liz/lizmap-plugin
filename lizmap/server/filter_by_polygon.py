@@ -217,18 +217,27 @@ array_intersect(
         try:
             sql = r"""
 WITH current_groups AS (
-    SELECT STRING_TO_ARRAY(
-        TRIM(BOTH ' ' FROM regexp_replace('{groups}', '\s*,\s*', ',')),
-        ',','g'
-    ) AS user_group
+    SELECT
+        ARRAY_REMOVE(
+            STRING_TO_ARRAY(
+                regexp_replace(
+                    '{groups}', '[^a-zA-Z0-9_-]', ',', 'g'
+                ),
+                ','
+            ),
+        '') AS user_group
 ),
 polygons AS (
     SELECT
         id, geom,
-        STRING_TO_ARRAY(
-            TRIM(BOTH ' ' FROM regexp_replace("{polygon_field}", '\s*,\s*', ',')),
-            ',','g'
-    ) as polygon_groups
+        ARRAY_REMOVE(
+            STRING_TO_ARRAY(
+                regexp_replace(
+                    '{polygon_field}', '[^a-zA-Z0-9_-]', ',', 'g'
+                ),
+                ','
+            ),
+        '') AS polygon_groups
     FROM {schema}.{table}
 )
 SELECT '1' AS id, ST_AsBinary(ST_Union(geom)) AS geom
