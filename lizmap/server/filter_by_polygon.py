@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 from functools import lru_cache
+from typing import Tuple
 
 from qgis.core import (
     Qgis,
@@ -125,7 +126,7 @@ class FilterByPolygon:
         return True
 
     @profiling
-    def subset_sql(self, groups: tuple) -> str:
+    def subset_sql(self, groups: tuple) -> Tuple[str, str]:
         """ Get the SQL subset string for the current groups of the user.
 
         :param groups: List of groups belongings to the user.
@@ -135,11 +136,10 @@ class FilterByPolygon:
             if not self.editing:
                 Logger.info(
                     "Layer is editing only BUT we are not in an editing session. Return all features.")
-                return ALL_FEATURES
-            else:
-                Logger.info(
-                    "Layer is editing only AND we are in an editing session. Continue to find the subset "
-                    "string")
+                return ALL_FEATURES, ''
+
+            Logger.info(
+                "Layer is editing only AND we are in an editing session. Continue to find the subset string")
 
         # We need to have a cache for this, valid for the combo polygon layer id & user_groups
         # as it will be done for each WMS or WFS query
@@ -150,7 +150,12 @@ class FilterByPolygon:
         # Logger.info("LRU Cache _polygon_for_groups : {}".format(self._polygon_for_groups.cache_info()))
 
         if polygon.isEmpty():
-            return NO_FEATURES
+            return NO_FEATURES, ''
+
+        ewkt = "SRID={crs};{wkt}".format(
+            crs=self.polygon.crs().postgisSrid(),
+            wkt=polygon.asWkt(6 if self.polygon.crs().isGeographic() else 2)
+        )
 
         if self.layer.providerType() == 'postgres':
             if self.use_st_intersect or Qgis.QGIS_VERSION_INT > 31000:
@@ -162,14 +167,14 @@ class FilterByPolygon:
                     polygon)
 
                 if self.use_st_intersect:
-                    return st_intersect
+                    return st_intersect, ewkt
 
-                return self._features_ids_with_sql_query(st_intersect)
+                return self._features_ids_with_sql_query(st_intersect), ewkt
 
         # Still here ? So we use the slow method with QGIS API
         subset = self._features_ids_with_qgis_api(polygon)
         # Logger.info("LRU Cache _layer_not_postgres : {}".format(self._layer_not_postgres.cache_info()))
-        return subset
+        return subset, ewkt
 
     @profiling
     @lru_cache(maxsize=CACHE_MAX_SIZE)

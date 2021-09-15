@@ -285,7 +285,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
                     return NO_FEATURES
 
                 # polygon_filter is set, we have a value to filter
-                polygon_filter = filter_polygon_config.subset_sql(groups)
+                polygon_filter, _ = filter_polygon_config.subset_sql(groups)
 
         except Exception as e:
             Logger.log_exception(e)

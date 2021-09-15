@@ -79,7 +79,9 @@ def test_lizmap_service_filter_polygon_with_user(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert b == {'filter': '"id" IN ( 68 )', 'status': 'success'}
+    assert b['filter'] == '"id" IN ( 68 )'
+    assert b['status'] == 'success'
+    assert b['polygons'].startswith('SRID=3857;MultiPolygon')
 
 
 def test_lizmap_service_filter_polygon_without_user(client):
@@ -101,4 +103,4 @@ def test_lizmap_service_filter_polygon_without_user(client):
 
     b = json.loads(rv.content.decode('utf-8'))
 
-    assert b == {'filter': '1 = 0', 'status': 'success'}
+    assert b == {'filter': '1 = 0', 'polygons': '', 'status': 'success'}

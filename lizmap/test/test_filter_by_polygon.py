@@ -104,7 +104,9 @@ class TestFilterByPolygon(unittest.TestCase):
         groups = ('unknown',)
         geom = config._polygon_for_groups_with_qgis_api(groups)
         self.assertTrue(geom.isEmpty())
-        self.assertEqual('1 = 0', config.subset_sql(groups))
+        subset, ewkt = config.subset_sql(groups)
+        self.assertEqual('1 = 0', subset)
+        self.assertEqual('', ewkt)
 
         # For admins, they see everything inside, not the one outside
         groups = ('admins',)
@@ -112,7 +114,10 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
-        self.assertEqual('"id" IN ( 1 , 3 )', config.subset_sql(groups))
+        subset, ewkt = config.subset_sql(groups)
+        self.assertEqual('"id" IN ( 1 , 3 )', subset)
+        self.assertEqual(
+            'SRID=4326;MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)),((0 0, 0 -5, -5 -5, -5 0, 0 0)))', ewkt)
 
         # For east
         groups = ('east',)
@@ -120,7 +125,10 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual(
             'MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)))',
             geom.asWkt(0))
-        self.assertEqual('"id" IN ( 1 )', config.subset_sql(groups))
+        subset, ewkt = config.subset_sql(groups)
+        self.assertEqual('"id" IN ( 1 )', subset)
+        self.assertEqual(
+            'SRID=4326;MultiPolygon (((0 0, 0 5, 5 5, 5 0, 0 0)))', ewkt)
 
         # For west
         groups = ('west',)
@@ -128,7 +136,10 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertEqual(
             'MultiPolygon (((0 0, 0 -5, -5 -5, -5 0, 0 0)))',
             geom.asWkt(0))
-        self.assertEqual('"id" IN ( 3 )', config.subset_sql(groups))
+        subset, ewkt = config.subset_sql(groups)
+        self.assertEqual('"id" IN ( 3 )', subset)
+        self.assertEqual(
+            'SRID=4326;MultiPolygon (((0 0, 0 -5, -5 -5, -5 0, 0 0)))', ewkt)
 
         # The only layer is editing only
         json = {
@@ -150,7 +161,9 @@ class TestFilterByPolygon(unittest.TestCase):
         self.assertTrue(FilterByPolygon(json, points).is_valid())
 
         groups = ('admins',)
-        self.assertEqual('', config.subset_sql(groups))
+        subset, ewkt = config.subset_sql(groups)
+        self.assertEqual('', subset)
+        self.assertEqual('', ewkt)
 
         config = FilterByPolygon(json, points, editing=True)
         self.assertTrue(config.is_filtered())

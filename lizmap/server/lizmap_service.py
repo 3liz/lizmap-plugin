@@ -117,6 +117,7 @@ class LizmapService(QgsService):
         body = {
             'status': 'success',
             'filter': ALL_FEATURES,
+            'polygons': ''
         }
 
         # Check first the headers to avoid unnecessary config file reading
@@ -156,6 +157,7 @@ class LizmapService(QgsService):
                     body = {
                         'status': 'success',
                         'filter': NO_FEATURES,
+                        'polygons': ''
                     }
                     write_json_response(body, response)
                     return
@@ -163,9 +165,11 @@ class LizmapService(QgsService):
                     # Get Lizmap user groups provided by the request
                     groups = get_lizmap_groups(self.server_iface.requestHandler())
                     # polygon_filter is set, we have a value to filter
+                    sql, polygons = filter_polygon_config.subset_sql(groups)
                     body = {
                         'status': 'success',
-                        'filter': filter_polygon_config.subset_sql(groups),
+                        'filter': sql,
+                        'polygons': polygons,
                     }
                     write_json_response(body, response)
                     return
@@ -177,6 +181,7 @@ class LizmapService(QgsService):
             body = {
                 'status': 'success',
                 'filter': NO_FEATURES,
+                'polygons': ''
             }
             write_json_response(body, response)
 
