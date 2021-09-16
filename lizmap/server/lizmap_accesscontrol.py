@@ -275,7 +275,7 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         try:
             edition_context = is_editing_context(self.iface.requestHandler())
             filter_polygon_config = FilterByPolygon(
-                cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=False)
+                cfg.get("filter_by_polygon"), layer, edition_context, use_st_relationship=False)
             polygon_filter = ALL_FEATURES
             if filter_polygon_config.is_filtered():
                 if not filter_polygon_config.is_valid():

@@ -646,6 +646,7 @@ class TestTableManager(unittest.TestCase):
                 {
                     "layer": self.layer.id(),
                     "primary_key": "id",
+                    "spatial_relationship": "intersects",
                     "filter_mode": "display_and_editing"
                 }
             ]

@@ -149,7 +149,7 @@ class LizmapService(QgsService):
         try:
             edition_context = is_editing_context(self.server_iface.requestHandler())
             filter_polygon_config = FilterByPolygon(
-                cfg.get("filter_by_polygon"), layer, edition_context, use_st_intersect=False)
+                cfg.get("filter_by_polygon"), layer, edition_context, use_st_relationship=False)
             if filter_polygon_config.is_filtered():
                 if not filter_polygon_config.is_valid():
                     Logger.critical(

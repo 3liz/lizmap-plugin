@@ -26,6 +26,20 @@ class FilterMode(Enum):
     }
 
 
+@unique
+class SpatialRelationShip(Enum):
+    Intersects = {
+        'data': 'intersects',
+        'label': tr('Intersects'),
+        'icon': ":images/themes/default/mActionAllowIntersections.svg",
+    }
+    Contains = {
+        'data': 'contains',
+        'label': tr('Contains'),
+        'icon': ':images/themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg',
+    }
+
+
 class FilterByPolygonDefinitions(BaseDefinitions):
 
     def __init__(self):
@@ -46,6 +60,13 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             'items': FilterMode,
             'default': FilterMode.DisplayEditing,
             'tooltip': tr('If the filtering should be done only for editing or not.')
+        }
+        self._layer_config['spatial_relationship'] = {
+            'type': InputType.List,
+            'header': tr('Relationship'),
+            'items': SpatialRelationShip,
+            'default': SpatialRelationShip.Intersects,
+            'tooltip': tr('The spatial relationship to use when filtering data')
         }
 
         self._general_config['polygon_layer_id'] = {

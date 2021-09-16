@@ -24,10 +24,12 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('layer', self.layer)
         self.config.add_layer_widget('primary_key', self.primary_key)
         self.config.add_layer_widget('filter_mode', self.filter_mode)
+        self.config.add_layer_widget('spatial_relationship', self.spatial_relationship_mode)
 
         self.config.add_layer_label('layer', self.label_layer)
         self.config.add_layer_label('primary_key', self.label_primary_key)
         self.config.add_layer_label('filter_mode', self.label_filter_mode)
+        self.config.add_layer_label('spatial_relationship', self.label_spatial_relationship)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.primary_key.setLayer)

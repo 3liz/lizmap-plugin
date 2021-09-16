@@ -27,6 +27,7 @@ class TestFilterByPolygon(unittest.TestCase):
                 {
                     "layer": "BAR",
                     "primary_key": "primary",
+                    "spatial_relationship": "intersects",
                     "filter_mode": "display_and_editing"
                 }
             ]
@@ -88,6 +89,7 @@ class TestFilterByPolygon(unittest.TestCase):
                 {
                     "layer": points.id(),
                     "primary_key": "id",
+                    "spatial_relationship": "intersects",
                     "filter_mode": "display_and_editing"
                 }
             ]
@@ -151,6 +153,7 @@ class TestFilterByPolygon(unittest.TestCase):
                 {
                     "layer": points.id(),
                     "primary_key": "id",
+                    "spatial_relationship": "intersects",
                     "filter_mode": "editing"
                 }
             ]
@@ -180,13 +183,31 @@ class TestFilterByPolygon(unittest.TestCase):
 
     def test_subset_string_postgres(self):
         """ Test building a postgresql string for filter by polygon. """
-        sql = FilterByPolygon._format_sql_st_intersects(
+        # ST_Intersect
+        sql = FilterByPolygon._format_sql_st_relationship(
             QgsCoordinateReferenceSystem(2154),
             QgsCoordinateReferenceSystem(4326),
             'geom',
-            QgsGeometry.fromWkt('POLYGON((0 0,0 5,5 5,5 0,0 0))')
+            QgsGeometry.fromWkt('POLYGON((0 0,0 5,5 5,5 0,0 0))'),
+            use_st_intersect=True,
         )
-        expected = """ST_Intersects(
+        expected = """
+ST_Intersects(
+    "geom",
+    ST_Transform(ST_GeomFromText('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))', 4326), 2154)
+)"""
+        self.assertEqual(expected, sql)
+
+        # ST_Contains
+        sql = FilterByPolygon._format_sql_st_relationship(
+            QgsCoordinateReferenceSystem(2154),
+            QgsCoordinateReferenceSystem(4326),
+            'geom',
+            QgsGeometry.fromWkt('POLYGON((0 0,0 5,5 5,5 0,0 0))'),
+            use_st_intersect=False,
+        )
+        expected = """
+ST_Contains(
     "geom",
     ST_Transform(ST_GeomFromText('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))', 4326), 2154)
 )"""

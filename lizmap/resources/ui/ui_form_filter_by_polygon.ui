@@ -49,6 +49,16 @@
      <item row="2" column="1">
       <widget class="QComboBox" name="filter_mode"/>
      </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_spatial_relationship">
+       <property name="text">
+        <string>Spatial relationship</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="spatial_relationship_mode"/>
+     </item>
     </layout>
    </item>
    <item>

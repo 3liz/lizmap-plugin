@@ -37,16 +37,16 @@ ALL_FEATURES = ''
 class FilterByPolygon:
 
     def __init__(
-            self, config: dict, layer: QgsVectorLayer, editing: bool = False, use_st_intersect: bool = False):
+            self, config: dict, layer: QgsVectorLayer, editing: bool = False, use_st_relationship: bool = False):
         """Constructor for the filter by polygon.
 
         :param config: The filter by polygon configuration as dictionary
         :param layer: The vector layer to filter
         """
-        # QGIS Server can consider the ST_Intersect not safe regarding SQL injection.
-        # Using this flag will transform or not the ST_Intersect into an IN by making the query straight to
-        # PostGIS.
-        self.use_st_intersect = use_st_intersect
+        # QGIS Server can consider the ST_Intersect/ST_Contains not safe regarding SQL injection.
+        # Using this flag will transform or not the ST_Intersect/ST_Contains into an IN by making the query
+        # straight to PostGIS.
+        self.use_st_relationship = use_st_relationship
         self.config = config
         self.editing = editing
         # noinspection PyArgumentList
@@ -58,6 +58,7 @@ class FilterByPolygon:
         # Will be filled if the current layer is filtered
         self.primary_key = None
         self.filter_mode = None
+        self.spatial_relationship = None
 
         # Will be filled with the polygon layer
         self.polygon = None
@@ -88,6 +89,7 @@ class FilterByPolygon:
             if layer.get("layer") == self.layer.id():
                 self.primary_key = layer.get('primary_key')
                 self.filter_mode = layer.get('filter_mode')
+                self.spatial_relationship = layer.get('spatial_relationship')
                 break
 
         if self.primary_key is None:
@@ -159,15 +161,17 @@ class FilterByPolygon:
         )
 
         if self.layer.providerType() == 'postgres':
-            if self.use_st_intersect or Qgis.QGIS_VERSION_INT > 31000:
+            if self.use_st_relationship or Qgis.QGIS_VERSION_INT > 31000:
                 uri = QgsDataSourceUri(self.layer.source())
-                st_intersect = self._format_sql_st_intersects(
+                st_intersect = self._format_sql_st_relationship(
                     self.layer.sourceCrs(),
                     self.polygon.sourceCrs(),
                     uri.geometryColumn(),
-                    polygon)
+                    polygon,
+                    self.spatial_relationship
+                )
 
-                if self.use_st_intersect:
+                if self.use_st_relationship:
                     return st_intersect, ewkt
 
                 return self._features_ids_with_sql_query(st_intersect), ewkt
@@ -302,8 +306,14 @@ WHERE c.user_group && p.polygon_groups
         unique_ids = []
         for candidate_id in candidates:
             feature = self.layer.getFeature(candidate_id)
-            if feature.geometry().intersects(polygons):
-                unique_ids.append(str(feature[self.primary_key]))
+            if self.spatial_relationship == 'contains':
+                if feature.geometry().contains(polygons):
+                    unique_ids.append(str(feature[self.primary_key]))
+            elif self.spatial_relationship == 'intersects':
+                if feature.geometry().intersects(polygons):
+                    unique_ids.append(str(feature[self.primary_key]))
+            else:
+                raise Exception("Spatial relationship unkonwn")
 
         return self._format_sql_in(self.primary_key, unique_ids)
 
@@ -345,20 +355,24 @@ WHERE c.user_group && p.polygon_groups
         return '"{pk}" IN ( {values} )'.format(pk=primary_key, values=' , '.join(values))
 
     @classmethod
-    def _format_sql_st_intersects(
+    def _format_sql_st_relationship(
             cls,
             filtered_crs: QgsCoordinateReferenceSystem,
             filtering_crs: QgsCoordinateReferenceSystem,
             geom_field: str,
-            polygons: QgsGeometry) -> str:
-        """If layer is of type PostgreSQL, use a simple ST_Intersects.
+            polygons: QgsGeometry,
+            use_st_intersect: bool,
+    ) -> str:
+        """If layer is of type PostgreSQL, use a simple ST_Intersects/ST_Contains.
 
         :returns: The subset SQL string.
         """
-        sql = """ST_Intersects(
+        sql = """
+{function}(
     "{geom_field}",
     ST_Transform(ST_GeomFromText('{wkt}', {from_crs}), {to_crs})
 )""".format(
+            function="ST_Intersects" if use_st_intersect else "ST_Contains",
             geom_field=geom_field,
             wkt=polygons.asWkt(6 if filtering_crs.isGeographic() else 2),
             from_crs=filtering_crs.postgisSrid(),
