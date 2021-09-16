@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Atlas layer</string>
+   <string>Spatial filtering</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
