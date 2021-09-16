@@ -313,7 +313,7 @@ WHERE c.user_group && p.polygon_groups
                 if feature.geometry().intersects(polygons):
                     unique_ids.append(str(feature[self.primary_key]))
             else:
-                raise Exception("Spatial relationship unkonwn")
+                raise Exception("Spatial relationship unknown")
 
         return self._format_sql_in(self.primary_key, unique_ids)
 

@@ -59,7 +59,7 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             'header': tr('Mode'),
             'items': FilterMode,
             'default': FilterMode.DisplayEditing,
-            'tooltip': tr('If the filtering should be done only for editing or not.')
+            'tooltip': tr('If the filtering should be done only for display or not.')
         }
         self._layer_config['spatial_relationship'] = {
             'type': InputType.List,
@@ -77,7 +77,7 @@ class FilterByPolygonDefinitions(BaseDefinitions):
         self._general_config['group_field'] = {
             'type': InputType.Field,
             'tooltip': tr(
-                'The field containing Lizmap group names. It must be group IDs and not group labels, '
+                'The field containing the Lizmap group names. It must be group IDs and not group labels, '
                 'separated by comma.'
             ),
         }
