@@ -19,15 +19,15 @@ class Logger:
 
     @staticmethod
     def info(message: str):
-        QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Info)
+        QgsMessageLog.logMessage('{} : {}'.format(PLUGIN, message), PLUGIN, Qgis.Info)
 
     @staticmethod
     def warning(message: str):
-        QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Warning)
+        QgsMessageLog.logMessage('{} : {}'.format(PLUGIN, message), PLUGIN, Qgis.Warning)
 
     @staticmethod
     def critical(message: str):
-        QgsMessageLog.logMessage(PLUGIN + ' : ' + message, PLUGIN, Qgis.Critical)
+        QgsMessageLog.logMessage('{} : {}'.format(PLUGIN, message), PLUGIN, Qgis.Critical)
 
     @staticmethod
     def log_exception(e: BaseException):

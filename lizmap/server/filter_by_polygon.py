@@ -16,6 +16,7 @@ from qgis.core import (
     QgsSpatialIndex,
     QgsVectorLayer,
 )
+from qgis.PyQt.QtCore import QVariant
 
 if Qgis.QGIS_VERSION_INT > 31000:
     import binascii
@@ -229,7 +230,7 @@ WITH current_groups AS (
 ),
 polygons AS (
     SELECT
-        id, geom,
+        {geom},
         ARRAY_REMOVE(
             STRING_TO_ARRAY(
                 regexp_replace(
@@ -248,6 +249,7 @@ WHERE c.user_group && p.polygon_groups
 """.format(
                 polygon_field=self.group_field,
                 groups=','.join(groups),
+                geom=uri.geometryColumn(),
                 schema=uri.schema(),
                 table=uri.table(),
             )
@@ -261,9 +263,13 @@ WHERE c.user_group && p.polygon_groups
             wkb = results[0][1]
 
             geom = QgsGeometry()
+            if isinstance(wkb, QVariant) and wkb.isNull():
+                return geom
+
             # Remove \x from string
             # Related to https://gis.stackexchange.com/questions/411545/use-st-asbinary-from-postgis-in-pyqgis
-            geom.fromWkb(binascii.a2b_hex(wkb[2:]))
+            wkb = wkb[2:]
+            geom.fromWkb(binascii.unhexlify(wkb))
             return geom
         except Exception as e:
             # Let's be safe
