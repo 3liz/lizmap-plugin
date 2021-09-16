@@ -310,7 +310,7 @@ QListWidget::item::selected {
              <item row="0" column="0">
               <widget class="QLabel" name="label_26">
                <property name="text">
-                <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Twitter &lt;a href=&quot;https://twitter.com/LizmapForQgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@LizmapForQgis&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Twitter &lt;a href=&quot;https://twitter.com/LizmapForQgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@LizmapForQgis&lt;/span&gt;&lt;/a&gt; &lt;a href=&quot;https://twitter.com/3lizrelease&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@3lizrelease&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="openExternalLinks">
                 <bool>true</bool>
@@ -320,7 +320,7 @@ QListWidget::item::selected {
              <item row="0" column="1">
               <widget class="QLabel" name="label_27">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mailinglist &lt;a href=&quot;http://osgeo-org.1560.x6.nabble.com/Lizmap-f5416555.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;web&lt;/span&gt;&lt;/a&gt; / &lt;a href=&quot;https://lists.osgeo.org/mailman/listinfo/lizmap&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;mail&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mailinglist &lt;a href=&quot;https://lists.osgeo.org/mailman/listinfo/lizmap&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;mail&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="openExternalLinks">
                 <bool>true</bool>
