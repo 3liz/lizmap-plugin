@@ -13,14 +13,15 @@ from qgis.core import (
     QgsMessageLog,
     QgsNetworkContentFetcher,
 )
-from qgis.PyQt.QtCore import Qt, QUrl, QVariant
-from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtCore import QPoint, Qt, QUrl, QVariant
+from qgis.PyQt.QtGui import QColor, QCursor, QDesktopServices, QIcon
 from qgis.PyQt.QtNetwork import QNetworkReply
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
     QInputDialog,
     QLineEdit,
+    QMenu,
     QTableWidgetItem,
 )
 
@@ -81,6 +82,8 @@ class ServerManager:
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_row)
+        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self.context_menu_requested)
 
         # Headers
         header = self.table.horizontalHeader()
@@ -384,6 +387,27 @@ class ServerManager:
             color = QColor("orange")
         cell.setData(Qt.ForegroundRole, QVariant(color))
         self.table.setItem(row, 2, cell)
+
+    def context_menu_requested(self, position: QPoint):
+        """ Opens the custom context menu with a right click in the table. """
+        item = self.table.itemAt(position)
+        if not item:
+            return
+
+        top_menu = QMenu(self.table)
+        menu = top_menu.addMenu("Menu")
+
+        edit_url = menu.addAction(tr("Edit URL") + "…")
+        edit_url.triggered.connect(self.edit_row)
+
+        open_url = menu.addAction(tr("Open URL") + "…")
+        left_item = self.table.item(item.row(), 0)
+        url = left_item.data(Qt.UserRole)
+        slot = partial(QDesktopServices.openUrl, QUrl(url))
+        open_url.triggered.connect(slot)
+
+        # noinspection PyArgumentList
+        menu.exec_(QCursor.pos())
 
     @staticmethod
     def released_versions():

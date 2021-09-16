@@ -103,6 +103,7 @@ from lizmap.definitions.definitions import (
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
+from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -112,6 +113,7 @@ from lizmap.forms.dataviz_edition import DatavizEditionDialog
 from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
+from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.table_manager import TableManager
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
@@ -141,6 +143,7 @@ from lizmap.tools import (
     current_git_hash,
     format_qgis_version,
     get_layer_wms_parameters,
+    has_git,
     layer_property,
     lizmap_user_folder,
     next_git_tag,
@@ -174,13 +177,16 @@ class Lizmap:
         self.dlg = LizmapDialog()
         self.version = version()
         self.is_dev_version = self.version in ['master', 'dev'] or 'beta' in self.version
+        self.dlg.label_dev_version.setVisible(False)
         if self.is_dev_version:
             self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
                 self.version, current_git_hash(), next_git_tag()))
-            text = self.dlg.label_dev_version.text().format(self.version)
-            self.dlg.label_dev_version.setText(text)
-        else:
-            self.dlg.label_dev_version.setVisible(False)
+
+            if not has_git():
+                text = self.dlg.label_dev_version.text().format(self.version)
+                self.dlg.label_dev_version.setText(text)
+                self.dlg.label_dev_version.setVisible(True)
+
         self.popup_dialog = None
         self.layers_table = dict()
 
@@ -209,6 +215,7 @@ class Lizmap:
             self.dlg.liPopupSource.model().item(
                 self.dlg.liPopupSource.findText('form')
             ),
+            self.dlg.label_filter_polygon,
         ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
@@ -301,10 +308,16 @@ class Lizmap:
         icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(12).setIcon(icon)
 
+        # Filter layer by polygon
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'layer_filter_light.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'layer_filter_dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(13).setIcon(icon)
+
         # Log
         # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
-        self.dlg.mOptionsListWidget.item(13).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(14).setIcon(icon)
 
         # Set stylesheet for QGroupBox
         if sys.platform.startswith('win'):
@@ -589,6 +602,13 @@ class Lizmap:
                 'downButton': self.dlg.down_dataviz_layer,
                 'manager': None,
             },
+            'filter_by_polygon': {
+                'tableWidget': self.dlg.table_filter_polygon,
+                'removeButton': self.dlg.remove_filter_polygon_button,
+                'addButton': self.dlg.add_filter_polygon_button,
+                'editButton': self.dlg.edit_filter_polygon_button,
+                'manager': None,
+            },
             'formFilterLayers': {
                 'tableWidget': self.dlg.table_form_filter,
                 'removeButton': self.dlg.remove_filter_form_button,
@@ -608,6 +628,9 @@ class Lizmap:
             'Use Lizmap Web Client group IDs and not labels.')
         self.dlg.label_group_visibility.setToolTip(tooltip)
         self.dlg.list_group_visiblity.setToolTip(tooltip)
+
+        self.dlg.layer_filter_polygon.layerChanged.connect(self.dlg.field_filter_polygon.setLayer)
+        self.dlg.field_filter_polygon.setLayer(self.dlg.layer_filter_polygon.currentLayer())
 
         self.layerList = None
         self.action = None
@@ -805,6 +828,9 @@ class Lizmap:
                 elif key == 'formFilterLayers':
                     definition = FilterByFormDefinitions()
                     dialog = FilterByFormEditionDialog
+                elif key == 'filter_by_polygon':
+                    definition = FilterByPolygonDefinitions()
+                    dialog = FilterByPolygonEditionDialog
                 else:
                     raise Exception('Unknown panel.')
 

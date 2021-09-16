@@ -13,6 +13,7 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
+from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -630,6 +631,34 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         # self.assertEqual(table_manager.table.rowCount(), 1)
+
+    def test_filter_by_polygon(self):
+        """ Test table manager with filter by polygon. """
+        table_manager = TableManager(
+            None, FilterByPolygonDefinitions(), None, QTableWidget(), None, None, None, None)
+
+        json = {
+            'config': {
+                'polygon_layer_id': self.layer.id(),
+                'group_field': 'id',
+            },
+            'layers': [
+                {
+                    "layer": self.layer.id(),
+                    "primary_key": "id",
+                    "spatial_relationship": "intersects",
+                    "filter_mode": "display_and_editing"
+                }
+            ]
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+
+        output = table_manager.to_json()
+        # Global widget are not defined in this test
+        json['config'] = {}
+        self.assertEqual(output, json)
 
     def test_tool_tip(self):
         """Test table manager with tooltip layer."""
