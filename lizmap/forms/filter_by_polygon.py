@@ -2,7 +2,10 @@
 
 from qgis.core import QgsMapLayerProxyModel
 
-from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
+from lizmap.definitions.filter_by_polygon import (
+    FilterByPolygonDefinitions,
+    FilterMode,
+)
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
@@ -40,6 +43,18 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
 
     def validate(self) -> str:
+        layer = self.layer.currentLayer()
+        if not layer:
+            return tr('A layer is mandatory.')
+
+        mode = self.filter_mode.currentData()
+        if mode == FilterMode.Editing.value['data'] and layer.providerType() != 'postgres':
+            msg = '{}\n{}'.format(
+                tr('The mode is set on "Editing only" but the layer is not stored in PostgreSQL.'),
+                tr('PostgreSQL is the only type of layer supported with editing capabilities.'),
+            )
+            return msg
+
         upstream = super().validate()
         if upstream:
             return upstream

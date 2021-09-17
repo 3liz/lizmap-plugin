@@ -5,6 +5,7 @@
 * New feature about the filtering by polygon coming in Lizmap Web Client 3.5
 * If running QGIS 3.10 or newer, display the file name when using a drag&drop layout with an attachement widget
 * Open the Lizmap URL instance from a right click in the "Information" panel
+* Removing Spatialite from available provider for editing capabilities, only PostgreSQL is supported
 * Allow to open the documentation in Japanese
 * Update the "Information" panel about links
 * Refactor some code on the server side
