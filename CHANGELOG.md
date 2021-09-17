@@ -8,6 +8,7 @@
 * Open the Lizmap URL instance from a right click in the "Information" panel
 * Allow to open the documentation in Japanese
 * Update the "Information" panel about links
+* Removing the check if all layers are in a subfolder of the project. Users on their own server might have data where they want
 * Refactor some code on the server side
 
 ## 3.5.7 - 2021-08-31
