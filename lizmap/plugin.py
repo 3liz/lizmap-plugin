@@ -52,7 +52,7 @@ import sys
 from collections import OrderedDict
 from functools import partial
 from shutil import copyfile
-from typing import Optional
+from typing import Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -2174,114 +2174,59 @@ class Lizmap:
 
         return valid, results
 
-    def check_global_project_options(self):
+    def check_global_project_options(self) -> Tuple[bool, str]:
         """Checks that the needed options are correctly set : relative path, project saved, etc.
 
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
-        is_valid = True
-        error_message = ''
         # Get the project data from api
         if not self.project.fileName() or not self.project.fileName().lower().endswith('qgs'):
-            error_message += tr(
+            message = tr(
                 'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
-            is_valid = False
+            return False, message
 
-        project_dir = None
-        if is_valid:
-            # Get the project folder
-            project_dir, project_name = os.path.split(os.path.abspath(self.project.fileName()))
+        # Check if Qgis/capitaliseLayerName is set
+        settings = QgsSettings()
+        if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
+            message = tr(
+                'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
+                'in the QGIS option dialog, as it could cause issues with Lizmap.')
+            return False, message
 
-        if is_valid:
-            # Check if Qgis/capitaliseLayerName is set
-            settings = QgsSettings()
-            if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
-                message = tr(
-                    'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
-                    'in the QGIS option dialog, as it could cause issues with Lizmap.')
-                error_message += '* {} \n'.format(message)
-                is_valid = False
+        # Check relative/absolute path
+        if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
+            message = tr(
+                'The project layer paths must be set to relative. '
+                'Please change this options in the project settings.')
+            return False, message
 
-        if is_valid:
-            # Check relative/absolute path
-            if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
-                error_message += '* ' + tr(
-                    'The project layer paths must be set to relative. '
-                    'Please change this options in the project settings.') + '\n'
-                is_valid = False
+        # check if a title has been given in the project QGIS Server tab configuration
+        # first set the WMSServiceCapabilities to true
+        if not self.project.readEntry('WMSServiceCapabilities', '/')[1]:
+            self.project.writeEntry('WMSServiceCapabilities', '/', 'True')
+        if self.project.readEntry('WMSServiceTitle', '')[0] == '':
+            self.project.writeEntry('WMSServiceTitle', '', self.project.baseName())
 
-            # check active layers path layer by layer
-            layer_sources_ok = []
-            layer_sources_bad = []
-            canvas = self.iface.mapCanvas()
-            layer_path_error = ''
-
-            for i in range(canvas.layerCount()):
-                layer_source = '{}'.format(canvas.layer(i).source())
-                if not hasattr(canvas.layer(i), 'providerType'):
-                    continue
-                layer_provider_key = canvas.layer(i).providerType()
-                # Only for layers stored in disk
-                if layer_provider_key in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr') \
-                        and not layer_source.lower().startswith('mysql'):
-                    # noinspection PyBroadException
-                    try:
-                        relative_path = os.path.normpath(
-                            os.path.relpath(os.path.abspath(layer_source), project_dir)
-                        )
-                        if (not relative_path.startswith('../../../')
-                            and not relative_path.startswith('..\\..\\..\\')) \
-                                or (layer_provider_key == 'ogr' and layer_source.startswith('http')):
-                            layer_sources_ok.append(os.path.abspath(layer_source))
-                        else:
-                            layer_sources_bad.append(layer_source)
-                            layer_path_error += '--> {} \n'.format(relative_path)
-                            is_valid = False
-                    except Exception:
-                        is_valid = False
-                        layer_sources_bad.append(layer_source)
-                        layer_path_error += '--> {} \n'.format(canvas.layer(i).name())
-
-            if len(layer_sources_bad) > 0:
-                message = tr(
-                    'The layers paths must be relative to the project file. '
-                    'Please copy the layers inside {}.').format(project_dir)
-                error_message += '* {}\n'.format(message)
-                self.log(
-                    tr('The layers paths must be relative to the project file. '
-                       'Please copy the layers inside {} or in one folder above '
-                       'or aside {}.').format(project_dir, layer_sources_bad),
-                    abort=True,
-                    textarea=self.dlg.outLog)
-                error_message += layer_path_error
-
-            # check if a title has been given in the project QGIS Server tab configuration
-            # first set the WMSServiceCapabilities to true
-            if not self.project.readEntry('WMSServiceCapabilities', '/')[1]:
-                self.project.writeEntry('WMSServiceCapabilities', '/', 'True')
-            if self.project.readEntry('WMSServiceTitle', '')[0] == '':
-                self.project.writeEntry('WMSServiceTitle', '', self.project.baseName())
-
-            # check if a bbox has been given in the project QGIS Server tab configuration
-            project_wms_extent, _ = self.project.readListEntry('WMSExtent', '')
-            full_extent = self.iface.mapCanvas().extent()
-            if not project_wms_extent:
-                project_wms_extent.append(str(full_extent.xMinimum()))
-                project_wms_extent.append(str(full_extent.yMinimum()))
-                project_wms_extent.append(str(full_extent.xMaximum()))
-                project_wms_extent.append(str(full_extent.yMaximum()))
+        # check if a bbox has been given in the project QGIS Server tab configuration
+        project_wms_extent, _ = self.project.readListEntry('WMSExtent', '')
+        full_extent = self.iface.mapCanvas().extent()
+        if not project_wms_extent:
+            project_wms_extent.append(str(full_extent.xMinimum()))
+            project_wms_extent.append(str(full_extent.yMinimum()))
+            project_wms_extent.append(str(full_extent.xMaximum()))
+            project_wms_extent.append(str(full_extent.yMaximum()))
+            self.project.writeEntry('WMSExtent', '', project_wms_extent)
+        else:
+            if not project_wms_extent[0] or not project_wms_extent[1] or not \
+                    project_wms_extent[2] or not project_wms_extent[3]:
+                project_wms_extent[0] = str(full_extent.xMinimum())
+                project_wms_extent[1] = str(full_extent.yMinimum())
+                project_wms_extent[2] = str(full_extent.xMaximum())
+                project_wms_extent[3] = str(full_extent.yMaximum())
                 self.project.writeEntry('WMSExtent', '', project_wms_extent)
-            else:
-                if not project_wms_extent[0] or not project_wms_extent[1] or not \
-                        project_wms_extent[2] or not project_wms_extent[3]:
-                    project_wms_extent[0] = str(full_extent.xMinimum())
-                    project_wms_extent[1] = str(full_extent.yMinimum())
-                    project_wms_extent[2] = str(full_extent.xMaximum())
-                    project_wms_extent[3] = str(full_extent.yMaximum())
-                    self.project.writeEntry('WMSExtent', '', project_wms_extent)
 
-        return is_valid, error_message
+        return True, ''
 
     def ok_button_clicked(self):
         """When the OK button is press, we 'apply' and close the dialog."""
