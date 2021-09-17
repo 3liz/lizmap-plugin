@@ -163,18 +163,19 @@ class FilterByPolygon:
         if self.layer.providerType() == 'postgres':
             if self.use_st_relationship or Qgis.QGIS_VERSION_INT > 31000:
                 uri = QgsDataSourceUri(self.layer.source())
-                st_intersect = self._format_sql_st_relationship(
+                use_st_intersect = False if self.spatial_relationship == 'contains' else True
+                st_relation = self._format_sql_st_relationship(
                     self.layer.sourceCrs(),
                     self.polygon.sourceCrs(),
                     uri.geometryColumn(),
                     polygon,
-                    self.spatial_relationship
+                    use_st_intersect
                 )
 
                 if self.use_st_relationship:
-                    return st_intersect, ewkt
+                    return st_relation, ewkt
 
-                return self._features_ids_with_sql_query(st_intersect), ewkt
+                return self._features_ids_with_sql_query(st_relation), ewkt
 
         # Still here ? So we use the slow method with QGIS API
         subset = self._features_ids_with_qgis_api(polygon)
@@ -231,25 +232,26 @@ WITH current_groups AS (
                 ','
             ),
         '') AS user_group
-),
-polygons AS (
-    SELECT
-        {geom},
-        ARRAY_REMOVE(
-            STRING_TO_ARRAY(
-                regexp_replace(
-                    '{polygon_field}', '[^a-zA-Z0-9_-]', ',', 'g'
-                ),
-                ','
-            ),
-        '') AS polygon_groups
-    FROM {schema}.{table}
 )
-SELECT '1' AS id, ST_AsBinary(ST_Union(geom)) AS geom
+SELECT
+        1 AS id, ST_AsBinary(ST_Union("{geom}")) AS geom
 FROM
-    current_groups c,
-    polygons p
-WHERE c.user_group && p.polygon_groups
+        "{schema}"."{table}" AS p,
+        current_groups AS c
+WHERE
+c.user_group && (
+    ARRAY_REMOVE(
+        STRING_TO_ARRAY(
+            regexp_replace(
+                "{polygon_field}", '[^a-zA-Z0-9_-]', ',', 'g'
+            ),
+            ','
+        ),
+    '')
+)
+
+
+
 """.format(
                 polygon_field=self.group_field,
                 groups=','.join(groups),
@@ -369,8 +371,8 @@ WHERE c.user_group && p.polygon_groups
         """
         sql = """
 {function}(
-    "{geom_field}",
-    ST_Transform(ST_GeomFromText('{wkt}', {from_crs}), {to_crs})
+    ST_Transform(ST_GeomFromText('{wkt}', {from_crs}), {to_crs}),
+    "{geom_field}"
 )""".format(
             function="ST_Intersects" if use_st_intersect else "ST_Contains",
             geom_field=geom_field,
