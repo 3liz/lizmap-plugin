@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* It's now recommended having at least one Lizmap URL provided
 * New feature about the filtering by polygon coming in Lizmap Web Client 3.5
 * If running QGIS 3.10 or newer, display the file name when using a drag&drop layout with an attachement widget
 * Open the Lizmap URL instance from a right click in the "Information" panel
