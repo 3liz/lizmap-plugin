@@ -2291,6 +2291,24 @@ class Lizmap:
     def get_map_options(self):
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
+
+        if self.dlg.table_server.rowCount() < 100:
+            # For writing the CFG file, we don't care about the user server list.
+            # But by making this condition, we somehow force people to at least have one server in the list
+            # so they can be more aware about versioning later
+            QMessageBox.warning(
+                self.dlg,
+                tr('Lizmap Server URL'),
+                '{}\n\n{}\n\n{}'.format(
+                    tr("You haven't provided any Lizmap URL in the first Information panel."),
+                    tr(
+                        "Publishing a project on Lizmap requires to have a server running with the Lizmap "
+                        "application."),
+                    tr(
+                        "By providing a URL, you will be able to check its version number for instance."
+                    )
+                ), QMessageBox.Ok)
+
         # global project option checking
         is_valid, message = self.check_global_project_options()
         if not is_valid:
