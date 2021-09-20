@@ -225,6 +225,16 @@ class Lizmap:
         self.populate_lwc_combo()
         self.lwc_version_changed()
 
+        # Needs Lizmap QGIS server
+        needs_qgis_server = (
+            self.dlg.label_filter_polygon,
+            self.dlg.label_group_visibility,
+        )
+        for label in needs_qgis_server:
+            font = label.font()
+            font.setUnderline(True)
+            label.setFont(font)
+
         self.dlg.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
         pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
@@ -295,17 +305,10 @@ class Lizmap:
         self.dlg.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
-        # Filter layer by attributes for a user
+        # Filter layer by user
         icon = QIcon()
         icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
-        i += 1
-
-        # Filter layer by polygon for a user
-        icon = QIcon()
-        icon.addFile(resources_path('icons', 'layer_filter_light.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', 'layer_filter_dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
