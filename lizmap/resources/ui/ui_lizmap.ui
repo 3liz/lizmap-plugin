@@ -3205,7 +3205,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <widget class="QLabel" name="label_filter_polygon">
                     <property name="text">
-                     <string>First you need to choose a layer used for filtering, by specifying the field where Lizmap groups are stored. Then, you can define one or many layers to be filtered. For each of them, you can choose if you want a strict &quot;contains&quot; GIS operation or a simple &quot;intersection&quot; with the filtering layer.</string>
+                     <string>First you need to choose a layer used for filtering, by specifying the field where Lizmap groups are stored. Then, you can define one or many layers to be filtered. For each of them, you can choose if you want a strict &quot;contains&quot; spatial relationship or a simple &quot;intersection&quot; with the filtering layer.</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
