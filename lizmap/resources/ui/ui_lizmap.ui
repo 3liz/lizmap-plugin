@@ -140,6 +140,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Filter by attribute with a form</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Filter by attribute for a user</string>
           </property>
          </item>
@@ -161,11 +166,6 @@ QListWidget::item::selected {
          <item>
           <property name="text">
            <string>Atlas</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Filter layer with form</string>
           </property>
          </item>
          <item>
@@ -3006,6 +3006,104 @@ border-radius: 0px;</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page_data_filter">
+          <layout class="QVBoxLayout" name="verticalLayout_45">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_13">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_13">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>450</width>
+                <height>300</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_46">
+               <item>
+                <widget class="QLabel" name="label_form_filter">
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="table_form_filter">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_38">
+                 <item>
+                  <widget class="QPushButton" name="add_filter_form_button">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_filter_form_button">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_filter_form_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_filter_form_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_filter_form_button">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_38">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="page_filter_attribute_user">
           <layout class="QVBoxLayout" name="verticalLayout_38">
            <property name="leftMargin">
@@ -3704,104 +3802,6 @@ border-radius: 0px;</string>
                   </item>
                  </layout>
                 </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="page_data_filter">
-          <layout class="QVBoxLayout" name="verticalLayout_45">
-           <item>
-            <widget class="QScrollArea" name="scrollArea_13">
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_13">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>450</width>
-                <height>300</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_46">
-               <item>
-                <widget class="QLabel" name="label_form_filter">
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="text">
-                  <string>This tool shows a form based on the vector layer fields, and allows the user to filter the displayed data. You can choose the fields to show in the form, and the type of input.</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QTableWidget" name="table_form_filter">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_38">
-                 <item>
-                  <widget class="QPushButton" name="add_filter_form_button">
-                   <property name="text">
-                    <string notr="true">+</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="remove_filter_form_button">
-                   <property name="text">
-                    <string notr="true">-</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="edit_filter_form_button">
-                   <property name="text">
-                    <string notr="true">edit</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="up_filter_form_button">
-                   <property name="text">
-                    <string notr="true">up</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="down_filter_form_button">
-                   <property name="text">
-                    <string notr="true">down</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_38">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
                </item>
               </layout>
              </widget>
