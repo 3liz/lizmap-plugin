@@ -541,6 +541,7 @@ class Lizmap:
         self.dlg.label_current_qgis.setText('<b>{}</b>'.format(current))
         text = self.dlg.qgis_and_lwc_versions_issue.text()
         self.dlg.qgis_and_lwc_versions_issue.setText(text.format(version=current))
+        self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
 
         # tables of layers
         # Todo Lizmap 3.4, remove dict init here
@@ -682,6 +683,7 @@ class Lizmap:
 
         # Restore connection
         self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
+        self.lwc_version_changed()
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
