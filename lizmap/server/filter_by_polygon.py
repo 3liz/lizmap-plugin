@@ -71,7 +71,6 @@ class FilterByPolygon:
         """If the configuration is filtering the given layer."""
         return self.primary_key is not None
 
-    @profiling
     def _parse(self) -> None:
         """Read the configuration and fill variables"""
         # Leave as quick as possible

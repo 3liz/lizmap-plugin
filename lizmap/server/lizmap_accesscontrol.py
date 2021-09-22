@@ -20,7 +20,7 @@ from lizmap.server.filter_by_polygon import (
     NO_FEATURES,
     FilterByPolygon,
 )
-from lizmap.server.logger import Logger, log_output_value, profiling
+from lizmap.server.logger import Logger, profiling
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):
@@ -238,7 +238,6 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
         return default_cache_key
 
     @profiling
-    @log_output_value
     def get_lizmap_layer_filter(self, layer: QgsVectorLayer) -> str:
         """ Get lizmap layer filter based on login filter """
 
