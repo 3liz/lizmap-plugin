@@ -30,7 +30,6 @@ from lizmap.tools import lizmap_user_folder
 
 
 class ServerManager:
-
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
@@ -348,9 +347,11 @@ class ServerManager:
             if version['branch'] == branch:
                 if not version['maintained']:
                     if i == 0:
+                        # Not maintained, but a dev version
                         messages.append(tr('A dev version, warrior !') + ' 👍')
                         level = Qgis.Success
                     else:
+                        # Upgrade because the branch is not maintained anymore
                         messages.append(tr('Version {version} not maintained anymore').format(version=branch))
                         level = Qgis.Critical
 
@@ -360,17 +361,33 @@ class ServerManager:
                 latest_bugfix = int(version['latest_release_version'].split('.')[2])
                 if version['latest_release_version'] != full_version:
                     if bugfix > latest_bugfix:
+                        # Congratulations :)
                         messages.append(tr('Higher than a public release') + ' 👍')
 
                     elif bugfix < latest_bugfix:
-                        messages.append(tr('Not latest bugfix release'))
+                        # The user is not running the latest bugfix release on the maintained branch
+
+                        if bugfix + 2 < latest_bugfix:
+                            # Let's make it clear when they are 2 release late
+                            level = Qgis.Critical
+
+                        if bugfix == 0:
+                            # I consider a .0 version fragile
+                            messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
+                        else:
+                            messages.append(
+                                tr(
+                                    'Not latest bugfix release, {version} is available'
+                                ).format(version=version['latest_release_version']))
+
                         if len(items_bugfix) > 1:
-                            # Pre release
-                            messages.append(' ' + tr('and not a production package'))
+                            # Pre release, maybe the package got some updates
+                            messages.append(' ' + tr('and you are not running not a production package'))
 
                 self.display_action(row, level, ', '.join(messages))
                 break
         else:
+            # This should not happen
             self.display_action(
                 row, Qgis.Critical, f"Version {branch} has not been detected has a known version.")
 
