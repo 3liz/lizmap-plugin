@@ -2259,7 +2259,7 @@ class Lizmap:
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
 
-        if self.dlg.table_server.rowCount() < 100:
+        if self.dlg.table_server.rowCount() < 1:
             # For writing the CFG file, we don't care about the user server list.
             # But by making this condition, we somehow force people to at least have one server in the list
             # so they can be more aware about versioning later

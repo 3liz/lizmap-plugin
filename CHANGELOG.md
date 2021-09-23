@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.6.2 - 2021-09-23
+
+* Fix an issue in the user interface saving the CFG file
+
 ## 3.6.1 - 2021-09-23
 
 * Fix an issue in the user interface when switching panels
