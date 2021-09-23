@@ -193,8 +193,8 @@ class TestFilterByPolygon(unittest.TestCase):
         )
         expected = """
 ST_Intersects(
-    "geom",
-    ST_Transform(ST_GeomFromText('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))', 4326), 2154)
+    ST_Transform(ST_GeomFromText('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))', 4326), 2154),
+    "geom"
 )"""
         self.assertEqual(expected, sql)
 
@@ -208,7 +208,7 @@ ST_Intersects(
         )
         expected = """
 ST_Contains(
-    "geom",
-    ST_Transform(ST_GeomFromText('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))', 4326), 2154)
+    ST_Transform(ST_GeomFromText('Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))', 4326), 2154),
+    "geom"
 )"""
         self.assertEqual(expected, sql)

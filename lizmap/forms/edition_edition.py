@@ -1,6 +1,11 @@
 """Dialog for edition layer edition."""
 
-from qgis.core import QgsMapLayerProxyModel, QgsProject, QgsWkbTypes
+from qgis.core import (
+    QgsMapLayerProxyModel,
+    QgsProject,
+    QgsProviderRegistry,
+    QgsWkbTypes,
+)
 from qgis.PyQt.QtWidgets import QMessageBox
 
 from lizmap.definitions.definitions import LwcVersions
@@ -8,7 +13,6 @@ from lizmap.definitions.edition import EditionDefinitions, layer_provider
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
-from lizmap.tools import excluded_providers
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -52,7 +56,9 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
 
         self.layer.layerChanged.connect(self.layer_changed)
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
-        self.layer.setExcludedProviders(excluded_providers())
+        providers = QgsProviderRegistry.instance().providerList()
+        providers.remove('postgres')
+        self.layer.setExcludedProviders(providers)
         self.layers.set_project(QgsProject.instance())
 
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
@@ -77,15 +83,9 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         if upstream:
             return upstream
 
-        wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
-        for wfs_layer in wfs_layers_list:
-            if layer.id() == wfs_layer:
-                break
-        else:
-            msg = tr(
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
-                ' option of the QGIS Server tab in the "Project Properties" dialog.')
-            return msg
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        if not_in_wfs:
+            return not_in_wfs
 
         create_feature = self.create_feature.isChecked()
         modify_attribute = self.edit_attributes.isChecked()

@@ -56,18 +56,6 @@ from qgis.PyQt.QtCore import QDir
 from lizmap.definitions.definitions import LayerProperties
 
 
-def excluded_providers():
-    """List of excluded providers for layer edition.
-
-    :return: List of providers.
-    :rtype: list
-    """
-    providers = QgsProviderRegistry.instance().providerList()
-    providers.remove('postgres')
-    providers.remove('spatialite')
-    return providers
-
-
 def get_layer_wms_parameters(layer):
     """
     Get WMS parameters for a raster WMS layers

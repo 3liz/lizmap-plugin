@@ -2,8 +2,18 @@
 
 ## Unreleased
 
-* New feature about the filtering by polygon coming in Lizmap Web Client 3.5
-* If running QGIS 3.10 or newer, display the file name when using a drag&drop layout with an attachement widget
+## 3.6.0 - 2021-09-23
+
+* First "Information panel" :
+  * It's now recommended having at least one Lizmap URL provided
+  * The plugin shows more information when the user is not running the latest bug fix version
+  * Open the Lizmap URL instance from a right click in the "Information" panel
+* New feature in Lizmap Web Client 3.5 :
+  * Filtering data by polygon for a given user
+* If running QGIS 3.10 or higher, display the file name when using a drag&drop layout with an attachement widget
+* Removing Spatialite from available provider for editing capabilities, only PostgreSQL is supported (fix #361)
+* Removing the check if all layers are in a sub folder of the project. Users on their own server might have data where they want (fix #346)
+* Allow to open the documentation in Japanese
 * Refactor some code on the server side
 
 ## 3.5.7 - 2021-08-31

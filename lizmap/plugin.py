@@ -52,7 +52,7 @@ import sys
 from collections import OrderedDict
 from functools import partial
 from shutil import copyfile
-from typing import Optional
+from typing import Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -225,99 +225,119 @@ class Lizmap:
         self.populate_lwc_combo()
         self.lwc_version_changed()
 
+        # Needs Lizmap QGIS server
+        needs_qgis_server = (
+            self.dlg.label_filter_polygon,
+            self.dlg.label_group_visibility,
+        )
+        for label in needs_qgis_server:
+            font = label.font()
+            font.setUnderline(True)
+            label.setFont(font)
+
         self.dlg.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
         pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
         self.dlg.label_lizmap_logo.setPixmap(pixmap)
 
+        i = 0
+
         # Information
         icon = QIcon()
         icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(0).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Map options
         icon = QIcon()
         icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(1).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Layers
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(2).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Base layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(3).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Locate by layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(4).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Attribute table
         icon = QIcon()
         icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(5).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Layer editing
         icon = QIcon()
         icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(6).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Tooltip layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(7).setIcon(icon)
-
-        # Filter layer by user
-        icon = QIcon()
-        icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(8).setIcon(icon)
-
-        # Dataviz
-        icon = QIcon()
-        icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(9).setIcon(icon)
-
-        # Time manager
-        icon = QIcon()
-        icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(10).setIcon(icon)
-
-        # Atlas
-        icon = QIcon()
-        icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(11).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Filter data with form
         icon = QIcon()
         icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(12).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
-        # Filter layer by polygon
+        # Filter layer by user
         icon = QIcon()
-        icon.addFile(resources_path('icons', 'layer_filter_light.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', 'layer_filter_dark.png'), mode=QIcon.Selected)
-        self.dlg.mOptionsListWidget.item(13).setIcon(icon)
+        icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Dataviz
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Time manager
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Atlas
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Log
         # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
-        self.dlg.mOptionsListWidget.item(14).setIcon(icon)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
 
         # Set stylesheet for QGroupBox
         if sys.platform.startswith('win'):
@@ -521,6 +541,7 @@ class Lizmap:
         self.dlg.label_current_qgis.setText('<b>{}</b>'.format(current))
         text = self.dlg.qgis_and_lwc_versions_issue.text()
         self.dlg.qgis_and_lwc_versions_issue.setText(text.format(version=current))
+        self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
 
         # tables of layers
         # Todo Lizmap 3.4, remove dict init here
@@ -662,6 +683,7 @@ class Lizmap:
 
         # Restore connection
         self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
+        self.lwc_version_changed()
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
@@ -2174,114 +2196,59 @@ class Lizmap:
 
         return valid, results
 
-    def check_global_project_options(self):
+    def check_global_project_options(self) -> Tuple[bool, str]:
         """Checks that the needed options are correctly set : relative path, project saved, etc.
 
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
-        is_valid = True
-        error_message = ''
         # Get the project data from api
         if not self.project.fileName() or not self.project.fileName().lower().endswith('qgs'):
-            error_message += tr(
+            message = tr(
                 'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
-            is_valid = False
+            return False, message
 
-        project_dir = None
-        if is_valid:
-            # Get the project folder
-            project_dir, project_name = os.path.split(os.path.abspath(self.project.fileName()))
+        # Check if Qgis/capitaliseLayerName is set
+        settings = QgsSettings()
+        if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
+            message = tr(
+                'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
+                'in the QGIS option dialog, as it could cause issues with Lizmap.')
+            return False, message
 
-        if is_valid:
-            # Check if Qgis/capitaliseLayerName is set
-            settings = QgsSettings()
-            if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
-                message = tr(
-                    'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
-                    'in the QGIS option dialog, as it could cause issues with Lizmap.')
-                error_message += '* {} \n'.format(message)
-                is_valid = False
+        # Check relative/absolute path
+        if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
+            message = tr(
+                'The project layer paths must be set to relative. '
+                'Please change this options in the project settings.')
+            return False, message
 
-        if is_valid:
-            # Check relative/absolute path
-            if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
-                error_message += '* ' + tr(
-                    'The project layer paths must be set to relative. '
-                    'Please change this options in the project settings.') + '\n'
-                is_valid = False
+        # check if a title has been given in the project QGIS Server tab configuration
+        # first set the WMSServiceCapabilities to true
+        if not self.project.readEntry('WMSServiceCapabilities', '/')[1]:
+            self.project.writeEntry('WMSServiceCapabilities', '/', 'True')
+        if self.project.readEntry('WMSServiceTitle', '')[0] == '':
+            self.project.writeEntry('WMSServiceTitle', '', self.project.baseName())
 
-            # check active layers path layer by layer
-            layer_sources_ok = []
-            layer_sources_bad = []
-            canvas = self.iface.mapCanvas()
-            layer_path_error = ''
-
-            for i in range(canvas.layerCount()):
-                layer_source = '{}'.format(canvas.layer(i).source())
-                if not hasattr(canvas.layer(i), 'providerType'):
-                    continue
-                layer_provider_key = canvas.layer(i).providerType()
-                # Only for layers stored in disk
-                if layer_provider_key in ('delimitedtext', 'gdal', 'gpx', 'grass', 'grassraster', 'ogr') \
-                        and not layer_source.lower().startswith('mysql'):
-                    # noinspection PyBroadException
-                    try:
-                        relative_path = os.path.normpath(
-                            os.path.relpath(os.path.abspath(layer_source), project_dir)
-                        )
-                        if (not relative_path.startswith('../../../')
-                            and not relative_path.startswith('..\\..\\..\\')) \
-                                or (layer_provider_key == 'ogr' and layer_source.startswith('http')):
-                            layer_sources_ok.append(os.path.abspath(layer_source))
-                        else:
-                            layer_sources_bad.append(layer_source)
-                            layer_path_error += '--> {} \n'.format(relative_path)
-                            is_valid = False
-                    except Exception:
-                        is_valid = False
-                        layer_sources_bad.append(layer_source)
-                        layer_path_error += '--> {} \n'.format(canvas.layer(i).name())
-
-            if len(layer_sources_bad) > 0:
-                message = tr(
-                    'The layers paths must be relative to the project file. '
-                    'Please copy the layers inside {}.').format(project_dir)
-                error_message += '* {}\n'.format(message)
-                self.log(
-                    tr('The layers paths must be relative to the project file. '
-                       'Please copy the layers inside {} or in one folder above '
-                       'or aside {}.').format(project_dir, layer_sources_bad),
-                    abort=True,
-                    textarea=self.dlg.outLog)
-                error_message += layer_path_error
-
-            # check if a title has been given in the project QGIS Server tab configuration
-            # first set the WMSServiceCapabilities to true
-            if not self.project.readEntry('WMSServiceCapabilities', '/')[1]:
-                self.project.writeEntry('WMSServiceCapabilities', '/', 'True')
-            if self.project.readEntry('WMSServiceTitle', '')[0] == '':
-                self.project.writeEntry('WMSServiceTitle', '', self.project.baseName())
-
-            # check if a bbox has been given in the project QGIS Server tab configuration
-            project_wms_extent, _ = self.project.readListEntry('WMSExtent', '')
-            full_extent = self.iface.mapCanvas().extent()
-            if not project_wms_extent:
-                project_wms_extent.append(str(full_extent.xMinimum()))
-                project_wms_extent.append(str(full_extent.yMinimum()))
-                project_wms_extent.append(str(full_extent.xMaximum()))
-                project_wms_extent.append(str(full_extent.yMaximum()))
+        # check if a bbox has been given in the project QGIS Server tab configuration
+        project_wms_extent, _ = self.project.readListEntry('WMSExtent', '')
+        full_extent = self.iface.mapCanvas().extent()
+        if not project_wms_extent:
+            project_wms_extent.append(str(full_extent.xMinimum()))
+            project_wms_extent.append(str(full_extent.yMinimum()))
+            project_wms_extent.append(str(full_extent.xMaximum()))
+            project_wms_extent.append(str(full_extent.yMaximum()))
+            self.project.writeEntry('WMSExtent', '', project_wms_extent)
+        else:
+            if not project_wms_extent[0] or not project_wms_extent[1] or not \
+                    project_wms_extent[2] or not project_wms_extent[3]:
+                project_wms_extent[0] = str(full_extent.xMinimum())
+                project_wms_extent[1] = str(full_extent.yMinimum())
+                project_wms_extent[2] = str(full_extent.xMaximum())
+                project_wms_extent[3] = str(full_extent.yMaximum())
                 self.project.writeEntry('WMSExtent', '', project_wms_extent)
-            else:
-                if not project_wms_extent[0] or not project_wms_extent[1] or not \
-                        project_wms_extent[2] or not project_wms_extent[3]:
-                    project_wms_extent[0] = str(full_extent.xMinimum())
-                    project_wms_extent[1] = str(full_extent.yMinimum())
-                    project_wms_extent[2] = str(full_extent.xMaximum())
-                    project_wms_extent[3] = str(full_extent.yMaximum())
-                    self.project.writeEntry('WMSExtent', '', project_wms_extent)
 
-        return is_valid, error_message
+        return True, ''
 
     def ok_button_clicked(self):
         """When the OK button is press, we 'apply' and close the dialog."""
@@ -2291,6 +2258,24 @@ class Lizmap:
     def get_map_options(self):
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
+
+        if self.dlg.table_server.rowCount() < 100:
+            # For writing the CFG file, we don't care about the user server list.
+            # But by making this condition, we somehow force people to at least have one server in the list
+            # so they can be more aware about versioning later
+            QMessageBox.warning(
+                self.dlg,
+                tr('Lizmap Server URL'),
+                '{}\n\n{}\n\n{}'.format(
+                    tr("You haven't provided any Lizmap URL in the first Information panel."),
+                    tr(
+                        "Publishing a project on Lizmap requires to have a server running with the Lizmap "
+                        "application."),
+                    tr(
+                        "By providing a URL, you will be able to check its version number for instance."
+                    )
+                ), QMessageBox.Ok)
+
         # global project option checking
         is_valid, message = self.check_global_project_options()
         if not is_valid:
