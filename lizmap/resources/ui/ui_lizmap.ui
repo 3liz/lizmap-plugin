@@ -3295,28 +3295,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_filter_polygon_user">
-          <layout class="QHBoxLayout" name="horizontalLayout_27">
-           <item>
-            <widget class="QScrollArea" name="scrollArea_14">
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_14">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>98</width>
-                <height>28</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8"/>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="page_dataviz">
           <layout class="QVBoxLayout" name="verticalLayout_16">
            <item>

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.6.1 - 2021-09-23
+
+* Fix an issue in the user interface when switching panels
+
 ## 3.6.0 - 2021-09-23
 
 * First "Information panel" :
