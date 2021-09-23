@@ -83,15 +83,9 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         if upstream:
             return upstream
 
-        wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
-        for wfs_layer in wfs_layers_list:
-            if layer.id() == wfs_layer:
-                break
-        else:
-            msg = tr(
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
-                ' option of the QGIS Server tab in the "Project Properties" dialog.')
-            return msg
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        if not_in_wfs:
+            return not_in_wfs
 
         create_feature = self.create_feature.isChecked()
         modify_attribute = self.edit_attributes.isChecked()

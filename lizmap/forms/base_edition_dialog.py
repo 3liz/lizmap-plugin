@@ -4,7 +4,9 @@ import json
 import re
 
 from collections import OrderedDict
+from typing import Union
 
+from qgis._core import QgsVectorLayer
 from qgis.core import QgsProject, QgsSettings
 from qgis.PyQt.QtCore import QLocale, Qt, QUrl
 from qgis.PyQt.QtGui import QColor, QDesktopServices, QIcon
@@ -174,6 +176,19 @@ class BaseEditionDialog(QDialog):
 
             if lwc_version == current_version:
                 found = True
+
+    @staticmethod
+    def is_layer_in_wfs(layer: QgsVectorLayer) -> Union[None, str]:
+        """ Check if the layer in the WFS capabilities. """
+        wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
+        for wfs_layer in wfs_layers_list:
+            if layer.id() == wfs_layer:
+                return None
+        else:
+            msg = tr(
+                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
+                ' option of the QGIS Server tab in the "Project Properties" dialog.')
+            return msg
 
     def validate(self):
         if self.unicity:

@@ -1,6 +1,6 @@
 """Dialog for attribute table edition."""
 
-from qgis.core import QgsMapLayerProxyModel, QgsProject
+from qgis.core import QgsMapLayerProxyModel
 
 from lizmap.definitions.attribute_table import (
     AttributeTableDefinitions,
@@ -62,15 +62,9 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
             return upstream
 
         layer = self.layer.currentLayer()
-        wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
-        for wfs_layer in wfs_layers_list:
-            if layer.id() == wfs_layer:
-                break
-        else:
-            msg = tr(
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
-                ' option of the QGIS Server tab in the "Project Properties" dialog.')
-            return msg
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        if not_in_wfs:
+            return not_in_wfs
 
         if not self.field_primary_key.currentField():
             return tr('Primary key field is mandatory.')
