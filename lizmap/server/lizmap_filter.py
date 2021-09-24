@@ -2,11 +2,6 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-import json
-import os
-
-from typing import List
-
 from qgis.core import QgsProject
 from qgis.server import QgsServerFilter, QgsServerInterface
 
@@ -78,8 +73,8 @@ class LizmapFilter(QgsServerFilter):
             # If one Lizmap user group provided in request headers is
             # defined in project acl option, the request can be evaluated
             # by QGIS Server
-            for g in groups:
-                if g in cfg_acl:
+            for group in groups:
+                if group in cfg_acl:
                     return
 
             # The lizmap user groups provided in request header are not
