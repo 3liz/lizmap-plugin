@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Variables `@lizmap_user` and `@lizmap_user_groups` are available at the project level with current Lizmap user and his groups.
+  It's possible to use them in QGIS Desktop.
+
 ## 3.6.2 - 2021-09-23
 
 * Fix an issue in the user interface saving the CFG file

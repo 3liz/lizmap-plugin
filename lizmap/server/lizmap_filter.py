@@ -33,10 +33,10 @@ class LizmapFilter(QgsServerFilter):
 
             # Set lizmap variables for expression
             project = QgsProject.instance()
-            project.setCustomVariables({
-                'lizmap_user': user_login,
-                'lizmap_user_groups': groups,
-            })
+            custom_var = project.customVariables()
+            custom_var['lizmap_user'] = user_login
+            custom_var['lizmap_user_groups'] = list(groups)  # QGIS can't store a tuple
+            project.setCustomVariables(custom_var)
 
             # If groups is empty, no Lizmap user groups provided by the request
             # The request can be evaluated by QGIS Server
