@@ -7,8 +7,14 @@ import os
 
 from typing import List
 
+from qgis.core import QgsProject
 from qgis.server import QgsServerFilter, QgsServerInterface
 
+from lizmap.server.core import (
+    get_lizmap_config,
+    get_lizmap_groups,
+    get_lizmap_user_login,
+)
 from lizmap.server.exception import LizmapFilterException
 from lizmap.server.logger import Logger
 
@@ -27,39 +33,23 @@ class LizmapFilter(QgsServerFilter):
         try:
             # Check first the headers to avoid unnecessary config file reading
             # Get Lizmap user groups defined in request headers
-            groups = self.getLizmapGroups()
+            groups = get_lizmap_groups(self.iface.requestHandler())
+            user_login = get_lizmap_user_login(self.iface.requestHandler())
+
+            # Set lizmap variables for expression
+            project = QgsProject.instance()
+            project.setCustomVariable({
+                'lizmap_user': user_login,
+                'lizmap_user_groups': groups,
+            })
 
             # If groups is empty, no Lizmap user groups provided by the request
             # The request can be evaluated by QGIS Server
             if len(groups) == 0:
                 return
 
-            # Get QGIS Project path
-            config_path = self.iface.configFilePath()
-            if not os.path.exists(config_path):
-                # QGIS Project path does not exist as a file
-                # The request can be evaluated by QGIS Server
-                return
-
-            # Get Lizmap config path
-            config_path += '.cfg'
-            if not os.path.exists(config_path):
-                # Lizmap config path does not exist
-                logger.info("Lizmap config does not exist")
-                # The request can be evaluated by QGIS Server
-                return
-
             # Get Lizmap config
-            with open(config_path, 'r') as cfg_file:
-                # noinspection PyBroadException
-                try:
-                    cfg = json.loads(cfg_file.read())
-                except Exception:
-                    # Lizmap config is not a valid JSON file
-                    logger.critical("Lizmap config not well formed")
-                    # The request can be evaluated by QGIS Server
-                    return
-
+            cfg = get_lizmap_config(self.iface.configFilePath())
             if not cfg:
                 # Lizmap config is empty
                 logger.warning("Lizmap config is empty")
@@ -104,40 +94,10 @@ class LizmapFilter(QgsServerFilter):
         except Exception as e:
             logger.log_exception(e)
 
-    def getLizmapGroups(self) -> List[str]:
-        """ Get Lizmap user groups provided by the request """
-        # Defined groups
-        groups = []
-
-        # Get request handler
-        handler = self.iface.requestHandler()
-
-        logger = Logger()
-
-        # Get Lizmap User Groups in request headers
-        headers = handler.requestHeaders()
-        if headers:
-            logger.info("Request headers provided")
-            # Get Lizmap user groups defined in request headers
-            user_groups = headers.get('X-Lizmap-User-Groups')
-            if user_groups is not None:
-                groups = [g.strip() for g in user_groups.split(',')]
-                logger.info("Lizmap user groups in request headers")
-        else:
-            logger.info("No request headers provided")
-
-        if len(groups) != 0:
-            return groups
-        else:
-            logger.info("No lizmap user groups in request headers")
-
-        # Get group in parameters
-        params = handler.parameterMap()
-        if params:
-            # Get Lizmap user groups defined in parameters
-            user_groups = params.get('LIZMAP_USER_GROUPS')
-            if user_groups is not None:
-                groups = [g.strip() for g in user_groups.split(',')]
-                logger.info("Lizmap user groups in parameters")
-
-        return groups
+    def responseComplete(self):
+        # Remove lizmap variables for expression
+        project = QgsProject.instance()
+        custom_var = project.customVariables()
+        custom_var.pop('lizmap_user', None)
+        custom_var.pop('lizmap_user_groups', None)
+        project.setCustomVariable(custom_var)
