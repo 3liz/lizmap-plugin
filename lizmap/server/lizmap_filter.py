@@ -33,7 +33,7 @@ class LizmapFilter(QgsServerFilter):
 
             # Set lizmap variables for expression
             project = QgsProject.instance()
-            project.setCustomVariable({
+            project.setCustomVariables({
                 'lizmap_user': user_login,
                 'lizmap_user_groups': groups,
             })
@@ -95,4 +95,4 @@ class LizmapFilter(QgsServerFilter):
         custom_var = project.customVariables()
         custom_var.pop('lizmap_user', None)
         custom_var.pop('lizmap_user_groups', None)
-        project.setCustomVariable(custom_var)
+        project.setCustomVariables(custom_var)
