@@ -13,6 +13,7 @@ lizmap.cfg
 .vscode/
 
 *.egg-info
+*.code-workspace
 
 # Python
 .venv/
