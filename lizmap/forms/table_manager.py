@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 
 from collections import namedtuple
 from typing import Type
@@ -630,7 +631,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in [
+        if self.definitions.key() in (
             'locateByLayer',
             'loginFilteredLayers',
             'tooltipLayers',
@@ -639,7 +640,7 @@ class TableManager:
             'timemanagerLayers',
             'formFilterLayers',
             'datavizLayers',
-        ]:
+        ):
             data = self._from_json_legacy_order(data)
 
         if self.definitions.key() == 'editionLayers':
@@ -690,6 +691,7 @@ class TableManager:
             if not layer:
                 continue
             layer_data = {}
+            vector_layer = None
             valid_layer = True
             for key, definition in self.definitions.layer_config.items():
                 if definition.get('plural'):
@@ -759,6 +761,16 @@ class TableManager:
                                 self.definitions.key(), key))
                         valid_layer = False
                         continue
+
+            # For editing, keep only postgresql, follow up about #364, #361
+            if self.definitions.key() == 'editionLayers' and not os.getenv("RUNNING_CI") == 'True':
+                # In CI, we still want to test this layer, sorry.
+                if vector_layer.dataProvider().name() != 'postgres':
+                    LOGGER.warning(
+                        "The layer for editing {} is not stored in PostgreSQL. Now, only PostgreSQL layers "
+                        "are supported for editing capabilities. Removing this layer from the "
+                        "configuration.".format(vector_layer.id()))
+                    valid_layer = False
 
             if valid_layer:
                 row = self.table.rowCount()

@@ -9,4 +9,5 @@ services:
       - ../lizmap:/tests_directory/lizmap
     environment:
       # - DISPLAY=unix$DISPLAY
+      - RUNNING_CI=True
       - DISPLAY=:99
