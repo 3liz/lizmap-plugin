@@ -2,14 +2,9 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from qgis.core import QgsProject
 from qgis.server import QgsServerFilter, QgsServerInterface
 
-from lizmap.server.core import (
-    get_lizmap_config,
-    get_lizmap_groups,
-    get_lizmap_user_login,
-)
+from lizmap.server.core import get_lizmap_config, get_lizmap_groups
 from lizmap.server.exception import LizmapFilterException
 from lizmap.server.logger import Logger
 
@@ -29,14 +24,6 @@ class LizmapFilter(QgsServerFilter):
             # Check first the headers to avoid unnecessary config file reading
             # Get Lizmap user groups defined in request headers
             groups = get_lizmap_groups(self.iface.requestHandler())
-            user_login = get_lizmap_user_login(self.iface.requestHandler())
-
-            # Set lizmap variables for expression
-            project = QgsProject.instance()
-            custom_var = project.customVariables()
-            custom_var['lizmap_user'] = user_login
-            custom_var['lizmap_user_groups'] = list(groups)  # QGIS can't store a tuple
-            project.setCustomVariables(custom_var)
 
             # If groups is empty, no Lizmap user groups provided by the request
             # The request can be evaluated by QGIS Server
@@ -88,11 +75,3 @@ class LizmapFilter(QgsServerFilter):
 
         except Exception as e:
             logger.log_exception(e)
-
-    def responseComplete(self):
-        # Remove lizmap variables for expression
-        project = QgsProject.instance()
-        custom_var = project.customVariables()
-        custom_var.pop('lizmap_user', None)
-        custom_var.pop('lizmap_user_groups', None)
-        project.setCustomVariables(custom_var)

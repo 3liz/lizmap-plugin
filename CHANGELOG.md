@@ -2,8 +2,6 @@
 
 ## Unreleased
 
-* Variables `@lizmap_user` and `@lizmap_user_groups` are available at the project level with current Lizmap user and its groups.
-  It's possible to use them in QGIS Desktop.
 * Follow up from version 3.6.0 about not supporting spatialite for editing capabilties, the plugin will now remove these lines from the CFG file
 
 ## 3.6.2 - 2021-09-23
