@@ -959,7 +959,10 @@ def my_form_open(dialog, layer, feature):
       <layerDependencies></layerDependencies>
       <dataDependencies></dataDependencies>
       <legend type="default-vector"></legend>
-      <expressionfields></expressionfields>
+      <expressionfields>
+        <field name="lwc_user" precision="0" length="0" expression="CASE WHEN @lizmap_user IS NULL OR @lizmap_user = '' THEN 'No user provided' ELSE @lizmap_user END" subType="0" comment="" typeName="string" type="10"/>
+        <field name="lwc_groups" precision="0" length="0" expression="CASE WHEN @lizmap_user_groups IS NULL OR array_length(@lizmap_user_groups) = 0 THEN 'No user groups provided' ELSE  array_to_string(@lizmap_user_groups, ', ') END" subType="0" comment="" typeName="string" type="10"/>
+      </expressionfields>
       <map-layer-style-manager current="défaut">
         <map-layer-style name="défaut"></map-layer-style>
       </map-layer-style-manager>
