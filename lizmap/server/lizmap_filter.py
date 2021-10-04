@@ -2,6 +2,7 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from qgis.core import QgsProject
 from qgis.server import QgsServerFilter, QgsServerInterface
 
 from lizmap.server.core import get_lizmap_config, get_lizmap_groups
@@ -75,3 +76,11 @@ class LizmapFilter(QgsServerFilter):
 
         except Exception as e:
             logger.log_exception(e)
+
+    def responseComplete(self):
+        # Remove lizmap variables for expression
+        project = QgsProject.instance()
+        custom_var = project.customVariables()
+        custom_var.pop('lizmap_user', None)
+        custom_var.pop('lizmap_user_groups', None)
+        project.setCustomVariables(custom_var)
