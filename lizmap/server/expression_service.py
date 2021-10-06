@@ -32,11 +32,11 @@ from lizmap.server.core import (
     get_lizmap_groups,
     get_lizmap_user_login,
     get_server_fid,
-    to_bool,
     write_json_response,
 )
 from lizmap.server.exception import ExpressionServiceError
 from lizmap.server.logger import Logger
+from lizmap.server.tools import to_bool
 
 
 class ExpressionService(QgsService):

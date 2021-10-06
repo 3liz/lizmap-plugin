@@ -19,7 +19,6 @@ from lizmap.server.core import (
     get_lizmap_override_filter,
     get_lizmap_user_login,
     is_editing_context,
-    to_bool,
 )
 from lizmap.server.filter_by_polygon import (
     ALL_FEATURES,
@@ -27,6 +26,7 @@ from lizmap.server.filter_by_polygon import (
     FilterByPolygon,
 )
 from lizmap.server.logger import Logger, profiling
+from lizmap.server.tools import to_bool
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):

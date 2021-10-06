@@ -3,12 +3,15 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import functools
+import os
 import time
 import traceback
 
 from contextlib import contextmanager
 
 from qgis.core import Qgis, QgsMessageLog
+
+from lizmap.server.tools import to_bool
 
 PLUGIN = 'Lizmap'
 
@@ -45,6 +48,9 @@ def exception_handler(func):
         try:
             func(*args, **kwargs)
         except Exception as e:
+            if to_bool(os.getenv("CI")):
+                Logger.log_exception(e)
+                raise
             Logger.log_exception(e)
     return inner_function
 
@@ -55,6 +61,9 @@ def trap():
     try:
         yield
     except Exception as e:
+        if to_bool(os.getenv("CI")):
+            Logger.log_exception(e)
+            raise
         Logger.log_exception(e)
 
 

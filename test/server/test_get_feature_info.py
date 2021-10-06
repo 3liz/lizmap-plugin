@@ -38,7 +38,8 @@ SINGLE_FEATURE = "I=1435&J=398&"
 LAYER_DEFAULT_POPUP = "default_popup"
 DEFAULT_POPUP = f"LAYERS={LAYER_DEFAULT_POPUP}&QUERY_LAYERS={LAYER_DEFAULT_POPUP}&"
 
-LAYER_QGIS_POPUP = "qgis_popup"
+# The layer qgis_popup_shortname has a shortname customshortname
+LAYER_QGIS_POPUP = "customshortname"
 QGIS_POPUP = f"LAYERS={LAYER_QGIS_POPUP}&QUERY_LAYERS={LAYER_QGIS_POPUP}&"
 
 LAYER_QGIS_FORM = "qgis_form"

@@ -18,6 +18,7 @@ from qgis.core import (
 from qgis.server import QgsRequestHandler, QgsServerResponse
 
 from lizmap.server.logger import Logger
+from lizmap.server.tools import to_bool
 
 
 def write_json_response(data: Dict[str, str], response: QgsServerResponse, code: int = 200) -> None:
@@ -59,6 +60,9 @@ def find_vector_layer(layer_name: str, project: QgsProject) -> Union[None, QgsVe
         # check layer id
         if layer.id() == layer_name:
             return layer
+
+    Logger.warning(
+        "The vector layer {} has not been found in the project {}".format(layer_name, project.fileName()))
     return None
 
 
@@ -68,18 +72,6 @@ def get_server_fid(feature: QgsFeature, pk_attributes: list) -> str:
         return str(feature.id())
 
     return '@@'.join([str(feature.attribute(pk)) for pk in pk_attributes])
-
-
-def to_bool(val: Union[str, int, float, bool]) -> bool:
-    """ Convert lizmap config value to boolean """
-    if isinstance(val, str):
-        # For string, compare lower value to True string
-        return val.lower() in ('yes', 'true', 't', '1')
-    elif not val:
-        # For value like False, 0, 0.0, None, empty list or dict returns False
-        return False
-    else:
-        return True
 
 
 def get_lizmap_config(qgis_project_path: str) -> Union[Dict, None]:
