@@ -14,6 +14,7 @@ export QT_LOGGING_RULES="*.debug=false;*.warning=false"
 # Disable python hooks/overrides
 export QGIS_DISABLE_MESSAGE_HOOKS=1
 export QGIS_NO_OVERRIDE_IMPORT=1
+export CI=True
 
 pytest -vv --qgis-plugins=/src $@
 exit $?

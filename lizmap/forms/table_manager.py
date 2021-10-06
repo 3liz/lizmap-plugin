@@ -19,6 +19,7 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
+from lizmap.server.tools import to_bool
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -763,7 +764,7 @@ class TableManager:
                         continue
 
             # For editing, keep only postgresql, follow up about #364, #361
-            if self.definitions.key() == 'editionLayers' and not os.getenv("RUNNING_CI") == 'True':
+            if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI")):
                 # In CI, we still want to test this layer, sorry.
                 if vector_layer.dataProvider().name() != 'postgres':
                     LOGGER.warning(

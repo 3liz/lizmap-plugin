@@ -25,7 +25,7 @@
     <layer-tree-layer checked="Qt::Checked" expanded="1" id="qgis_popup_a6f4c4e3_79bc_4443_aab6_7e44ef9fe24b" legend_exp="" name="qgis_form" providerKey="ogr" source="./france_parts/france_parts.shp">
       <customproperties></customproperties>
     </layer-tree-layer>
-    <layer-tree-layer checked="Qt::Checked" expanded="1" id="default_popup_cfe76c13_c331_4fd8_b8d0_c33af351c9f1" legend_exp="" name="qgis_popup" providerKey="ogr" source="./france_parts/france_parts.shp">
+    <layer-tree-layer checked="Qt::Checked" expanded="1" id="default_popup_cfe76c13_c331_4fd8_b8d0_c33af351c9f1" legend_exp="" name="qgis_popup_shortname" providerKey="ogr" source="./france_parts/france_parts.shp">
       <customproperties></customproperties>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -79,7 +79,7 @@
         <legendlayerfile isInOverview="0" layerid="qgis_popup_a6f4c4e3_79bc_4443_aab6_7e44ef9fe24b" visible="1"></legendlayerfile>
       </filegroup>
     </legendlayer>
-    <legendlayer checked="Qt::Checked" drawingOrder="-1" name="qgis_popup" open="true" showFeatureCount="0">
+    <legendlayer checked="Qt::Checked" drawingOrder="-1" name="qgis_popup_shortname" open="true" showFeatureCount="0">
       <filegroup hidden="false" open="true">
         <legendlayerfile isInOverview="0" layerid="default_popup_cfe76c13_c331_4fd8_b8d0_c33af351c9f1" visible="1"></legendlayerfile>
       </filegroup>
@@ -100,7 +100,8 @@
       <keywordList>
         <value></value>
       </keywordList>
-      <layername>qgis_popup</layername>
+      <layername>qgis_popup_shortname</layername>
+      <shortname>customshortname</shortname>
       <srs>
         <spatialrefsys>
           <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
