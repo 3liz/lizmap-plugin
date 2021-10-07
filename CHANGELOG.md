@@ -2,10 +2,14 @@
 
 ## Unreleased
 
-* Follow up from version 3.6.0 about not supporting spatialite for editing capabilties, the plugin will now remove these lines from the CFG file
-* Variables `@lizmap_user` and `@lizmap_user_groups` are available at the project level with current Lizmap user and his groups.
-  It's possible to use them in QGIS Desktop.
-* Fix the GetFeatureInfo request on the server side when there is a short name set on the layer
+## 3.6.3 - 2021-10-07
+
+* Follow up from version 3.6.0 about not supporting spatialite for editing capabilities, the plugin will
+  now remove these lines from the CFG file.
+* Variables `@lizmap_user` and `@lizmap_user_groups` are available at the project level with current Lizmap
+  user and its groups. It's possible to use them in QGIS Desktop manually to try symbology, default value in
+  form etc.
+* Fix the GetFeatureInfo request on the server side when there is a short name set on the layer.
 
 ## 3.6.2 - 2021-09-23
 
