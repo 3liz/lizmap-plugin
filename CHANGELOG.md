@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-* Server - display the current plugin version in the logs when loading the plugin
+* Desktop - Add `@lizmap_user` and `@lizmap_user_groups` in the project with empty string/list.
+* Server - Display the current plugin version in the logs when loading the plugin.
 
 ## 3.6.3 - 2021-10-07
 
