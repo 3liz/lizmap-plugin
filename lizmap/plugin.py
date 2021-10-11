@@ -58,6 +58,7 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsEditFormConfig,
+    QgsExpression,
     QgsLayerTree,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
@@ -902,6 +903,28 @@ class Lizmap:
 
         # IGN
         self.global_options['ignKey']['widget'].textChanged.connect(self.check_ign_french_free_key)
+
+        server_side = tr(
+            "This value will be replaced on the server side when evaluating the expression thanks to "
+            "the QGIS server Lizmap plugin.")
+        # Register variable helps
+        if Qgis.QGIS_VERSION_INT >= 32200:
+            QgsExpression.addVariableHelpText(
+                "lizmap_user",
+                "{}<br/>{}<br/>{}".format(
+                    tr("The current Lizmap login as a string."),
+                    tr("It might be an empty string if the user is not connected."),
+                    server_side,
+                )
+            )
+            QgsExpression.addVariableHelpText(
+                "lizmap_user_groups",
+                "{}<br/>{}<br/>{}".format(
+                    tr("The current groups of the logged user as an array."),
+                    tr("It might be an empty array if the user is not connected."),
+                    server_side,
+                )
+            )
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
@@ -2202,6 +2225,16 @@ class Lizmap:
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
+        # Add default variables in the project
+        variables = self.project.customVariables()
+        if not variables.get('lizmap_user'):
+            variables['lizmap_user'] = ''
+
+        if not variables.get('lizmap_user_groups'):
+            variables['lizmap_user_groups'] = list()
+
+        self.project.setCustomVariables(variables)
+
         # Get the project data from api
         if not self.project.fileName() or not self.project.fileName().lower().endswith('qgs'):
             message = tr(
