@@ -10,6 +10,7 @@ from lizmap.server.lizmap_accesscontrol import LizmapAccessControlFilter
 from lizmap.server.lizmap_filter import LizmapFilter
 from lizmap.server.lizmap_service import LizmapService
 from lizmap.server.logger import Logger
+from lizmap.server.tools import version
 
 
 class LizmapServer:
@@ -19,7 +20,7 @@ class LizmapServer:
     def __init__(self, server_iface: QgsServerInterface) -> None:
         self.server_iface = server_iface
         self.logger = Logger()
-        self.logger.info('Init server')
+        self.logger.info('Init server version "{}"'.format(version()))
 
         reg = server_iface.serviceRegistry()
         try:
