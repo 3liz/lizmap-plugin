@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Server - display the current plugin version in the logs when loading the plugin
+
 ## 3.6.3 - 2021-10-07
 
 * Follow up from version 3.6.0 about not supporting spatialite for editing capabilities, the plugin will
