@@ -169,7 +169,7 @@ class TestToolTip(unittest.TestCase):
         expected = '''
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B"'),
-                        "field_a"
+                        replace("field_a", '\\'', '’')
                     )'''
         self.assertEqual(expected, expression)
         self.check_layer_context('a', expression, 'A')
@@ -185,7 +185,7 @@ class TestToolTip(unittest.TestCase):
         expected = '''
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B"'),
-                        "field_a"
+                        replace("field_a", '\\'', '’')
                     )'''
         self.assertEqual(expected, expression)
         self.check_layer_context('a', expression, 'A')
@@ -205,7 +205,7 @@ class TestToolTip(unittest.TestCase):
         expected = '''
                     map_get(
                         hstore_to_map('"a"=>"L’eau c’est bon","b"=>"B"'),
-                        "field_a"
+                        replace("field_a", '\\'', '’')
                     )'''
         self.assertEqual(expected, expression)
         self.check_layer_context('a', expression, 'L’eau c’est bon')
@@ -466,7 +466,7 @@ class TestToolTip(unittest.TestCase):
                             '<div class="field">', 
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
-                        "name"
+                        replace("name", '\\'', '’')
                     ), '</div>',
                             '</p>'
                         )
@@ -486,7 +486,7 @@ class TestToolTip(unittest.TestCase):
                             '<div class="field">', 
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
-                        "name"
+                        replace("name", '\\'', '’')
                     ), '</div>',
                             '</p>'
                         )

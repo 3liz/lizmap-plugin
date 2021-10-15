@@ -225,25 +225,28 @@ class Tooltip:
 
     @staticmethod
     def _generate_value_map(widget_config, name):
+        def escape_value(value):
+            return value.replace("'", "’")
+
         if isinstance(widget_config['map'], list):
             values = dict()
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
-                    reverted = {y.replace("'", "’"): x.replace("'", "’") for x, y in row.items()}
+                    reverted = {escape_value(y): escape_value(x) for x, y in row.items()}
                     values.update(reverted)
         else:
             # It's not a list, it's a dict.
             values = widget_config['map']
             if values.get('<NULL>'):
                 del values['<NULL>']
-            values = {y.replace("'", "’"): x.replace("'", "’") for x, y in values.items()}
+            values = {escape_value(y): escape_value(x) for x, y in values.items()}
 
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
         field_view = '''
                     map_get(
                         hstore_to_map('{}'),
-                        "{}"
+                        replace("{}", '\\'', '’')
                     )'''.format(hstore, name)
         return field_view
 
