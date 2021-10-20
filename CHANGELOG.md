@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Desktop - Add link to the Lizmap IRC channel on libera.chat
+* Desktop - Improve user experience when using the checkbox "Third-party WMS layers"
+  by disabling the format option if needed.
 * Desktop - Add `@lizmap_user` and `@lizmap_user_groups` in the project with empty string/list.
 * Server - Display the current plugin version in the logs when loading the plugin.
 

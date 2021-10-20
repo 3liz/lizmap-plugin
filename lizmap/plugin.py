@@ -1695,8 +1695,16 @@ class Lizmap:
                         wms_enabled = self.get_item_wms_capability(selectedItem)
                         if wms_enabled is not None:
                             self.dlg.cbExternalWms.setEnabled(wms_enabled)
-                            if not wms_enabled:
+                            if wms_enabled:
+                                self.dlg.cbExternalWms.toggled.connect(self.external_wms_toggled)
+                                self.external_wms_toggled()
+                            else:
                                 self.dlg.cbExternalWms.setChecked(False)
+                                try:
+                                    self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
+                                except TypeError:
+                                    # The object was not connected
+                                    pass
 
             layer = self._current_selected_layer()  # It can be a layer or a group
 
@@ -1769,6 +1777,10 @@ class Lizmap:
     #         self.layer_options_list['toggled']['widget'].setChecked(False)
     #         tooltip = tr("For a group, it depends of layers inside the group")
     #     self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+
+    def external_wms_toggled(self):
+        """ Disable the format combobox is the checkbox third party WMS is checked. """
+        self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
 
     def get_item_wms_capability(self, selectedItem) -> Optional[bool]:
         """
