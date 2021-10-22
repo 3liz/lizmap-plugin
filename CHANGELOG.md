@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add support for the "Attribute Editor Relation" when generating the tooltip. It needs Lizmap Web Client 3.7.0.
+
 ## 3.14.2 - 2023-06-23
 
 * Add wizard for setting up the PostgreSQL database

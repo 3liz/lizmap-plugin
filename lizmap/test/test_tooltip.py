@@ -259,6 +259,15 @@ class TestToolTip(unittest.TestCase):
                        </a>'''
         self.check_layer_context('test.pdf', expression, expected)
 
+    def test_attribute_editor_relation(self):
+        """Test to generate the attribute editor relation."""
+        expression = Tooltip._generate_attribute_editor_relation('a country', 'a_relation_id', 'a_layer_id')
+        expected = '''
+  <p><b>a country</b></p>
+  <div id="popup_relation_a_relation_id" data-relation-id="a_relation_id" data-referencing-layer-id="a_layer_id" class="popup_lizmap_dd_relation">
+  </div>'''
+        self.assertEqual(expected, expression)
+
     def test_external_resource_image(self):
         """Test we can generate external resource for an image."""
         widget_config = {

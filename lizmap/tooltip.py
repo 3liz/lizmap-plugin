@@ -14,6 +14,7 @@ from qgis.core import (
     QgsAttributeEditorContainer,
     QgsAttributeEditorElement,
     QgsAttributeEditorField,
+    QgsAttributeEditorRelation,
     QgsHstoreUtils,
     QgsProject,
     QgsRelationManager,
@@ -115,6 +116,10 @@ class Tooltip:
             a += '\n' + SPACES * level
             a += Tooltip._generate_field_name(name, fname, field_view)
 
+        if isinstance(node, QgsAttributeEditorRelation):
+            relation = node.relation()
+            a += Tooltip._generate_attribute_editor_relation(node.label(), relation.id(), relation.referencingLayerId())
+
         if isinstance(node, QgsAttributeEditorContainer):
 
             visibility = ''
@@ -197,6 +202,18 @@ class Tooltip:
     @staticmethod
     def _generate_eval_visibility(expression: str):
         return "[% if ({}, '', 'hidden') %]".format(expression)
+
+    @staticmethod
+    def _generate_attribute_editor_relation(label: str, relation_id: str, referencing_layer_id: str) -> str:
+        """ Generate the div. LWC will manage to include children in the given div."""
+        result = '\n' + SPACES + '<p><b>{}</b></p>'.format(label)
+        result += '\n' + SPACES
+        result += (
+            '<div id="popup_relation_{0}" data-relation-id="{0}" data-referencing-layer-id="{1}" '
+            'class="popup_lizmap_dd_relation">'.format(relation_id, referencing_layer_id)
+        )
+        result += '\n' + SPACES + '</div>'
+        return result
 
     @staticmethod
     def _generate_relation_reference(name: str, parent_pk: str, layer_id: str, display_expression: str):
