@@ -140,7 +140,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
         if params.get('INFO_FORMAT', '').upper() != 'TEXT/XML':
             logger.info(
-                "Lizmap is not only processing TEXT/XML INFO_FORMAT, not {}".format(
+                "Lizmap is only processing INFO_FORMAT=TEXT/XML, not '{}'.".format(
                     params.get('INFO_FORMAT', '').upper()))
             return
 
@@ -182,8 +182,9 @@ class GetFeatureInfoFilter(QgsServerFilter):
             return
 
         if not features:
-            # This is not normal ...
-            logger.warning(
+            # The user has clicked in a random area on the map or no interesting LAYERS,
+            # no features are returned.
+            logger.info(
                 "No features found in the XML from QGIS Server for project {}".format(project_path)
             )
             return
