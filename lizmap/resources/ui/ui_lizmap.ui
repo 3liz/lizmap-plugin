@@ -1472,22 +1472,22 @@ This is different to the map maximum extent (defined in QGIS project properties,
                              </property>
                              <item>
                               <property name="text">
-                               <string>auto</string>
+                               <string notr="true">auto</string>
                               </property>
                              </item>
                              <item>
                               <property name="text">
-                               <string>lizmap</string>
+                               <string notr="true">lizmap</string>
                               </property>
                              </item>
                              <item>
                               <property name="text">
-                               <string>qgis</string>
+                               <string notr="true">qgis</string>
                               </property>
                              </item>
                              <item>
                               <property name="text">
-                               <string>form</string>
+                               <string notr="true">form</string>
                               </property>
                              </item>
                             </widget>

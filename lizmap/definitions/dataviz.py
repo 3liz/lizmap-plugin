@@ -65,11 +65,13 @@ class GraphType(Enum):
         'data': 'sunburst',
         'label': tr('Sunburst'),
         'icon': resources_path('icons', 'plots', 'sunburst.svg'),
+        'version': LwcVersions.Lizmap_3_4,
     }
     HtmlTemplate = {
         'data': 'html',
         'label': tr('HTML Template'),
         'icon': resources_path('icons', 'plots', 'html_template.png'),
+        'version': LwcVersions.Lizmap_3_4,
     }
 
 
@@ -149,7 +151,8 @@ class DatavizDefinitions(BaseDefinitions):
             'header': tr('Type'),
             'items': GraphType,
             'default': GraphType.Scatter,
-            'tooltip': tr('Type of chart to add')
+            'tooltip': tr('Type of chart to add'),
+            'items_depend_on_lwc_version': True,
         }
         self._layer_config['title'] = {
             'type': InputType.Text,
@@ -181,7 +184,9 @@ class DatavizDefinitions(BaseDefinitions):
             'header': tr('Aggregation'),
             'items': AggregationType,
             'default': AggregationType.Sum,
-            'tooltip': tr('For a few types of charts like "bar" or "pie", you can choose to aggregate the data in the graph.')
+            'tooltip': tr(
+                'For a few types of charts like "bar" or "pie", you can choose to aggregate the data in the '
+                'graph.')
         }
         self._layer_config['traces'] = {
             'type': InputType.Collection,

@@ -214,6 +214,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_5] = [
             self.dlg.liPopupSource.model().item(
+                # This is fragile GH #379
                 self.dlg.liPopupSource.findText('form')
             ),
             self.dlg.label_filter_polygon,
@@ -469,10 +470,12 @@ class Lizmap:
         # Popup configuration
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
+
+        # This is fragile GH ticket #379, strings are translated
         index = widget_source_popup.findText('form')
         form_popup = widget_source_popup.model().item(index)
         if form_popup is None:
-            # Random bug I need to find why
+            # Found issue with translated strings, GH ticket #379
             # The "form" is not found
             # But it's not critical so let's skip
             form_type = [
@@ -699,8 +702,10 @@ class Lizmap:
             if found:
                 for item in items:
                     if hasattr(item, 'setStyleSheet'):
+                        # QLabel
                         item.setStyleSheet(NEW_FEATURE_CSS)
                     elif isinstance(item, QStandardItem):
+                        # QComboBox
                         brush = QBrush()
                         brush.setStyle(Qt.SolidPattern)
                         brush.setColor(QColor(NEW_FEATURE_COLOR))
@@ -708,8 +713,10 @@ class Lizmap:
             else:
                 for item in items:
                     if hasattr(item, 'setStyleSheet'):
+                        # QLabel
                         item.setStyleSheet('')
                     elif isinstance(item, QStandardItem):
+                        # QComboBox
                         item.setBackground(QBrush())
 
             if lwc_version == current_version:
@@ -974,7 +981,10 @@ class Lizmap:
         layer = self._current_selected_layer()
         is_vector = isinstance(layer, QgsVectorLayer)
         has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
+
+        # This is fragile GH #379
         index = self.layer_options_list['popupSource']['widget'].findText('qgis')
+
         qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
         qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
 

@@ -6,6 +6,7 @@
 * Desktop - Improve user experience when using the checkbox "Third-party WMS layers"
   by disabling the format option if needed.
 * Desktop - Add `@lizmap_user` and `@lizmap_user_groups` in the project with empty string/list.
+* Desktop - Display if the plot or popup is available for the given Lizmap Web Client version
 * Server - Display the current plugin version in the logs when loading the plugin.
 
 ## 3.6.3 - 2021-10-07
