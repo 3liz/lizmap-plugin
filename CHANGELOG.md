@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.6.4 - 2021-11-15
+
 * Desktop - Add link to the Lizmap IRC channel on libera.chat
 * Desktop - Improve user experience when using the checkbox "Third-party WMS layers"
   by disabling the format option if needed.
