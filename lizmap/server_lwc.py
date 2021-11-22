@@ -122,6 +122,9 @@ class ServerManager:
         if not result:
             return
 
+        # Clean input data
+        server_url = server_url.strip()
+
         row = self.table.rowCount()
         self.table.setRowCount(row + 1)
         self._edit_row(row, server_url)
