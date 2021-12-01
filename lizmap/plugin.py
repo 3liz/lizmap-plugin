@@ -2257,10 +2257,14 @@ class Lizmap:
 
         self.project.setCustomVariables(variables)
 
-        # Get the project data from api
-        if not self.project.fileName() or not self.project.fileName().lower().endswith('qgs'):
-            message = tr(
-                'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
+        message = tr(
+            'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
+        if not self.project.fileName():
+            return False, message
+
+        if not self.project.fileName().lower().endswith('qgs'):
+            message += "\n" + tr(
+                "Your extension is QGZ. Please save again the project using the other extension.")
             return False, message
 
         # Check if Qgis/capitaliseLayerName is set
