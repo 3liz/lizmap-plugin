@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Tooltip : Fix generation of the tooltip expression when using `@current_geometry` and `current_value()` when it's
+  used outside the form context.
+
 ## 3.6.4 - 2021-11-15
 
 * Desktop - Add link to the Lizmap IRC channel on libera.chat
