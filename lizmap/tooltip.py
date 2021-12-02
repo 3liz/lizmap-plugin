@@ -337,6 +337,10 @@ class Tooltip:
 
         filter_exp = widget_config['FilterExpression'].strip()
         if filter_exp:
+            # replace @current_geometry only available in form by geometry(@parent) for aggregate
+            filter_exp = filter_exp.replace('@current_geometry', 'geometry(@parent)')
+            # replace current_value( only available in form by attribute(@parent, for aggregate
+            filter_exp = filter_exp.replace('current_value(', 'attribute(@parent, ')
             expression += ' AND {}'.format(filter_exp)
 
         field_view = '''

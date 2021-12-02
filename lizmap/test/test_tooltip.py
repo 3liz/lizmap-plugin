@@ -339,8 +339,48 @@ class TestToolTip(unittest.TestCase):
         expression = QgsExpression(result)
         self.assertFalse(expression.hasParserError())
 
+    def test_value_relation_current_geometry(self):
+        """Test a value relation with @current_geometry in widget config FilterExpression."""
+        widget_config = {
+            'Key': 'key',
+            'Layer': 'layer_id',
+            'FilterExpression': 'intersects(@current_geometry, $geometry)',
+            'Value': 'value',
+        }
+        result = Tooltip._generate_value_relation(widget_config, 'foo')
+        expected = '''
+                    aggregate(
+                        layer:='layer_id',
+                        aggregate:='concatenate',
+                        expression:="value",
+                        filter:="key" = attribute(@parent, 'foo') AND intersects(geometry(@parent), $geometry)
+                    )'''
+        self.assertEqual(expected, result)
+        expression = QgsExpression(result)
+        self.assertFalse(expression.hasParserError())
+
+    def test_value_relation_current_value(self):
+        """Test a value relation with current_value in widget config FilterExpression."""
+        widget_config = {
+            'Key': 'key',
+            'Layer': 'layer_id',
+            'FilterExpression': '''"fkey" = current_value('bar')''',
+            'Value': 'value',
+        }
+        result = Tooltip._generate_value_relation(widget_config, 'foo')
+        expected = '''
+                    aggregate(
+                        layer:='layer_id',
+                        aggregate:='concatenate',
+                        expression:="value",
+                        filter:="key" = attribute(@parent, 'foo') AND "fkey" = attribute(@parent, 'bar')
+                    )'''
+        self.assertEqual(expected, result)
+        expression = QgsExpression(result)
+        self.assertFalse(expression.hasParserError())
+
     def test_layer_non_existing_field(self):
-        """Test we do not generate for non existing fields."""
+        """Test we do not generate for non-existing fields."""
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
 
         feature = QgsFeature()
