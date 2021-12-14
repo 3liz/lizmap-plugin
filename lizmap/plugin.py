@@ -960,17 +960,11 @@ class Lizmap:
     def check_ign_french_free_key(self):
         """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
         key = self.global_options['ignKey']['widget'].text()
-        if key in ['choisirgeoportail', 'pratique']:
+        if not key:
             self.global_options['ignTerrain']['widget'].setEnabled(False)
             self.global_options['ignTerrain']['widget'].setChecked(False)
         else:
             self.global_options['ignTerrain']['widget'].setEnabled(True)
-
-        if key in ['pratique']:
-            self.global_options['ignCadastral']['widget'].setEnabled(False)
-            self.global_options['ignCadastral']['widget'].setChecked(False)
-        else:
-            self.global_options['ignCadastral']['widget'].setEnabled(True)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
