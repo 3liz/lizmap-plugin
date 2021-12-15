@@ -68,8 +68,15 @@ If it's from a previous GitHub repository:
 
 Lizmap is also a QGIS Server plugin.
 
+Starting from Lizmap 3.4, the plugin is **highly** recommended.
+
+To enable all features in Lizmap Web Client, read the documentation about the
+[environment variable](https://docs.lizmap.com/3.5/en/install/pre_requirements.html#lizmap-server-plugin)
+on the QGIS server side.
+
+* lizmap/server.json
 * SERVICE=LIZMAP
-    * REQUEST=GetServerSettings
+    * ~REQUEST=GetServerSettings~ deprecated for the JSON URL above
     * REQUEST=GetSubsetString
       * LAYER=
       * LIZMAP_USER_GROUPS=
