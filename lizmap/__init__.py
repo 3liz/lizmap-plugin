@@ -49,7 +49,7 @@
 try:
     from lizmap.definitions.definitions import LwcVersions
 
-    DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_4
+    DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_5
 
     def classFactory(iface):
         from lizmap.plugin import Lizmap

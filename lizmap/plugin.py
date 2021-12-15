@@ -154,6 +154,8 @@ from lizmap.version_checker import VersionChecker
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
+# To try a local file
+# VERSION_URL = 'file:///home/etienne/.local/share/QGIS/QGIS3/profiles/default/Lizmap/released_versions.json'
 
 
 class Lizmap:

@@ -4,6 +4,8 @@
 
 * Tooltip : Fix generation of the tooltip expression when using `@current_geometry` and `current_value()` when it's
   used outside the form context.
+* Enable Lizmap Web Client 3.5 for the default version
+* Update the user interface for the new API for the French IGN provider
 
 ## 3.6.4 - 2021-11-15
 

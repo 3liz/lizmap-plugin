@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import json
+import logging
 import os
 
 from qgis.core import QgsNetworkContentFetcher
@@ -12,6 +13,8 @@ from qgis.PyQt.QtWidgets import QDialog
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
+
+LOGGER = logging.getLogger('Lizmap')
 
 
 class VersionChecker:
@@ -51,6 +54,12 @@ class VersionChecker:
         for i, json_version in enumerate(released_versions):
             if not json_version['maintained']:
                 index = self.dialog.combo_lwc_version.findData(LwcVersions(json_version['branch']))
+                if not index and json_version['branch'] != '3.1':
+                    LOGGER.warning(
+                        "We did not find the version {} in the selector version".format(
+                            json_version['branch'])
+                    )
+                    continue
                 text = self.dialog.combo_lwc_version.itemText(index)
 
                 if i == 0:

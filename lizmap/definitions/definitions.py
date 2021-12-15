@@ -14,6 +14,7 @@ class LwcVersions(Enum):
     Lizmap_3_3 = '3.3'
     Lizmap_3_4 = '3.4'
     Lizmap_3_5 = '3.5'
+    Lizmap_3_6 = '3.6'
 
 
 @unique
