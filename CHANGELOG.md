@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.6.5 - 2021-12-15
+
 * Tooltip : Fix generation of the tooltip expression when using `@current_geometry` and `current_value()` when it's
   used outside the form context.
 * Enable Lizmap Web Client 3.5 for the default version
