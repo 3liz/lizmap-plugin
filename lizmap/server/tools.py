@@ -14,7 +14,7 @@ Tools for Lizmap.
 """
 
 
-def to_bool(val: Union[str, int, float, bool]) -> bool:
+def to_bool(val: Union[str, int, float, bool], default_value: bool = True) -> bool:
     """ Convert lizmap config value to boolean """
     if isinstance(val, str):
         # For string, compare lower value to True string
@@ -23,7 +23,7 @@ def to_bool(val: Union[str, int, float, bool]) -> bool:
         # For value like False, 0, 0.0, None, empty list or dict returns False
         return False
     else:
-        return True
+        return default_value
 
 
 def version() -> str:
