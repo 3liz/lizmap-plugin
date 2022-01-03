@@ -270,6 +270,20 @@ class ServerManager:
                 self.display_action(row, Qgis.Critical, 'Not a JSON document.')
                 return
 
+            qgis_server = content.get('qgis_server')
+            if not qgis_server:
+                self.display_action(row, Qgis.Critical, 'No "qgis_server" in the JSON document')
+                return
+
+            mime_type = qgis_server.get('mime_type')
+            if not mime_type:
+                self.display_action(
+                    row,
+                    Qgis.Critical,
+                    'QGIS Server is not loaded properly. Check the settings in the administration interface.'
+                )
+                return
+
             info = content.get('info')
             if not info:
                 self.display_action(row, Qgis.Critical, 'No "info" in the JSON document')
