@@ -53,6 +53,7 @@ class LizmapServer:
                     self.version)
                 service_registry.registerApi(lizmap_api)
                 lizmap_api.registerHandler(ServerInfoHandler())
+                self.logger.info('API "/lizmap" loaded with the server info handler')
 
         # Register service
         try:
