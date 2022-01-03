@@ -14,9 +14,12 @@ try:
     IS_PY_QGIS_SERVER = True
 except ImportError:
     # FCGI and others
-    from qgis.utils import pluginMetadata
-    from qgis.utils import server_active_plugins as plugin_list
+    from qgis.utils import pluginMetadata, server_active_plugins
     IS_PY_QGIS_SERVER = False
+
+    def plugin_list() -> list:
+        """ To match Py-QGIS-Server API."""
+        return server_active_plugins
 
 from lizmap.server.tools import to_bool
 
@@ -51,7 +54,7 @@ class ServerInfoHandler(QgsServerOgcApiHandler):
 
     def handleRequest(self, context):
         plugins = dict()
-        for plugin in plugin_list:
+        for plugin in plugin_list():
             plugins[plugin] = dict()
             plugins[plugin]['version'] = plugin_version(plugin)
 
