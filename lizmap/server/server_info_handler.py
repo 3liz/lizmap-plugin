@@ -59,13 +59,17 @@ class ServerInfoHandler(QgsServerOgcApiHandler):
             plugins[plugin] = dict()
             plugins[plugin]['version'] = plugin_version(plugin)
 
-        # expected = (
-        #     'wfsOutputExtension',
-        #     'cadastre',
-        #     'lizmap',
-        #     'atlasprint',
-        #     # 'tilesForServer', waiting a little for this one
-        # )
+        expected_list = (
+            'wfsOutputExtension',
+            'cadastre',
+            'lizmap',
+            'atlasprint',
+            # 'tilesForServer', waiting a little for this one
+        )
+
+        for expected in expected_list:
+            if expected not in plugins.keys():
+                plugins[expected] = {'version': 'not found'}
 
         qgis_version_split = Qgis.QGIS_VERSION.split('-')
 
