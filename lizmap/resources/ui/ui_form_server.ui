@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>528</width>
+    <height>304</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Lizmap Server</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>The URL is required.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>The administrator login and password is recommended as more information can be fetched such as QGIS Server version.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do not use any URL redirection. For instance, &lt;a href=&quot;https://demo.lizmap.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/&lt;/span&gt;&lt;/a&gt; is a redirection to &lt;a href=&quot;https://demo.lizmap.com/lizmap/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/lizmap/&lt;/span&gt;&lt;/a&gt;. Only the second one will work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="openExternalLinks">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_layer">
+       <property name="text">
+        <string>URL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="url">
+       <property name="toolTip">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Login</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="login">
+       <property name="toolTip">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Password</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsPasswordLineEdit" name="password"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="error">
+     <property name="styleSheet">
+      <string notr="true">QLabel { color : red; }</string>
+     </property>
+     <property name="text">
+      <string notr="true">ERROR</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="button_box">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
