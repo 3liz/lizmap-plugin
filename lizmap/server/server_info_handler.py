@@ -27,7 +27,8 @@ from lizmap.server.tools import to_bool
 def plugin_version(name: str) -> str:
     """ Return the version for a given plugin. """
     if IS_PY_QGIS_SERVER:
-        return plugin_metadata(name)['version']
+        metadata = plugin_metadata(name)
+        return metadata['general'].get('version', 'unknown')
     else:
         return pluginMetadata(name, 'version')
 
