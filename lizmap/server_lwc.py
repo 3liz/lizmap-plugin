@@ -166,7 +166,8 @@ class ServerManager:
         row = selection[0].row()
         self.table.clearSelection()
         self.table.removeRow(row)
-        del self.fetchers[row]
+        if row in self.fetchers.keys():
+            del self.fetchers[row]
         self.save_table()
         self.check_display_warning_no_server()
 
