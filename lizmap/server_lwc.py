@@ -6,6 +6,7 @@ import json
 import os
 
 from functools import partial
+from typing import Union
 
 from qgis.core import (
     Qgis,
@@ -76,7 +77,7 @@ class ServerManager:
         self.down_button.setToolTip(tr('Move the server down'))
 
         # Table
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(5)
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -103,9 +104,13 @@ class ServerManager:
         item.setToolTip(tooltip)
         self.table.setHorizontalHeaderItem(2, item)
 
+        item = QTableWidgetItem(tr('QGIS Version'))
+        item.setToolTip(tooltip)
+        self.table.setHorizontalHeaderItem(3, item)
+
         item = QTableWidgetItem(tr('Action'))
         item.setToolTip(tr('If there is any action to do on the server'))
-        self.table.setHorizontalHeaderItem(3, item)
+        self.table.setHorizontalHeaderItem(4, item)
 
         # Connect
         self.add_button.clicked.connect(self.add_row)
@@ -205,11 +210,17 @@ class ServerManager:
         cell.setData(Qt.UserRole, None)
         self.table.setItem(row, 2, cell)
 
-        # Action
+        # QGIS Version
         cell = QTableWidgetItem()
         cell.setText('')
         cell.setData(Qt.UserRole, '')
         self.table.setItem(row, 3, cell)
+
+        # Action
+        cell = QTableWidgetItem()
+        cell.setText('')
+        cell.setData(Qt.UserRole, '')
+        self.table.setItem(row, 4, cell)
 
         self.table.clearSelection()
         self.fetch(server_url, auth_id, row)
@@ -246,7 +257,6 @@ class ServerManager:
 
     def fetch(self, url: str, auth_id: str, row: int):
         """ Fetch the JSON file and call the function when it's finished. """
-        _ = auth_id  # TODO Need to do something later to use the login
         self.display_action(row, False, tr('Fetching…'))
         self.fetchers[row] = QgsNetworkContentFetcher()
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
@@ -254,24 +264,29 @@ class ServerManager:
         if not url.endswith('/'):
             url += '/'
 
+        if auth_id:
+            QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Critical)
+
         url_version = '{}index.php/view/app/metadata'.format(url)
-        self.fetchers[row].fetchContent(QUrl(url_version))
+        self.fetchers[row].fetchContent(QUrl(url_version), auth_id)
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
         _, auth_id = self._fetch_cells(row)
-        if not auth_id:
-            self.display_action(row, Qgis.Warning, 'No login provided')
 
         login = self.login_for_id(auth_id)
 
-        cell = QTableWidgetItem()
+        lizmap_cell = QTableWidgetItem()
+        qgis_cell = QTableWidgetItem()
+        self.table.setItem(row, 2, lizmap_cell)
+        self.table.setItem(row, 3, qgis_cell)
 
         reply = self.fetchers[row].reply()
 
         if not reply:
-            cell.setText(tr('Error'))
+            lizmap_cell.setText(tr('Error'))
             self.display_action(row, Qgis.Warning, 'Temporary not available')
+            return
 
         if reply.error() != QNetworkReply.NoError:
             if reply.error() == QNetworkReply.HostNotFoundError:
@@ -283,48 +298,63 @@ class ServerManager:
                     'Not a valid Lizmap URL or this version is already not maintained < 3.2')
             else:
                 self.display_action(row, Qgis.Critical, reply.errorString())
-            cell.setText(tr('Error'))
-        else:
+            lizmap_cell.setText(tr('Error'))
+            return
 
-            content = self.fetchers[row].contentAsString()
-            if not content:
-                self.display_action(row, Qgis.Critical, 'Not a valid Lizmap URL')
-                return
+        content = self.fetchers[row].contentAsString()
+        if not content:
+            self.display_action(row, Qgis.Critical, 'Not a valid Lizmap URL')
+            return
 
-            try:
-                content = json.loads(content)
-            except json.JSONDecodeError:
-                self.display_action(row, Qgis.Critical, 'Not a JSON document.')
-                return
+        try:
+            content = json.loads(content)
+        except json.JSONDecodeError:
+            self.display_action(row, Qgis.Critical, 'Not a JSON document.')
+            return
 
-            qgis_server = content.get('qgis_server')
-            if not qgis_server:
-                self.display_action(row, Qgis.Critical, 'No "qgis_server" in the JSON document')
-                return
+        qgis_server = content.get('qgis_server')
+        if not qgis_server:
+            self.display_action(row, Qgis.Critical, 'No "qgis_server" in the JSON document')
+            return
 
-            mime_type = qgis_server.get('mime_type')
-            if not mime_type:
-                self.display_action(
-                    row,
-                    Qgis.Critical,
-                    'QGIS Server is not loaded properly. Check the settings in the administration interface.'
-                )
-                return
+        mime_type = qgis_server.get('mime_type')
+        if not mime_type:
+            self.display_action(
+                row,
+                Qgis.Critical,
+                'QGIS Server is not loaded properly. Check the settings in the administration interface.'
+            )
+            return
 
-            info = content.get('info')
-            if not info:
-                self.display_action(row, Qgis.Critical, 'No "info" in the JSON document')
-                return
+        info = content.get('info')
+        if not info:
+            self.display_action(row, Qgis.Critical, 'No "info" in the JSON document')
+            return
 
-            version = info.get('version')
-            if not info:
-                self.display_action(row, Qgis.Critical, 'No "version" in the JSON document')
-                return
+        # Lizmap version
+        lizmap_version = info.get('version')
+        if not info:
+            self.display_action(row, Qgis.Critical, 'No "version" in the JSON document')
+            return
 
-            cell.setText(version)
-            self.update_action_version(version, row, login)
+        lizmap_cell.setText(lizmap_version)
 
-        self.table.setItem(row, 2, cell)
+        # QGIS Server version
+        qgis_version = None
+        if lizmap_version.startswith('3.5') and not content.get('qgis_server_info'):
+            # TODO fix for LWC 3.6 ticket #392
+            # Running < 3.5.1
+            # We bypass the metadata section
+            self.update_action_version(lizmap_version, qgis_version, row, login)
+            return
+
+        qgis_server_info = content.get('qgis_server_info')
+        if qgis_server_info and "error" not in qgis_server_info.keys():
+            # The current user is an admin, running at least LWC 3.5.1
+            qgis_version = qgis_server_info.get('metadata').get('version')
+            qgis_cell.setText(qgis_version)
+
+        self.update_action_version(lizmap_version, qgis_version, row, login)
 
     def load_table(self):
         """ Load the table by reading the user configuration file. """
@@ -368,10 +398,9 @@ class ServerManager:
         """ If we should display or not if there isn't server configured. """
         self.label_no_server.setVisible(self.table.rowCount() == 0)
 
-    def update_action_version(self, server_version: str, row: int, login: str):
+    def update_action_version(
+            self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
-        # TODO check the login against the response from QGIS Server if the user is not admin
-        _ = login
 
         version_file = os.path.join(lizmap_user_folder(), 'released_versions.json')
         if not os.path.exists(version_file):
@@ -380,11 +409,11 @@ class ServerManager:
         with open(version_file, 'r') as json_file:
             json_content = json.loads(json_file.read())
 
-        split_version = server_version.split('.')
-        if len(split_version) not in [3, 4]:
+        split_version = lizmap_version.split('.')
+        if len(split_version) not in (3, 4):
             # 3.4.0-pre but also 3.4.0-rc.1
             QgsMessageLog.logMessage(
-                "The version '{}' is not correct.".format(server_version), "Lizmap", Qgis.Critical)
+                "The version '{}' is not correct.".format(lizmap_version), "Lizmap", Qgis.Critical)
 
         # Debug
         # split_version = ['3', '4', '2-pre']
@@ -414,6 +443,7 @@ class ServerManager:
                     if bugfix > latest_bugfix:
                         # Congratulations :)
                         messages.append(tr('Higher than a public release') + ' 👍')
+                        level = Qgis.Success
 
                     elif bugfix < latest_bugfix:
                         # The user is not running the latest bugfix release on the maintained branch
@@ -435,7 +465,12 @@ class ServerManager:
                             # Pre-release, maybe the package got some updates
                             messages.append(' ' + tr('and you are not running a production package'))
 
-                self.display_action(row, level, ', '.join(messages))
+                # TODO check the login against the response from QGIS Server if the user is not admin
+                if not login:
+                    messages.append(tr('No login provided'))
+                    level = Qgis.Warning
+
+                self.display_action(row, level, '\n'.join(messages))
                 break
         else:
             # This should not happen
@@ -454,7 +489,7 @@ class ServerManager:
         else:
             color = QColor("orange")
         cell.setData(Qt.ForegroundRole, QVariant(color))
-        self.table.setItem(row, 3, cell)
+        self.table.setItem(row, 4, cell)
 
     def context_menu_requested(self, position: QPoint):
         """ Opens the custom context menu with a right click in the table. """
