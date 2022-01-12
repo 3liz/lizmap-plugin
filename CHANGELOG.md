@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 3.7.0 - 2022-01-12
+
+* Add the possibility to add a login and a password for a given Lizmap server URL
 * Server - Add API to fetch server information on the URL http://your.qgis.server/lizmap/server.json.
   Read the documentation how to setup this API
   https://docs.lizmap.com/3.5/en/install/pre_requirements.html#lizmap-server-plugin
