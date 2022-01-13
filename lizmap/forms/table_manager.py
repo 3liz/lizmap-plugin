@@ -24,7 +24,7 @@ from lizmap.server.tools import to_bool
 LOGGER = logging.getLogger(plugin_name())
 
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -46,6 +46,8 @@ class TableManager:
         self.lwc_versions.append(LwcVersions.Lizmap_3_2)
         self.lwc_versions.append(LwcVersions.Lizmap_3_3)
         self.lwc_versions.append(LwcVersions.Lizmap_3_4)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_5)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_6)
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))
