@@ -11,5 +11,5 @@ flake8-print
 isort
 pylint
 # pycodestyle
-PyQt5
-PyQt5-stubs
+# PyQt5
+# PyQt5-stubs

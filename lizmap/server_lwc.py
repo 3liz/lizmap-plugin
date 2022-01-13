@@ -125,7 +125,11 @@ class ServerManager:
 
     @staticmethod
     def login_for_id(auth_id) -> str:
+        """ Get the login for a given auth ID in the password manager. """
         auth_manager = QgsApplication.authManager()
+        if not auth_manager.masterPasswordIsSet():
+            return ''
+
         conf = QgsAuthMethodConfig()
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
         if conf.id():

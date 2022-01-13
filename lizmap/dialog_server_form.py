@@ -24,21 +24,29 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         self.auth_id = auth_id
         if url:
             self.url.setText(url)
-            auth_manager = QgsApplication.authManager()
-            conf = QgsAuthMethodConfig()
-            auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
-            if conf.id():
-                self.login.setText(conf.config('username'))
-                self.password.setText(conf.config('password'))
-            else:
-                # The credentials have been removed from the password database
-                # Must do something
-                pass
+            self.update_existing_credentials()
 
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.button_box.button(QDialogButtonBox.Help).clicked.connect(self.click_help)
         self.validate()
+
+    def update_existing_credentials(self):
+        """ Set login and password in the UI if needed and possible. """
+        auth_manager = QgsApplication.authManager()
+        if not auth_manager.masterPasswordIsSet():
+            return
+
+        conf = QgsAuthMethodConfig()
+        auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
+        if conf.id():
+            self.login.setText(conf.config('username'))
+            self.password.setText(conf.config('password'))
+            return
+
+        # The credentials have been removed from the password database
+        # Must do something
+        return
 
     @staticmethod
     def clean_data(data) -> str:

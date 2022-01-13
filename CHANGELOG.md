@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Update the user experience when no master password is set in QGIS Desktop
+
 ## 3.7.0 - 2022-01-12
 
 * Add the possibility to add a login and a password for a given Lizmap server URL
