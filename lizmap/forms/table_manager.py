@@ -31,7 +31,9 @@ __email__ = 'info@3liz.org'
 
 class TableManager:
 
-    def __init__(self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button, up_button, down_button):
+    def __init__(
+            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
+            up_button, down_button):
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
@@ -357,9 +359,14 @@ class TableManager:
             row = self.table.rowCount()
             for i in range(row):
                 cell = self.table.item(i, 0)
+                if not cell:
+                    continue
+
                 value = cell.data(Qt.UserRole)
                 if value == layer:
                     self.table.removeRow(i)
+                    LOGGER.info("Removing '{}' from table {}".format(layer, self.definitions.key()))
+                    continue
 
     def truncate(self):
         """Truncate the table."""
@@ -653,6 +660,7 @@ class TableManager:
             data = self._from_json_legacy_dataviz(data)
 
         config = data.get('config')
+        # config: Union[dict, None]
         if config:
             settings = []
             Setting = namedtuple('Setting', ['widget', 'type', 'value'])
@@ -666,8 +674,8 @@ class TableManager:
                     vector_layer = QgsProject.instance().mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
                         LOGGER.warning(
-                            'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not exist.'
-                            ' Skipping that layer.'.format(
+                            'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not '
+                            'exist. Skipping that layer.'.format(
                                 self.definitions.key(), config_key, value))
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
@@ -676,7 +684,7 @@ class TableManager:
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
-            # Now in correct order, because the field depends of the layer
+            # Now in correct order, because the field depends on the layer
             for setting in settings:
                 if setting.type == InputType.Layer:
                     setting.widget.setLayer(setting.value)
@@ -694,8 +702,11 @@ class TableManager:
             if not layer:
                 continue
             layer_data = {}
+
+            # Fixme, better to mave these two lines in a dedicated function to retrieve QgsVectorLayer from a dict
             vector_layer = None
             valid_layer = True
+
             for key, definition in self.definitions.layer_config.items():
                 if definition.get('plural'):
                     continue
@@ -755,15 +766,27 @@ class TableManager:
                         else:
                             layer_data[key] = default_value
                     elif default_value is not None and hasattr(default_value, '__call__'):
-                        # The function will evaluated layer, with the layer context
+                        # The function will evaluate the value, with the layer context
                         layer_data[key] = default_value
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
-                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. Skipping that layer.'.format(
+                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. '
+                            'Skipping that layer.'.format(
                                 self.definitions.key(), key))
                         valid_layer = False
                         continue
+
+            if not valid_layer:
+                # We didn't find any valid layer during the process of reading this JSON dictionary
+                row = self.table.rowCount()
+                LOGGER.info(
+                    "No valid layer found when reading this section {}. Not adding the row number {}".format(
+                        row + 1,
+                        self.definitions.key()
+                    )
+                )
+                continue
 
             # For editing, keep only postgresql, follow up about #364, #361
             if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI")):

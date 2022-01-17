@@ -468,7 +468,7 @@ class ServerManager:
                 # Remember a version can be 3.4.2-pre
                 items_bugfix = split_version[2].split('-')
                 bugfix = int(items_bugfix[0])
-                latest_bugfix = int(version['latest_release_version'].split('.')[2])
+                latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
                 if json_version['latest_release_version'] != full_version:
                     if bugfix > latest_bugfix:
                         # Congratulations :)
@@ -489,14 +489,14 @@ class ServerManager:
                             messages.append(
                                 tr(
                                     'Not latest bugfix release, {version} is available'
-                                ).format(version=version['latest_release_version']))
+                                ).format(version=json_version['latest_release_version']))
 
                         if len(items_bugfix) > 1:
                             # Pre-release, maybe the package got some updates
                             messages.append(' ' + tr('and you are not running a production package'))
 
                 # TODO check the login against the response from QGIS Server if the user is not admin
-                if not login:
+                if not login and int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
                     messages.append(tr('No login provided'))
                     level = Qgis.Warning
 

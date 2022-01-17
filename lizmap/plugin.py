@@ -952,7 +952,7 @@ class Lizmap:
 
     def unload(self):
         """Remove the plugin menu item and icon."""
-        self.iface.databaseMenu().removeAction(self.action)
+        self.iface.webMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
 
         if Qgis.QGIS_VERSION_INT >= 31000 and self.help_action:
