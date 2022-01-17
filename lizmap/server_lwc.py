@@ -16,7 +16,13 @@ from qgis.core import (
     QgsNetworkContentFetcher,
 )
 from qgis.PyQt.QtCore import QPoint, Qt, QUrl, QVariant
-from qgis.PyQt.QtGui import QColor, QCursor, QDesktopServices, QIcon
+from qgis.PyQt.QtGui import (
+    QColor,
+    QCursor,
+    QDesktopServices,
+    QGuiApplication,
+    QIcon,
+)
 from qgis.PyQt.QtNetwork import QNetworkReply
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -28,6 +34,7 @@ from qgis.PyQt.QtWidgets import (
 
 from lizmap.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.tools import lizmap_user_folder
 
 
@@ -343,13 +350,22 @@ class ServerManager:
 
         lizmap_cell.setText(lizmap_version)
 
+        # Markdown
+        markdown = '**Versions :**\n\n'
+        markdown += '* Lizmap Web Client : {}\n'.format(lizmap_version)
+        markdown += '* Lizmap plugin : {}\n'.format(version())
+        markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
+        qgis_cell.setData(Qt.UserRole, markdown)
+
         # QGIS Server version
         qgis_version = None
-        if lizmap_version.startswith('3.5') and not content.get('qgis_server_info'):
-            # TODO fix for LWC 3.6 ticket #392
+        if not content.get('qgis_server_info') and lizmap_version.startswith('3.5'):
             # Running < 3.5.1
             # We bypass the metadata section
             self.update_action_version(lizmap_version, qgis_version, row, login)
+            # Make a better warning to upgrade ASAP
+            markdown += '* QGIS Server and plugins unknown status\n'
+            qgis_cell.setData(Qt.UserRole, markdown)
             return
 
         qgis_server_info = content.get('qgis_server_info')
@@ -358,6 +374,16 @@ class ServerManager:
             qgis_version = qgis_server_info.get('metadata').get('version')
             qgis_cell.setText(qgis_version)
 
+            plugins = qgis_server_info.get('plugins')
+            # plugins = {'atlasprint': {'version': '3.2.2'}}
+            # Temporary, add plugins as markdown in the data
+            markdown += '* QGIS Server : {}\n'.format(qgis_version)
+            for plugin, info in plugins.items():
+                markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
+        else:
+            markdown += '* QGIS Server and plugins unknown status\n'
+
+        qgis_cell.setData(Qt.UserRole, markdown)
         self.update_action_version(lizmap_version, qgis_version, row, login)
 
     def load_table(self):
@@ -427,9 +453,9 @@ class ServerManager:
         messages = []
         level = Qgis.Warning
 
-        for i, version in enumerate(json_content):
-            if version['branch'] == branch:
-                if not version['maintained']:
+        for i, json_version in enumerate(json_content):
+            if json_version['branch'] == branch:
+                if not json_version['maintained']:
                     if i == 0:
                         # Not maintained, but a dev version
                         messages.append(tr('A dev version, warrior !') + ' 👍')
@@ -443,7 +469,7 @@ class ServerManager:
                 items_bugfix = split_version[2].split('-')
                 bugfix = int(items_bugfix[0])
                 latest_bugfix = int(version['latest_release_version'].split('.')[2])
-                if version['latest_release_version'] != full_version:
+                if json_version['latest_release_version'] != full_version:
                     if bugfix > latest_bugfix:
                         # Congratulations :)
                         messages.append(tr('Higher than a public release') + ' 👍')
@@ -513,8 +539,20 @@ class ServerManager:
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
+        server_as_markdown = menu.addAction(tr("Copy versions in the clipboard"))
+        qgis_server_item = self.table.item(item.row(), 3)
+        data = qgis_server_item.data(Qt.UserRole)
+        slot = partial(self.copy_as_markdown, data)
+        server_as_markdown.triggered.connect(slot)
+
         # noinspection PyArgumentList
         menu.exec_(QCursor.pos())
+
+    @staticmethod
+    def copy_as_markdown(data):
+        """ Copy the server information"""
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(data)
 
     @staticmethod
     def released_versions():

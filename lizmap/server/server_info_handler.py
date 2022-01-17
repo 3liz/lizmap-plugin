@@ -64,7 +64,9 @@ class ServerInfoHandler(QgsServerOgcApiHandler):
             'cadastre',
             'lizmap',
             'atlasprint',
-            # 'tilesForServer', waiting a little for this one
+            # waiting a little for these ones
+            # 'tilesForServer',
+            # 'DataPlotly',
         )
 
         for expected in expected_list:

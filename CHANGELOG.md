@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Update the user experience when no master password is set in QGIS Desktop
+* Adds "Copy versions in the clipboard" in the right click on a server
 
 ## 3.7.0 - 2022-01-12
 

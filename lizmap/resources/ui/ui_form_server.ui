@@ -27,7 +27,7 @@
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>The administrator login and password is recommended as more information can be fetched such as QGIS Server version.</string>
+      <string>The administrator login and password is recommended as more information can be fetched such as QGIS Server version starting from Lizmap Web Client 3.5.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
