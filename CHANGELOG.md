@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.7.1 - 2022-01-17
+
 * Update the user experience when no master password is set in QGIS Desktop
 * Add new actions in the right click on a server such as "Copy versions in the clipboard"
 * Fix a Python error with a project having some deleted layers
