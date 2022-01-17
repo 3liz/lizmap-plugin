@@ -3,7 +3,7 @@
 ## Unreleased
 
 * Update the user experience when no master password is set in QGIS Desktop
-* Adds "Copy versions in the clipboard" in the right click on a server
+* Add new actions in the right click on a server such as "Copy versions in the clipboard"
 * Fix a Python error with a project having some deleted layers
 * Fix duplicated entry in the web menu when reloading the plugin
 

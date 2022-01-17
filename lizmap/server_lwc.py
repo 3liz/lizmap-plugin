@@ -29,6 +29,7 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QHeaderView,
     QMenu,
+    QMessageBox,
     QTableWidgetItem,
 )
 
@@ -539,8 +540,14 @@ class ServerManager:
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
-        server_as_markdown = menu.addAction(tr("Copy versions in the clipboard"))
         qgis_server_item = self.table.item(item.row(), 3)
+        data = qgis_server_item.data(Qt.UserRole)
+
+        show_all_versions = menu.addAction(tr("Display all versions") + "…")
+        slot = partial(self.display_all_versions, data)
+        show_all_versions.triggered.connect(slot)
+
+        server_as_markdown = menu.addAction(tr("Copy versions in the clipboard"))
         data = qgis_server_item.data(Qt.UserRole)
         slot = partial(self.copy_as_markdown, data)
         server_as_markdown.triggered.connect(slot)
@@ -550,9 +557,18 @@ class ServerManager:
 
     @staticmethod
     def copy_as_markdown(data):
-        """ Copy the server information"""
+        """ Copy the server information. """
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
+
+    def display_all_versions(self, data):
+        """ Display the markdown in a message box. """
+        data = data.replace('*', '')
+        QMessageBox.information(
+            self.parent,
+            tr('Server versions'),
+            data,
+            QMessageBox.Ok)
 
     @staticmethod
     def released_versions():
