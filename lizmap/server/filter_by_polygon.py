@@ -3,7 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 from functools import lru_cache
-from typing import Tuple
+from typing import Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -309,10 +309,10 @@ c.user_group && (
             feature = self.layer.getFeature(candidate_id)
             if self.spatial_relationship == 'contains':
                 if feature.geometry().contains(polygons):
-                    unique_ids.append(str(feature[self.primary_key]))
+                    unique_ids.append(feature[self.primary_key])
             elif self.spatial_relationship == 'intersects':
                 if feature.geometry().intersects(polygons):
-                    unique_ids.append(str(feature[self.primary_key]))
+                    unique_ids.append(feature[self.primary_key])
             else:
                 raise Exception("Spatial relationship unknown")
 
@@ -348,12 +348,19 @@ c.user_group && (
         return self._format_sql_in(self.primary_key, unique_ids)
 
     @classmethod
-    def _format_sql_in(cls, primary_key: str, values: list) -> str:
+    def _format_sql_in(cls, primary_key: str, values: Union[list, Tuple]) -> str:
         """Format the SQL IN statement."""
         if not values:
             return NO_FEATURES
 
-        return '"{pk}" IN ( {values} )'.format(pk=primary_key, values=' , '.join(values))
+        cleaned = []
+        for value in values:
+            if isinstance(value, str):
+                cleaned.append("'{}'".format(value))
+            else:
+                cleaned.append(str(value))
+
+        return '"{pk}" IN ( {values} )'.format(pk=primary_key, values=' , '.join(cleaned))
 
     @classmethod
     def _format_sql_st_relationship(

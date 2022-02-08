@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Server : fix a SQL query for the "filtering by polygon" when the field is a string
+
 ## 3.7.1 - 2022-01-17
 
 * Update the user experience when no master password is set in QGIS Desktop
