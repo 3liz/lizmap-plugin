@@ -64,6 +64,7 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsMapLayer,
     QgsMapLayerModel,
+    QgsMapLayerProxyModel,
     QgsProject,
     QgsSettings,
     QgsVectorLayer,
@@ -656,6 +657,8 @@ class Lizmap:
         self.dlg.label_group_visibility.setToolTip(tooltip)
         self.dlg.list_group_visiblity.setToolTip(tooltip)
 
+        # Filter by polygon
+        self.dlg.layer_filter_polygon.setFilters(QgsMapLayerProxyModel.PolygonLayer)
         self.dlg.layer_filter_polygon.layerChanged.connect(self.dlg.field_filter_polygon.setLayer)
         self.dlg.field_filter_polygon.setLayer(self.dlg.layer_filter_polygon.currentLayer())
 
