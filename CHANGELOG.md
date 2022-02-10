@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.7.2 - 2022-02-10
+
 * Server : fix a SQL query for the "filtering by polygon" when the field is a string
 
 ## 3.7.1 - 2022-01-17
