@@ -447,7 +447,9 @@ class ServerManager:
                 "The version '{}' is not correct.".format(lizmap_version), "Lizmap", Qgis.Critical)
 
         # Debug
-        # split_version = ['3', '4', '2-pre']
+        # split_version = ('3', '5', '1')
+        # split_version = ('3', '5', '1-pre')
+
         branch = '{}.{}'.format(split_version[0], split_version[1])
         full_version = '{}.{}'.format(branch, split_version[2].split('-')[0])
 
@@ -468,15 +470,16 @@ class ServerManager:
 
                 # Remember a version can be 3.4.2-pre
                 items_bugfix = split_version[2].split('-')
+                is_pre_package = len(items_bugfix) > 1
                 bugfix = int(items_bugfix[0])
                 latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
-                if json_version['latest_release_version'] != full_version:
+                if json_version['latest_release_version'] != full_version or is_pre_package:
                     if bugfix > latest_bugfix:
                         # Congratulations :)
                         messages.append(tr('Higher than a public release') + ' 👍')
                         level = Qgis.Success
 
-                    elif bugfix < latest_bugfix:
+                    elif bugfix < latest_bugfix or is_pre_package:
                         # The user is not running the latest bugfix release on the maintained branch
 
                         if bugfix + 2 < latest_bugfix:
@@ -492,7 +495,7 @@ class ServerManager:
                                     'Not latest bugfix release, {version} is available'
                                 ).format(version=json_version['latest_release_version']))
 
-                        if len(items_bugfix) > 1:
+                        if is_pre_package:
                             # Pre-release, maybe the package got some updates
                             messages.append(' ' + tr('and you are not running a production package'))
 
