@@ -26,6 +26,15 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             self.url.setText(url)
             self.update_existing_credentials()
 
+        if Qgis.QGIS_VERSION_INT < 31000:
+            self.label_login_with_auth.setVisible(True)
+            self.login.setEnabled(False)
+            self.password.setEnabled(False)
+            self.login.setText('')
+            self.password.setText('')
+        else:
+            self.label_login_with_auth.setVisible(False)
+
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.button_box.button(QDialogButtonBox.Help).clicked.connect(self.click_help)

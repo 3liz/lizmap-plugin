@@ -35,6 +35,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_login_with_auth">
+     <property name="text">
+      <string>Login/password is only available for QGIS ≥ 3.10.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do not use any URL redirection. For instance, &lt;a href=&quot;https://demo.lizmap.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/&lt;/span&gt;&lt;/a&gt; is a redirection to &lt;a href=&quot;https://demo.lizmap.com/lizmap/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/lizmap/&lt;/span&gt;&lt;/a&gt;. Only the second one will work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

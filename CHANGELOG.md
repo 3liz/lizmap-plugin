@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-* Improve the server version comparaison and fix some errors
+* Desktop - Improve the server version comparaison and fix some errors
+* Desktop - Fix a Python error if the QGIS version is not correct when registering a Lizmap server
 
 ## 3.7.2 - 2022-02-10
 
