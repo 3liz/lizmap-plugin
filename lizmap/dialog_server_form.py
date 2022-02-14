@@ -110,6 +110,14 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             self.error.setVisible(True)
             return False
 
+        if ".php" in self.current_url():
+            # Example : http://localhost:8080/index.php/view
+            self.error.setText(
+                "The URL mustn't contain the \".php\".\n"
+                "For instance, \"http://mydomain.com/index.php/view\" must be \"http://mydomain.com/\".")
+            self.error.setVisible(True)
+            return False
+
         login = self.login.text()
         password = self.password.text()
 
