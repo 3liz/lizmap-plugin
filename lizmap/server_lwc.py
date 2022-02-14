@@ -459,6 +459,8 @@ class ServerManager:
         # Debug
         # split_version = ('3', '5', '1')
         # split_version = ('3', '5', '1-pre')
+        # when it's not even developed yet (3.4 and 3.5 released)
+        # split_version = ('3', '6', '0-pre')
 
         branch = '{}.{}'.format(split_version[0], split_version[1])
         full_version = '{}.{}'.format(branch, split_version[2].split('-')[0])
@@ -466,6 +468,7 @@ class ServerManager:
         messages = []
         level = Qgis.Warning
 
+        is_dev_version = False
         for i, json_version in enumerate(json_content):
             if json_version['branch'] == branch:
                 if not json_version['maintained']:
@@ -473,6 +476,7 @@ class ServerManager:
                         # Not maintained, but a dev version
                         messages.append(tr('A dev version, warrior !') + ' 👍')
                         level = Qgis.Success
+                        is_dev_version = True
                     else:
                         # Upgrade because the branch is not maintained anymore
                         messages.append(tr('Version {version} not maintained anymore').format(version=branch))
@@ -484,6 +488,11 @@ class ServerManager:
                 bugfix = int(items_bugfix[0])
                 latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
                 if json_version['latest_release_version'] != full_version or is_pre_package:
+
+                    if is_dev_version:
+                        self.display_action(row, level, '\n'.join(messages))
+                        break
+
                     if bugfix > latest_bugfix:
                         # Congratulations :)
                         messages.append(tr('Higher than a public release') + ' 👍')
