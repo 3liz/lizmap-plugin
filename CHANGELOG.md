@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Desktop - Improve the parsing of LWC server versions
+
 ## 3.7.3 - 2022-02-14
 
 * Desktop - Improve the server version comparaison and fix some errors

@@ -6,7 +6,8 @@ import json
 import os
 
 from functools import partial
-from typing import Union
+from pathlib import Path
+from typing import List, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -442,12 +443,22 @@ class ServerManager:
     def update_action_version(
             self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
-
-        version_file = os.path.join(lizmap_user_folder(), 'released_versions.json')
-        if not os.path.exists(version_file):
+        version_file = Path(lizmap_user_folder()).joinpath('released_versions.json')
+        if not version_file.exists():
             return
+        level, messages = self._messages_for_version(lizmap_version, qgis_version, login, version_file)
+        self.display_action(row, level, '\n'.join(messages))
 
-        with open(version_file, 'r') as json_file:
+    @staticmethod
+    def _messages_for_version(
+            lizmap_version: str, qgis_version: Union[str, None], login: str, json_path: Path
+    ) -> Tuple[Qgis.MessageLevel, List[str]]:
+        """Returns the list of messages and the color to use."""
+
+        # fixme, qgis_version is not used for now
+        _ = qgis_version
+
+        with open(json_path, 'r') as json_file:
             json_content = json.loads(json_file.read())
 
         split_version = lizmap_version.split('.')
@@ -456,17 +467,19 @@ class ServerManager:
             QgsMessageLog.logMessage(
                 "The version '{}' is not correct.".format(lizmap_version), "Lizmap", Qgis.Critical)
 
-        # Debug
-        # split_version = ('3', '5', '1')
-        # split_version = ('3', '5', '1-pre')
-        # when it's not even developed yet (3.4 and 3.5 released)
-        # split_version = ('3', '6', '0-pre')
-
         branch = '{}.{}'.format(split_version[0], split_version[1])
         full_version = '{}.{}'.format(branch, split_version[2].split('-')[0])
 
         messages = []
         level = Qgis.Warning
+
+        # Special case for 3.5.0, 3.5.1-pre, 3.5.1-pre.5110
+        # Upgrade ASAP, keep it for a few months
+        if full_version == '3.5.0' or (full_version == '3.5.1' and len(split_version[2].split('-')) == 2):
+            messages.append(
+                '⚠ ' + tr(
+                    "Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version."))
+            return Qgis.Critical, messages
 
         is_dev_version = False
         for i, json_version in enumerate(json_content):
@@ -490,8 +503,7 @@ class ServerManager:
                 if json_version['latest_release_version'] != full_version or is_pre_package:
 
                     if is_dev_version:
-                        self.display_action(row, level, '\n'.join(messages))
-                        break
+                        return level, messages
 
                     if bugfix > latest_bugfix:
                         # Congratulations :)
@@ -505,10 +517,10 @@ class ServerManager:
                             # Let's make it clear when they are 2 release late
                             level = Qgis.Critical
 
-                        if bugfix == 0:
+                        if bugfix == 0 and json_version['maintained']:
                             # I consider a .0 version fragile
                             messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
-                        else:
+                        elif bugfix != 0 and json_version['maintained']:
                             messages.append(
                                 tr(
                                     'Not latest bugfix release, {version} is available'
@@ -523,12 +535,14 @@ class ServerManager:
                     messages.append(tr('No login provided'))
                     level = Qgis.Warning
 
-                self.display_action(row, level, '\n'.join(messages))
-                break
-        else:
-            # This should not happen
-            self.display_action(
-                row, Qgis.Critical, f"Version {branch} has not been detected has a known version.")
+                if len(messages) == 0:
+                    level = Qgis.Success
+                    messages.append("👍")
+
+                return level, messages
+
+        # This should not happen
+        return Qgis.Critical, [f"Version {branch} has not been detected as a known version."]
 
     def display_action(self, row, level, message):
         """ Display the action if needed to the user with a color. """
@@ -539,8 +553,11 @@ class ServerManager:
             color = QColor("green")
         elif level == Qgis.Critical:
             color = QColor("red")
-        else:
+        elif level == Qgis.Warning:
             color = QColor("orange")
+        else:
+            color = QColor("black")
+
         cell.setData(Qt.ForegroundRole, QVariant(color))
         self.table.setItem(row, 4, cell)
 
