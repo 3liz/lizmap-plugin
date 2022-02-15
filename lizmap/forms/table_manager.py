@@ -386,7 +386,7 @@ class TableManager:
 
         data = dict()
 
-        if self.definitions.key() in ['filter_by_polygon']:
+        if self.definitions.key() in ('filter_by_polygon',):
             data['config'] = dict()
             for config_key, general_config in self.definitions.general_config.items():
                 widget = general_config.get('widget')
@@ -396,7 +396,9 @@ class TableManager:
                 input_type = general_config['type']
 
                 if input_type == InputType.Layer:
-                    data['config'][config_key] = widget.currentLayer().id()
+                    layer = widget.currentLayer()
+                    # The combobox might be empty, the layer me be deleted in the meantime
+                    data['config'][config_key] = layer.id() if layer else None
                 elif input_type == InputType.Field:
                     data['config'][config_key] = widget.currentField()
                 else:

@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Desktop - Improve the parsing of LWC server versions
+* Desktop - Fix saving the configuration file if a layer is not available with the filter by polygon
 
 ## 3.7.3 - 2022-02-14
 
