@@ -2,8 +2,6 @@ __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-import os
-
 from qgis.core import Qgis
 from qgis.server import QgsServerInterface, QgsServerOgcApi
 
@@ -13,7 +11,7 @@ from lizmap.server.lizmap_accesscontrol import LizmapAccessControlFilter
 from lizmap.server.lizmap_filter import LizmapFilter
 from lizmap.server.lizmap_service import LizmapService
 from lizmap.server.logger import Logger
-from lizmap.server.tools import version, check_environment_variable
+from lizmap.server.tools import check_environment_variable, version
 
 if Qgis.QGIS_VERSION_INT >= 31000:
     from lizmap.server.server_info_handler import ServerInfoHandler
