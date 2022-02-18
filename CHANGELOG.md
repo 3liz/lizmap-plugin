@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Server - Always register the API if possible, raise the error only when requested instead
+
 ## 3.7.4 - 2022-02-15
 
 * Desktop - Improve the parsing of LWC server versions

@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import configparser
+import os
 
 from pathlib import Path
 from typing import Union
@@ -45,3 +46,18 @@ def version() -> str:
         return 'NULL'
     else:
         return config["general"]["version"]
+
+
+def check_environment_variable() -> bool:
+    """ Check the server configuration. """
+    if not to_bool(os.environ.get('QGIS_SERVER_LIZMAP_REVEAL_SETTINGS', ''), default_value=False):
+        QgsMessageLog.logMessage(
+            'Please read the documentation how to enable the Lizmap API on QGIS server side '
+            'https://docs.lizmap.com/current/en/install/pre_requirements.html#lizmap-server-plugin '
+            'An environment variable must be enabled to have Lizmap Web Client ≥ 3.5.',
+            "Lizmap",
+            Qgis.Critical
+        )
+        return False
+
+    return True

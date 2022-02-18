@@ -1,4 +1,4 @@
-__copyright__ = 'Copyright 2021, 3Liz'
+__copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -13,7 +13,7 @@ from lizmap.server.lizmap_accesscontrol import LizmapAccessControlFilter
 from lizmap.server.lizmap_filter import LizmapFilter
 from lizmap.server.lizmap_service import LizmapService
 from lizmap.server.logger import Logger
-from lizmap.server.tools import to_bool, version
+from lizmap.server.tools import version, check_environment_variable
 
 if Qgis.QGIS_VERSION_INT >= 31000:
     from lizmap.server.server_info_handler import ServerInfoHandler
@@ -37,23 +37,17 @@ class LizmapServer:
                 'Not possible to register the API needed for Lizmap Web Client ≥ 3.5. '
                 'QGIS Server/Desktop must be 3.10 minimum.')
         else:
-            variable = 'QGIS_SERVER_LIZMAP_REVEAL_SETTINGS'
-            if not to_bool(os.environ.get(variable, ''), default_value=False):
-                self.logger.warning(
-                    'Please read the documentation how to enable the Lizmap API on QGIS server side '
-                    'https://docs.lizmap.com/3.5/en/install/pre_requirements.html#lizmap-server-plugin '
-                    'An environment variable must be enabled to have Lizmap Web Client ≥ 3.5.'
-                )
-            else:
-                lizmap_api = QgsServerOgcApi(
-                    self.server_iface,
-                    '/lizmap',
-                    'Lizmap',
-                    'The Lizmap API endpoint',
-                    self.version)
-                service_registry.registerApi(lizmap_api)
-                lizmap_api.registerHandler(ServerInfoHandler())
-                self.logger.info('API "/lizmap" loaded with the server info handler')
+            lizmap_api = QgsServerOgcApi(
+                self.server_iface,
+                '/lizmap',
+                'Lizmap',
+                'The Lizmap API endpoint',
+                self.version)
+            service_registry.registerApi(lizmap_api)
+            lizmap_api.registerHandler(ServerInfoHandler())
+            self.logger.info('API "/lizmap" loaded with the server info handler')
+
+            check_environment_variable()
 
         # Register service
         try:

@@ -1,12 +1,18 @@
-__copyright__ = 'Copyright 2021, 3Liz'
+__copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+
+import os
 
 from typing import Union
 
 from qgis.core import Qgis
 from qgis.PyQt.QtCore import QRegularExpression
 from qgis.server import QgsServerOgcApi, QgsServerOgcApiHandler
+
+from lizmap.server.exception import ServiceError
+from lizmap.server.logger import Logger
+from lizmap.server.tools import check_environment_variable
 
 try:
     # Py-QGIS-Server
@@ -54,6 +60,9 @@ class ServerInfoHandler(QgsServerOgcApiHandler):
         return QgsServerOgcApi.data
 
     def handleRequest(self, context):
+        if not check_environment_variable():
+            raise ServiceError("Bad request error", "Invalid request", 404)
+
         plugins = dict()
         for plugin in plugin_list():
             plugins[plugin] = dict()
