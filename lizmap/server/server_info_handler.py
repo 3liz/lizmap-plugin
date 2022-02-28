@@ -87,11 +87,17 @@ class ServerInfoHandler(QgsServerOgcApiHandler):
             if context.serverInterface().serviceRegistry().getService(service):
                 services_available.append(service)
 
+        if Qgis.QGIS_VERSION_INT >= 31200 and Qgis.devVersion() != 'exported':
+            commit_id = Qgis.devVersion()
+        else:
+            commit_id = ''
+
         data = {
             'qgis_server': {
                 'metadata': {
                     'version': qgis_version_split[0],  # 3.16.0
                     'name': qgis_version_split[1],  # Hannover
+                    'commit_id': commit_id,  # 288d2cacb5 if it's a dev version
                     'version_int': Qgis.QGIS_VERSION_INT,  # 31600
                     'py_qgis_server': IS_PY_QGIS_SERVER,  # bool
                 },

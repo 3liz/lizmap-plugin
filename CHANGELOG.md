@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Server - Always register the API if possible, raise the error only when requested instead
+* Server - Add the commit ID of QGIS if available in the JSON metadata
 
 ## 3.7.4 - 2022-02-15
 
