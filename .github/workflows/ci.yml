@@ -8,11 +8,14 @@ on:
       - master
     paths:
       - 'lizmap/**'
+      - '.docker/**'
+      - 'test/**'
   pull_request:
     branches:
       - master
     paths:
       - 'lizmap/**'
+      - 'test/**'
 
 jobs:
 
@@ -59,6 +62,14 @@ jobs:
 
   test-server:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        qgis_version: [
+          "3.16",
+          "3.22",
+          "nightly-release",
+        ]
+
     steps:
 
       - name: Check out repository
@@ -85,7 +96,7 @@ jobs:
           -e CI="True"
           -v ${GITHUB_WORKSPACE}:/src
           -v ${GITHUB_WORKSPACE}/.local:/.local
-          3liz/qgis-platform:3.10
+          3liz/qgis-platform:${{ matrix.qgis_version }}
           ./run-tests.sh
 
   release:
