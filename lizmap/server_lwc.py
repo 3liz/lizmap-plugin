@@ -372,13 +372,16 @@ class ServerManager:
         # QGIS Server version
         qgis_version = None
         if not content.get('qgis_server_info') and lizmap_version.startswith('3.5'):
-            # Running < 3.5.1
+            # Running > 3.5.x-pre but < 3.5.1
             # We bypass the metadata section
             self.update_action_version(lizmap_version, qgis_version, row, login)
             # Make a better warning to upgrade ASAP
             markdown += '* QGIS Server and plugins unknown status\n'
             qgis_cell.setData(Qt.UserRole, markdown)
             return
+
+        lizmap_version_split = lizmap_version.split('.')
+        branch = (int(lizmap_version_split[0]), int(lizmap_version_split[1]))
 
         qgis_server_info = content.get('qgis_server_info')
         if qgis_server_info and "error" not in qgis_server_info.keys():
@@ -392,7 +395,17 @@ class ServerManager:
             markdown += '* QGIS Server : {}\n'.format(qgis_version)
             for plugin, info in plugins.items():
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
+        elif branch < (3, 5):
+            # Running LWC < 3.5.X
+            markdown += '* QGIS Server and plugins unknown status because running Lizmap Web Client < 3.5\n'
+            font = qgis_cell.font()
+            font.setItalic(True)
+            qgis_cell.setFont(font)
+            qgis_cell.setText(tr("Not possible"))
+            qgis_cell.setToolTip(
+                tr("Not possible to determine QGIS Server version because you need at least Lizmap Web Client 3.5"))
         else:
+            # Unknown
             markdown += '* QGIS Server and plugins unknown status\n'
 
         qgis_cell.setData(Qt.UserRole, markdown)

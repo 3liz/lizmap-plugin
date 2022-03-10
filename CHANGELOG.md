@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Desktop - Better display of the QGIS Server version when it's not available
 * Server - Always register the API if possible, raise the error only when requested instead
 * Server - Add the commit ID of QGIS if available in the JSON metadata
 
