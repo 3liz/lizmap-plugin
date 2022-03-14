@@ -5,6 +5,7 @@ __email__ = 'info@3liz.org'
 import json
 import os
 
+from enum import Enum
 from functools import partial
 from pathlib import Path
 from typing import List, Tuple, Union
@@ -38,6 +39,23 @@ from lizmap.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.tools import lizmap_user_folder
+
+
+class TableCell(Enum):
+    """ Cells in the table. """
+    Url = 0
+    Login = 1
+    LizmapVersion = 2
+    QgisVersion = 3
+    Action = 4
+
+
+class Color(Enum):
+    """ Color used in the table. """
+    Success = QColor("green")
+    Critical = QColor("red")
+    Advice = QColor("orange")  # Warning is a Python builtin
+    Normal = QColor("black")
 
 
 class ServerManager:
@@ -101,25 +119,25 @@ class ServerManager:
 
         item = QTableWidgetItem(tr('URL'))
         item.setToolTip(tr('URL of the server.'))
-        self.table.setHorizontalHeaderItem(0, item)
+        self.table.setHorizontalHeaderItem(TableCell.Url.value, item)
 
         item = QTableWidgetItem(tr('Login'))
         item.setToolTip(tr('Login of the administrator.'))
-        self.table.setHorizontalHeaderItem(1, item)
+        self.table.setHorizontalHeaderItem(TableCell.Login.value, item)
 
         tooltip = tr('Version detected on the server')
 
         item = QTableWidgetItem(tr('Lizmap Version'))
         item.setToolTip(tooltip)
-        self.table.setHorizontalHeaderItem(2, item)
+        self.table.setHorizontalHeaderItem(TableCell.LizmapVersion.value, item)
 
         item = QTableWidgetItem(tr('QGIS Version'))
         item.setToolTip(tooltip)
-        self.table.setHorizontalHeaderItem(3, item)
+        self.table.setHorizontalHeaderItem(TableCell.QgisVersion.value, item)
 
         item = QTableWidgetItem(tr('Action'))
         item.setToolTip(tr('If there is any action to do on the server'))
-        self.table.setHorizontalHeaderItem(4, item)
+        self.table.setHorizontalHeaderItem(TableCell.Action.value, item)
 
         # Connect
         self.add_button.clicked.connect(self.add_row)
@@ -162,8 +180,8 @@ class ServerManager:
 
     def _fetch_cells(self, row: int) -> tuple:
         """ Fetch the URL and the authid in the cells. """
-        url_item = self.table.item(row, 0)
-        login_item = self.table.item(row, 1)
+        url_item = self.table.item(row, TableCell.Url.value)
+        login_item = self.table.item(row, TableCell.Login.value)
         url = url_item.data(Qt.UserRole)
         auth_id = login_item.data(Qt.UserRole)
         return url, auth_id
@@ -209,31 +227,31 @@ class ServerManager:
         cell = QTableWidgetItem()
         cell.setText(server_url)
         cell.setData(Qt.UserRole, server_url)
-        self.table.setItem(row, 0, cell)
+        self.table.setItem(row, TableCell.Url.value, cell)
 
         # Login
         cell = QTableWidgetItem()
         cell.setText(self.login_for_id(auth_id))
         cell.setData(Qt.UserRole, auth_id)
-        self.table.setItem(row, 1, cell)
+        self.table.setItem(row, TableCell.Login.value, cell)
 
         # LWC Version
         cell = QTableWidgetItem()
         cell.setText(tr(''))
         cell.setData(Qt.UserRole, None)
-        self.table.setItem(row, 2, cell)
+        self.table.setItem(row, TableCell.LizmapVersion.value, cell)
 
         # QGIS Version
         cell = QTableWidgetItem()
         cell.setText('')
         cell.setData(Qt.UserRole, '')
-        self.table.setItem(row, 3, cell)
+        self.table.setItem(row, TableCell.QgisVersion.value, cell)
 
         # Action
         cell = QTableWidgetItem()
         cell.setText('')
         cell.setData(Qt.UserRole, '')
-        self.table.setItem(row, 4, cell)
+        self.table.setItem(row, TableCell.Action.value, cell)
 
         self.table.clearSelection()
         self.fetch(server_url, auth_id, row)
@@ -301,8 +319,8 @@ class ServerManager:
 
         lizmap_cell = QTableWidgetItem()
         qgis_cell = QTableWidgetItem()
-        self.table.setItem(row, 2, lizmap_cell)
-        self.table.setItem(row, 3, qgis_cell)
+        self.table.setItem(row, TableCell.LizmapVersion.value, lizmap_cell)
+        self.table.setItem(row, TableCell.QgisVersion.value, qgis_cell)
 
         reply = self.fetchers[row].reply()
 
@@ -563,16 +581,16 @@ class ServerManager:
         cell.setText(message)
         cell.setToolTip(message)
         if level == Qgis.Success:
-            color = QColor("green")
+            color = Color.Success.value
         elif level == Qgis.Critical:
-            color = QColor("red")
+            color = Color.Critical.value
         elif level == Qgis.Warning:
-            color = QColor("orange")
+            color = Color.Advice.value
         else:
-            color = QColor("black")
+            color = Color.Normal.value
 
         cell.setData(Qt.ForegroundRole, QVariant(color))
-        self.table.setItem(row, 4, cell)
+        self.table.setItem(row, TableCell.Action.value, cell)
 
     def context_menu_requested(self, position: QPoint):
         """ Opens the custom context menu with a right click in the table. """
@@ -587,33 +605,51 @@ class ServerManager:
         edit_url.triggered.connect(self.edit_row)
 
         open_url = menu.addAction(tr("Open URL") + "…")
-        left_item = self.table.item(item.row(), 0)
+        left_item = self.table.item(item.row(), TableCell.Url.value)
         url = left_item.data(Qt.UserRole)
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
-        qgis_server_item = self.table.item(item.row(), 3)
+        action_item = self.table.item(item.row(), TableCell.Action.value)
+        action_data = action_item.data(Qt.DisplayRole)
+        action_required = action_item.data(Qt.ForegroundRole) in (Color.Advice.value, Color.Critical.value)
+
+        qgis_server_item = self.table.item(item.row(), TableCell.QgisVersion.value)
         data = qgis_server_item.data(Qt.UserRole)
 
         show_all_versions = menu.addAction(tr("Display all versions") + "…")
-        slot = partial(self.display_all_versions, data)
+        slot = partial(self.display_all_versions, data, action_data, action_required)
         show_all_versions.triggered.connect(slot)
 
         server_as_markdown = menu.addAction(tr("Copy versions in the clipboard"))
         data = qgis_server_item.data(Qt.UserRole)
-        slot = partial(self.copy_as_markdown, data)
+        slot = partial(self.copy_as_markdown, data, action_data, action_required)
         server_as_markdown.triggered.connect(slot)
 
         # noinspection PyArgumentList
         menu.exec_(QCursor.pos())
 
-    @staticmethod
-    def copy_as_markdown(data):
+    def copy_as_markdown(self, data: str, action_data: str, action_required: bool):
         """ Copy the server information. """
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
+        if not action_required:
+            return
 
-    def display_all_versions(self, data):
+        new_data = tr("Your versions have been copied in your clipboard.")
+        new_data += "\n\n"
+        new_data += tr("However, you have some actions to do on your server to do before opening a ticket.")
+        new_data += "\n\n"
+        new_data += tr(
+            "For instance, if you are running an old version of Lizmap Web Client, your bug might be "
+            "already fixed in a newer version.")
+        new_data += "\n\n"
+        new_data += tr("You should try to fix these issues : ")
+        new_data += "\n\n"
+        new_data += action_data
+        self.display_all_versions(new_data)
+
+    def display_all_versions(self, data: str):
         """ Display the markdown in a message box. """
         data = data.replace('*', '')
         QMessageBox.information(
