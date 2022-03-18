@@ -27,13 +27,18 @@ except ImportError:
 from lizmap.server.tools import to_bool
 
 
-def plugin_version(name: str) -> str:
+def plugin_metadata_key(name: str, key: str, ) -> str:
     """ Return the version for a given plugin. """
+    unknown = 'unknown'
     if IS_PY_QGIS_SERVER:
         metadata = plugin_metadata(name)
-        return metadata['general'].get('version', 'unknown')
+        return metadata['general'].get(key, unknown)
     else:
-        return pluginMetadata(name, 'version')
+        value = pluginMetadata(name, key)
+        if value in ("__error__", ""):
+            return unknown
+        else:
+            return value
 
 
 class ServerInfoHandler(QgsServerOgcApiHandler):
@@ -60,10 +65,12 @@ class ServerInfoHandler(QgsServerOgcApiHandler):
         if not check_environment_variable():
             raise ServiceError("Bad request error", "Invalid request", 404)
 
+        keys = ('version', 'commitNumber', 'commitSha1', 'dateTime')
         plugins = dict()
         for plugin in plugin_list():
             plugins[plugin] = dict()
-            plugins[plugin]['version'] = plugin_version(plugin)
+            for key in keys:
+                plugins[plugin][key] = plugin_metadata_key(plugin, key)
 
         expected_list = (
             'wfsOutputExtension',
