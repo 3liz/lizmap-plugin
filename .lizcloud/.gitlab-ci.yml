@@ -19,7 +19,7 @@ build:infrav3:
       - tags
       - master
   tags:
-    - infrav3-plain
+    - infrav3-dind
 
 deploy:infrav3:
   stage: deploy 🚀
@@ -35,7 +35,7 @@ deploy:infrav3:
       - tags
       - master
   tags:
-    - infrav3-plain
+    - infrav3-dind
 
 release:infrav3:
   stage: release
@@ -50,7 +50,7 @@ release:infrav3:
   only:
     - tags
   tags:
-    - infrav3-plain
+    - infrav3-dind
 
 build:infrav2:
   stage: build

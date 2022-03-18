@@ -58,11 +58,13 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsEditFormConfig,
+    QgsExpression,
     QgsLayerTree,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsMapLayer,
     QgsMapLayerModel,
+    QgsMapLayerProxyModel,
     QgsProject,
     QgsSettings,
     QgsVectorLayer,
@@ -153,6 +155,8 @@ from lizmap.version_checker import VersionChecker
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
+# To try a local file
+# VERSION_URL = 'file:///home/etienne/.local/share/QGIS/QGIS3/profiles/default/Lizmap/released_versions.json'
 
 
 class Lizmap:
@@ -213,6 +217,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_5] = [
             self.dlg.liPopupSource.model().item(
+                # This is fragile GH #379
                 self.dlg.liPopupSource.findText('form')
             ),
             self.dlg.label_filter_polygon,
@@ -468,10 +473,12 @@ class Lizmap:
         # Popup configuration
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
+
+        # This is fragile GH ticket #379, strings are translated
         index = widget_source_popup.findText('form')
         form_popup = widget_source_popup.model().item(index)
         if form_popup is None:
-            # Random bug I need to find why
+            # Found issue with translated strings, GH ticket #379
             # The "form" is not found
             # But it's not critical so let's skip
             form_type = [
@@ -650,6 +657,8 @@ class Lizmap:
         self.dlg.label_group_visibility.setToolTip(tooltip)
         self.dlg.list_group_visiblity.setToolTip(tooltip)
 
+        # Filter by polygon
+        self.dlg.layer_filter_polygon.setFilters(QgsMapLayerProxyModel.PolygonLayer)
         self.dlg.layer_filter_polygon.layerChanged.connect(self.dlg.field_filter_polygon.setLayer)
         self.dlg.field_filter_polygon.setLayer(self.dlg.layer_filter_polygon.currentLayer())
 
@@ -698,8 +707,10 @@ class Lizmap:
             if found:
                 for item in items:
                     if hasattr(item, 'setStyleSheet'):
+                        # QLabel
                         item.setStyleSheet(NEW_FEATURE_CSS)
                     elif isinstance(item, QStandardItem):
+                        # QComboBox
                         brush = QBrush()
                         brush.setStyle(Qt.SolidPattern)
                         brush.setColor(QColor(NEW_FEATURE_COLOR))
@@ -707,8 +718,10 @@ class Lizmap:
             else:
                 for item in items:
                     if hasattr(item, 'setStyleSheet'):
+                        # QLabel
                         item.setStyleSheet('')
                     elif isinstance(item, QStandardItem):
+                        # QComboBox
                         item.setBackground(QBrush())
 
             if lwc_version == current_version:
@@ -903,6 +916,28 @@ class Lizmap:
         # IGN
         self.global_options['ignKey']['widget'].textChanged.connect(self.check_ign_french_free_key)
 
+        server_side = tr(
+            "This value will be replaced on the server side when evaluating the expression thanks to "
+            "the QGIS server Lizmap plugin.")
+        # Register variable helps
+        if Qgis.QGIS_VERSION_INT >= 32200:
+            QgsExpression.addVariableHelpText(
+                "lizmap_user",
+                "{}<br/>{}<br/>{}".format(
+                    tr("The current Lizmap login as a string."),
+                    tr("It might be an empty string if the user is not connected."),
+                    server_side,
+                )
+            )
+            QgsExpression.addVariableHelpText(
+                "lizmap_user_groups",
+                "{}<br/>{}<br/>{}".format(
+                    tr("The current groups of the logged user as an array."),
+                    tr("It might be an empty array if the user is not connected."),
+                    server_side,
+                )
+            )
+
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
@@ -920,7 +955,7 @@ class Lizmap:
 
     def unload(self):
         """Remove the plugin menu item and icon."""
-        self.iface.databaseMenu().removeAction(self.action)
+        self.iface.webMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
 
         if Qgis.QGIS_VERSION_INT >= 31000 and self.help_action:
@@ -930,17 +965,11 @@ class Lizmap:
     def check_ign_french_free_key(self):
         """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
         key = self.global_options['ignKey']['widget'].text()
-        if key in ['choisirgeoportail', 'pratique']:
+        if not key:
             self.global_options['ignTerrain']['widget'].setEnabled(False)
             self.global_options['ignTerrain']['widget'].setChecked(False)
         else:
             self.global_options['ignTerrain']['widget'].setEnabled(True)
-
-        if key in ['pratique']:
-            self.global_options['ignCadastral']['widget'].setEnabled(False)
-            self.global_options['ignCadastral']['widget'].setChecked(False)
-        else:
-            self.global_options['ignCadastral']['widget'].setEnabled(True)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
@@ -951,7 +980,10 @@ class Lizmap:
         layer = self._current_selected_layer()
         is_vector = isinstance(layer, QgsVectorLayer)
         has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
+
+        # This is fragile GH #379
         index = self.layer_options_list['popupSource']['widget'].findText('qgis')
+
         qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
         qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
 
@@ -1672,8 +1704,16 @@ class Lizmap:
                         wms_enabled = self.get_item_wms_capability(selectedItem)
                         if wms_enabled is not None:
                             self.dlg.cbExternalWms.setEnabled(wms_enabled)
-                            if not wms_enabled:
+                            if wms_enabled:
+                                self.dlg.cbExternalWms.toggled.connect(self.external_wms_toggled)
+                                self.external_wms_toggled()
+                            else:
                                 self.dlg.cbExternalWms.setChecked(False)
+                                try:
+                                    self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
+                                except TypeError:
+                                    # The object was not connected
+                                    pass
 
             layer = self._current_selected_layer()  # It can be a layer or a group
 
@@ -1746,6 +1786,10 @@ class Lizmap:
     #         self.layer_options_list['toggled']['widget'].setChecked(False)
     #         tooltip = tr("For a group, it depends of layers inside the group")
     #     self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+
+    def external_wms_toggled(self):
+        """ Disable the format combobox is the checkbox third party WMS is checked. """
+        self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
 
     def get_item_wms_capability(self, selectedItem) -> Optional[bool]:
         """
@@ -2202,10 +2246,24 @@ class Lizmap:
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
-        # Get the project data from api
-        if not self.project.fileName() or not self.project.fileName().lower().endswith('qgs'):
-            message = tr(
-                'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
+        # Add default variables in the project
+        variables = self.project.customVariables()
+        if not variables.get('lizmap_user'):
+            variables['lizmap_user'] = ''
+
+        if not variables.get('lizmap_user_groups'):
+            variables['lizmap_user_groups'] = list()
+
+        self.project.setCustomVariables(variables)
+
+        message = tr(
+            'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
+        if not self.project.fileName():
+            return False, message
+
+        if not self.project.fileName().lower().endswith('qgs'):
+            message += "\n" + tr(
+                "Your extension is QGZ. Please save again the project using the other extension.")
             return False, message
 
         # Check if Qgis/capitaliseLayerName is set
@@ -2259,7 +2317,7 @@ class Lizmap:
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
 
-        if self.dlg.table_server.rowCount() < 100:
+        if self.dlg.table_server.rowCount() < 1:
             # For writing the CFG file, we don't care about the user server list.
             # But by making this condition, we somehow force people to at least have one server in the list
             # so they can be more aware about versioning later

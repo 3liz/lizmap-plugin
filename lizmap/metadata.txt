@@ -19,3 +19,7 @@ icon=resources/icons/icon.png
 experimental=False
 deprecated=False
 server=True
+
+commitNumber=
+commitSha1=
+dateTime=

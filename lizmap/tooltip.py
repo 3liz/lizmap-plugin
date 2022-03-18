@@ -3,6 +3,8 @@
 import logging
 import re
 
+from typing import Union
+
 from qgis.core import (
     Qgis,
     QgsAttributeEditorContainer,
@@ -10,14 +12,15 @@ from qgis.core import (
     QgsAttributeEditorField,
     QgsHstoreUtils,
     QgsProject,
+    QgsRelationManager,
     QgsVectorLayer,
 )
 from qgis.gui import QgsExternalResourceWidget
 
 LOGGER = logging.getLogger('Lizmap')
+SPACES = '  '
 
-
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -25,7 +28,7 @@ __email__ = 'info@3liz.org'
 class Tooltip:
 
     @staticmethod
-    def create_popup(html):
+    def create_popup(html: str) -> str:
         template = '''<div class="container popup_lizmap_dd" style="width:100%;">
     {}
 </div>\n'''
@@ -33,11 +36,16 @@ class Tooltip:
 
     @staticmethod
     def create_popup_node_item_from_form(
-            layer: QgsVectorLayer, node: QgsAttributeEditorElement, level, headers, html, relation_manager):
+            layer: QgsVectorLayer,
+            node: QgsAttributeEditorElement,
+            level: int,
+            headers: list,
+            html: str,
+            relation_manager: QgsRelationManager,
+            ) -> str:
         regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
         a = ''
         h = ''
-        SPACES = '  '
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
                 # The form might have been imported from QML with some not existing fields
@@ -179,15 +187,15 @@ class Tooltip:
         return html
 
     @staticmethod
-    def _generate_field_view(name):
+    def _generate_field_view(name: str):
         return '"{}"'.format(name)
 
     @staticmethod
-    def _generate_eval_visibility(expression):
+    def _generate_eval_visibility(expression: str):
         return "[% if ({}, '', 'hidden') %]".format(expression)
 
     @staticmethod
-    def _generate_relation_reference(name, parent_pk, layer_id, display_expression):
+    def _generate_relation_reference(name: str, parent_pk: str, layer_id: str, display_expression: str):
         expression = '''
                     "{}" = attribute(@parent, '{}')
                 '''.format(parent_pk, name)
@@ -206,7 +214,7 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def _generate_field_name(name, fname, expression):
+    def _generate_field_name(name: str, fname: str, expression: str):
         text = '''
                     [% CASE
                         WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
@@ -224,31 +232,35 @@ class Tooltip:
         return text
 
     @staticmethod
-    def _generate_value_map(widget_config, name):
+    def _generate_value_map(widget_config: Union[list, dict], name: str):
+        def escape_value(value: str) -> str:
+            """Change ' to ’ for the HStore function. """
+            return value.replace("'", "’")
+
         if isinstance(widget_config['map'], list):
             values = dict()
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
-                    reverted = {y.replace("'", "’"): x.replace("'", "’") for x, y in row.items()}
+                    reverted = {escape_value(y): escape_value(x) for x, y in row.items()}
                     values.update(reverted)
         else:
             # It's not a list, it's a dict.
             values = widget_config['map']
             if values.get('<NULL>'):
                 del values['<NULL>']
-            values = {y.replace("'", "’"): x.replace("'", "’") for x, y in values.items()}
+            values = {escape_value(y): escape_value(x) for x, y in values.items()}
 
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
         field_view = '''
                     map_get(
                         hstore_to_map('{}'),
-                        "{}"
+                        replace("{}", '\\'', '’')
                     )'''.format(hstore, name)
         return field_view
 
     @staticmethod
-    def _generate_external_resource(widget_config, name, fname):
+    def _generate_external_resource(widget_config: dict, name: str, fname: str):
         dview = widget_config['DocumentViewer']
 
         if dview == QgsExternalResourceWidget.Image:
@@ -305,7 +317,7 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def _generate_date(widget_config, name):
+    def _generate_date(widget_config: dict, name: str):
         dfor = widget_config['display_format']
         field_view = '''
                     format_date(
@@ -315,7 +327,7 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def _generate_value_relation(widget_config, name):
+    def _generate_value_relation(widget_config: dict, name: str):
         vlid = widget_config['Layer']
 
         expression = '''"{}" = attribute(@parent, '{}')'''.format(
@@ -325,6 +337,10 @@ class Tooltip:
 
         filter_exp = widget_config['FilterExpression'].strip()
         if filter_exp:
+            # replace @current_geometry only available in form by geometry(@parent) for aggregate
+            filter_exp = filter_exp.replace('@current_geometry', 'geometry(@parent)')
+            # replace current_value( only available in form by attribute(@parent, for aggregate
+            filter_exp = filter_exp.replace('current_value(', 'attribute(@parent, ')
             expression += ' AND {}'.format(filter_exp)
 
         field_view = '''
@@ -341,7 +357,7 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def css():
+    def css() -> str:
         css = '''<style>
     div.popup_lizmap_dd {
         margin: 2px;

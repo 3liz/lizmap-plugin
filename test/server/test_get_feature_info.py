@@ -38,7 +38,8 @@ SINGLE_FEATURE = "I=1435&J=398&"
 LAYER_DEFAULT_POPUP = "default_popup"
 DEFAULT_POPUP = f"LAYERS={LAYER_DEFAULT_POPUP}&QUERY_LAYERS={LAYER_DEFAULT_POPUP}&"
 
-LAYER_QGIS_POPUP = "qgis_popup"
+# The layer qgis_popup_shortname has a shortname customshortname
+LAYER_QGIS_POPUP = "customshortname"
 QGIS_POPUP = f"LAYERS={LAYER_QGIS_POPUP}&QUERY_LAYERS={LAYER_QGIS_POPUP}&"
 
 LAYER_QGIS_FORM = "qgis_form"
@@ -74,6 +75,34 @@ def test_single_get_feature_info_default_popup(client):
    <Attribute name="Region" value="Bretagne"/>
    <Attribute name="Shape_Leng" value="18.39336934850"/>
    <Attribute name="Shape_Area" value="3.30646936365"/>
+   <Attribute name="lwc_user" value="No user provided"/>
+   <Attribute name="lwc_groups" value="No user groups provided"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>
+'''
+    diff = xml_diff.diff_texts(expected, rv.content.decode('utf-8'))
+    assert diff == [], diff
+
+
+def test_single_get_feature_info_default_popup_user(client):
+    """ Test the get feature info with a single feature with default layer. """
+    qs = BASE_QUERY + SINGLE_FEATURE + DEFAULT_POPUP
+    headers = {'X-Lizmap-User-Groups': 'test1', 'X-Lizmap-User': 'Bretagne'}
+    rv = client.get(qs, PROJECT, headers)
+    assert rv.status_code == 200
+    assert rv.headers.get('Content-Type', '').find('text/xml') == 0
+    expected = f'''<GetFeatureInfoResponse>
+ <Layer name="{LAYER_DEFAULT_POPUP}">
+  <Feature id="1">
+   <Attribute name="OBJECTID" value="2662"/>
+   <Attribute name="NAME_0" value="France"/>
+   <Attribute name="VARNAME_1" value="Bretaa|Brittany"/>
+   <Attribute name="Region" value="Bretagne"/>
+   <Attribute name="Shape_Leng" value="18.39336934850"/>
+   <Attribute name="Shape_Area" value="3.30646936365"/>
+   <Attribute name="lwc_user" value="Bretagne"/>
+   <Attribute name="lwc_groups" value="test1"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>

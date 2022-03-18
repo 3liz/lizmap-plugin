@@ -3,6 +3,7 @@ __license__ = "GPL version 3"
 __email__ = "info@3liz.org"
 
 import json
+import os
 import xml.etree.ElementTree as ET
 
 from collections import namedtuple
@@ -21,12 +22,9 @@ from qgis.core import (
 )
 from qgis.server import QgsServerFilter
 
-from lizmap.server.core import (
-    find_vector_layer,
-    server_feature_id_expression,
-    to_bool,
-)
+from lizmap.server.core import find_vector_layer, server_feature_id_expression
 from lizmap.server.logger import Logger, exception_handler
+from lizmap.server.tools import to_bool
 from lizmap.tooltip import Tooltip
 
 """
@@ -79,8 +77,26 @@ class GetFeatureInfoFilter(QgsServerFilter):
         features = []
         for layer_name, feature_id in GetFeatureInfoFilter.parse_xml(xml):
             layer = find_vector_layer(layer_name, project)
+            if not layer:
+                Logger.warning("Skipping the layer '{}'".format(layer_name))
+                continue
 
-            layer_config = cfg.get('layers').get(layer_name)
+            if layer_name != layer.name():
+                Logger.info("Request on layer shortname '{}' and layer name '{}'".format(
+                    layer_name, layer.name()))
+
+            layers = cfg.get('layers')
+            if not layers:
+                Logger.critical("No 'layers' section in the CFG file {}.cfg".format(project.fileName()))
+                continue
+
+            layer_config = layers.get(layer.name())
+            if not layer_config:
+                Logger.critical(
+                    "No layer configuration for layer {} in the CFG file {}.cfg".format(
+                        layer.name(), project.fileName()))
+                continue
+
             if not to_bool(layer_config.get('popup')):
                 continue
 
@@ -103,6 +119,9 @@ class GetFeatureInfoFilter(QgsServerFilter):
             html_content += Tooltip.css()
 
             features.append(Result(layer, feature_id, html_content))
+            Logger.info(
+                "The popup has been replaced for feature ID '{}' in layer '{}'".format(
+                    feature_id, layer_name))
         return features
 
     @exception_handler
@@ -121,7 +140,7 @@ class GetFeatureInfoFilter(QgsServerFilter):
 
         if params.get('INFO_FORMAT', '').upper() != 'TEXT/XML':
             logger.info(
-                "Lizmap is not only processing TEXT/XML INFO_FORMAT, not {}".format(
+                "Lizmap is only processing INFO_FORMAT=TEXT/XML, not '{}'.".format(
                     params.get('INFO_FORMAT', '').upper()))
             return
 
@@ -152,6 +171,10 @@ class GetFeatureInfoFilter(QgsServerFilter):
         try:
             features = self.feature_list_to_replace(cfg, project, relation_manager, xml)
         except Exception as e:
+            if to_bool(os.getenv("CI")):
+                logger.log_exception(e)
+                raise
+
             logger.critical(
                 "Error while reading the XML response GetFeatureInfo for project {}, returning default "
                 "response".format(project_path))
@@ -159,8 +182,9 @@ class GetFeatureInfoFilter(QgsServerFilter):
             return
 
         if not features:
-            # This is not normal ...
-            logger.warning(
+            # The user has clicked in a random area on the map or no interesting LAYERS,
+            # no features are returned.
+            logger.info(
                 "No features found in the XML from QGIS Server for project {}".format(project_path)
             )
             return
@@ -232,6 +256,10 @@ class GetFeatureInfoFilter(QgsServerFilter):
             logger.info("GetFeatureInfo replaced for project {}".format(project_path))
 
         except Exception as e:
+            if to_bool(os.getenv("CI")):
+                logger.log_exception(e)
+                raise
+
             logger.critical(
                 "Error while rewriting the XML response GetFeatureInfo, returning default response")
             logger.log_exception(e)

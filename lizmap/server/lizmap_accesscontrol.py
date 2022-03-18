@@ -2,7 +2,13 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from qgis.core import Qgis, QgsExpression, QgsMapLayer, QgsVectorLayer
+from qgis.core import (
+    Qgis,
+    QgsExpression,
+    QgsMapLayer,
+    QgsProject,
+    QgsVectorLayer,
+)
 from qgis.server import QgsAccessControlFilter, QgsServerInterface
 
 from lizmap.server.core import (
@@ -13,7 +19,6 @@ from lizmap.server.core import (
     get_lizmap_override_filter,
     get_lizmap_user_login,
     is_editing_context,
-    to_bool,
 )
 from lizmap.server.filter_by_polygon import (
     ALL_FEATURES,
@@ -21,6 +26,7 @@ from lizmap.server.filter_by_polygon import (
     FilterByPolygon,
 )
 from lizmap.server.logger import Logger, profiling
+from lizmap.server.tools import to_bool
 
 
 class LizmapAccessControlFilter(QgsAccessControlFilter):
@@ -64,6 +70,15 @@ class LizmapAccessControlFilter(QgsAccessControlFilter):
 
         # Get Lizmap user groups provided by the request
         groups = get_lizmap_groups(self.iface.requestHandler())
+
+        # Set lizmap variables
+        user_login = get_lizmap_user_login(self.iface.requestHandler())
+        project = QgsProject.instance()
+        custom_var = project.customVariables()
+        if custom_var.get('lizmap_user', None) != user_login:
+            custom_var['lizmap_user'] = user_login
+            custom_var['lizmap_user_groups'] = list(groups)  # QGIS can't store a tuple
+            project.setCustomVariables(custom_var)
 
         # If groups is empty, no Lizmap user groups provided by the request
         # The default layer rights is applied

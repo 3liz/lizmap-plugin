@@ -12,9 +12,9 @@ from lizmap.server.core import (
     get_lizmap_layer_login_filter,
     get_lizmap_layers_config,
     server_feature_id_expression,
-    to_bool,
 )
 from lizmap.server.get_feature_info import GetFeatureInfoFilter
+from lizmap.server.tools import to_bool
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

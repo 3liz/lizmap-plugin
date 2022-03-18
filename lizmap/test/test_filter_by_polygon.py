@@ -181,6 +181,23 @@ class TestFilterByPolygon(unittest.TestCase):
         # self.assertEqual('', config.subset_sql(groups))
         project.clear()
 
+    def test_format_sql_in(self):
+        """ Test SQL IN statement. """
+        # Integer only
+        sql = FilterByPolygon._format_sql_in('code', (1, 2, 3))
+        expected = '"code" IN ( 1 , 2 , 3 )'
+        self.assertEqual(expected, sql)
+
+        # Integer as string
+        sql = FilterByPolygon._format_sql_in('code', ('1', '2', '3'))
+        expected = '"code" IN ( \'1\' , \'2\' , \'3\' )'
+        self.assertEqual(expected, sql)
+
+        # String
+        sql = FilterByPolygon._format_sql_in('code', ('a', 'b', 'c'))
+        expected = '"code" IN ( \'a\' , \'b\' , \'c\' )'
+        self.assertEqual(expected, sql)
+
     def test_subset_string_postgres(self):
         """ Test building a postgresql string for filter by polygon. """
         # ST_Intersect

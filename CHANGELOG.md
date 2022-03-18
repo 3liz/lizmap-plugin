@@ -2,6 +2,71 @@
 
 ## Unreleased
 
+* Desktop - Better display of the QGIS Server version when it's not available
+* Server - Always register the API if possible, raise the error only when requested instead
+* Server - Add the commit ID of QGIS if available in the JSON metadata
+
+## 3.7.4 - 2022-02-15
+
+* Desktop - Improve the parsing of LWC server versions
+* Desktop - Fix saving the configuration file if a layer is not available with the filter by polygon
+
+## 3.7.3 - 2022-02-14
+
+* Desktop - Improve the server version comparaison and fix some errors
+* Desktop - Fix a Python error if the QGIS version is not correct when registering a Lizmap server
+
+## 3.7.2 - 2022-02-10
+
+* Server : fix a SQL query for the "filtering by polygon" when the field is a string
+
+## 3.7.1 - 2022-01-17
+
+* Update the user experience when no master password is set in QGIS Desktop
+* Add new actions in the right click on a server such as "Copy versions in the clipboard"
+* Fix a Python error with a project having some deleted layers
+* Fix duplicated entry in the web menu when reloading the plugin
+
+## 3.7.0 - 2022-01-12
+
+* Add the possibility to add a login and a password for a given Lizmap server URL
+* Server - Add API to fetch server information on the URL http://your.qgis.server/lizmap/server.json.
+  Read the documentation how to setup this API
+  https://docs.lizmap.com/3.5/en/install/pre_requirements.html#lizmap-server-plugin
+
+## 3.6.5 - 2021-12-15
+
+* Tooltip : Fix generation of the tooltip expression when using `@current_geometry` and `current_value()` when it's
+  used outside the form context.
+* Enable Lizmap Web Client 3.5 for the default version
+* Update the user interface for the new API for the French IGN provider
+
+## 3.6.4 - 2021-11-15
+
+* Desktop - Add link to the Lizmap IRC channel on libera.chat
+* Desktop - Improve user experience when using the checkbox "Third-party WMS layers"
+  by disabling the format option if needed.
+* Desktop - Add `@lizmap_user` and `@lizmap_user_groups` in the project with empty string/list.
+* Desktop - Display if the plot or popup is available for the given Lizmap Web Client version
+* Server - Display the current plugin version in the logs when loading the plugin.
+
+## 3.6.3 - 2021-10-07
+
+* Follow up from version 3.6.0 about not supporting spatialite for editing capabilities, the plugin will
+  now remove these lines from the CFG file.
+* Variables `@lizmap_user` and `@lizmap_user_groups` are available at the project level with current Lizmap
+  user and its groups. It's possible to use them in QGIS Desktop manually to try symbology, default value in
+  form etc.
+* Fix the GetFeatureInfo request on the server side when there is a short name set on the layer.
+
+## 3.6.2 - 2021-09-23
+
+* Fix an issue in the user interface saving the CFG file
+
+## 3.6.1 - 2021-09-23
+
+* Fix an issue in the user interface when switching panels
+
 ## 3.6.0 - 2021-09-23
 
 * First "Information panel" :

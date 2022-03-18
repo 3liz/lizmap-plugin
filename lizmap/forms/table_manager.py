@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 
 from collections import namedtuple
 from typing import Type
@@ -18,18 +19,21 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
+from lizmap.server.tools import to_bool
 
 LOGGER = logging.getLogger(plugin_name())
 
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 
 class TableManager:
 
-    def __init__(self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button, up_button, down_button):
+    def __init__(
+            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
+            up_button, down_button):
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
@@ -44,6 +48,8 @@ class TableManager:
         self.lwc_versions.append(LwcVersions.Lizmap_3_2)
         self.lwc_versions.append(LwcVersions.Lizmap_3_3)
         self.lwc_versions.append(LwcVersions.Lizmap_3_4)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_5)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_6)
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))
@@ -353,9 +359,14 @@ class TableManager:
             row = self.table.rowCount()
             for i in range(row):
                 cell = self.table.item(i, 0)
+                if not cell:
+                    continue
+
                 value = cell.data(Qt.UserRole)
                 if value == layer:
                     self.table.removeRow(i)
+                    LOGGER.info("Removing '{}' from table {}".format(layer, self.definitions.key()))
+                    continue
 
     def truncate(self):
         """Truncate the table."""
@@ -375,7 +386,7 @@ class TableManager:
 
         data = dict()
 
-        if self.definitions.key() in ['filter_by_polygon']:
+        if self.definitions.key() in ('filter_by_polygon',):
             data['config'] = dict()
             for config_key, general_config in self.definitions.general_config.items():
                 widget = general_config.get('widget')
@@ -385,7 +396,9 @@ class TableManager:
                 input_type = general_config['type']
 
                 if input_type == InputType.Layer:
-                    data['config'][config_key] = widget.currentLayer().id()
+                    layer = widget.currentLayer()
+                    # The combobox might be empty, the layer me be deleted in the meantime
+                    data['config'][config_key] = layer.id() if layer else None
                 elif input_type == InputType.Field:
                     data['config'][config_key] = widget.currentField()
                 else:
@@ -474,7 +487,7 @@ class TableManager:
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
             if self.definitions.key() == 'datavizLayers':
-                if version != LwcVersions.Lizmap_3_4:
+                if version not in (LwcVersions.Lizmap_3_4, LwcVersions.Lizmap_3_5, LwcVersions.Lizmap_3_6):
                     traces = layer_data.pop('traces')
                     for j, trace in enumerate(traces):
                         for key in trace:
@@ -630,7 +643,7 @@ class TableManager:
 
     def from_json(self, data):
         """Load JSON into the table."""
-        if self.definitions.key() in [
+        if self.definitions.key() in (
             'locateByLayer',
             'loginFilteredLayers',
             'tooltipLayers',
@@ -639,7 +652,7 @@ class TableManager:
             'timemanagerLayers',
             'formFilterLayers',
             'datavizLayers',
-        ]:
+        ):
             data = self._from_json_legacy_order(data)
 
         if self.definitions.key() == 'editionLayers':
@@ -649,6 +662,7 @@ class TableManager:
             data = self._from_json_legacy_dataviz(data)
 
         config = data.get('config')
+        # config: Union[dict, None]
         if config:
             settings = []
             Setting = namedtuple('Setting', ['widget', 'type', 'value'])
@@ -662,8 +676,8 @@ class TableManager:
                     vector_layer = QgsProject.instance().mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
                         LOGGER.warning(
-                            'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not exist.'
-                            ' Skipping that layer.'.format(
+                            'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not '
+                            'exist. Skipping that layer.'.format(
                                 self.definitions.key(), config_key, value))
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
@@ -672,7 +686,7 @@ class TableManager:
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
-            # Now in correct order, because the field depends of the layer
+            # Now in correct order, because the field depends on the layer
             for setting in settings:
                 if setting.type == InputType.Layer:
                     setting.widget.setLayer(setting.value)
@@ -690,7 +704,11 @@ class TableManager:
             if not layer:
                 continue
             layer_data = {}
+
+            # Fixme, better to mave these two lines in a dedicated function to retrieve QgsVectorLayer from a dict
+            vector_layer = None
             valid_layer = True
+
             for key, definition in self.definitions.layer_config.items():
                 if definition.get('plural'):
                     continue
@@ -750,15 +768,37 @@ class TableManager:
                         else:
                             layer_data[key] = default_value
                     elif default_value is not None and hasattr(default_value, '__call__'):
-                        # The function will evaluated layer, with the layer context
+                        # The function will evaluate the value, with the layer context
                         layer_data[key] = default_value
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
-                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. Skipping that layer.'.format(
+                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. '
+                            'Skipping that layer.'.format(
                                 self.definitions.key(), key))
                         valid_layer = False
                         continue
+
+            if not valid_layer:
+                # We didn't find any valid layer during the process of reading this JSON dictionary
+                row = self.table.rowCount()
+                LOGGER.info(
+                    "No valid layer found when reading this section {}. Not adding the row number {}".format(
+                        row + 1,
+                        self.definitions.key()
+                    )
+                )
+                continue
+
+            # For editing, keep only postgresql, follow up about #364, #361
+            if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI")):
+                # In CI, we still want to test this layer, sorry.
+                if vector_layer.dataProvider().name() != 'postgres':
+                    LOGGER.warning(
+                        "The layer for editing {} is not stored in PostgreSQL. Now, only PostgreSQL layers "
+                        "are supported for editing capabilities. Removing this layer from the "
+                        "configuration.".format(vector_layer.id()))
+                    valid_layer = False
 
             if valid_layer:
                 row = self.table.rowCount()

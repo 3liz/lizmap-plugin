@@ -20,16 +20,23 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.PyQt.QtCore import QTextCodec
-from qgis.server import QgsServerRequest, QgsServerResponse, QgsService
+from qgis.server import (
+    QgsRequestHandler,
+    QgsServerRequest,
+    QgsServerResponse,
+    QgsService,
+)
 
 from lizmap.server.core import (
     find_vector_layer,
+    get_lizmap_groups,
+    get_lizmap_user_login,
     get_server_fid,
-    to_bool,
     write_json_response,
 )
 from lizmap.server.exception import ExpressionServiceError
 from lizmap.server.logger import Logger
+from lizmap.server.tools import to_bool
 
 
 class ExpressionService(QgsService):
@@ -54,6 +61,15 @@ class ExpressionService(QgsService):
                        project: QgsProject) -> None:
         """ Execute a 'EXPRESSION' request
         """
+
+        # Set lizmap variables
+        request_handler = QgsRequestHandler(request, response)
+        groups = get_lizmap_groups(request_handler)
+        user_login = get_lizmap_user_login(request_handler)
+        custom_var = project.customVariables()
+        custom_var['lizmap_user'] = user_login
+        custom_var['lizmap_user_groups'] = list(groups)  # QGIS can't store a tuple
+        project.setCustomVariables(custom_var)
 
         params = request.parameters()
 

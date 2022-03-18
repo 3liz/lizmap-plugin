@@ -137,6 +137,27 @@ def test_request_without_features(client):
     assert 'b' in b['results'][0]
     assert b['results'][0]['b'] == 2
 
+    # Request with lizmap headers and custom variables
+    qs = "?SERVICE=EXPRESSION&REQUEST=Evaluate&MAP=france_parts.qgs&LAYER=france_parts&EXPRESSIONS={\"a\":\"%s\", \"b\":\"%s\"}" % (
+        quote('@lizmap_user', safe=''), quote('@lizmap_user_groups', safe=''))
+    headers = {'X-Lizmap-User-Groups': 'test1', 'X-Lizmap-User': 'Bretagne'}
+    rv = client.get(qs, projectfile, headers)
+    assert rv.status_code == 200
+
+    assert rv.headers.get('Content-Type', '').find('application/json') == 0
+
+    b = json.loads(rv.content.decode('utf-8'))
+
+    assert 'status' in b
+    assert b['status'] == 'success'
+
+    assert 'results' in b
+    assert len(b['results']) == 1
+    assert 'a' in b['results'][0]
+    assert b['results'][0]['a'] == 'Bretagne'
+    assert 'b' in b['results'][0]
+    assert b['results'][0]['b'] == ['test1']
+
 
 def test_request_with_features(client):
     """  Test Expression Evaluate request with Feature or Features parameter

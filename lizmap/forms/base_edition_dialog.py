@@ -6,10 +6,9 @@ import re
 from collections import OrderedDict
 from typing import Union
 
-from qgis._core import QgsVectorLayer
-from qgis.core import QgsProject, QgsSettings
+from qgis.core import QgsProject, QgsSettings, QgsVectorLayer
 from qgis.PyQt.QtCore import QLocale, Qt, QUrl
-from qgis.PyQt.QtGui import QColor, QDesktopServices, QIcon
+from qgis.PyQt.QtGui import QBrush, QColor, QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QPlainTextEdit
 
 from lizmap import DEFAULT_LWC_VERSION
@@ -20,7 +19,7 @@ from lizmap.definitions.definitions import (
     LwcVersions,
 )
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qt_style_sheets import NEW_FEATURE_CSS
+from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -173,6 +172,47 @@ class BaseEditionDialog(QDialog):
                             label.setStyleSheet('')
                         if layer_config['type'] == InputType.CheckBox:
                             layer_config.get('widget').setStyleSheet('')
+
+            if lwc_version == current_version:
+                found = True
+
+        # For items in combobox
+        found = False
+        for lwc_version in self.lwc_versions.keys():
+            if found:
+                for layer_config in self.config.layer_config.values():
+                    widget_type = layer_config.get('type')
+                    if not layer_config.get('items_depend_on_lwc_version'):
+                        continue
+
+                    if widget_type != InputType.List:
+                        continue
+
+                    for item in layer_config['items']:
+                        if item.value.get('version'):
+                            item_combo = layer_config['widget'].model().item(
+                                layer_config['widget'].findData(item.value.get('data'))
+                            )
+                            brush = QBrush()
+                            brush.setStyle(Qt.SolidPattern)
+                            brush.setColor(QColor(NEW_FEATURE_COLOR))
+                            item_combo.setBackground(brush)
+
+            else:
+                for layer_config in self.config.layer_config.values():
+                    widget_type = layer_config.get('type')
+                    if not layer_config.get('items_depend_on_lwc_version'):
+                        continue
+
+                    if widget_type != InputType.List:
+                        continue
+
+                    for item in layer_config['items']:
+                        if item.value.get('version'):
+                            item_combo = layer_config['widget'].model().item(
+                                layer_config['widget'].findData(item.value.get('data'))
+                            )
+                            item_combo.setBackground(QBrush())
 
             if lwc_version == current_version:
                 found = True

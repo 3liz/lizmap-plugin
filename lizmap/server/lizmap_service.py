@@ -2,10 +2,8 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-import configparser
 import traceback
 
-from os.path import dirname, join
 from typing import Dict
 
 from osgeo import gdal
@@ -33,6 +31,7 @@ from lizmap.server.filter_by_polygon import (
     FilterByPolygon,
 )
 from lizmap.server.logger import Logger, profiling
+from lizmap.server.tools import version
 
 
 class LizmapServiceError(ServiceError):
@@ -216,23 +215,8 @@ class LizmapService(QgsService):
             if reg.getService(s):
                 body['services'].append(s)
 
-        # Lizmap plugin metadata, do not use qgis_plugin_tools because of the packaging.
-        file_path = join(dirname(dirname(__file__)), 'metadata.txt')
-        config = configparser.ConfigParser()
-        try:
-            config.read(file_path, encoding='utf8')
-        except UnicodeDecodeError:
-            # Issue LWC https://github.com/3liz/lizmap-web-client/issues/1908
-            # Maybe a locale issue ?
-            self.logger.critical(
-                "Error, an UnicodeDecodeError occurred while reading the metadata.txt. Is the locale "
-                "correctly set on the server ?")
-            version = 'NULL'
-        else:
-            version = config["general"]["version"]
-
         body['lizmap']['name'] = 'Lizmap'
-        body['lizmap']['version'] = version
+        body['lizmap']['version'] = version()
 
         write_json_response(body, response)
         return
