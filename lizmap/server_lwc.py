@@ -296,7 +296,7 @@ class ServerManager:
             url += '/'
 
         if auth_id:
-            QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Critical)
+            QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
 
         url_version = '{}index.php/view/app/metadata'.format(url)
         if Qgis.QGIS_VERSION_INT < 31000:
