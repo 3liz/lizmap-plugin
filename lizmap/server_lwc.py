@@ -422,6 +422,9 @@ class ServerManager:
             qgis_cell.setText(tr("Not possible"))
             qgis_cell.setToolTip(
                 tr("Not possible to determine QGIS Server version because you need at least Lizmap Web Client 3.5"))
+        elif branch >= (3, 5) and not login:
+            # No admin login provided and running LWC >= 3.5
+            markdown += '* QGIS Server and plugins unknown status because no admin login provided\n'
         else:
             # Unknown
             markdown += '* QGIS Server and plugins unknown status\n'
