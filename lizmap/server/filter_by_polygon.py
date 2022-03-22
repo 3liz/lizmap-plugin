@@ -168,6 +168,8 @@ class FilterByPolygon:
         # Logger.info("LRU Cache _polygon_for_groups : {}".format(self._polygon_for_groups.cache_info()))
 
         if polygon.isEmpty():
+            # Let's try to free the connection
+            self.connection = None
             return NO_FEATURES, ''
 
         ewkt = "SRID={crs};{wkt}".format(
@@ -190,7 +192,10 @@ class FilterByPolygon:
                 if self.use_st_relationship:
                     return st_relation, ewkt
 
-                return self._features_ids_with_sql_query(st_relation), ewkt
+                result = self._features_ids_with_sql_query(st_relation), ewkt
+                # Let's try to free the connection
+                self.connection = None
+                return result
 
         # Still here ? So we use the slow method with QGIS API
         subset = self._features_ids_with_qgis_api(polygon)
