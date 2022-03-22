@@ -13,6 +13,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsGeometry,
     QgsProject,
+    QgsProviderConnectionException,
     QgsSpatialIndex,
     QgsVectorLayer,
 )
@@ -43,6 +44,7 @@ class FilterByPolygon:
         :param config: The filter by polygon configuration as dictionary
         :param layer: The vector layer to filter
         """
+        self.connection = None
         # QGIS Server can consider the ST_Intersect/ST_Contains not safe regarding SQL injection.
         # Using this flag will transform or not the ST_Intersect/ST_Contains into an IN by making the query
         # straight to PostGIS.
@@ -126,6 +128,20 @@ class FilterByPolygon:
                     self.primary_key, self.layer.name()))
 
         return True
+
+    def sql_query(self, uri: QgsDataSourceUri, sql) -> Tuple[Tuple]:
+        """ For a given URI, execute an SQL query and return the result. """
+        if self.connection is None:
+            # noinspection PyArgumentList
+            metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+            self.connection = metadata.createConnection(uri.uri(), {})
+            try:
+                self.connection.executeSql("SET application_name='QGIS Lizmap Server : Filter By Polygon';")
+            except QgsProviderConnectionException as e:
+                Logger.log_exception(e)
+
+        results = self.connection.executeSql(sql)
+        return results
 
     @profiling
     def subset_sql(self, groups: tuple) -> Tuple[str, str]:
@@ -261,10 +277,7 @@ c.user_group && (
             Logger.info(
                 "Requesting the database about polygons for the current groups with : \n{}".format(sql))
 
-            # noinspection PyArgumentList
-            metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
-            connection = metadata.createConnection(uri.uri(), {})
-            results = connection.executeSql(sql)
+            results = self.sql_query(uri, sql)
             wkb = results[0][1]
 
             geom = QgsGeometry()
@@ -338,11 +351,7 @@ c.user_group && (
         Logger.info(
             "Requesting the database about IDs to filter with {}...".format(sql[0:90]))
 
-        # noinspection PyArgumentList
-        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
-        connection = metadata.createConnection(uri.uri(), {})
-        results = connection.executeSql(sql)
-
+        results = self.sql_query(uri, sql)
         unique_ids = [str(row[0]) for row in results]
 
         return self._format_sql_in(self.primary_key, unique_ids)
