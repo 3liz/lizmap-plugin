@@ -53,12 +53,14 @@ def pytest_sessionstart(session):
     install_logger_hook(verbose=True)
 
 
-def pytest_sessionfinish(session, exitstatus):
-    """ End qgis session
-    """
-    global qgis_application
-    qgis_application.exitQgis()
-    del qgis_application
+# Note from Etienne 22/03/2022
+# Switching from 3.10 to 3.16 is crashing when a test is failing
+# def pytest_sessionfinish(session, exitstatus):
+#     """ End qgis session
+#     """
+#     global qgis_application
+#     qgis_application.exitQgis()
+#     del qgis_application
 
 
 NAMESPACES = {
