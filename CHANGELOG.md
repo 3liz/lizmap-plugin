@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.7.5 - 2022-03-22
+
 * Desktop - Better display of the QGIS Server version when it's not available
 * Server - Always register the API if possible, raise the error only when requested instead
 * Server - Add the commit ID of QGIS if available in the JSON metadata
