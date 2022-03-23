@@ -174,7 +174,6 @@ QListWidget::item::selected {
         <widget class="QLabel" name="label_lizmap_server">
          <property name="font">
           <font>
-           <family>Ubuntu</family>
            <italic>true</italic>
           </font>
          </property>
@@ -414,29 +413,85 @@ QListWidget::item::selected {
               </font>
              </property>
              <property name="text">
-              <string>Latest Lizmap Web Client releases :</string>
+              <string>Latest releases</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="lwc_version_latest">
-             <property name="text">
-              <string>Unknown</string>
-             </property>
-             <property name="openExternalLinks">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="lwc_version_oldest">
-             <property name="text">
-              <string>Unknown</string>
-             </property>
-             <property name="openExternalLinks">
-              <bool>true</bool>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_27">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_42">
+               <item>
+                <widget class="QLabel" name="label_58">
+                 <property name="text">
+                  <string>Lizmap Web Client</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lwc_version_latest">
+                 <property name="text">
+                  <string>Unknown</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lwc_version_oldest">
+                 <property name="text">
+                  <string>Unknown</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <widget class="QLabel" name="label_57">
+                 <property name="text">
+                  <string>QGIS Server plugins</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_lizmap_plugin">
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_wfsoutputextension_plugin">
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_atlasprint_plugin">
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </item>
            <item>
             <widget class="Line" name="line_3">

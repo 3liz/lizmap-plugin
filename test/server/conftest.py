@@ -3,9 +3,15 @@ import glob
 import logging
 import os
 import sys
+import warnings
 
 import lxml.etree
 import pytest
+
+from qgis.PyQt import Qt
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    import gdal
 
 logging.basicConfig( stream=sys.stderr )
 logging.disable(logging.NOTSET)
@@ -13,7 +19,7 @@ logging.disable(logging.NOTSET)
 LOGGER = logging.getLogger('server')
 LOGGER.setLevel(logging.DEBUG)
 
-from typing import Any, Dict, Generator, Mapping
+from typing import Any, Dict, Generator
 
 from qgis.core import Qgis, QgsApplication, QgsFontUtils, QgsProject
 from qgis.server import (
@@ -30,6 +36,15 @@ def pytest_addoption(parser):
 
 
 plugin_path = None
+
+
+def pytest_report_header(config):
+    message = 'QGIS : {}\n'.format(Qgis.QGIS_VERSION_INT)
+    message += 'Python GDAL : {}\n'.format(gdal.VersionInfo('VERSION_NUM'))
+    message += 'Python : {}\n'.format(sys.version)
+    # message += 'Python path : {}'.format(sys.path)
+    message += 'QT : {}'.format(Qt.QT_VERSION_STR)
+    return message
 
 
 def pytest_configure(config):
@@ -53,12 +68,14 @@ def pytest_sessionstart(session):
     install_logger_hook(verbose=True)
 
 
-def pytest_sessionfinish(session, exitstatus):
-    """ End qgis session
-    """
-    global qgis_application
-    qgis_application.exitQgis()
-    del qgis_application
+# Note from Etienne 22/03/2022
+# Switching from 3.10 to 3.16 is crashing when a test is failing
+# def pytest_sessionfinish(session, exitstatus):
+#     """ End qgis session
+#     """
+#     global qgis_application
+#     qgis_application.exitQgis()
+#     del qgis_application
 
 
 NAMESPACES = {

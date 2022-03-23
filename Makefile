@@ -1,9 +1,3 @@
-# default is no locales
-# Empty in Transifex for now 20/09/2019 : bg_BG zh_CN lt_LT tr
-# TODO CHECK TRANSLATIONS
-# IT IS NOT USED ANYMORE
-LOCALES = "cs de el en es eu fi fr gl hu_HU id it nl no pl_PL pt pt_BR ro ru sl sv_SE tr"
-
 start_tests:
 	@echo 'Start docker-compose'
 	@cd .docker && ./start.sh
@@ -29,7 +23,7 @@ ifdef REGISTRY_URL
 	REGISTRY_PREFIX=$(REGISTRY_URL)/
 endif
 
-FLAVOR:=3.10
+FLAVOR:=3.16
 
 BECOME_USER:=$(shell id -u)
 

@@ -123,6 +123,7 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
+from lizmap.plugin_manager import PluginManager
 from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
@@ -2527,6 +2528,13 @@ class Lizmap:
                 return False
 
             self.populate_lwc_combo()
+
+            # QGIS Plugin manager
+            plugin_manager = PluginManager()
+            self.dlg.label_lizmap_plugin.setText(plugin_manager.metadata.get('Lizmap', ''))
+            self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.metadata.get('wfsOutputExtension', ''))
+            self.dlg.label_atlasprint_plugin.setText(plugin_manager.metadata.get('atlasprint', ''))
+
             version_checker = VersionChecker(self.dlg, VERSION_URL)
             version_checker.fetch()
             self.set_previous_qgis_version(None)

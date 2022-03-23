@@ -296,7 +296,7 @@ class ServerManager:
             url += '/'
 
         if auth_id:
-            QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Critical)
+            QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
 
         url_version = '{}index.php/view/app/metadata'.format(url)
         if Qgis.QGIS_VERSION_INT < 31000:
@@ -422,6 +422,9 @@ class ServerManager:
             qgis_cell.setText(tr("Not possible"))
             qgis_cell.setToolTip(
                 tr("Not possible to determine QGIS Server version because you need at least Lizmap Web Client 3.5"))
+        elif branch >= (3, 5) and not login:
+            # No admin login provided and running LWC >= 3.5
+            markdown += '* QGIS Server and plugins unknown status because no admin login provided\n'
         else:
             # Unknown
             markdown += '* QGIS Server and plugins unknown status\n'
@@ -618,7 +621,7 @@ class ServerManager:
         data = qgis_server_item.data(Qt.UserRole)
 
         show_all_versions = menu.addAction(tr("Display all versions") + "…")
-        slot = partial(self.display_all_versions, data, action_data, action_required)
+        slot = partial(self.display_all_versions, data)
         show_all_versions.triggered.connect(slot)
 
         server_as_markdown = menu.addAction(tr("Copy versions in the clipboard"))
