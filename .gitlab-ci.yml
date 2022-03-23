@@ -10,7 +10,15 @@ stages:
 
 test:server:
   stage: test
-  script: make test_server
+  parallel:
+    matrix:
+      - QGIS_VERSION: [
+        "3.16",
+        "3.22",
+        "nightly-release",
+      ]
+  script:
+    - make test_server FLAVOR=${QGIS_VERSION}
   environment:
     name: snap
   tags:
