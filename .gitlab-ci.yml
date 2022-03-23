@@ -18,31 +18,26 @@ test:server:
 
 package:
   stage: package 📦
-  only:
-    - schedules
   before_script:
     - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-beta
+    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-alpha
+  image: registry.snap.lizlan:5000/factory/qgis-plugin-ci:latest
+  environment: snap
   script:
-    # --transifex-token ${TX_TOKEN}  # Need to fix the docker image about lrelease
     - >
-      docker run
-      --rm -w /plugin
-      -v ${CI_PROJECT_DIR}:/plugin
-      -u $(id -u):$(id -g)
-      3liz/qgis-plugin-ci:latest
+      qgis-plugin-ci
       package ${VERSION}
+      --transifex-token ${TX_TOKEN}
       --allow-uncommitted-changes
       --disable-submodule-update
   after_script:
-    - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-beta
     - mv lizmap.${VERSION}.zip lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
   tags:
-    - factory
+    - infrav3-plain
   artifacts:
+    expose_as: 'QGIS package'
     paths:
-    - lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
+      - lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
 
 deploy:
   stage: deploy 🚀
