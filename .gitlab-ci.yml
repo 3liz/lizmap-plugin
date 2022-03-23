@@ -31,6 +31,9 @@ package:
       --allow-uncommitted-changes
       --disable-submodule-update
   after_script:
+    # Need to copy/paste these two lines because variables are lost
+    - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-alpha
     - mv lizmap.${VERSION}.zip lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
   tags:
     - infrav3-plain
