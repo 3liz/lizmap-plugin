@@ -2530,10 +2530,18 @@ class Lizmap:
             self.populate_lwc_combo()
 
             # QGIS Plugin manager
-            plugin_manager = PluginManager()
-            self.dlg.label_lizmap_plugin.setText(plugin_manager.metadata.get('Lizmap', ''))
-            self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.metadata.get('wfsOutputExtension', ''))
-            self.dlg.label_atlasprint_plugin.setText(plugin_manager.metadata.get('atlasprint', ''))
+            # noinspection PyBroadException
+            try:
+                plugin_manager = PluginManager()
+                self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
+                self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
+                self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
+            except Exception as e:
+                # Core QGIS plugin manager API might not be well stable ?
+                LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
+                self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
+                self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
+                self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
 
             version_checker = VersionChecker(self.dlg, VERSION_URL)
             version_checker.fetch()

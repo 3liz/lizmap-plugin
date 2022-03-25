@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Desktop - Fix possible python exception about the QGIS desktop plugin manager
+
 ## 3.7.5 - 2022-03-22
 
 * Desktop - Better display of the QGIS Server version when it's not available
