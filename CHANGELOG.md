@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.7.6 - 2022-03-25
+
 * Desktop - Fix possible python exception about the QGIS desktop plugin manager
 
 ## 3.7.5 - 2022-03-22
