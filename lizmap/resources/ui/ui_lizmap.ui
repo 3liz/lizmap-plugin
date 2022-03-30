@@ -1676,6 +1676,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            </item>
                           </layout>
                          </item>
+                         <item>
+                          <widget class="QCheckBox" name="checkbox_popup_allow_download">
+                           <property name="text">
+                            <string>Add a download button</string>
+                           </property>
+                          </widget>
+                         </item>
                         </layout>
                        </widget>
                       </item>
