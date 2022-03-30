@@ -289,6 +289,14 @@ class LizmapConfig:
         'popupDisplayChildren': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
+        'popup_allow_download': {
+            'wType': 'checkbox',
+            'type': 'boolean',
+            'default': True,
+            'tooltip': tr(
+                'If checked, a download button will be added in the popup to allow GPX, KML and GeoJSON export'),
+            'use_proper_boolean': True,
+        },
         'noLegendImage': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },

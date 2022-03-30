@@ -223,6 +223,9 @@ class Lizmap:
             ),
             self.dlg.label_filter_polygon,
         ]
+        self.lwc_versions[LwcVersions.Lizmap_3_6] = [
+            self.dlg.checkbox_popup_allow_download,
+        ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
             self.dlg.list_group_visiblity,
@@ -435,6 +438,7 @@ class Lizmap:
         self.layer_options_list['popupTemplate']['widget'] = None
         self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
         self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
+        self.layer_options_list['popup_allow_download']['widget'] = self.dlg.checkbox_popup_allow_download
         self.layer_options_list['noLegendImage']['widget'] = self.dlg.cbNoLegendImage
         self.layer_options_list['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
         self.layer_options_list['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
@@ -1120,8 +1124,11 @@ class Lizmap:
                 if item['wType'] == 'checkbox':
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
-                        if json_options[key].lower() in ('yes', 'true', 't', '1'):
-                            item['widget'].setChecked(True)
+                        if isinstance(json_options[key], str):
+                            if json_options[key].lower() in ('yes', 'true', 't', '1'):
+                                item['widget'].setChecked(True)
+                        elif isinstance(json_options[key], bool):
+                            item['widget'].setChecked(json_options[key])
 
                 if item['wType'] in ('text', 'textarea', 'html'):
                     if isinstance(item['default'], (list, tuple)):
@@ -1522,7 +1529,10 @@ class Lizmap:
                     if key in jsonLayers[jsonKey]:
                         # checkboxes
                         if item['wType'] == 'checkbox':
-                            if jsonLayers[jsonKey][key].lower() in ('yes', 'true', 't', '1'):
+                            value = jsonLayers[jsonKey][key]
+                            if isinstance(value, bool):
+                                self.myDic[itemKey][key] = value
+                            elif value.lower() in ('yes', 'true', 't', '1'):
                                 self.myDic[itemKey][key] = True
                             else:
                                 self.myDic[itemKey][key] = False
@@ -1674,6 +1684,10 @@ class Lizmap:
             # set options
             for key, val in self.layer_options_list.items():
                 if val['widget']:
+
+                    if val.get('tooltip'):
+                        val['widget'].setToolTip(val.get('tooltip'))
+
                     if val['wType'] in ('text', 'textarea'):
                         if val['type'] == 'list':
                             data = selectedItem[key]
@@ -2153,7 +2167,8 @@ class Lizmap:
                     except Exception:
                         propVal = 1
                 elif val['type'] == 'boolean':
-                    propVal = str(propVal)
+                    if not val.get('use_proper_boolean'):
+                        propVal = str(propVal)
                 layerOptions[key] = propVal
 
             # Cache Metatile: unset metatileSize if empty
