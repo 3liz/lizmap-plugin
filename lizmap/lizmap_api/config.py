@@ -51,6 +51,7 @@ import os
 from qgis.core import QgsMapLayer, QgsProject
 
 from lizmap import DEFAULT_LWC_VERSION
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import (
     format_version_integer,
     version,
@@ -238,6 +239,16 @@ class LizmapConfig:
         'atlasAutoPlay': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
+        'fixed_scale_overview_map': {
+            'wType': 'checkbox',
+            'type': 'boolean',
+            'default': False,
+            'tooltip': tr(
+                "If not checked, the overview map will follow the scale of the main map with a small scale. "
+                "If disabled, the overview map will have a fixed scale covering the project extent."
+            ),
+            'use_proper_boolean': True,
+        }
     }
 
     layerOptionDefinitions = {

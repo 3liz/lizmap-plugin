@@ -369,6 +369,7 @@ class Lizmap:
         # List of ui widget for data driven actions and checking
         self.global_options = LizmapConfig.globalOptionDefinitions
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
+        self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overiew_map
         self.global_options['mapScales']['widget'] = self.dlg.inMapScales
         self.global_options['minScale']['widget'] = self.dlg.inMinScale
         self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
@@ -1123,6 +1124,9 @@ class Lizmap:
         # Set the global options (map, tools, etc.)
         for key, item in self.global_options.items():
             if item.get('widget'):
+                if item.get('tooltip'):
+                    item['widget'].setToolTip(item.get('tooltip'))
+
                 if item['wType'] == 'checkbox':
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
@@ -2091,7 +2095,9 @@ class Lizmap:
                         inputValue = int(item['default'])
 
                 elif item['type'] == 'boolean':
-                    inputValue = str(inputValue)
+                    inputValue = item['widget'].isChecked()
+                    if not item.get('use_proper_boolean'):
+                        inputValue = str(inputValue)
 
                 # Add value to the option
                 if inputValue and inputValue != "False":
