@@ -1169,6 +1169,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </item>
                    </layout>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkbox_scale_overiew_map">
+                    <property name="toolTip">
+                     <string/>
+                    </property>
+                    <property name="text">
+                     <string>Static scale for the overview map</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
