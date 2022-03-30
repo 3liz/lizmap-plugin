@@ -5,6 +5,7 @@ __email__ = 'info@3liz.org'
 import json
 import os
 
+from functools import lru_cache
 from typing import Dict, Tuple, Union
 
 from qgis.core import (
@@ -74,6 +75,7 @@ def get_server_fid(feature: QgsFeature, pk_attributes: list) -> str:
     return '@@'.join([str(feature.attribute(pk)) for pk in pk_attributes])
 
 
+@lru_cache
 def get_lizmap_config(qgis_project_path: str) -> Union[Dict, None]:
     """ Get the lizmap config based on QGIS project path """
 

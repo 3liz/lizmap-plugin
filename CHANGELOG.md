@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Server - Use LRU Cache when reading the CFG file to avoid multiple access
+
 ## 3.7.6 - 2022-03-25
 
 * Desktop - Fix possible python exception about the QGIS desktop plugin manager
