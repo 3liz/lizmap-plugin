@@ -20,6 +20,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         os.remove(plugin_test_data_path('unittest.qgs'))
 
     def test_ui(self):
+        """ Test opening the Lizmap dialog with some basic checks."""
         project = QgsProject.instance()
         lizmap = Lizmap(get_iface())
 

@@ -75,7 +75,7 @@ if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
 
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
+from qgis.PyQt.QtCore import QCoreApplication, QRegExp, Qt, QTranslator, QUrl
 from qgis.PyQt.QtGui import (
     QBrush,
     QColor,
@@ -150,6 +150,7 @@ from lizmap.tools import (
     layer_property,
     lizmap_user_folder,
     next_git_tag,
+    unaccent,
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
@@ -2263,8 +2264,18 @@ class Lizmap:
             return False, message
 
         if not self.project.fileName().lower().endswith('qgs'):
-            message += "\n" + tr(
+            message += "\n\n" + tr(
                 "Your extension is QGZ. Please save again the project using the other extension.")
+            return False, message
+
+        if QRegExp(r'\s').indexIn(self.project.baseName()) >= 0:
+            message = tr(
+                "Your file name has a space in its name. The project file name mustn't have a space in its name.")
+            return False, message
+
+        if self.project.baseName() != unaccent(self.project.baseName()):
+            message = tr(
+                "Your file name has some accents in its name. The project file name mustn't have accents in its name.")
             return False, message
 
         # Check if Qgis/capitaliseLayerName is set

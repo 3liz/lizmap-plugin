@@ -46,6 +46,7 @@
 
 import os
 import subprocess
+import unicodedata
 import urllib.parse
 
 from os.path import abspath, join
@@ -54,6 +55,12 @@ from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QDir
 
 from lizmap.definitions.definitions import LayerProperties
+
+
+def unaccent(a_string: str) -> str:
+    """ Return the unaccentuated string. """
+    return ''.join(
+        (c for c in unicodedata.normalize('NFD', a_string) if unicodedata.category(c) != 'Mn'))
 
 
 def get_layer_wms_parameters(layer):

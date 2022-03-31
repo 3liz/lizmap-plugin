@@ -9,6 +9,7 @@ import lxml.etree
 import pytest
 
 from qgis.PyQt import Qt
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import gdal
