@@ -659,6 +659,12 @@ class Lizmap:
         self.dlg.label_group_visibility.setToolTip(tooltip)
         self.dlg.list_group_visiblity.setToolTip(tooltip)
 
+        self.dlg.button_generate_html_table.setToolTip(tr(
+            "A default HTML table will be generated in the layer maptip. The layout will be very similar to the auto "
+            "popup, except that the display of a media must still be managed manually using HTML &lt;a&gt; or "
+            "&lt;img&gt; for instance."
+        ))
+
         # Filter by polygon
         self.dlg.layer_filter_polygon.setFilters(QgsMapLayerProxyModel.PolygonLayer)
         self.dlg.layer_filter_polygon.layerChanged.connect(self.dlg.field_filter_polygon.setLayer)
@@ -789,6 +795,7 @@ class Lizmap:
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
         self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
+        self.dlg.button_generate_html_table.clicked.connect(self.html_table_from_layer)
 
         # Link button
         self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
@@ -978,6 +985,7 @@ class Lizmap:
         data = self.layer_options_list['popupSource']['widget'].currentText()
         self.dlg.btConfigurePopup.setEnabled(data == 'lizmap')
         self.dlg.btQgisPopupFromForm.setEnabled(data == 'qgis')
+        self.dlg.button_generate_html_table.setEnabled(data == 'qgis')
 
         layer = self._current_selected_layer()
         is_vector = isinstance(layer, QgsVectorLayer)
@@ -1024,6 +1032,7 @@ class Lizmap:
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
         self.dlg.btQgisPopupFromForm.setEnabled(value)
+        self.dlg.button_generate_html_table.setEnabled(value)
 
     def get_min_max_scales(self):
         """Get Min Max Scales from scales input field."""
@@ -1725,6 +1734,7 @@ class Lizmap:
             has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
             self.dlg.btConfigurePopup.setEnabled(has_geom)
             self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
+            self.dlg.button_generate_html_table.setEnabled(is_vector)
             self.dlg.label_drag_drop_form.setEnabled(has_geom)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
@@ -1928,8 +1938,56 @@ class Lizmap:
         value = layer_property(layer, LayerProperties.DataUrl)
         self.layer_options_list['link']['widget'].setText(value)
 
-    def maptip_from_form(self):
+    def _set_maptip(self, layer: QgsVectorLayer, html_content: str):
+        """ Internal function to set the maptip on a layer. """
+        if layer.mapTipTemplate() != '':
+            box = QMessageBox(self.dlg)
+            box.setIcon(QMessageBox.Question)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
+            box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
+            box.setText(tr(
+                'A maptip already exists for this layer. This is going to override it. '
+                'Are you sure you want to continue ?'))
+            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            box.setDefaultButton(QMessageBox.No)
+            result = box.exec_()
+            if result == QMessageBox.No:
+                return
+
+        layer.setMapTipTemplate(html_content)
+        QMessageBox.information(
+            self.dlg, tr('Maptip'), tr('The maptip has been set in the layer.'), QMessageBox.Ok)
+
+    def html_table_from_layer(self):
         """ Button set popup maptip from layer in the Lizmap configuration. """
+        layer = self._current_selected_layer()
+        if not isinstance(layer, QgsVectorLayer):
+            return
+
+        table_template = """<table class="table table-condensed table-striped table-bordered lizmapPopupTable">
+  <thead>
+    <tr>
+      <th>{field}</th>
+      <th>{value}</th>
+    </tr>
+  </thead>
+  <tbody>
+{fields_template}
+  </tbody>
+</table>"""
+        field_template = """    <tr>
+      <th>{name}</th>
+      <td>[% "{value}" %]</td>
+    </tr>
+"""
+        fields = ""
+        for field in layer.fields():
+            fields += field_template.format(name=field.displayName(), value=field.name())
+        result = table_template.format(field=tr("Field"), value=tr("Value"), fields_template=fields)
+        self._set_maptip(layer, result)
+
+    def maptip_from_form(self):
+        """ Button set popup maptip from DND form in the Lizmap configuration. """
         layer = self._current_selected_layer()
         if not isinstance(layer, QgsVectorLayer):
             return
@@ -1949,24 +2007,7 @@ class Lizmap:
         html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
         html_content = Tooltip.create_popup(html_content)
         html_content += Tooltip.css()
-
-        if layer.mapTipTemplate() != '':
-            box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
-            box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
-            box.setText(tr(
-                'A maptip already exists for this layer. This is going to override it. '
-                'Are you sure you want to continue ?'))
-            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            box.setDefaultButton(QMessageBox.No)
-            result = box.exec_()
-            if result == QMessageBox.No:
-                return
-
-        layer.setMapTipTemplate(html_content)
-        QMessageBox.information(
-            self.dlg, tr('Maptip'), tr('The maptip has been set in the layer.'), QMessageBox.Ok)
+        self._set_maptip(layer, html_content)
 
     def writeProjectConfigFile(self):
         """Get general project options and user edited layers options from plugin gui.

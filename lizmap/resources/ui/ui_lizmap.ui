@@ -1590,6 +1590,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </widget>
                          </item>
                          <item>
+                          <widget class="QPushButton" name="button_generate_html_table">
+                           <property name="text">
+                            <string>Generate an HTML table</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_37">
                            <item>
                             <widget class="QLabel" name="label_max_feature_popup">
