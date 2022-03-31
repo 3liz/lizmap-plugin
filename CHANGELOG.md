@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Desktop - Add a new button to generate an HTML table from layer fields, like the auto popup
+* Desktop - Add some checks about spaces or accents in filename when opening the QGS file
+
 ## 3.7.6 - 2022-03-25
 
 * Desktop - Fix possible python exception about the QGIS desktop plugin manager
