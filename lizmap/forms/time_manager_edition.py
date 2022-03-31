@@ -47,6 +47,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.start_field.setAllowEmptyFieldName(False)
         self.end_field.setAllowEmptyFieldName(True)
 
+        self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.start_field.setLayer)
         self.layer.layerChanged.connect(self.end_field.setLayer)
         self.layer.layerChanged.connect(self.set_visible_min_max)
@@ -61,6 +62,17 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
         self.set_visible_min_max()
         self.setup_ui()
+        self.check_layer_wfs()
+
+    def check_layer_wfs(self):
+        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            self.show_error(tr('A layer is mandatory.'))
+            return
+
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        self.show_error(not_in_wfs)
 
     def compute_minimum_value(self):
         value = self.compute_value_min_max(True)

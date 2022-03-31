@@ -269,6 +269,15 @@ class BaseEditionDialog(QDialog):
         else:
             super().accept()
 
+    def show_error(self, message):
+        """ Show the error bar or not. """
+        if message:
+            self.error.setVisible(True)
+            self.error.setText(message)
+        else:
+            self.error.setVisible(False)
+            self.error.setText("")
+
     def load_collection(self, value):
         """Load a collection to JSON."""
         # This function is implemented in child class.

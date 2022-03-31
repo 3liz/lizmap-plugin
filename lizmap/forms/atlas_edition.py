@@ -48,6 +48,7 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.feature_label.setAllowEmptyFieldName(False)
         self.sort_field.setAllowEmptyFieldName(False)
 
+        self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.primary_key.setLayer)
         self.layer.layerChanged.connect(self.feature_label.setLayer)
         self.layer.layerChanged.connect(self.sort_field.setLayer)
@@ -57,6 +58,17 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.sort_field.setLayer(self.layer.currentLayer())
 
         self.setup_ui()
+        self.check_layer_wfs()
+
+    def check_layer_wfs(self):
+        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            self.show_error(tr('A layer is mandatory.'))
+            return
+
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        self.show_error(not_in_wfs)
 
     def validate(self) -> str:
         layer = self.layer.currentLayer()

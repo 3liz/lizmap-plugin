@@ -41,6 +41,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('custom_config', self.label_has_custom_config)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.layer_changed)
         self.layer.layerChanged.connect(self.field_primary_key.setLayer)
         self.field_primary_key.setLayer(self.layer.currentLayer())
@@ -48,6 +49,17 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.fields_to_hide.set_layer(self.layer.currentLayer())
 
         self.setup_ui()
+        self.check_layer_wfs()
+
+    def check_layer_wfs(self):
+        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            self.show_error(tr('A layer is mandatory.'))
+            return
+
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        self.show_error(not_in_wfs)
 
     def post_load_form(self):
         self.layer_changed()

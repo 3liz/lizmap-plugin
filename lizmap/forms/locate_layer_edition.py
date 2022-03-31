@@ -36,6 +36,7 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('filterOnLocate', self.label_filter_layer)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.display_field.setLayer)
         self.layer.layerChanged.connect(self.field_group_by.setLayer)
 
@@ -46,6 +47,17 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         self.field_group_by.setLayer(self.layer.currentLayer())
 
         self.setup_ui()
+        self.check_layer_wfs()
+
+    def check_layer_wfs(self):
+        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            self.show_error(tr('A layer is mandatory.'))
+            return
+
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        self.show_error(not_in_wfs)
 
     def validate(self) -> str:
         upstream = super().validate()

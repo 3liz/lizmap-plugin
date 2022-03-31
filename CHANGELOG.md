@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Desktop - Always check if the layer is published as WFS when opening the dialog instead of at the end
 * Desktop - Add a new button to generate an HTML table from layer fields, like the auto popup
 * Desktop - Add some checks about spaces or accents in filename when opening the QGS file
 

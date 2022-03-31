@@ -55,6 +55,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('provider', self.label_provider)
 
         self.layer.layerChanged.connect(self.layer_changed)
+        self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         providers = QgsProviderRegistry.instance().providerList()
         providers.remove('postgres')
@@ -66,6 +67,17 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         ]
 
         self.setup_ui()
+        self.check_layer_wfs()
+
+    def check_layer_wfs(self):
+        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            self.show_error(tr('A layer is mandatory.'))
+            return
+
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        self.show_error(not_in_wfs)
 
     def post_load_form(self):
         self.layer_changed()

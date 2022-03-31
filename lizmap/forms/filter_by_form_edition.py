@@ -49,6 +49,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
+        self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.field.setLayer)
         self.layer.layerChanged.connect(self.min_date.setLayer)
         self.layer.layerChanged.connect(self.max_date.setLayer)
@@ -73,6 +74,17 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
         self.update_visibility()
         self.type.currentIndexChanged.connect(self.update_visibility)
+        self.check_layer_wfs()
+
+    def check_layer_wfs(self):
+        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            self.show_error(tr('A layer is mandatory.'))
+            return
+
+        not_in_wfs = self.is_layer_in_wfs(layer)
+        self.show_error(not_in_wfs)
 
     def update_visibility(self):
         """Show/Hide fields depending of chosen type."""
