@@ -190,6 +190,16 @@ class TestToolTip(unittest.TestCase):
         self.assertEqual(expected, expression)
         self.check_layer_context('a', expression, 'A')
 
+    def test_empty_value_map(self):
+        """ Test empty value map. """
+        # This test is a special one, the widget is not fully configured in the QGIS UI.
+        widget_config = {
+            'map': None
+        }
+        expression = Tooltip._generate_value_map(widget_config, 'field_a')
+        self.assertEqual("''", expression)
+        self.check_layer_context('a', expression, '')
+
     def test_value_map_with_quote(self):
         """Test we can generate a value map with some quotes."""
         widget_config = {

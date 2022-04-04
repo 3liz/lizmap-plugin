@@ -246,6 +246,11 @@ class Tooltip:
         else:
             # It's not a list, it's a dict.
             values = widget_config['map']
+
+            if values is None:
+                # The list is empty, the widget is not fully configured
+                return "''"
+
             if values.get('<NULL>'):
                 del values['<NULL>']
             values = {escape_value(y): escape_value(x) for x, y in values.items()}
