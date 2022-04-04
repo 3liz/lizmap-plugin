@@ -318,12 +318,17 @@ class Tooltip:
 
     @staticmethod
     def _generate_date(widget_config: dict, name: str):
-        dfor = widget_config['display_format']
+        date_format = widget_config.get('display_format')
+
+        if not date_format:
+            # Fallback to ISO 8601, when the widget has not been configured yet
+            date_format = "yyyy-MM-dd"
+
         field_view = '''
                     format_date(
                         "{}",
                         '{}'
-                    )'''.format(name, dfor)
+                    )'''.format(name, date_format)
         return field_view
 
     @staticmethod

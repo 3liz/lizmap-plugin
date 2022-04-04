@@ -5,6 +5,7 @@
 * Desktop - Always check if the layer is published as WFS when opening the dialog instead of at the end
 * Desktop - Add a new button to generate an HTML table from layer fields, like the auto popup
 * Desktop - Add some checks about spaces or accents in filename when opening the QGS file
+* Desktop and server - Fix a Python exception when using the tooltip from Drag&Drop if the date format is not set yet
 
 ## 3.7.6 - 2022-03-25
 
