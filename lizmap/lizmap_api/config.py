@@ -242,10 +242,10 @@ class LizmapConfig:
         'fixed_scale_overview_map': {
             'wType': 'checkbox',
             'type': 'boolean',
-            'default': False,
+            'default': True,
             'tooltip': tr(
-                "If not checked, the overview map will follow the scale of the main map with a small scale. "
-                "If disabled, the overview map will have a fixed scale covering the project extent."
+                "If checked, the overview map will have a fixed scale covering the Lizmap initial extent. "
+                "If not checked, the overview map will follow the scale of the main map with a smaller scale."
             ),
             'use_proper_boolean': True,
         }

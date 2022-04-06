@@ -223,6 +223,7 @@ class Lizmap:
                 self.dlg.liPopupSource.findText('form')
             ),
             self.dlg.label_filter_polygon,
+            self.dlg.checkbox_scale_overiew_map,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [
             self.dlg.checkbox_popup_allow_download,
