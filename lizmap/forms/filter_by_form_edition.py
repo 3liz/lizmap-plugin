@@ -6,8 +6,9 @@ from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.tools import is_database_layer
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -64,11 +65,8 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
         block_list = []
         for layer in QgsProject().instance().mapLayers().values():
-            if layer.providerType() not in ('ogr', 'postgres', 'spatialite'):
+            if not is_database_layer(layer):
                 block_list.append(layer)
-            if layer.providerType() == 'ogr':
-                if '|layername=' not in layer.dataProvider().dataSourceUri():
-                    block_list.append(layer)
         self.layer.setExceptedLayerList(block_list)
 
         self.setup_ui()
