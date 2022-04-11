@@ -16,6 +16,12 @@ __email__ = 'info@3liz.org'
 
 class TestVersionInfo(unittest.TestCase):
 
+    def test_split_lizmap_version(self):
+        """ Test to split the LWC version. """
+        self.assertTupleEqual(ServerManager._split_lizmap_version("3.5.2"), (3, 5, 2))
+        self.assertTupleEqual(ServerManager._split_lizmap_version("3.5.2-pre"), (3, 5, 2, 'pre'))
+        self.assertTupleEqual(ServerManager._split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, 'pre', 5204))
+
     def test_version_info(self):
         """ Test version info according to LWC version and QGIS version. """
 
@@ -37,6 +43,21 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.6.0', '', 'bob_is_admin', json_path),
             (Qgis.Success, ['A dev version, warrior ! 👍'])
+        )
+
+        # 3.5.1 with error
+        self.assertEqual(
+            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, error='HTTP_ERROR'),
+            (Qgis.Critical, [
+                'Please check your "Server Information" panel in the Lizmap administration interface. There is an '
+                'error reading the QGIS Server configuration.'
+            ])
+        )
+
+        # 3.5.1 with login denied
+        self.assertEqual(
+            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, error='NO_ACCESS'),
+            (None, ['The login is not an administrator'])
         )
 
         # 3.5.1
@@ -76,6 +97,17 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9', '', '', json_path),
             (Qgis.Success, ['👍'])
+        )
+
+        # Latest 3.4.9-pre
+        self.assertEqual(
+            ServerManager._messages_for_version('3.4.9-pre', '', '', json_path),
+            (
+                Qgis.Warning, [
+                    'Not latest bugfix release, 3.4.9 is available',
+                    ' and you are not running a production package'
+                ]
+            )
         )
 
         # 3.4.8

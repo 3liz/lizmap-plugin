@@ -387,23 +387,25 @@ class ServerManager:
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)
 
+        # LWC version split
+        lizmap_version_split = self._split_lizmap_version(lizmap_version)
+        branch = lizmap_version_split[0], lizmap_version_split[1]
+
+        # QGIS Server info
+        qgis_server_info = content.get('qgis_server_info')
+
         # QGIS Server version
-        qgis_version = None
-        if not content.get('qgis_server_info') and lizmap_version.startswith('3.5'):
+        if not qgis_server_info and branch == (3, 5):
             # Running > 3.5.x-pre but < 3.5.1
             # We bypass the metadata section
-            self.update_action_version(lizmap_version, qgis_version, row, login)
+            self.update_action_version(lizmap_version, None, row, login)
             # Make a better warning to upgrade ASAP
             markdown += '* QGIS Server and plugins unknown status\n'
             qgis_cell.setData(Qt.UserRole, markdown)
             return
 
-        lizmap_version_split = lizmap_version.split('.')
-        branch = (int(lizmap_version_split[0]), int(lizmap_version_split[1]))
-
-        qgis_server_info = content.get('qgis_server_info')
         if qgis_server_info and "error" not in qgis_server_info.keys():
-            # The current user is an admin, running at least LWC 3.5.1
+            # The current user is an admin, running at least LWC >= 3.5.1
             qgis_version = qgis_server_info.get('metadata').get('version')
             qgis_cell.setText(qgis_version)
 
@@ -413,7 +415,11 @@ class ServerManager:
             markdown += '* QGIS Server : {}\n'.format(qgis_version)
             for plugin, info in plugins.items():
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
-        elif branch < (3, 5):
+            qgis_cell.setData(Qt.UserRole, markdown)
+            self.update_action_version(lizmap_version, qgis_version, row, login)
+            return
+
+        if branch < (3, 5):
             # Running LWC < 3.5.X
             markdown += '* QGIS Server and plugins unknown status because running Lizmap Web Client < 3.5\n'
             font = qgis_cell.font()
@@ -422,15 +428,42 @@ class ServerManager:
             qgis_cell.setText(tr("Not possible"))
             qgis_cell.setToolTip(
                 tr("Not possible to determine QGIS Server version because you need at least Lizmap Web Client 3.5"))
-        elif branch >= (3, 5) and not login:
-            # No admin login provided and running LWC >= 3.5
-            markdown += '* QGIS Server and plugins unknown status because no admin login provided\n'
-        else:
-            # Unknown
-            markdown += '* QGIS Server and plugins unknown status\n'
+            qgis_cell.setData(Qt.UserRole, markdown)
+            self.update_action_version(lizmap_version, None, row)
+            return
 
+        if branch >= (3, 5):
+            # QGIS Server is either not setup or no login
+            if not login:
+                # No admin login provided and running LWC >= 3.5
+                markdown += '* QGIS Server and plugins unknown status because no admin login provided\n'
+                qgis_cell.setData(Qt.UserRole, markdown)
+                self.update_action_version(lizmap_version, None, row)
+                return
+            else:
+                if "error" in qgis_server_info.keys():
+                    if qgis_server_info['error'] == 'NO_ACCESS':
+                        markdown += (
+                            '* QGIS Server and plugins unknown status because the login provided is not an '
+                            'administrator\n'
+                        )
+                        qgis_cell.setData(Qt.UserRole, markdown)
+                        self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
+                        return
+
+                    markdown += (
+                        '* QGIS Server and plugins unknown status because of the settings in QGIS Server, '
+                        'please review your server settings in the Lizmap Web Client administration interface, '
+                        'then in the "Server Information" panel.\n'
+                    )
+                    qgis_cell.setData(Qt.UserRole, markdown)
+                    self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
+                    return
+
+        # Unknown
+        markdown += '* QGIS Server and plugins unknown status\n'
         qgis_cell.setData(Qt.UserRole, markdown)
-        self.update_action_version(lizmap_version, qgis_version, row, login)
+        self.update_action_version(lizmap_version, None, row)
 
     def load_table(self):
         """ Load the table by reading the user configuration file. """
@@ -475,17 +508,21 @@ class ServerManager:
         self.label_no_server.setVisible(self.table.rowCount() == 0)
 
     def update_action_version(
-            self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str):
+            self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str = None,
+            error: str = None,
+    ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
         version_file = Path(lizmap_user_folder()).joinpath('released_versions.json')
         if not version_file.exists():
             return
-        level, messages = self._messages_for_version(lizmap_version, qgis_version, login, version_file)
+
+        level, messages = self._messages_for_version(lizmap_version, qgis_version, login, version_file, error)
         self.display_action(row, level, '\n'.join(messages))
 
     @staticmethod
     def _messages_for_version(
-            lizmap_version: str, qgis_version: Union[str, None], login: str, json_path: Path
+            lizmap_version: str, qgis_version: Union[str, None], login: str, json_path: Path,
+            error: str = '',
     ) -> Tuple[Qgis.MessageLevel, List[str]]:
         """Returns the list of messages and the color to use."""
 
@@ -564,10 +601,22 @@ class ServerManager:
                             # Pre-release, maybe the package got some updates
                             messages.append(' ' + tr('and you are not running a production package'))
 
-                # TODO check the login against the response from QGIS Server if the user is not admin
-                if not login and int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
-                    messages.append(tr('No login provided'))
-                    level = Qgis.Warning
+                if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
+                    # Running 3.5.X
+                    if not login:
+                        messages.append(tr('No login provided'))
+                        level = Qgis.Warning
+
+                    if login and error == "NO_ACCESS":
+                        messages.append(tr('The login is not an administrator'))
+                        level = None  # Not blocking, None will make it default font color
+
+                    if login and error and error != 'NO_ACCESS':
+                        messages.append(tr(
+                            'Please check your "Server Information" panel in the Lizmap administration interface. '
+                            'There is an error reading the QGIS Server configuration.'
+                        ))
+                        level = Qgis.Critical
 
                 if len(messages) == 0:
                     level = Qgis.Success
@@ -577,6 +626,38 @@ class ServerManager:
 
         # This should not happen
         return Qgis.Critical, [f"Version {branch} has not been detected as a known version."]
+
+    @staticmethod
+    def _split_lizmap_version(lwc_version: str) -> tuple:
+        """ Split a Lizmap Web Client version. """
+        lizmap_version_split = lwc_version.split('.')
+        items_bugfix = lizmap_version_split[2].split('-')
+        is_pre_package = len(items_bugfix) > 1
+        if not is_pre_package:
+            # 3.5.2
+            return (
+                int(lizmap_version_split[0]),
+                int(lizmap_version_split[1]),
+                int(lizmap_version_split[2]),
+            )
+
+        if len(lizmap_version_split) == 3:
+            # 3.5.2-pre
+            return (
+                int(lizmap_version_split[0]),
+                int(lizmap_version_split[1]),
+                int(items_bugfix[0]),
+                items_bugfix[1],
+            )
+
+        # 3.5.2-pre.5204
+        return (
+            int(lizmap_version_split[0]),
+            int(lizmap_version_split[1]),
+            int(items_bugfix[0]),
+            items_bugfix[1],
+            int(lizmap_version_split[3]),
+        )
 
     def display_action(self, row, level, message):
         """ Display the action if needed to the user with a color. """
@@ -590,9 +671,13 @@ class ServerManager:
         elif level == Qgis.Warning:
             color = Color.Advice.value
         else:
-            color = Color.Normal.value
+            # color = Color.Normal.value
+            color = None
 
-        cell.setData(Qt.ForegroundRole, QVariant(color))
+        if color:
+            cell.setData(Qt.ForegroundRole, QVariant(color))
+        else:
+            cell.setData(Qt.ForegroundRole, None)
         self.table.setItem(row, TableCell.Action.value, cell)
 
     def context_menu_requested(self, position: QPoint):
