@@ -2676,7 +2676,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_28">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add some layers as a source of the locating tool. For your information, Lizmap provides another way, with better performance in some cases, using a &amp;quot;&lt;a href=&quot;https://docs.lizmap.com/current/en/publish/advanced_lizmap_config.html#postgresql-search&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;lizmap_search&lt;/span&gt;&lt;/a&gt;&amp;quot; table in PostgreSQL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add some layers as a source of the locating tool. For your information, Lizmap provides another way, with better performance in some cases, using a &amp;quot;&lt;a href=&quot;https://docs.lizmap.com/current/en/publish/configuration/spatial_search.html#postgresql-search&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;lizmap_search&lt;/span&gt;&lt;/a&gt;&amp;quot; table in PostgreSQL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
