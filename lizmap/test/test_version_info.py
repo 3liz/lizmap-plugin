@@ -56,7 +56,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.1 with login denied
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, error='NO_ACCESS'),
+            ServerManager._messages_for_version('3.5.1', '', 'bob_is_not_admin', json_path, error='NO_ACCESS'),
             (None, ['The login is not an administrator'])
         )
 
