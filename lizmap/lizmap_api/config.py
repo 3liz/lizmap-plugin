@@ -246,7 +246,7 @@ class LizmapConfig:
             'tooltip': tr(
                 "If checked, the overview map will have a fixed scale covering the Lizmap initial extent. "
                 "If not checked, the overview map will follow the scale of the main map with a smaller scale."
-            ),
+            ) + " " + tr("New in Lizmap Web Client 3.5.3"),
             'use_proper_boolean': True,
         }
     }
