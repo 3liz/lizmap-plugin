@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.7.7 - 2022-04-13
+
 * Desktop - Better message if there is an error when fetching data from QGIS Server
 * Desktop - Fix link to the documentation about the PostgreSQL search `lizmap_search`
 * Desktop - Always check if the layer is published as WFS when opening the dialog instead of at the end
