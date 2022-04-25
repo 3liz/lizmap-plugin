@@ -42,7 +42,8 @@ class GetFeatureInfoFilter(QgsServerFilter):
         root = ET.fromstring(string)
         for layer in root:
             for feature in layer:
-                yield layer.attrib['name'], feature.attrib['id']
+                if feature.attrib.get('id'):
+                    yield layer.attrib['name'], feature.attrib['id']
 
     @classmethod
     def append_maptip(cls, string: str, layer_name: str, feature_id: Union[str, int], maptip: str) -> str:
@@ -72,13 +73,13 @@ class GetFeatureInfoFilter(QgsServerFilter):
         return xml_string.strip()
 
     @classmethod
-    def feature_list_to_replace(cls, cfg, project, relation_manager, xml) -> List[Result]:
+    def feature_list_to_replace(cls, cfg: dict, project: QgsProject, relation_manager, xml) -> List[Result]:
         """ Parse the XML and check for each layer according to the Lizmap CFG file. """
         features = []
         for layer_name, feature_id in GetFeatureInfoFilter.parse_xml(xml):
             layer = find_vector_layer(layer_name, project)
             if not layer:
-                Logger.warning("Skipping the layer '{}'".format(layer_name))
+                Logger.info("Skipping the layer '{}' because it's not a vector layer".format(layer_name))
                 continue
 
             if layer_name != layer.name():

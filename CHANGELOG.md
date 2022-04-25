@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Server - Fix Python exception when GetFeatureInfo does not have a feature ID
+
 ## 3.7.7 - 2022-04-13
 
 * Desktop - Better message if there is an error when fetching data from QGIS Server
