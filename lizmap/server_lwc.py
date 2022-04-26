@@ -131,7 +131,7 @@ class ServerManager:
         item.setToolTip(tooltip)
         self.table.setHorizontalHeaderItem(TableCell.LizmapVersion.value, item)
 
-        item = QTableWidgetItem(tr('QGIS Version'))
+        item = QTableWidgetItem(tr('QGIS Server Version'))
         item.setToolTip(tooltip)
         self.table.setHorizontalHeaderItem(TableCell.QgisVersion.value, item)
 
