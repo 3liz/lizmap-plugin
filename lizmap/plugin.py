@@ -2035,9 +2035,15 @@ class Lizmap:
         valid, _ = self.check_project_validity()
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
+        if current_version in ('dev', 'master'):
+            next_version = next_git_tag()
+            if next_version != 'next':
+                current_version = next_version
+
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
-            'lizmap_plugin_version': self.global_options['metadata']['lizmap_plugin_version']['default'],
+            'lizmap_plugin_version': current_version,
             'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
         }
         if valid is not None:
