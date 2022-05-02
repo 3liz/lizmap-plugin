@@ -242,6 +242,7 @@ class LizmapConfig:
         'fixed_scale_overview_map': {
             'wType': 'checkbox',
             'type': 'boolean',
+            'always_export': True,
             'default': True,
             'tooltip': tr(
                 "If checked, the overview map will have a fixed scale covering the Lizmap initial extent. "
