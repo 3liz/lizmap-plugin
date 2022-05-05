@@ -24,4 +24,4 @@ changelog=changelog
 icon=resources/icons/icon.png
 experimental=False
 deprecated=False
-server=True
+server=False
