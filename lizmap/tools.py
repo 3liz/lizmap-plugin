@@ -50,6 +50,7 @@ import unicodedata
 import urllib.parse
 
 from os.path import abspath, join
+from typing import Union
 
 from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QDir
@@ -185,3 +186,15 @@ def next_git_tag():
     versions = tag.split('.')
     text = '{}.{}.{}-pre'.format(versions[0], versions[1], int(versions[2]) + 1)
     return text
+
+
+def to_bool(val: Union[str, int, float, bool], default_value: bool = True) -> bool:
+    """ Convert lizmap config value to boolean """
+    if isinstance(val, str):
+        # For string, compare lower value to True string
+        return val.lower() in ('yes', 'true', 't', '1')
+    elif not val:
+        # For value like False, 0, 0.0, None, empty list or dict returns False
+        return False
+    else:
+        return default_value

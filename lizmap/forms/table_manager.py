@@ -19,7 +19,7 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
-from lizmap.server.tools import to_bool
+from lizmap.tools import to_bool
 
 LOGGER = logging.getLogger(plugin_name())
 
