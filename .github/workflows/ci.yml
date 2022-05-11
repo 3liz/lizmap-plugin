@@ -9,13 +9,11 @@ on:
     paths:
       - 'lizmap/**'
       - '.docker/**'
-      - 'test/**'
   pull_request:
     branches:
       - master
     paths:
       - 'lizmap/**'
-      - 'test/**'
 
 jobs:
 
@@ -45,7 +43,7 @@ jobs:
       - name: Run flake8
         run: flake8
 
-  test-desktop:
+  tests:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -60,47 +58,8 @@ jobs:
       - name: Running tests
         run: ./exec.sh
 
-  test-server:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        qgis_version: [
-          "3.16",
-          "3.22",
-          "nightly-release",
-        ]
-
-    steps:
-
-      - name: Check out repository
-        uses: actions/checkout@v2
-        with:
-          submodules: 'true'
-
-      - name: Create dir
-        run: |
-          mkdir .local
-          mkdir .cache
-
-      - name: Running tests
-        run: >-
-          docker run
-          --rm
-          --name qgis-server
-          -u $(id -u)
-          -v ${GITHUB_WORKSPACE}/.cache:/.cache
-          -e PIP_CACHE_DIR=/.cache
-          -w /src/test/server
-          -e PYTEST_ADDOPTS=""
-          -e QGIS_SERVER_LIZMAP_REVEAL_SETTINGS=TRUE
-          -e CI="True"
-          -v ${GITHUB_WORKSPACE}:/src
-          -v ${GITHUB_WORKSPACE}/.local:/.local
-          3liz/qgis-platform:${{ matrix.qgis_version }}
-          ./run-tests.sh
-
   release:
-    needs: [test-desktop, test-server, flake8]
+    needs: [tests, flake8]
 
     runs-on: ubuntu-latest
     if: github.repository_owner == '3liz' && contains(github.ref, 'refs/tags/')
@@ -157,7 +116,7 @@ jobs:
           consumer_secret: ${{ secrets.TWITTER_CONSUMER_SECRET }}
           access_token_key: ${{ secrets.TWITTER_ACCESS_TOKEN_KEY }}
           access_token_secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-          tweet_body: "New version of @LizmapForQgis plugin ${{ env.RELEASE_VERSION }} 🦎 on #QGIS https://github.com/3liz/lizmap-plugin/releases"
+          tweet_body: "New version of @LizmapForQgis desktop plugin ${{ env.RELEASE_VERSION }} 🦎 on #QGIS https://github.com/3liz/lizmap-plugin/releases"
 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2

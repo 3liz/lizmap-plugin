@@ -58,13 +58,3 @@ try:
 except ImportError:
     # We may not have this package when running on a server.
     pass
-
-
-def serverClassFactory(serverIface):  # pylint: disable=invalid-name
-    """Load Lizmap server class.
-
-    :param serverIface: A QGIS Server interface instance.
-    :type serverIface: QgsServerInterface
-    """
-    from lizmap.server.lizmap_server import LizmapServer
-    return LizmapServer(serverIface)

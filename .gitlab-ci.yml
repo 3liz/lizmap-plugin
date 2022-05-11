@@ -8,22 +8,6 @@ stages:
 - deploy 🚀
 - release
 
-test:server:
-  stage: test
-  parallel:
-    matrix:
-      - QGIS_VERSION: [
-        "3.16",
-        "3.22",
-        "nightly-release",
-      ]
-  script:
-    - make test_server FLAVOR=${QGIS_VERSION}
-  environment:
-    name: snap
-  tags:
-    - infrav3
-
 package:
   stage: package 📦
   before_script:
@@ -58,7 +42,3 @@ deploy:
     - upload_to_packages_server lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip pub/lizmap-qgis-plugin/${CI_COMMIT_REF_NAME}
   tags:
     - fabric
-
-
-# Infrav3 build
-include: '/.lizcloud/.gitlab-ci.yml'

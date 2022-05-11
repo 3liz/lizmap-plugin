@@ -64,45 +64,6 @@ If it's from a previous GitHub repository:
 
 [GitHub documentation](https://github.com/3liz/lizmap-documentation)
 
-#### Lizmap server API
-
-Lizmap is also a QGIS Server plugin.
-
-Starting from Lizmap 3.4, the plugin is **highly** recommended.
-
-To enable all features in Lizmap Web Client, read the documentation about the
-[environment variable](https://docs.lizmap.com/3.5/en/install/pre_requirements.html#lizmap-server-plugin)
-on the QGIS server side.
-
-* lizmap/server.json
-* SERVICE=LIZMAP
-    * ~REQUEST=GetServerSettings~ deprecated for the JSON URL above
-    * REQUEST=GetSubsetString
-      * LAYER=
-      * LIZMAP_USER_GROUPS=
-* SERVICE=EXPRESSION
-    * REQUEST=VirtualFields
-        * VIRTUALS=
-        * FILTER=
-        * FIELDS=
-        * WITH_GEOMETRY=true
-    * REQUEST=replaceExpressionText
-        * STRING=
-        * STRINGS=
-        * FEATURE=
-        * FEATURES=
-        * FORM_SCOPE=
-    * REQUEST=GetFeatureWithFormScope
-        * FILTER=
-        * FORM_FEATURE=
-        * WITH_GEOMETRY=
-        * FIELDS=
-    * REQUEST=Evaluate
-        * EXPRESSIONS=
-        * FEATURE=
-        * FEATURES=
-        * FORM_SCOPE=
-
 ### Contributors
 
 * Salvatore Larosa  @slarosa

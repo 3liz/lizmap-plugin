@@ -1,5 +1,10 @@
 """Create QGIS tooltip from Drag&Drop designer form."""
 
+# BE CAREFUL
+# This file MUST BE an exact copy between
+# Desktop lizmap/tooltip.py
+# Server lizmap_server/tooltip.py
+
 import logging
 import re
 
@@ -407,3 +412,8 @@ class Tooltip:
 
 </style>\n'''
         return css
+
+# BE CAREFUL
+# This file MUST BE an exact copy between
+# Desktop lizmap/tooltip.py
+# Server lizmap_server/tooltip.py
