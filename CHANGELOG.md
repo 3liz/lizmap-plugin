@@ -2,8 +2,8 @@
 
 ## Unreleased
 
-* Desktop - Always export the new checkbox for a fixed scale in the overview map
-* Server - Fix Python exception when GetFeatureInfo does not have a feature ID
+* Always export the new checkbox for a fixed scale in the overview map
+* Remove the code related to the server side. It's a new plugin called "Lizmap server" now.
 
 ## 3.7.7 - 2022-04-13
 
