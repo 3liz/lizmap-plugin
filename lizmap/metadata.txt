@@ -1,6 +1,6 @@
 [general]
 name=Lizmap
-qgisMinimumVersion=3.4
+qgisMinimumVersion=3.10
 qgisMaximumVersion=3.99
 author=3Liz
 email=info@3liz.com
