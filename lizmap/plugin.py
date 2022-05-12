@@ -227,6 +227,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [
             self.dlg.checkbox_popup_allow_download,
+            self.dlg.cb_open_topo_map,
         ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
@@ -386,6 +387,7 @@ class Lizmap:
         self.global_options['googleStreets']['widget'] = self.dlg.cbGoogleStreets
         self.global_options['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
         self.global_options['osmStamenToner']['widget'] = self.dlg.cbOsmStamenToner
+        self.global_options['openTopoMap']['widget'] = self.dlg.cb_open_topo_map
         self.global_options['bingKey']['widget'] = self.dlg.inBingKey
         self.global_options['bingStreets']['widget'] = self.dlg.cbBingStreets
         self.global_options['bingSatellite']['widget'] = self.dlg.cbBingSatellite
@@ -522,6 +524,7 @@ class Lizmap:
             'layer': self.dlg.cbLayerIsBaseLayer,
             'osm-mapnik': self.dlg.cbOsmMapnik,
             'osm-stamen-toner': self.dlg.cbOsmStamenToner,
+            'opentopomap': self.dlg.cb_open_topo_map,
             'google-street': self.dlg.cbGoogleStreets,
             'google-satellite': self.dlg.cbGoogleSatellite,
             'google-hybrid': self.dlg.cbGoogleHybrid,
@@ -2421,10 +2424,11 @@ class Lizmap:
         if is_valid:
             # Get configuration from input fields
 
-            # Need to get theses values to check for Pseudo Mercator projection
+            # Need to get these values to check for Pseudo Mercator projection
             mercator_layers = [
                 self.dlg.cbOsmMapnik.isChecked(),
                 self.dlg.cbOsmStamenToner.isChecked(),
+                self.dlg.cb_open_topo_map.isChecked(),
                 self.dlg.cbGoogleStreets.isChecked(),
                 self.dlg.cbGoogleSatellite.isChecked(),
                 self.dlg.cbGoogleHybrid.isChecked(),

@@ -123,6 +123,10 @@ class LizmapConfig:
         'osmStamenToner': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
         },
+        'openTopoMap': {
+            'wType': 'checkbox', 'type': 'boolean', 'default': False,
+            'use_proper_boolean': True,
+        },
         'bingKey': {
             'wType': 'text', 'type': 'string', 'default': ''
         },
