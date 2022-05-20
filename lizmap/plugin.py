@@ -194,6 +194,16 @@ class Lizmap:
         self.popup_dialog = None
         self.layers_table = dict()
 
+        # List of ui widget for data driven actions and checking
+        self.layer_options_list = LizmapConfig.layerOptionDefinitions
+        self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
+        # Fill the combobox from the Lizmap API
+        for option in self.layer_options_list['legend_image_option']['list']:
+            data, label, tooltip, icon = option
+            self.dlg.combo_legend_option.addItem(QIcon(icon), label, data)
+            index = self.dlg.combo_legend_option.findData(data)
+            self.dlg.combo_legend_option.setItemData(index, tooltip, Qt.ToolTipRole)
+
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
         self.lwc_versions = OrderedDict()
@@ -226,6 +236,9 @@ class Lizmap:
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [
             self.dlg.checkbox_popup_allow_download,
             self.dlg.cb_open_topo_map,
+            self.dlg.combo_legend_option.model().item(
+                self.dlg.combo_legend_option.findData('expand_at_startup')
+            ),
         ]
         self.lizmap_server_plugin = [
             self.dlg.label_group_visibility,
@@ -441,7 +454,7 @@ class Lizmap:
         self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
         self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
         self.layer_options_list['popup_allow_download']['widget'] = self.dlg.checkbox_popup_allow_download
-        self.layer_options_list['noLegendImage']['widget'] = self.dlg.cbNoLegendImage
+        self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
         self.layer_options_list['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
         self.layer_options_list['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
         self.layer_options_list['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
@@ -501,7 +514,7 @@ class Lizmap:
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
-            if item['widget']:
+            if item.get('widget'):
                 control = item['widget']
                 slot = partial(self.set_layer_property, key)
                 if item['wType'] in ('text', 'spinbox'):
@@ -1033,7 +1046,7 @@ class Lizmap:
     def enable_check_box(self, value):
         """Enable/Disable checkboxes and fields of the Layer tab."""
         for key, item in self.layer_options_list.items():
-            if item['widget'] and key != 'sourceProject':
+            if item.get('widget') and key != 'sourceProject':
                 item['widget'].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
         self.dlg.btQgisPopupFromForm.setEnabled(value)
@@ -1535,7 +1548,7 @@ class Lizmap:
             # loop through layer options to override
             for key, item in self.layer_options_list.items():
                 # override only for ui widgets
-                if item['widget']:
+                if item.get('widget'):
                     if key in jsonLayers[jsonKey]:
                         # checkboxes
                         if item['wType'] == 'checkbox':
@@ -1693,7 +1706,7 @@ class Lizmap:
 
             # set options
             for key, val in self.layer_options_list.items():
-                if val['widget']:
+                if val.get('widget'):
 
                     if val.get('tooltip'):
                         val['widget'].setToolTip(val.get('tooltip'))
@@ -1725,8 +1738,19 @@ class Lizmap:
                                     self.layer_options_list[children]['widget'].setChecked(False)
 
                     elif val['wType'] == 'list':
-                        listDic = {val['list'][i]: i for i in range(0, len(val['list']))}
-                        val['widget'].setCurrentIndex(listDic[selectedItem[key]])
+                        if isinstance(val['list'][0], tuple):
+                            # LWC 3.6 with tooltip, data and label
+                            index = val['widget'].findData(selectedItem[key])
+                        else:
+                            # Old way
+                            list_dict = {val['list'][i]: i for i in range(0, len(val['list']))}
+                            index = list_dict[selectedItem[key]]
+
+                        if index < 0 and val.get('default'):
+                            # Get back to default
+                            index = val['widget'].findData(val['default'])
+
+                        val['widget'].setCurrentIndex(index)
 
                     # deactivate wms checkbox if not needed
                     if key == 'externalWmsToggle':
@@ -1771,7 +1795,7 @@ class Lizmap:
             #     tooltip = tr("If the layer is displayed by default")
             #     self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
             # else:
-            #     # It depends of the "Group as layer" checked or not, so it's has a signal
+            #     # It depends on the "Group as layer" checked or not, so it has a signal
             #     self.layer_options_list['groupAsLayer']['widget'].stateChanged.connect(
             #         self.enable_or_not_toggle_checkbox)
             #     self.enable_or_not_toggle_checkbox()
@@ -1787,7 +1811,7 @@ class Lizmap:
         else:
             # set default values for this layer/group
             for key, val in self.layer_options_list.items():
-                if val['widget']:
+                if val.get('widget'):
                     if val['wType'] in ('text', 'textarea'):
                         if isinstance(val['default'], (list, tuple)):
                             text = ','.join(val['default'])
@@ -1799,8 +1823,15 @@ class Lizmap:
                     elif val['wType'] == 'checkbox':
                         val['widget'].setChecked(val['default'])
                     elif val['wType'] == 'list':
-                        listDic = {val['list'][i]: i for i in range(0, len(val['list']))}
-                        val['widget'].setCurrentIndex(listDic[val['default']])
+
+                        if isinstance(val['list'][0], tuple):
+                            # LWC 3.6 with tooltip, data and label
+                            index = val['widget'].findData(val['default'])
+                        else:
+                            # Old way
+                            list_dict = {val['list'][i]: i for i in range(0, len(val['list']))}
+                            index = list_dict[val['default']]
+                        val['widget'].setCurrentIndex(index)
 
         self.enable_popup_source_button()
 
@@ -2205,6 +2236,9 @@ class Lizmap:
                 if val['type'] == 'string':
                     if val['wType'] in ('text', 'textarea'):
                         propVal = str(propVal)
+                    elif val['wType'] == 'list' and isinstance(propVal, tuple):
+                        # Process later, do not cast for now
+                        pass
                     else:
                         propVal = str(propVal)
                 elif val['type'] == 'integer':
@@ -2215,6 +2249,25 @@ class Lizmap:
                 elif val['type'] == 'boolean':
                     if not val.get('use_proper_boolean'):
                         propVal = str(propVal)
+
+                if key in ('legend_image_option', 'noLegendImage'):
+
+                    target_version = self.dlg.combo_lwc_version.currentData()
+                    max_version = val.get('max_version')
+                    if max_version and target_version > max_version:
+                        continue
+
+                    min_version = val.get('min_version')
+                    if min_version and target_version < min_version:
+                        continue
+
+                    if key == 'noLegendImage':
+                        # We take the value of legend_image_option
+                        propVal = 'True' if v['legend_image_option'][0] == 'disabled' else 'False'
+
+                    if isinstance(propVal, tuple):
+                        propVal = propVal[0]
+
                 layerOptions[key] = propVal
 
             # Cache Metatile: unset metatileSize if empty
