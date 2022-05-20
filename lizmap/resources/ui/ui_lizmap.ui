@@ -1042,8 +1042,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    <layout class="QHBoxLayout" name="horizontalLayout_19">
                     <item>
                      <widget class="QPushButton" name="btSetExtentFromProject">
+                      <property name="toolTip">
+                       <string>In the project properties, then QGIS server tab, WMS section, there is an advertised extent</string>
+                      </property>
                       <property name="text">
-                       <string>Set from project properties</string>
+                       <string>Set from project properties, QGIS server tab</string>
                       </property>
                      </widget>
                     </item>
