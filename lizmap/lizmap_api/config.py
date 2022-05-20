@@ -50,6 +50,7 @@ import os
 
 from qgis.core import QgsMapLayer, QgsProject
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import (
@@ -303,7 +304,33 @@ class LizmapConfig:
             'use_proper_boolean': True,
         },
         'noLegendImage': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
+            'wType': 'checkbox', 'type': 'boolean', 'default': False,
+            'max_version': LwcVersions.Lizmap_3_5,
+        },
+        'legend_image_option': {
+            'wType': 'list', 'type': 'string', 'default': 'hide_at_startup',
+            'list': [
+                (
+                    'hide_at_startup',
+                    tr('Hide legend image at startup'),
+                    tr('The layer legend can be displayed by clicking on the arrow button.'),
+                    ':images/themes/default/mActionHideAllLayers.svg',
+                ), (
+                    'expand_at_startup',
+                    tr('Show legend image at startup'),
+                    tr(
+                        'The legend image will be displayed be default at startup. This will make more request to QGIS '
+                        'server. Use with cautious.'
+                    ),
+                    ':images/themes/default/mActionShowAllLayers.svg',
+                ), (
+                    'disabled',
+                    tr('Disable the legend image'),
+                    tr('The legend image won\'t be available for display.'),
+                    ':images/themes/default/mTaskCancel.svg',
+                ),
+            ],
+            'min_version': LwcVersions.Lizmap_3_6,
         },
         'groupAsLayer': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False
@@ -351,34 +378,27 @@ class LizmapConfig:
     }
 
 
-    timemanagerOptionDefinitions = {
-        'attributeResolution': {
-            'wType': 'list', 'type': 'string', 'default': 'years',
-            'list': ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'year']
-        }
-    }
-
-    datavizOptionDefinitions = {
-        'plotType': {
-            'wType': 'list', 'type': 'string', 'default': 'scatter',
-            'list': ['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar', 'sunburst']
-        },
-        'plotAggregation': {
-            'wType': 'list', 'type': 'string', 'default': '',
-            'list': ['', 'avg', 'sum', 'count', 'median', 'stddev', 'min', 'max', 'first', 'last']
-        }
-    }
-
-    formFilterOptionDefinitions = {
-        'type': {
-            'wType': 'list', 'type': 'string', 'default': 'text',
-            'list': ['text', 'uniquevalues', 'numeric', 'date']
-        },
-        'uniqueValuesFormat': {
-            'wType': 'list', 'type': 'string', 'default': 'checkboxes',
-            'list': ['checkboxes', 'select']
-        }
-    }
+    # datavizOptionDefinitions = {
+    #     'plotType': {
+    #         'wType': 'list', 'type': 'string', 'default': 'scatter',
+    #         'list': ['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar', 'sunburst']
+    #     },
+    #     'plotAggregation': {
+    #         'wType': 'list', 'type': 'string', 'default': '',
+    #         'list': ['', 'avg', 'sum', 'count', 'median', 'stddev', 'min', 'max', 'first', 'last']
+    #     }
+    # }
+    #
+    # formFilterOptionDefinitions = {
+    #     'type': {
+    #         'wType': 'list', 'type': 'string', 'default': 'text',
+    #         'list': ['text', 'uniquevalues', 'numeric', 'date']
+    #     },
+    #     'uniqueValuesFormat': {
+    #         'wType': 'list', 'type': 'string', 'default': 'checkboxes',
+    #         'list': ['checkboxes', 'select']
+    #     }
+    # }
 
     def __init__(self, project, fix_json=False):
         """ Configuration setup

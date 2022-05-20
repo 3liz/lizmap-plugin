@@ -1398,7 +1398,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <item>
                        <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
                         <property name="title">
-                         <string>Legend</string>
+                         <string>Layer tree options</string>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_23">
                          <item>
@@ -1419,7 +1419,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <string>If the layer is displayed in the legend</string>
                              </property>
                              <property name="text">
-                              <string>Display in legend tree</string>
+                              <string>Display in layer tree</string>
                              </property>
                              <property name="checked">
                               <bool>true</bool>
@@ -1442,14 +1442,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
-                          <widget class="QCheckBox" name="cbNoLegendImage">
-                           <property name="toolTip">
-                            <string>If we want to hide the legend content of the layer in the legend panel</string>
-                           </property>
-                           <property name="text">
-                            <string>Hide legend image</string>
-                           </property>
-                          </widget>
+                          <widget class="QComboBox" name="combo_legend_option"/>
                          </item>
                          <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_33">
@@ -4011,7 +4004,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>inLayerLink</tabstop>
   <tabstop>cbToggled</tabstop>
   <tabstop>cbDisplayInLegend</tabstop>
-  <tabstop>cbNoLegendImage</tabstop>
+  <tabstop>combo_legend_option</tabstop>
   <tabstop>cbGroupAsLayer</tabstop>
   <tabstop>cbLayerIsBaseLayer</tabstop>
   <tabstop>liPopupSource</tabstop>
