@@ -1,6 +1,5 @@
 """Test tooltip."""
 from qgis.core import (
-    Qgis,
     QgsAttributeEditorContainer,
     QgsAttributeEditorField,
     QgsEditFormConfig,
@@ -108,7 +107,6 @@ class TestToolTip(unittest.TestCase):
                     )'''
         self.assertEqual(expected, result)
 
-    @unittest.skipIf(Qgis.QGIS_VERSION_INT < 31000, 'Memory layer is not so good in tests on 3.4')
     def test_checkbox(self):
         """Test we can generate checkbox."""
         # Here, we have nothing to do, it's working by default in QGIS.
@@ -292,15 +290,7 @@ class TestToolTip(unittest.TestCase):
             'DocumentViewer': QgsExternalResourceWidget.NoContent,
         }
         expression = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
-        if Qgis.QGIS_VERSION_INT < 30800:
-            expected = '''
-                    concat(
-                        '<a href="',
-                        "field_a",
-                        '" target="_blank">fname</a>'
-                    )'''
-        else:
-            expected = '''
+        expected = '''
                     concat(
                         '<a href="',
                         "field_a",
@@ -310,10 +300,7 @@ class TestToolTip(unittest.TestCase):
                     )'''
         self.assertEqual(expected, expression)
 
-        if Qgis.QGIS_VERSION_INT < 30800:
-            expected = '<a href="test.png" target="_blank">fname</a>'
-        else:
-            expected = '<a href="test.png" target="_blank">test</a>'
+        expected = '<a href="test.png" target="_blank">test</a>'
         self.check_layer_context('test.png', expression, expected)
 
     def test_value_relation(self):

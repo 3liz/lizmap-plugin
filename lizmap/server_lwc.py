@@ -299,17 +299,7 @@ class ServerManager:
             QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
 
         url_version = '{}index.php/view/app/metadata'.format(url)
-        if Qgis.QGIS_VERSION_INT < 31000:
-            QgsMessageLog.logMessage(
-                "Skipping the authentification for the Lizmap server {}. QGIS must be 3.10 minimum to use the "
-                "authentification when doing HTTP requests.".format(url),
-                "Lizmap",
-                Qgis.Critical
-            )
-            self.fetchers[row].fetchContent(QUrl(url_version))
-        else:
-            # QGIS 3.10 and higher have authentification support
-            self.fetchers[row].fetchContent(QUrl(url_version), auth_id)
+        self.fetchers[row].fetchContent(QUrl(url_version), auth_id)
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
