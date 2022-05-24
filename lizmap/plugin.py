@@ -132,10 +132,7 @@ from lizmap.qgis_plugin_tools.tools.resources import (
     plugin_path,
     resources_path,
 )
-from lizmap.qgis_plugin_tools.tools.version import (
-    format_version_integer,
-    version,
-)
+from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.qt_style_sheets import (
     NEW_FEATURE_COLOR,
     NEW_FEATURE_CSS,
@@ -145,6 +142,7 @@ from lizmap.server_lwc import ServerManager
 from lizmap.tools import (
     current_git_hash,
     format_qgis_version,
+    format_version_integer,
     get_layer_wms_parameters,
     has_git,
     layer_property,
@@ -2045,6 +2043,7 @@ class Lizmap:
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version': current_version,
+            'lizmap_plugin_version_int': format_version_integer(current_version),
             'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
         }
         if valid is not None:

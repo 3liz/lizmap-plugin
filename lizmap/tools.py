@@ -184,7 +184,7 @@ def next_git_tag():
     if not tag:
         return 'next'
     versions = tag.split('.')
-    text = '{}.{}.{}-pre'.format(versions[0], versions[1], int(versions[2]) + 1)
+    text = '{}.{}.{}-alpha'.format(versions[0], versions[1], int(versions[2]) + 1)
     return text
 
 
@@ -198,3 +198,24 @@ def to_bool(val: Union[str, int, float, bool], default_value: bool = True) -> bo
         return False
     else:
         return default_value
+
+
+def format_version_integer(version_string: str) -> str:
+    """Transform version string to integers to allow comparing versions.
+
+    Transform "0.1.2" into "000102"
+    Transform "10.9.12" into "100912"
+    """
+    if version_string in ('master', 'dev'):
+        return '000000'
+
+    version_string = version_string.strip()
+
+    output = ""
+
+    for a in version_string.split("."):
+        if '-' in a:
+            a = a.split('-')[0]
+        output += str(a.zfill(2))
+
+    return output
