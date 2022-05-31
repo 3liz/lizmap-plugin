@@ -2,11 +2,12 @@
 
 ## Unreleased
 
-* New option for automatic legend display at startup, Lizmap Web Client 3.6
-* Add OpenTopoMap background for Lizmap Web Client 3.6
+* Improve the CFG generation when the attribute table has a custom configuration
 * Always export the new checkbox for a fixed scale in the overview map
 * Remove the code related to the server side. It's a new plugin called "Lizmap server" now.
 * Raise the QGIS minimum version to 3.10
+* New option for automatic legend display at startup, Lizmap Web Client 3.6
+* Add OpenTopoMap background for Lizmap Web Client 3.6
 
 ## 3.7.7 - 2022-04-13
 

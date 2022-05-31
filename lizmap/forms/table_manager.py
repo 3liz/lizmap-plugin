@@ -199,6 +199,7 @@ class TableManager:
 
             if self._layer and hasattr(value, '__call__'):
                 # Value is a for now a function, we need to evaluate it
+                # We assume for now we only use the QgsVectorLayer for the input
                 value = value(self._layer)
 
             if input_type == InputType.Layer:
@@ -458,6 +459,21 @@ class TableManager:
 
                 if layer_data[key] == '':
                     layer_data.pop(key)
+
+            for key in self.keys:
+                # Re-iterate after we got the layer ID in the form
+
+                default_value = self.definitions.layer_config[key].get('default')
+                is_read_only = self.definitions.layer_config[key].get('read_only', False)
+                if default_value is not None and hasattr(default_value, '__call__') and is_read_only:
+                    # Value is a for now a function, we need to evaluate it
+                    # We assume for now we only use the QgsVectorLayer for the input
+                    vector_layer = QgsProject.instance().mapLayer(layer_data['layerId'])
+                    layer_data[key] = default_value(vector_layer)
+
+                    if isinstance(layer_data[key], bool):
+                        # Ticket #176 about true boolean
+                        layer_data[key] = 'True' if layer_data[key] else 'False'
 
             if self.definitions.key() == 'datavizLayers':
                 if layer_data['type'] == GraphType.Box.value['data']:
