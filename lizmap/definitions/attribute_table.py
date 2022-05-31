@@ -1,5 +1,5 @@
 """Definitions for attribute table."""
-from qgis.core import QgsAttributeTableConfig
+from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -9,7 +9,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 
-def layer_has_custom_attribute_table(layer) -> bool:
+def layer_has_custom_attribute_table(layer: QgsVectorLayer) -> bool:
     # Do not use the isEmpty() on the QgsVectorLayer. It's automatically populated if empty with the fields.
     config = QgsAttributeTableConfig()
     config.update(layer.fields())
