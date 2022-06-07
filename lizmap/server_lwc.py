@@ -164,6 +164,15 @@ class ServerManager:
 
         return ''
 
+    def check_lwc_version(self, version_check) -> bool:
+        """ Check if the given LWC version is at least in the table. """
+        for row in range(self.table.rowCount()):
+            lwc_version = self.table.item(row, TableCell.LizmapVersion.value).data(Qt.DisplayRole)
+            if lwc_version.startswith(version_check):
+                return True
+
+        return False
+
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
         dialog = LizmapServerInfoForm(self.parent)

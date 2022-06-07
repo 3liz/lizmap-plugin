@@ -2085,6 +2085,24 @@ class Lizmap:
             if next_version != 'next':
                 current_version = next_version
 
+        is_found = self.server_manager.check_lwc_version(lwc_version)
+        if not is_found:
+            QMessageBox.warning(
+                self.dlg,
+                tr('Lizmap Target Version'),
+                '{}\n\n{}\n\n{}'.format(
+                    tr(
+                        "Your Lizmap Web Client target version {version} has not been found in the server "
+                        "table.".format(version=lwc_version)),
+                    tr(
+                        "Either check your Lizmap Web Client target version in the first panel of the plugin or check "
+                        "you have provided the correct server URL."
+                    ),
+                    tr(
+                        "The CFG file will be written following the {version} format.".format(version=lwc_version)
+                    )
+                ), QMessageBox.Ok)
+
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version_str': current_version,
