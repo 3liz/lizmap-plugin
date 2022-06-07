@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.8.0 - 2022-06-07
+
 * Check that the Lizmap Web Client target version exists in the table before saving the CFG file
 * Improve the CFG generation when the attribute table has a custom configuration
 * Always export the new checkbox for a fixed scale in the overview map
