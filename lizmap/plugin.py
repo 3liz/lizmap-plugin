@@ -1573,8 +1573,15 @@ class Lizmap:
                                     self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                         # lists
                         elif item['wType'] == 'list':
-                            if jsonLayers[jsonKey][key] in item['list']:
-                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                            if isinstance(item['list'], (list, tuple)):
+                                # New way with data, icon, tooltip etc
+                                datas = [j[0] for j in item['list']]
+                                if jsonLayers[jsonKey][key] in datas:
+                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                            else:
+                                # Old way
+                                if jsonLayers[jsonKey][key] in item['list']:
+                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
 
                 # popupContent
                 if key == 'popupTemplate':
@@ -1738,10 +1745,11 @@ class Lizmap:
                                     self.layer_options_list[children]['widget'].setChecked(False)
 
                     elif val['wType'] == 'list':
-                        if isinstance(val['list'][0], tuple):
+                        if isinstance(val['list'][0], (list, tuple)):
                             # LWC 3.6 with tooltip, data and label
                             index = val['widget'].findData(selectedItem[key])
                         else:
+                            # It's str, like "popup"
                             # Old way
                             list_dict = {val['list'][i]: i for i in range(0, len(val['list']))}
                             index = list_dict[selectedItem[key]]
@@ -1824,7 +1832,7 @@ class Lizmap:
                         val['widget'].setChecked(val['default'])
                     elif val['wType'] == 'list':
 
-                        if isinstance(val['list'][0], tuple):
+                        if isinstance(val['list'][0], (list, tuple)):
                             # LWC 3.6 with tooltip, data and label
                             index = val['widget'].findData(val['default'])
                         else:
@@ -1912,7 +1920,13 @@ class Lizmap:
                         if self.layer_options_list[children]['widget'].isChecked():
                             self.layer_options_list[children]['widget'].setChecked(False)
             elif layer_option['wType'] == 'list':
-                self.layerList[item.text(1)][key] = layer_option['list'][layer_option['widget'].currentIndex()]
+                if isinstance(layer_option['list'][0], (tuple, list)):
+                    # New way with data, tooltip, icon etc
+                    datas = [j[0] for j in layer_option['list']]
+                    self.layerList[item.text(1)][key] = datas[layer_option['widget'].currentIndex()]
+                else:
+                    # Old way
+                    self.layerList[item.text(1)][key] = layer_option['list'][layer_option['widget'].currentIndex()]
 
             # Deactivate the "exclude" widget if necessary
             if ('exclude' in layer_option
@@ -2073,9 +2087,9 @@ class Lizmap:
 
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
-            'lizmap_plugin_version': current_version,
-            'lizmap_plugin_version_int': format_version_integer(current_version),
-            'lizmap_web_client_target_version': format_version_integer('{}.0'.format(lwc_version)),
+            'lizmap_plugin_version_str': current_version,
+            'lizmap_plugin_version': int(format_version_integer(current_version)),
+            'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version))),
         }
         if valid is not None:
             metadata['project_valid'] = valid
