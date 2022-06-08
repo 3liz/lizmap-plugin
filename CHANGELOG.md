@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix configuration reading about the new setting legend image option when using Lizmap Web Clietn < 3.6
+
 ## 3.8.0 - 2022-06-07
 
 * Check that the Lizmap Web Client target version exists in the table before saving the CFG file

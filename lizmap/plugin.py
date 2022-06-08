@@ -1545,11 +1545,21 @@ class Lizmap:
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
         if self.myDic[itemKey]['name'] in jsonLayers:
             jsonKey = self.myDic[itemKey]['name']
+            LOGGER.info('Reading configuration from dictionary for layer {}'.format(jsonKey))
             # loop through layer options to override
             for key, item in self.layer_options_list.items():
                 # override only for ui widgets
                 if item.get('widget'):
                     if key in jsonLayers[jsonKey]:
+
+                        if key == 'legend_image_option':
+                            if self.myDic[itemKey].get('legend_image_option'):
+                                # The key is already set before with noLegendImage
+                                LOGGER.info(
+                                    "Skip key legend_image_option because it has been set previously with noLegendImage"
+                                )
+                                continue
+
                         # checkboxes
                         if item['wType'] == 'checkbox':
                             value = jsonLayers[jsonKey][key]
@@ -1582,6 +1592,18 @@ class Lizmap:
                                 # Old way
                                 if jsonLayers[jsonKey][key] in item['list']:
                                     self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                else:
+                    if key == 'noLegendImage':
+                        tmp = 'hide_at_startup'  # Default value
+                        if jsonLayers[jsonKey]['noLegendImage'] == 'True':
+                            tmp = 'disabled'
+                        elif jsonLayers[jsonKey]['noLegendImage'] != 'False':
+                            LOGGER.info(
+                                "Unknown value for key noLegendImage = {}".format(
+                                    jsonLayers[jsonKey]['noLegendImage']))
+                        self.myDic[itemKey]['legend_image_option'] = tmp
+
+                    LOGGER.info('Skip key {} because no UI widget'.format(key))
 
                 # popupContent
                 if key == 'popupTemplate':
@@ -2228,6 +2250,7 @@ class Lizmap:
                 ltype = 'layer'
             else:
                 ltype = 'group'
+
             if self.get_qgis_layer_by_id(k):
                 ltype = 'layer'
                 gal = True
@@ -2283,22 +2306,47 @@ class Lizmap:
                         propVal = str(propVal)
 
                 if key in ('legend_image_option', 'noLegendImage'):
+                    if layerOptions.get('legend_image_option') and key == 'noLegendImage':
+                        # Let's skip, the key is already saved
+                        continue
+
+                    if layerOptions.get('noLegendImage') and key == 'legend_image_option':
+                        # Let's skip, the key is already saved
+                        continue
 
                     target_version = self.dlg.combo_lwc_version.currentData()
+                    LOGGER.info("Reading current Lizmap Web Client target version {}".format(target_version))
                     max_version = val.get('max_version')
                     if max_version and target_version > max_version:
+                        LOGGER.info("Skipping key '{}' because of max_version.".format(key))
                         continue
 
                     min_version = val.get('min_version')
                     if min_version and target_version < min_version:
+                        LOGGER.info("Skipping key '{}' because of min_version.".format(key))
                         continue
 
                     if key == 'noLegendImage':
                         # We take the value of legend_image_option
-                        propVal = 'True' if v['legend_image_option'][0] == 'disabled' else 'False'
+                        propVal = 'False'
+                        if v['legend_image_option'] == 'disabled':
+                            propVal = 'True'
+                        if v['legend_image_option'] == 'expand_at_startup':
+                            # We keep False
+                            QMessageBox.warning(
+                                self.dlg,
+                                tr('Legend image'),
+                                tr(
+                                    'Be careful, the option "Expand at startup" for the layer "{layer_name}" is not '
+                                    'available for your Lizmap Web Client target version. Falling back to '
+                                    '"Hide at startup" in the configuration file.'.format(layer_name=k)
+                                ),
+                            )
 
                     if isinstance(propVal, tuple):
                         propVal = propVal[0]
+
+                    # LOGGER.info("Saving {} = {} for layer {}".format(key, propVal, k))
 
                 layerOptions[key] = propVal
 

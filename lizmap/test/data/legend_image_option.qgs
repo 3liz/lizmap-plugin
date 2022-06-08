@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="etienne" saveDateTime="2022-06-08T11:44:22" saveUserFull="Etienne Trimaille" projectname="" version="3.16.15-Hannover">
+<qgis saveUser="etienne" saveDateTime="2022-06-08T13:09:54" saveUserFull="Etienne Trimaille" projectname="" version="3.16.15-Hannover">
   <homePath path=""/>
   <title></title>
   <autotransaction active="0"/>
@@ -1106,7 +1106,7 @@
   <Bookmarks/>
   <ProjectViewSettings UseProjectScales="0">
     <Scales/>
-    <DefaultViewExtent xmin="3.80240366755738224" ymax="43.70236587393091554" ymin="43.5333379981236277" xmax="3.98300399129338034">
+    <DefaultViewExtent xmin="3.80240366755738224" ymax="43.64730907620945288" ymin="43.58839479584509036" xmax="3.98300399129338034">
       <spatialrefsys>
         <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
