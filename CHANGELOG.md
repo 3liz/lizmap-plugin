@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.8.1 - 2022-06-08
+
 * Fix configuration reading about the new setting legend image option when using Lizmap Web Clietn < 3.6
 
 ## 3.8.0 - 2022-06-07

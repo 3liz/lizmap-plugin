@@ -50,7 +50,6 @@ import os
 
 from qgis.core import QgsMapLayer, QgsProject
 
-from lizmap.definitions.definitions import LwcVersions
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
