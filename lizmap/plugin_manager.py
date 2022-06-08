@@ -15,7 +15,7 @@ class PluginManager:
 
         plugins = {
             'cadastre': 'https://github.com/3liz/QgisCadastrePlugin/releases/tag/{tag}',
-            'lizmap': 'https://github.com/3liz/lizmap-plugin/releases/tag/{tag}',
+            'lizmap_server': 'https://github.com/3liz/qgis-lizmap-server-plugin/releases/tag/{tag}',
             'wfsOutputExtension': 'https://github.com/3liz/qgis-wfsOutputExtension/releases/tag/{tag}',
             'atlasprint': 'https://github.com/3liz/qgis-atlasprint/releases/tag/{tag}',
         }
@@ -45,7 +45,7 @@ class PluginManager:
                 self.metadata[plugin] = '{name} - Unknown'.format(name=plugin)
 
     def lizmap_version(self):
-        return self.metadata['lizmap']
+        return self.metadata['lizmap_server']
 
     def cadastre_version(self):
         return self.metadata['cadastre']
