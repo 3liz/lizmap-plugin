@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.8.2 - 2022-06-13
+
 * Improve the user experience about dropdown menu in the layer panel by providing icon, tooltip, proper label
 * Fixing an issue when saving the CFG file about the popup source and the image format
 
