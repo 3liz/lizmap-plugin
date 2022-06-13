@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+* Improve the user experience about dropdown menu in the layer panel by providing icon, tooltip, proper label
+* Fixing an issue when saving the CFG file about the popup source and the image format
+
 ## 3.8.1 - 2022-06-08
 
-* Fix configuration reading about the new setting legend image option when using Lizmap Web Clietn < 3.6
+* Fix configuration reading about the new setting legend image option when using Lizmap Web Client < 3.6
 
 ## 3.8.0 - 2022-06-07
 

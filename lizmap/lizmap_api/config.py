@@ -283,8 +283,45 @@ class LizmapConfig:
             'wType': 'frame', 'type': None, 'default': None, 'parent': 'popup'
         },
         'popupSource': {
-            'wType': 'list', 'type': 'string', 'default': 'auto',
-            'list': ["auto", "lizmap", "qgis", "form", ]
+            'wType': 'list',
+            'type': 'string',
+            'default': 'auto',
+            'list': [
+                (
+                    "auto",
+                    tr("Automatic"),
+                    tr(
+                        "The table is built automatically. The only way to customize it is to use alias, "
+                        "attribute order and QGIS server settings about WMS."
+                    ),
+                    ":images/themes/default/mIconTableLayer.svg",
+                ), (
+                    "lizmap",
+                    "Lizmap HTML",
+                    tr(
+                        "Read the documentation on how to write a Lizmap popup with HTML. "
+                        "The QGIS HTML popup is more powerful because it's possible to use expression."
+                    ),
+                    ":images/themes/default/mLayoutItemHtml.svg",
+                ), (
+                    "qgis",
+                    tr("QGIS HTML maptip"),
+                    tr(
+                        "You would need to write the maptip with HTML and QGIS expressions. "
+                        "If you don't want to start from scratch, you can generate the template using the default "
+                        "table or from the drag&drop form layout."
+                    ),
+                    ":images/themes/default/mActionMapTips.svg",
+                ), (
+                    "form",
+                    tr("QGIS Drag&Drop form"),
+                    tr(
+                        "Same as the QGIS HTML maptip, but it will use straight the drag&drop form layout. "
+                        "You cannot customize the HTML in the vector layer properties."
+                    ),
+                    ":images/themes/default/mActionFormView.svg",
+                ),
+            ]
         },
         'popupTemplate': {
             'wType': 'text', 'type': 'string', 'default': ''
@@ -348,8 +385,32 @@ class LizmapConfig:
             'wType': 'checkbox', 'type': 'boolean', 'default': True, 'children': 'cached', 'exclusive': True
         },
         'imageFormat': {
-            'wType': 'list', 'type': 'string', 'default': 'image/png',
-            'list': ["image/png", "image/png; mode=16bit", "image/png; mode=8bit", "image/jpeg"]
+            'wType': 'list',
+            'type': 'string',
+            'default': 'image/png',
+            'list': [
+                (
+                    "image/png",
+                    "PNG",
+                    None,
+                    None,
+                ), (
+                    "image/png; mode=16bit",
+                    "PNG, 16 bit",
+                    None,
+                    None,
+                ), (
+                    "image/png; mode=8bit",
+                    "PNG, 8 bit",
+                    None,
+                    None,
+                ), (
+                    "image/jpeg",
+                    "JPEG",
+                    None,
+                    None,
+                ),
+            ]
         },
         'cached': {
             'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'serverFrame', 'parent': 'singleTile'

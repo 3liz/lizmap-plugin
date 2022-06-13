@@ -1534,26 +1534,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                              <property name="styleSheet">
                               <string notr="true"/>
                              </property>
-                             <item>
-                              <property name="text">
-                               <string notr="true">auto</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string notr="true">lizmap</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string notr="true">qgis</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string notr="true">form</string>
-                              </property>
-                             </item>
                             </widget>
                            </item>
                            <item>
@@ -1705,26 +1685,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                                <height>16777215</height>
                               </size>
                              </property>
-                             <item>
-                              <property name="text">
-                               <string>png</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string>png; mode=16bit</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string>png; mode=8bit</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string>jpeg</string>
-                              </property>
-                             </item>
                             </widget>
                            </item>
                            <item>

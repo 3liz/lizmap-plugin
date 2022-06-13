@@ -197,12 +197,20 @@ class Lizmap:
         # List of ui widget for data driven actions and checking
         self.layer_options_list = LizmapConfig.layerOptionDefinitions
         self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
+        self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
+        self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
         # Fill the combobox from the Lizmap API
-        for option in self.layer_options_list['legend_image_option']['list']:
-            data, label, tooltip, icon = option
-            self.dlg.combo_legend_option.addItem(QIcon(icon), label, data)
-            index = self.dlg.combo_legend_option.findData(data)
-            self.dlg.combo_legend_option.setItemData(index, tooltip, Qt.ToolTipRole)
+        for combo_item in ('legend_image_option', 'popupSource', 'imageFormat'):
+            for option in self.layer_options_list[combo_item]['list']:
+                data, label, tooltip, icon = option
+                self.layer_options_list[combo_item]['widget'].addItem(label, data)
+                index = self.layer_options_list[combo_item]['widget'].findData(data)
+
+                if tooltip:
+                    self.layer_options_list[combo_item]['widget'].setItemData(index, tooltip, Qt.ToolTipRole)
+
+                if icon:
+                    self.layer_options_list[combo_item]['widget'].setItemIcon(index, QIcon(icon))
 
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
@@ -227,8 +235,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_5] = [
             self.dlg.liPopupSource.model().item(
-                # This is fragile GH #379
-                self.dlg.liPopupSource.findText('form')
+                self.dlg.liPopupSource.findData('form')
             ),
             self.dlg.label_filter_polygon,
             self.dlg.checkbox_scale_overiew_map,
@@ -449,17 +456,14 @@ class Lizmap:
         self.layer_options_list['group_visibility']['widget'] = self.dlg.list_group_visiblity
         self.layer_options_list['popup']['widget'] = self.dlg.checkbox_popup
         self.layer_options_list['popupFrame']['widget'] = self.dlg.popup_frame
-        self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
         self.layer_options_list['popupTemplate']['widget'] = None
         self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
         self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
         self.layer_options_list['popup_allow_download']['widget'] = self.dlg.checkbox_popup_allow_download
-        self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
         self.layer_options_list['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
         self.layer_options_list['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
         self.layer_options_list['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
         self.layer_options_list['singleTile']['widget'] = self.dlg.cbSingleTile
-        self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
         self.layer_options_list['cached']['widget'] = self.dlg.checkbox_server_cache
         self.layer_options_list['serverFrame']['widget'] = self.dlg.server_cache_frame
         self.layer_options_list['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
@@ -468,6 +472,11 @@ class Lizmap:
         self.layer_options_list['externalWmsToggle']['widget'] = self.dlg.cbExternalWms
         self.layer_options_list['sourceRepository']['widget'] = self.dlg.inSourceRepository
         self.layer_options_list['sourceProject']['widget'] = self.dlg.inSourceProject
+
+        # Disabled because done earlier
+        # self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
+        # self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
+        # self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
 
         # map QGIS geometry type
         # TODO lizmap 4, to remove
@@ -495,22 +504,12 @@ class Lizmap:
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
 
-        # This is fragile GH ticket #379, strings are translated
-        index = widget_source_popup.findText('form')
+        index = widget_source_popup.findData('form')
         form_popup = widget_source_popup.model().item(index)
-        if form_popup is None:
-            # Found issue with translated strings, GH ticket #379
-            # The "form" is not found
-            # But it's not critical so let's skip
-            form_type = [
-                widget_source_popup.itemText(i) for i in range(widget_source_popup.count())
-            ]
-            LOGGER.warning(
-                "Element 'form' was not found in the Lizmap dialog. Only {}".format(','.join(form_type)))
-        else:
-            font = form_popup.font()
-            font.setUnderline(True)
-            form_popup.setFont(font)
+
+        font = form_popup.font()
+        font.setUnderline(True)
+        form_popup.setFont(font)
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
@@ -1010,8 +1009,7 @@ class Lizmap:
         is_vector = isinstance(layer, QgsVectorLayer)
         has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
 
-        # This is fragile GH #379
-        index = self.layer_options_list['popupSource']['widget'].findText('qgis')
+        index = self.layer_options_list['popupSource']['widget'].findData('qgis')
 
         qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
         qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
@@ -1474,7 +1472,7 @@ class Lizmap:
             # set new rowCount
             lblTableWidget.setRowCount(twRowCount + 1)
             lblTableWidget.setColumnCount(colCount)
-            # Add content the the widget line
+            # Add content in the widget line
             i = 0
             for val in content:
                 item = QTableWidgetItem(val)
@@ -1583,15 +1581,11 @@ class Lizmap:
                                     self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
                         # lists
                         elif item['wType'] == 'list':
-                            if isinstance(item['list'], (list, tuple)):
-                                # New way with data, icon, tooltip etc
-                                datas = [j[0] for j in item['list']]
-                                if jsonLayers[jsonKey][key] in datas:
-                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
-                            else:
-                                # Old way
-                                if jsonLayers[jsonKey][key] in item['list']:
-                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                            # New way with data, label, tooltip and icon
+                            datas = [j[0] for j in item['list']]
+                            if jsonLayers[jsonKey][key] in datas:
+                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+
                 else:
                     if key == 'noLegendImage':
                         tmp = 'hide_at_startup'  # Default value
@@ -1767,14 +1761,8 @@ class Lizmap:
                                     self.layer_options_list[children]['widget'].setChecked(False)
 
                     elif val['wType'] == 'list':
-                        if isinstance(val['list'][0], (list, tuple)):
-                            # LWC 3.6 with tooltip, data and label
-                            index = val['widget'].findData(selectedItem[key])
-                        else:
-                            # It's str, like "popup"
-                            # Old way
-                            list_dict = {val['list'][i]: i for i in range(0, len(val['list']))}
-                            index = list_dict[selectedItem[key]]
+                        # New way with data, label, tooltip and icon
+                        index = val['widget'].findData(selectedItem[key])
 
                         if index < 0 and val.get('default'):
                             # Get back to default
@@ -1854,13 +1842,8 @@ class Lizmap:
                         val['widget'].setChecked(val['default'])
                     elif val['wType'] == 'list':
 
-                        if isinstance(val['list'][0], (list, tuple)):
-                            # LWC 3.6 with tooltip, data and label
-                            index = val['widget'].findData(val['default'])
-                        else:
-                            # Old way
-                            list_dict = {val['list'][i]: i for i in range(0, len(val['list']))}
-                            index = list_dict[val['default']]
+                        # New way with data, label, tooltip and icon
+                        index = val['widget'].findData(val['default'])
                         val['widget'].setCurrentIndex(index)
 
         self.enable_popup_source_button()
@@ -1942,13 +1925,9 @@ class Lizmap:
                         if self.layer_options_list[children]['widget'].isChecked():
                             self.layer_options_list[children]['widget'].setChecked(False)
             elif layer_option['wType'] == 'list':
-                if isinstance(layer_option['list'][0], (tuple, list)):
-                    # New way with data, tooltip, icon etc
-                    datas = [j[0] for j in layer_option['list']]
-                    self.layerList[item.text(1)][key] = datas[layer_option['widget'].currentIndex()]
-                else:
-                    # Old way
-                    self.layerList[item.text(1)][key] = layer_option['list'][layer_option['widget'].currentIndex()]
+                # New way with data, label, tooltip and icon
+                datas = [j[0] for j in layer_option['list']]
+                self.layerList[item.text(1)][key] = datas[layer_option['widget'].currentIndex()]
 
             # Deactivate the "exclude" widget if necessary
             if ('exclude' in layer_option
