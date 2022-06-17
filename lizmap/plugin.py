@@ -109,6 +109,7 @@ from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
+from lizmap.definitions.warnings import Warnings
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
@@ -2086,6 +2087,26 @@ class Lizmap:
             if next_version != 'next':
                 current_version = next_version
 
+        warnings = []
+
+        # Layer ID as short name
+        if LwcVersions(lwc_version) >= LwcVersions.Lizmap_3_6:
+            use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
+            if use_layer_id:
+                QMessageBox.warning(
+                    self.dlg,
+                    tr('Use layer IDs as name'),
+                    '{}\n\n{}'.format(
+                        tr(
+                            "Since Lizmap Web Client 3.6, it's not possible anymore to use the option 'Use layer IDs "
+                            "as name' in the project properties dialog, QGIS server tab, then WMS capabilities."
+                        ),
+                        tr("Please uncheck this checkbox and re-save the Lizmap configuration file.")
+                    ),
+                    QMessageBox.Ok
+                )
+                warnings.append(Warnings.UseLayerIdAsName.value)
+
         is_found = self.server_manager.check_lwc_version(lwc_version)
         if not is_found:
             QMessageBox.warning(
@@ -2112,9 +2133,12 @@ class Lizmap:
         }
         if valid is not None:
             metadata['project_valid'] = valid
+            if not valid:
+                warnings.append(Warnings.OgcNotValid.value)
 
         liz2json = dict()
         liz2json['metadata'] = metadata
+        liz2json['warnings'] = warnings
         liz2json["options"] = dict()
         liz2json["layers"] = dict()
 
