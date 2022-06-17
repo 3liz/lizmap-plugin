@@ -1589,12 +1589,12 @@ class Lizmap:
                 else:
                     if key == 'noLegendImage':
                         tmp = 'hide_at_startup'  # Default value
-                        if jsonLayers[jsonKey]['noLegendImage'] == 'True':
+                        if jsonLayers[jsonKey].get('noLegendImage') == 'True':
                             tmp = 'disabled'
-                        elif jsonLayers[jsonKey]['noLegendImage'] != 'False':
+                        elif jsonLayers[jsonKey].get('noLegendImage') != 'False':
                             LOGGER.info(
                                 "Unknown value for key noLegendImage = {}".format(
-                                    jsonLayers[jsonKey]['noLegendImage']))
+                                    jsonLayers[jsonKey].get('noLegendImage')))
                         self.myDic[itemKey]['legend_image_option'] = tmp
 
                     LOGGER.info('Skip key {} because no UI widget'.format(key))

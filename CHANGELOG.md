@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix a Python error if the legacy key `noLegendImage` was not found in the CFG file
+
 ## 3.8.2 - 2022-06-13
 
 * Improve the user experience about dropdown menu in the layer panel by providing icon, tooltip, proper label
