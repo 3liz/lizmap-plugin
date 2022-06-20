@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Set shortnames when it's possible for layers, groups and project when Lizmap Web Client ≥ 3.6
 * Better handling when a QGIS project has been renamed :
   * Either from QGIS when "save as" is used
   * Or when the QGIS project has the `lizmap_user` project variable but no CFG file

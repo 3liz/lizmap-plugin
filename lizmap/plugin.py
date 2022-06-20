@@ -132,6 +132,7 @@ from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
+from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.saas import is_lizmap_dot_com_hosting, valid_saas_lizmap_dot_com
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
@@ -2997,6 +2998,7 @@ class Lizmap:
 
         validator = QgsProjectServerValidator()
         valid, results = validator.validate(self.project)
+        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
 
         if not valid:
             message = tr(
@@ -3159,6 +3161,25 @@ class Lizmap:
                         stop_process
                     ), QMessageBox.Ok)
                 return False
+
+        if lwc_version >= LwcVersions.Lizmap_3_6:
+            LOGGER.info(
+                'Lizmap Web Client target version {}, let\'s try to make the project valid.'.format(
+                    lwc_version.value)
+            )
+            # Set shortnames if it's not set
+            ogc_projet_validity = OgcProjectValidity(self.project)
+            ogc_projet_validity.add_shortnames()
+            ogc_projet_validity.set_project_short_name()
+
+            validator = QgsProjectServerValidator()
+            valid, results = validator.validate(self.project)
+            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
+        else:
+            LOGGER.info(
+                "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
+                    lwc_version.value)
+            )
 
         # global project option checking
         is_valid, message = self.check_global_project_options()
