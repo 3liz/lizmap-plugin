@@ -503,7 +503,7 @@ class TableManager:
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
             if self.definitions.key() == 'datavizLayers':
-                if version not in (LwcVersions.Lizmap_3_4, LwcVersions.Lizmap_3_5, LwcVersions.Lizmap_3_6):
+                if version <= LwcVersions.Lizmap_3_3:
                     traces = layer_data.pop('traces')
                     for j, trace in enumerate(traces):
                         for key in trace:

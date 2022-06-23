@@ -54,7 +54,7 @@ class VersionChecker:
         for i, json_version in enumerate(released_versions):
             if not json_version['maintained']:
                 index = self.dialog.combo_lwc_version.findData(LwcVersions(json_version['branch']))
-                if not index and json_version['branch'] != '3.1':
+                if not index and json_version['branch'] != LwcVersions.Lizmap_3_1.value:
                     LOGGER.warning(
                         "We did not find the version {} in the selector version".format(
                             json_version['branch'])

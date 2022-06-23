@@ -18,6 +18,8 @@ class LwcVersions(Enum):
     Lizmap_3_4 = '3.4'
     Lizmap_3_5 = '3.5'
     Lizmap_3_6 = '3.6'
+    # Enable only when the JSON file is published the new version below
+    # Lizmap_3_7 = '3.7'
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:
