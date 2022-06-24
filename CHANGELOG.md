@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Fix a Python error if the legacy key `noLegendImage` was not found in the CFG file
+* Check if the QGIS Server property "Use layer ID as name" is checked for Lizmap Web Client ≥ 3.6
 
 ## 3.8.2 - 2022-06-13
 
