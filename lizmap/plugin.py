@@ -149,6 +149,7 @@ from lizmap.tools import (
     layer_property,
     lizmap_user_folder,
     next_git_tag,
+    to_bool,
     unaccent,
 )
 from lizmap.tooltip import Tooltip
@@ -2092,7 +2093,7 @@ class Lizmap:
         # Layer ID as short name
         if LwcVersions(lwc_version) >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
-            if use_layer_id:
+            if to_bool(use_layer_id):
                 QMessageBox.warning(
                     self.dlg,
                     tr('Use layer IDs as name'),

@@ -708,7 +708,7 @@ class ServerManager:
         slot = partial(self.display_all_versions, data)
         show_all_versions.triggered.connect(slot)
 
-        server_as_markdown = menu.addAction(tr("Copy versions in the clipboard"))
+        server_as_markdown = menu.addAction(tr("Copy versions in the clipboard for a support request"))
         data = qgis_server_item.data(Qt.UserRole)
         slot = partial(self.copy_as_markdown, data, action_data, action_required)
         server_as_markdown.triggered.connect(slot)
