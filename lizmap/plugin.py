@@ -240,6 +240,7 @@ class Lizmap:
                 self.dlg.liPopupSource.findData('form')
             ),
             self.dlg.label_filter_polygon,
+            self.dlg.filter_polygon_by_user,
             self.dlg.checkbox_scale_overiew_map,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [

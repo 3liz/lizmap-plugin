@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Spatial filtering - Add a new checkbox "Filter by user" to filter by users and not by user groups.
+  This feature will be compatible for Lizmap Web Client >= 3.5.
+
 ## 3.8.3 - 2022-06-29
 
 * Fix a Python error if the legacy key `noLegendImage` was not found in the CFG file
@@ -159,7 +162,7 @@
 
 ## 3.5.0 - 2021-06-21
 
-* New "form" popup type for a vector layer using straight the Drag&Drop form layout 
+* New "form" popup type for a vector layer using straight the Drag&Drop form layout
   (Lizmap Web Client 3.5 and Lizmap plugin on the server side are needed)
 * Files have chmod 755 by default to make it easier to deploy on a server
 
@@ -193,9 +196,9 @@
 ## 3.4.0 - 2020-12-30
 
 * Server - Re-enable Lizmap expression filtering on server, follow up #321
-* UX - Review tooltip sentence in edition 
-* Fix #323 inverted checkbox in layer edition 
-* CFG - Increase performance if using Lizmap Web Client >= 3.4.0. 
+* UX - Review tooltip sentence in edition
+* Fix #323 inverted checkbox in layer edition
+* CFG - Increase performance if using Lizmap Web Client >= 3.4.0.
   You should re-generate the Lizmap configuration for (by clicking the edit button to add these new keys)
   * layer edition capabilities
   * layer attribute table

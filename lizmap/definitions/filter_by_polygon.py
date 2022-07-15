@@ -82,6 +82,13 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             ),
         }
 
+        self._general_config['filter_by_user'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Filter by user'),
+            'default': False,
+            'tooltip': tr('If checked, the chosen field above should contain a list of users, not groups.')
+        }
+
     @staticmethod
     def primary_keys() -> tuple:
         return 'layer',
