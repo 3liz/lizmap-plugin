@@ -641,6 +641,7 @@ class TestTableManager(unittest.TestCase):
             'config': {
                 'polygon_layer_id': self.layer.id(),
                 'group_field': 'id',
+                'filter_by_user': False,
             },
             'layers': [
                 {

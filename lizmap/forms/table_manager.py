@@ -87,6 +87,7 @@ class TableManager:
         elif self.definitions.key() == 'filter_by_polygon' and self.parent:
             self.definitions.add_general_widget('polygon_layer_id', self.parent.layer_filter_polygon)
             self.definitions.add_general_widget('group_field', self.parent.field_filter_polygon)
+            self.definitions.add_general_widget('filter_by_user', self.parent.filter_polygon_by_user)
 
             self.definitions.add_general_label('polygon_layer_id', self.parent.label_layer_filter_polygon)
             self.definitions.add_general_label('group_field', self.parent.label_field_filter_polygon)
@@ -402,6 +403,8 @@ class TableManager:
                     data['config'][config_key] = layer.id() if layer else None
                 elif input_type == InputType.Field:
                     data['config'][config_key] = widget.currentField()
+                elif input_type == InputType.CheckBox:
+                    data['config'][config_key] = widget.isChecked()
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(input_type))
 
@@ -699,6 +702,8 @@ class TableManager:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
                 elif widget_type == InputType.Field:
                     settings.append(Setting(widget, widget_type, value))
+                elif widget_type == InputType.CheckBox:
+                    settings.append(Setting(widget, widget_type, value))
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
@@ -708,6 +713,8 @@ class TableManager:
                     setting.widget.setLayer(setting.value)
                 elif setting.type == InputType.Field:
                     setting.widget.setField(setting.value)
+                elif setting.type == InputType.CheckBox:
+                    setting.widget.setChecked(setting.value)
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
