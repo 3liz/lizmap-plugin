@@ -2,8 +2,10 @@
 
 ## Unreleased
 
-* Spatial filtering - Add a new checkbox "Filter by user" to filter by users and not by user groups.
-  This feature will be compatible for Lizmap Web Client >= 3.5.
+## 3.9.0 - 2022-07-25
+
+* Spatial filtering - Add a new checkbox "Filter by user" to filter by users and not by user groups only.
+  This feature is compatible for Lizmap Web Client ≥ 3.5 if the server plugin is updated as well to version 1.1.0.
 
 ## 3.8.3 - 2022-06-29
 
