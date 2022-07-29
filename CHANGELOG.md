@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add a link to GIS Stackexchange on the first tab
+
 ## 3.9.0 - 2022-07-25
 
 * Spatial filtering - Add a new checkbox "Filter by user" to filter by users and not by user groups only.

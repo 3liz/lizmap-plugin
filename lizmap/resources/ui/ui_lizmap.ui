@@ -351,6 +351,16 @@ QListWidget::item::selected {
                </property>
               </widget>
              </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="label_61">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://gis.stackexchange.com/questions/tagged/lizmap&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GIS Stackexchange, tag Lizmap&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="openExternalLinks">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
            <item>
@@ -408,7 +418,6 @@ QListWidget::item::selected {
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -814,7 +823,6 @@ QListWidget::item::selected {
                      <widget class="QLabel" name="label_68">
                       <property name="font">
                        <font>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1728,7 +1736,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <widget class="QLabel" name="label_56">
                              <property name="font">
                               <font>
-                               <weight>50</weight>
                                <bold>false</bold>
                               </font>
                              </property>
@@ -1951,7 +1958,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_32">
                       <property name="font">
                        <font>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2017,7 +2023,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2083,7 +2088,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2170,7 +2174,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_34">
                       <property name="font">
                        <font>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2250,7 +2253,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_35">
                       <property name="font">
                        <font>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
