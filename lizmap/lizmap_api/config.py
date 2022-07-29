@@ -65,8 +65,6 @@ class LizmapConfigError(Exception):
 
 class LizmapConfig:
 
-    # Static data
-
     mapQgisGeometryType = {
         0: 'point',
         1: 'line',
@@ -75,398 +73,376 @@ class LizmapConfig:
         4: 'none'
     }
 
-    lizmap_version = version()
-    target_lwc_version = format_version_integer('{}.0'.format(DEFAULT_LWC_VERSION.value))
-
-    metadata = dict()
-    metadata['lizmap_plugin_version'] = {
-        'wType': 'spinbox', 'type': 'integer', 'default': lizmap_version,
-    }
-    metadata['lizmap_web_client_target_version'] = {
-        'wType': 'spinbox', 'type': 'integer', 'default': target_lwc_version,
-    }
-
-    globalOptionDefinitions = {
-        'metadata': metadata,
-        'mapScales': {
-            'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
-        },
-        'minScale': {
-            'wType': 'text', 'type': 'integer', 'default': 1
-        },
-        'maxScale': {
-            'wType': 'text', 'type': 'integer', 'default': 1000000000
-        },
-        'acl': {
-            'wType': 'text', 'type': 'list', 'default': []
-        },
-        'initialExtent': {
-            'wType': 'text', 'type': 'floatlist', 'default': []
-        },
-        'googleKey': {
-            'wType': 'text', 'type': 'string', 'default': ''
-        },
-        'googleHybrid': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'googleSatellite': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'googleTerrain': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'googleStreets': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'osmMapnik': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'osmStamenToner': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'openTopoMap': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False,
-            'use_proper_boolean': True,
-        },
-        'bingKey': {
-            'wType': 'text', 'type': 'string', 'default': ''
-        },
-        'bingStreets': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'bingSatellite': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'bingHybrid': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'ignKey': {
-            'wType': 'text', 'type': 'string', 'default': ''
-        },
-        'ignStreets': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'ignSatellite': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'ignTerrain': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'ignCadastral': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-
-        'hideGroupCheckbox': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'activateFirstMapTheme': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'popupLocation': {
-            'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
-        },
-        'draw': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'print': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'measure': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'externalSearch': {
-            'wType': 'list', 'type': 'string', 'default': '', 'list': ['', 'nominatim', 'google', 'ban', 'ign']
-        },
-        'zoomHistory': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'geolocation': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'pointTolerance': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 25
-        },
-        'lineTolerance': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 10
-        },
-        'polygonTolerance': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 5
-        },
-        'hideHeader': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'hideMenu': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'hideLegend': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'hideOverview': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'hideNavbar': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'hideProject': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'tmTimeFrameSize': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 10
-        },
-        'tmTimeFrameType': {
-            'wType': 'list', 'type': 'string', 'default': 'seconds',
-            'list': ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
-        },
-        'tmAnimationFrameLength': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 1000
-        },
-        'emptyBaselayer': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'startupBaselayer': {
-            'wType': 'list', 'type': 'string', 'default': '', 'list': ['']
-        },
-        'limitDataToBbox': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'datavizLocation': {
-            'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'bottomdock', 'right-dock']
-        },
-        'datavizTemplate': {
-            'wType': 'html', 'type': 'string', 'default': ''
-        },
-        'theme': {
-            'wType': 'list', 'type': 'string', 'default': 'light', 'list': ['dark', 'light']
-        },
-        'atlasShowAtStartup': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'atlasAutoPlay': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'fixed_scale_overview_map': {
-            'wType': 'checkbox',
-            'type': 'boolean',
-            'always_export': True,
-            'default': True,
-            'tooltip': tr(
-                "If checked, the overview map will have a fixed scale covering the Lizmap initial extent. "
-                "If not checked, the overview map will follow the scale of the main map with a smaller scale."
-            ) + " " + tr("New in Lizmap Web Client 3.5.3"),
-            'use_proper_boolean': True,
-        }
-    }
-
-    layerOptionDefinitions = {
-        'title': {
-            'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
-        },
-        'abstract': {
-            'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata': True
-        },
-        'link': {
-            'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': False
-        },
-        'minScale': {
-            'wType': 'text', 'type': 'integer', 'default': 1
-        },
-        'maxScale': {
-            'wType': 'text', 'type': 'integer', 'default': 1000000000000
-        },
-        'toggled': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True
-        },
-        'popup': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'popupFrame'
-        },
-        'popupFrame': {
-            'wType': 'frame', 'type': None, 'default': None, 'parent': 'popup'
-        },
-        'popupSource': {
-            'wType': 'list',
-            'type': 'string',
-            'default': 'auto',
-            'list': [
-                (
-                    "auto",
-                    tr("Automatic"),
-                    tr(
-                        "The table is built automatically. The only way to customize it is to use alias, "
-                        "attribute order and QGIS server settings about WMS."
-                    ),
-                    ":images/themes/default/mIconTableLayer.svg",
-                ), (
-                    "lizmap",
-                    "Lizmap HTML",
-                    tr(
-                        "Read the documentation on how to write a Lizmap popup with HTML. "
-                        "The QGIS HTML popup is more powerful because it's possible to use expression."
-                    ),
-                    ":images/themes/default/mLayoutItemHtml.svg",
-                ), (
-                    "qgis",
-                    tr("QGIS HTML maptip"),
-                    tr(
-                        "You would need to write the maptip with HTML and QGIS expressions. "
-                        "If you don't want to start from scratch, you can generate the template using the default "
-                        "table or from the drag&drop form layout."
-                    ),
-                    ":images/themes/default/mActionMapTips.svg",
-                ), (
-                    "form",
-                    tr("QGIS Drag&Drop form"),
-                    tr(
-                        "Same as the QGIS HTML maptip, but it will use straight the drag&drop form layout. "
-                        "You cannot customize the HTML in the vector layer properties."
-                    ),
-                    ":images/themes/default/mActionFormView.svg",
-                ),
-            ]
-        },
-        'popupTemplate': {
-            'wType': 'text', 'type': 'string', 'default': ''
-        },
-        'popupMaxFeatures': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 10
-        },
-        'popupDisplayChildren': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'popup_allow_download': {
-            'wType': 'checkbox',
-            'type': 'boolean',
-            'default': True,
-            'tooltip': tr(
-                'If checked, a download button will be added in the popup to allow GPX, KML and GeoJSON export'),
-            'use_proper_boolean': True,
-        },
-        'noLegendImage': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False,
-            'max_version': LwcVersions.Lizmap_3_5,
-        },
-        'legend_image_option': {
-            'wType': 'list', 'type': 'string', 'default': 'hide_at_startup',
-            'list': [
-                (
-                    'hide_at_startup',
-                    tr('Hide legend image at startup'),
-                    tr('The layer legend can be displayed by clicking on the arrow button.'),
-                    ':images/themes/default/mActionHideAllLayers.svg',
-                ), (
-                    'expand_at_startup',
-                    tr('Show legend image at startup'),
-                    tr(
-                        'The legend image will be displayed be default at startup. This will make more request to QGIS '
-                        'server. Use with cautious.'
-                    ),
-                    ':images/themes/default/mActionShowAllLayers.svg',
-                ), (
-                    'disabled',
-                    tr('Disable the legend image'),
-                    tr('The legend image won\'t be available for display.'),
-                    ':images/themes/default/mTaskCancel.svg',
-                ),
-            ],
-            'min_version': LwcVersions.Lizmap_3_6,
-        },
-        'groupAsLayer': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'baseLayer': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'displayInLegend': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True
-        },
-        'group_visibility': {
-            'wType': 'text', 'type': 'list', 'default': []
-        },
-        'singleTile': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': True, 'children': 'cached', 'exclusive': True
-        },
-        'imageFormat': {
-            'wType': 'list',
-            'type': 'string',
-            'default': 'image/png',
-            'list': [
-                (
-                    "image/png",
-                    "PNG",
-                    None,
-                    None,
-                ), (
-                    "image/png; mode=16bit",
-                    "PNG, 16 bit",
-                    None,
-                    None,
-                ), (
-                    "image/png; mode=8bit",
-                    "PNG, 8 bit",
-                    None,
-                    None,
-                ), (
-                    "image/jpeg",
-                    "JPEG",
-                    None,
-                    None,
-                ),
-            ]
-        },
-        'cached': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'serverFrame', 'parent': 'singleTile'
-        },
-        'serverFrame': {
-            'wType': 'frame', 'type': None, 'default': None, 'parent': 'cached'
-        },
-        'cacheExpiration': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 0
-        },
-        'metatileSize': {
-            'wType': 'text', 'type': 'string', 'default': ''
-        },
-        'clientCacheExpiration': {
-            'wType': 'spinbox', 'type': 'integer', 'default': 300
-        },
-        'externalWmsToggle': {
-            'wType': 'checkbox', 'type': 'boolean', 'default': False
-        },
-        'sourceRepository': {
-                'wType': 'text', 'type': 'string', 'default': '', '_api': False
-        },
-        'sourceProject': {
-                'wType': 'text', 'type': 'string', 'default': '', '_api': False
-        }
-    }
-
-
-    # datavizOptionDefinitions = {
-    #     'plotType': {
-    #         'wType': 'list', 'type': 'string', 'default': 'scatter',
-    #         'list': ['scatter', 'box', 'bar', 'histogram', 'pie', 'histogram2d', 'polar', 'sunburst']
-    #     },
-    #     'plotAggregation': {
-    #         'wType': 'list', 'type': 'string', 'default': '',
-    #         'list': ['', 'avg', 'sum', 'count', 'median', 'stddev', 'min', 'max', 'first', 'last']
-    #     }
-    # }
-    #
-    # formFilterOptionDefinitions = {
-    #     'type': {
-    #         'wType': 'list', 'type': 'string', 'default': 'text',
-    #         'list': ['text', 'uniquevalues', 'numeric', 'date']
-    #     },
-    #     'uniqueValuesFormat': {
-    #         'wType': 'list', 'type': 'string', 'default': 'checkboxes',
-    #         'list': ['checkboxes', 'select']
-    #     }
-    # }
-
     def __init__(self, project, fix_json=False):
         """ Configuration setup
 
             :param fix_json: fix the json parsing,
                 see https://github.com/3liz/lizmap-web-client/issues/925
         """
+
+        metadata = dict()
+        metadata['lizmap_plugin_version'] = {
+            'wType': 'spinbox', 'type': 'integer', 'default': version(),
+        }
+        metadata['lizmap_web_client_target_version'] = {
+            'wType': 'spinbox', 'type': 'integer',
+            'default': format_version_integer('{}.0'.format(DEFAULT_LWC_VERSION.value)),
+        }
+
+        # We want to translate some items, do not make this variable static
+        self.globalOptionDefinitions = {
+            'metadata': metadata,
+            'mapScales': {
+                'wType': 'text', 'type': 'intlist', 'default': [10000, 25000, 50000, 100000, 250000, 500000]
+            },
+            'minScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1
+            },
+            'maxScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1000000000
+            },
+            'acl': {
+                'wType': 'text', 'type': 'list', 'default': []
+            },
+            'initialExtent': {
+                'wType': 'text', 'type': 'floatlist', 'default': []
+            },
+            'googleKey': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'googleHybrid': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleSatellite': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleTerrain': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'googleStreets': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'osmMapnik': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'osmStamenToner': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'openTopoMap': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False,
+                'use_proper_boolean': True,
+            },
+            'bingKey': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'bingStreets': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingSatellite': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'bingHybrid': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignKey': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'ignStreets': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignSatellite': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignTerrain': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'ignCadastral': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+
+            'hideGroupCheckbox': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'activateFirstMapTheme': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'popupLocation': {
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'minidock', 'map', 'bottomdock', 'right-dock']
+            },
+            'draw': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'print': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'measure': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'externalSearch': {
+                'wType': 'list', 'type': 'string', 'default': '', 'list': ['', 'nominatim', 'google', 'ban', 'ign']
+            },
+            'zoomHistory': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'geolocation': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'pointTolerance': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 25
+            },
+            'lineTolerance': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'polygonTolerance': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 5
+            },
+            'hideHeader': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideMenu': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideLegend': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideOverview': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideNavbar': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'hideProject': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'tmTimeFrameSize': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'tmTimeFrameType': {
+                'wType': 'list', 'type': 'string', 'default': 'seconds',
+                'list': ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years']
+            },
+            'tmAnimationFrameLength': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 1000
+            },
+            'emptyBaselayer': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'startupBaselayer': {
+                'wType': 'list', 'type': 'string', 'default': '', 'list': ['']
+            },
+            'limitDataToBbox': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'datavizLocation': {
+                'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'bottomdock', 'right-dock']
+            },
+            'datavizTemplate': {
+                'wType': 'html', 'type': 'string', 'default': ''
+            },
+            'theme': {
+                'wType': 'list', 'type': 'string', 'default': 'light', 'list': ['dark', 'light']
+            },
+            'atlasShowAtStartup': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'atlasAutoPlay': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'fixed_scale_overview_map': {
+                'wType': 'checkbox',
+                'type': 'boolean',
+                'always_export': True,
+                'default': True,
+                'tooltip': tr(
+                    "If checked, the overview map will have a fixed scale covering the Lizmap initial extent. "
+                    "If not checked, the overview map will follow the scale of the main map with a smaller scale."
+                ) + " " + tr("New in Lizmap Web Client 3.5.3"),
+                'use_proper_boolean': True,
+            }
+        }
+
+        # We want to translate some items, do not make this variable static
+        self.layerOptionDefinitions = {
+            'title': {
+                'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
+            },
+            'abstract': {
+                'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata': True
+            },
+            'link': {
+                'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': False
+            },
+            'minScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1
+            },
+            'maxScale': {
+                'wType': 'text', 'type': 'integer', 'default': 1000000000000
+            },
+            'toggled': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'popup': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'popupFrame'
+            },
+            'popupFrame': {
+                'wType': 'frame', 'type': None, 'default': None, 'parent': 'popup'
+            },
+            'popupSource': {
+                'wType': 'list',
+                'type': 'string',
+                'default': 'auto',
+                'list': [
+                    (
+                        "auto",
+                        tr("Automatic"),
+                        tr(
+                            "The table is built automatically. The only way to customize it is to use alias, "
+                            "attribute order and QGIS server settings about WMS."
+                        ),
+                        ":images/themes/default/mIconTableLayer.svg",
+                    ), (
+                        "lizmap",
+                        "Lizmap HTML",
+                        tr(
+                            "Read the documentation on how to write a Lizmap popup with HTML. "
+                            "The QGIS HTML popup is more powerful because it's possible to use expression."
+                        ),
+                        ":images/themes/default/mLayoutItemHtml.svg",
+                    ), (
+                        "qgis",
+                        tr("QGIS HTML maptip"),
+                        tr(
+                            "You would need to write the maptip with HTML and QGIS expressions. "
+                            "If you don't want to start from scratch, you can generate the template using the default "
+                            "table or from the drag&drop form layout."
+                        ),
+                        ":images/themes/default/mActionMapTips.svg",
+                    ), (
+                        "form",
+                        tr("QGIS Drag&Drop form"),
+                        tr(
+                            "Same as the QGIS HTML maptip, but it will use straight the drag&drop form layout. "
+                            "You cannot customize the HTML in the vector layer properties."
+                        ),
+                        ":images/themes/default/mActionFormView.svg",
+                    ),
+                ]
+            },
+            'popupTemplate': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'popupMaxFeatures': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 10
+            },
+            'popupDisplayChildren': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'popup_allow_download': {
+                'wType': 'checkbox',
+                'type': 'boolean',
+                'default': True,
+                'tooltip': tr(
+                    'If checked, a download button will be added in the popup to allow GPX, KML and GeoJSON export'),
+                'use_proper_boolean': True,
+            },
+            'noLegendImage': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False,
+                'max_version': LwcVersions.Lizmap_3_5,
+            },
+            'legend_image_option': {
+                'wType': 'list', 'type': 'string', 'default': 'hide_at_startup',
+                'list': [
+                    (
+                        'hide_at_startup',
+                        tr('Hide legend image at startup'),
+                        tr('The layer legend can be displayed by clicking on the arrow button.'),
+                        ':images/themes/default/mActionHideAllLayers.svg',
+                    ), (
+                        'expand_at_startup',
+                        tr('Show legend image at startup'),
+                        tr(
+                            'The legend image will be displayed be default at startup. This will make more request to QGIS '
+                            'server. Use with cautious.'
+                        ),
+                        ':images/themes/default/mActionShowAllLayers.svg',
+                    ), (
+                        'disabled',
+                        tr('Disable the legend image'),
+                        tr('The legend image won\'t be available for display.'),
+                        ':images/themes/default/mTaskCancel.svg',
+                    ),
+                ],
+                'min_version': LwcVersions.Lizmap_3_6,
+            },
+            'groupAsLayer': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'baseLayer': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'displayInLegend': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True
+            },
+            'group_visibility': {
+                'wType': 'text', 'type': 'list', 'default': []
+            },
+            'singleTile': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True, 'children': 'cached', 'exclusive': True
+            },
+            'imageFormat': {
+                'wType': 'list',
+                'type': 'string',
+                'default': 'image/png',
+                'list': [
+                    (
+                        "image/png",
+                        "PNG",
+                        None,
+                        None,
+                    ), (
+                        "image/png; mode=16bit",
+                        "PNG, 16 bit",
+                        None,
+                        None,
+                    ), (
+                        "image/png; mode=8bit",
+                        "PNG, 8 bit",
+                        None,
+                        None,
+                    ), (
+                        "image/jpeg",
+                        "JPEG",
+                        None,
+                        None,
+                    ),
+                ]
+            },
+            'cached': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'serverFrame', 'parent': 'singleTile'
+            },
+            'serverFrame': {
+                'wType': 'frame', 'type': None, 'default': None, 'parent': 'cached'
+            },
+            'cacheExpiration': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 0
+            },
+            'metatileSize': {
+                'wType': 'text', 'type': 'string', 'default': ''
+            },
+            'clientCacheExpiration': {
+                'wType': 'spinbox', 'type': 'integer', 'default': 300
+            },
+            'externalWmsToggle': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
+            'sourceRepository': {
+                    'wType': 'text', 'type': 'string', 'default': '', '_api': False
+            },
+            'sourceProject': {
+                    'wType': 'text', 'type': 'string', 'default': '', '_api': False
+            }
+        }
+
         if not isinstance(project, QgsProject):
             self.project = self._load_project(project)
         else:

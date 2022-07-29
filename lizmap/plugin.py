@@ -180,6 +180,8 @@ class Lizmap:
             self.translator.load(file_path)
             QCoreApplication.installTranslator(self.translator)
 
+        lizmap_config = LizmapConfig(project=self.project)
+
         self.dlg = LizmapDialog()
         self.version = version()
         self.is_dev_version = self.version in ['master', 'dev'] or 'beta' in self.version
@@ -197,7 +199,7 @@ class Lizmap:
         self.layers_table = dict()
 
         # List of ui widget for data driven actions and checking
-        self.layer_options_list = LizmapConfig.layerOptionDefinitions
+        self.layer_options_list = lizmap_config.layerOptionDefinitions
         self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
         self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
         self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
@@ -393,7 +395,7 @@ class Lizmap:
         self.dlg.gb_baselayersOptions.setStyleSheet(self.style_sheet)
 
         # List of ui widget for data driven actions and checking
-        self.global_options = LizmapConfig.globalOptionDefinitions
+        self.global_options = lizmap_config.globalOptionDefinitions
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overiew_map
         self.global_options['mapScales']['widget'] = self.dlg.inMapScales
@@ -448,7 +450,7 @@ class Lizmap:
         self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
         self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
 
-        self.layer_options_list = LizmapConfig.layerOptionDefinitions
+        self.layer_options_list = lizmap_config.layerOptionDefinitions
         # Add widget information
         self.layer_options_list['title']['widget'] = self.dlg.inLayerTitle
         self.layer_options_list['abstract']['widget'] = self.dlg.teLayerAbstract
