@@ -295,6 +295,12 @@ class ServerManager:
             url, auth_id = self._fetch_cells(row)
             self.fetch(url, auth_id, row)
 
+    @staticmethod
+    def url_metadata(base_url) -> str:
+        """ Return the URL to fetch metadata from LWC server. """
+        url = '{}index.php/view/app/metadata'.format(base_url)
+        return url
+
     def fetch(self, url: str, auth_id: str, row: int):
         """ Fetch the JSON file and call the function when it's finished. """
         self.display_action(row, False, tr('Fetching…'))
@@ -307,8 +313,7 @@ class ServerManager:
         if auth_id:
             QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
 
-        url_version = '{}index.php/view/app/metadata'.format(url)
-        self.fetchers[row].fetchContent(QUrl(url_version), auth_id)
+        self.fetchers[row].fetchContent(QUrl(self.url_metadata(url)), auth_id)
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
@@ -696,6 +701,13 @@ class ServerManager:
         url = left_item.data(Qt.UserRole)
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
+
+        if version() in ('master', 'dev'):
+            open_url = menu.addAction(tr("Open raw JSON file") + "…")
+            left_item = self.table.item(item.row(), TableCell.Url.value)
+            url = left_item.data(Qt.UserRole)
+            slot = partial(QDesktopServices.openUrl, QUrl(self.url_metadata(url)))
+            open_url.triggered.connect(slot)
 
         action_item = self.table.item(item.row(), TableCell.Action.value)
         action_data = action_item.data(Qt.DisplayRole)
