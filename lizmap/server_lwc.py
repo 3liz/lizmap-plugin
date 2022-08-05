@@ -410,13 +410,15 @@ class ServerManager:
 
         if qgis_server_info and "error" not in qgis_server_info.keys():
             # The current user is an admin, running at least LWC >= 3.5.1
-            qgis_version = qgis_server_info.get('metadata').get('version')
+            qgis_metadata = qgis_server_info.get('metadata')
+            qgis_version = qgis_metadata.get('version')
             qgis_cell.setText(qgis_version)
 
             plugins = qgis_server_info.get('plugins')
             # plugins = {'atlasprint': {'version': '3.2.2'}}
             # Temporary, add plugins as markdown in the data
             markdown += '* QGIS Server : {}\n'.format(qgis_version)
+            markdown += '* Py-QGIS-Server : {}\n'.format(qgis_metadata.get('py_qgis_server_version', ''))
             for plugin, info in plugins.items():
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
             qgis_cell.setData(Qt.UserRole, markdown)
@@ -442,6 +444,14 @@ class ServerManager:
                 # No admin login provided and running LWC >= 3.5
                 markdown += '* QGIS Server and plugins unknown status because no admin login provided\n'
                 qgis_cell.setData(Qt.UserRole, markdown)
+
+                font = qgis_cell.font()
+                font.setItalic(True)
+                qgis_cell.setFont(font)
+                qgis_cell.setText(tr("Not possible"))
+                qgis_cell.setToolTip(
+                    tr("Not possible to determine QGIS Server version because you didn't provide a login"))
+
                 self.update_action_version(lizmap_version, None, row)
                 return
             else:
