@@ -15,6 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Only layers stored in Spatialite, GPKG or PostgreSQL are available in this tool.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label_layer">
@@ -135,6 +145,26 @@
         <bool>true</bool>
        </property>
       </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_start_field">
+       <property name="text">
+        <string>Start/min field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_end_field">
+       <property name="text">
+        <string>End/max field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QgsFieldComboBox" name="start_field"/>
+     </item>
+     <item row="9" column="1">
+      <widget class="QgsFieldComboBox" name="end_field"/>
      </item>
     </layout>
    </item>

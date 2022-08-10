@@ -62,7 +62,7 @@ class TestTableManager(unittest.TestCase):
             '1': {
                 'title': 'Line filtering',
                 'type': 'numeric',
-                'field': 'id',
+                'field': 'id',  # Numeric and 'field', this is a < 3.7 format
                 'min_date': '',
                 'max_date': '',
                 'format': 'checkboxes',
@@ -76,7 +76,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 2)
-        data = table_manager.to_json()
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_6)
 
         expected = {
             '0': {
@@ -96,6 +96,88 @@ class TestTableManager(unittest.TestCase):
                 'field': 'id',
                 'format': 'checkboxes',
                 'order': 1
+            }
+        }
+        self.assertDictEqual(data, expected)
+
+        # Version >= 3.7
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_7)
+
+        expected = {
+            '0': {
+                'layerId': self.layer.id(),
+                'provider': 'ogr',  # Added automatically on the fly
+                'title': 'Line filtering',
+                'type': 'text',
+                'field': 'name',
+                'format': 'checkboxes',
+                'order': 0
+            },
+            '1': {
+                'layerId': self.layer.id(),
+                'provider': 'ogr',  # Added automatically on the fly
+                'title': 'Line filtering',
+                'type': 'numeric',
+                'start_field': 'id',
+                'format': 'checkboxes',
+                'order': 1
+            }
+        }
+        self.assertDictEqual(data, expected)
+
+    def test_form_filter_3_7(self):
+        """ Test to write to 3.6 format. """
+        table_manager = TableManager(
+            None, FilterByFormDefinitions(), None, QTableWidget(), None, None, None, None)
+
+        json = {
+            '0': {
+                'title': 'Line filtering',
+                'type': 'numeric',
+                'start_field': 'id',
+                'end_field': 'id',
+                'min_date': '',
+                'max_date': '',
+                'format': 'checkboxes',
+                'splitter': '',
+                'provider': 'ogr',
+                'layerId': self.layer.id(),
+                'order': 0
+            }
+        }
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_6)
+
+        expected = {
+            '0': {
+                'layerId': self.layer.id(),
+                'provider': 'ogr',
+                'title': 'Line filtering',
+                'type': 'numeric',
+                'field': 'id',
+                # Not used, but we keep it in memory, more convenient if the end user has just temporary changed its
+                # LWC version
+                'end_field': 'id',
+                'format': 'checkboxes',
+                'order': 0
+            }
+        }
+        self.assertDictEqual(data, expected)
+
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_7)
+        expected = {
+            '0': {
+                'layerId': self.layer.id(),
+                'provider': 'ogr',
+                'title': 'Line filtering',
+                'type': 'numeric',
+                'start_field': 'id',
+                'end_field': 'id',
+                'format': 'checkboxes',
+                'order': 0
             }
         }
         self.assertDictEqual(data, expected)

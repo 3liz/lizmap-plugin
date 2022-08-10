@@ -37,6 +37,9 @@ class BaseEditionDialog(QDialog):
         self.lwc_versions[LwcVersions.Lizmap_3_2] = []
         self.lwc_versions[LwcVersions.Lizmap_3_3] = []
         self.lwc_versions[LwcVersions.Lizmap_3_4] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_5] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_6] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_7] = []
 
     def setup_ui(self):
         self.button_box.button(QDialogButtonBox.Help).setToolTip(
