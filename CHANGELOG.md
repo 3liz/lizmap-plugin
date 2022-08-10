@@ -5,6 +5,7 @@
 * Add a link to GIS Stackexchange on the first tab
 * Fix missing translations in the user interface of the plugin
 * Improve the panel about server information
+* Improve metadata in the CFG file about the status of the current Lizmap Web Client version which is used
 
 ## 3.9.0 - 2022-07-25
 

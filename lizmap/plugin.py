@@ -101,6 +101,7 @@ from lizmap.definitions.definitions import (
     ONLINE_HELP_LANGUAGES,
     LayerProperties,
     LwcVersions,
+    ReleaseStatus,
 )
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
@@ -718,7 +719,11 @@ class Lizmap:
                     display_next_release = self.version not in ['dev', 'master']
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        lwc_version = LwcVersions(lwc_version)
+        try:
+            lwc_version = LwcVersions(lwc_version)
+        except ValueError:
+            # The QgsSettings does not contain a valid LWC version item
+            lwc_version = DEFAULT_LWC_VERSION
         index = self.dlg.combo_lwc_version.findData(lwc_version)
         self.dlg.combo_lwc_version.setCurrentIndex(index)
 
@@ -2129,11 +2134,15 @@ class Lizmap:
                     )
                 ), QMessageBox.Ok)
 
+        target_status = self.dlg.combo_lwc_version.itemData(self.dlg.combo_lwc_version.currentIndex(), Qt.UserRole + 1)
+        if not target_status:
+            target_status = ReleaseStatus.Unknown
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version_str': current_version,
             'lizmap_plugin_version': int(format_version_integer(current_version)),
             'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version))),
+            'lizmap_web_client_target_status': target_status.value,
         }
         if valid is not None:
             metadata['project_valid'] = valid
