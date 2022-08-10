@@ -36,7 +36,7 @@ class TestVersionInfo(unittest.TestCase):
         # 3.6.0 without login
         self.assertEqual(
             ServerManager._messages_for_version('3.6.0', '', '', json_path),
-            (Qgis.Warning, ['A dev version, warrior ! 👍', 'No login provided'])
+            (Qgis.Warning, ['A dev version, warrior ! 👍', 'No administrator login provided'])
         )
 
         # 3.6.0 with login
