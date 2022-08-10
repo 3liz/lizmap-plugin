@@ -28,6 +28,20 @@ class LwcVersions(Enum):
 
 
 @unique
+@total_ordering
+class ReleaseStatus(Enum):
+    Unknown = 'Unknown'
+    NotMaintained = 'NotMaintained'
+    Stable = 'Stable'
+    Dev = 'Dev'
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
+
+
+@unique
 class LayerProperties(Enum):
     DataUrl = 'DataUrl'
 

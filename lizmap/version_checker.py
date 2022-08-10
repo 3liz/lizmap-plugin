@@ -7,10 +7,10 @@ import logging
 import os
 
 from qgis.core import QgsNetworkContentFetcher
-from qgis.PyQt.QtCore import QDate, QLocale, QUrl
+from qgis.PyQt.QtCore import QDate, QLocale, Qt, QUrl
 from qgis.PyQt.QtWidgets import QDialog
 
-from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.definitions import LwcVersions, ReleaseStatus
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
 
@@ -52,8 +52,8 @@ class VersionChecker:
     def update_lwc_selector(self, released_versions: dict):
         """ Update LWC selector showing outdated versions. """
         for i, json_version in enumerate(released_versions):
+            index = self.dialog.combo_lwc_version.findData(LwcVersions(json_version['branch']))
             if not json_version['maintained']:
-                index = self.dialog.combo_lwc_version.findData(LwcVersions(json_version['branch']))
                 if not index and json_version['branch'] != LwcVersions.Lizmap_3_1.value:
                     LOGGER.warning(
                         "We did not find the version {} in the selector version".format(
@@ -65,9 +65,14 @@ class VersionChecker:
                 if i == 0:
                     # If it's the first item in the list AND not maintained, then it's the next LWC version
                     new_text = text + ' - ' + tr('Next')
+                    flag = ReleaseStatus.Dev
                 else:
                     new_text = text + ' - ' + tr('Not maintained')
+                    flag = ReleaseStatus.NotMaintained
                 self.dialog.combo_lwc_version.setItemText(index, new_text)
+            else:
+                flag = ReleaseStatus.Stable
+            self.dialog.combo_lwc_version.setItemData(index, flag, Qt.UserRole + 1)
 
     def update_lwc_releases(self, released_versions: dict):
         """ Update labels about latest releases. """
