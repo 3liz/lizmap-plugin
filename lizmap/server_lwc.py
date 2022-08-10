@@ -618,7 +618,7 @@ class ServerManager:
                 if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
                     # Running 3.5.X
                     if not login:
-                        messages.append(tr('No login provided'))
+                        messages.append(tr('No administrator login provided'))
                         level = Qgis.Warning
 
                     if login and error == "NO_ACCESS":
