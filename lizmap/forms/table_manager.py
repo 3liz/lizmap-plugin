@@ -686,6 +686,8 @@ class TableManager:
             settings = []
             Setting = namedtuple('Setting', ['widget', 'type', 'value'])
             for config_key, value in config.items():
+                if config_key not in self.definitions.general_config:
+                    continue
                 widget = self.definitions.general_config[config_key].get('widget')
                 if not widget:
                     # In tests, we don't have this dialog with general config
