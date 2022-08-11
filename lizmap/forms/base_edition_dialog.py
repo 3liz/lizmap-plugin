@@ -138,6 +138,7 @@ class BaseEditionDialog(QDialog):
         QDesktopServices.openUrl(QUrl(url))
 
     def version_lwc(self):
+        """ Make all colors about widgets if it is available or not. """
         current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         current_version = LwcVersions(current_version)
 

@@ -28,8 +28,6 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('title', self.title)
         self.config.add_layer_widget('type', self.type)
         self.config.add_layer_widget('field', self.field)
-        self.config.add_layer_widget('min_date', self.min_date)
-        self.config.add_layer_widget('max_date', self.max_date)
         self.config.add_layer_widget('start_field', self.start_field)
         self.config.add_layer_widget('end_field', self.end_field)
         self.config.add_layer_widget('format', self.filter_format)
@@ -39,8 +37,6 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('title', self.label_title)
         self.config.add_layer_label('type', self.label_type)
         self.config.add_layer_label('field', self.label_field)
-        self.config.add_layer_label('min_date', self.label_min_date)
-        self.config.add_layer_label('max_date', self.label_max_date)
         self.config.add_layer_label('start_field', self.label_start_field)
         self.config.add_layer_label('end_field', self.label_end_field)
         self.config.add_layer_label('format', self.label_format)
@@ -83,19 +79,15 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.field.setLayer)
-        self.layer.layerChanged.connect(self.min_date.setLayer)
-        self.layer.layerChanged.connect(self.max_date.setLayer)
         self.layer.layerChanged.connect(self.start_field.setLayer)
         self.layer.layerChanged.connect(self.end_field.setLayer)
 
         self.field.setLayer(self.layer.currentLayer())
-        self.min_date.setLayer(self.layer.currentLayer())
-        self.max_date.setLayer(self.layer.currentLayer())
         self.start_field.setLayer(self.layer.currentLayer())
         self.end_field.setLayer(self.layer.currentLayer())
 
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
-            self.label_end_field,
+            # self.label_end_field, this one, it depends on the type of filter : date versus numeric
         ]
 
         block_list = []
@@ -129,17 +121,17 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         # Field
         self.label_field.setVisible(False)
         self.field.setVisible(False)
-        self.field.setAllowEmptyFieldName(False)
+        self.field.setAllowEmptyFieldName(True)
 
         # Start field
         self.label_start_field.setVisible(False)
         self.start_field.setVisible(False)
-        self.start_field.setAllowEmptyFieldName(False)
+        self.start_field.setAllowEmptyFieldName(True)
 
         # End field
         self.label_end_field.setVisible(False)
         self.end_field.setVisible(False)
-        self.end_field.setAllowEmptyFieldName(False)
+        self.end_field.setAllowEmptyFieldName(True)
 
         # Format
         self.filter_format.setVisible(False)
@@ -149,26 +141,18 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         self.splitter.setVisible(False)
         self.label_splitter.setVisible(False)
 
-        # Min date
-        self.label_min_date.setVisible(False)
-        self.min_date.setVisible(False)
-        self.min_date.setAllowEmptyFieldName(False)
-
-        # Max date
-        self.label_max_date.setVisible(False)
-        self.max_date.setVisible(False)
-        self.max_date.setAllowEmptyFieldName(False)
-
         if data == 'date':
-            self.min_date.setVisible(True)
-            self.min_date.setAllowEmptyFieldName(False)
-            self.max_date.setVisible(True)
-            self.max_date.setAllowEmptyFieldName(True)
-            self.label_min_date.setVisible(True)
-            self.label_max_date.setVisible(True)
+            self.start_field.setVisible(True)
+            self.start_field.setAllowEmptyFieldName(False)
+            self.end_field.setVisible(True)
+            self.label_start_field.setVisible(True)
+            self.label_end_field.setVisible(True)
+            if self.label_end_field in self.lwc_versions[LwcVersions.Lizmap_3_7]:
+                self.lwc_versions[LwcVersions.Lizmap_3_7].remove(self.label_end_field)
         elif data == 'uniquevalues':
             self.label_field.setVisible(True)
             self.field.setVisible(True)
+            self.field.setAllowEmptyFieldName(False)
             self.filter_format.setVisible(True)
             index = self.filter_format.findData('')
             self.filter_format.removeItem(index)
@@ -179,17 +163,23 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             self.label_start_field.setVisible(True)
             self.label_end_field.setVisible(True)
             self.start_field.setVisible(True)
+            self.start_field.setAllowEmptyFieldName(False)
             self.end_field.setVisible(True)
-            self.end_field.setAllowEmptyFieldName(True)
+            if self.label_end_field not in self.lwc_versions[LwcVersions.Lizmap_3_7]:
+                self.lwc_versions[LwcVersions.Lizmap_3_7].append(self.label_end_field)
         elif data == 'text':
             self.label_field.setVisible(True)
             self.field.setVisible(True)
+            self.field.setAllowEmptyFieldName(False)
             self.filter_format.addItem('', '')
             index = self.filter_format.findData('')
             self.filter_format.setCurrentIndex(index)
             self.splitter.setText('')
         else:
             raise Exception('Unknown type')
+
+        # Let's repaint colors on widgets because of the numeric versus date type
+        self.version_lwc()
 
     def validate(self) -> str:
         upstream = super().validate()
@@ -205,14 +195,11 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         data = self.type.itemData(index)
 
         field_required = tr('Field is mandatory.')
-        if data == 'date':
-            if not self.min_date.currentField():
-                return tr('Field min date is mandatory.')
+        if data in ('numeric', 'date'):
+            if not self.start_field.currentField():
+                return field_required
         elif data in ('text', 'uniquevalues'):
             if not self.field.currentField():
-                return field_required
-        elif data == 'numeric':
-            if not self.start_field.currentField():
                 return field_required
         else:
             raise Exception('Unknown option')
