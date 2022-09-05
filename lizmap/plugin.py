@@ -506,6 +506,20 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
+        # Scales
+        self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
+        self.dlg.min_scale_pic.setText('')
+        self.dlg.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
+        self.dlg.max_scale_pic.setText('')
+        self.dlg.label_warning_crs.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
+        ui_items = (
+            self.dlg.label_min_scale, self.dlg.label_max_scale,
+            self.dlg.min_scale_pic, self.dlg.max_scale_pic,
+            self.dlg.inMinScale, self.dlg.inMaxScale,
+        )
+        for item in ui_items:
+            item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
+
         # Popup configuration
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
@@ -535,9 +549,7 @@ class Lizmap:
                 elif item['wType'] == 'fields':
                     control.fieldChanged.connect(slot)
 
-        # Connect baselayer checkboxes
-        self.base_layer_widget_list = {
-            'layer': self.dlg.cbLayerIsBaseLayer,
+        self.crs_3857_base_layers_list = {
             'osm-mapnik': self.dlg.cbOsmMapnik,
             'osm-stamen-toner': self.dlg.cbOsmStamenToner,
             'opentopomap': self.dlg.cb_open_topo_map,
@@ -552,9 +564,19 @@ class Lizmap:
             'ign-photo': self.dlg.cbIgnSatellite,
             'ign-scan': self.dlg.cbIgnTerrain,
             'ign-cadastral': self.dlg.cbIgnCadastral,
+        }
+        for item in self.crs_3857_base_layers_list.values():
+            slot = self.check_visibility_crs_3857
+            item.stateChanged.connect(slot)
+        self.check_visibility_crs_3857()
+
+        # Connect base-layer checkboxes
+        self.base_layer_widget_list = {
+            'layer': self.dlg.cbLayerIsBaseLayer,
             'empty': self.dlg.cbAddEmptyBaselayer
         }
-        for key, item in self.base_layer_widget_list.items():
+        self.base_layer_widget_list.update(self.crs_3857_base_layers_list)
+        for item in self.base_layer_widget_list.values():
             slot = self.onBaselayerCheckboxChange
             item.stateChanged.connect(slot)
 
@@ -838,6 +860,9 @@ class Lizmap:
         # initial extent
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
         self.dlg.btSetExtentFromCanvas.clicked.connect(self.set_initial_extent_from_canvas)
+
+        self.dlg.btSetExtentFromProject.setIcon(QIcon(":images/themes/default/propertyicons/overlay.svg"))
+        self.dlg.btSetExtentFromCanvas.setIcon(QIcon(":images/themes/default/mLayoutItemMap.svg"))
 
         # Dataviz options
         for item in Theme:
@@ -2650,6 +2675,15 @@ class Lizmap:
                             level=Qgis.Warning,
                             duration=30
                         )
+
+    def check_visibility_crs_3857(self):
+        """ Check if we display the warning about scales. """
+        visible = False
+        for item in self.crs_3857_base_layers_list.values():
+            if item.isChecked():
+                visible = True
+
+        self.dlg.scales_warning_layout.setVisible(visible)
 
     def onBaselayerCheckboxChange(self):
         """

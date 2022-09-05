@@ -916,12 +916,65 @@ QListWidget::item::selected {
                   <string>Scales</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="5" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QLabel" name="label_15">
+                      <property name="text">
+                       <string>Map Scales</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="inMapScales">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="inputMethodHints">
+                       <set>Qt::ImhDigitsOnly</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                   <item row="2" column="0">
+                   <widget class="QWidget" name="scales_warning_layout" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_34">
+                     <item>
+                      <widget class="QLabel" name="label_warning_crs">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string notr="true">WARNING</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_14">
+                       <property name="text">
+                        <string>The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map.</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_11">
                     <item>
-                     <widget class="QLabel" name="label_13">
+                     <widget class="QLabel" name="label_min_scale">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
                        <string>Min Scale</string>
@@ -929,9 +982,16 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item>
+                     <widget class="QLabel" name="min_scale_pic">
+                      <property name="text">
+                       <string notr="true">PICTURE</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QLineEdit" name="inMinScale">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="inputMethodHints">
                        <set>Qt::ImhDigitsOnly</set>
@@ -939,12 +999,15 @@ QListWidget::item::selected {
                       <property name="maxLength">
                        <number>10</number>
                       </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="label_14">
+                     <widget class="QLabel" name="label_max_scale">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
                        <string>Max Scale</string>
@@ -952,9 +1015,19 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item>
+                     <widget class="QLabel" name="max_scale_pic">
+                      <property name="text">
+                       <string notr="true">PICTURE</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QLineEdit" name="inMaxScale">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -976,40 +1049,16 @@ QListWidget::item::selected {
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_17">
                     <property name="text">
-                     <string>&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br /&gt;Ex: 1000, 250000&lt;br /&gt;If the map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map.&lt;br /&gt;These scales are used for printing too, regardless of the projection.&lt;/p&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br/&gt;Ex: 1000, 250000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
-                    <item>
-                     <widget class="QLabel" name="label_15">
-                      <property name="text">
-                       <string>Map Scales</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inMapScales">
-                      <property name="inputMethodHints">
-                       <set>Qt::ImhDigitsOnly</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_11">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>These scales are used for printing too, regardless of the projection.</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1049,19 +1098,26 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_19">
                     <item>
+                     <widget class="QLabel" name="label_62">
+                      <property name="text">
+                       <string>Set the extent from</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QPushButton" name="btSetExtentFromProject">
                       <property name="toolTip">
                        <string>In the project properties, then QGIS server tab, WMS section, there is an advertised extent</string>
                       </property>
                       <property name="text">
-                       <string>Set from project properties, QGIS server tab</string>
+                       <string>project properties, QGIS server tab</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btSetExtentFromCanvas">
                       <property name="text">
-                       <string>Set from map canvas</string>
+                       <string>map canvas</string>
                       </property>
                      </widget>
                     </item>
