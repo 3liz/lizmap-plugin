@@ -659,6 +659,7 @@ class TestTableManager(unittest.TestCase):
         output = table_manager.to_json()
         # Global widget are not defined in this test
         json['config'] = {}
+        json['layers'][0]['use_centroid'] = False  # Default value
         self.assertEqual(output, json)
 
     def test_tool_tip(self):

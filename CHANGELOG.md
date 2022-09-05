@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Add a new option "Use the geometry centroid" for the filtering by polygon. An index on the PostgreSQL layer is required.
+  Available in the 1.2.0 version of the server plugin.
+
 ## 3.9.1 - 2022-10-04
 
 * Add a link to GIS Stackexchange on the first tab

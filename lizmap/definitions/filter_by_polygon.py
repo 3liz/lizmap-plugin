@@ -1,8 +1,14 @@
 """Definitions for filter by polygon."""
 
 from enum import Enum, unique
+from typing import Optional, Tuple
 
-from qgis.core import QgsApplication
+from qgis.core import (
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsProviderRegistry,
+    QgsVectorLayer,
+)
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -69,6 +75,17 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             'tooltip': tr('The spatial relationship to use when filtering data')
         }
 
+        self._layer_config['use_centroid'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Centroid'),
+            'default': False,
+            'tooltip': tr(
+                'If the tool must use the centroid of the geometry or the full geometry. It\'s quicker to use the'
+                'centroid. For a PostgreSQL layer, an index on the centroid is required.'
+            ),
+            'use_json': True,
+        }
+
         self._general_config['polygon_layer_id'] = {
             'type': InputType.Layer,
             'tooltip': tr('The layer to use for filtering.'),
@@ -88,6 +105,41 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             'default': False,
             'tooltip': tr('If checked, the chosen field above should contain a list of users, not groups.')
         }
+
+    @classmethod
+    def has_spatial_centroid_index(cls, layer: QgsVectorLayer) -> Tuple[bool, Optional[str]]:
+        """ Check if the layer has a spatial index on the centroid. """
+        datasource = QgsDataSourceUri(layer.source())
+
+        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+        connection = metadata.createConnection(datasource.uri(), {})
+        result = connection.executeSql("""
+            SELECT tablename, indexname, indexdef
+            FROM pg_indexes
+            WHERE schemaname = '{schema}'
+            AND tablename = '{table}'
+            AND indexdef ILIKE '%{geom}%'
+            AND indexdef ILIKE '%st_centroid%'""".format(
+            schema=datasource.schema(),
+            table=datasource.table(),
+            geom=datasource.geometryColumn(),
+            )
+        )
+        if len(result) >= 1:
+            return True, None
+
+        message = tr('The layer is stored in PostgreSQL and the option "Use Centroid" is used.')
+        message += '\n'
+        message += tr(
+            'However, we could not detect a spatial index on the centroid. The given query must be executed :'
+        )
+        message += '\n'
+        message += "CREATE INDEX ON \"{schema}\".\"{table}\" USING GIST (ST_Centroid({geom}));".format(
+            schema=datasource.schema(),
+            table=datasource.table(),
+            geom=datasource.geometryColumn(),
+        )
+        return False, message
 
     @staticmethod
     def primary_keys() -> tuple:
