@@ -10,7 +10,12 @@ from typing import Type
 from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
-from qgis.PyQt.QtWidgets import QAbstractItemView, QDialog, QTableWidgetItem
+from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
+    QDialog,
+    QMessageBox,
+    QTableWidgetItem,
+)
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
@@ -418,6 +423,7 @@ class TableManager:
             layer_data = dict()
             for i, key in enumerate(self.keys):
                 input_type = self.definitions.layer_config[key]['type']
+                use_bool_type = self.definitions.layer_config[key].get('use_json', False)
                 item = self.table.item(row, i)
 
                 if export_legacy_single_row:
@@ -447,8 +453,11 @@ class TableManager:
                 elif input_type == InputType.Json:
                     layer_data[key] = cell
                 elif input_type == InputType.CheckBox:
-                    # Lizmap 4 #176
-                    layer_data[key] = 'True' if cell else 'False'
+                    if use_bool_type:
+                        layer_data[key] = cell
+                    else:
+                        # Lizmap 4 #176
+                        layer_data[key] = 'True' if cell else 'False'
                 elif input_type == InputType.SpinBox:
                     layer_data[key] = cell
                 elif input_type == InputType.List:
@@ -475,8 +484,9 @@ class TableManager:
                     layer_data[key] = default_value(vector_layer)
 
                     if isinstance(layer_data[key], bool):
-                        # Ticket #176 about true boolean
-                        layer_data[key] = 'True' if layer_data[key] else 'False'
+                        if not self.definitions.layer_config[key].get('use_json', False):
+                            # Ticket #176 about true boolean
+                            layer_data[key] = 'True' if layer_data[key] else 'False'
 
             if self.definitions.key() == 'datavizLayers':
                 if layer_data['type'] == GraphType.Box.value['data']:
@@ -528,6 +538,19 @@ class TableManager:
                 return layer_data
 
             data['layers'].append(layer_data)
+
+        # Check for PG with centroid options
+        # Maybe move this code later if we have more checks to do when saving CFG
+        if self.definitions.key() == 'filter_by_polygon':
+            for layer_data in data['layers']:
+                if layer_data['use_centroid']:
+                    vector_layer = QgsProject.instance().mapLayer(layer_data['layer'])
+                    if vector_layer.providerType() == 'postgres':
+                        # noinspection PyUnresolvedReferences
+                        has_index, message = self.definitions.has_spatial_centroid_index(vector_layer)
+                        if not has_index:
+                            # noinspection PyUnresolvedReferences
+                            QMessageBox.critical(self.parent, tr('Filter by polygon'), message, QMessageBox.Ok)
 
         if self.definitions.key() in [
             'locateByLayer',

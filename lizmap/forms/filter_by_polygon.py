@@ -28,6 +28,7 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('primary_key', self.primary_key)
         self.config.add_layer_widget('filter_mode', self.filter_mode)
         self.config.add_layer_widget('spatial_relationship', self.spatial_relationship_mode)
+        self.config.add_layer_widget('use_centroid', self.checkbox_use_centroid)
 
         self.config.add_layer_label('layer', self.label_layer)
         self.config.add_layer_label('primary_key', self.label_primary_key)
@@ -54,6 +55,11 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
                 tr('PostgreSQL is the only type of layer supported with editing capabilities.'),
             )
             return msg
+
+        if layer.providerType() == 'postgres' and self.checkbox_use_centroid.isChecked():
+            has_index, message = self.config.has_spatial_centroid_index(layer)
+            if not has_index:
+                return message
 
         upstream = super().validate()
         if upstream:

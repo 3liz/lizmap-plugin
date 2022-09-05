@@ -41,6 +41,7 @@ class BaseEditionDialog(QDialog):
     def setup_ui(self):
         self.button_box.button(QDialogButtonBox.Help).setToolTip(
             tr('Open the online documentation for this feature.'))
+        self.error.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         if not self.config.help_path():
             self.button_box.button(QDialogButtonBox.Help).setVisible(False)
