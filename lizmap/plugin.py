@@ -212,6 +212,7 @@ class Lizmap:
                 index = self.layer_options_list[combo_item]['widget'].findData(data)
 
                 if tooltip:
+                    # noinspection PyUnresolvedReferences
                     self.layer_options_list[combo_item]['widget'].setItemData(index, tooltip, Qt.ToolTipRole)
 
                 if icon:
@@ -273,6 +274,7 @@ class Lizmap:
 
         self.dlg.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
+        # noinspection PyUnresolvedReferences
         pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
         self.dlg.label_lizmap_logo.setPixmap(pixmap)
 
@@ -771,6 +773,7 @@ class Lizmap:
                     elif isinstance(item, QStandardItem):
                         # QComboBox
                         brush = QBrush()
+                        # noinspection PyUnresolvedReferences
                         brush.setStyle(Qt.SolidPattern)
                         brush.setColor(QColor(NEW_FEATURE_COLOR))
                         item.setBackground(brush)
@@ -829,6 +832,7 @@ class Lizmap:
         # Open the online help
         self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
         self.iface.pluginHelpMenu().addAction(self.help_action)
+        # noinspection PyUnresolvedReferences
         self.help_action.triggered.connect(self.show_help)
 
         # connect Lizmap signals and functions
@@ -963,6 +967,7 @@ class Lizmap:
                     control.setToolTip(tr('Move the layer down in the table'))
 
         # Delete layers from table when deleted from registry
+        # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
         # Lizmap external layers as baselayers
@@ -1042,16 +1047,20 @@ class Lizmap:
 
         layer = self._current_selected_layer()
         is_vector = isinstance(layer, QgsVectorLayer)
+        # noinspection PyUnresolvedReferences
         has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
 
         index = self.layer_options_list['popupSource']['widget'].findData('qgis')
 
         qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
+        # noinspection PyUnresolvedReferences
         qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
 
         if has_geom:
+            # noinspection PyUnresolvedReferences
             qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
         else:
+            # noinspection PyUnresolvedReferences
             qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
 
     def show_help(self):
@@ -1331,7 +1340,7 @@ class Lizmap:
                 widget.setColumnCount(col_count)
                 i = 0
                 if store_layer_id:
-                    # add layer name column - get name from layer if possible (if user has renamed the layer)
+                    # add layer name column - get name from layer if possible (if the user has renamed the layer)
                     icon = None
                     if 'layerId' in list(v.keys()):
                         layer = self.project.mapLayer(v['layerId'])
@@ -1577,13 +1586,13 @@ class Lizmap:
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
         if self.myDic[itemKey]['name'] in jsonLayers:
-            jsonKey = self.myDic[itemKey]['name']
-            LOGGER.info('Reading configuration from dictionary for layer {}'.format(jsonKey))
+            json_key = self.myDic[itemKey]['name']
+            LOGGER.info('Reading configuration from dictionary for layer {}'.format(json_key))
             # loop through layer options to override
             for key, item in self.layer_options_list.items():
                 # override only for ui widgets
                 if item.get('widget'):
-                    if key in jsonLayers[jsonKey]:
+                    if key in jsonLayers[json_key]:
 
                         if key == 'legend_image_option':
                             if self.myDic[itemKey].get('legend_image_option'):
@@ -1595,7 +1604,7 @@ class Lizmap:
 
                         # checkboxes
                         if item['wType'] == 'checkbox':
-                            value = jsonLayers[jsonKey][key]
+                            value = jsonLayers[json_key][key]
                             if isinstance(value, bool):
                                 self.myDic[itemKey][key] = value
                             elif value.lower() in ('yes', 'true', 't', '1'):
@@ -1604,40 +1613,40 @@ class Lizmap:
                                 self.myDic[itemKey][key] = False
                         # spin box
                         elif item['wType'] == 'spinbox':
-                            if jsonLayers[jsonKey][key] != '':
-                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                            if jsonLayers[json_key][key] != '':
+                                self.myDic[itemKey][key] = jsonLayers[json_key][key]
                         # text inputs
                         elif item['wType'] in ('text', 'textarea'):
-                            if jsonLayers[jsonKey][key] != '':
+                            if jsonLayers[json_key][key] != '':
                                 if item.get('isMetadata'):  # title and abstract
                                     if not keepMetadata:
-                                        self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                                        self.myDic[itemKey][key] = jsonLayers[json_key][key]
                                 else:
-                                    self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                                    self.myDic[itemKey][key] = jsonLayers[json_key][key]
                         # lists
                         elif item['wType'] == 'list':
                             # New way with data, label, tooltip and icon
                             datas = [j[0] for j in item['list']]
-                            if jsonLayers[jsonKey][key] in datas:
-                                self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                            if jsonLayers[json_key][key] in datas:
+                                self.myDic[itemKey][key] = jsonLayers[json_key][key]
 
                 else:
                     if key == 'noLegendImage':
                         tmp = 'hide_at_startup'  # Default value
-                        if jsonLayers[jsonKey].get('noLegendImage') == 'True':
+                        if jsonLayers[json_key].get('noLegendImage') == 'True':
                             tmp = 'disabled'
-                        elif jsonLayers[jsonKey].get('noLegendImage') != 'False':
+                        elif jsonLayers[json_key].get('noLegendImage') != 'False':
                             LOGGER.info(
                                 "Unknown value for key noLegendImage = {}".format(
-                                    jsonLayers[jsonKey].get('noLegendImage')))
+                                    jsonLayers[json_key].get('noLegendImage')))
                         self.myDic[itemKey]['legend_image_option'] = tmp
 
                     LOGGER.info('Skip key {} because no UI widget'.format(key))
 
                 # popupContent
                 if key == 'popupTemplate':
-                    if key in jsonLayers[jsonKey]:
-                        self.myDic[itemKey][key] = jsonLayers[jsonKey][key]
+                    if key in jsonLayers[json_key]:
+                        self.myDic[itemKey][key] = jsonLayers[json_key][key]
 
     def process_node(self, node, parent_node, json_layers):
         """
@@ -1727,7 +1736,7 @@ class Lizmap:
                 f.close()
         return json_layers
 
-    def populateLayerTree(self):
+    def populate_layer_tree(self):
         """Populate the layer tree of the Layers tab from QGIS legend interface.
 
         Needs to be refactored.
@@ -2108,7 +2117,7 @@ class Lizmap:
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
 
-    def writeProjectConfigFile(self):
+    def write_project_config_file(self):
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
 
@@ -2488,16 +2497,6 @@ class Lizmap:
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
-        # Add default variables in the project
-        variables = self.project.customVariables()
-        if not variables.get('lizmap_user'):
-            variables['lizmap_user'] = ''
-
-        if not variables.get('lizmap_user_groups'):
-            variables['lizmap_user_groups'] = list()
-
-        self.project.setCustomVariables(variables)
-
         message = tr(
             'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
         if not self.project.fileName():
@@ -2557,6 +2556,16 @@ class Lizmap:
                 project_wms_extent[2] = str(full_extent.xMaximum())
                 project_wms_extent[3] = str(full_extent.yMaximum())
                 self.project.writeEntry('WMSExtent', '', project_wms_extent)
+
+        # Add default variables in the project
+        variables = self.project.customVariables()
+        if not variables.get('lizmap_user'):
+            variables['lizmap_user'] = ''
+
+        if not variables.get('lizmap_user_groups'):
+            variables['lizmap_user_groups'] = list()
+
+        self.project.setCustomVariables(variables)
 
         return True, ''
 
@@ -2620,7 +2629,7 @@ class Lizmap:
             # Checking configuration data
             # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
 
-            # public baselayers: check that the 3857 projection is set in the
+            # public base-layers: check that the 3857 projection is set in the
             # "Coordinate System Restriction" section of the project WMS Server tab properties
             if True in mercator_layers:
                 crs_list = self.project.readListEntry('WMSCrsList', '')
@@ -2634,7 +2643,7 @@ class Lizmap:
 
             if self.isok:
                 # write data in the lizmap json config file
-                self.writeProjectConfigFile()
+                self.write_project_config_file()
                 self.log(
                     tr('All the map parameters are correctly set'),
                     abort=False,
@@ -2687,13 +2696,13 @@ class Lizmap:
 
     def onBaselayerCheckboxChange(self):
         """
-        Add or remove a baselayer in cbStartupBaselayer combobox
-        when user change state of any baselayer related checkbox
+        Add or remove a base-layer in cbStartupBaselayer combobox
+        when user change state of any base-layer related checkbox
         """
         if not self.layerList:
             return
 
-        # Combo to fill up with baselayers
+        # Combo to fill up with base-layer
         combo = self.dlg.cbStartupBaselayer
 
         # First get selected item
@@ -2705,7 +2714,7 @@ class Lizmap:
         i = 0
         blist = []
 
-        # Fill with checked baselayers
+        # Fill with checked base-layers
         # 1/ QGIS layers
         for k, v in self.layerList.items():
             if not v['baseLayer']:
@@ -2716,7 +2725,7 @@ class Lizmap:
                 idx = i
             i += 1
 
-        # 2/ External baselayers
+        # 2/ External base-layers
         for k, v in self.base_layer_widget_list.items():
             if k != 'layer':
                 if v.isChecked():
@@ -2735,7 +2744,7 @@ class Lizmap:
     def setStartupBaselayerFromConfig(self):
         """
         Read lizmap current cfg configuration
-        and set the startup baselayer if found
+        and set the startup base-layer if found
         """
         # Get the project config file (projectname.qgs.cfg)
         json_file = '{}.cfg'.format(self.project.fileName())
@@ -2819,7 +2828,7 @@ class Lizmap:
             self.embeddedGroups = None
 
             # Fill the layer tree
-            self.populateLayerTree()
+            self.populate_layer_tree()
 
             # Fill baselayer startup
             self.onBaselayerCheckboxChange()
