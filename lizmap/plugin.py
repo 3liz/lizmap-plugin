@@ -1100,8 +1100,9 @@ class Lizmap:
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
         data = self.layer_options_list['popupSource']['widget'].currentData()
-        self.dlg.btConfigurePopup.setVisible(data == 'lizmap')
-        self.dlg.widget_qgis_maptip.setVisible(data == 'qgis')
+        self.dlg.btConfigurePopup.setEnabled(data == 'lizmap')
+        self.dlg.btQgisPopupFromForm.setEnabled(data == 'qgis')
+        self.dlg.button_generate_html_table.setEnabled(data == 'qgis')
 
     def show_help(self):
         """Opens the html help file content with default browser."""
