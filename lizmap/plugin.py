@@ -858,6 +858,8 @@ class Lizmap:
 
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
 
+        self.dlg.label_image_warning_project.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
+
         # clear log button clicked
         self.dlg.btClearlog.clicked.connect(self.clear_log)
 
@@ -985,8 +987,8 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
-        # Lizmap external layers as baselayers
-        # add a layer to the lizmap external baselayers
+        # Lizmap external layers as base-layers
+        # add a layer to the lizmap external base-layers
         self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
 
         # Atlas
@@ -1024,6 +1026,24 @@ class Lizmap:
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
+
+    def check_dialog_validity(self):
+        """ Change the dialog if we have a project or not.
+
+        Only the first tab is always allowed.
+        All other tabs must have a valid QGS project.
+        """
+        valid, msg = self.check_global_project_options()
+        self.dlg.layout_project_valid.setVisible(not valid)
+        if not valid:
+            self.dlg.error_no_project.setText(msg)
+
+        for i in range(1, self.dlg.mOptionsListWidget.count()):
+            item = self.dlg.mOptionsListWidget.item(i)
+            if valid:
+                item.setFlags(item.flags() | Qt.ItemIsEnabled)
+            else:
+                item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
 
     def add_new_layer(self, key):
         self.layers_table[key]['manager'].add_new_row()
@@ -1351,8 +1371,9 @@ class Lizmap:
         if json_config:
             # reorder data if needed
             if 'order' in list(json_config.items())[0][1]:
-                # FIXME shadow error with key
-                data = [(k, json_config[k]) for k in sorted(json_config, key=lambda key: json_config[key]['order'])]
+                data = [
+                    (k, json_config[k]) for k in sorted(json_config, key=lambda json_key: json_config[json_key]['order'])
+                ]
             else:
                 data = list(json_config.items())
 
@@ -1403,7 +1424,7 @@ class Lizmap:
             LOGGER.info('Table "{}" has been loaded'.format(key))
 
     def get_qgis_layer_by_id(self, my_id):
-        """Get a QgsLayer by its Id"""
+        """Get a QgsLayer by its ID"""
         for layer in self.project.mapLayers().values():
             if my_id == layer.id():
                 return layer
@@ -2838,6 +2859,7 @@ class Lizmap:
 
     def run(self):
         """Plugin run method : launch the GUI."""
+        self.check_dialog_validity()
         if self.dlg.isVisible():
             # show dialog in front of QGIS
             self.dlg.raise_()
@@ -2846,16 +2868,6 @@ class Lizmap:
 
         # show the dialog only if checkGlobalProjectOptions is true
         if not self.dlg.isVisible():
-            project_is_valid, message = self.check_global_project_options()
-
-            if not project_is_valid:
-                QMessageBox.critical(
-                    self.dlg,
-                    tr('Lizmap Error'),
-                    message,
-                    QMessageBox.Ok)
-                return False
-
             self.populate_lwc_combo()
 
             # QGIS Plugin manager

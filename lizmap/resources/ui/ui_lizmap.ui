@@ -235,7 +235,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -275,6 +275,32 @@ QListWidget::item::selected {
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="layout_project_valid" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_42">
+              <item>
+               <widget class="QLabel" name="label_image_warning_project">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>IMAGE</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="error_no_project">
+                <property name="text">
+                 <string notr="true">ERROR SET PYTHON IF NOT VALID PROJECT</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -403,6 +429,7 @@ QListWidget::item::selected {
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -782,6 +809,7 @@ QListWidget::item::selected {
                      <widget class="QLabel" name="label_68">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1886,6 +1914,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <widget class="QLabel" name="label_56">
                              <property name="font">
                               <font>
+                               <weight>50</weight>
                                <bold>false</bold>
                               </font>
                              </property>
@@ -2108,6 +2137,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_32">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2173,6 +2203,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2238,6 +2269,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2324,6 +2356,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_34">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2403,6 +2436,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_35">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>

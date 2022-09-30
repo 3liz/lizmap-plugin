@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Remove notes about the Lizmap QGIS server plugin
+* Allow to open the first tab in Lizmap without a project, to be able to visit links
 
 ## 3.9.5 - 2022-11-29
 
