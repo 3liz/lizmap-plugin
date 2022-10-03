@@ -587,16 +587,6 @@ QListWidget::item::selected {
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_no_server">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;You haven't added any server yet. You should consider adding at least one, so you will be able to have its version number and be aware of any new version.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QTableWidget" name="table_server"/>
            </item>
            <item>

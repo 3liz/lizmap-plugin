@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="label_5">
      <property name="text">
       <string>All fields are required. Login and password are allowing more details only for QGIS ≥ 3.10 and Lizmap Web Client ≥ 3.5.</string>
      </property>
@@ -30,6 +30,9 @@
       <string>If you are using Lizmap Web Client ≥ 3.6, visit your administration panel, then &quot;Server information&quot; and copy/paste the URL of your instance.</string>
      </property>
      <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="openExternalLinks">
       <bool>true</bool>
      </property>
     </widget>
@@ -52,6 +55,35 @@
      <property name="openExternalLinks">
       <bool>true</bool>
      </property>
+    <widget class="QWidget" name="widget_no_master_password" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_logo_warning">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string notr="true">IMAGE WARNING</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It seems it's the first time you are using the QGIS password manager. When pressing OK, you will be prompt to enter a master password. This master password is only linked to your QGIS profile on your computer and is not linked to Lizmap. Please read the &lt;a href=&quot;https://docs.qgis.org/3.22/en/docs/user_manual/auth_system/auth_overview.html#master-password&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS documentation&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -167,7 +199,7 @@
   <customwidget>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
+   <header>qgspasswordlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

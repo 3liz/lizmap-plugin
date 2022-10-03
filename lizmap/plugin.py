@@ -605,7 +605,6 @@ class Lizmap:
             self.dlg.remove_server_button,
             self.dlg.edit_server_button,
             self.dlg.refresh_versions_button,
-            self.dlg.label_no_server,
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
         )
@@ -1034,9 +1033,19 @@ class Lizmap:
         All other tabs must have a valid QGS project.
         """
         valid, msg = self.check_global_project_options()
-        self.dlg.layout_project_valid.setVisible(not valid)
         if not valid:
             self.dlg.error_no_project.setText(msg)
+
+        if valid:
+            # Project is valid, now check the server validity
+            valid = self.server_manager.check_validity_servers()
+            if not valid:
+                msg = tr(
+                    'You must have all Lizmap servers with a valid URL and a login provided before using the plugin.'
+                )
+
+        self.dlg.error_no_project.setText(msg)
+        self.dlg.layout_project_valid.setVisible(not valid)
 
         for i in range(1, self.dlg.mOptionsListWidget.count()):
             item = self.dlg.mOptionsListWidget.item(i)
@@ -2642,22 +2651,6 @@ class Lizmap:
     def get_map_options(self):
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
-
-        if self.dlg.table_server.rowCount() < 1:
-            # But by making this condition, we somehow force people to at least have one server in the list,
-            # so they can be more aware about versioning later
-            QMessageBox.warning(
-                self.dlg,
-                tr('Lizmap Server URL'),
-                '{}\n\n{}\n\n{}'.format(
-                    tr("You haven't provided any Lizmap URL in the first Information panel."),
-                    tr(
-                        "Publishing a project on Lizmap requires to have a server running with the Lizmap "
-                        "application."),
-                    tr(
-                        "By providing a URL, you will be able to check its version number for instance."
-                    )
-                ), QMessageBox.Ok)
 
         # global project option checking
         is_valid, message = self.check_global_project_options()

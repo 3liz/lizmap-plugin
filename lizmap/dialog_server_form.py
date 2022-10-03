@@ -5,6 +5,7 @@ __email__ = 'info@3liz.org'
 import logging
 
 from qgis.core import QgsApplication, QgsAuthMethodConfig
+from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig, QgsMessageLog
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QPixmap
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
@@ -26,6 +27,9 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         self.setupUi(self)
         self.auth_manager = QgsApplication.authManager()
         self.existing = existing
+
+        self.label_logo_warning.setText('')
+        self.label_logo_warning.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
 
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
@@ -199,6 +203,13 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
         if not QUrl(url).isValid():
             self.error.setText(tr("The URL is not valid."))
+        if not login:
+            self.error.setText("The login is required.")
+            self.error.setVisible(True)
+            return False
+
+        if not password:
+            self.error.setText("The password is required.")
             self.error.setVisible(True)
             return False
 

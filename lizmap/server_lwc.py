@@ -1,4 +1,4 @@
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -70,7 +70,7 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server,
+            self, parent, table, add_button, remove_button, edit_button, refresh_button,
             up_button, down_button
     ):
         self.parent = parent
@@ -81,10 +81,10 @@ class ServerManager:
         self.refresh_button = refresh_button
         self.up_button = up_button
         self.down_button = down_button
-        self.label_no_server = label_no_server
 
         # Network
         self.fetchers = {}
+        self.row_valid = {}
 
         # Icons and tooltips
         self.remove_button.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
@@ -212,6 +212,26 @@ class ServerManager:
 
         return True
 
+    def check_validity_servers(self) -> bool:
+        """ Check if all servers are valid. """
+        if self.table.rowCount() == 0:
+            return False
+
+        current = version()
+        if current in ('master', 'dev') or 'alpha' in current:
+            # For developers, we bypass this check :)
+            return True
+
+        for row in range(self.table.rowCount()):
+            login = self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole)
+            if not login:
+                return False
+
+        if False in self.row_valid.values():
+            return False
+
+        return True
+
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
         existing = self.existing_json_server_list()
@@ -225,7 +245,7 @@ class ServerManager:
         self.table.setRowCount(row + 1)
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
-        self.check_display_warning_no_server()
+        self.parent.check_dialog_validity()
 
     def _fetch_cells(self, row: int) -> tuple:
         """ Fetch the URL and the authid in the cells. """
@@ -260,7 +280,6 @@ class ServerManager:
 
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
-        self.check_display_warning_no_server()
 
     def remove_row(self):
         """ Remove the selected row from the table. """
@@ -293,8 +312,10 @@ class ServerManager:
         self.table.removeRow(row)
         if row in self.fetchers.keys():
             del self.fetchers[row]
+        if row in self.row_valid:
+            del self.row_valid[row]
         self.save_table()
-        self.check_display_warning_no_server()
+        self.parent.check_dialog_validity()
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
@@ -384,6 +405,7 @@ class ServerManager:
     def fetch(self, url: str, auth_id: str, row: int):
         """ Fetch the JSON file and call the function when it's finished. """
         self.display_action(row, False, tr('Fetching…'))
+        self.row_valid[row] = None
         self.fetchers[row] = QgsNetworkContentFetcher()
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
 
@@ -411,6 +433,9 @@ class ServerManager:
 
         reply = self.fetchers[row].reply()
 
+        # Default value
+        self.row_valid[row] = False
+
         if not reply:
             lizmap_cell.setText(tr('Error'))
             self.display_action(row, Qgis.Warning, tr('Temporary not available'))
@@ -419,6 +444,7 @@ class ServerManager:
         if reply.error() != QNetworkReply.NoError:
             if reply.error() == QNetworkReply.HostNotFoundError:
                 self.display_action(row, Qgis.Warning, tr('Host can not be found. Is-it an intranet server ?'))
+                self.row_valid[row] = True
             if reply.error() == QNetworkReply.ContentNotFoundError:
                 self.display_action(
                     row,
@@ -509,6 +535,7 @@ class ServerManager:
             # Make a better warning to upgrade ASAP
             markdown += '* QGIS Server and plugins unknown status\n'
             qgis_cell.setData(Qt.UserRole, markdown)
+            self.row_valid[row] = False
             return
 
         if qgis_server_info and "error" not in qgis_server_info.keys():
@@ -526,6 +553,7 @@ class ServerManager:
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
             qgis_cell.setData(Qt.UserRole, markdown)
             self.update_action_version(lizmap_version, qgis_version, row, login)
+            self.row_valid[row] = True
             return
 
         if branch < (3, 5):
@@ -539,6 +567,7 @@ class ServerManager:
                 tr("Not possible to determine QGIS Server version because you need at least Lizmap Web Client 3.5"))
             qgis_cell.setData(Qt.UserRole, markdown)
             self.update_action_version(lizmap_version, None, row)
+            self.row_valid[row] = True
             return
 
         if branch >= (3, 5):
@@ -556,6 +585,7 @@ class ServerManager:
                     tr("Not possible to determine QGIS Server version because you didn't provide a login"))
 
                 self.update_action_version(lizmap_version, None, row)
+                self.row_valid[row] = False
                 return
             else:
                 if "error" in qgis_server_info.keys():
@@ -566,6 +596,7 @@ class ServerManager:
                         )
                         qgis_cell.setData(Qt.UserRole, markdown)
                         self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
+                        self.row_valid[row] = False
                         return
 
                     markdown += (
@@ -575,9 +606,11 @@ class ServerManager:
                     )
                     qgis_cell.setData(Qt.UserRole, markdown)
                     self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
+                    self.row_valid[row] = False
                     return
 
         # Unknown
+        self.row_valid[row] = False
         markdown += '* QGIS Server and plugins unknown status\n'
         qgis_cell.setData(Qt.UserRole, markdown)
         self.update_action_version(lizmap_version, None, row)
@@ -611,7 +644,7 @@ class ServerManager:
                 server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
             )
 
-        self.check_display_warning_no_server()
+        self.parent.check_dialog_validity()
 
     def save_table(self):
         """ Save the table as JSON in the user configuration file. """
@@ -634,10 +667,6 @@ class ServerManager:
 
         with open(self.user_settings(), 'w') as json_file:
             json_file.write(json_file_content)
-
-    def check_display_warning_no_server(self):
-        """ If we should display or not if there isn't server configured. """
-        self.label_no_server.setVisible(self.table.rowCount() == 0)
 
     def update_action_version(
             self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str = None,
@@ -734,6 +763,11 @@ class ServerManager:
                         if is_pre_package:
                             # Pre-release, maybe the package got some updates
                             messages.append('. ' + tr('This version is not based on a tag.'))
+
+                if not login:
+                    # Add the message at the beginning
+                    messages.insert(0, tr('No administrator login provided'))
+                    level = Qgis.Critical
 
                 if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
                     # Running 3.5.X
