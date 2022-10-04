@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.9.1 - 2022-10-04
+
 * Add a link to GIS Stackexchange on the first tab
 * Fix missing translations in the user interface of the plugin
 * Improve the panel about server information
