@@ -2,6 +2,7 @@ __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import logging
 import json
 import logging
 import os
@@ -11,6 +12,7 @@ from functools import partial
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
+from PyQt5.QtWidgets import QTableWidget, QPushButton
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -70,9 +72,11 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent, table, add_button, remove_button, edit_button, refresh_button,
-            up_button, down_button
+            self, parent_class: 'Lizmap', parent: QDialog, table: QTableWidget, add_button: QPushButton,
+            remove_button: QPushButton, edit_button: QPushButton, refresh_button: QPushButton, up_button: QPushButton,
+            down_button: QPushButton
     ):
+        self.parent_class = parent_class
         self.parent = parent
         self.table = table
         self.add_button = add_button
@@ -215,11 +219,15 @@ class ServerManager:
     def check_validity_servers(self) -> bool:
         """ Check if all servers are valid. """
         if self.table.rowCount() == 0:
+            # At least one server minimum
             return False
 
         current = version()
         if current in ('master', 'dev') or 'alpha' in current:
             # For developers, we bypass this check :)
+            return True
+
+        if to_bool(os.getenv("LIZMAP_SKIP_SERVER_CHECK")):
             return True
 
         for row in range(self.table.rowCount()):
@@ -245,7 +253,7 @@ class ServerManager:
         self.table.setRowCount(row + 1)
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
-        self.parent.check_dialog_validity()
+        self.parent_class.check_dialog_validity()
 
     def _fetch_cells(self, row: int) -> tuple:
         """ Fetch the URL and the authid in the cells. """
@@ -315,7 +323,7 @@ class ServerManager:
         if row in self.row_valid:
             del self.row_valid[row]
         self.save_table()
-        self.parent.check_dialog_validity()
+        self.parent_class.check_dialog_validity()
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
@@ -444,13 +452,26 @@ class ServerManager:
         if reply.error() != QNetworkReply.NoError:
             if reply.error() == QNetworkReply.HostNotFoundError:
                 self.display_action(row, Qgis.Warning, tr('Host can not be found. Is-it an intranet server ?'))
+                self.display_action(row, Qgis.Warning, 'Host can not be found. Is-it an intranet server ?')
+                # We are nice, we don't invalid the server...
                 self.row_valid[row] = True
-            if reply.error() == QNetworkReply.ContentNotFoundError:
+            elif reply.error() == QNetworkReply.ContentNotFoundError:
                 self.display_action(
                     row,
                     Qgis.Critical,
-                    tr('Not a valid Lizmap URL or this version is already not maintained < 3.2'))
+                    tr('Not a valid Lizmap URL or this version is already not maintained < 3.2')
+                )
+                self.row_valid[row] = False
+            elif reply.error() == QNetworkReply.ConnectionRefusedError:
+                self.display_action(
+                    row,
+                    Qgis.Critical,
+                    tr('Connection refused, is the server running ?')
+                )
+                # We are nice, we don't invalid the server...
+                self.row_valid[row] = True
             else:
+                LOGGER.debug(f"Error while fetching {row} : {reply.error()}")
                 self.display_action(row, Qgis.Critical, reply.errorString())
             lizmap_cell.setText(tr('Error'))
             return
@@ -644,7 +665,7 @@ class ServerManager:
                 server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
             )
 
-        self.parent.check_dialog_validity()
+        self.parent_class.check_dialog_validity()
 
     def save_table(self):
         """ Save the table as JSON in the user configuration file. """

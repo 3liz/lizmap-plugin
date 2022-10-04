@@ -2,16 +2,22 @@ __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import os
+
 import logging
 
 from qgis.core import QgsApplication, QgsAuthMethodConfig
 from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig, QgsMessageLog
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QPixmap
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
+from qgis.PyQt.QtGui import QDesktopServices, QPixmap
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.qgis_plugin_tools.tools.version import version
+from lizmap.tools import to_bool
 
 FORM_CLASS = load_ui('ui_form_server.ui')
 LOGGER = logging.getLogger('Lizmap')
@@ -203,6 +209,14 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
         if not QUrl(url).isValid():
             self.error.setText(tr("The URL is not valid."))
+        current = version()
+        if current in ('master', 'dev') or 'alpha' in current:
+            # For developers, we bypass this check :)
+            return True
+
+        if to_bool(os.getenv("LIZMAP_SKIP_SERVER_CHECK")):
+            return True
+
         if not login:
             self.error.setText("The login is required.")
             self.error.setVisible(True)

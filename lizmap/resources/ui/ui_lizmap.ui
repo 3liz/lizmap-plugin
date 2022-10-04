@@ -4107,6 +4107,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <class>QgsCodeEditorHTML</class>
    <extends>QTextEdit</extends>
    <header>qgis.gui</header>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>

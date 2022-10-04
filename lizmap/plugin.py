@@ -186,6 +186,19 @@ class Lizmap:
         lizmap_config = LizmapConfig(project=self.project)
 
         self.dlg = LizmapDialog()
+
+        self.server_manager = ServerManager(
+            self,
+            self.dlg,
+            self.dlg.table_server,
+            self.dlg.add_server_button,
+            self.dlg.remove_server_button,
+            self.dlg.edit_server_button,
+            self.dlg.refresh_versions_button,
+            self.dlg.move_up_server_button,
+            self.dlg.move_down_server_button,
+        )
+
         self.version = version()
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg.label_dev_version.setVisible(False)
@@ -1044,7 +1057,7 @@ class Lizmap:
                     'You must have all Lizmap servers with a valid URL and a login provided before using the plugin.'
                 )
 
-        self.dlg.error_no_project.setText(msg)
+        self.dlg.error_no_project.setText("<b>{}</b>".format(msg))
         self.dlg.layout_project_valid.setVisible(not valid)
 
         for i in range(1, self.dlg.mOptionsListWidget.count()):
@@ -2571,25 +2584,25 @@ class Lizmap:
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
-        message = tr(
-            'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
+        base_message = "<br>" + tr("This is needed before using other tabs in the plugin.")
+        message = tr('You need to open a QGIS project, using the QGS extension.')
         if not self.project.fileName():
-            return False, message
+            return False, message + base_message
 
         if not self.project.fileName().lower().endswith('qgs'):
             message += "\n\n" + tr(
                 "Your extension is QGZ. Please save again the project using the other extension.")
-            return False, message
+            return False, message + base_message
 
         if QRegExp(r'\s').indexIn(self.project.baseName()) >= 0:
             message = tr(
                 "Your file name has a space in its name. The project file name mustn't have a space in its name.")
-            return False, message
+            return False, message + + base_message
 
         if self.project.baseName() != unaccent(self.project.baseName()):
             message = tr(
                 "Your file name has some accents in its name. The project file name mustn't have accents in its name.")
-            return False, message
+            return False, message + base_message
 
         # Check if Qgis/capitaliseLayerName is set
         settings = QgsSettings()
@@ -2597,14 +2610,14 @@ class Lizmap:
             message = tr(
                 'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
                 'in the QGIS option dialog, as it could cause issues with Lizmap.')
-            return False, message
+            return False, message + base_message
 
         # Check relative/absolute path
         if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
             message = tr(
                 'The project layer paths must be set to relative. '
                 'Please change this options in the project settings.')
-            return False, message
+            return False, message + base_message
 
         # check if a title has been given in the project QGIS Server tab configuration
         # first set the WMSServiceCapabilities to true
@@ -2650,6 +2663,11 @@ class Lizmap:
 
     def get_map_options(self):
         """Check the user defined data from gui and save them to both global and project config files"""
+        valid, message = self.check_dialog_validity()
+        if not valid:
+            LOGGER.debug("Leaving the dialog without a project.")
+            return
+
         self.isok = 1
 
         # global project option checking

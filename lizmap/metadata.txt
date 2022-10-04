@@ -14,6 +14,7 @@ tracker=https://github.com/3liz/lizmap-plugin/issues
 repository=https://github.com/3liz/lizmap-plugin
 
 # Done automatically by qgis-plugin-ci
+# TO REMOVE
 version=1.1.1
 commitNumber=
 commitSha1=

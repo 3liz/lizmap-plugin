@@ -91,20 +91,21 @@ class TestVersionInfo(unittest.TestCase):
         # 3.4.10-rc.4
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9', '', '', json_path),
-            (Qgis.Success, ['👍'])
+            (Qgis.Critical, ['No administrator login provided'])
         )
 
         # Latest 3.4.9 without login
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9', '', '', json_path),
-            (Qgis.Success, ['👍'])
+            (Qgis.Critical, ['No administrator login provided'])
         )
 
         # Latest 3.4.9-pre
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9-pre', '', '', json_path),
             (
-                Qgis.Warning, [
+                Qgis.Critical, [
+                    'No administrator login provided',
                     'Not latest bugfix release, 3.4.9 is available',
                     '. This version is not based on a tag.'
                 ]
@@ -114,23 +115,23 @@ class TestVersionInfo(unittest.TestCase):
         # 3.4.8
         self.assertEqual(
             ServerManager._messages_for_version('3.4.8', '', '', json_path),
-            (Qgis.Warning, ['Not latest bugfix release, 3.4.9 is available'])
+            (Qgis.Critical, ['No administrator login provided', 'Not latest bugfix release, 3.4.9 is available'])
         )
 
         # 3.4.5, critical because more than 2 releases late
         self.assertEqual(
             ServerManager._messages_for_version('3.4.5', '', '', json_path),
-            (Qgis.Critical, ['Not latest bugfix release, 3.4.9 is available'])
+            (Qgis.Critical, ['No administrator login provided', 'Not latest bugfix release, 3.4.9 is available'])
         )
 
         # 3.3.16
         self.assertEqual(
             ServerManager._messages_for_version('3.3.16', '', '', json_path),
-            (Qgis.Critical, ['Version 3.3 not maintained anymore'])
+            (Qgis.Critical, ['No administrator login provided', 'Version 3.3 not maintained anymore'])
         )
 
         # 3.2.0
         self.assertEqual(
             ServerManager._messages_for_version('3.2.0', '', '', json_path),
-            (Qgis.Critical, ['Version 3.2 not maintained anymore'])
+            (Qgis.Critical, ['No administrator login provided', 'Version 3.2 not maintained anymore'])
         )
