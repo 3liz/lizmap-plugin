@@ -1,5 +1,6 @@
 ## [![logo](lizmap/resources/icons/icon.png "3Liz")][3liz]Lizmap QGIS Plugin
 
+[![QGIS.org](https://img.shields.io/badge/QGIS.org-published-green)](https://plugins.qgis.org/plugins/lizmap/)
 [![Tests 🎳](https://github.com/3liz/lizmap-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/3liz/lizmap-plugin/actions/workflows/ci.yml)
 [![Transifex 🗺](https://github.com/3liz/lizmap-plugin/actions/workflows/transifex.yml/badge.svg)](https://github.com/3liz/lizmap-plugin/actions/workflows/transifex.yml)
 
