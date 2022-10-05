@@ -140,6 +140,7 @@ from lizmap.qt_style_sheets import (
     NEW_FEATURE_CSS,
     STYLESHEET,
 )
+from lizmap.server_ftp import FtpServer
 from lizmap.server_lwc import ServerManager
 from lizmap.tools import (
     current_git_hash,
@@ -581,6 +582,8 @@ class Lizmap:
         for item in self.base_layer_widget_list.values():
             slot = self.onBaselayerCheckboxChange
             item.stateChanged.connect(slot)
+
+        self.server_ftp = FtpServer(self.dlg)
 
         self.server_manager = ServerManager(
             self.dlg,
@@ -2662,12 +2665,7 @@ class Lizmap:
             # Get and check map scales
             if self.isok:
                 self.get_min_max_scales()
-                self.iface.messageBar().pushMessage(
-                    'Lizmap',
-                    tr('Lizmap configuration file has been updated'),
-                    level=Qgis.Success,
-                    duration=3
-                )
+                msg = tr('Lizmap configuration file has been updated')
 
                 # Ask to save the project
                 auto_save = self.dlg.checkbox_save_project.isChecked()
@@ -2684,6 +2682,28 @@ class Lizmap:
                             level=Qgis.Warning,
                             duration=30
                         )
+
+                if auto_save and self.dlg.checkbox_ftp_transfer.isChecked():
+                    valid, messsage = self.server_ftp.connect(send_files=True)
+                    if not valid:
+                        self.iface.messageBar().pushMessage(
+                            'Lizmap',
+                            messsage,
+                            level=Qgis.Critical,
+                        )
+                        return
+
+                    msg = tr(
+                        'Lizmap configuration file has been updated and sent to the FTP {}.'.format(
+                            self.server_ftp.host)
+                    )
+
+                self.iface.messageBar().pushMessage(
+                    'Lizmap',
+                    msg,
+                    level=Qgis.Success,
+                    duration=3
+                )
 
     def check_visibility_crs_3857(self):
         """ Check if we display the warning about scales. """
