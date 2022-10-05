@@ -2,40 +2,50 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
+- tests 🎳
 - package 📦
 - deploy 🚀
 
-package:
+version:
+  stage: tests 🎳
+  image:
+    name: registry.snap.lizlan:5000/infra/ci-tools:latest
+  script:
+    - version-helper
+  tags:
+    - factory-plain
+  artifacts:
+    reports:
+      dotenv: build.env
+
+package-zip:
+  dependencies:
+    - version
   stage: package 📦
-  before_script:
-    - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-alpha
-  image: registry.snap.lizlan:5000/factory/qgis-plugin-ci:latest
-  environment: snap
+  image: registry.snap.lizlan:5000/qgis-plugin-ci:latest
   script:
     - >
       qgis-plugin-ci
       package ${VERSION}
+      --plugin-repo-url https://packages.3liz.org/pub/lizmap-qgis-plugin/${STATUS}/
       --transifex-token ${TX_TOKEN}
-      --allow-uncommitted-changes
-      --disable-submodule-update
-  after_script:
-    # Need to copy/paste these two lines because variables are lost
-    - TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    - VERSION=$(echo ${TAG} | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}')-alpha
-    - mv lizmap.${VERSION}.zip lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
   tags:
     - infrav3-plain
   artifacts:
+    untracked: true
     expose_as: 'QGIS package'
     paths:
-      - lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip
+      - lizmap.${VERSION}.zip
+      - plugins.xml
 
-deploy:
+push-zip:
+  dependencies:
+    - version
+    - package-zip
   stage: deploy 🚀
-  only:
-    - schedules
   script:
-    - upload_to_packages_server lizmap-qgis-plugin.${CI_COMMIT_REF_NAME}.zip pub/lizmap-qgis-plugin/${CI_COMMIT_REF_NAME}
+    # Upload into the plugin directory
+    - upload_to_packages_server lizmap.${VERSION}.zip pub/lizmap-qgis-plugin/${STATUS}/
+    - upload_to_packages_server plugins.xml pub/lizmap-qgis-plugin/${STATUS}/
   tags:
     - fabric
