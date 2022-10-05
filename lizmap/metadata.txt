@@ -7,7 +7,7 @@ email=info@3liz.com
 description=Publish and share your QGIS maps on the Web via Lizmap Web Client, by 3liz.com
 about=With a few clicks, it's possible to publish and share your QGIS projects on the Web via Lizmap Web Client, by 3liz.com. QGIS Server is used in the background so all the symbology is kept. The edition forms in QGIS are also available. Demo : https://demo.lizmap.com and documentation : https://docs.lizmap.com and hosting solutions https://lizmap.com
 category=Web
-tags=online,server,web,webgis,webservice,webmapping,mobile,publication,wms,wfs,wps,internet,cloud,dashboard
+tags=online,server,web,webgis,webservice,webmapping,mobile,publication,wms,wfs,wps,internet,cloud
 
 homepage=https://docs.lizmap.com
 tracker=https://github.com/3liz/lizmap-plugin/issues
