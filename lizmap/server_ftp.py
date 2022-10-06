@@ -43,7 +43,7 @@ class FtpServer:
         self.project_name = None
         self.set_project_name()
 
-        self.dialog.input_ftp_port.setReadOnly(True)
+        # self.dialog.input_ftp_port.setReadOnly(True)
 
         # self.dialog.button_ftp_save.setIcon(QIcon(":images/themes/default/mActionFileSave.svg"))
         # self.dialog.button_ftp_save.setVisible(False)
@@ -58,7 +58,7 @@ class FtpServer:
         if not self.is_ftp_available():
             self.dialog.button_ftp_reset.setEnabled(False)
             self.dialog.button_ftp_check.setEnabled(False)
-            self.dialog.input_ftp_port.setEnabled(False)
+            # self.dialog.input_ftp_port.setEnabled(False)
             self.dialog.input_ftp_host.ssetEnabled(False)
             self.dialog.input_ftp_user.setEnabled(False)
             self.dialog.input_ftp_password.setEnabled(False)
@@ -85,7 +85,7 @@ class FtpServer:
             if result == QMessageBox.No:
                 return
 
-        self.dialog.input_ftp_port.setValue(21)
+        # self.dialog.input_ftp_port.setValue(21)
         self.dialog.input_ftp_host.setText('')
         self.dialog.input_ftp_user.setText('')
         self.dialog.input_ftp_password.setText('')
@@ -93,7 +93,7 @@ class FtpServer:
 
     def fetch_inputs(self) -> bool:
         """ Fetch inputs from fields and check."""
-        self.port = self.dialog.input_ftp_port.value()
+        # self.port = self.dialog.input_ftp_port.value()
         self.host = self.dialog.input_ftp_host.text()
         self.user = self.dialog.input_ftp_user.text()
         self.password = self.dialog.input_ftp_password.text()

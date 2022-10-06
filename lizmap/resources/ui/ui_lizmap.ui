@@ -250,7 +250,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>9</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -418,6 +418,7 @@ QListWidget::item::selected {
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -674,9 +675,9 @@ QListWidget::item::selected {
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>789</width>
-                <height>880</height>
+                <y>-607</y>
+                <width>723</width>
+                <height>1300</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -823,6 +824,7 @@ QListWidget::item::selected {
                      <widget class="QLabel" name="label_68">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1265,6 +1267,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </property>
                    </widget>
                   </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_77">
+                    <property name="text">
+                     <string notr="true">There isn't any storage for this experimental feature yet. Credentials must be entered when QGIS is reopened or when you open another project.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_63">
                     <property name="text">
@@ -1276,71 +1288,54 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    <widget class="QLineEdit" name="input_ftp_host"/>
                   </item>
                   <item row="3" column="0">
-                   <widget class="QLabel" name="label_66">
-                    <property name="text">
-                     <string notr="true">Port</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QgsSpinBox" name="input_ftp_port">
-                    <property name="maximum">
-                     <number>99999</number>
-                    </property>
-                    <property name="value">
-                     <number>21</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
                    <widget class="QLabel" name="label_64">
                     <property name="text">
                      <string notr="true">User</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="1">
+                  <item row="3" column="1">
                    <widget class="QLineEdit" name="input_ftp_user"/>
                   </item>
-                  <item row="5" column="0">
+                  <item row="4" column="0">
                    <widget class="QLabel" name="label_71">
                     <property name="text">
                      <string notr="true">Password</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
+                  <item row="4" column="1">
                    <widget class="QgsPasswordLineEdit" name="input_ftp_password"/>
                   </item>
-                  <item row="6" column="0">
+                  <item row="5" column="0">
                    <widget class="QLabel" name="label_74">
                     <property name="text">
                      <string notr="true">Directory</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="1">
+                  <item row="5" column="1">
                    <widget class="QLineEdit" name="input_ftp_directory">
                     <property name="placeholderText">
                      <string notr="true">/</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="1">
+                  <item row="6" column="1">
                    <widget class="QLabel" name="label_76">
                     <property name="text">
                      <string notr="true">The checkbox about automatic saving of the project must be checked as well, on the right.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="1">
+                  <item row="7" column="1">
                    <widget class="QCheckBox" name="checkbox_ftp_transfer">
                     <property name="text">
                      <string notr="true">Transfer &quot;.qgs&quot; and .qgs.cfg&quot; over FTP automatically.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="9" column="1">
+                  <item row="8" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_42">
                     <item>
                      <widget class="QPushButton" name="button_ftp_reset">
@@ -1370,16 +1365,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </spacer>
                     </item>
                    </layout>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLabel" name="label_77">
-                    <property name="text">
-                     <string notr="true">There isn't any storage for this experimental feature yet. Credentials must be entered when QGIS is reopened or when you open another project.</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1927,6 +1912,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <widget class="QLabel" name="label_56">
                              <property name="font">
                               <font>
+                               <weight>50</weight>
                                <bold>false</bold>
                               </font>
                              </property>
@@ -2149,6 +2135,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_32">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2214,6 +2201,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2279,6 +2267,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2365,6 +2354,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_34">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2444,6 +2434,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_35">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -3754,8 +3745,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>707</height>
+                <width>450</width>
+                <height>439</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4108,6 +4099,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
