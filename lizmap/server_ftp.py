@@ -10,7 +10,7 @@ from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 from lizmap.qgis_plugin_tools.tools.resources import resources_path
 
 try:
-    from ftplib import FTP, error_perm, socket
+    from ftplib import FTP, FTP_TLS, error_perm, socket
     IS_FTP_AVAILABLE = True
 except (ImportError, ModuleNotFoundError):
     IS_FTP_AVAILABLE = False
@@ -156,19 +156,36 @@ class FtpServer:
             return False, "The FTP is not installed."
 
         try:
+            self.with_tls(send_files)
+        except socket.gaierror:
+            return False, 'Host is not correct'
+        except error_perm as e:
+            raise
+            return False, str(e)
+        except Exception as e:
+            raise
+            return False, str(e)
+
+        LOGGER.info("Both QGS and CFG files have been send on {}".format(self.host))
+        return True, None
+
+    def with_tls(self, send_files):
+        with FTP_TLS(self.host) as session:
+            session.login(user=self.user, passwd=self.password)
+            session.prot_p()
+            session.set_pasv(False)
+            session.cwd(self.directory)
+
+            if send_files:
+                session.set_pasv(True)
+                self._send_files(session)
+
+    def without_tls(self, send_files):
+        try:
             with FTP(self.host, self.user, self.password) as ftp:
                 ftp.cwd(self.directory)
-
                 if send_files:
-                    cfg_path = Path(self.project.fileName() + '.cfg')
-
-                    # CFG file
-                    with open(cfg_path, 'rb') as file:
-                        ftp.storbinary(f'STOR {cfg_path.name}', file)
-
-                    # QGS file
-                    with open(self.project.fileName(), 'rb') as file:
-                        ftp.storbinary(f'STOR {Path(self.project.fileName()).name}', file)
+                    self._send_files(ftp)
 
         except socket.gaierror:
             return False, 'Host is not correct'
@@ -179,3 +196,13 @@ class FtpServer:
 
         LOGGER.info("Both QGS and CFG files have been send on {}".format(self.host))
         return True, None
+
+    def _send_files(self, connection):
+        cfg_path = Path(self.project.fileName() + '.cfg')
+        # CFG file
+        with open(cfg_path, 'rb') as file:
+            connection.storbinary(f'STOR {cfg_path.name}', file)
+
+        # QGS file
+        with open(self.project.fileName(), 'rb') as file:
+            connection.storbinary(f'STOR {Path(self.project.fileName()).name}', file)
