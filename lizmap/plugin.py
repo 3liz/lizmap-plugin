@@ -2195,7 +2195,7 @@ class Lizmap:
         # projection
         projection = self.iface.mapCanvas().mapSettings().destinationCrs()
         liz2json['options']['projection'] = dict()
-        liz2json['options']['projection']['proj4'] = projection.toProj4()
+        liz2json['options']['projection']['proj4'] = projection.toProj()
         liz2json['options']['projection']['ref'] = projection.authid()
 
         # wms extent

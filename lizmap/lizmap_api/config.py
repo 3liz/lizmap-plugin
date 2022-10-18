@@ -525,7 +525,7 @@ class LizmapConfig:
         # projection
         # project projection
         project_crs = self.project.crs()
-        self._global_options["projection"] = {"proj4": str(project_crs.toProj4()), "ref": str(project_crs.authid())}
+        self._global_options["projection"] = {"proj4": str(project_crs.toProj()), "ref": str(project_crs.authid())}
         # wms extent
         project_wms_extent = self.project.readListEntry('WMSExtent', '')[0]
         if len(project_wms_extent) > 1:
