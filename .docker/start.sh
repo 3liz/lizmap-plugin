@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-docker-compose up -d --force-recreate
+docker compose up -d --force-recreate
 echo 'Wait 10 seconds'
 sleep 10
 echo 'Installation of the plugin'
