@@ -2368,7 +2368,7 @@ class Lizmap:
                         continue
 
                     target_version = self.dlg.combo_lwc_version.currentData()
-                    LOGGER.info("Reading current Lizmap Web Client target version {}".format(target_version))
+                    LOGGER.info("Reading current Lizmap Web Client target version {}".format(target_version.value))
                     max_version = val.get('max_version')
                     if max_version and target_version > max_version:
                         LOGGER.info("Skipping key '{}' because of max_version.".format(key))
