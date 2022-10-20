@@ -1,4 +1,5 @@
 import logging
+import os
 
 from pathlib import Path
 from typing import Optional, Tuple
@@ -28,7 +29,8 @@ class FtpServer:
     @classmethod
     def is_ftp_available(cls) -> bool:
         """ Check if the FTP lib is available. """
-        LOGGER.warning("FTP library is not available.")
+        if not IS_FTP_AVAILABLE:
+            LOGGER.warning("FTP library is not available.")
         return IS_FTP_AVAILABLE
 
     def __init__(self, dialog: QDialog):
@@ -42,6 +44,12 @@ class FtpServer:
         self.project = QgsProject.instance()
         self.project_name = None
         self.set_project_name()
+
+        # For easier debug only, it will be removed later
+        self.dialog.input_ftp_host.setText(os.getenv("LIZMAP_FTP_HOST", ""))
+        self.dialog.input_ftp_user.setText(os.getenv("LIZMAP_FTP_USER", ""))
+        self.dialog.input_ftp_password.setText(os.getenv("LIZMAP_FTP_PASSWORD", ""))
+        self.dialog.input_ftp_directory.setText(os.getenv("LIZMAP_FTP_DIRECTORY", ""))
 
         # self.dialog.input_ftp_port.setReadOnly(True)
 
@@ -159,11 +167,18 @@ class FtpServer:
             self.with_tls(send_files)
         except socket.gaierror:
             return False, 'Host is not correct'
-        except error_perm as e:
-            raise
+        except ConnectionResetError as e:
+            LOGGER.critical("Connection reset error")
             return False, str(e)
+        except error_perm:
+            # The directory does not exist or no rights.
+            msg = (
+                "The directory {} does not exist or not enough permission to move in this directory."
+            ).format(self.directory)
+            return False, msg
+
         except Exception as e:
-            raise
+            LOGGER.critical(f"Unknown exception while using FTP : {str(e)}")
             return False, str(e)
 
         LOGGER.info("Both QGS and CFG files have been send on {}".format(self.host))
@@ -178,7 +193,21 @@ class FtpServer:
 
             if send_files:
                 session.set_pasv(True)
-                self._send_files(session)
+
+                cfg_path = Path(self.project.fileName() + '.cfg')
+                # CFG file
+                with open(cfg_path, 'rb') as file:
+                    session.storbinary(f'STOR {cfg_path.name}', file)
+
+                # QGS file
+                with open(self.project.fileName(), 'rb') as file:
+                    session.storbinary(f'STOR {Path(self.project.fileName()).name}', file)
+
+                try:
+                    session.close()
+                except Exception as e:
+                    # It shouldn't be necessary as we are in a context
+                    LOGGER.critical("Error while closing the FTP connection : {}".format(str(e)))
 
     def without_tls(self, send_files):
         try:
@@ -196,13 +225,3 @@ class FtpServer:
 
         LOGGER.info("Both QGS and CFG files have been send on {}".format(self.host))
         return True, None
-
-    def _send_files(self, connection):
-        cfg_path = Path(self.project.fileName() + '.cfg')
-        # CFG file
-        with open(cfg_path, 'rb') as file:
-            connection.storbinary(f'STOR {cfg_path.name}', file)
-
-        # QGS file
-        with open(self.project.fileName(), 'rb') as file:
-            connection.storbinary(f'STOR {Path(self.project.fileName()).name}', file)
