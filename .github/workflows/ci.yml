@@ -28,7 +28,7 @@ jobs:
           architecture: x64
 
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - uses: actions/cache@v3.0.9
         with:
@@ -50,7 +50,7 @@ jobs:
         working-directory: .docker
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: 'true'
       - name: Launching docker compose
@@ -68,7 +68,7 @@ jobs:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
