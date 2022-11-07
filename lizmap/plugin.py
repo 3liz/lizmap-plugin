@@ -509,6 +509,9 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
+        # External search
+        self.dlg.liExternalSearch.currentIndexChanged.connect(self.check_api_key_address)
+
         # Scales
         self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
         self.dlg.min_scale_pic.setText('')
@@ -983,8 +986,10 @@ class Lizmap:
         self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
 
-        # IGN
+        # IGN and google
         self.global_options['ignKey']['widget'].textChanged.connect(self.check_ign_french_free_key)
+        self.global_options['ignKey']['widget'].textChanged.connect(self.check_api_key_address)
+        self.global_options['googleKey']['widget'].textChanged.connect(self.check_api_key_address)
 
         server_side = tr(
             "This value will be replaced on the server side when evaluating the expression thanks to "
@@ -1031,6 +1036,28 @@ class Lizmap:
         if self.help_action:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
+
+    def check_api_key_address(self):
+        """ Check the API key is provided for the address search bar. """
+        provider = self.dlg.liExternalSearch.currentText()
+        if provider in ('google', 'ign'):
+            if provider == 'google':
+                key = self.dlg.inGoogleKey.text()
+            else:
+                key = self.dlg.inIgnKey.text()
+
+            if not key:
+                QMessageBox.critical(
+                    self.dlg,
+                    tr('Address provider'),
+                    tr('You have selected "{}" for the address search bar.').format(provider)
+                    + "\n\n"
+                    + tr(
+                        'However, you have not provided any API key for this provider. Please add one in the '
+                        '"Basemaps" panel to use this provider.'
+                    ),
+                    QMessageBox.Ok
+                )
 
     def check_ign_french_free_key(self):
         """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
@@ -1257,6 +1284,7 @@ class Lizmap:
             self.load_config_into_table_widget(key)
 
         self.check_ign_french_free_key()
+        # self.check_api_key_address() Done when the CFG is loaded
         LOGGER.info('CFG file has been loaded')
 
     def set_previous_qgis_version(self, qgis_version):
