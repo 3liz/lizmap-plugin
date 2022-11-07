@@ -38,7 +38,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
-from lizmap.tools import lizmap_user_folder
+from lizmap.tools import lizmap_user_folder, to_bool
 
 
 class TableCell(Enum):
@@ -172,6 +172,20 @@ class ServerManager:
                 return True
 
         return False
+
+    def check_admin_login_provided(self) -> bool:
+        """ Check if the given LWC version is at least in the table. """
+        if version() in ('master', 'dev'):
+            return True
+
+        if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+            return True
+
+        for row in range(self.table.rowCount()):
+            if not self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole):
+                return False
+
+        return True
 
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
@@ -729,7 +743,7 @@ class ServerManager:
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
-        if version() in ('master', 'dev'):
+        if version() in ('master', 'dev') or to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
             open_url = menu.addAction(tr("Open raw JSON file") + "…")
             left_item = self.table.item(item.row(), TableCell.Url.value)
             url = left_item.data(Qt.UserRole)

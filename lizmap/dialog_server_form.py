@@ -4,7 +4,7 @@ __email__ = 'info@3liz.org'
 
 from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig, QgsMessageLog
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtGui import QDesktopServices, QPixmap
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
@@ -26,7 +26,9 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             self.url.setText(url)
             self.update_existing_credentials()
 
-        self.label_login_with_auth.setVisible(False)
+        self.auth_manager = QgsApplication.authManager()
+        self.widget_warning_password.setVisible(not self.auth_manager.masterPasswordIsSet())
+        self.label_warning.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
 
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
@@ -35,12 +37,11 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
     def update_existing_credentials(self):
         """ Set login and password in the UI if needed and possible. """
-        auth_manager = QgsApplication.authManager()
-        if not auth_manager.masterPasswordIsSet():
+        if not self.auth_manager.masterPasswordIsSet():
             return
 
         conf = QgsAuthMethodConfig()
-        auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
+        self.auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
         if conf.id():
             self.login.setText(conf.config('username'))
             self.password.setText(conf.config('password'))
@@ -76,11 +77,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         login = self.current_login()
         password = self.current_password()
 
-        if not login:
-            self.done(QDialog.Accepted)
-
-        auth_manager = QgsApplication.authManager()
-        self.auth_id = auth_manager.uniqueConfigId()
+        self.auth_id = self.auth_manager.uniqueConfigId()
 
         # TODO check if existing account exists for this server or in the JSON
         QgsMessageLog.logMessage(
@@ -92,14 +89,17 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         config.setMethod('Basic')
         config.setConfig('username', login)
         config.setConfig('password', password)
-        auth_manager.storeAuthenticationConfig(config)
+        self.auth_manager.storeAuthenticationConfig(config)
 
         self.done(QDialog.Accepted)
 
     def validate(self) -> bool:
         """ Check the form validity. """
-        if not self.current_url():
-            self.error.setText("The URL is required.")
+        url = self.current_url()
+        login = self.login.text()
+        password = self.password.text()
+        if not url or not login or not password:
+            self.error.setText("All fields are required.")
             self.error.setVisible(True)
             return False
 
@@ -108,14 +108,6 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             self.error.setText(
                 "The URL mustn't contain the \".php\".\n"
                 "For instance, \"http://mydomain.com/index.php/view\" must be \"http://mydomain.com/\".")
-            self.error.setVisible(True)
-            return False
-
-        login = self.login.text()
-        password = self.password.text()
-
-        if login and not password:
-            self.error.setText("The password is required if the login is provided.")
             self.error.setVisible(True)
             return False
 

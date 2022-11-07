@@ -7,7 +7,11 @@
 * Latest release link: https://github.com/3liz/lizmap-plugin/releases
 * The `master` and `dev` branch can be found on https://packages.3liz.org/ after each commits with a stable link.
 * All published versions are available [plugins.qgis.org](https://plugins.qgis.org/plugins/lizmap/).
-* Do not use the link provided by GitHub by default on the top right corner.
+* Do not use the link provided by GitHub by default in the top right corner.
+
+### Environment variables
+
+* `LIZMAP_ADVANCED_USER`, boolean, to avoid some validity checks. This variable is not needed if you use the source code from Git.
 
 ### Branches
 

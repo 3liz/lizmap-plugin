@@ -6,6 +6,8 @@
   Available in the 1.2.0 version of the server plugin.
 * Fix an issue when using Lizmap Web Client 3.6 RC 2
 * Add a warning if Google or IGN is used for the address search without an API key
+* Better warning about the QGIS master password when it was not set yet
+* Make login on each server required
 
 ## 3.9.1 - 2022-10-04
 

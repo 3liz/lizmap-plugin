@@ -2181,6 +2181,19 @@ class Lizmap:
                 )
                 warnings.append(Warnings.UseLayerIdAsName.value)
 
+        if not self.server_manager.check_admin_login_provided():
+            QMessageBox.warning(
+                self.dlg,
+                tr('Missing login on a server'),
+                '{}\n\n{}\n\n{}'.format(
+                    tr(
+                        "You have set up a server in the first panel of the plugin, but you have not provided a "
+                        "login/password."
+                    ),
+                    tr("Please go back to the server panel and edit the server to add a login."),
+                    tr("The process about saving the CFG is still continuing. This is only a warning.")
+                ), QMessageBox.Ok)
+
         is_found = self.server_manager.check_lwc_version(lwc_version)
         if not is_found:
             QMessageBox.warning(

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>304</height>
+    <width>686</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>The URL is required.</string>
+      <string>All fields are required. Login and password are allowing more details only for QGIS ≥ 3.10 and Lizmap Web Client ≥ 3.5.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -25,26 +25,19 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>The administrator login and password is recommended as more information can be fetched such as QGIS Server version starting from Lizmap Web Client 3.5.</string>
+      <string>If you are using Lizmap Web Client ≥ 3.6, visit your administration panel, then &quot;Server information&quot; and copy/paste the URL of your instance.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_login_with_auth">
-     <property name="text">
-      <string>Login/password is only available for QGIS ≥ 3.10.</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do not use any URL redirection. For instance, &lt;a href=&quot;https://demo.lizmap.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/&lt;/span&gt;&lt;/a&gt; is a redirection to &lt;a href=&quot;https://demo.lizmap.com/lizmap/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/lizmap/&lt;/span&gt;&lt;/a&gt;. Only the second one will work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do not use any URL redirection. For instance, &lt;a href=&quot;https://demo.lizmap.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/&lt;/span&gt;&lt;/a&gt; is a redirection to &lt;a href=&quot;https://demo.lizmap.com/lizmap/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://demo.lizmap.com/lizmap/&lt;/span&gt;&lt;/a&gt;. Only the second one will work. Your URL mustn't contain &amp;quot;php&amp;quot; extension.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -52,6 +45,38 @@
      <property name="openExternalLinks">
       <bool>true</bool>
      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_warning_password" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_warning">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string notr="true">WARNING</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It's the first time you are using the QGIS native password manager. When pressing OK, you will be prompted for another password to secure your password manager. This password is not related to Lizmap, only to your QGIS current profile on this computer to unlock your password manager. This password is not recoverable. &lt;a href=&quot;https://docs.qgis.org/latest/en/docs/user_manual/auth_system/auth_overview.html#master-password&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Read more&lt;/span&gt;&lt;/a&gt; on the QGIS documentation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
