@@ -357,20 +357,6 @@ class ServerManager:
             self.display_action(row, Qgis.Critical, 'Not a JSON document.')
             return
 
-        qgis_server = content.get('qgis_server')
-        if not qgis_server:
-            self.display_action(row, Qgis.Critical, 'No "qgis_server" in the JSON document')
-            return
-
-        mime_type = qgis_server.get('mime_type')
-        if not mime_type:
-            self.display_action(
-                row,
-                Qgis.Critical,
-                'QGIS Server is not loaded properly. Check the settings in the administration interface.'
-            )
-            return
-
         info = content.get('info')
         if not info:
             self.display_action(row, Qgis.Critical, 'No "info" in the JSON document')
@@ -382,6 +368,41 @@ class ServerManager:
             self.display_action(row, Qgis.Critical, 'No "version" in the JSON document')
             return
 
+        # LWC version split
+        lizmap_version_split = self._split_lizmap_version(lizmap_version)
+        branch = lizmap_version_split[0], lizmap_version_split[1]
+
+        qgis_server = content.get('qgis_server')
+        if branch >= (3, 6):
+            if qgis_server:
+                if lizmap_version in ("3.6.0-beta.1", "3.6.0-beta.2", "3.6.0-rc.1"):
+                    if not qgis_server.get('mime_type'):
+                        self.display_action(
+                            row,
+                            Qgis.Critical,
+                            'QGIS Server is not loaded properly. Check the settings in the administration interface.'
+                        )
+                        return
+                else:
+                    # Starting from LWC 3.6.0 RC 2
+                    # https://github.com/3liz/lizmap-web-client/pull/3292
+                    pass
+
+        elif branch < (3, 6):
+            # qgis_server must be in the JSON file
+            if not qgis_server:
+                self.display_action(row, Qgis.Critical, 'No "qgis_server" in the JSON document')
+                return
+
+            mime_type = qgis_server.get('mime_type')
+            if not mime_type:
+                self.display_action(
+                    row,
+                    Qgis.Critical,
+                    'QGIS Server is not loaded properly. Check the settings in the administration interface.'
+                )
+                return
+
         lizmap_cell.setText(lizmap_version)
 
         # Markdown
@@ -390,10 +411,6 @@ class ServerManager:
         markdown += '* Lizmap plugin : {}\n'.format(version())
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)
-
-        # LWC version split
-        lizmap_version_split = self._split_lizmap_version(lizmap_version)
-        branch = lizmap_version_split[0], lizmap_version_split[1]
 
         # QGIS Server info
         qgis_server_info = content.get('qgis_server_info')
