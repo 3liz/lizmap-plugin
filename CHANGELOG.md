@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.9.2 - 2022-11-07
+
 * Add a new option "Use the geometry centroid" for the filtering by polygon. An index on the PostgreSQL layer is required.
   Available in the 1.2.0 version of the server plugin.
 * Fix an issue when using Lizmap Web Client 3.6 RC 2
