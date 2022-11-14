@@ -19,6 +19,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         # noinspection PyArgumentList
         QDialog.__init__(self, parent=parent)
         self.setupUi(self)
+        self.auth_manager = QgsApplication.authManager()
 
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
@@ -26,7 +27,6 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             self.url.setText(url)
             self.update_existing_credentials()
 
-        self.auth_manager = QgsApplication.authManager()
         self.widget_warning_password.setVisible(not self.auth_manager.masterPasswordIsSet())
         self.label_warning.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
 

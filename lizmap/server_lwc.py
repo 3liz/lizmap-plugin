@@ -734,7 +734,7 @@ class ServerManager:
         top_menu = QMenu(self.table)
         menu = top_menu.addMenu("Menu")
 
-        edit_url = menu.addAction(tr("Edit URL") + "…")
+        edit_url = menu.addAction(tr("Edit server") + "…")
         edit_url.triggered.connect(self.edit_row)
 
         open_url = menu.addAction(tr("Open URL") + "…")
