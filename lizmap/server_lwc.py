@@ -654,7 +654,8 @@ class ServerManager:
 
                     if login and error == "NO_ACCESS":
                         messages.append(tr('The login is not an administrator'))
-                        level = None  # Not blocking, None will make it default font color
+                        # Starting from version 3.9.2, login is required
+                        level = Qgis.Critical
 
                     if login and error and error != 'NO_ACCESS':
                         messages.append(tr(

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.9.3 - 2022-11-14
+
+* Fix the edit server dialog, as it is now required to have login&password.
+
 ## 3.9.2 - 2022-11-07
 
 * Add a new option "Use the geometry centroid" for the filtering by polygon. An index on the PostgreSQL layer is required.
