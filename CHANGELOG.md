@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Review the user interface about address search provider and the error if no API key was provided
+
 ## 3.9.3 - 2022-11-14
 
 * Fix the edit server dialog, as it is now required to have login&password.

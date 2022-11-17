@@ -787,31 +787,6 @@ QListWidget::item::selected {
                       </item>
                       <item>
                        <widget class="QComboBox" name="liExternalSearch">
-                        <item>
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>nominatim</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>google</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>ban</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>ign</string>
-                         </property>
-                        </item>
                        </widget>
                       </item>
                      </layout>

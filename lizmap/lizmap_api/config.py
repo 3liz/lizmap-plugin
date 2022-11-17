@@ -179,7 +179,36 @@ class LizmapConfig:
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
             'externalSearch': {
-                'wType': 'list', 'type': 'string', 'default': '', 'list': ['', 'nominatim', 'google', 'ban', 'ign']
+                'wType': 'list', 'type': 'string', 'default': '', 'list': [
+                    (
+                        '',
+                        tr('Disabled'),
+                        tr('No external address provider.'),
+                        ('icons', 'disabled.svg'),
+                    ), (
+                        'nominatim',
+                        tr('Nominatim (OSM)'),
+                        tr(
+                            'Nominatim is using OpenStreetMap data'
+                        ),
+                        ('icons', 'osm-32-32.png'),
+                    ), (
+                        'google',
+                        tr('Google'),
+                        tr('Google Geocoding API. A key is required.'),
+                        ('icons', 'google.png'),
+                    ), (
+                        'ban',
+                        tr('French BAN'),
+                        tr('The French BAN API.'),
+                        ':images/flags/fr.svg',
+                    ), (
+                        'ign',
+                        tr('French IGN'),
+                        tr('The French IGN API.'),
+                        ':images/flags/fr.svg',
+                    ),
+                ],
             },
             'zoomHistory': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False

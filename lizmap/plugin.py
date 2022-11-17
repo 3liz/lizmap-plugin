@@ -201,23 +201,43 @@ class Lizmap:
         self.layers_table = dict()
 
         # List of ui widget for data driven actions and checking
+        self.global_options = lizmap_config.globalOptionDefinitions
+        self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
+
+        # List of ui widget for data driven actions and checking
         self.layer_options_list = lizmap_config.layerOptionDefinitions
         self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
         self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
         self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
+
         # Fill the combobox from the Lizmap API
-        for combo_item in ('legend_image_option', 'popupSource', 'imageFormat'):
-            for option in self.layer_options_list[combo_item]['list']:
+        for combo_item in ('legend_image_option', 'popupSource', 'imageFormat', 'externalSearch'):
+
+            item_info = self.layer_options_list.get(combo_item)
+            if not item_info:
+                item_info = self.global_options.get(combo_item)
+
+            if not item_info:
+                # This should not happen
+                raise Exception('Unknown type for item_info')
+
+            for option in item_info['list']:
                 data, label, tooltip, icon = option
-                self.layer_options_list[combo_item]['widget'].addItem(label, data)
-                index = self.layer_options_list[combo_item]['widget'].findData(data)
+                item_info['widget'].addItem(label, data)
+                index = item_info['widget'].findData(data)
 
                 if tooltip:
                     # noinspection PyUnresolvedReferences
-                    self.layer_options_list[combo_item]['widget'].setItemData(index, tooltip, Qt.ToolTipRole)
+                    item_info['widget'].setItemData(index, tooltip, Qt.ToolTipRole)
 
                 if icon:
-                    self.layer_options_list[combo_item]['widget'].setItemIcon(index, QIcon(icon))
+                    if isinstance(icon, str):
+                        # From QGIS resources file
+                        pass
+                    else:
+                        # It's a list, from the plugin
+                        icon = resources_path(*icon)
+                    item_info['widget'].setItemIcon(index, QIcon(icon))
 
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
@@ -398,8 +418,6 @@ class Lizmap:
         self.dlg.gb_interface.setStyleSheet(self.style_sheet)
         self.dlg.gb_baselayersOptions.setStyleSheet(self.style_sheet)
 
-        # List of ui widget for data driven actions and checking
-        self.global_options = lizmap_config.globalOptionDefinitions
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overiew_map
         self.global_options['mapScales']['widget'] = self.dlg.inMapScales
@@ -430,7 +448,6 @@ class Lizmap:
         self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
-        self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
         self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
         self.global_options['geolocation']['widget'] = self.dlg.cbActivateGeolocation
         self.global_options['pointTolerance']['widget'] = self.dlg.inPointTolerance
@@ -486,6 +503,7 @@ class Lizmap:
         # self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
         # self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
         # self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
+        # self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
 
         # map QGIS geometry type
         # TODO lizmap 4, to remove
@@ -510,7 +528,9 @@ class Lizmap:
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
         # External search
-        self.dlg.liExternalSearch.currentIndexChanged.connect(self.check_api_key_address)
+        # Commented because when loading the CFG, the combobox is updated before we can read the API key from the CFG
+        # file. The check is done only when saving.
+        # self.dlg.liExternalSearch.currentIndexChanged.connect(self.check_api_key_address)
 
         # Scales
         self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
@@ -1039,7 +1059,7 @@ class Lizmap:
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
-        provider = self.dlg.liExternalSearch.currentText()
+        provider = self.dlg.liExternalSearch.currentData()
         if provider in ('google', 'ign'):
             if provider == 'google':
                 key = self.dlg.inGoogleKey.text()
@@ -1253,14 +1273,22 @@ class Lizmap:
                         item['widget'].setValue(int(json_options[key]))
 
                 if item['wType'] == 'list':
-                    list_dic = {item['list'][i]: i for i in range(0, len(item['list']))}
-                    for k, i in list_dic.items():
-                        item['widget'].setItemData(i, k)
-                    if item['default'] in list_dic:
-                        item['widget'].setCurrentIndex(list_dic[item['default']])
+                    if isinstance(item['list'][0], (list, tuple)):
+                        # New way with icon, tooltip, translated label
+                        pass
+                    else:
+                        # Legacy way
+                        for i, item_config in enumerate(item['list']):
+                            item['widget'].setItemData(i, item_config)
+
+                        if item['default'] in item['list']:
+                            index = item['widget'].findData(item['default'])
+                            item['widget'].setCurrentIndex(index)
+
                     if key in json_options:
-                        if json_options[key] in list_dic:
-                            item['widget'].setCurrentIndex(list_dic[json_options[key]])
+                        index = item['widget'].findData(json_options[key])
+                        if index:
+                            item['widget'].setCurrentIndex(index)
 
         # Set layer combobox
         for key, item in self.global_options.items():
@@ -2264,7 +2292,7 @@ class Lizmap:
                     inputValue = str(item['widget'].isChecked())
 
                 if item['wType'] == 'list':
-                    inputValue = item['list'][item['widget'].currentIndex()]
+                    inputValue = item['widget'].currentData()
 
                 if item['wType'] == 'layers':
                     lay = item['widget'].layer(item['widget'].currentIndex())
@@ -2532,6 +2560,8 @@ class Lizmap:
             self.iface.messageBar().pushMessage(
                 'Lizmap', message, level=Qgis.Warning, duration=15
             )
+
+        self.check_api_key_address()
 
         return valid, results
 
