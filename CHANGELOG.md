@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-* Review the user interface about address search provider and the error if no API key was provided
+* Review the user interface about
+  * address search provider and the error if no API key was provided
+  * setting up popup on a layer
 
 ## 3.9.3 - 2022-11-14
 

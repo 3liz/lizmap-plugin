@@ -251,7 +251,6 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_3] = [
             self.dlg.label_form_filter,
-            self.dlg.label_drag_drop_form,
             self.dlg.btQgisPopupFromForm,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
@@ -1091,27 +1090,8 @@ class Lizmap:
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
         data = self.layer_options_list['popupSource']['widget'].currentData()
-        self.dlg.btConfigurePopup.setEnabled(data == 'lizmap')
-        self.dlg.btQgisPopupFromForm.setEnabled(data == 'qgis')
-        self.dlg.button_generate_html_table.setEnabled(data == 'qgis')
-
-        layer = self._current_selected_layer()
-        is_vector = isinstance(layer, QgsVectorLayer)
-        # noinspection PyUnresolvedReferences
-        has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
-
-        index = self.layer_options_list['popupSource']['widget'].findData('qgis')
-
-        qgis_popup = self.layer_options_list['popupSource']['widget'].model().item(index)
-        # noinspection PyUnresolvedReferences
-        qgis_popup.setFlags(qgis_popup.flags() & ~ Qt.ItemIsEnabled)
-
-        if has_geom:
-            # noinspection PyUnresolvedReferences
-            qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
-        else:
-            # noinspection PyUnresolvedReferences
-            qgis_popup.setFlags(qgis_popup.flags() | Qt.ItemIsEnabled)
+        self.dlg.btConfigurePopup.setVisible(data == 'lizmap')
+        self.dlg.widget_qgis_maptip.setVisible(data == 'qgis')
 
     def show_help(self):
         """Opens the html help file content with default browser."""
@@ -1898,7 +1878,6 @@ class Lizmap:
             self.dlg.btConfigurePopup.setEnabled(has_geom)
             self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
             self.dlg.button_generate_html_table.setEnabled(is_vector)
-            self.dlg.label_drag_drop_form.setEnabled(has_geom)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
             # For a group, there isn't the toggle option, #298, TEMPORARY DISABLED

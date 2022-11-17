@@ -786,8 +786,7 @@ QListWidget::item::selected {
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="liExternalSearch">
-                       </widget>
+                       <widget class="QComboBox" name="liExternalSearch"/>
                       </item>
                      </layout>
                     </item>
@@ -1698,7 +1697,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            <item>
                             <widget class="QPushButton" name="btConfigurePopup">
                              <property name="text">
-                              <string>configure</string>
+                              <string>Configure</string>
                              </property>
                             </widget>
                            </item>
@@ -1718,27 +1717,44 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
-                          <widget class="QLabel" name="label_drag_drop_form">
-                           <property name="text">
-                            <string>Only if using &quot;qgis&quot; above. Use the button below to copy the form Drag&amp;Drop design to the HTML maptip template. Be careful, any maptip template will be replaced.</string>
-                           </property>
-                           <property name="wordWrap">
-                            <bool>true</bool>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="btQgisPopupFromForm">
-                           <property name="text">
-                            <string>Copy the drag &amp;&amp; drop form layout</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="button_generate_html_table">
-                           <property name="text">
-                            <string>Generate an HTML table</string>
-                           </property>
+                          <widget class="QWidget" name="widget_qgis_maptip" native="true">
+                           <layout class="QVBoxLayout" name="verticalLayout_51">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QGroupBox" name="groupBox_10">
+                              <property name="title">
+                               <string>Template</string>
+                              </property>
+                              <layout class="QVBoxLayout" name="verticalLayout_50">
+                               <item>
+                                <widget class="QPushButton" name="btQgisPopupFromForm">
+                                 <property name="text">
+                                  <string>Copy the drag &amp;&amp; drop form layout</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QPushButton" name="button_generate_html_table">
+                                 <property name="text">
+                                  <string>Generate an HTML table</string>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                           </layout>
                           </widget>
                          </item>
                          <item>
@@ -4213,7 +4229,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>checkbox_save_project</tabstop>
   <tabstop>checkbox_popup</tabstop>
   <tabstop>btConfigurePopup</tabstop>
-  <tabstop>btQgisPopupFromForm</tabstop>
   <tabstop>checkbox_server_cache</tabstop>
   <tabstop>table_locate_by_layer</tabstop>
   <tabstop>edit_locate_layer_button</tabstop>
