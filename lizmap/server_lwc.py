@@ -9,7 +9,7 @@ import os
 from enum import Enum
 from functools import partial
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -158,20 +158,19 @@ class ServerManager:
         self.load_table()
 
     @staticmethod
-    def login_for_id(auth_id) -> str:
-        """ Get the login for a given auth ID in the password manager. """
+    def config_for_id(auth_id: str) -> Optional[QgsAuthMethodConfig]:
+        """ Fetch the authentication settings for a given token. """
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
             LOGGER.warning("Master password is not set")
-            return ''
+            return None
 
         conf = QgsAuthMethodConfig()
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
-        if conf.id():
-            return conf.config('username', '')
+        if not conf.id():
+            return None
 
-        LOGGER.warning("No login found for authentification ID : {}".format(auth_id))
-        return ''
+        return conf
 
     def check_lwc_version(self, version_check) -> bool:
         """ Check if the given LWC version is at least in the table. """
@@ -263,8 +262,10 @@ class ServerManager:
 
         # Login
         cell = QTableWidgetItem()
-        login = self.login_for_id(auth_id)
-        LOGGER.debug("Setting login with : {} with authid {}".format(login, auth_id))
+        login = ''
+        conf = self.config_for_id(auth_id)
+        if conf:
+            login = conf.config('username', '')
         cell.setText(login)
         cell.setData(Qt.UserRole, auth_id)
         self.table.setItem(row, TableCell.Login.value, cell)
@@ -344,7 +345,10 @@ class ServerManager:
         """ Dispatch the answer to update the GUI. """
         _, auth_id = self._fetch_cells(row)
 
-        login = self.login_for_id(auth_id)
+        login = ''
+        conf = self.config_for_id(auth_id)
+        if conf:
+            login = conf.config('username', '')
 
         lizmap_cell = QTableWidgetItem()
         qgis_cell = QTableWidgetItem()
@@ -530,6 +534,8 @@ class ServerManager:
         with open(user_file, 'r') as json_file:
             json_content = json.loads(json_file.read())
 
+        self.migrate_password_manager(json_content)
+
         for i, server in enumerate(json_content):
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
@@ -629,7 +635,7 @@ class ServerManager:
                 latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
                 if json_version['latest_release_version'] != full_version or is_pre_package:
 
-                    if is_dev_version:
+                    if is_dev_version and login:
                         return level, messages
 
                     if bugfix > latest_bugfix:
@@ -660,16 +666,16 @@ class ServerManager:
                 if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
                     # Running 3.5.X
                     if not login:
-                        messages.append(tr('No administrator login provided'))
-                        level = Qgis.Warning
+                        messages.insert(0, tr('No administrator login provided'))
+                        level = Qgis.Critical
 
                     if login and error == "NO_ACCESS":
-                        messages.append(tr('The login is not an administrator'))
+                        messages.insert(0, tr('The login is not an administrator'))
                         # Starting from version 3.9.2, login is required
                         level = Qgis.Critical
 
                     if login and error and error != 'NO_ACCESS':
-                        messages.append(tr(
+                        messages.insert(0, tr(
                             'Please check your "Server Information" panel in the Lizmap administration interface. '
                             'There is an error reading the QGIS Server configuration.'
                         ))
@@ -819,3 +825,62 @@ class ServerManager:
     def user_settings():
         """ Path to the user file configuration. """
         return os.path.join(lizmap_user_folder(), 'user_servers.json')
+
+    def migrate_password_manager(self, servers: dict):
+        """ Migrate all servers in the QGIS Password manager to a better format in the QGIS API.
+
+        This method will be removed in a few versions.
+        """
+        known_auth_config = []
+        auth_manager = QgsApplication.authManager()
+
+        # Lizmap server from JSON
+        for server in servers:
+            url = server['url']
+            auth_id = server['auth_id']
+
+            conf = self.config_for_id(auth_id)
+            if not conf:
+                # Let's continue, the user will be invited to edit the server
+                continue
+
+            known_auth_config.append(auth_id)
+
+            if '@{}'.format(url) in conf.name():
+                # Old format
+                LOGGER.warning("Migrating the URL {} in the QGIS password manager".format(url))
+                user = conf.config('username')
+                password = conf.config('password')
+
+                config = QgsAuthMethodConfig()
+                config.setId(auth_id)
+                config.setUri(url)
+                config.setName(user)
+                config.setMethod('Basic')
+                config.setConfig('username', user)
+                config.setConfig('password', password)
+                config.setConfig('realm', QUrl(url).host())
+                result = auth_manager.storeAuthenticationConfig(config, True)
+                if not result:
+                    LOGGER.critical("Error while migrating the server")
+
+        # Other entries in the password manager
+        for config in auth_manager.configIds():
+            if config in known_auth_config:
+                continue
+
+            conf = self.config_for_id(config)
+            if not conf:
+                # Why do we have None here ? It's supposed to be existing auth ID ...
+                continue
+
+            if '@' not in conf.name():
+                continue
+
+            split = conf.name().split('@')
+            if QUrl(split[-1]).isValid():
+                LOGGER.critical(
+                    "Is the ID '{}' in the QGIS password manager a Lizmap server URL ? If yes, please remove it "
+                    "manually, otherwise skip this message. Go in QGIS global properties, then Password Manager and "
+                    "check the ID.".format(config)
+                )
