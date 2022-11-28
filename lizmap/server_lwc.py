@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import json
+import logging
 import os
 
 from enum import Enum
@@ -35,10 +36,16 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
+from lizmap.definitions.definitions import (
+    DEV_VERSION_PREFIX,
+    UNSTABLE_VERSION_PREFIX,
+)
 from lizmap.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.tools import lizmap_user_folder, to_bool
+
+LOGGER = logging.getLogger('Lizmap')
 
 
 class TableCell(Enum):
@@ -155,6 +162,7 @@ class ServerManager:
         """ Get the login for a given auth ID in the password manager. """
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
+            LOGGER.warning("Master password is not set")
             return ''
 
         conf = QgsAuthMethodConfig()
@@ -162,6 +170,7 @@ class ServerManager:
         if conf.id():
             return conf.config('username', '')
 
+        LOGGER.warning("No login found for authentification ID : {}".format(auth_id))
         return ''
 
     def check_lwc_version(self, version_check) -> bool:
@@ -175,7 +184,7 @@ class ServerManager:
 
     def check_admin_login_provided(self) -> bool:
         """ Check if the given LWC version is at least in the table. """
-        if version() in ('master', 'dev'):
+        if any(item in version() for item in DEV_VERSION_PREFIX):
             return True
 
         if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
@@ -254,7 +263,9 @@ class ServerManager:
 
         # Login
         cell = QTableWidgetItem()
-        cell.setText(self.login_for_id(auth_id))
+        login = self.login_for_id(auth_id)
+        LOGGER.debug("Setting login with : {} with authid {}".format(login, auth_id))
+        cell.setText(login)
         cell.setData(Qt.UserRole, auth_id)
         self.table.setItem(row, TableCell.Login.value, cell)
 
@@ -744,7 +755,7 @@ class ServerManager:
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
-        if version() in ('master', 'dev') or to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+        if any(item in version() for item in UNSTABLE_VERSION_PREFIX) or to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
             open_url = menu.addAction(tr("Open raw JSON file") + "…")
             left_item = self.table.item(item.row(), TableCell.Url.value)
             url = left_item.data(Qt.UserRole)

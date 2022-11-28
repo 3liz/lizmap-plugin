@@ -27,6 +27,13 @@ class LwcVersions(Enum):
         return NotImplemented
 
 
+# Possible prefix before a stable release
+# Note that 'pre' is not supported by the QGIS Desktop plugin manager
+# Master and dev is for internal purpose only, name of the current branch. It's not supported as well by QGIS Desktop
+UNSTABLE_VERSION_PREFIX = ('master', 'dev', 'pre', 'alpha', 'beta', 'rc')
+DEV_VERSION_PREFIX = ('master', 'dev')
+
+
 @unique
 @total_ordering
 class ReleaseStatus(Enum):

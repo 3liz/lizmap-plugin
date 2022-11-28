@@ -99,6 +99,7 @@ from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
     DOC_URL,
     ONLINE_HELP_LANGUAGES,
+    UNSTABLE_VERSION_PREFIX,
     LayerProperties,
     LwcVersions,
     ReleaseStatus,
@@ -186,7 +187,7 @@ class Lizmap:
 
         self.dlg = LizmapDialog()
         self.version = version()
-        self.is_dev_version = self.version in ['master', 'dev'] or 'beta' in self.version
+        self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg.label_dev_version.setVisible(False)
         if self.is_dev_version:
             self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
@@ -760,19 +761,18 @@ class Lizmap:
             pass
 
         self.dlg.combo_lwc_version.clear()
-        display_next_release = False
         for lwc_version in LwcVersions:
-            if not display_next_release:
-                self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
-                if lwc_version == DEFAULT_LWC_VERSION:
-                    display_next_release = self.version not in ['dev', 'master']
+            self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
 
+        # Find latest LWC version saved on the computer
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         try:
             lwc_version = LwcVersions(lwc_version)
         except ValueError:
             # The QgsSettings does not contain a valid LWC version item
+            # Fallback on the default one from the plugin
             lwc_version = DEFAULT_LWC_VERSION
+
         index = self.dlg.combo_lwc_version.findData(lwc_version)
         self.dlg.combo_lwc_version.setCurrentIndex(index)
 
@@ -2163,7 +2163,7 @@ class Lizmap:
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
-        if current_version in ('dev', 'master'):
+        if self.is_dev_version:
             next_version = next_git_tag()
             if next_version != 'next':
                 current_version = next_version
