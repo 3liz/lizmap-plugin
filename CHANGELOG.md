@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 3.9.4 - 2022-11-29
+## 3.9.5 - 2022-11-29
 
 * Review the user interface about
   * address search provider and the error if no API key was provided
