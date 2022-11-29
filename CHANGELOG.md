@@ -2,9 +2,14 @@
 
 ## Unreleased
 
+## 3.9.4 - 2022-11-29
+
 * Review the user interface about
   * address search provider and the error if no API key was provided
   * setting up popup on a layer
+* Some code refactoring and review the user interface about the login and password for a Lizmap server
+* Always show the next version of Lizmap Web Client (3.6 for now)
+* Add more translated strings in the translation system
 
 ## 3.9.3 - 2022-11-14
 
