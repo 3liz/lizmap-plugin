@@ -2,24 +2,30 @@ __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig, QgsMessageLog
+import logging
+
+from qgis.core import QgsApplication, QgsAuthMethodConfig
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QPixmap
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
 FORM_CLASS = load_ui('ui_form_server.ui')
+LOGGER = logging.getLogger('Lizmap')
 
 
 class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
-    def __init__(self, parent, url='', auth_id=''):
+    def __init__(self, parent, existing: list, url='', auth_id=''):
         """ Constructor. """
         # noinspection PyArgumentList
         QDialog.__init__(self, parent=parent)
+        self.parent = parent
         self.setupUi(self)
         self.auth_manager = QgsApplication.authManager()
+        self.existing = existing
 
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
@@ -58,7 +64,12 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
     def current_url(self) -> str:
         """ Cleaned input URL. """
-        return self.clean_data(self.url.text())
+        url = self.url.text()
+
+        if not url.endswith('/'):
+            url += '/'
+
+        return url
 
     def current_login(self) -> str:
         """ Cleaned input login. """
@@ -74,22 +85,39 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         if not result:
             return
 
+        url = self.current_url()
         login = self.current_login()
         password = self.current_password()
 
-        self.auth_id = self.auth_manager.uniqueConfigId()
-
-        # TODO check if existing account exists for this server or in the JSON
-        QgsMessageLog.logMessage(
-            "Saving configuration with login/password ID {}".format(self.auth_id), "Lizmap", Qgis.Info)
-
         config = QgsAuthMethodConfig()
-        config.setId(self.auth_id)
-        config.setName('{}@{}'.format(login, self.current_url()))
+        config.setUri(url)
+        config.setName(login)
         config.setMethod('Basic')
         config.setConfig('username', login)
         config.setConfig('password', password)
-        self.auth_manager.storeAuthenticationConfig(config)
+        config.setConfig('realm', QUrl(self.current_url()).host())
+        if self.auth_id:
+            # Edit
+            config.setId(self.auth_id)
+            result = self.auth_manager.storeAuthenticationConfig(config, True)
+        else:
+            # Creation
+            self.auth_id = self.auth_manager.uniqueConfigId()
+            config.setId(self.auth_id)
+            result = self.auth_manager.storeAuthenticationConfig(config, False)
+
+        if result[0]:
+            LOGGER.info(
+                "Saving configuration with login/password ID {} = OK".format(self.auth_id))
+        else:
+            LOGGER.warning(
+                "Saving configuration with login/password ID {} = {}".format(self.auth_id, result[1]))
+            QMessageBox.critical(
+                self.parent,
+                tr('QGIS password manager'),
+                tr("We couldn't save the login/password into the QGIS password manager : ")
+                + result[1],
+                QMessageBox.Ok)
 
         self.done(QDialog.Accepted)
 
@@ -99,17 +127,32 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         login = self.login.text()
         password = self.password.text()
         if not url or not login or not password:
-            self.error.setText("All fields are required.")
+            self.error.setText(tr("All fields are required."))
             self.error.setVisible(True)
             return False
 
         if ".php" in self.current_url():
             # Example : http://localhost:8080/index.php/view
-            self.error.setText(
+            self.error.setText(tr(
                 "The URL mustn't contain the \".php\".\n"
-                "For instance, \"http://mydomain.com/index.php/view\" must be \"http://mydomain.com/\".")
+                "For instance, \"http://mydomain.com/index.php/view\" must be \"http://mydomain.com/\"."))
             self.error.setVisible(True)
             return False
+
+        # Check for existing server in the JSON
+        url = url.rstrip('/')
+        for server in self.existing:
+            existing_server = server.get('url').rstrip('/')
+            if url == existing_server:
+                self.error.setText(tr(
+                    "The URL is already in your existing list of Lizmap servers.\n"
+                    "You should edit or remove the other server."))
+                self.error.setVisible(True)
+                return False
+
+        # Check the server / login validity
+        # It cannot be done here, because we need the auth_cfg
+        # TODO
 
         self.error.setVisible(False)
         return True

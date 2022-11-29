@@ -106,7 +106,7 @@ class TestVersionInfo(unittest.TestCase):
             (
                 Qgis.Warning, [
                     'Not latest bugfix release, 3.4.9 is available',
-                    ' and you are not running a production package'
+                    '. This version is not based on a tag.'
                 ]
             )
         )

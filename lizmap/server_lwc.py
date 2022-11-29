@@ -189,6 +189,18 @@ class ServerManager:
         if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
             return True
 
+        missing = False
+        for row in range(self.table.rowCount()):
+            if not self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole):
+                missing = True
+
+        if not missing:
+            return True
+
+        # Try again, this is a hack
+        # Weird bug, sometimes, the master password is not set, so the login column is not filled
+        # Maybe by loading again all logins, we can avoid the "false" return
+        self.load_table()
         for row in range(self.table.rowCount()):
             if not self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole):
                 return False
@@ -197,7 +209,8 @@ class ServerManager:
 
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
-        dialog = LizmapServerInfoForm(self.parent)
+        existing = self.existing_json_server_list()
+        dialog = LizmapServerInfoForm(self.parent, existing)
         result = dialog.exec_()
 
         if result != QDialog.Accepted:
@@ -227,7 +240,12 @@ class ServerManager:
         row = selection[0].row()
         url, auth_id = self._fetch_cells(row)
 
-        dialog = LizmapServerInfoForm(self.parent, url=url, auth_id=auth_id)
+        data = []
+        existing = self.existing_json_server_list()
+        for i, server in enumerate(existing):
+            if server.get('url') != url:
+                data.append({'url': server.get('url'), 'auth_id': auth_id})
+        dialog = LizmapServerInfoForm(self.parent, data, url=url, auth_id=auth_id)
         result = dialog.exec_()
 
         if result != QDialog.Accepted:
@@ -245,6 +263,24 @@ class ServerManager:
             return
 
         row = selection[0].row()
+
+        _, auth_id = self._fetch_cells(row)
+        if auth_id:
+            # Do not try to remove from QPM if no login was provided
+            auth_manager = QgsApplication.authManager()
+            result = auth_manager.removeAuthenticationConfig(auth_id)
+            if not result:
+                QMessageBox.critical(
+                    self.parent,
+                    tr('QGIS password manager'),
+                    tr(
+                        "We couldn't remove the login/password from the QGIS password manager. Please remove manually "
+                        "the line '{}' from your QGIS password manager in the your global settings.").format(auth_id),
+                    QMessageBox.Ok)
+                self.table.clearSelection()
+                return
+            LOGGER.debug("Row {} removed from the QGIS password manager".format(auth_id))
+
         self.table.clearSelection()
         self.table.removeRow(row)
         if row in self.fetchers.keys():
@@ -254,18 +290,21 @@ class ServerManager:
 
     def _edit_row(self, row: int, server_url: str, auth_id: str):
         """ Internal function to edit a row. """
+        login = ''
+        conf = self.config_for_id(auth_id)
+
         # URL
         cell = QTableWidgetItem()
         cell.setText(server_url)
+        cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br><b>Password ID</b> {}').format(server_url, auth_id))
         cell.setData(Qt.UserRole, server_url)
         self.table.setItem(row, TableCell.Url.value, cell)
 
         # Login
         cell = QTableWidgetItem()
-        login = ''
-        conf = self.config_for_id(auth_id)
         if conf:
             login = conf.config('username', '')
+            cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br></b>Password ID</b> {}').format(server_url, auth_id))
         cell.setText(login)
         cell.setData(Qt.UserRole, auth_id)
         self.table.setItem(row, TableCell.Login.value, cell)
@@ -359,17 +398,17 @@ class ServerManager:
 
         if not reply:
             lizmap_cell.setText(tr('Error'))
-            self.display_action(row, Qgis.Warning, 'Temporary not available')
+            self.display_action(row, Qgis.Warning, tr('Temporary not available'))
             return
 
         if reply.error() != QNetworkReply.NoError:
             if reply.error() == QNetworkReply.HostNotFoundError:
-                self.display_action(row, Qgis.Warning, 'Host can not be found. Is-it an intranet server ?')
+                self.display_action(row, Qgis.Warning, tr('Host can not be found. Is-it an intranet server ?'))
             if reply.error() == QNetworkReply.ContentNotFoundError:
                 self.display_action(
                     row,
                     Qgis.Critical,
-                    'Not a valid Lizmap URL or this version is already not maintained < 3.2')
+                    tr('Not a valid Lizmap URL or this version is already not maintained < 3.2'))
             else:
                 self.display_action(row, Qgis.Critical, reply.errorString())
             lizmap_cell.setText(tr('Error'))
@@ -377,24 +416,24 @@ class ServerManager:
 
         content = self.fetchers[row].contentAsString()
         if not content:
-            self.display_action(row, Qgis.Critical, 'Not a valid Lizmap URL')
+            self.display_action(row, Qgis.Critical, tr('Not a valid Lizmap URL'))
             return
 
         try:
             content = json.loads(content)
         except json.JSONDecodeError:
-            self.display_action(row, Qgis.Critical, 'Not a JSON document.')
+            self.display_action(row, Qgis.Critical, tr('Not a JSON document.'))
             return
 
         info = content.get('info')
         if not info:
-            self.display_action(row, Qgis.Critical, 'No "info" in the JSON document')
+            self.display_action(row, Qgis.Critical, tr('No "info" in the JSON document'))
             return
 
         # Lizmap version
         lizmap_version = info.get('version')
         if not info:
-            self.display_action(row, Qgis.Critical, 'No "version" in the JSON document')
+            self.display_action(row, Qgis.Critical, tr('No "version" in the JSON document'))
             return
 
         # LWC version split
@@ -409,7 +448,10 @@ class ServerManager:
                         self.display_action(
                             row,
                             Qgis.Critical,
-                            'QGIS Server is not loaded properly. Check the settings in the administration interface.'
+                            tr(
+                                'QGIS Server is not loaded properly. Check the settings in the administration '
+                                'interface.'
+                            )
                         )
                         return
                 else:
@@ -420,7 +462,7 @@ class ServerManager:
         elif branch < (3, 6):
             # qgis_server must be in the JSON file
             if not qgis_server:
-                self.display_action(row, Qgis.Critical, 'No "qgis_server" in the JSON document')
+                self.display_action(row, Qgis.Critical, tr('No "qgis_server" in the JSON document'))
                 return
 
             mime_type = qgis_server.get('mime_type')
@@ -428,7 +470,7 @@ class ServerManager:
                 self.display_action(
                     row,
                     Qgis.Critical,
-                    'QGIS Server is not loaded properly. Check the settings in the administration interface.'
+                    tr('QGIS Server is not loaded properly. Check the settings in the administration interface.')
                 )
                 return
 
@@ -525,22 +567,29 @@ class ServerManager:
         qgis_cell.setData(Qt.UserRole, markdown)
         self.update_action_version(lizmap_version, None, row)
 
-    def load_table(self):
-        """ Load the table by reading the user configuration file. """
+    def existing_json_server_list(self) -> List:
+        """ Read the JSON file and return its content. """
         user_file = self.user_settings()
         if not os.path.exists(user_file):
-            return
+            return list()
 
         with open(user_file, 'r') as json_file:
             json_content = json.loads(json_file.read())
 
-        self.migrate_password_manager(json_content)
+        return json_content
 
-        for i, server in enumerate(json_content):
+    def load_table(self):
+        """ Load the table by reading the user configuration file. """
+        servers = self.existing_json_server_list()
+        self.migrate_password_manager(servers)
+
+        # Truncate
+        self.table.setRowCount(0)
+
+        for server in servers:
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
-            auth_id = json_content[i].get('auth_id', '')
-            self._edit_row(row, json_content[i]['url'], auth_id)
+            self._edit_row(row, server.get('url'), server.get('auth_id', ''))
 
         self.check_display_warning_no_server()
 
@@ -636,7 +685,9 @@ class ServerManager:
                 if json_version['latest_release_version'] != full_version or is_pre_package:
 
                     if is_dev_version and login:
-                        return level, messages
+                        pass
+                        # We continue
+                        # return level, messages
 
                     if bugfix > latest_bugfix:
                         # Congratulations :)
@@ -661,7 +712,7 @@ class ServerManager:
 
                         if is_pre_package:
                             # Pre-release, maybe the package got some updates
-                            messages.append(' ' + tr('and you are not running a production package'))
+                            messages.append('. ' + tr('This version is not based on a tag.'))
 
                 if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
                     # Running 3.5.X
@@ -826,7 +877,7 @@ class ServerManager:
         """ Path to the user file configuration. """
         return os.path.join(lizmap_user_folder(), 'user_servers.json')
 
-    def migrate_password_manager(self, servers: dict):
+    def migrate_password_manager(self, servers: list):
         """ Migrate all servers in the QGIS Password manager to a better format in the QGIS API.
 
         This method will be removed in a few versions.
@@ -836,8 +887,8 @@ class ServerManager:
 
         # Lizmap server from JSON
         for server in servers:
-            url = server['url']
-            auth_id = server['auth_id']
+            url = server.get('url')
+            auth_id = server.get('auth_id')
 
             conf = self.config_for_id(auth_id)
             if not conf:
