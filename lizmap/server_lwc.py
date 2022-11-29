@@ -272,14 +272,15 @@ class ServerManager:
             if not result:
                 QMessageBox.critical(
                     self.parent,
-                    tr('QGIS password manager'),
+                    tr('QGIS Authentication database'),
                     tr(
-                        "We couldn't remove the login/password from the QGIS password manager. Please remove manually "
-                        "the line '{}' from your QGIS password manager in the your global settings.").format(auth_id),
+                        "We couldn't remove the login/password from the QGIS authentication database. "
+                        "Please remove manually the line '{}' from your QGIS authentication database in the your QGIS "
+                        "global settings, then 'Authentication' tab.").format(auth_id),
                     QMessageBox.Ok)
                 self.table.clearSelection()
                 return
-            LOGGER.debug("Row {} removed from the QGIS password manager".format(auth_id))
+            LOGGER.debug("Row {} removed from the QGIS authentication database".format(auth_id))
 
         self.table.clearSelection()
         self.table.removeRow(row)
@@ -304,7 +305,7 @@ class ServerManager:
         cell = QTableWidgetItem()
         if conf:
             login = conf.config('username', '')
-            cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br></b>Password ID</b> {}').format(server_url, auth_id))
+            cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br><b>Password ID</b> {}').format(server_url, auth_id))
         cell.setText(login)
         cell.setData(Qt.UserRole, auth_id)
         self.table.setItem(row, TableCell.Login.value, cell)
@@ -878,7 +879,7 @@ class ServerManager:
         return os.path.join(lizmap_user_folder(), 'user_servers.json')
 
     def migrate_password_manager(self, servers: list):
-        """ Migrate all servers in the QGIS Password manager to a better format in the QGIS API.
+        """ Migrate all servers in the QGIS authentication database to a better format in the QGIS API.
 
         This method will be removed in a few versions.
         """
@@ -899,7 +900,7 @@ class ServerManager:
 
             if '@{}'.format(url) in conf.name():
                 # Old format
-                LOGGER.warning("Migrating the URL {} in the QGIS password manager".format(url))
+                LOGGER.warning("Migrating the URL {} in the QGIS authentication database".format(url))
                 user = conf.config('username')
                 password = conf.config('password')
 
@@ -915,7 +916,7 @@ class ServerManager:
                 if not result:
                     LOGGER.critical("Error while migrating the server")
 
-        # Other entries in the password manager
+        # Other entries in the authentication database
         for config in auth_manager.configIds():
             if config in known_auth_config:
                 continue
@@ -931,7 +932,7 @@ class ServerManager:
             split = conf.name().split('@')
             if QUrl(split[-1]).isValid():
                 LOGGER.critical(
-                    "Is the ID '{}' in the QGIS password manager a Lizmap server URL ? If yes, please remove it "
-                    "manually, otherwise skip this message. Go in QGIS global properties, then Password Manager and "
-                    "check the ID.".format(config)
+                    "Is the password ID '{}' in the QGIS authentication database a Lizmap server URL ? If yes, "
+                    "please remove it manually, otherwise skip this message. Go in the QGIS global properties, "
+                    "then 'Authentication' panel and check this ID.".format(config)
                 )

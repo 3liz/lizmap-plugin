@@ -114,8 +114,8 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
                 "Saving configuration with login/password ID {} = {}".format(self.auth_id, result[1]))
             QMessageBox.critical(
                 self.parent,
-                tr('QGIS password manager'),
-                tr("We couldn't save the login/password into the QGIS password manager : ")
+                tr('QGIS Authentication'),
+                tr("We couldn't save the login/password into the QGIS authentication database : ")
                 + result[1],
                 QMessageBox.Ok)
 
