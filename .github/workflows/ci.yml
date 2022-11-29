@@ -21,21 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
           architecture: x64
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: actions/cache@v3.0.11
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          cache: "pip"
+          cache-dependency-path: "requirements/dev.txt"
 
       - name: Install Python requirements
         run: pip install -r requirements/dev.txt
@@ -49,12 +44,15 @@ jobs:
       run:
         working-directory: .docker
     steps:
+
       - name: Check out repository
         uses: actions/checkout@v3
         with:
           submodules: 'true'
+
       - name: Launching docker compose
         run: ./start.sh
+
       - name: Running tests
         run: ./exec.sh
 
@@ -74,18 +72,13 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
+          cache: "pip"
+          cache-dependency-path: "requirements/packaging.txt"
 
       - name: Install Qt lrelease
         run: |
           sudo apt-get update
-          sudo apt-get install qt5-default qttools5-dev-tools
-
-      - uses: actions/cache@v3.0.11
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/packaging.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          sudo apt-get install qttools5-dev-tools
 
       - name: Install Python requirements
         run: pip install -r requirements/packaging.txt
