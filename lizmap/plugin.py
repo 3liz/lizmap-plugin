@@ -283,16 +283,6 @@ class Lizmap:
         self.populate_lwc_combo()
         self.lwc_version_changed()
 
-        # Needs Lizmap QGIS server
-        needs_qgis_server = (
-            self.dlg.label_filter_polygon,
-            self.dlg.label_group_visibility,
-        )
-        for label in needs_qgis_server:
-            font = label.font()
-            font.setUnderline(True)
-            label.setFont(font)
-
         self.dlg.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
         # noinspection PyUnresolvedReferences

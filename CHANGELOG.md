@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Remove notes about the Lizmap QGIS server plugin
+
 ## 3.9.5 - 2022-11-29
 
 * Review the user interface about
