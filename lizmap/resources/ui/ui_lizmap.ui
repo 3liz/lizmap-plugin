@@ -195,6 +195,9 @@ QListWidget::item::selected {
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QComboBox" name="server_combo"/>
+       </item>
       </layout>
      </widget>
      <widget class="QFrame" name="mOptionsFrame">

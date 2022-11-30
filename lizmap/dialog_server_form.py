@@ -18,7 +18,7 @@ LOGGER = logging.getLogger('Lizmap')
 
 class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
-    def __init__(self, parent, existing: list, url='', auth_id=''):
+    def __init__(self, parent, existing: list, url: str = '', auth_id: str = '', name: str = ''):
         """ Constructor. """
         # noinspection PyArgumentList
         QDialog.__init__(self, parent=parent)
@@ -31,11 +31,35 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         self.auth_id = auth_id
         if url:
             self.url.setText(url)
+            self.name_placeholder()
             self.update_existing_credentials()
+            self.name.setText(name)
 
         self.widget_warning_password.setVisible(not self.auth_manager.masterPasswordIsSet())
         self.label_warning.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
 
+        # Tooltip
+        url = tr(
+            'The URL of the Lizmap instance. You can visit the administration panel, then "Server information" tab and '
+            'then click the copy/paste button.'
+        )
+        self.url.setToolTip(url)
+        self.label_url.setToolTip(url)
+
+        name = tr("The name that you want to see in the plugin. It's only a alias to help you.")
+        self.name.setToolTip(name)
+        self.label_name.setToolTip(name)
+
+        login = tr("The login used to connect in your web browser.")
+        self.login.setToolTip(login)
+        self.label_login.setToolTip(login)
+
+        password = tr("The password used to connect in your web browser.")
+        self.password.setToolTip(password)
+        self.label_password.setToolTip(password)
+
+        # Signals
+        self.url.textChanged.connect(self.name_placeholder)
         self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.button_box.button(QDialogButtonBox.Help).clicked.connect(self.click_help)
@@ -57,6 +81,21 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         # Must do something
         return
 
+    @classmethod
+    def automatic_name(cls, name: str) -> str:
+        """ Transform the URL to make a shorter alias. """
+        name = name.replace("https://", "")
+        name = name.replace("http://", "")
+
+        if name.endswith('/'):
+            name = name[0:-1]
+
+        return name
+
+    def name_placeholder(self):
+        """ Set the placeholder for the name. """
+        self.name.setPlaceholderText(self.automatic_name(self.current_url()))
+
     @staticmethod
     def clean_data(data) -> str:
         """ Clean input data from forms. """
@@ -70,6 +109,14 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             url += '/'
 
         return url
+
+    def current_name(self) -> str:
+        """ Cleaned input name. """
+        user_input = self.clean_data(self.name.text())
+        if user_input:
+            return user_input
+
+        return self.name.placeholderText()
 
     def current_login(self) -> str:
         """ Cleaned input login. """
@@ -149,6 +196,11 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
                     "You should edit or remove the other server."))
                 self.error.setVisible(True)
                 return False
+
+        if not QUrl(url).isValid():
+            self.error.setText(tr("The URL is not valid."))
+            self.error.setVisible(True)
+            return False
 
         # Check the server / login validity
         # It cannot be done here, because we need the auth_cfg

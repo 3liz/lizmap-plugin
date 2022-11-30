@@ -51,10 +51,11 @@ LOGGER = logging.getLogger('Lizmap')
 class TableCell(Enum):
     """ Cells in the table. """
     Url = 0
-    Login = 1
-    LizmapVersion = 2
-    QgisVersion = 3
-    Action = 4
+    Name = 1
+    Login = 2
+    LizmapVersion = 3
+    QgisVersion = 4
+    Action = 5
 
 
 class Color(Enum):
@@ -111,7 +112,7 @@ class ServerManager:
         self.down_button.setToolTip(tr('Move the server down'))
 
         # Table
-        self.table.setColumnCount(5)
+        self.table.setColumnCount(6)
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -127,6 +128,10 @@ class ServerManager:
         item = QTableWidgetItem(tr('URL'))
         item.setToolTip(tr('URL of the server.'))
         self.table.setHorizontalHeaderItem(TableCell.Url.value, item)
+
+        item = QTableWidgetItem(tr('Name'))
+        item.setToolTip(tr('Name of the server.'))
+        self.table.setHorizontalHeaderItem(TableCell.Name.value, item)
 
         item = QTableWidgetItem(tr('Login'))
         item.setToolTip(tr('Login of the administrator.'))
@@ -218,7 +223,7 @@ class ServerManager:
 
         row = self.table.rowCount()
         self.table.setRowCount(row + 1)
-        self._edit_row(row, dialog.current_url(), dialog.auth_id)
+        self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
         self.check_display_warning_no_server()
 
@@ -226,9 +231,11 @@ class ServerManager:
         """ Fetch the URL and the authid in the cells. """
         url_item = self.table.item(row, TableCell.Url.value)
         login_item = self.table.item(row, TableCell.Login.value)
+        name_item = self.table.item(row, TableCell.Name.value)
         url = url_item.data(Qt.UserRole)
         auth_id = login_item.data(Qt.UserRole)
-        return url, auth_id
+        name = name_item.data(Qt.UserRole)
+        return url, auth_id, name
 
     def edit_row(self):
         """ Edit the selected row in the table. """
@@ -238,20 +245,20 @@ class ServerManager:
             return
 
         row = selection[0].row()
-        url, auth_id = self._fetch_cells(row)
+        url, auth_id, name = self._fetch_cells(row)
 
         data = []
         existing = self.existing_json_server_list()
         for i, server in enumerate(existing):
             if server.get('url') != url:
                 data.append({'url': server.get('url'), 'auth_id': auth_id})
-        dialog = LizmapServerInfoForm(self.parent, data, url=url, auth_id=auth_id)
+        dialog = LizmapServerInfoForm(self.parent, data, url=url, auth_id=auth_id, name=name)
         result = dialog.exec_()
 
         if result != QDialog.Accepted:
             return
 
-        self._edit_row(row, dialog.current_url(), dialog.auth_id)
+        self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
         self.check_display_warning_no_server()
 
@@ -264,7 +271,7 @@ class ServerManager:
 
         row = selection[0].row()
 
-        _, auth_id = self._fetch_cells(row)
+        _, auth_id, _ = self._fetch_cells(row)
         if auth_id:
             # Do not try to remove from QPM if no login was provided
             auth_manager = QgsApplication.authManager()
@@ -289,7 +296,7 @@ class ServerManager:
         self.save_table()
         self.check_display_warning_no_server()
 
-    def _edit_row(self, row: int, server_url: str, auth_id: str):
+    def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
         login = ''
         conf = self.config_for_id(auth_id)
@@ -300,6 +307,13 @@ class ServerManager:
         cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br><b>Password ID</b> {}').format(server_url, auth_id))
         cell.setData(Qt.UserRole, server_url)
         self.table.setItem(row, TableCell.Url.value, cell)
+
+        # Name
+        cell = QTableWidgetItem()
+        cell.setText(name)
+        cell.setData(Qt.ToolTipRole, name)
+        cell.setData(Qt.UserRole, name)
+        self.table.setItem(row, TableCell.Name.value, cell)
 
         # Login
         cell = QTableWidgetItem()
@@ -358,7 +372,7 @@ class ServerManager:
     def refresh_table(self):
         """ Refresh all rows with the server status. """
         for row in range(self.table.rowCount()):
-            url, auth_id = self._fetch_cells(row)
+            url, auth_id, _ = self._fetch_cells(row)
             self.fetch(url, auth_id, row)
 
     @staticmethod
@@ -383,7 +397,7 @@ class ServerManager:
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
-        _, auth_id = self._fetch_cells(row)
+        _, auth_id, _ = self._fetch_cells(row)
 
         login = ''
         conf = self.config_for_id(auth_id)
@@ -590,7 +604,12 @@ class ServerManager:
         for server in servers:
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
-            self._edit_row(row, server.get('url'), server.get('auth_id', ''))
+            self._edit_row(
+                row,
+                server.get('url'),
+                server.get('auth_id', ''),
+                server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
+            )
 
         self.check_display_warning_no_server()
 
@@ -599,10 +618,11 @@ class ServerManager:
         rows = self.table.rowCount()
         data = []
         for row in range(rows):
-            url, auth_id = self._fetch_cells(row)
+            url, auth_id, name = self._fetch_cells(row)
             data.append({
                 'url': url,
                 'auth_id': auth_id,
+                'name': name,
             })
 
         json_file_content = json.dumps(
