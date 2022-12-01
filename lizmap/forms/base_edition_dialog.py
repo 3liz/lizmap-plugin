@@ -37,6 +37,9 @@ class BaseEditionDialog(QDialog):
         self.lwc_versions[LwcVersions.Lizmap_3_2] = []
         self.lwc_versions[LwcVersions.Lizmap_3_3] = []
         self.lwc_versions[LwcVersions.Lizmap_3_4] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_5] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_6] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_7] = []
 
     def setup_ui(self):
         self.button_box.button(QDialogButtonBox.Help).setToolTip(
@@ -135,6 +138,7 @@ class BaseEditionDialog(QDialog):
         QDesktopServices.openUrl(QUrl(url))
 
     def version_lwc(self):
+        """ Make all colors about widgets if it is available or not. """
         current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         current_version = LwcVersions(current_version)
 

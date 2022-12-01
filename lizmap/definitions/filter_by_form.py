@@ -26,6 +26,7 @@ class FilterByFormDefinitions(BaseDefinitions):
                 'The title to give to the input, which will be displayed above the form input. '
                 'For example "Choose a category" for a layer field called "category".')
         }
+        # TODO switch to enum for the list with icons
         self._layer_config['type'] = {
             'type': InputType.List,
             'header': tr('Type'),
@@ -39,22 +40,22 @@ class FilterByFormDefinitions(BaseDefinitions):
             'tooltip': tr(
                 'The field name to apply the filter on.')
         }
-        self._layer_config['min_date'] = {
+        self._layer_config['start_field'] = {
             'type': InputType.Field,
-            'header': tr('Date minimum'),
+            'header': tr('Start field'),
             'default': '',
-            'tooltip': tr(
-                'The field containing the start date of your feature (ex: "start_date" of an event).')
+            'tooltip': tr('The field containing the minimum/start value (ex: "start_date" of an event).'),
+            # 'version': LwcVersions.Lizmap_3_7, # This key has been renamed from start_date
         }
-        self._layer_config['max_date'] = {
+        self._layer_config['end_field'] = {
             'type': InputType.Field,
-            'header': tr('Date maximum'),
+            'header': tr('End field'),
             'default': '',
             'tooltip': tr(
-                'The field containing the end date of your data. If you have 2 fields containing dates, '
-                'one for the start date and another for the end date, you can differentiate them. '
-                'If not, you need to use the same field name for Min date and Max date.'
-            )
+                'The field containing the maximum/end value of your data. If you have 2 fields containing dates, one '
+                'for the start date and another for the end date, you can differentiate them.'
+            ),
+            # 'version': LwcVersions.Lizmap_3_7, # This key has been renamed from end_date
         }
         self._layer_config['format'] = {
             'type': InputType.List,

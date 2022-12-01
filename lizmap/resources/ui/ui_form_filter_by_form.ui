@@ -15,6 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Only layers stored in Spatialite, GPKG or PostgreSQL are available in this tool.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label_layer">
@@ -69,7 +79,7 @@
        <property name="toolTip">
         <string/>
        </property>
-       <property name="allowEmptyFieldName">
+       <property name="allowEmptyFieldName" stdset="0">
         <bool>true</bool>
        </property>
       </widget>
@@ -103,38 +113,24 @@
       </widget>
      </item>
      <item row="6" column="0">
-      <widget class="QLabel" name="label_min_date">
+      <widget class="QLabel" name="label_start_field">
        <property name="text">
-        <string>Min date</string>
+        <string>Start/min field</string>
        </property>
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QgsFieldComboBox" name="min_date">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="allowEmptyFieldName">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <widget class="QgsFieldComboBox" name="start_field"/>
      </item>
      <item row="7" column="0">
-      <widget class="QLabel" name="label_max_date">
+      <widget class="QLabel" name="label_end_field">
        <property name="text">
-        <string>Max date</string>
+        <string>End/max field</string>
        </property>
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QgsFieldComboBox" name="max_date">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="allowEmptyFieldName">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <widget class="QgsFieldComboBox" name="end_field"/>
      </item>
     </layout>
    </item>

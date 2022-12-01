@@ -531,6 +531,27 @@ class TableManager:
 
                             layer_data[json_key] = trace[key]
 
+            if self.definitions.key() == 'formFilterLayers':
+                if version < LwcVersions.Lizmap_3_7:
+                    # We need to change keys to write in the legacy format
+                    if layer_data.get('type') == 'numeric':
+                        if layer_data.get('end_field'):
+                            # Incompatible with this format, but we don't remove it just in case
+                            LOGGER.error(
+                                "A end_field is defined for the form filter. This is not compatible for this version "
+                                "of Lizmap Web Client"
+                            )
+                        if layer_data.get('start_field'):
+                            layer_data['field'] = layer_data.get('start_field')
+                            del layer_data['start_field']
+                    elif layer_data.get('type') == 'date':
+                        if layer_data.get('start_field'):
+                            layer_data['min_date'] = layer_data.get('start_field')
+                            del layer_data['start_field']
+                        if layer_data.get('end_field'):
+                            layer_data['max_date'] = layer_data.get('end_field')
+                            del layer_data['end_field']
+
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
                     layer_data['atlasEnabled'] = 'True'
@@ -638,6 +659,30 @@ class TableManager:
         return data
 
     @staticmethod
+    def _from_json_legacy_form_filter(data):
+        """ Read form filter and transform it if needed. """
+        for layer in data.get('layers'):
+            if layer.get('type') == 'numeric':
+
+                if layer.get('field'):
+                    # We upgrade from < 3.7 to 3.7 format
+                    layer['start_field'] = layer['field']
+                    del layer['field']
+
+            if layer.get('type') == 'date':
+                if layer.get('min_date'):
+                    # We upgrade from < 3.7 to 3.7 format
+                    layer['start_field'] = layer['min_date']
+                    del layer['min_date']
+
+                if layer.get('end_date'):
+                    # We upgrade from < 3.7 to 3.7 format
+                    layer['end_field'] = layer['end_date']
+                    del layer['end_date']
+
+        return data
+
+    @staticmethod
     def _from_json_legacy_dataviz(data):
         """Read legacy dataviz without the traces config."""
 
@@ -683,8 +728,11 @@ class TableManager:
 
         return data
 
-    def from_json(self, data):
-        """Load JSON into the table."""
+    def from_json(self, data: dict):
+        """Load JSON into the table.
+
+        :param data: The data for the given table to read from the CFG file : layers and general configuration
+        """
         if self.definitions.key() in (
             'locateByLayer',
             'loginFilteredLayers',
@@ -702,6 +750,9 @@ class TableManager:
 
         if self.definitions.key() == 'datavizLayers':
             data = self._from_json_legacy_dataviz(data)
+
+        if self.definitions.key() == 'formFilterLayers':
+            data = self._from_json_legacy_form_filter(data)
 
         config = data.get('config')
         # config: Union[dict, None]
