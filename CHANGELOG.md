@@ -1,11 +1,8 @@
 # Changelog
 
-## Unreleased for the next version, so this won't be merged and no conflict
-
-* Add new "maximum field" for Lizmap Web Client ≥ 3.7 about the form filter with numeric values
-
 ## Unreleased
 
+* Add new "maximum field" for Lizmap Web Client ≥ 3.7 about the form filter with numeric values
 * Remove notes about the Lizmap QGIS server plugin
 
 ## 3.9.5 - 2022-11-29
