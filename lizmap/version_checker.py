@@ -51,6 +51,8 @@ class VersionChecker:
 
     def update_lwc_selector(self, released_versions: dict):
         """ Update LWC selector showing outdated versions. """
+        # TODO remove this variable as well soon
+        first_stable_release = False
         for i, json_version in enumerate(released_versions):
             try:
                 lwc_version = LwcVersions(json_version['branch'])
@@ -61,26 +63,56 @@ class VersionChecker:
                 continue
 
             index = self.dialog.combo_lwc_version.findData(lwc_version)
-            if not json_version['maintained']:
-                if not index and json_version['branch'] != LwcVersions.Lizmap_3_1.value:
-                    LOGGER.warning(
-                        "We did not find the version {} in the selector version".format(
-                            json_version['branch'])
-                    )
-                    continue
-                text = self.dialog.combo_lwc_version.itemText(index)
-
-                if i == 0:
-                    # If it's the first item in the list AND not maintained, then it's the next LWC version
-                    new_text = text + ' - ' + tr('Next')
+            status = json_version.get('status')
+            if status:
+                if status == 'dev':
                     flag = ReleaseStatus.Dev
-                else:
-                    new_text = text + ' - ' + tr('Not maintained')
+                    suffix = tr('Next')
+                elif status == 'feature_freeze':
+                    flag = ReleaseStatus.ReleaseCandidate
+                    suffix = tr('Feature freeze')
+                elif status == 'stable':
+                    flag = ReleaseStatus.Stable
+                    suffix = tr('Stable')
+                elif status == 'retired':
                     flag = ReleaseStatus.NotMaintained
-                self.dialog.combo_lwc_version.setItemText(index, new_text)
+                    suffix = tr('Not maintained')
+                else:
+                    flag = ReleaseStatus.Unknown
+                    suffix = tr('Inconnu')
+
+                text = self.dialog.combo_lwc_version.itemText(index)
+                if suffix:
+                    text += ' - ' + suffix
+                    self.dialog.combo_lwc_version.setItemText(index, text)
+                self.dialog.combo_lwc_version.setItemData(index, flag, Qt.UserRole + 1)
+
             else:
-                flag = ReleaseStatus.Stable
-            self.dialog.combo_lwc_version.setItemData(index, flag, Qt.UserRole + 1)
+                # Legacy
+                # TODO remove in a few weeks
+                # ET 1/12/2022
+                if not json_version['maintained']:
+                    if not index and json_version['branch'] != LwcVersions.Lizmap_3_1.value:
+                        LOGGER.warning(
+                            "We did not find the version {} in the selector version".format(
+                                json_version['branch'])
+                        )
+                        continue
+                    text = self.dialog.combo_lwc_version.itemText(index)
+
+                    if not first_stable_release:
+                        # All dev version are for now tagged "not maintained" in the JSON file
+                        new_text = text + ' - ' + tr('Next')
+                        flag = ReleaseStatus.Dev
+                    else:
+                        new_text = text + ' - ' + tr('Not maintained')
+                        flag = ReleaseStatus.NotMaintained
+                    self.dialog.combo_lwc_version.setItemText(index, new_text)
+                else:
+                    first_stable_release = True
+                    flag = ReleaseStatus.Stable
+                self.dialog.combo_lwc_version.setItemData(index, flag, Qt.UserRole + 1)
+                # End of legacy
 
     def update_lwc_releases(self, released_versions: dict):
         """ Update labels about latest releases. """

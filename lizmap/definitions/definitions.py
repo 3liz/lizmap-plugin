@@ -40,6 +40,7 @@ class ReleaseStatus(Enum):
     Unknown = 'Unknown'
     NotMaintained = 'NotMaintained'
     Stable = 'Stable'
+    ReleaseCandidate = 'ReleaseCandidate'
     Dev = 'Dev'
 
     def __lt__(self, other):
