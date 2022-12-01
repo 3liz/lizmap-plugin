@@ -52,7 +52,15 @@ class VersionChecker:
     def update_lwc_selector(self, released_versions: dict):
         """ Update LWC selector showing outdated versions. """
         for i, json_version in enumerate(released_versions):
-            index = self.dialog.combo_lwc_version.findData(LwcVersions(json_version['branch']))
+            try:
+                lwc_version = LwcVersions(json_version['branch'])
+            except ValueError:
+                # The version is found in the online JSON file
+                # But not in the Lizmap source code, in the "definitions.py" file
+                # We can continue, we do nothing with this version. It's not displayed in the UI.
+                continue
+
+            index = self.dialog.combo_lwc_version.findData(lwc_version)
             if not json_version['maintained']:
                 if not index and json_version['branch'] != LwcVersions.Lizmap_3_1.value:
                     LOGGER.warning(
