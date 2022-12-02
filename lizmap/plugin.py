@@ -608,6 +608,8 @@ class Lizmap:
             self.dlg.label_no_server,
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
+            self.dlg.server_combo,
+            self.target_server_changed,
         )
 
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
@@ -735,6 +737,15 @@ class Lizmap:
         self.dlg.layer_filter_polygon.layerChanged.connect(self.dlg.field_filter_polygon.setLayer)
         self.dlg.field_filter_polygon.setLayer(self.dlg.layer_filter_polygon.currentLayer())
 
+        # Server combo
+        server = QgsSettings().value('lizmap/instance_target_url', '')
+        if server:
+            index = self.dlg.server_combo.findData(server, Qt.UserRole + 1)
+            if index:
+                self.dlg.server_combo.setCurrentIndex(index)
+        self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
+        self.target_server_changed()
+
         self.layerList = None
         self.action = None
         self.isok = None
@@ -769,6 +780,11 @@ class Lizmap:
         # Restore connection
         self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
         self.lwc_version_changed()
+
+    def target_server_changed(self):
+        """ When the server destination has changed in the selector. """
+        current = self.dlg.server_combo.currentData(Qt.UserRole + 1)
+        QgsSettings().setValue('lizmap/instance_target_url', current)
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
@@ -2218,6 +2234,7 @@ class Lizmap:
             'lizmap_plugin_version': int(format_version_integer(current_version)),
             'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version))),
             'lizmap_web_client_target_status': target_status.value,
+            'instance_target_url': self.dlg.server_combo.currentData(Qt.UserRole + 1)
         }
         if valid is not None:
             metadata['project_valid'] = valid

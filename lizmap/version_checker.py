@@ -20,7 +20,7 @@ LOGGER = logging.getLogger('Lizmap')
 class VersionChecker:
 
     def __init__(self, dialog: QDialog, url):
-        """ Update the dialog when versions has been fetched. """
+        """ Update the dialog when versions have been fetched. """
         self.dialog = dialog
         self.url = url
         self.fetcher = None

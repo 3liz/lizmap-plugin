@@ -17,6 +17,7 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsMessageLog,
     QgsNetworkContentFetcher,
+    QgsSettings,
 )
 from qgis.PyQt.QtCore import QPoint, Qt, QUrl, QVariant
 from qgis.PyQt.QtGui import (
@@ -71,7 +72,7 @@ class ServerManager:
 
     def __init__(
             self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server,
-            up_button, down_button
+            up_button, down_button, server_combo, target_server_changed,
     ):
         self.parent = parent
         self.table = table
@@ -82,6 +83,9 @@ class ServerManager:
         self.up_button = up_button
         self.down_button = down_button
         self.label_no_server = label_no_server
+        self.server_combo = server_combo
+        # Ugly hack to reconnect the signal after disconnect
+        self.target_server_changed = target_server_changed
 
         # Network
         self.fetchers = {}
@@ -225,6 +229,7 @@ class ServerManager:
         self.table.setRowCount(row + 1)
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
+        self.refresh_server_combo()
         self.check_display_warning_no_server()
 
     def _fetch_cells(self, row: int) -> tuple:
@@ -260,6 +265,7 @@ class ServerManager:
 
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
+        self.refresh_server_combo()
         self.check_display_warning_no_server()
 
     def remove_row(self):
@@ -294,6 +300,7 @@ class ServerManager:
         if row in self.fetchers.keys():
             del self.fetchers[row]
         self.save_table()
+        self.refresh_server_combo()
         self.check_display_warning_no_server()
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
@@ -397,7 +404,7 @@ class ServerManager:
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
-        _, auth_id, _ = self._fetch_cells(row)
+        url, auth_id, _ = self._fetch_cells(row)
 
         login = ''
         conf = self.config_for_id(auth_id)
@@ -491,6 +498,10 @@ class ServerManager:
 
         lizmap_cell.setText(lizmap_version)
 
+        # Set Lizmap version in the server combo
+        index = self.server_combo.findData(url, Qt.UserRole + 1)
+        self.server_combo.setItemData(index, lizmap_version, Qt.UserRole + 2)
+
         # Markdown
         markdown = '**Versions :**\n\n'
         markdown += '* Lizmap Web Client : {}\n'.format(lizmap_version)
@@ -516,6 +527,10 @@ class ServerManager:
             qgis_metadata = qgis_server_info.get('metadata')
             qgis_version = qgis_metadata.get('version')
             qgis_cell.setText(qgis_version)
+
+            # Set QGIS version in the server combo
+            index = self.server_combo.findData(url, Qt.UserRole + 1)
+            self.server_combo.setItemData(index, qgis_version, Qt.UserRole + 3)
 
             plugins = qgis_server_info.get('plugins')
             # plugins = {'atlasprint': {'version': '3.2.2'}}
@@ -593,6 +608,36 @@ class ServerManager:
 
         return json_content
 
+    def refresh_server_combo(self):
+        """ Refresh the server combobox. """
+        servers = self.existing_json_server_list()
+
+        try:
+            self.server_combo.currentIndexChanged.disconnect()
+        except TypeError:
+            pass
+
+        self.server_combo.clear()
+
+        for server in servers:
+            url = server.get('url')
+            auth_id = server.get('auth_id')
+            name = server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
+            self.server_combo.addItem(name, auth_id)
+            index = self.server_combo.findData(auth_id)
+            self.server_combo.setItemData(index, url, Qt.UserRole + 1)
+            self.server_combo.setItemData(index, url, Qt.ToolTipRole)
+
+        # Restore previous value
+        server = QgsSettings().value('lizmap/instance_target_url', '')
+        if server:
+            index = self.server_combo.findData(server, Qt.UserRole + 1)
+            if index:
+                self.server_combo.setCurrentIndex(index)
+
+        # This function is located in the plugin.py ... :/
+        self.server_combo.currentIndexChanged.connect(self.target_server_changed)
+
     def load_table(self):
         """ Load the table by reading the user configuration file. """
         servers = self.existing_json_server_list()
@@ -612,6 +657,7 @@ class ServerManager:
             )
 
         self.check_display_warning_no_server()
+        self.refresh_server_combo()
 
     def save_table(self):
         """ Save the table as JSON in the user configuration file. """
