@@ -2161,7 +2161,7 @@ class Lizmap:
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
 
-    def write_project_config_file(self):
+    def write_project_config_file(self) -> bool:
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
 
@@ -2195,7 +2195,7 @@ class Lizmap:
                 warnings.append(Warnings.UseLayerIdAsName.value)
 
         if not self.server_manager.check_admin_login_provided():
-            QMessageBox.warning(
+            QMessageBox.critical(
                 self.dlg,
                 tr('Missing login on a server'),
                 '{}\n\n{}\n\n{}'.format(
@@ -2204,8 +2204,9 @@ class Lizmap:
                         "login/password."
                     ),
                     tr("Please go back to the server panel and edit the server to add a login."),
-                    tr("The process about saving the CFG is still continuing. This is only a warning.")
+                    tr("The process is stopping.")
                 ), QMessageBox.Ok)
+            return False
 
         is_found = self.server_manager.check_lwc_version(lwc_version)
         if not is_found:
@@ -2631,10 +2632,14 @@ class Lizmap:
 
     def ok_button_clicked(self):
         """When the OK button is press, we 'apply' and close the dialog."""
-        self.get_map_options()
+        flag = self.get_map_options()
+        if not flag:
+            return
+
+        # Only close the dialog if no error
         self.dlg.close()
 
-    def get_map_options(self):
+    def get_map_options(self) -> bool:
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
 
@@ -2702,7 +2707,10 @@ class Lizmap:
 
             if self.isok:
                 # write data in the lizmap json config file
-                self.write_project_config_file()
+                flag = self.write_project_config_file()
+                if not flag:
+                    return False
+
                 self.log(
                     tr('All the map parameters are correctly set'),
                     abort=False,
@@ -2747,7 +2755,7 @@ class Lizmap:
                             messsage,
                             level=Qgis.Critical,
                         )
-                        return
+                        return False
 
                     msg = tr(
                         'Lizmap configuration file has been updated and sent to the FTP {}.'.format(
@@ -2760,6 +2768,7 @@ class Lizmap:
                     level=Qgis.Success,
                     duration=3
                 )
+        return True
 
     def check_visibility_crs_3857(self):
         """ Check if we display the warning about scales. """
