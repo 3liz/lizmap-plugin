@@ -2194,38 +2194,6 @@ class Lizmap:
                 )
                 warnings.append(Warnings.UseLayerIdAsName.value)
 
-        if not self.server_manager.check_admin_login_provided():
-            QMessageBox.critical(
-                self.dlg,
-                tr('Missing login on a server'),
-                '{}\n\n{}\n\n{}'.format(
-                    tr(
-                        "You have set up a server in the first panel of the plugin, but you have not provided a "
-                        "login/password."
-                    ),
-                    tr("Please go back to the server panel and edit the server to add a login."),
-                    tr("The process is stopping.")
-                ), QMessageBox.Ok)
-            return False
-
-        is_found = self.server_manager.check_lwc_version(lwc_version)
-        if not is_found:
-            QMessageBox.warning(
-                self.dlg,
-                tr('Lizmap Target Version'),
-                '{}\n\n{}\n\n{}'.format(
-                    tr(
-                        "Your Lizmap Web Client target version {version} has not been found in the server "
-                        "table.".format(version=lwc_version)),
-                    tr(
-                        "Either check your Lizmap Web Client target version in the first panel of the plugin or check "
-                        "you have provided the correct server URL."
-                    ),
-                    tr(
-                        "The CFG file will be written following the {version} format.".format(version=lwc_version)
-                    )
-                ), QMessageBox.Ok)
-
         target_status = self.dlg.combo_lwc_version.itemData(self.dlg.combo_lwc_version.currentIndex(), Qt.UserRole + 1)
         if not target_status:
             target_status = ReleaseStatus.Unknown
@@ -2643,132 +2611,170 @@ class Lizmap:
         """Check the user defined data from gui and save them to both global and project config files"""
         self.isok = 1
 
+        stop = tr("The process is stopping.")
+
         if self.dlg.table_server.rowCount() < 1:
-            # But by making this condition, we somehow force people to at least have one server in the list,
+            # But by making this condition, we force people to at least have one server in the list,
             # so they can be more aware about versioning later
-            QMessageBox.warning(
+            QMessageBox.critical(
                 self.dlg,
                 tr('Lizmap Server URL'),
-                '{}\n\n{}\n\n{}'.format(
+                '{}\n\n{}\n\n{}\n\n{}'.format(
                     tr("You haven't provided any Lizmap URL in the first Information panel."),
                     tr(
                         "Publishing a project on Lizmap requires to have a server running with the Lizmap "
                         "application."),
                     tr(
                         "By providing a URL, you will be able to check its version number for instance."
-                    )
+                    ),
+                    stop
                 ), QMessageBox.Ok)
+            return False
+
+        if not self.server_manager.check_admin_login_provided():
+            QMessageBox.critical(
+                self.dlg,
+                tr('Missing login on a server'),
+                '{}\n\n{}\n\n{}'.format(
+                    tr(
+                        "You have set up a server in the first panel of the plugin, but you have not provided a "
+                        "login/password."
+                    ),
+                    tr("Please go back to the server panel and edit the server to add a login."),
+                    stop
+                ), QMessageBox.Ok)
+            return False
+
+        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        is_found = self.server_manager.check_lwc_version(lwc_version)
+        if not is_found:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Lizmap Target Version'),
+                '{}\n\n{}\n\n{}'.format(
+                    tr(
+                        "Your Lizmap Web Client target version {version} has not been found in the server "
+                        "table.".format(version=lwc_version)),
+                    tr(
+                        "Either check your Lizmap Web Client target version in the first panel of the plugin or check "
+                        "you have provided the correct server URL."
+                    ),
+                    stop
+                ), QMessageBox.Ok)
+            return False
 
         # global project option checking
         is_valid, message = self.check_global_project_options()
         if not is_valid:
             QMessageBox.critical(
-                self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
+                self.dlg, tr('Lizmap Error'), '{}\n\n{}'.format(message, stop), QMessageBox.Ok)
+            return False
 
-        if is_valid:
-            # Get configuration from input fields
+        # Get configuration from input fields
 
-            # Need to get these values to check for Pseudo Mercator projection
-            mercator_layers = [
-                self.dlg.cbOsmMapnik.isChecked(),
-                self.dlg.cbOsmStamenToner.isChecked(),
-                self.dlg.cb_open_topo_map.isChecked(),
-                self.dlg.cbGoogleStreets.isChecked(),
-                self.dlg.cbGoogleSatellite.isChecked(),
-                self.dlg.cbGoogleHybrid.isChecked(),
-                self.dlg.cbGoogleTerrain.isChecked(),
-                self.dlg.cbBingStreets.isChecked(),
-                self.dlg.cbBingSatellite.isChecked(),
-                self.dlg.cbBingHybrid.isChecked(),
-                self.dlg.cbIgnStreets.isChecked(),
-                self.dlg.cbIgnSatellite.isChecked(),
-                self.dlg.cbIgnTerrain.isChecked(),
-                self.dlg.cbIgnCadastral.isChecked(),
-            ]
+        # Need to get these values to check for Pseudo Mercator projection
+        mercator_layers = [
+            self.dlg.cbOsmMapnik.isChecked(),
+            self.dlg.cbOsmStamenToner.isChecked(),
+            self.dlg.cb_open_topo_map.isChecked(),
+            self.dlg.cbGoogleStreets.isChecked(),
+            self.dlg.cbGoogleSatellite.isChecked(),
+            self.dlg.cbGoogleHybrid.isChecked(),
+            self.dlg.cbGoogleTerrain.isChecked(),
+            self.dlg.cbBingStreets.isChecked(),
+            self.dlg.cbBingSatellite.isChecked(),
+            self.dlg.cbBingHybrid.isChecked(),
+            self.dlg.cbIgnStreets.isChecked(),
+            self.dlg.cbIgnSatellite.isChecked(),
+            self.dlg.cbIgnTerrain.isChecked(),
+            self.dlg.cbIgnCadastral.isChecked(),
+        ]
 
-            self.dlg.outLog.append('=' * 20)
-            self.dlg.outLog.append('<b>' + tr('Map - options') + '</b>')
-            self.dlg.outLog.append('=' * 20)
+        self.dlg.outLog.append('=' * 20)
+        self.dlg.outLog.append('<b>' + tr('Map - options') + '</b>')
+        self.dlg.outLog.append('=' * 20)
 
-            # Checking configuration data
-            # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
+        # Checking configuration data
+        # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
 
-            # public base-layers: check that the 3857 projection is set in the
-            # "Coordinate System Restriction" section of the project WMS Server tab properties
-            if True in mercator_layers:
-                crs_list = self.project.readListEntry('WMSCrsList', '')
-                mercator_found = False
-                for i in crs_list[0]:
-                    if i == 'EPSG:3857':
-                        mercator_found = True
-                if not mercator_found:
-                    crs_list[0].append('EPSG:3857')
-                    self.project.writeEntry('WMSCrsList', '', crs_list[0])
+        # public base-layers: check that the 3857 projection is set in the
+        # "Coordinate System Restriction" section of the project WMS Server tab properties
+        if True in mercator_layers:
+            crs_list = self.project.readListEntry('WMSCrsList', '')
+            mercator_found = False
+            for i in crs_list[0]:
+                if i == 'EPSG:3857':
+                    mercator_found = True
+            if not mercator_found:
+                crs_list[0].append('EPSG:3857')
+                self.project.writeEntry('WMSCrsList', '', crs_list[0])
 
-            if self.isok:
-                # write data in the lizmap json config file
-                flag = self.write_project_config_file()
-                if not flag:
-                    return False
+        if not self.isok:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Lizmap Error'),
+                tr('Wrong or missing map parameters: please read the log and correct the printed errors.'),
+                QMessageBox.Ok)
+            return False
 
-                self.log(
-                    tr('All the map parameters are correctly set'),
-                    abort=False,
-                    textarea=self.dlg.outLog)
-                self.log(
-                    '<b>' + tr('Lizmap configuration file has been updated') + '</b>',
-                    abort=False,
-                    textarea=self.dlg.outLog)
+        # write data in the lizmap json config file
+        flag = self.write_project_config_file()
+        if not flag:
+            return False
+
+        self.log(
+            tr('All the map parameters are correctly set'),
+            abort=False,
+            textarea=self.dlg.outLog)
+        self.log(
+            '<b>' + tr('Lizmap configuration file has been updated') + '</b>',
+            abort=False,
+            textarea=self.dlg.outLog)
+
+        # Get and check map scales
+        if not self.isok:
+            return False
+
+        self.get_min_max_scales()
+        msg = tr('Lizmap configuration file has been updated')
+
+        # Ask to save the project
+        auto_save = self.dlg.checkbox_save_project.isChecked()
+        QgsSettings().setValue('lizmap/auto_save_project', auto_save)
+        if self.project.isDirty():
+            if auto_save:
+                # Do not use QgsProject.write() as it will trigger file
+                # modified warning in QGIS Desktop later
+                self.iface.actionSaveProject().trigger()
             else:
-                QMessageBox.critical(
-                    self.dlg,
-                    tr('Lizmap Error'),
-                    tr('Wrong or missing map parameters: please read the log and correct the printed errors.'),
-                    QMessageBox.Ok)
-
-            # Get and check map scales
-            if self.isok:
-                self.get_min_max_scales()
-                msg = tr('Lizmap configuration file has been updated')
-
-                # Ask to save the project
-                auto_save = self.dlg.checkbox_save_project.isChecked()
-                QgsSettings().setValue('lizmap/auto_save_project', auto_save)
-                if self.project.isDirty():
-                    if auto_save:
-                        # Do not use QgsProject.write() as it will trigger file
-                        # modified warning in QGIS Desktop later
-                        self.iface.actionSaveProject().trigger()
-                    else:
-                        self.iface.messageBar().pushMessage(
-                            'Lizmap',
-                            tr('Please do not forget to save the QGIS project before publishing your map'),
-                            level=Qgis.Warning,
-                            duration=30
-                        )
-
-                if auto_save and self.dlg.checkbox_ftp_transfer.isChecked():
-                    valid, messsage = self.server_ftp.connect(send_files=True)
-                    if not valid:
-                        self.iface.messageBar().pushMessage(
-                            'Lizmap',
-                            messsage,
-                            level=Qgis.Critical,
-                        )
-                        return False
-
-                    msg = tr(
-                        'Lizmap configuration file has been updated and sent to the FTP {}.'.format(
-                            self.server_ftp.host)
-                    )
-
                 self.iface.messageBar().pushMessage(
                     'Lizmap',
-                    msg,
-                    level=Qgis.Success,
-                    duration=3
+                    tr('Please do not forget to save the QGIS project before publishing your map'),
+                    level=Qgis.Warning,
+                    duration=30
                 )
-        return True
+
+        if auto_save and self.dlg.checkbox_ftp_transfer.isChecked():
+            valid, messsage = self.server_ftp.connect(send_files=True)
+            if not valid:
+                self.iface.messageBar().pushMessage(
+                    'Lizmap',
+                    messsage,
+                    level=Qgis.Critical,
+                )
+                return False
+
+            msg = tr(
+                'Lizmap configuration file has been updated and sent to the FTP {}.'.format(
+                    self.server_ftp.host)
+            )
+
+        self.iface.messageBar().pushMessage(
+            'Lizmap',
+            msg,
+            level=Qgis.Success,
+            duration=3
+        )
 
     def check_visibility_crs_3857(self):
         """ Check if we display the warning about scales. """
