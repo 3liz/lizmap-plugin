@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+## 3.9.6 - 2022-12-05
+
 * Add new "maximum field" for Lizmap Web Client ≥ 3.7 about the form filter with numeric values
 * Remove notes about the Lizmap QGIS server plugin
+* Add new field in the server list to set a custom name
+* Allow the plugin to have many development versions such as Lizmap Web Client 3.6 and 3.7
+* All logins must be filled before saving a CFG file
 
 ## 3.9.5 - 2022-11-29
 

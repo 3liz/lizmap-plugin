@@ -661,7 +661,7 @@ QListWidget::item::selected {
                 <x>0</x>
                 <y>0</y>
                 <width>723</width>
-                <height>1306</height>
+                <height>1329</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -679,11 +679,18 @@ QListWidget::item::selected {
                    </widget>
                   </item>
                   <item>
+                   <widget class="QLabel" name="label_54">
+                    <property name="text">
+                     <string>Restrict access to the following groups</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
                     <item>
-                     <widget class="QLabel" name="label_54">
+                     <widget class="QPushButton" name="help_group">
                       <property name="text">
-                       <string>Restrict access to the following groups</string>
+                       <string>PushButton</string>
                       </property>
                      </widget>
                     </item>
