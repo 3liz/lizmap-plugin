@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* The legacy "Lizmap HTML" popup is now deprecated for vector layer. A warning is raised when saving a the CFG file.
+
 ## 3.9.6 - 2022-12-05
 
 * Add new "maximum field" for Lizmap Web Client ≥ 3.7 about the form filter with numeric values

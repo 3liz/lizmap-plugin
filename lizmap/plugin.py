@@ -198,7 +198,6 @@ class Lizmap:
                 self.dlg.label_dev_version.setText(text)
                 self.dlg.label_dev_version.setVisible(True)
 
-        self.popup_dialog = None
         self.layers_table = dict()
 
         # List of ui widget for data driven actions and checking
@@ -537,6 +536,9 @@ class Lizmap:
             item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
 
         # Popup configuration
+        self.dlg.image_warning_lizmap_popup.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
+        self.dlg.image_warning_lizmap_popup.setText('')
+
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
 
@@ -878,9 +880,10 @@ class Lizmap:
         self.dlg.btClearlog.clicked.connect(self.clear_log)
 
         # configure popup button
-        self.dlg.btConfigurePopup.clicked.connect(self.configure_popup)
+        self.dlg.btConfigurePopup.clicked.connect(self.configure_popup_lizmap)
         self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
         self.dlg.button_generate_html_table.clicked.connect(self.html_table_from_layer)
+        self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
 
         # Link button
         self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
@@ -1098,6 +1101,12 @@ class Lizmap:
         data = self.layer_options_list['popupSource']['widget'].currentData()
         self.dlg.btConfigurePopup.setVisible(data == 'lizmap')
         self.dlg.widget_qgis_maptip.setVisible(data == 'qgis')
+
+        if data == 'lizmap':
+            layer = self._current_selected_layer()
+            self.dlg.widget_deprecated_lizmap_popup.setVisible(isinstance(layer, QgsVectorLayer))
+        else:
+            self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
 
     def show_help(self):
         """Opens the html help file content with default browser."""
@@ -2040,7 +2049,7 @@ class Lizmap:
                         if key == 'abstract':
                             layer.setAbstract(self.layerList[item.text(1)][key])
 
-    def configure_popup(self):
+    def configure_popup_lizmap(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
         # get the selected item in the layer tree
         item = self.dlg.layer_tree.currentItem()
@@ -2055,19 +2064,22 @@ class Lizmap:
                 text = self.layerList[item.text(1)]['popupTemplate']
             else:
                 text = ''
-            self.popup_dialog = LizmapPopupDialog(self.style_sheet, text)
+
             LOGGER.info('Opening the popup configuration')
-            result = self.popup_dialog.exec_()
-            if not result:
+            popup_dialog = LizmapPopupDialog(self.style_sheet, text)
+            if not popup_dialog.exec_():
                 return
 
-            content = self.popup_dialog.txtPopup.text()
+            content = popup_dialog.txtPopup.text()
 
             # Get the selected item in the layer tree
             item = self.dlg.layer_tree.currentItem()
             if item and item.text(1) in self.layerList:
                 # Write the content into the global object
                 self.layerList[item.text(1)]['popupTemplate'] = content
+                layer = self._current_selected_layer()
+                if isinstance(layer, QgsVectorLayer):
+                    LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
 
     def _current_selected_layer(self) -> QgsMapLayer:
         """ Current selected map layer in the tree. """
@@ -2321,7 +2333,6 @@ class Lizmap:
         for k, v in self.layerList.items():
             ltype = v['type']
             gal = v['groupAsLayer']
-            geometryType = -1
             layer = False
             if gal:
                 ltype = 'layer'
@@ -2331,11 +2342,6 @@ class Lizmap:
             if self.get_qgis_layer_by_id(k):
                 ltype = 'layer'
                 gal = True
-            if ltype == 'layer':
-                layer = self.get_qgis_layer_by_id(k)
-                if layer:
-                    if layer.type() == QgsMapLayer.VectorLayer:  # if it is a vector layer
-                        geometryType = layer.geometryType()
 
             # ~ # add layerOption only for geo layers
             # ~ if geometryType != 4:
@@ -2343,6 +2349,13 @@ class Lizmap:
             layerOptions["id"] = str(k)
             layerOptions["name"] = str(v['name'])
             layerOptions["type"] = ltype
+
+            geometryType = -1
+            if ltype == 'layer':
+                layer = self.get_qgis_layer_by_id(k)
+                if layer:
+                    if layer.type() == QgsMapLayer.VectorLayer:  # if it is a vector layer
+                        geometryType = layer.geometryType()
 
             # geometry type
             if geometryType != -1:
@@ -2451,6 +2464,19 @@ class Lizmap:
                 'popupTemplate'] == '':
                 layerOptions['popupSource'] = 'auto'
 
+            if layerOptions.get("geometryType") in ('point', 'line', 'polygon'):
+                if layerOptions.get('popupSource') == 'lizmap':
+                    QMessageBox.warning(
+                        self.dlg,
+                        tr('Deprecated feature'),
+                        tr(
+                            'The layer "{}" is vector layer and the popup is a "Lizmap HTML". This kind of popup is '
+                            'deprecated for vector layer, you should switch to another kind of popup, for instance to '
+                            'a "QGIS HTML maptip". This will be removed in a future version of Lizmap.'
+                        ).format(layerOptions["name"]),
+                        QMessageBox.Ok
+                    )
+
             # Add external WMS options if needed
             if layer and hasattr(layer, 'providerType') \
                     and 'externalWmsToggle' in layerOptions \
@@ -2486,7 +2512,7 @@ class Lizmap:
         self.clean_project()
 
     def clean_project(self):
-        """Clean a little bit the QGIS project.
+        """Clean a little the QGIS project.
 
         Mainly ghost layers for now.
         """
@@ -2613,7 +2639,7 @@ class Lizmap:
 
         stop = tr("The process is stopping.")
 
-        if self.dlg.table_server.rowCount() < 1:
+        if self.dlg.table_server.rowCount() < 1 and not self.is_dev_version:
             # But by making this condition, we force people to at least have one server in the list,
             # so they can be more aware about versioning later
             QMessageBox.critical(
@@ -2631,7 +2657,7 @@ class Lizmap:
                 ), QMessageBox.Ok)
             return False
 
-        if not self.server_manager.check_admin_login_provided():
+        if not self.server_manager.check_admin_login_provided() and not self.is_dev_version:
             QMessageBox.critical(
                 self.dlg,
                 tr('Missing login on a server'),
@@ -2647,7 +2673,7 @@ class Lizmap:
 
         lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         is_found = self.server_manager.check_lwc_version(lwc_version)
-        if not is_found:
+        if not is_found and not self.is_dev_version:
             QMessageBox.critical(
                 self.dlg,
                 tr('Lizmap Target Version'),
