@@ -750,7 +750,6 @@ class Lizmap:
 
         self.layerList = None
         self.action = None
-        self.isok = None
         self.embeddedGroups = None
         self.myDic = None
         self.help_action = None
@@ -870,7 +869,7 @@ class Lizmap:
 
         # connect Lizmap signals and functions
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
-        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.get_map_options)
+        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_cfg_file)
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
         self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
 
@@ -1118,11 +1117,11 @@ class Lizmap:
         url = '{url}/{lang}/'.format(url=DOC_URL, lang=locale)
         QDesktopServices.openUrl(QUrl(url))
 
-    def log(self, msg, abort=None, textarea=None):
+    @staticmethod
+    def log(msg, abort=None, textarea=None):
         """Log the actions and errors and optionally show them in given text area."""
         if abort:
             sys.stdout = sys.stderr
-            self.isok = 0
         if textarea:
             textarea.append(msg)
 
@@ -1779,13 +1778,12 @@ class Lizmap:
             except Exception:
                 if self.is_dev_version:
                     raise
+                message = tr(
+                    'Errors encountered while reading the last layer tree state. '
+                    'Please re-configure the options in the Layers tab completely'
+                )
                 QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
-                self.log(
-                    tr(
-                        'Errors encountered while reading the last layer tree state. '
-                        'Please re-configure the options in the Layers tab completely'),
-                    abort=True,
-                    textarea=self.dlg.outLog)
+                self.log(message, abort=True, textarea=self.dlg.outLog)
             finally:
                 f.close()
         return json_layers
@@ -2173,7 +2171,7 @@ class Lizmap:
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
 
-    def write_project_config_file(self) -> bool:
+    def write_project_config_file(self):
         """Get general project options and user edited layers options from plugin gui.
         Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
 
@@ -2626,17 +2624,17 @@ class Lizmap:
 
     def ok_button_clicked(self):
         """When the OK button is press, we 'apply' and close the dialog."""
-        flag = self.get_map_options()
-        if not flag:
+        if not self.save_cfg_file():
             return
 
         # Only close the dialog if no error
         self.dlg.close()
 
-    def get_map_options(self) -> bool:
-        """Check the user defined data from gui and save them to both global and project config files"""
-        self.isok = 1
+    def save_cfg_file(self) -> bool:
+        """Save the CFG file.
 
+        Check the user defined data from GUI and save them to both global and project config files.
+        """
         stop = tr("The process is stopping.")
 
         if self.dlg.table_server.rowCount() < 1 and not self.is_dev_version:
@@ -2735,18 +2733,8 @@ class Lizmap:
                 crs_list[0].append('EPSG:3857')
                 self.project.writeEntry('WMSCrsList', '', crs_list[0])
 
-        if not self.isok:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Lizmap Error'),
-                tr('Wrong or missing map parameters: please read the log and correct the printed errors.'),
-                QMessageBox.Ok)
-            return False
-
         # write data in the lizmap json config file
-        flag = self.write_project_config_file()
-        if not flag:
-            return False
+        self.write_project_config_file()
 
         self.log(
             tr('All the map parameters are correctly set'),
@@ -2756,10 +2744,6 @@ class Lizmap:
             '<b>' + tr('Lizmap configuration file has been updated') + '</b>',
             abort=False,
             textarea=self.dlg.outLog)
-
-        # Get and check map scales
-        if not self.isok:
-            return False
 
         self.get_min_max_scales()
         msg = tr('Lizmap configuration file has been updated')
@@ -2781,11 +2765,11 @@ class Lizmap:
                 )
 
         if auto_save and self.dlg.checkbox_ftp_transfer.isChecked():
-            valid, messsage = self.server_ftp.connect(send_files=True)
+            valid, message = self.server_ftp.connect(send_files=True)
             if not valid:
                 self.iface.messageBar().pushMessage(
                     'Lizmap',
-                    messsage,
+                    message,
                     level=Qgis.Critical,
                 )
                 return False
@@ -2801,6 +2785,7 @@ class Lizmap:
             level=Qgis.Success,
             duration=3
         )
+        return True
 
     def check_visibility_crs_3857(self):
         """ Check if we display the warning about scales. """
@@ -2954,11 +2939,5 @@ class Lizmap:
             auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
             self.dlg.checkbox_save_project.setChecked(auto_save)
 
-            self.isok = 1
-
-            result = self.dlg.exec_()
-            # See if OK was pressed
-            if result == 1:
-                QMessageBox.warning(self.dlg, "Debug", "Quit !", QMessageBox.Ok)
-
+            self.dlg.exec_()
             return True
