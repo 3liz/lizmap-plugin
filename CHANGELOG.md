@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.9.7 - 2022-12-07
+
 * The legacy "Lizmap HTML" popup is now deprecated for vector layer. A warning is raised when saving the CFG file.
 * Fix the "OK" button was not closing the dialog.
 
