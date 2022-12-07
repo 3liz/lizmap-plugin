@@ -688,13 +688,6 @@ QListWidget::item::selected {
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
                     <item>
-                     <widget class="QPushButton" name="help_group">
-                      <property name="text">
-                       <string>PushButton</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
                      <widget class="QLineEdit" name="inAcl">
                       <property name="toolTip">
                        <string>List of group id separated by comma. Leave empty if access is not restricted.</string>
