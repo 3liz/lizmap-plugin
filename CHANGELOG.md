@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-* Login and password are the on you used in your web browser, to connect to the administration interface.
+## 3.9.8 - 2022-12-08
+
+* Improve the user interface about the server table.
 * Fix regression when using QGIS Desktop < 3.20 when saving credentials.
 
 ## 3.9.7 - 2022-12-07
