@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Login and password are the on you used in your web browser, to connect to the administration interface.
 * Fix regression when using QGIS Desktop < 3.20 when saving credentials.
 
 ## 3.9.7 - 2022-12-07
@@ -121,7 +122,7 @@
 
 * Add the possibility to add a login and a password for a given Lizmap server URL
 * Server - Add API to fetch server information on the URL http://your.qgis.server/lizmap/server.json.
-  Read the documentation how to setup this API
+  Read the documentation how to set up this API
   https://docs.lizmap.com/3.5/en/install/pre_requirements.html#lizmap-server-plugin
 
 ## 3.6.5 - 2021-12-15
@@ -133,7 +134,7 @@
 
 ## 3.6.4 - 2021-11-15
 
-* Desktop - Add link to the Lizmap IRC channel on libera.chat
+* Desktop - Add link to the Lizmap IRC channel on libera.chat.
 * Desktop - Improve user experience when using the checkbox "Third-party WMS layers"
   by disabling the format option if needed.
 * Desktop - Add `@lizmap_user` and `@lizmap_user_groups` in the project with empty string/list.
@@ -189,7 +190,7 @@
 
 ## 3.5.4 - 2021-07-13
 
-* Fix the visibility used on container in QGIS Form with level upper than 1
+* Fix the visibility used on container in QGIS Form with level upper-more than 1
 * Server - Always log when there is a Python exception
 * Server - Make the plugin compatible Python 3.5
 * Server - Rename variable about conflict
@@ -271,7 +272,7 @@
     * Group visibility
     * Default value
     * Constraint
-    * Form drilldown using Value Relation widget
+    * Form drill-down using Value Relation widget
   * Allow multiple Lizmap atlas
   * Add option for layer visibility according to a Lizmap group
   * Add option to activate the first map theme defined in QGIS
@@ -291,7 +292,7 @@
   * Improvements about the Edition
     * Add options to snap on layers
     * Set tolerance for snapping
-    * Add option to allow geometryless feature
+    * Add option to allow geometry-less feature
   * Access rights
     * Add option to filter by user for edition only
     * Add option to hide a layer for some groups
@@ -355,7 +356,7 @@
 * Add missing icons in dataviz panel
 * Fix default color when editing a row
 * Add feature ID in tabs when using drag&drop tooltip
-* Fix inverted HStore in valuemap when using drag&drop tooltip
+* Fix inverted HStore in **Value map** when using drag&drop tooltip
 * Allow double click in table for editing
 
 ## 3.2.9 - 2020-03-03
@@ -427,7 +428,7 @@
 * Add apply and close button
 * Move back embedded layer and group from another project
 * Add icon for add/remove button
-* Add checkable fields input in forms
+* Add a check-able field input in forms
 * Add autosave project option
 * Fix add new layer without fields
 * Fix typo
@@ -486,7 +487,7 @@
 * [FEATURE] Create HTML tooltip from drag&drop form
 * [Bugfix] Fix QGIS widgets paths
 * Improve the HTML tooltip form: get the represented value
-* Use QGIS native maplayer combobox in panels (except base layer)
+* Use QGIS native map layer combobox in panels (except base layer)
 * Hide by default the external Lizmap project panel
 * Code refactoring
 * Update locales
@@ -501,8 +502,8 @@
 
 * Update Czech, Finnish, Hungarian, Spanish and Italian locales
 * [Bugfix] dataviz plot aggregation localize list
-* [Bugfix] support wms urls thet have parameters with no =
-* [Bugfix] fix #122 with reversed min and maxscales
+* [Bugfix] support wms urls when they have parameters with no =
+* [Bugfix] fix #122 with reversed min and max scales
 
 ## 3.0.1
 
@@ -526,7 +527,7 @@
 
 * Do not save project from lizmap plugin but let the user do it
 * Fix icons in plugin manager, remove unused imports
-* UI - fix issue with qgscollapsiblegroupbox import
+* UI - fix issue with QgsCollapsibleGroupBox import
 * Update locales
 * Change of default mode of popup source to 'auto'
 * Dataviz - add of a button in Dataviz who permit you to hide parent plot
@@ -541,13 +542,13 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * [FEATURE] Popup - Allow to use popup in bottom dock or in right dock
 * [BUGFIX] Fix bug when the layer scale is not set
 * [BUGFIX] Support MySQL Layer
-* [FEATURE] Dataviz - Add a field to enter a HTML template for plot positionning
+* [FEATURE] Dataviz - Add a field to enter an HTML template for plot positioning
 * [BUGFIX] Python - replace modules import *
 * [FEATURE] New Atlas tool to navigate through a layer features
 * [FEATURE] Configure the amount of features per layer displayed in popup
 * [BUGFIX] Allow layers with datasource starting with HTTP
 * Update locales
-* [BUGFIX] Baselayers - fix get startup baselayer from project #56
+* [BUGFIX] Base-layers - fix get startup base-layer from project #56
 
 
 
@@ -559,15 +560,15 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 This version add new features which are only usable with upcoming Lizmap Web Client 3.1
 
-* Interface - Add toolips and blue background for new features
-* Plugin - Improve makefile for transup and transcompile
+* Interface - Add tooltips and blue background for new features
+* Plugin - Improve makefile for `transup` and `transcompile`
 * Attribute table - Option to fetch data only within map extent && layer scale visibility
 * Tools layer limit linked to combobox size
-* Map - fix bug with startup baselayer for accentuated layers/groups
-* UI - fix issue with qgscollapsiblegroupbox import
+* Map - fix bug with startup base-layer for accentuated layers/groups
+* UI - fix issue with QgsCollapsibleGroupBox import
 * Editing - Add option to pass list of groups to restrict editing for each layer
 * Locales - Add Euskara and Swedish, update other languages
-* Add Stamen Toner external baselayer (and remove Maquest and OSM CycleMap)
+* Add Stamen Toner external base-layer (and remove Mapquest and OSM CycleMap)
 * Popup - Option to display related children under each parent object
 * Attribute table - Add an option to hide the layer in the list (first tab of attribute table tool)
 * Add an option to restrict access to project for given groups
@@ -583,7 +584,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 * Add and update locales: English, Spanish, German, French, Russian, Polish, Italian, Portuguese, Greek
 * Menu - Change menu label from LizMap to Lizmap
-* Baselayers - Get the startup baselayer from configuration #56
+* Base-layers - Get the startup base-layer from configuration #56
 * Layers - Enable WMS checkbox only for WMS layers
 * Remove option to transform groups as legend blocks #57
 
@@ -591,11 +592,11 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 This version add new features which are only usable with upcoming Lizmap Web Client 3.0.
 
-  * Baselayers - Choose active baselayer at map startup
+  * Base-layers - Choose active base-layer at map startup
   * Map - Add options to configure tolerances for popup activation in pixels
-  * Layers - New option to choose popup source: auto, lizmap advanced or QGIS maptip
+  * Layers - New option to choose popup source: auto, lizmap advanced or QGIS map-tip
   * Map - New map option to choose info popup container: dock, mini-dock or map
-  * Tools - Allow virtual fields in layer fields comboboxes
+  * Tools - Allow virtual fields in layer fields combo-boxes
 
 ## 2.0.0
 
@@ -623,24 +624,24 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 * [BUGFIX] #22 Ask the user to deactivate Layer name capitalization in QGIS option
 * Improve management of layers option tables such as "Locate by Layers" (remove layers from table if not in the project anymore or if removed during work session, rename layer in the table when renamed from the project)
-* Minor GUI modifications in the Layers tab to improve readibility
+* Minor GUI modifications in the Layers tab to improve readability
 * Add minLength option for Locate by layer
 
 ## 1.9.8
 
 * Speed up lizmap start (was bad since embedded layers feature)
 * New feature - hide layer in Legend but displayed in map
-* External baselayer - Add Osm Cyclemap
-* Lizmap external baselayers - add image format option
+* External base-layer - Add OsmCycleMap
+* Lizmap external base-layers - add image format option
 
 ## 1.9.7
 
-* Baselayers - option to add an empty baselayer with project background color - #25
+* Base-layers - option to add an empty base-layer with project background color - #25
 * Change default scales list in Map tab (add 10k and 50k)
 * Automatic configuration for some Project parameters : title, advertised extent, EPSG:3857 if needed
 * Italian translation - Build qm file
 * IT translation
-* Adress Search - Add Google and IGN (france) API
+* Address Search - Add Google and IGN (france) API
 * Option to get tiles directly from WMS server for external WMS layers
 * Manage embedded groups and layers - allow to configure lizmap repository
 * Layers - add option to call directly external WMS layers
@@ -653,9 +654,9 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 * Tools - Add "time manager" optional tool to animate vector layers based on date/time attribute
 * Map - add option to hide the project in LizmapWebClient
-* Baselayers - option to add external Lizmap project layers as baselayers
+* base-layers - option to add external Lizmap project layers as base-layers
 * Table widgets - refactor code to retrieve options from json config
-* Baselayers - Add OpenCycleMap, IGN (plan, aerial, scans), Bing Maps
+* base-layers - Add OpenCycleMap, IGN (plan, aerial, scans), Bing Maps
 
 ## 1.9.5.1
 
@@ -674,7 +675,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 ## 1.9.4
 
-* Remove python module simplejson dependancy (replaced by module json)
+* Remove python module simplejson dependency (replaced by module json)
 * New tool : filter layer data based on authenticated user
 
 ## 1.9.3
@@ -713,9 +714,10 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 ## 1.7.2
 
-* Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder. Can be used to have a Data folder at the same level of the repositories.
-* Bug Fix: Fix the toggled option for layers wich was always on
-* Bug Fix: Winscp - a password can be empty if the winScp session field is filled.
+* Improvement: Allow the user to use layers from a parent folder or a brother folder of the root project folder.
+  Can be used to have a Data folder at the same level of the repositories.
+* Bug Fix: Fix the toggled option for layers which was always on
+* Bug Fix: Win-scp - a password can be empty if the winScp session field is filled.
 
 ## 1.7.1
 
@@ -728,15 +730,15 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 * New feature: Popup - add a checkbox to enable/disable popup for each layer
 * New feature: Ability to write templates for popup
 * Bug fix:  Project properties - checks the BBOX is really set in the OWS tab.
-* Bug fix: FTP windows sync - protect the winscp path with double quote when running the sync
+* Bug fix: FTP windows sync - protect the win-scp path with double quote when running the sync
 
 ## 1.6.1
 
-* Bug fix : correctlu use layer.setAbstract instead of setTitle to set back the abstract
+* Bug fix : correctly use `layer.setAbstract` instead of setTitle to set back the abstract
 
 ## 1.6.0
 
-* New : addition of more cache parameters : cache expiration and metatile
+* New : addition of more cache parameters : cache expiration and meta tile
 * Enhancement : Heavy refactoring of the code ("data driven") to easy addition of new layers properties.
 
 ## 1.5.0
@@ -765,7 +767,7 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 ## 1.2.0
 
-* New : support for plugin internationalization : english and french languages available
+* New : support for plugin internationalization : english and French languages available
 * Modify : integrate Lizmap in the Qgis Web menu
 * Modify : remove warning dialog when closing Lizmap window and auto-save the configuration
 * Modify : move help and about dialogs to the plugin Menu
@@ -780,6 +782,6 @@ This version add new features which are only usable with upcoming Lizmap Web Cli
 
 ## 1.1
 
-* addition of Google and OpenStreetMap public baselayers option in the "Map" tab
+* addition of Google and OpenStreetMap public base-layers option in the "Map" tab
 * ignore non-geometric vector layers
 * only one lizmap plugin window available at a time
