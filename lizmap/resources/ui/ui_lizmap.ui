@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>800</height>
+    <width>1200</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -403,6 +403,7 @@ QListWidget::item::selected {
             <widget class="QLabel" name="label">
              <property name="font">
               <font>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -660,8 +661,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>723</width>
-                <height>1329</height>
+                <width>815</width>
+                <height>1323</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -782,6 +783,7 @@ QListWidget::item::selected {
                      <widget class="QLabel" name="label_68">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1459,7 +1461,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        <x>0</x>
                        <y>0</y>
                        <width>375</width>
-                       <height>1009</height>
+                       <height>1130</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1915,6 +1917,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <widget class="QLabel" name="label_56">
                              <property name="font">
                               <font>
+                               <weight>50</weight>
                                <bold>false</bold>
                               </font>
                              </property>
@@ -2111,7 +2114,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>577</width>
-                <height>885</height>
+                <height>879</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2137,6 +2140,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_32">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2202,6 +2206,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2267,6 +2272,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2353,6 +2359,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_34">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2432,6 +2439,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <widget class="QLabel" name="label_35">
                       <property name="font">
                        <font>
+                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -2813,7 +2821,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>450</width>
-                <height>321</height>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2919,7 +2927,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>497</width>
-                <height>375</height>
+                <height>373</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3044,7 +3052,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>450</width>
-                <height>284</height>
+                <height>283</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3154,7 +3162,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>450</width>
-                <height>320</height>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3245,7 +3253,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>450</width>
-                <height>302</height>
+                <height>300</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -3358,7 +3366,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>302</width>
-                <height>1002</height>
+                <height>989</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3554,7 +3562,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>618</width>
-                <height>477</height>
+                <height>474</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3743,7 +3751,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>450</width>
-                <height>441</height>
+                <height>439</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3926,7 +3934,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>450</width>
-                <height>505</height>
+                <height>499</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
