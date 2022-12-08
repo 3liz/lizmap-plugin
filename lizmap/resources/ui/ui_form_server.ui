@@ -55,6 +55,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Login and password are the ones you are using in your web browser, to connect to the administration interface.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QWidget" name="widget_warning_password" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -170,6 +180,12 @@
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>url</tabstop>
+  <tabstop>name</tabstop>
+  <tabstop>login</tabstop>
+  <tabstop>password</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
