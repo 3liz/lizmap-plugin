@@ -4,7 +4,7 @@ __email__ = 'info@3liz.org'
 
 import logging
 
-from qgis.core import QgsApplication, QgsAuthMethodConfig
+from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QPixmap
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
@@ -146,12 +146,16 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         if self.auth_id:
             # Edit
             config.setId(self.auth_id)
-            result = self.auth_manager.storeAuthenticationConfig(config, True)
+            if Qgis.QGIS_VERSION_INT < 32000:
+                self.auth_manager.removeAuthenticationConfig(self.auth_id)
+                result = self.auth_manager.storeAuthenticationConfig(config)
+            else:
+                result = self.auth_manager.storeAuthenticationConfig(config, True)
         else:
             # Creation
             self.auth_id = self.auth_manager.uniqueConfigId()
             config.setId(self.auth_id)
-            result = self.auth_manager.storeAuthenticationConfig(config, False)
+            result = self.auth_manager.storeAuthenticationConfig(config)
 
         if result[0]:
             LOGGER.info(
