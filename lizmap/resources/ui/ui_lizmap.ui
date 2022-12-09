@@ -1283,7 +1283,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item row="6" column="1">
                    <widget class="QLabel" name="label_76">
                     <property name="text">
-                     <string notr="true">The checkbox about automatic saving of the project must be checked as well, on the right.</string>
+                     <string notr="true">The checkbox about automatic saving of the project must be checked as well, on the left.</string>
                     </property>
                    </widget>
                   </item>
