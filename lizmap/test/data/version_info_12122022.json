@@ -1,0 +1,72 @@
+[
+    {
+        "branch": "3.7",
+        "first_release_date": "",
+        "latest_release_date": "",
+        "latest_release_version": "3.7.0",
+        "maintained": false,
+        "qgis_max_version_recommended": 39900,
+        "qgis_min_version_recommended": 31000,
+        "status": "dev"
+    },
+    {
+        "branch": "3.6",
+        "first_release_date": "2022-12-09",
+        "latest_release_date": "2022-12-09",
+        "latest_release_version": "3.6.0",
+        "maintained": true,
+        "qgis_max_version_recommended": 39900,
+        "qgis_min_version_recommended": 31000,
+        "status": "stable"
+    },
+    {
+        "branch": "3.5",
+        "first_release_date": "2021-12-15",
+        "latest_release_date": "2022-12-08",
+        "latest_release_version": "3.5.8",
+        "maintained": true,
+        "qgis_max_version_recommended": 39900,
+        "qgis_min_version_recommended": 31000,
+        "status": "stable"
+    },
+    {
+        "branch": "3.4",
+        "first_release_date": "2020-12-18",
+        "latest_release_date": "2022-10-18",
+        "latest_release_version": "3.4.14",
+        "maintained": false,
+        "qgis_max_version_recommended": 39900,
+        "qgis_min_version_recommended": 30000,
+        "status": "retired"
+    },
+    {
+        "branch": "3.3",
+        "first_release_date": "2019-09-02",
+        "latest_release_date": "2021-06-17",
+        "latest_release_version": "3.3.16",
+        "maintained": false,
+        "qgis_max_version_recommended": 31500,
+        "qgis_min_version_recommended": 20000,
+        "status": "retired"
+    },
+    {
+        "branch": "3.2",
+        "first_release_date": "2018-11-19",
+        "latest_release_date": "2020-12-07",
+        "latest_release_version": "3.2.18",
+        "maintained": false,
+        "qgis_max_version_recommended": 21900,
+        "qgis_min_version_recommended": 20000,
+        "status": "retired"
+    },
+    {
+        "branch": "3.1",
+        "first_release_date": "2017-03-07",
+        "latest_release_date": "2019-05-19",
+        "latest_release_version": "3.1.21",
+        "maintained": false,
+        "qgis_max_version_recommended": 21900,
+        "qgis_min_version_recommended": 20000,
+        "status": "retired"
+    }
+]
