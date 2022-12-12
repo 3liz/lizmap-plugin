@@ -32,6 +32,7 @@ class BaseEditionDialog(QDialog):
         super().__init__(parent)
         self.config = None
         self.unicity = unicity
+        self.server_manager = None
         self.lwc_versions = OrderedDict()
         self.lwc_versions[LwcVersions.Lizmap_3_1] = []
         self.lwc_versions[LwcVersions.Lizmap_3_2] = []

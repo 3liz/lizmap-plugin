@@ -112,15 +112,26 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="allowed_groups"/>
-     </item>
      <item row="6" column="0">
       <widget class="QLabel" name="label_allowed_groups">
        <property name="text">
         <string>Allowed groups</string>
        </property>
       </widget>
+     </item>
+     <item row="6" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="allowed_groups"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="button_wizard_group">
+         <property name="text">
+          <string notr="true">WIZARD</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_provider">

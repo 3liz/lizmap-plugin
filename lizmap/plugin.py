@@ -70,6 +70,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtWidgets import QLineEdit
 
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
@@ -157,6 +158,7 @@ from lizmap.tools import (
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
+from lizmap.wizard_group_dialog import WizardGroupDialog
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
@@ -274,9 +276,9 @@ class Lizmap:
                 self.dlg.combo_legend_option.findData('expand_at_startup')
             ),
         ]
-        self.lizmap_server_plugin = [
-            self.dlg.label_group_visibility,
-            self.dlg.list_group_visiblity,
+        self.lwc_versions[LwcVersions.Lizmap_3_7] = [
+            self.dlg.button_wizard_group_visibility_project,
+            self.dlg.button_wizard_group_visibility_layer,
         ]
 
         self.populate_lwc_combo()
@@ -878,6 +880,18 @@ class Lizmap:
         # clear log button clicked
         self.dlg.btClearlog.clicked.connect(self.clear_log)
 
+        # Group wizard
+        icon = QIcon(resources_path('icons', 'user_group.svg'))
+        self.dlg.button_wizard_group_visibility_project.setText('')
+        self.dlg.button_wizard_group_visibility_layer.setText('')
+        self.dlg.button_wizard_group_visibility_project.setIcon(icon)
+        self.dlg.button_wizard_group_visibility_layer.setIcon(icon)
+        self.dlg.button_wizard_group_visibility_project.clicked.connect(self.open_wizard_group_project)
+        self.dlg.button_wizard_group_visibility_layer.clicked.connect(self.open_wizard_group_layer)
+        tooltip = tr("Open the group wizard")
+        self.dlg.button_wizard_group_visibility_project.setToolTip(tooltip)
+        self.dlg.button_wizard_group_visibility_layer.setToolTip(tooltip)
+
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup_lizmap)
         self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
@@ -978,7 +992,8 @@ class Lizmap:
                     item['removeButton'],
                     item['editButton'],
                     item.get('upButton'),
-                    item.get('downButton')
+                    item.get('downButton'),
+                    self.server_manager,
                 )
 
                 control = item.get('upButton')
@@ -1106,6 +1121,67 @@ class Lizmap:
             self.dlg.widget_deprecated_lizmap_popup.setVisible(isinstance(layer, QgsVectorLayer))
         else:
             self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
+
+    def open_wizard_group_layer(self):
+        """ Open the group wizard for the layer visibility. """
+        line_edit = self.dlg.list_group_visiblity
+        layer = self._current_selected_layer()
+        if not layer:
+            return
+        helper = tr("Setting groups for the layer visibility '{}'".format(layer.name()))
+        self._open_wizard_group(line_edit, helper)
+
+    def open_wizard_group_project(self):
+        """ Open the group wizard for the project visibility. """
+        line_edit = self.dlg.inAcl
+        helper = tr("Setting groups for the project visibility.")
+        self._open_wizard_group(line_edit, helper)
+
+    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
+        """ Open the group wizard and set the output in the line edit. """
+        url = self.dlg.server_combo.currentData(Qt.UserRole + 1)
+        if not url:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Server URL Error'),
+                tr("You must have selected a server before opening the wizard, on the left panel."),
+                QMessageBox.Ok
+            )
+            return None
+
+        json_metadata = self.server_manager.metadata_for_url(url)
+        if not json_metadata:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Server URL Error'),
+                tr("Check your server information table about the current selected server.")
+                + "<br><br>" + url,
+                QMessageBox.Ok
+            )
+            return None
+
+        acl = json_metadata.get('acl')
+        if not acl:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Upgrade your Lizmap instance'),
+                tr(
+                    "Your current Lizmap instance, running version {} is not providing the needed information. "
+                    "You should upgrade your Lizmap instance.").format(json_metadata["info"]["version"]),
+                QMessageBox.Ok
+            )
+            return None
+
+        current_acl = line_edit.text()
+        wizard_dialog = WizardGroupDialog(helper, current_acl, acl['groups'])
+        if not wizard_dialog.exec_():
+            return None
+
+        text = wizard_dialog.preview.text()
+        if not text:
+            return
+
+        line_edit.setText(text)
 
     def show_help(self):
         """Opens the html help file content with default browser."""
