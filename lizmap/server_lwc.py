@@ -393,6 +393,9 @@ class ServerManager:
     @staticmethod
     def url_metadata(base_url) -> str:
         """ Return the URL to fetch metadata from LWC server. """
+        if not base_url.endswith('/'):
+            base_url += '/'
+
         url = '{}index.php/view/app/metadata'.format(base_url)
         return url
 
@@ -401,9 +404,6 @@ class ServerManager:
         self.display_action(row, False, tr('Fetching…'))
         self.fetchers[row] = QgsNetworkContentFetcher()
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
-
-        if not url.endswith('/'):
-            url += '/'
 
         if auth_id:
             QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)

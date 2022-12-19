@@ -2,11 +2,21 @@ __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import json
 import logging
 
-from qgis.core import Qgis, QgsApplication, QgsAuthMethodConfig
+from base64 import b64encode
+from typing import Tuple
+
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsAuthMethodConfig,
+    QgsBlockingNetworkRequest,
+)
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QPixmap
+from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -84,6 +94,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
     @classmethod
     def automatic_name(cls, name: str) -> str:
         """ Transform the URL to make a shorter alias. """
+        name = name.strip()
         name = name.replace("https://", "")
         name = name.replace("http://", "")
 
@@ -136,6 +147,17 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         login = self.current_login()
         password = self.current_password()
 
+        result, message = self.request_check_url(url, login, password)
+        if not result:
+            QMessageBox.critical(
+                self.parent,
+                tr('Lizmap Web Client error'),
+                tr("It's not possible to fetch the metadata from this Lizmap instance.")
+                + "<br><br>"
+                + message,
+                QMessageBox.Ok)
+            return
+
         config = QgsAuthMethodConfig()
         config.setUri(url)
         config.setName(login)
@@ -157,10 +179,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             config.setId(self.auth_id)
             result = self.auth_manager.storeAuthenticationConfig(config)
 
-        if result[0]:
-            LOGGER.info(
-                "Saving configuration with login/password ID {} = OK".format(self.auth_id))
-        else:
+        if not result[0]:
             LOGGER.warning(
                 "Saving configuration with login/password ID {} = {}".format(self.auth_id, result[1]))
             QMessageBox.critical(
@@ -169,6 +188,10 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
                 tr("We couldn't save the login/password into the QGIS authentication database : ")
                 + result[1],
                 QMessageBox.Ok)
+            return
+
+        LOGGER.info(
+            "Saving configuration with login/password ID {} = OK".format(self.auth_id))
 
         self.done(QDialog.Accepted)
 
@@ -191,6 +214,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             return False
 
         # Check for existing server in the JSON
+        url = url.strip()
         url = url.rstrip('/')
         for server in self.existing:
             existing_server = server.get('url').rstrip('/')
@@ -212,6 +236,60 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
         self.error.setVisible(False)
         return True
+
+    @staticmethod
+    def request_check_url(url: str, login: str, password: str) -> Tuple[bool, str]:
+        """ Check the URL and given login. """
+
+        if not url.endswith('/'):
+            url += '/'
+
+        url = '{}index.php/view/app/metadata'.format(url)
+
+        net_req = QNetworkRequest()
+        net_req.setUrl(QUrl(url))
+        token = b64encode(f"{login}:{password}".encode('utf-8'))
+        net_req.setRawHeader(b"Authorization", b"Basic %s" % token)
+        request = QgsBlockingNetworkRequest()
+        error = request.get(net_req)
+        if error == QgsBlockingNetworkRequest.NetworkError:
+            return False, tr("Network error")
+        elif error == QgsBlockingNetworkRequest.ServerExceptionError:
+            return False, tr("Server exception error")
+        elif error == QgsBlockingNetworkRequest.TimeoutError:
+            return False, tr("Timeout error")
+        elif error != QgsBlockingNetworkRequest.NoError:
+            return False, tr("Unknown error")
+
+        response = request.reply().content()
+        try:
+            content = json.loads(response.data().decode('utf-8'))
+        except json.JSONDecodeError:
+            return False, tr('Not a JSON document, is-it the correct URL ?')
+
+        info = content.get('info')
+        if not info:
+            return False, tr('No "info" in the JSON document')
+
+        lizmap_version = info.get('version')
+        if lizmap_version.startswith(('3.1', '3.2', '3.3', '3.4')):
+            # Wait for EOL QGIS 3.10 because linked to LWC 3.5
+            return True, ''
+
+        # For other versions, we continue to see the access
+        qgis_info = content.get('qgis_server_info')
+        if not qgis_info:
+            return False, 'Missing QGIS server info in the response, is-it the correct URL ?'
+
+        error = qgis_info.get('error')
+        if error:
+            if error == "NO_ACCESS":
+                message = tr("The given user does not have the right <b>Lizmap Admin access</b>'.")
+                message += "<br><br>"
+                message += tr('Right') + " : lizmap.admin.access"
+                return False, message
+
+        return True, ''
 
     @staticmethod
     def click_help():
