@@ -38,7 +38,7 @@ class TableManager:
 
     def __init__(
             self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
-            up_button, down_button):
+            up_button, down_button, server_manager):
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
@@ -47,6 +47,8 @@ class TableManager:
         self.edit_button = edit_button
         self.up_button = up_button
         self.down_button = down_button
+        # Hack to get the JSON metadata when editing a row
+        self.server_manager = server_manager
 
         self.lwc_versions = list()
         self.lwc_versions.append(LwcVersions.Lizmap_3_1)
@@ -164,6 +166,7 @@ class TableManager:
         row = self.table.rowCount()
 
         dialog = self.edition(self.parent, self._primary_keys())
+        dialog.server_manager = self.server_manager
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
@@ -186,6 +189,7 @@ class TableManager:
             data[key] = value
 
         dialog = self.edition()
+        dialog.server_manager = self.server_manager
         dialog.load_form(data)
         result = dialog.exec_()
         if result == QDialog.Accepted:

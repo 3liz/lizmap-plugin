@@ -4,15 +4,18 @@ from qgis.core import (
     QgsMapLayerProxyModel,
     QgsProject,
     QgsProviderRegistry,
+    QgsSettings,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QMessageBox
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.edition import EditionDefinitions, layer_provider
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.wizard_group_dialog import WizardGroupDialog
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -66,6 +69,13 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             self.group_box_snapping
         ]
 
+        # Wizard ACL group
+        icon = QIcon(resources_path('icons', 'user_group.svg'))
+        self.button_wizard_group.setText('')
+        self.button_wizard_group.setIcon(icon)
+        self.button_wizard_group.clicked.connect(self.open_wizard_group)
+        self.button_wizard_group.setToolTip(tr("Open the group wizard"))
+
         self.setup_ui()
         self.check_layer_wfs()
 
@@ -85,6 +95,59 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
     def layer_changed(self):
         layer = self.layer.currentLayer()
         self.provider.setText(layer_provider(layer))
+
+    def open_wizard_group(self):
+        """ When the user clicks on the group wizard. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            return
+
+        helper = tr("Setting groups for the layer editing capabilities '{}'".format(layer.name()))
+
+        # Duplicated in plugin.py
+        url = QgsSettings().value('lizmap/instance_target_url', str)
+        if not url:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Missing server'),
+                tr('You first need to select a server in the left panel.'),
+                QMessageBox.Ok
+            )
+            return
+
+        json_metadata = self.server_manager.metadata_for_url(url)
+        if not json_metadata:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Server URL Error'),
+                tr("Check your server information table about the current selected server.")
+                + "<br><br>" + url,
+                QMessageBox.Ok
+            )
+            return None
+
+        acl = json_metadata.get('acl')
+        if not acl:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Upgrade your Lizmap instance'),
+                tr(
+                    "Your current Lizmap instance, running version {} is not providing the needed information. "
+                    "You should upgrade your Lizmap instance.").format(json_metadata["info"]["version"]),
+                QMessageBox.Ok
+            )
+            return None
+        # End of duplicated
+
+        wizard_dialog = WizardGroupDialog(helper, self.allowed_groups.text(), acl['groups'])
+        if not wizard_dialog.exec_():
+            return
+
+        text = wizard_dialog.preview.text()
+        if not text:
+            return
+
+        self.allowed_groups.setText(text)
 
     def validate(self) -> str:
         layer = self.layer.currentLayer()

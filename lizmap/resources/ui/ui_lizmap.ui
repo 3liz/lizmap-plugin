@@ -235,7 +235,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -680,14 +680,14 @@ QListWidget::item::selected {
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLabel" name="label_54">
-                    <property name="text">
-                     <string>Restrict access to the following groups</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
+                    <item>
+                     <widget class="QLabel" name="label_54">
+                      <property name="text">
+                       <string>Restrict access to the following groups</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <widget class="QLineEdit" name="inAcl">
                       <property name="toolTip">
@@ -695,6 +695,13 @@ QListWidget::item::selected {
                       </property>
                       <property name="styleSheet">
                        <string notr="true"/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="button_wizard_group_visibility_project">
+                      <property name="text">
+                       <string>WIZARD</string>
                       </property>
                      </widget>
                     </item>
@@ -1632,6 +1639,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            </item>
                            <item>
                             <widget class="QLineEdit" name="list_group_visiblity"/>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="button_wizard_group_visibility_layer">
+                             <property name="text">
+                              <string notr="true">WIZARD</string>
+                             </property>
+                            </widget>
                            </item>
                           </layout>
                          </item>

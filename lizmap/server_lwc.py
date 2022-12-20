@@ -216,6 +216,14 @@ class ServerManager:
 
         return True
 
+    def metadata_for_url(self, server_url: str) -> Optional[dict]:
+        """ Retrieve metadata from a URL. """
+        for row in range(self.table.rowCount()):
+            if self.table.item(row, TableCell.Url.value).data(Qt.DisplayRole) == server_url:
+                return self.table.item(row, TableCell.LizmapVersion.value).data(Qt.UserRole + 1)
+
+        return None
+
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
         existing = self.existing_json_server_list()
@@ -497,10 +505,7 @@ class ServerManager:
                 return
 
         lizmap_cell.setText(lizmap_version)
-
-        # Set Lizmap version in the server combo
-        index = self.server_combo.findData(url, Qt.UserRole + 1)
-        self.server_combo.setItemData(index, lizmap_version, Qt.UserRole + 2)
+        lizmap_cell.setData(Qt.UserRole + 1, content)
 
         # Markdown
         markdown = '**Versions :**\n\n'
@@ -527,10 +532,6 @@ class ServerManager:
             qgis_metadata = qgis_server_info.get('metadata')
             qgis_version = qgis_metadata.get('version')
             qgis_cell.setText(qgis_version)
-
-            # Set QGIS version in the server combo
-            index = self.server_combo.findData(url, Qt.UserRole + 1)
-            self.server_combo.setItemData(index, qgis_version, Qt.UserRole + 3)
 
             plugins = qgis_server_info.get('plugins')
             # plugins = {'atlasprint': {'version': '3.2.2'}}

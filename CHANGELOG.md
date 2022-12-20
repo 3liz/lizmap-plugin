@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add a new wizard helper for setting Lizmap Web Client groups in the plugin
+
 ## 3.9.8 - 2022-12-08
 
 * Improve the user interface about the server table.
