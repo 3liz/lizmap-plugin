@@ -1,0 +1,24 @@
+<head>
+
+    <script src='{plotly}'></script>
+    <script src='{locale}'></script>
+    <script type="text/javascript">
+    function plotLizmap() {{
+    Plotly.newPlot(
+            "lizmap-plot",
+            {plot_data},
+            {plot_layout},
+            {plot_config}
+        );
+    }}
+    window.addEventListener('load', function () {{
+      plotLizmap();
+    }});
+  </script>
+</head>
+
+    <body>
+      <div id='lizmap-plot' style="width:100%; height: 100%;">
+        <!-- Plotly chart will be drawn inside this DIV -->
+      </div>
+    </body>

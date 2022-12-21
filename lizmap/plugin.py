@@ -124,6 +124,7 @@ from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.table_manager import TableManager
+from lizmap.forms.table_manager_dataviz import TableManagerDataviz
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
@@ -286,6 +287,7 @@ class Lizmap:
             ),
             self.dlg.button_wizard_group_visibility_project,
             self.dlg.button_wizard_group_visibility_layer,
+            self.dlg.label_helper_dataviz,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
         ]
@@ -628,6 +630,7 @@ class Lizmap:
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
             self.dlg.server_combo,
+            self.refresh_combo_repositories,
         )
 
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
@@ -762,7 +765,9 @@ class Lizmap:
             if index:
                 self.dlg.server_combo.setCurrentIndex(index)
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
+        self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
+        self.refresh_combo_repositories()
 
         self.layerList = None
         self.action = None
@@ -795,8 +800,73 @@ class Lizmap:
 
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
+        current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
+        current_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        QgsSettings().setValue('lizmap/instance_target_url', current_url)
+        QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
+        self.refresh_combo_repositories()
+
+    def target_repository_changed(self):
+        """ When the repository destination has changed in the selector. """
+        current = self.dlg.repository_combo.currentData()
+        QgsSettings().setValue('lizmap/instance_target_repository', current)
+
+    def refresh_combo_repositories(self):
+        """ Refresh the combobox about repositories. """
+        self.dlg.label_filtered_plot.setVisible(False)
+        error = tr(
+            "Your current version of the selected server doesn't support the plot preview. "
+            "You must upgrade at least to Lizmap Web Client "
+            "<a href=\"https://github.com/3liz/lizmap-web-client/releases/tag/3.6.1\">3.6.1</a>."
+        )
+        self.dlg.dataviz_error_message.setText(error)
+
+        self.dlg.repository_combo.clear()
+
         current = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
-        QgsSettings().setValue('lizmap/instance_target_url', current)
+        if not current:
+            return
+
+        if not current.endswith('/'):
+            current += '/'
+
+        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        if not metadata:
+            self.dlg.repository_combo.setVisible(False)
+            self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
+            return
+
+        repositories = metadata.get("repositories")
+        if not repositories:
+            self.dlg.repository_combo.setVisible(False)
+            self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
+            return
+
+        self.dlg.repository_combo.setVisible(True)
+        self.dlg.stacked_dataviz_preview.setCurrentIndex(0)
+
+        for repository_id, repository_data in repositories.items():
+            self.dlg.repository_combo.addItem(repository_data['label'], repository_id)
+            index = self.dlg.repository_combo.findData(repository_id)
+            self.dlg.repository_combo.setItemData(index, repository_id, Qt.ToolTipRole)
+
+        # Restore the previous value if possible
+        previous = QgsSettings().value('lizmap/instance_target_repository')
+        if not previous:
+            return
+
+        index = self.dlg.repository_combo.findData(previous)
+        if not index:
+            return
+
+        self.dlg.repository_combo.setCurrentIndex(index)
+
+    def current_repository(self) -> str:
+        """ Fetch the current directory on the server if available. """
+        if not self.dlg.repository_combo.isVisible():
+            return ''
+
+        return self.dlg.repository_combo.currentData()
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
@@ -994,17 +1064,29 @@ class Lizmap:
 
                 item['tableWidget'].horizontalHeader().setStretchLastSection(True)
 
-                item['manager'] = TableManager(
-                    self.dlg,
-                    definition,
-                    dialog,
-                    item['tableWidget'],
-                    item['removeButton'],
-                    item['editButton'],
-                    item.get('upButton'),
-                    item.get('downButton'),
-                    self.server_manager,
-                )
+                if key == 'datavizLayers':
+                    item['manager'] = TableManagerDataviz(
+                        self.dlg,
+                        definition,
+                        dialog,
+                        item['tableWidget'],
+                        item['editButton'],
+                        item.get('upButton'),
+                        item.get('downButton'),
+                        self.server_manager,
+                    )
+                else:
+                    item['manager'] = TableManager(
+                        self.dlg,
+                        definition,
+                        dialog,
+                        item['tableWidget'],
+                        item['removeButton'],
+                        item['editButton'],
+                        item.get('upButton'),
+                        item.get('downButton'),
+                        self.server_manager,
+                    )
 
                 control = item.get('upButton')
                 if control:
@@ -1159,7 +1241,7 @@ class Lizmap:
             )
             return None
 
-        json_metadata = self.server_manager.metadata_for_url(url)
+        json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not json_metadata:
             QMessageBox.critical(
                 self.dlg,
@@ -2327,6 +2409,7 @@ class Lizmap:
             'lizmap_plugin_version': int(format_version_integer(current_version)),
             'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version.value))),
             'lizmap_web_client_target_status': target_status.value,
+            'instance_target_repository': self.current_repository(),
             'instance_target_url': self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         }
         if valid is not None:

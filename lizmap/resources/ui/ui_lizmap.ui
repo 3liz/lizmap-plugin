@@ -198,6 +198,9 @@ QListWidget::item::selected {
        <item>
         <widget class="QComboBox" name="server_combo"/>
        </item>
+       <item>
+        <widget class="QComboBox" name="repository_combo"/>
+       </item>
       </layout>
      </widget>
      <widget class="QFrame" name="mOptionsFrame">
@@ -3698,6 +3701,81 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </layout>
                    </item>
                    <item>
+                    <widget class="QLabel" name="label_helper_dataviz">
+                     <property name="text">
+                      <string notr="true">SET IN PYTHON, helper</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QStackedWidget" name="stacked_dataviz_preview">
+                     <property name="currentIndex">
+                      <number>1</number>
+                     </property>
+                     <widget class="QWidget" name="html_content">
+                      <layout class="QVBoxLayout" name="verticalLayout_52">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="label_filtered_plot">
+                         <property name="text">
+                          <string>You have checked the 'Popup for children'. The plot for all features is currently displayed.</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>false</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QWebView" name="dataviz_viewer">
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>300</height>
+                          </size>
+                         </property>
+                         <property name="url">
+                          <url>
+                           <string>about:blank</string>
+                          </url>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                     <widget class="QWidget" name="error_content">
+                      <layout class="QVBoxLayout" name="verticalLayout_57">
+                       <item>
+                        <widget class="QLabel" name="dataviz_error_message">
+                         <property name="text">
+                          <string notr="true">SET IN PYTHON</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>true</bool>
+                         </property>
+                         <property name="openExternalLinks">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QGroupBox" name="groupBox_5">
                      <property name="title">
                       <string>Dataviz options</string>
@@ -4174,6 +4252,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header location="global">QtWebKitWidgets/QWebView</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>

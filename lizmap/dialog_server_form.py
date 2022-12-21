@@ -284,11 +284,20 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         error = qgis_info.get('error')
         if error:
             if error == "NO_ACCESS":
-                message = tr("The given user does not have the right <b>Lizmap Admin access</b>.")
-                message += "<br><br>"
-                message += tr('Right') + " : lizmap.admin.access"
+                if lizmap_version.startswith(('3.5', '3.6.0')):
+                    message = tr("The given user does not have the right <b>Lizmap Admin access</b>.")
+                    message += "<br><br>"
+                    message += tr('Right') + " : lizmap.admin.access"
+                else:
+                    message = tr("The given user does not have the right <b>View the detailed server information</b>.")
+                    message += "<br><br>"
+                    message += tr('Right') + " : lizmap.admin.server.information.view"
                 return False, message
-
+            elif error == 'WRONG_CREDENTIALS':
+                message = tr(
+                    "Either the login or the password is wrong. Please check your credentials. It must be your login "
+                    "you use in your web-browser.")
+                return False, message
         return True, ''
 
     @staticmethod

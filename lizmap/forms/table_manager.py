@@ -7,7 +7,7 @@ import os
 from collections import namedtuple
 from typing import Type
 
-from qgis.core import QgsMapLayerModel, QgsProject, QgsSettings
+from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
@@ -20,7 +20,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
-from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.definitions import LwcVersionComboData, LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
@@ -57,6 +57,7 @@ class TableManager:
         self.lwc_versions.append(LwcVersions.Lizmap_3_4)
         self.lwc_versions.append(LwcVersions.Lizmap_3_5)
         self.lwc_versions.append(LwcVersions.Lizmap_3_6)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_7)
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))
@@ -112,9 +113,9 @@ class TableManager:
                     label.setToolTip(tooltip)
 
         # Set versions
-        current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        current_version = LwcVersions(current_version)
-        self.set_lwc_version(current_version)
+        if self.parent:
+            current_version = self.parent.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+            self.set_lwc_version(current_version)
 
     def set_lwc_version(self, current_version):
         found = False
@@ -328,6 +329,9 @@ class TableManager:
 
             self.table.setItem(row, i, cell)
         self._layer = None
+
+        if self.definitions.key() == 'dataviz':
+            self.preview_dataviz_dialog()
         self.table.clearSelection()
 
     def move_layer_up(self):
@@ -392,8 +396,10 @@ class TableManager:
         Since Lizmap 3.4, the JSON is different.
         """
         if not version:
-            version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-            version = LwcVersions(version)
+            if self.parent:
+                version = self.parent.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+            else:
+                version = DEFAULT_LWC_VERSION
 
         data = dict()
 
