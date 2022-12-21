@@ -74,7 +74,7 @@ class ServerManager:
 
     def __init__(
             self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server,
-            up_button, down_button, server_combo,
+            up_button, down_button, server_combo, function_refresh_repositories
     ):
         self.parent = parent
         self.table = table
@@ -86,6 +86,7 @@ class ServerManager:
         self.down_button = down_button
         self.label_no_server = label_no_server
         self.server_combo = server_combo
+        self.refresh_repositories = function_refresh_repositories
 
         # Network
         self.fetchers = {}
@@ -229,14 +230,6 @@ class ServerManager:
 
         return True
 
-    def metadata_for_url(self, server_url: str) -> Optional[dict]:
-        """ Retrieve metadata from a URL. """
-        for row in range(self.table.rowCount()):
-            if self.table.item(row, TableCell.Url.value).data(Qt.DisplayRole) == server_url:
-                return self.table.item(row, TableCell.ActionText.value).data()
-
-        return None
-
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
         existing = self.existing_json_server_list()
@@ -255,6 +248,11 @@ class ServerManager:
 
     def _fetch_cells(self, row: int) -> tuple:
         """ Fetch the URL and the authid in the cells. """
+        if not self.table:
+            # When we are reloading the plugin
+            # I'm not sure why ...
+            return None, None, None
+
         url_item = self.table.item(row, TableCell.Url.value)
         login_item = self.table.item(row, TableCell.Login.value)
         name_item = self.table.item(row, TableCell.Name.value)
@@ -525,7 +523,17 @@ class ServerManager:
                 return
 
         lizmap_cell.setText(lizmap_version)
-        action_text_cell.setData(Qt.UserRole, content)
+
+        # TODO, I think there something wrong here
+        # action_text_cell.setData(Qt.UserRole, content)
+
+        # Add the JSON metadata in the server combobox
+        index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
+        self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
+
+        # and refresh repositories if needed about the new metadata downloaded about repositories available
+        if self.server_combo.currentData(ServerComboData.ServerUrl.value) == url:
+            self.refresh_repositories()
 
         # Markdown
         markdown = '**Versions :**\n\n'
@@ -595,7 +603,7 @@ class ServerManager:
                 return
             else:
                 if "error" in qgis_server_info.keys():
-                    if qgis_server_info['error'] == 'NO_ACCESS':
+                    if qgis_server_info['error'] in ('NO_ACCESS', 'WRONG_CREDENTIALS'):
                         markdown += (
                             '* QGIS Server and plugins unknown status because the login provided is not an '
                             'administrator\n'
@@ -644,6 +652,7 @@ class ServerManager:
             self.server_combo.addItem(name, auth_id)
             index = self.server_combo.findData(auth_id, ServerComboData.AuthId.value)
             self.server_combo.setItemData(index, url, ServerComboData.ServerUrl.value)
+            self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
             self.server_combo.setItemData(index, url, Qt.ToolTipRole)
 
         # Restore previous value
@@ -805,7 +814,12 @@ class ServerManager:
                         level = Qgis.Critical
 
                     if login and error == "NO_ACCESS":
-                        messages.insert(0, tr('The login is not an administrator'))
+                        messages.insert(0, tr('The login is not a publisher/administrator'))
+                        # Starting from version 3.9.2, login is required
+                        level = Qgis.Critical
+
+                    if login and error == "WRONG_CREDENTIALS":
+                        messages.insert(0, tr('Check your credentials, wrong login/password'))
                         # Starting from version 3.9.2, login is required
                         level = Qgis.Critical
 

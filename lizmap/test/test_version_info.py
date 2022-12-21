@@ -58,7 +58,7 @@ class TestVersionInfo(unittest.TestCase):
         # Starting with the QGIS plugin version 3.9.2, login is required
         self.assertEqual(
             ServerManager._messages_for_version('3.5.1', '', 'bob_is_not_admin', json_path, error='NO_ACCESS'),
-            (Qgis.Critical, ['The login is not an administrator'])
+            (Qgis.Critical, ['The login is not a publisher/administrator'])
         )
 
         # 3.5.1

@@ -65,6 +65,7 @@ class ServerComboData(Enum):
     """ The server combobox. """
     AuthId = Qt.UserRole  # String with the authentication ID
     ServerUrl = Qt.UserRole + 1  # String with the server URL
+    JsonMetadata = Qt.UserRole + 2  # JSON from the server, raw
 
 
 @unique

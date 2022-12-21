@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* New with Lizmap Web Client 3.6.1:
+  * Add a preview about a plot in the dataviz panel
+  * Better error message if the credentials to connect to Lizmap Web Client is wrong
+  * Group wizard
+
 ## 3.9.9 - 2023-01-04
 
 * Fix issue when reading the CFG file about the new configuration legend image option.
