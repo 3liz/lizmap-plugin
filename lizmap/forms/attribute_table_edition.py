@@ -1,6 +1,5 @@
 """Dialog for attribute table edition."""
-
-from qgis.core import QgsMapLayerProxyModel
+from qgis.core import QgsFieldProxyModel, QgsMapLayerProxyModel
 
 from lizmap.definitions.attribute_table import (
     AttributeTableDefinitions,
@@ -45,6 +44,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.layer.layerChanged.connect(self.layer_changed)
         self.layer.layerChanged.connect(self.field_primary_key.setLayer)
         self.field_primary_key.setLayer(self.layer.currentLayer())
+        self.field_primary_key.setFilters(QgsFieldProxyModel.Numeric)
         self.layer.layerChanged.connect(self.fields_to_hide.set_layer)
         self.fields_to_hide.set_layer(self.layer.currentLayer())
 

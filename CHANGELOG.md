@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* When adding a new layer in the attribute table panel, the primary key must be a numeric type
 * Add a new wizard helper for setting Lizmap Web Client groups in the plugin
 * Check the login and server URL before saving in the authentication database
 
