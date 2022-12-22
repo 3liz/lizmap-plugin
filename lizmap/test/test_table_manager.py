@@ -214,6 +214,11 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+    def test_layout_definitions(self):
+        """ Test layout definitions. """
+        # TODO
+        pass
+
     def test_dataviz_definitions(self):
         """Test dataviz collections keys."""
         table_manager = TableManager(

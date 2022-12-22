@@ -10,12 +10,13 @@ from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
+from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -41,6 +42,7 @@ class TestEditionDialog(unittest.TestCase):
             FilterByFormEditionDialog,
             FilterByLoginEditionDialog,
             FilterByPolygonEditionDialog,
+            LayoutEditionDialog,
             LocateLayerEditionDialog,
             TimeManagerEditionDialog,
             ToolTipEditionDialog,

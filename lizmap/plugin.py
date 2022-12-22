@@ -51,6 +51,7 @@ import sys
 
 from collections import OrderedDict
 from functools import partial
+from pathlib import Path
 from shutil import copyfile
 from typing import Optional, Tuple
 
@@ -71,6 +72,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.PyQt.QtWidgets import QLineEdit
+
+from lizmap.forms.table_manager_layouts import TableManagerLayouts
 
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
@@ -111,6 +114,7 @@ from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
+from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -122,6 +126,7 @@ from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
+from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.table_manager import TableManager
 from lizmap.forms.table_manager_dataviz import TableManagerDataviz
@@ -341,6 +346,13 @@ class Lizmap:
         self.dlg.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
+        # Layouts
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
         # Locate by layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
@@ -458,7 +470,7 @@ class Lizmap:
         self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_map_theme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
         self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
-        self.global_options['print']['widget'] = self.dlg.cbActivatePrint
+        # self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
         self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
         self.global_options['geolocation']['widget'] = self.dlg.cbActivateGeolocation
@@ -690,6 +702,13 @@ class Lizmap:
                 'editButton': self.dlg.edit_edition_layer,
                 'upButton': self.dlg.up_edition_layer,
                 'downButton': self.dlg.down_edition_layer,
+                'manager': None,
+            },
+            'layouts': {
+                'tableWidget': self.dlg.table_layout,
+                'editButton': self.dlg.edit_layout_form_button,
+                'upButton': self.dlg.up_layout_form_button,
+                'downButton': self.dlg.down_layout_form_button,
                 'manager': None,
             },
             'loginFilteredLayers': {
@@ -1009,19 +1028,21 @@ class Lizmap:
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():
-            control = item['removeButton']
-            slot = partial(self.remove_selected_layer_from_table, key)
-            control.clicked.connect(slot)
-            # noinspection PyCallByClass,PyArgumentList
-            control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-            control.setText('')
-            control.setToolTip(tr('Remove the selected layer from the list'))
+            control = item.get('removeButton')
+            if control:
+                slot = partial(self.remove_selected_layer_from_table, key)
+                control.clicked.connect(slot)
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+                control.setText('')
+                control.setToolTip(tr('Remove the selected layer from the list'))
 
             control = item.get('addButton')
-            control.setText('')
-            # noinspection PyCallByClass,PyArgumentList
-            control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-            control.setToolTip(tr('Add a new layer in the list'))
+            if control:
+                control.setText('')
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+                control.setToolTip(tr('Add a new layer in the list'))
 
             control = item.get('editButton')
             if control:
@@ -1034,7 +1055,9 @@ class Lizmap:
                 control.setToolTip(tr('Edit the current layer configuration'))
 
                 slot = partial(self.add_new_layer, key)
-                item.get('addButton').clicked.connect(slot)
+                add_button = item.get('addButton')
+                if add_button:
+                    add_button.clicked.connect(slot)
                 if key == 'atlas':
                     definition = AtlasDefinitions()
                     dialog = AtlasEditionDialog
@@ -1047,6 +1070,9 @@ class Lizmap:
                 elif key == 'datavizLayers':
                     definition = DatavizDefinitions()
                     dialog = DatavizEditionDialog
+                elif key == 'layouts':
+                    definition = LayoutsDefinitions()
+                    dialog = LayoutEditionDialog
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
@@ -1072,6 +1098,17 @@ class Lizmap:
 
                 if key == 'datavizLayers':
                     item['manager'] = TableManagerDataviz(
+                        self.dlg,
+                        definition,
+                        dialog,
+                        item['tableWidget'],
+                        item['editButton'],
+                        item.get('upButton'),
+                        item.get('downButton'),
+                        self.server_manager,
+                    )
+                elif key == 'layouts':
+                    item['manager'] = TableManagerLayouts(
                         self.dlg,
                         definition,
                         dialog,
@@ -1115,6 +1152,11 @@ class Lizmap:
         # Delete layers from table when deleted from registry
         # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
+
+        # Layouts
+        # Not connecting the "layoutAdded" signal, it's done when opening the Lizmap plugin
+        self.project.layoutManager().layoutRenamed.connect(self.layout_renamed)
+        self.project.layoutManager().layoutRemoved.connect(self.layout_removed)
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
@@ -1368,7 +1410,14 @@ class Lizmap:
 
                     manager = self.layers_table[key].get('manager')
                     if manager:
+
                         manager.truncate()
+
+                        if key == 'layouts':
+                            # TODO rename to from_json and merge this line with the other one ?
+                            manager.load_qgis_layouts(sjson[key])
+                            continue
+
                         if key in sjson:
                             manager.from_json(sjson[key])
                         else:
@@ -1653,12 +1702,14 @@ class Lizmap:
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
+    def check_cfg_file_exists(self) -> bool:
+        return Path(self.project.fileName() + '.cfg').exists()
+
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
         Remove layers from tables when deleted from layer registry
         """
-        json_file = '{}.cfg'.format(self.project.fileName())
-        if not os.path.exists(json_file):
+        if not self.check_cfg_file_exists():
             return
 
         for key, item in self.layers_table.items():
@@ -1688,6 +1739,20 @@ class Lizmap:
                         tw.removeRow(row)
 
         LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
+
+    def layout_renamed(self, layout, new_name: str):
+        """ When a layout has been renamed in the project. """
+        if not self.check_cfg_file_exists():
+            return
+
+        self.layers_table['layouts']['manager'].layout_renamed(layout, new_name)
+
+    def layout_removed(self, name: str):
+        """ When a layout has been removed from the project. """
+        if not self.check_cfg_file_exists():
+            return
+
+        self.layers_table['layouts']['manager'].layout_renamed(name)
 
     def check_wfs_is_checked(self, layer):
         wfs_layers_list = self.project.readListEntry('WFSLayers', '')[0]

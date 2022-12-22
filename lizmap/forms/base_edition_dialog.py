@@ -9,7 +9,12 @@ from typing import Union
 from qgis.core import QgsProject, QgsSettings, QgsVectorLayer
 from qgis.PyQt.QtCore import QLocale, Qt, QUrl
 from qgis.PyQt.QtGui import QBrush, QColor, QDesktopServices, QIcon
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QPlainTextEdit
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QMessageBox,
+    QPlainTextEdit,
+)
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
@@ -20,6 +25,7 @@ from lizmap.definitions.definitions import (
 )
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
+from lizmap.wizard_group_dialog import WizardGroupDialog
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -28,11 +34,12 @@ __email__ = 'info@3liz.org'
 
 class BaseEditionDialog(QDialog):
 
-    def __init__(self, parent=None, unicity=None):
+    def __init__(self, parent: QDialog = None, unicity=None):
+        # parent is the main UI of the plugin
         super().__init__(parent)
+        self.parent = parent
         self.config = None
         self.unicity = unicity
-        self.server_manager = None
         self.lwc_versions = OrderedDict()
         self.lwc_versions[LwcVersions.Lizmap_3_1] = []
         self.lwc_versions[LwcVersions.Lizmap_3_2] = []
@@ -77,7 +84,7 @@ class BaseEditionDialog(QDialog):
                             else:
                                 widget.addItem(item.value['label'], item.value['data'])
                         default = layer_config.get('default')
-                        if default:
+                        if default and not isinstance(default, (list, tuple)):
                             index = widget.findData(default.value['data'])
                             widget.setCurrentIndex(index)
 
@@ -140,8 +147,7 @@ class BaseEditionDialog(QDialog):
 
     def version_lwc(self):
         """ Make all colors about widgets if it is available or not. """
-        current_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        current_version = LwcVersions(current_version)
+        current_version = self.parent.combo_lwc_version.currentData()
 
         # For labels in the UI files, which are not part of the definitions.
         found = False
@@ -333,8 +339,13 @@ class BaseEditionDialog(QDialog):
                 else:
                     definition['widget'].setToNull()
             elif definition['type'] == InputType.List:
-                index = definition['widget'].findData(value)
-                definition['widget'].setCurrentIndex(index)
+                if definition.get('multiple_selection', False):
+                    for val in value:
+                        index = definition['widget'].findData(val)
+                        definition['widget'].setItemCheckState(index, Qt.Checked)
+                else:
+                    index = definition['widget'].findData(value)
+                    definition['widget'].setCurrentIndex(index)
             elif definition['type'] == InputType.SpinBox:
                 definition['widget'].setValue(value)
             elif definition['type'] == InputType.Text:
@@ -383,7 +394,10 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.CheckBox:
                 value = definition['widget'].isChecked()
             elif definition['type'] == InputType.List:
-                value = definition['widget'].currentData()
+                if definition.get('multiple_selection', False):
+                    value = definition['widget'].checkedItemsData()
+                else:
+                    value = definition['widget'].currentData()
             elif definition['type'] == InputType.SpinBox:
                 value = definition['widget'].value()
             elif definition['type'] == InputType.Text:
@@ -408,3 +422,50 @@ class BaseEditionDialog(QDialog):
 
             data[key] = value
         return data
+
+    def open_wizard_dialog(self, helper: str):
+        """ Internal function to open the wizard ACL. """
+        # Duplicated in plugin.py
+        url = QgsSettings().value('lizmap/instance_target_url', str)
+        if not url:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Missing server'),
+                tr('You first need to select a server in the left panel.'),
+                QMessageBox.Ok
+            )
+            return
+
+        json_metadata = self.server_manager.metadata_for_url(url)
+        if not json_metadata:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Server URL Error'),
+                tr("Check your server information table about the current selected server.")
+                + "<br><br>" + url,
+                QMessageBox.Ok
+            )
+            return None
+
+        acl = json_metadata.get('acl')
+        if not acl:
+            QMessageBox.critical(
+                self.dlg,
+                tr('Upgrade your Lizmap instance'),
+                tr(
+                    "Your current Lizmap instance, running version {} is not providing the needed information. "
+                    "You should upgrade your Lizmap instance.").format(json_metadata["info"]["version"]),
+                QMessageBox.Ok
+            )
+            return None
+        # End of duplicated
+
+        wizard_dialog = WizardGroupDialog(helper, self.allowed_groups.text(), acl['groups'])
+        if not wizard_dialog.exec_():
+            return
+
+        text = wizard_dialog.preview.text()
+        if not text:
+            return
+
+        self.allowed_groups.setText(text)

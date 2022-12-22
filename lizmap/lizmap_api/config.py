@@ -172,9 +172,9 @@ class LizmapConfig:
             'draw': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
-            'print': {
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
+            # 'print': {
+            #     'wType': 'checkbox', 'type': 'boolean', 'default': False
+            # },
             'measure': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
