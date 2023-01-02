@@ -1,12 +1,13 @@
 """Definitions used in Lizmap"""
 
-from enum import Enum, unique
-
-__copyright__ = 'Copyright 2022, 3Liz'
+__copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from enum import Enum, unique
 from functools import total_ordering
+
+from qgis.PyQt.QtCore import Qt
 
 
 @unique
@@ -57,3 +58,17 @@ DOMAIN = 'https://docs.lizmap.com'
 VERSION = 'current'
 DOC_URL = '{domain}/{version}/'.format(domain=DOMAIN, version=VERSION)
 ONLINE_HELP_LANGUAGES = ('en', 'es', 'it', 'ja', 'pt', 'fi', 'fr')
+
+
+@unique
+class ServerComboData(Enum):
+    """ The server combobox. """
+    AuthId = Qt.UserRole  # String with the authentication ID
+    ServerUrl = Qt.UserRole + 1  # String with the server URL
+
+
+@unique
+class LwcVersionComboData(Enum):
+    """ The LWC version combo. """
+    LwcVersion = Qt.UserRole  # Enum item with the LWC version
+    LwcBranchStatus = Qt.UserRole + 1  # Enum item about the release status at that time.

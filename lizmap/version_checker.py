@@ -7,10 +7,14 @@ import logging
 import os
 
 from qgis.core import QgsNetworkContentFetcher
-from qgis.PyQt.QtCore import QDate, QLocale, Qt, QUrl
+from qgis.PyQt.QtCore import QDate, QLocale, QUrl
 from qgis.PyQt.QtWidgets import QDialog
 
-from lizmap.definitions.definitions import LwcVersions, ReleaseStatus
+from lizmap.definitions.definitions import (
+    LwcVersionComboData,
+    LwcVersions,
+    ReleaseStatus,
+)
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
 
@@ -62,7 +66,7 @@ class VersionChecker:
                 # We can continue, we do nothing with this version. It's not displayed in the UI.
                 continue
 
-            index = self.dialog.combo_lwc_version.findData(lwc_version)
+            index = self.dialog.combo_lwc_version.findData(lwc_version, LwcVersionComboData.LwcVersion.value)
             status = json_version.get('status')
             if status:
                 if status == 'dev':
@@ -85,7 +89,7 @@ class VersionChecker:
                 if suffix:
                     text += ' - ' + suffix
                     self.dialog.combo_lwc_version.setItemText(index, text)
-                self.dialog.combo_lwc_version.setItemData(index, flag, Qt.UserRole + 1)
+                self.dialog.combo_lwc_version.setItemData(index, flag, LwcVersionComboData.LwcBranchStatus.value)
 
             else:
                 # Legacy
@@ -111,7 +115,7 @@ class VersionChecker:
                 else:
                     first_stable_release = True
                     flag = ReleaseStatus.Stable
-                self.dialog.combo_lwc_version.setItemData(index, flag, Qt.UserRole + 1)
+                self.dialog.combo_lwc_version.setItemData(index, flag, LwcVersionComboData.LwcBranchStatus.value)
                 # End of legacy
 
     def update_lwc_releases(self, released_versions: dict):

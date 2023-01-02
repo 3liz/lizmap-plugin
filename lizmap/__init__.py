@@ -50,8 +50,9 @@ try:
     from lizmap.definitions.definitions import LwcVersions
 
     # TODO, change this behavior. Use only the online JSON file.
-    DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_5
+    DEFAULT_LWC_VERSION = LwcVersions.Lizmap_3_6
 
+    # noinspection PyPep8Naming
     def classFactory(iface):
         from lizmap.plugin import Lizmap
         return Lizmap(iface)

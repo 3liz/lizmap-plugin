@@ -102,8 +102,10 @@ from lizmap.definitions.definitions import (
     ONLINE_HELP_LANGUAGES,
     UNSTABLE_VERSION_PREFIX,
     LayerProperties,
+    LwcVersionComboData,
     LwcVersions,
     ReleaseStatus,
+    ServerComboData,
 )
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
@@ -743,7 +745,7 @@ class Lizmap:
         # Server combo
         server = QgsSettings().value('lizmap/instance_target_url', '')
         if server:
-            index = self.dlg.server_combo.findData(server, Qt.UserRole + 1)
+            index = self.dlg.server_combo.findData(server, ServerComboData.ServerUrl.value)
             if index:
                 self.dlg.server_combo.setCurrentIndex(index)
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
@@ -770,8 +772,9 @@ class Lizmap:
             # The QgsSettings does not contain a valid LWC version item
             # Fallback on the default one from the plugin
             lwc_version = DEFAULT_LWC_VERSION
+            LOGGER.info("Set value to default LWC version {}".format(lwc_version.value))
 
-        index = self.dlg.combo_lwc_version.findData(lwc_version)
+        index = self.dlg.combo_lwc_version.findData(lwc_version, LwcVersionComboData.LwcVersion.value)
         self.dlg.combo_lwc_version.setCurrentIndex(index)
 
         self.dlg.combo_lwc_version.blockSignals(False)
@@ -779,12 +782,12 @@ class Lizmap:
 
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
-        current = self.dlg.server_combo.currentData(Qt.UserRole + 1)
+        current = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         QgsSettings().setValue('lizmap/instance_target_url', current)
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
-        current_version = self.dlg.combo_lwc_version.currentData()
+        current_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
 
         if current_version is None:
             # We come from a higher version of Lizmap (from dev to master)
@@ -1132,7 +1135,7 @@ class Lizmap:
 
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """ Open the group wizard and set the output in the line edit. """
-        url = self.dlg.server_combo.currentData(Qt.UserRole + 1)
+        url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not url:
             QMessageBox.critical(
                 self.dlg,
@@ -2246,7 +2249,8 @@ class Lizmap:
 
         valid, _ = self.check_project_validity()
 
-        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+        LOGGER.info("Writing CFG file for LWC version {}".format(lwc_version.value))
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
         if self.is_dev_version:
             next_version = next_git_tag()
@@ -2256,7 +2260,7 @@ class Lizmap:
         warnings = []
 
         # Layer ID as short name
-        if LwcVersions(lwc_version) >= LwcVersions.Lizmap_3_6:
+        if lwc_version >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
             if to_bool(use_layer_id):
                 QMessageBox.warning(
@@ -2273,7 +2277,7 @@ class Lizmap:
                 )
                 warnings.append(Warnings.UseLayerIdAsName.value)
 
-        target_status = self.dlg.combo_lwc_version.itemData(self.dlg.combo_lwc_version.currentIndex(), Qt.UserRole + 1)
+        target_status = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcBranchStatus.value)
         if not target_status:
             target_status = ReleaseStatus.Unknown
 
@@ -2281,9 +2285,9 @@ class Lizmap:
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version_str': current_version,
             'lizmap_plugin_version': int(format_version_integer(current_version)),
-            'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version))),
+            'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version.value))),
             'lizmap_web_client_target_status': target_status.value,
-            'instance_target_url': self.dlg.server_combo.currentData(Qt.UserRole + 1)
+            'instance_target_url': self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         }
         if valid is not None:
             metadata['project_valid'] = valid
@@ -2739,23 +2743,23 @@ class Lizmap:
                 ), QMessageBox.Ok)
             return False
 
-        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        is_found = self.server_manager.check_lwc_version(lwc_version)
-        if not is_found and not self.is_dev_version:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Lizmap Target Version'),
-                '{}\n\n{}\n\n{}'.format(
-                    tr(
-                        "Your Lizmap Web Client target version {version} has not been found in the server "
-                        "table.".format(version=lwc_version)),
-                    tr(
-                        "Either check your Lizmap Web Client target version in the first panel of the plugin or check "
-                        "you have provided the correct server URL."
-                    ),
-                    stop
-                ), QMessageBox.Ok)
-            return False
+        if not self.is_dev_version:
+            lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+            if not self.server_manager.check_lwc_version(lwc_version.value):
+                QMessageBox.critical(
+                    self.dlg,
+                    tr('Lizmap Target Version'),
+                    '{}\n\n{}\n\n{}'.format(
+                        tr(
+                            "Your Lizmap Web Client target version {version} has not been found in the server "
+                            "table.".format(version=lwc_version.value)),
+                        tr(
+                            "Either check your Lizmap Web Client target version in the first panel of the plugin or "
+                            "check you have provided the correct server URL."
+                        ),
+                        stop
+                    ), QMessageBox.Ok)
+                return False
 
         # global project option checking
         is_valid, message = self.check_global_project_options()

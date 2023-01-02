@@ -40,6 +40,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
     UNSTABLE_VERSION_PREFIX,
+    ServerComboData,
 )
 from lizmap.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -57,6 +58,7 @@ class TableCell(Enum):
     LizmapVersion = 3
     QgisVersion = 4
     Action = 5
+    ActionText = 6
 
 
 class Color(Enum):
@@ -114,7 +116,7 @@ class ServerManager:
         self.down_button.setToolTip(tr('Move the server down'))
 
         # Table
-        self.table.setColumnCount(6)
+        self.table.setColumnCount(7)
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -153,6 +155,11 @@ class ServerManager:
         item.setToolTip(tr('If there is any action to do on the server'))
         self.table.setHorizontalHeaderItem(TableCell.Action.value, item)
 
+        # Hidden one to store the action text, as HTML
+        item = QTableWidgetItem('Action text')
+        self.table.setHorizontalHeaderItem(TableCell.ActionText.value, item)
+        self.table.setColumnHidden(6, True)
+
         # Connect
         self.add_button.clicked.connect(self.add_row)
         self.remove_button.clicked.connect(self.remove_row)
@@ -179,7 +186,7 @@ class ServerManager:
 
         return conf
 
-    def check_lwc_version(self, version_check) -> bool:
+    def check_lwc_version(self, version_check: str) -> bool:
         """ Check if the given LWC version is at least in the table. """
         for row in range(self.table.rowCount()):
             lwc_version = self.table.item(row, TableCell.LizmapVersion.value).data(Qt.DisplayRole)
@@ -218,7 +225,7 @@ class ServerManager:
         """ Retrieve metadata from a URL. """
         for row in range(self.table.rowCount()):
             if self.table.item(row, TableCell.Url.value).data(Qt.DisplayRole) == server_url:
-                return self.table.item(row, TableCell.LizmapVersion.value).data(Qt.UserRole + 1)
+                return self.table.item(row, TableCell.ActionText.value).data()
 
         return None
 
@@ -355,6 +362,11 @@ class ServerManager:
         cell.setData(Qt.UserRole, '')
         self.table.setItem(row, TableCell.Action.value, cell)
 
+        # Action text, hidden
+        cell = QTableWidgetItem()
+        cell.setData(Qt.UserRole, '')
+        self.table.setItem(row, TableCell.ActionText.value, cell)
+
         self.table.clearSelection()
         self.fetch(server_url, auth_id, row)
 
@@ -419,6 +431,8 @@ class ServerManager:
 
         lizmap_cell = QTableWidgetItem()
         qgis_cell = QTableWidgetItem()
+        action_text_cell = QTableWidgetItem()
+        self.table.setItem(row, TableCell.ActionText.value, action_text_cell)
         self.table.setItem(row, TableCell.LizmapVersion.value, lizmap_cell)
         self.table.setItem(row, TableCell.QgisVersion.value, qgis_cell)
 
@@ -503,7 +517,7 @@ class ServerManager:
                 return
 
         lizmap_cell.setText(lizmap_version)
-        lizmap_cell.setData(Qt.UserRole + 1, content)
+        action_text_cell.setData(Qt.UserRole, content)
 
         # Markdown
         markdown = '**Versions :**\n\n'
@@ -620,14 +634,14 @@ class ServerManager:
             auth_id = server.get('auth_id')
             name = server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
             self.server_combo.addItem(name, auth_id)
-            index = self.server_combo.findData(auth_id)
-            self.server_combo.setItemData(index, url, Qt.UserRole + 1)
+            index = self.server_combo.findData(auth_id, ServerComboData.AuthId.value)
+            self.server_combo.setItemData(index, url, ServerComboData.ServerUrl.value)
             self.server_combo.setItemData(index, url, Qt.ToolTipRole)
 
         # Restore previous value
         server = QgsSettings().value('lizmap/instance_target_url', '')
         if server:
-            index = self.server_combo.findData(server, Qt.UserRole + 1)
+            index = self.server_combo.findData(server, ServerComboData.ServerUrl.value)
             if index:
                 self.server_combo.setCurrentIndex(index)
 

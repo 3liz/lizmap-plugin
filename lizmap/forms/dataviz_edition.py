@@ -145,7 +145,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 item = self.traces.item(row, i)
 
                 if item is None:
-                    # Safe guard
+                    # Safeguard
                     # Do not put if not item, it might be False
                     raise Exception('Cell is not initialized ({}, {})'.format(row, i))
 
