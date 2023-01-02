@@ -72,7 +72,7 @@ class ServerManager:
 
     def __init__(
             self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server,
-            up_button, down_button, server_combo, target_server_changed,
+            up_button, down_button, server_combo,
     ):
         self.parent = parent
         self.table = table
@@ -84,8 +84,6 @@ class ServerManager:
         self.down_button = down_button
         self.label_no_server = label_no_server
         self.server_combo = server_combo
-        # Ugly hack to reconnect the signal after disconnect
-        self.target_server_changed = target_server_changed
 
         # Network
         self.fetchers = {}
@@ -613,10 +611,7 @@ class ServerManager:
         """ Refresh the server combobox. """
         servers = self.existing_json_server_list()
 
-        try:
-            self.server_combo.currentIndexChanged.disconnect()
-        except TypeError:
-            pass
+        self.server_combo.blockSignals(True)
 
         self.server_combo.clear()
 
@@ -636,8 +631,7 @@ class ServerManager:
             if index:
                 self.server_combo.setCurrentIndex(index)
 
-        # This function is located in the plugin.py ... :/
-        self.server_combo.currentIndexChanged.connect(self.target_server_changed)
+        self.server_combo.blockSignals(False)
 
     def load_table(self):
         """ Load the table by reading the user configuration file. """

@@ -4,6 +4,7 @@
 
 * Add a new wizard helper for setting Lizmap Web Client groups in the plugin
 * Check the login and server URL before saving in the authentication database
+* Internal code refactoring about signals and slots in the plugin
 
 ## 3.9.8 - 2022-12-08
 

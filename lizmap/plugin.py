@@ -613,7 +613,6 @@ class Lizmap:
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
             self.dlg.server_combo,
-            self.target_server_changed,
         )
 
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
@@ -758,12 +757,7 @@ class Lizmap:
 
     def populate_lwc_combo(self):
         """ Fill the LWC selector about all versions. """
-        try:
-            # First disconnect all signals from the combobox
-            self.dlg.combo_lwc_version.currentIndexChanged.disconnect()
-        except TypeError:
-            pass
-
+        self.dlg.combo_lwc_version.blockSignals(True)
         self.dlg.combo_lwc_version.clear()
         for lwc_version in LwcVersions:
             self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
@@ -780,8 +774,7 @@ class Lizmap:
         index = self.dlg.combo_lwc_version.findData(lwc_version)
         self.dlg.combo_lwc_version.setCurrentIndex(index)
 
-        # Restore connection
-        self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
+        self.dlg.combo_lwc_version.blockSignals(False)
         self.lwc_version_changed()
 
     def target_server_changed(self):
@@ -2283,6 +2276,7 @@ class Lizmap:
         target_status = self.dlg.combo_lwc_version.itemData(self.dlg.combo_lwc_version.currentIndex(), Qt.UserRole + 1)
         if not target_status:
             target_status = ReleaseStatus.Unknown
+
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version_str': current_version,
