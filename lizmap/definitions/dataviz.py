@@ -307,6 +307,7 @@ class DatavizDefinitions(BaseDefinitions):
         self._general_config['theme'] = {
             'type': InputType.List,
             'items': Theme,
+            # If the default value is changed, must be changed in the commands python file as well
             'default': Theme.Dark,
             'tooltip': tr('The theme for the dataviz panel.'),
             'version': LwcVersions.Lizmap_3_4,

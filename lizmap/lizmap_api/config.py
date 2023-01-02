@@ -269,7 +269,8 @@ class LizmapConfig:
                 'wType': 'html', 'type': 'string', 'default': ''
             },
             'theme': {
-                'wType': 'list', 'type': 'string', 'default': 'light', 'list': ['dark', 'light']
+                # If the default value is changed, must be changed in the definitions python file as well
+                'wType': 'list', 'type': 'string', 'default': 'dark', 'list': ['dark', 'light']
             },
             'atlasShowAtStartup': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
