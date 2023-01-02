@@ -249,7 +249,6 @@ class Lizmap:
         self.lwc_versions[LwcVersions.Lizmap_3_1] = []
         self.lwc_versions[LwcVersions.Lizmap_3_2] = [
             self.dlg.label_max_feature_popup,
-            self.dlg.label_display_popup_children,
             self.dlg.label_dataviz,
             self.dlg.label_atlas,
         ]
@@ -1985,13 +1984,12 @@ class Lizmap:
             #         self.enable_or_not_toggle_checkbox)
             #     self.enable_or_not_toggle_checkbox()
 
-            # Max feature per popup
-            self.dlg.label_max_feature_popup.setEnabled(is_vector)
-            self.layer_options_list['popupMaxFeatures']['widget'].setEnabled(is_vector)
-
-            # Checkbox display children
-            self.layer_options_list['popupDisplayChildren']['widget'].setEnabled(is_vector)
-            self.dlg.label_display_popup_children.setEnabled(is_vector)
+            # Checkbox display children features
+            self.dlg.relation_stacked_widget.setCurrentIndex(0)
+            if is_vector:
+                if len(self.project.relationManager().referencedRelations(layer)) >= 1:
+                    # We display options
+                    self.dlg.relation_stacked_widget.setCurrentIndex(1)
 
         else:
             # set default values for this layer/group
