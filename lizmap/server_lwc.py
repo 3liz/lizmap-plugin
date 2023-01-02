@@ -129,28 +129,36 @@ class ServerManager:
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeToContents)
 
+        # URL of the server, hidden
         item = QTableWidgetItem(tr('URL'))
         item.setToolTip(tr('URL of the server.'))
         self.table.setHorizontalHeaderItem(TableCell.Url.value, item)
+        self.table.setColumnHidden(0, True)
 
+        # Name of the server
         item = QTableWidgetItem(tr('Name'))
         item.setToolTip(tr('Name of the server.'))
         self.table.setHorizontalHeaderItem(TableCell.Name.value, item)
 
+        # Login used, hidden
         item = QTableWidgetItem(tr('Login'))
         item.setToolTip(tr('Login of the administrator.'))
         self.table.setHorizontalHeaderItem(TableCell.Login.value, item)
+        self.table.setColumnHidden(2, True)
 
         tooltip = tr('Version detected on the server')
 
+        # Lizmap Web Client version
         item = QTableWidgetItem(tr('Lizmap Version'))
         item.setToolTip(tooltip)
         self.table.setHorizontalHeaderItem(TableCell.LizmapVersion.value, item)
 
+        # QGIS Server version
         item = QTableWidgetItem(tr('QGIS Server Version'))
         item.setToolTip(tooltip)
         self.table.setHorizontalHeaderItem(TableCell.QgisVersion.value, item)
 
+        # Action needed
         item = QTableWidgetItem(tr('Action'))
         item.setToolTip(tr('If there is any action to do on the server'))
         self.table.setHorizontalHeaderItem(TableCell.Action.value, item)
@@ -318,28 +326,28 @@ class ServerManager:
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
-        login = ''
+        login = tr('Unknown')
         conf = self.config_for_id(auth_id)
+        if conf:
+            login = conf.config('username', '')
 
         # URL
         cell = QTableWidgetItem()
-        cell.setText(server_url)
-        cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br><b>Password ID</b> {}').format(server_url, auth_id))
         cell.setData(Qt.UserRole, server_url)
         self.table.setItem(row, TableCell.Url.value, cell)
 
         # Name
         cell = QTableWidgetItem()
         cell.setText(name)
-        cell.setData(Qt.ToolTipRole, name)
+        cell.setData(Qt.ToolTipRole, tr(
+            '<b>URL</b> {}<br>'
+            '<b>Login</b> {}<br>'
+            '<b>Password ID</b> {}').format(server_url, login, auth_id))
         cell.setData(Qt.UserRole, name)
         self.table.setItem(row, TableCell.Name.value, cell)
 
         # Login
         cell = QTableWidgetItem()
-        if conf:
-            login = conf.config('username', '')
-            cell.setData(Qt.ToolTipRole, tr('<b>URL</b> {}<br><b>Password ID</b> {}').format(server_url, auth_id))
         cell.setText(login)
         cell.setData(Qt.UserRole, auth_id)
         self.table.setItem(row, TableCell.Login.value, cell)
