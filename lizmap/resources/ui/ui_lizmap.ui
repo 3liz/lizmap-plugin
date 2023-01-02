@@ -1717,27 +1717,38 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </item>
                          <item>
                           <widget class="QWidget" name="widget_deprecated_lizmap_popup" native="true">
-                           <layout class="QHBoxLayout" name="horizontalLayout_43">
+                           <layout class="QVBoxLayout" name="verticalLayout_56">
                             <item>
-                             <widget class="QLabel" name="image_warning_lizmap_popup">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="text">
-                               <string notr="true">IMAGE</string>
-                              </property>
-                             </widget>
+                             <layout class="QHBoxLayout" name="horizontalLayout_43">
+                              <item>
+                               <widget class="QLabel" name="image_warning_lizmap_popup">
+                                <property name="sizePolicy">
+                                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                  <horstretch>0</horstretch>
+                                  <verstretch>0</verstretch>
+                                 </sizepolicy>
+                                </property>
+                                <property name="text">
+                                 <string notr="true">IMAGE</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="text_lizmap_popup">
+                                <property name="text">
+                                 <string>This source of popup is deprecated for vector layer. You should switch to another one, such as the QGIS HTML maptip which is the more powerful. This popup will be removed later for vector layer.</string>
+                                </property>
+                                <property name="wordWrap">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
                             </item>
                             <item>
-                             <widget class="QLabel" name="text_lizmap_popup">
+                             <widget class="QPushButton" name="convert_html_maptip">
                               <property name="text">
-                               <string>This source of popup is deprecated for vector layer. You should switch to another one, such as the QGIS HTML maptip which is the more powerful. This popup will be removed later for vector layer.</string>
-                              </property>
-                              <property name="wordWrap">
-                               <bool>true</bool>
+                               <string>Convert to QGIS HTML Maptip</string>
                               </property>
                              </widget>
                             </item>

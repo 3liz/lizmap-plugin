@@ -45,12 +45,13 @@
 """
 
 import os
+import re
 import subprocess
 import unicodedata
 import urllib.parse
 
 from os.path import abspath, join
-from typing import Union
+from typing import List, Tuple, Union
 
 from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QDir
@@ -219,3 +220,30 @@ def format_version_integer(version_string: str) -> str:
         output += str(a.zfill(2))
 
     return output
+
+
+def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List[str]]:
+    """ Convert an HTML Lizmap popup to QGIS HTML Maptip.
+
+    If one or more field couldn't be found in the layer fields/alias, returned in errors.
+    If all fields could be converted, an empty list is returned.
+    """
+    pattern = re.compile(r"(\{\s?\$([a-zA-Z\s]+)\s?\})")
+    lizmap_variables = pattern.findall(content)
+    fields = layer.fields()
+
+    translations = {}
+    for field in fields:
+        translations[field.name()] = field.alias()
+
+    errors = []
+
+    for variable in lizmap_variables:
+        for field, alias in translations.items():
+            if variable[1].strip() in (alias, field):
+                content = content.replace(variable[0], '[% "{}" %]'.format(field))
+                break
+        else:
+            errors.append(variable[1])
+
+    return content, errors

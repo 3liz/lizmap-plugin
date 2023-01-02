@@ -147,6 +147,7 @@ from lizmap.qt_style_sheets import (
 from lizmap.server_ftp import FtpServer
 from lizmap.server_lwc import ServerManager
 from lizmap.tools import (
+    convert_lizmap_popup,
     current_git_hash,
     format_qgis_version,
     format_version_integer,
@@ -889,6 +890,7 @@ class Lizmap:
 
         # configure popup button
         self.dlg.btConfigurePopup.clicked.connect(self.configure_popup_lizmap)
+        self.dlg.convert_html_maptip.clicked.connect(self.convert_html_maptip)
         self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
         self.dlg.button_generate_html_table.clicked.connect(self.html_table_from_layer)
         self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
@@ -2117,6 +2119,31 @@ class Lizmap:
                         if key == 'abstract':
                             layer.setAbstract(self.layerList[item.text(1)][key])
 
+    def convert_html_maptip(self):
+        """ Trying to convert a Lizmap popup to HTML popup. """
+        item = self.dlg.layer_tree.currentItem()
+        if item and item.text(1) in self.layerList:
+            if 'popupTemplate' in self.layerList[item.text(1)]:
+                self.layerList[item.text(1)]['popup'] = True
+                text = self.layerList[item.text(1)]['popupTemplate']
+
+                layer = self._current_selected_layer()
+                html, errors = convert_lizmap_popup(text, layer)
+                if errors:
+                    QMessageBox.warning(
+                        self.dlg,
+                        tr('Lizmap - Warning'),
+                        tr(
+                            'Some fields or alias could not be found in the layer. You must check the result manually '
+                            'about these values below :'
+                        ) + '<br><br>' + ','.join(errors),
+                        QMessageBox.Ok)
+
+                flag = self._set_maptip(layer, html)
+                if flag:
+                    index = self.layer_options_list['popupSource']['widget'].findData('qgis')
+                    self.layer_options_list['popupSource']['widget'].setCurrentIndex(index)
+
     def configure_popup_lizmap(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
         # get the selected item in the layer tree
@@ -2170,7 +2197,7 @@ class Lizmap:
         value = layer_property(layer, LayerProperties.DataUrl)
         self.layer_options_list['link']['widget'].setText(value)
 
-    def _set_maptip(self, layer: QgsVectorLayer, html_content: str):
+    def _set_maptip(self, layer: QgsVectorLayer, html_content: str) -> bool:
         """ Internal function to set the maptip on a layer. """
         if layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
@@ -2184,11 +2211,12 @@ class Lizmap:
             box.setDefaultButton(QMessageBox.No)
             result = box.exec_()
             if result == QMessageBox.No:
-                return
+                return False
 
         layer.setMapTipTemplate(html_content)
         QMessageBox.information(
             self.dlg, tr('Maptip'), tr('The maptip has been set in the layer.'), QMessageBox.Ok)
+        return True
 
     def html_table_from_layer(self):
         """ Button set popup maptip from layer in the Lizmap configuration. """

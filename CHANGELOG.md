@@ -8,6 +8,7 @@
 * Make the default version 3.6 if no settings was found, instead of 3.5
 * Review the server information panel
 * Fix the theme selector in the dataviz panel
+* Add a converter from Lizmap HTML popup to QGIS HTML popup
 
 ## 3.9.8 - 2022-12-08
 
