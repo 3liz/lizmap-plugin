@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="etienne" saveDateTime="2022-06-08T13:09:54" saveUserFull="Etienne Trimaille" projectname="" version="3.16.15-Hannover">
+<qgis saveDateTime="2023-01-03T11:07:35" projectname="" version="3.22.14-Białowieża" saveUser="etienne" saveUserFull="Etienne Trimaille">
   <homePath path=""/>
   <title></title>
   <autotransaction active="0"/>
@@ -7,7 +7,7 @@
   <trust active="0"/>
   <projectCrs>
     <spatialrefsys>
-      <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+      <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
       <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
       <srsid>3452</srsid>
       <srid>4326</srid>
@@ -19,30 +19,39 @@
     </spatialrefsys>
   </projectCrs>
   <layer-tree-group>
-    <customproperties/>
-    <layer-tree-layer expanded="1" patch_size="-1,-1" source="./points.geojson" legend_exp="" name="legend_disabled" checked="Qt::Unchecked" legend_split_behavior="0" providerKey="ogr" id="points_bead0dcc_c74f_41e5_b706_709363023720">
-      <customproperties/>
+    <customproperties>
+      <Option/>
+    </customproperties>
+    <layer-tree-layer expanded="1" name="legend_disabled" source="./points.geojson" providerKey="ogr" legend_exp="" id="legend_disabled_layer_id" checked="Qt::Unchecked" patch_size="-1,-1" legend_split_behavior="0">
+      <customproperties>
+        <Option/>
+      </customproperties>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" patch_size="-1,-1" source="./points.geojson" legend_exp="" name="legend_displayed_startup" checked="Qt::Checked" legend_split_behavior="0" providerKey="ogr" id="legend_disabled_6b25620d_6821_472c_b308_586971779b6f">
-      <customproperties/>
+    <layer-tree-layer expanded="1" name="legend_displayed_startup" source="./points.geojson" providerKey="ogr" legend_exp="" id="legend_displayed_startup_layer_id" checked="Qt::Checked" patch_size="-1,-1" legend_split_behavior="0">
+      <customproperties>
+        <Option/>
+      </customproperties>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" patch_size="-1,-1" source="./points.geojson" legend_exp="" name="legend_hidden_startup" checked="Qt::Unchecked" legend_split_behavior="0" providerKey="ogr" id="legend_displayed_startup_6505f7b5_aea9_4db7_b3f0_021ac309d508">
-      <customproperties/>
+    <layer-tree-layer expanded="1" name="legend_hidden_startup" source="./points.geojson" providerKey="ogr" legend_exp="" id="legend_hidden_startup_layer_id" checked="Qt::Unchecked" patch_size="-1,-1" legend_split_behavior="0">
+      <customproperties>
+        <Option/>
+      </customproperties>
     </layer-tree-layer>
     <custom-order enabled="0">
-      <item>points_bead0dcc_c74f_41e5_b706_709363023720</item>
-      <item>legend_disabled_6b25620d_6821_472c_b308_586971779b6f</item>
-      <item>legend_displayed_startup_6505f7b5_aea9_4db7_b3f0_021ac309d508</item>
+      <item>legend_disabled_layer_id</item>
+      <item>legend_displayed_startup_layer_id</item>
+      <item>legend_hidden_startup_layer_id</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings intersection-snapping="0" self-snapping="0" scaleDependencyMode="0" maxScale="0" minScale="0" mode="2" enabled="0" type="1" unit="1" tolerance="12">
+  <snapping-settings mode="2" self-snapping="0" intersection-snapping="0" minScale="0" enabled="0" type="1" tolerance="12" maxScale="0" scaleDependencyMode="0" unit="1">
     <individual-layer-settings>
-      <layer-setting units="1" maxScale="0" minScale="0" enabled="0" type="1" tolerance="12" id="legend_disabled_6b25620d_6821_472c_b308_586971779b6f"/>
-      <layer-setting units="1" maxScale="0" minScale="0" enabled="0" type="1" tolerance="12" id="legend_displayed_startup_6505f7b5_aea9_4db7_b3f0_021ac309d508"/>
-      <layer-setting units="1" maxScale="0" minScale="0" enabled="0" type="1" tolerance="12" id="points_bead0dcc_c74f_41e5_b706_709363023720"/>
+      <layer-setting units="1" minScale="0" enabled="0" type="1" tolerance="12" maxScale="0" id="legend_displayed_startup_layer_id"/>
+      <layer-setting units="1" minScale="0" enabled="0" type="1" tolerance="12" maxScale="0" id="legend_disabled_layer_id"/>
+      <layer-setting units="1" minScale="0" enabled="0" type="1" tolerance="12" maxScale="0" id="legend_hidden_startup_layer_id"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
+  <polymorphicRelations/>
   <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>degrees</units>
     <extent>
@@ -54,7 +63,7 @@
     <rotation>0</rotation>
     <destinationsrs>
       <spatialrefsys>
-        <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+        <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
         <srsid>3452</srsid>
         <srid>4326</srid>
@@ -68,132 +77,27 @@
     <rendermaptile>0</rendermaptile>
     <expressionContextScope/>
   </mapcanvas>
-  <DataPlotly>
-    <Option type="Map">
-      <Option name="dynamic_properties" type="Map">
-        <Option name="name" value="" type="QString"/>
-        <Option name="properties"/>
-        <Option name="type" value="collection" type="QString"/>
-      </Option>
-      <Option name="plot_layout" type="Map">
-        <Option name="additional_info_expression" value="" type="QString"/>
-        <Option name="bar_mode" value="group" type="QString"/>
-        <Option name="bargaps" value="0" type="double"/>
-        <Option name="bins_check" value="false" type="bool"/>
-        <Option name="font_title_color" value="#000000" type="QString"/>
-        <Option name="font_title_family" value="Arial" type="QString"/>
-        <Option name="font_title_size" value="10" type="int"/>
-        <Option name="font_xlabel_color" value="#000000" type="QString"/>
-        <Option name="font_xlabel_family" value="Arial" type="QString"/>
-        <Option name="font_xlabel_size" value="10" type="int"/>
-        <Option name="font_xticks_color" value="#000000" type="QString"/>
-        <Option name="font_xticks_family" value="Arial" type="QString"/>
-        <Option name="font_xticks_size" value="10" type="int"/>
-        <Option name="font_ylabel_color" value="#000000" type="QString"/>
-        <Option name="font_ylabel_family" value="Arial" type="QString"/>
-        <Option name="font_ylabel_size" value="10" type="int"/>
-        <Option name="font_yticks_color" value="#000000" type="QString"/>
-        <Option name="font_yticks_family" value="Arial" type="QString"/>
-        <Option name="font_yticks_size" value="10" type="int"/>
-        <Option name="gridcolor" value="#bdbfc0" type="QString"/>
-        <Option name="legend" value="true" type="bool"/>
-        <Option name="legend_orientation" value="v" type="QString"/>
-        <Option name="legend_title" type="invalid"/>
-        <Option name="polar" type="Map">
-          <Option name="angularaxis" type="Map">
-            <Option name="direction" value="clockwise" type="QString"/>
-          </Option>
-        </Option>
-        <Option name="range_slider" type="Map">
-          <Option name="borderwidth" value="1" type="int"/>
-          <Option name="visible" value="false" type="bool"/>
-        </Option>
-        <Option name="title" value="" type="QString"/>
-        <Option name="x_inv" type="invalid"/>
-        <Option name="x_max" type="invalid"/>
-        <Option name="x_min" type="invalid"/>
-        <Option name="x_title" value="" type="QString"/>
-        <Option name="x_type" value="linear" type="QString"/>
-        <Option name="xaxis" type="invalid"/>
-        <Option name="y_inv" type="invalid"/>
-        <Option name="y_max" type="invalid"/>
-        <Option name="y_min" type="invalid"/>
-        <Option name="y_title" value="" type="QString"/>
-        <Option name="y_type" value="linear" type="QString"/>
-        <Option name="z_title" value="" type="QString"/>
-      </Option>
-      <Option name="plot_properties" type="Map">
-        <Option name="additional_hover_text" type="invalid"/>
-        <Option name="bins" value="10" type="int"/>
-        <Option name="box_orientation" value="v" type="QString"/>
-        <Option name="box_outliers" value="false" type="bool"/>
-        <Option name="box_stat" value="false" type="bool"/>
-        <Option name="color_scale" value="Greys" type="QString"/>
-        <Option name="color_scale_data_defined_in_check" value="false" type="bool"/>
-        <Option name="color_scale_data_defined_in_invert_check" value="false" type="bool"/>
-        <Option name="cont_type" value="fill" type="QString"/>
-        <Option name="contour_type_combo" value="Plein" type="QString"/>
-        <Option name="cumulative" value="false" type="bool"/>
-        <Option name="custom" type="List">
-          <Option value="" type="QString"/>
-        </Option>
-        <Option name="hover_label_position" value="auto" type="QString"/>
-        <Option name="hover_label_text" type="invalid"/>
-        <Option name="hover_text" value="all" type="QString"/>
-        <Option name="in_color" value="#8ebad9" type="QString"/>
-        <Option name="invert_color_scale" value="false" type="bool"/>
-        <Option name="invert_hist" value="increasing" type="QString"/>
-        <Option name="layout_filter_by_atlas" value="false" type="bool"/>
-        <Option name="layout_filter_by_map" value="false" type="bool"/>
-        <Option name="line_combo" value="ligne pleine" type="QString"/>
-        <Option name="line_dash" value="solid" type="QString"/>
-        <Option name="marker" value="markers" type="QString"/>
-        <Option name="marker_size" value="10" type="double"/>
-        <Option name="marker_symbol" value="0" type="int"/>
-        <Option name="marker_type_combo" value="Points" type="QString"/>
-        <Option name="marker_width" value="1" type="double"/>
-        <Option name="name" value="" type="QString"/>
-        <Option name="normalization" value="" type="QString"/>
-        <Option name="opacity" value="1" type="double"/>
-        <Option name="out_color" value="#1f77b4" type="QString"/>
-        <Option name="point_combo" value="" type="QString"/>
-        <Option name="selected_features_only" value="false" type="bool"/>
-        <Option name="show_colorscale_legend" value="false" type="bool"/>
-        <Option name="show_lines" value="true" type="bool"/>
-        <Option name="show_lines_check" value="true" type="bool"/>
-        <Option name="show_mean_line" value="true" type="bool"/>
-        <Option name="violin_box" value="true" type="bool"/>
-        <Option name="violin_side" value="both" type="QString"/>
-        <Option name="visible_features_only" value="false" type="bool"/>
-        <Option name="x_name" value="" type="QString"/>
-        <Option name="y_name" value="" type="QString"/>
-        <Option name="z_name" value="" type="QString"/>
-      </Option>
-      <Option name="plot_type" value="scatter" type="QString"/>
-      <Option name="source_layer_id" value="points_bead0dcc_c74f_41e5_b706_709363023720" type="QString"/>
-    </Option>
-  </DataPlotly>
   <projectModels/>
   <legend updateDrawingOrder="true">
-    <legendlayer showFeatureCount="0" checked="Qt::Unchecked" name="legend_disabled" drawingOrder="-1" open="true">
-      <filegroup hidden="false" open="true">
-        <legendlayerfile isInOverview="0" visible="0" layerid="points_bead0dcc_c74f_41e5_b706_709363023720"/>
+    <legendlayer name="legend_disabled" drawingOrder="-1" open="true" checked="Qt::Unchecked" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="legend_disabled_layer_id" visible="0" isInOverview="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer showFeatureCount="0" checked="Qt::Checked" name="legend_displayed_startup" drawingOrder="-1" open="true">
-      <filegroup hidden="false" open="true">
-        <legendlayerfile isInOverview="0" visible="1" layerid="legend_disabled_6b25620d_6821_472c_b308_586971779b6f"/>
+    <legendlayer name="legend_displayed_startup" drawingOrder="-1" open="true" checked="Qt::Checked" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="legend_displayed_startup_layer_id" visible="1" isInOverview="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer showFeatureCount="0" checked="Qt::Unchecked" name="legend_hidden_startup" drawingOrder="-1" open="true">
-      <filegroup hidden="false" open="true">
-        <legendlayerfile isInOverview="0" visible="0" layerid="legend_displayed_startup_6505f7b5_aea9_4db7_b3f0_021ac309d508"/>
+    <legendlayer name="legend_hidden_startup" drawingOrder="-1" open="true" checked="Qt::Unchecked" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="legend_hidden_startup_layer_id" visible="0" isInOverview="0"/>
       </filegroup>
     </legendlayer>
   </legend>
   <mapViewDocks/>
   <mapViewDocks3D/>
-  <main-annotation-layer autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" refreshOnNotifyMessage="" type="annotation">
+  <main-annotation-layer refreshOnNotifyMessage="" refreshOnNotifyEnabled="0" type="annotation" autoRefreshTime="0" legendPlaceholderImage="" autoRefreshEnabled="0">
     <id>Annotations_f7e4d112_938c_4fe7_8caf_72e75257659c</id>
     <datasource></datasource>
     <keywordList>
@@ -240,16 +144,24 @@
     </resourceMetadata>
     <items/>
     <layerOpacity>1</layerOpacity>
+    <blendMode>0</blendMode>
+    <paintEffect/>
   </main-annotation-layer>
   <projectlayers>
-    <maplayer simplifyDrawingTol="1" minScale="100000000" labelsEnabled="0" styleCategories="AllStyleCategories" simplifyMaxScale="1" readOnly="0" maxScale="0" geometry="Point" hasScaleBasedVisibilityFlag="0" wkbType="Point" simplifyLocal="1" simplifyAlgorithm="0" simplifyDrawingHints="1" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" autoRefreshEnabled="0" type="vector" autoRefreshTime="0">
+    <maplayer readOnly="0" wkbType="Point" geometry="Point" styleCategories="AllStyleCategories" simplifyAlgorithm="0" simplifyLocal="1" legendPlaceholderImage="" maxScale="0" symbologyReferenceScale="-1" type="vector" simplifyDrawingTol="1" simplifyDrawingHints="1" autoRefreshEnabled="0" simplifyMaxScale="1" labelsEnabled="0" refreshOnNotifyMessage="" hasScaleBasedVisibilityFlag="0" refreshOnNotifyEnabled="0" minScale="100000000" autoRefreshTime="0">
       <extent>
         <xmin>3.85400000000000009</xmin>
         <ymin>43.62199999999999989</ymin>
         <xmax>3.8969999999999998</xmax>
         <ymax>43.62199999999999989</ymax>
       </extent>
-      <id>legend_disabled_6b25620d_6821_472c_b308_586971779b6f</id>
+      <wgs84extent>
+        <xmin>3.85400000000000009</xmin>
+        <ymin>43.62199999999999989</ymin>
+        <xmax>3.8969999999999998</xmax>
+        <ymax>43.62199999999999989</ymax>
+      </wgs84extent>
+      <id>legend_displayed_startup_layer_id</id>
       <datasource>./points.geojson</datasource>
       <keywordList>
         <value></value>
@@ -257,7 +169,7 @@
       <layername>legend_displayed_startup</layername>
       <srs>
         <spatialrefsys>
-          <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+          <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
           <srsid>3452</srsid>
           <srid>4326</srid>
@@ -300,40 +212,40 @@
       <expressionfields/>
       <map-layer-style-manager current="défaut">
         <map-layer-style name="default">
-          <qgis styleCategories="AllStyleCategories" simplifyDrawingTol="1" readOnly="0" maxScale="0" simplifyAlgorithm="0" minScale="100000000" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" simplifyMaxScale="1" labelsEnabled="0" version="3.16.15-Hannover" simplifyDrawingHints="1">
+          <qgis simplifyDrawingHints="1" hasScaleBasedVisibilityFlag="0" simplifyMaxScale="1" version="3.16.15-Hannover" minScale="100000000" styleCategories="AllStyleCategories" simplifyLocal="1" readOnly="0" labelsEnabled="0" simplifyAlgorithm="0" simplifyDrawingTol="1" maxScale="0">
             <flags>
               <Identifiable>1</Identifiable>
               <Removable>1</Removable>
               <Searchable>1</Searchable>
             </flags>
-            <temporal durationField="" startField="" endField="" startExpression="" mode="0" enabled="0" durationUnit="min" fixedDuration="0" endExpression="" accumulate="0">
+            <temporal durationField="" startExpression="" durationUnit="min" accumulate="0" endField="" mode="0" enabled="0" endExpression="" startField="" fixedDuration="0">
               <fixedRange>
                 <start/>
                 <end/>
               </fixedRange>
             </temporal>
-            <renderer-v2 forceraster="0" type="singleSymbol" symbollevels="0" enableorderby="0">
+            <renderer-v2 type="singleSymbol" symbollevels="0" forceraster="0" enableorderby="0">
               <symbols>
-                <symbol name="0" type="marker" force_rhr="0" clip_to_extent="1" alpha="1">
-                  <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
-                    <prop k="angle" v="0"/>
-                    <prop k="color" v="243,166,178,255"/>
-                    <prop k="horizontal_anchor_point" v="1"/>
-                    <prop k="joinstyle" v="bevel"/>
-                    <prop k="name" v="circle"/>
-                    <prop k="offset" v="0,0"/>
-                    <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-                    <prop k="offset_unit" v="MM"/>
-                    <prop k="outline_color" v="35,35,35,255"/>
-                    <prop k="outline_style" v="solid"/>
-                    <prop k="outline_width" v="0"/>
-                    <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-                    <prop k="outline_width_unit" v="MM"/>
-                    <prop k="scale_method" v="diameter"/>
-                    <prop k="size" v="2"/>
-                    <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-                    <prop k="size_unit" v="MM"/>
-                    <prop k="vertical_anchor_point" v="1"/>
+                <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+                  <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
+                    <prop v="0" k="angle"/>
+                    <prop v="243,166,178,255" k="color"/>
+                    <prop v="1" k="horizontal_anchor_point"/>
+                    <prop v="bevel" k="joinstyle"/>
+                    <prop v="circle" k="name"/>
+                    <prop v="0,0" k="offset"/>
+                    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+                    <prop v="MM" k="offset_unit"/>
+                    <prop v="35,35,35,255" k="outline_color"/>
+                    <prop v="solid" k="outline_style"/>
+                    <prop v="0" k="outline_width"/>
+                    <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+                    <prop v="MM" k="outline_width_unit"/>
+                    <prop v="diameter" k="scale_method"/>
+                    <prop v="2" k="size"/>
+                    <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+                    <prop v="MM" k="size_unit"/>
+                    <prop v="1" k="vertical_anchor_point"/>
                     <data_defined_properties>
                       <Option type="Map">
                         <Option name="name" value="" type="QString"/>
@@ -376,26 +288,26 @@
               </field>
             </fieldConfiguration>
             <aliases>
-              <alias index="0" field="id" name=""/>
-              <alias index="1" field="name" name=""/>
+              <alias name="" index="0" field="id"/>
+              <alias name="" index="1" field="name"/>
             </aliases>
             <defaults>
-              <default field="id" expression="" applyOnUpdate="0"/>
-              <default field="name" expression="" applyOnUpdate="0"/>
+              <default applyOnUpdate="0" expression="" field="id"/>
+              <default applyOnUpdate="0" expression="" field="name"/>
             </defaults>
             <constraints>
-              <constraint field="id" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
-              <constraint field="name" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
+              <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="id"/>
+              <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="name"/>
             </constraints>
             <constraintExpressions>
-              <constraint field="id" exp="" desc=""/>
-              <constraint field="name" exp="" desc=""/>
+              <constraint desc="" field="id" exp=""/>
+              <constraint desc="" field="name" exp=""/>
             </constraintExpressions>
             <expressionfields/>
             <attributeactions>
               <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
             </attributeactions>
-            <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+            <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
               <columns/>
             </attributetableconfig>
             <conditionalstyles>
@@ -422,39 +334,70 @@
         <map-layer-style name="défaut"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <metadataUrls/>
       <flags>
         <Identifiable>1</Identifiable>
         <Removable>1</Removable>
         <Searchable>1</Searchable>
+        <Private>0</Private>
       </flags>
-      <temporal durationField="" startField="" endField="" startExpression="" mode="0" enabled="0" durationUnit="min" fixedDuration="0" endExpression="" accumulate="0">
+      <temporal startExpression="" durationField="" durationUnit="min" accumulate="0" mode="0" endField="" enabled="0" endExpression="" startField="" fixedDuration="0" limitMode="0">
         <fixedRange>
           <start></start>
           <end></end>
         </fixedRange>
       </temporal>
-      <renderer-v2 forceraster="0" type="singleSymbol" symbollevels="0" enableorderby="0">
+      <renderer-v2 referencescale="-1" type="singleSymbol" symbollevels="0" forceraster="0" enableorderby="0">
         <symbols>
-          <symbol name="0" type="marker" force_rhr="0" clip_to_extent="1" alpha="1">
-            <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="243,166,178,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="solid"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="2"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
+          <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+            <data_defined_properties>
+              <Option type="Map">
+                <Option name="name" value="" type="QString"/>
+                <Option name="properties"/>
+                <Option name="type" value="collection" type="QString"/>
+              </Option>
+            </data_defined_properties>
+            <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
+              <Option type="Map">
+                <Option name="angle" value="0" type="QString"/>
+                <Option name="cap_style" value="square" type="QString"/>
+                <Option name="color" value="243,166,178,255" type="QString"/>
+                <Option name="horizontal_anchor_point" value="1" type="QString"/>
+                <Option name="joinstyle" value="bevel" type="QString"/>
+                <Option name="name" value="circle" type="QString"/>
+                <Option name="offset" value="0,0" type="QString"/>
+                <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="offset_unit" value="MM" type="QString"/>
+                <Option name="outline_color" value="35,35,35,255" type="QString"/>
+                <Option name="outline_style" value="solid" type="QString"/>
+                <Option name="outline_width" value="0" type="QString"/>
+                <Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="outline_width_unit" value="MM" type="QString"/>
+                <Option name="scale_method" value="diameter" type="QString"/>
+                <Option name="size" value="2" type="QString"/>
+                <Option name="size_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="size_unit" value="MM" type="QString"/>
+                <Option name="vertical_anchor_point" value="1" type="QString"/>
+              </Option>
+              <prop v="0" k="angle"/>
+              <prop v="square" k="cap_style"/>
+              <prop v="243,166,178,255" k="color"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="bevel" k="joinstyle"/>
+              <prop v="circle" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="35,35,35,255" k="outline_color"/>
+              <prop v="solid" k="outline_style"/>
+              <prop v="0" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="2" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
               <data_defined_properties>
                 <Option type="Map">
                   <Option name="name" value="" type="QString"/>
@@ -468,7 +411,9 @@
         <rotation/>
         <sizescale/>
       </renderer-v2>
-      <customproperties/>
+      <customproperties>
+        <Option/>
+      </customproperties>
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
@@ -478,7 +423,7 @@
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
-      <legend type="default-vector"/>
+      <legend showLabelLegend="0" type="default-vector"/>
       <referencedLayers/>
       <fieldConfiguration>
         <field name="id" configurationFlags="None">
@@ -497,26 +442,26 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias index="0" field="id" name=""/>
-        <alias index="1" field="name" name=""/>
+        <alias name="" index="0" field="id"/>
+        <alias name="" index="1" field="name"/>
       </aliases>
       <defaults>
-        <default field="id" expression="" applyOnUpdate="0"/>
-        <default field="name" expression="" applyOnUpdate="0"/>
+        <default applyOnUpdate="0" expression="" field="id"/>
+        <default applyOnUpdate="0" expression="" field="name"/>
       </defaults>
       <constraints>
-        <constraint field="id" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
-        <constraint field="name" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
+        <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="id"/>
+        <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="name"/>
       </constraints>
       <constraintExpressions>
-        <constraint field="id" exp="" desc=""/>
-        <constraint field="name" exp="" desc=""/>
+        <constraint desc="" field="id" exp=""/>
+        <constraint desc="" field="name" exp=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
       </attributeactions>
-      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
         <columns/>
       </attributetableconfig>
       <conditionalstyles>
@@ -533,19 +478,26 @@
       <editorlayout>generatedlayout</editorlayout>
       <editable/>
       <labelOnTop/>
+      <reuseLastValue/>
       <dataDefinedFieldProperties/>
       <widgets/>
       <previewExpression></previewExpression>
       <mapTip></mapTip>
     </maplayer>
-    <maplayer simplifyDrawingTol="1" minScale="100000000" labelsEnabled="0" styleCategories="AllStyleCategories" simplifyMaxScale="1" readOnly="0" maxScale="0" geometry="Point" hasScaleBasedVisibilityFlag="0" wkbType="Point" simplifyLocal="1" simplifyAlgorithm="0" simplifyDrawingHints="1" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" autoRefreshEnabled="0" type="vector" autoRefreshTime="0">
+    <maplayer readOnly="0" wkbType="Point" geometry="Point" styleCategories="AllStyleCategories" simplifyAlgorithm="0" simplifyLocal="1" legendPlaceholderImage="" maxScale="0" symbologyReferenceScale="-1" type="vector" simplifyDrawingTol="1" simplifyDrawingHints="1" autoRefreshEnabled="0" simplifyMaxScale="1" labelsEnabled="0" refreshOnNotifyMessage="" hasScaleBasedVisibilityFlag="0" refreshOnNotifyEnabled="0" minScale="100000000" autoRefreshTime="0">
       <extent>
         <xmin>3.85400000000000009</xmin>
         <ymin>43.62199999999999989</ymin>
         <xmax>3.8969999999999998</xmax>
         <ymax>43.62199999999999989</ymax>
       </extent>
-      <id>legend_displayed_startup_6505f7b5_aea9_4db7_b3f0_021ac309d508</id>
+      <wgs84extent>
+        <xmin>3.85400000000000009</xmin>
+        <ymin>43.62199999999999989</ymin>
+        <xmax>3.8969999999999998</xmax>
+        <ymax>43.62199999999999989</ymax>
+      </wgs84extent>
+      <id>legend_hidden_startup_layer_id</id>
       <datasource>./points.geojson</datasource>
       <keywordList>
         <value></value>
@@ -553,7 +505,7 @@
       <layername>legend_hidden_startup</layername>
       <srs>
         <spatialrefsys>
-          <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+          <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
           <srsid>3452</srsid>
           <srid>4326</srid>
@@ -596,40 +548,40 @@
       <expressionfields/>
       <map-layer-style-manager current="défaut">
         <map-layer-style name="default">
-          <qgis styleCategories="AllStyleCategories" simplifyDrawingTol="1" readOnly="0" maxScale="0" simplifyAlgorithm="0" minScale="100000000" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" simplifyMaxScale="1" labelsEnabled="0" version="3.16.15-Hannover" simplifyDrawingHints="1">
+          <qgis simplifyDrawingHints="1" hasScaleBasedVisibilityFlag="0" simplifyMaxScale="1" version="3.16.15-Hannover" minScale="100000000" styleCategories="AllStyleCategories" simplifyLocal="1" readOnly="0" labelsEnabled="0" simplifyAlgorithm="0" simplifyDrawingTol="1" maxScale="0">
             <flags>
               <Identifiable>1</Identifiable>
               <Removable>1</Removable>
               <Searchable>1</Searchable>
             </flags>
-            <temporal durationField="" startField="" endField="" startExpression="" mode="0" enabled="0" durationUnit="min" fixedDuration="0" endExpression="" accumulate="0">
+            <temporal durationField="" startExpression="" durationUnit="min" accumulate="0" endField="" mode="0" enabled="0" endExpression="" startField="" fixedDuration="0">
               <fixedRange>
                 <start/>
                 <end/>
               </fixedRange>
             </temporal>
-            <renderer-v2 forceraster="0" type="singleSymbol" symbollevels="0" enableorderby="0">
+            <renderer-v2 type="singleSymbol" symbollevels="0" forceraster="0" enableorderby="0">
               <symbols>
-                <symbol name="0" type="marker" force_rhr="0" clip_to_extent="1" alpha="1">
-                  <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
-                    <prop k="angle" v="0"/>
-                    <prop k="color" v="243,166,178,255"/>
-                    <prop k="horizontal_anchor_point" v="1"/>
-                    <prop k="joinstyle" v="bevel"/>
-                    <prop k="name" v="circle"/>
-                    <prop k="offset" v="0,0"/>
-                    <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-                    <prop k="offset_unit" v="MM"/>
-                    <prop k="outline_color" v="35,35,35,255"/>
-                    <prop k="outline_style" v="solid"/>
-                    <prop k="outline_width" v="0"/>
-                    <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-                    <prop k="outline_width_unit" v="MM"/>
-                    <prop k="scale_method" v="diameter"/>
-                    <prop k="size" v="2"/>
-                    <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-                    <prop k="size_unit" v="MM"/>
-                    <prop k="vertical_anchor_point" v="1"/>
+                <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+                  <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
+                    <prop v="0" k="angle"/>
+                    <prop v="243,166,178,255" k="color"/>
+                    <prop v="1" k="horizontal_anchor_point"/>
+                    <prop v="bevel" k="joinstyle"/>
+                    <prop v="circle" k="name"/>
+                    <prop v="0,0" k="offset"/>
+                    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+                    <prop v="MM" k="offset_unit"/>
+                    <prop v="35,35,35,255" k="outline_color"/>
+                    <prop v="solid" k="outline_style"/>
+                    <prop v="0" k="outline_width"/>
+                    <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+                    <prop v="MM" k="outline_width_unit"/>
+                    <prop v="diameter" k="scale_method"/>
+                    <prop v="2" k="size"/>
+                    <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+                    <prop v="MM" k="size_unit"/>
+                    <prop v="1" k="vertical_anchor_point"/>
                     <data_defined_properties>
                       <Option type="Map">
                         <Option name="name" value="" type="QString"/>
@@ -672,26 +624,26 @@
               </field>
             </fieldConfiguration>
             <aliases>
-              <alias index="0" field="id" name=""/>
-              <alias index="1" field="name" name=""/>
+              <alias name="" index="0" field="id"/>
+              <alias name="" index="1" field="name"/>
             </aliases>
             <defaults>
-              <default field="id" expression="" applyOnUpdate="0"/>
-              <default field="name" expression="" applyOnUpdate="0"/>
+              <default applyOnUpdate="0" expression="" field="id"/>
+              <default applyOnUpdate="0" expression="" field="name"/>
             </defaults>
             <constraints>
-              <constraint field="id" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
-              <constraint field="name" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
+              <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="id"/>
+              <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="name"/>
             </constraints>
             <constraintExpressions>
-              <constraint field="id" exp="" desc=""/>
-              <constraint field="name" exp="" desc=""/>
+              <constraint desc="" field="id" exp=""/>
+              <constraint desc="" field="name" exp=""/>
             </constraintExpressions>
             <expressionfields/>
             <attributeactions>
               <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
             </attributeactions>
-            <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+            <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
               <columns/>
             </attributetableconfig>
             <conditionalstyles>
@@ -718,39 +670,70 @@
         <map-layer-style name="défaut"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <metadataUrls/>
       <flags>
         <Identifiable>1</Identifiable>
         <Removable>1</Removable>
         <Searchable>1</Searchable>
+        <Private>0</Private>
       </flags>
-      <temporal durationField="" startField="" endField="" startExpression="" mode="0" enabled="0" durationUnit="min" fixedDuration="0" endExpression="" accumulate="0">
+      <temporal startExpression="" durationField="" durationUnit="min" accumulate="0" mode="0" endField="" enabled="0" endExpression="" startField="" fixedDuration="0" limitMode="0">
         <fixedRange>
           <start></start>
           <end></end>
         </fixedRange>
       </temporal>
-      <renderer-v2 forceraster="0" type="singleSymbol" symbollevels="0" enableorderby="0">
+      <renderer-v2 referencescale="-1" type="singleSymbol" symbollevels="0" forceraster="0" enableorderby="0">
         <symbols>
-          <symbol name="0" type="marker" force_rhr="0" clip_to_extent="1" alpha="1">
-            <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="243,166,178,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="solid"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="2"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
+          <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+            <data_defined_properties>
+              <Option type="Map">
+                <Option name="name" value="" type="QString"/>
+                <Option name="properties"/>
+                <Option name="type" value="collection" type="QString"/>
+              </Option>
+            </data_defined_properties>
+            <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
+              <Option type="Map">
+                <Option name="angle" value="0" type="QString"/>
+                <Option name="cap_style" value="square" type="QString"/>
+                <Option name="color" value="243,166,178,255" type="QString"/>
+                <Option name="horizontal_anchor_point" value="1" type="QString"/>
+                <Option name="joinstyle" value="bevel" type="QString"/>
+                <Option name="name" value="circle" type="QString"/>
+                <Option name="offset" value="0,0" type="QString"/>
+                <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="offset_unit" value="MM" type="QString"/>
+                <Option name="outline_color" value="35,35,35,255" type="QString"/>
+                <Option name="outline_style" value="solid" type="QString"/>
+                <Option name="outline_width" value="0" type="QString"/>
+                <Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="outline_width_unit" value="MM" type="QString"/>
+                <Option name="scale_method" value="diameter" type="QString"/>
+                <Option name="size" value="2" type="QString"/>
+                <Option name="size_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="size_unit" value="MM" type="QString"/>
+                <Option name="vertical_anchor_point" value="1" type="QString"/>
+              </Option>
+              <prop v="0" k="angle"/>
+              <prop v="square" k="cap_style"/>
+              <prop v="243,166,178,255" k="color"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="bevel" k="joinstyle"/>
+              <prop v="circle" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="35,35,35,255" k="outline_color"/>
+              <prop v="solid" k="outline_style"/>
+              <prop v="0" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="2" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
               <data_defined_properties>
                 <Option type="Map">
                   <Option name="name" value="" type="QString"/>
@@ -764,7 +747,9 @@
         <rotation/>
         <sizescale/>
       </renderer-v2>
-      <customproperties/>
+      <customproperties>
+        <Option/>
+      </customproperties>
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
@@ -774,7 +759,7 @@
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
-      <legend type="default-vector"/>
+      <legend showLabelLegend="0" type="default-vector"/>
       <referencedLayers/>
       <fieldConfiguration>
         <field name="id" configurationFlags="None">
@@ -793,26 +778,26 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias index="0" field="id" name=""/>
-        <alias index="1" field="name" name=""/>
+        <alias name="" index="0" field="id"/>
+        <alias name="" index="1" field="name"/>
       </aliases>
       <defaults>
-        <default field="id" expression="" applyOnUpdate="0"/>
-        <default field="name" expression="" applyOnUpdate="0"/>
+        <default applyOnUpdate="0" expression="" field="id"/>
+        <default applyOnUpdate="0" expression="" field="name"/>
       </defaults>
       <constraints>
-        <constraint field="id" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
-        <constraint field="name" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
+        <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="id"/>
+        <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="name"/>
       </constraints>
       <constraintExpressions>
-        <constraint field="id" exp="" desc=""/>
-        <constraint field="name" exp="" desc=""/>
+        <constraint desc="" field="id" exp=""/>
+        <constraint desc="" field="name" exp=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
       </attributeactions>
-      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
         <columns/>
       </attributetableconfig>
       <conditionalstyles>
@@ -829,19 +814,26 @@
       <editorlayout>generatedlayout</editorlayout>
       <editable/>
       <labelOnTop/>
+      <reuseLastValue/>
       <dataDefinedFieldProperties/>
       <widgets/>
       <previewExpression></previewExpression>
       <mapTip></mapTip>
     </maplayer>
-    <maplayer simplifyDrawingTol="1" minScale="100000000" labelsEnabled="0" styleCategories="AllStyleCategories" simplifyMaxScale="1" readOnly="0" maxScale="0" geometry="Point" hasScaleBasedVisibilityFlag="0" wkbType="Point" simplifyLocal="1" simplifyAlgorithm="0" simplifyDrawingHints="1" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" autoRefreshEnabled="0" type="vector" autoRefreshTime="0">
+    <maplayer readOnly="0" wkbType="Point" geometry="Point" styleCategories="AllStyleCategories" simplifyAlgorithm="0" simplifyLocal="1" legendPlaceholderImage="" maxScale="0" symbologyReferenceScale="-1" type="vector" simplifyDrawingTol="1" simplifyDrawingHints="1" autoRefreshEnabled="0" simplifyMaxScale="1" labelsEnabled="0" refreshOnNotifyMessage="" hasScaleBasedVisibilityFlag="0" refreshOnNotifyEnabled="0" minScale="100000000" autoRefreshTime="0">
       <extent>
         <xmin>3.85400000000000009</xmin>
         <ymin>43.62199999999999989</ymin>
         <xmax>3.8969999999999998</xmax>
         <ymax>43.62199999999999989</ymax>
       </extent>
-      <id>points_bead0dcc_c74f_41e5_b706_709363023720</id>
+      <wgs84extent>
+        <xmin>3.85400000000000009</xmin>
+        <ymin>43.62199999999999989</ymin>
+        <xmax>3.8969999999999998</xmax>
+        <ymax>43.62199999999999989</ymax>
+      </wgs84extent>
+      <id>legend_disabled_layer_id</id>
       <datasource>./points.geojson</datasource>
       <keywordList>
         <value></value>
@@ -849,7 +841,7 @@
       <layername>legend_disabled</layername>
       <srs>
         <spatialrefsys>
-          <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+          <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
           <srsid>3452</srsid>
           <srid>4326</srid>
@@ -894,39 +886,70 @@
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <metadataUrls/>
       <flags>
         <Identifiable>1</Identifiable>
         <Removable>1</Removable>
         <Searchable>1</Searchable>
+        <Private>0</Private>
       </flags>
-      <temporal durationField="" startField="" endField="" startExpression="" mode="0" enabled="0" durationUnit="min" fixedDuration="0" endExpression="" accumulate="0">
+      <temporal startExpression="" durationField="" durationUnit="min" accumulate="0" mode="0" endField="" enabled="0" endExpression="" startField="" fixedDuration="0" limitMode="0">
         <fixedRange>
           <start></start>
           <end></end>
         </fixedRange>
       </temporal>
-      <renderer-v2 forceraster="0" type="singleSymbol" symbollevels="0" enableorderby="0">
+      <renderer-v2 referencescale="-1" type="singleSymbol" symbollevels="0" forceraster="0" enableorderby="0">
         <symbols>
-          <symbol name="0" type="marker" force_rhr="0" clip_to_extent="1" alpha="1">
-            <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="243,166,178,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="solid"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="2"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
+          <symbol alpha="1" name="0" type="marker" clip_to_extent="1" force_rhr="0">
+            <data_defined_properties>
+              <Option type="Map">
+                <Option name="name" value="" type="QString"/>
+                <Option name="properties"/>
+                <Option name="type" value="collection" type="QString"/>
+              </Option>
+            </data_defined_properties>
+            <layer locked="0" class="SimpleMarker" enabled="1" pass="0">
+              <Option type="Map">
+                <Option name="angle" value="0" type="QString"/>
+                <Option name="cap_style" value="square" type="QString"/>
+                <Option name="color" value="243,166,178,255" type="QString"/>
+                <Option name="horizontal_anchor_point" value="1" type="QString"/>
+                <Option name="joinstyle" value="bevel" type="QString"/>
+                <Option name="name" value="circle" type="QString"/>
+                <Option name="offset" value="0,0" type="QString"/>
+                <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="offset_unit" value="MM" type="QString"/>
+                <Option name="outline_color" value="35,35,35,255" type="QString"/>
+                <Option name="outline_style" value="solid" type="QString"/>
+                <Option name="outline_width" value="0" type="QString"/>
+                <Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="outline_width_unit" value="MM" type="QString"/>
+                <Option name="scale_method" value="diameter" type="QString"/>
+                <Option name="size" value="2" type="QString"/>
+                <Option name="size_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+                <Option name="size_unit" value="MM" type="QString"/>
+                <Option name="vertical_anchor_point" value="1" type="QString"/>
+              </Option>
+              <prop v="0" k="angle"/>
+              <prop v="square" k="cap_style"/>
+              <prop v="243,166,178,255" k="color"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="bevel" k="joinstyle"/>
+              <prop v="circle" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="35,35,35,255" k="outline_color"/>
+              <prop v="solid" k="outline_style"/>
+              <prop v="0" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="2" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
               <data_defined_properties>
                 <Option type="Map">
                   <Option name="name" value="" type="QString"/>
@@ -940,7 +963,9 @@
         <rotation/>
         <sizescale/>
       </renderer-v2>
-      <customproperties/>
+      <customproperties>
+        <Option/>
+      </customproperties>
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
@@ -950,7 +975,7 @@
         </activeChecks>
         <checkConfiguration/>
       </geometryOptions>
-      <legend type="default-vector"/>
+      <legend showLabelLegend="0" type="default-vector"/>
       <referencedLayers/>
       <fieldConfiguration>
         <field name="id" configurationFlags="None">
@@ -969,26 +994,26 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias index="0" field="id" name=""/>
-        <alias index="1" field="name" name=""/>
+        <alias name="" index="0" field="id"/>
+        <alias name="" index="1" field="name"/>
       </aliases>
       <defaults>
-        <default field="id" expression="" applyOnUpdate="0"/>
-        <default field="name" expression="" applyOnUpdate="0"/>
+        <default applyOnUpdate="0" expression="" field="id"/>
+        <default applyOnUpdate="0" expression="" field="name"/>
       </defaults>
       <constraints>
-        <constraint field="id" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
-        <constraint field="name" unique_strength="0" constraints="0" notnull_strength="0" exp_strength="0"/>
+        <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="id"/>
+        <constraint exp_strength="0" notnull_strength="0" constraints="0" unique_strength="0" field="name"/>
       </constraints>
       <constraintExpressions>
-        <constraint field="id" exp="" desc=""/>
-        <constraint field="name" exp="" desc=""/>
+        <constraint desc="" field="id" exp=""/>
+        <constraint desc="" field="name" exp=""/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
       </attributeactions>
-      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
         <columns/>
       </attributetableconfig>
       <conditionalstyles>
@@ -1005,6 +1030,7 @@
       <editorlayout>generatedlayout</editorlayout>
       <editable/>
       <labelOnTop/>
+      <reuseLastValue/>
       <dataDefinedFieldProperties/>
       <widgets/>
       <previewExpression></previewExpression>
@@ -1012,9 +1038,9 @@
     </maplayer>
   </projectlayers>
   <layerorder>
-    <layer id="points_bead0dcc_c74f_41e5_b706_709363023720"/>
-    <layer id="legend_disabled_6b25620d_6821_472c_b308_586971779b6f"/>
-    <layer id="legend_displayed_startup_6505f7b5_aea9_4db7_b3f0_021ac309d508"/>
+    <layer id="legend_disabled_layer_id"/>
+    <layer id="legend_displayed_startup_layer_id"/>
+    <layer id="legend_hidden_startup_layer_id"/>
   </layerorder>
   <properties>
     <Digitizing>
@@ -1104,11 +1130,11 @@
   <Annotations/>
   <Layouts/>
   <Bookmarks/>
-  <ProjectViewSettings UseProjectScales="0">
+  <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmin="3.80240366755738224" ymax="43.64730907620945288" ymin="43.58839479584509036" xmax="3.98300399129338034">
+    <DefaultViewExtent xmin="3.80240366755738224" ymin="43.54682502299334601" xmax="3.98300399129338034" ymax="43.68887884906119723">
       <spatialrefsys>
-        <wkt>GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
+        <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
         <srsid>3452</srsid>
         <srid>4326</srid>
@@ -1120,7 +1146,7 @@
       </spatialrefsys>
     </DefaultViewExtent>
   </ProjectViewSettings>
-  <ProjectTimeSettings cumulativeTemporalRange="0" timeStep="1" frameRate="1" timeStepUnit="h"/>
+  <ProjectTimeSettings timeStep="1" timeStepUnit="h" frameRate="1" cumulativeTemporalRange="0"/>
   <ProjectDisplaySettings>
     <BearingFormat id="bearing">
       <Option type="Map">
