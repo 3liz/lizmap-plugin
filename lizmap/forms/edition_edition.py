@@ -68,6 +68,14 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
             self.group_box_snapping
         ]
+        self.lwc_versions[LwcVersions.Lizmap_3_6] = [
+            self.button_wizard_group,
+        ]
+
+        # Temporary until LWC 3.6.1
+        # Edit also in plugin.py file
+        # Edit also the changelog file
+        self.button_wizard_group.setVisible(False)
 
         # Wizard ACL group
         icon = QIcon(resources_path('icons', 'user_group.svg'))

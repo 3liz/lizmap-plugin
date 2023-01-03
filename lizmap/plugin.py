@@ -293,6 +293,12 @@ class Lizmap:
         self.populate_lwc_combo()
         self.lwc_version_changed()
 
+        # Temporary until LWC 3.6.1
+        # Edit also in forms/edition_edition.py file
+        # Edit also the changelog file
+        self.dlg.button_wizard_group_visibility_project.setVisible(False)
+        self.dlg.button_wizard_group_visibility_layer.setVisible(False)
+
         self.dlg.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
         # noinspection PyUnresolvedReferences

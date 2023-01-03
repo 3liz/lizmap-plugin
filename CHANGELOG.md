@@ -2,13 +2,13 @@
 
 ## Unreleased
 
-* Add a new wizard helper for setting Lizmap Web Client groups in the plugin
-* Check the login and server URL before saving in the authentication database
-* Internal code refactoring about signals and slots in the plugin
-* Make the default version 3.6 if no settings was found, instead of 3.5
-* Review the server information panel
+* Fix issue when reading the CFG file about the new configuration legend image option.
 * Fix the theme selector in the dataviz panel
 * Add a converter from Lizmap HTML popup to QGIS HTML popup
+* Check the login and server URL before saving in the authentication database
+* Make the default version Lizmap Web Client 3.6 if no settings was found, instead of 3.5
+* Review the server information panel, it's now more readable
+* Internal code refactoring about signals and slots in the plugin
 
 ## 3.9.8 - 2022-12-08
 
