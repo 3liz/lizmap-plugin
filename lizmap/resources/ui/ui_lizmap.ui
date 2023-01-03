@@ -701,7 +701,7 @@ QListWidget::item::selected {
                     <item>
                      <widget class="QPushButton" name="button_wizard_group_visibility_project">
                       <property name="text">
-                       <string>WIZARD</string>
+                       <string notr="true">WIZARD</string>
                       </property>
                      </widget>
                     </item>

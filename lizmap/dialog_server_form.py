@@ -284,7 +284,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         error = qgis_info.get('error')
         if error:
             if error == "NO_ACCESS":
-                message = tr("The given user does not have the right <b>Lizmap Admin access</b>'.")
+                message = tr("The given user does not have the right <b>Lizmap Admin access</b>.")
                 message += "<br><br>"
                 message += tr('Right') + " : lizmap.admin.access"
                 return False, message

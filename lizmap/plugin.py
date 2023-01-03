@@ -284,10 +284,10 @@ class Lizmap:
             self.dlg.combo_legend_option.model().item(
                 self.dlg.combo_legend_option.findData('expand_at_startup')
             ),
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_7] = [
             self.dlg.button_wizard_group_visibility_project,
             self.dlg.button_wizard_group_visibility_layer,
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_7] = [
         ]
 
         self.populate_lwc_combo()
@@ -1170,8 +1170,9 @@ class Lizmap:
                 self.dlg,
                 tr('Upgrade your Lizmap instance'),
                 tr(
-                    "Your current Lizmap instance, running version {} is not providing the needed information. "
-                    "You should upgrade your Lizmap instance.").format(json_metadata["info"]["version"]),
+                    "Your current Lizmap instance, running version {}, is not providing the needed information. "
+                    "You should upgrade your Lizmap instance to at least 3.6.1 to use this wizard."
+                ).format(json_metadata["info"]["version"]),
                 QMessageBox.Ok
             )
             return None
