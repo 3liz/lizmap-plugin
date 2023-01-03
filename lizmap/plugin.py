@@ -129,7 +129,14 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
-from lizmap.plugin_manager import PluginManager
+
+try:
+    from lizmap.plugin_manager import PluginManager
+    QGIS_PLUGIN_MANAGER = True
+except ModuleNotFoundError:
+    # In a standalone application
+    QGIS_PLUGIN_MANAGER = False
+
 from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
@@ -1720,7 +1727,7 @@ class Lizmap:
                 if item.get('widget'):
                     if key in jsonLayers[json_key]:
 
-                        if key == 'legend_image_option':
+                        if key == 'legend_image_option' and 'noLegendImage' in jsonLayers[json_key]:
                             if self.myDic[itemKey].get('legend_image_option'):
                                 # The key is already set before with noLegendImage
                                 LOGGER.info(
@@ -1757,7 +1764,7 @@ class Lizmap:
                                 self.myDic[itemKey][key] = jsonLayers[json_key][key]
 
                 else:
-                    if key == 'noLegendImage':
+                    if key == 'noLegendImage' and 'noLegendImage' in jsonLayers.get(json_key):
                         tmp = 'hide_at_startup'  # Default value
                         if jsonLayers[json_key].get('noLegendImage') == 'True':
                             tmp = 'disabled'
@@ -3002,15 +3009,19 @@ class Lizmap:
             self.populate_lwc_combo()
 
             # QGIS Plugin manager
-            # noinspection PyBroadException
-            try:
-                plugin_manager = PluginManager()
-                self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
-                self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
-                self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
-            except Exception as e:
-                # Core QGIS plugin manager API might not be well stable ?
-                LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
+            qgis_plugin_manager = None
+            if QGIS_PLUGIN_MANAGER:
+                # noinspection PyBroadException
+                try:
+                    plugin_manager = PluginManager()
+                    self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
+                    self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
+                    self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
+                    qgis_plugin_manager = True
+                except Exception as e:
+                    # Core QGIS plugin manager API might not be well stable ?
+                    LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
+            if not qgis_plugin_manager:
                 self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
                 self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
                 self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
