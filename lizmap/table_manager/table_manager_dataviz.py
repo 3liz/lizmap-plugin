@@ -23,12 +23,12 @@ from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.definitions import ServerComboData
-from lizmap.forms.table_manager import TableManager
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import (
     plugin_name,
     resources_path,
 )
+from lizmap.table_manager.table_manager import TableManager
 from lizmap.tools import to_bool
 
 LOGGER = logging.getLogger(plugin_name())
@@ -48,10 +48,9 @@ class TableManagerDataviz(TableManager):
     """
 
     def __init__(
-        self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, edit_button, up_button, down_button,
-            server_manager):
-        TableManager.__init__(
-            self, parent, definitions, edition, table, None, edit_button, up_button, down_button, server_manager)
+            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, edit_button, up_button,
+            down_button):
+        TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
 
         label = tr(
             "This plot is a preview, using the <b>data</b> and the <b>project</b> currently stored "

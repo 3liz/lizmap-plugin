@@ -73,7 +73,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtWidgets import QLineEdit
 
-from lizmap.forms.table_manager_layouts import TableManagerLayouts
+from lizmap.table_manager.table_manager_layouts import TableManagerLayouts
 
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
@@ -128,13 +128,13 @@ from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
 from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
-from lizmap.forms.table_manager import TableManager
-from lizmap.forms.table_manager_dataviz import TableManagerDataviz
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
+from lizmap.table_manager.table_manager import TableManager
+from lizmap.table_manager.table_manager_dataviz import TableManagerDataviz
 
 try:
     from lizmap.plugin_manager import PluginManager
@@ -1105,7 +1105,6 @@ class Lizmap:
                         item['editButton'],
                         item.get('upButton'),
                         item.get('downButton'),
-                        self.server_manager,
                     )
                 elif key == 'layouts':
                     item['manager'] = TableManagerLayouts(
@@ -1116,7 +1115,6 @@ class Lizmap:
                         item['editButton'],
                         item.get('upButton'),
                         item.get('downButton'),
-                        self.server_manager,
                     )
                 else:
                     item['manager'] = TableManager(
@@ -1128,7 +1126,6 @@ class Lizmap:
                         item['editButton'],
                         item.get('upButton'),
                         item.get('downButton'),
-                        self.server_manager,
                     )
 
                 control = item.get('upButton')
@@ -1279,6 +1276,7 @@ class Lizmap:
 
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """ Open the group wizard and set the output in the line edit. """
+        # Duplicated in base_edition_dialog.py, open_wizard_dialog()
         url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not url:
             QMessageBox.critical(
@@ -1312,6 +1310,7 @@ class Lizmap:
                 QMessageBox.Ok
             )
             return None
+        # End of duplicated
 
         current_acl = line_edit.text()
         wizard_dialog = WizardGroupDialog(helper, current_acl, acl['groups'])

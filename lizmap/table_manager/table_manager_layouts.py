@@ -1,17 +1,17 @@
 """ Table manager for layouts. """
 
 import logging
+
 from enum import Enum
+from typing import List, Type
 
-from typing import Type, List
-
-from PyQt5.QtCore import Qt
 from qgis.core import QgsProject
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.base import BaseDefinitions
-from lizmap.forms.table_manager import TableManager
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
+from lizmap.table_manager.table_manager import TableManager
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -26,10 +26,9 @@ class TableManagerLayouts(TableManager):
     """ Table manager for layouts. """
 
     def __init__(
-        self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, edit_button, up_button, down_button,
-            server_manager):
-        TableManager.__init__(
-            self, parent, definitions, edition, table, None, edit_button, up_button, down_button, server_manager)
+            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, edit_button, up_button,
+            down_button):
+        TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
 
     @staticmethod
     def label_dictionary_list() -> str:

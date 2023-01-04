@@ -16,18 +16,18 @@ from qgis.PyQt.QtWidgets import (
     QPlainTextEdit,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import (
     DOC_URL,
     ONLINE_HELP_LANGUAGES,
     LwcVersions,
+    ServerComboData,
 )
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.wizard_group_dialog import WizardGroupDialog
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -425,18 +425,18 @@ class BaseEditionDialog(QDialog):
 
     def open_wizard_dialog(self, helper: str):
         """ Internal function to open the wizard ACL. """
-        # Duplicated in plugin.py
-        url = QgsSettings().value('lizmap/instance_target_url', str)
+        # Duplicated in plugin.py, _open_wizard_group()
+        url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not url:
             QMessageBox.critical(
                 self.dlg,
-                tr('Missing server'),
-                tr('You first need to select a server in the left panel.'),
+                tr('Server URL Error'),
+                tr("You must have selected a server before opening the wizard, on the left panel."),
                 QMessageBox.Ok
             )
-            return
+            return None
 
-        json_metadata = self.server_manager.metadata_for_url(url)
+        json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not json_metadata:
             QMessageBox.critical(
                 self.dlg,
@@ -453,8 +453,9 @@ class BaseEditionDialog(QDialog):
                 self.dlg,
                 tr('Upgrade your Lizmap instance'),
                 tr(
-                    "Your current Lizmap instance, running version {} is not providing the needed information. "
-                    "You should upgrade your Lizmap instance.").format(json_metadata["info"]["version"]),
+                    "Your current Lizmap instance, running version {}, is not providing the needed information. "
+                    "You should upgrade your Lizmap instance to at least 3.6.1 to use this wizard."
+                ).format(json_metadata["info"]["version"]),
                 QMessageBox.Ok
             )
             return None

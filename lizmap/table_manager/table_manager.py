@@ -38,7 +38,7 @@ class TableManager:
 
     def __init__(
             self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
-            up_button, down_button, server_manager):
+            up_button, down_button):
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
