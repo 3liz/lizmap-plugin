@@ -267,8 +267,8 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
             self.dlg.label_atlas_34,
-            self.dlg.list_group_visiblity,
-            self.dlg.activate_first_maptheme,
+            self.dlg.list_group_visibility,
+            self.dlg.activate_first_map_theme,
             self.dlg.activate_drawing_tools,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_5] = [
@@ -277,7 +277,7 @@ class Lizmap:
             ),
             self.dlg.label_filter_polygon,
             self.dlg.filter_polygon_by_user,
-            self.dlg.checkbox_scale_overiew_map,
+            self.dlg.checkbox_scale_overview_map,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [
             self.dlg.checkbox_popup_allow_download,
@@ -429,7 +429,7 @@ class Lizmap:
         self.dlg.gb_baselayersOptions.setStyleSheet(self.style_sheet)
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
-        self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overiew_map
+        self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
         self.global_options['mapScales']['widget'] = self.dlg.inMapScales
         self.global_options['minScale']['widget'] = self.dlg.inMinScale
         self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
@@ -453,7 +453,7 @@ class Lizmap:
         self.global_options['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
         self.global_options['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
         self.global_options['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
-        self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_maptheme
+        self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_map_theme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
         self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
@@ -489,7 +489,7 @@ class Lizmap:
         self.layer_options_list['minScale']['widget'] = None
         self.layer_options_list['maxScale']['widget'] = None
         self.layer_options_list['toggled']['widget'] = self.dlg.cbToggled
-        self.layer_options_list['group_visibility']['widget'] = self.dlg.list_group_visiblity
+        self.layer_options_list['group_visibility']['widget'] = self.dlg.list_group_visibility
         self.layer_options_list['popup']['widget'] = self.dlg.checkbox_popup
         self.layer_options_list['popupFrame']['widget'] = self.dlg.popup_frame
         self.layer_options_list['popupTemplate']['widget'] = None
@@ -747,7 +747,7 @@ class Lizmap:
             'the layer will be visible only for these groups.\n'
             'Use Lizmap Web Client group IDs and not labels.')
         self.dlg.label_group_visibility.setToolTip(tooltip)
-        self.dlg.list_group_visiblity.setToolTip(tooltip)
+        self.dlg.list_group_visibility.setToolTip(tooltip)
 
         self.dlg.button_generate_html_table.setToolTip(tr(
             "A default HTML table will be generated in the layer maptip. The layout will be very similar to the auto "
@@ -961,7 +961,7 @@ class Lizmap:
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
 
         # clear log button clicked
-        self.dlg.btClearlog.clicked.connect(self.clear_log)
+        self.dlg.button_clear_log.clicked.connect(self.clear_log)
 
         # Group wizard
         icon = QIcon(resources_path('icons', 'user_group.svg'))
@@ -1220,7 +1220,7 @@ class Lizmap:
 
     def open_wizard_group_layer(self):
         """ Open the group wizard for the layer visibility. """
-        line_edit = self.dlg.list_group_visiblity
+        line_edit = self.dlg.list_group_visibility
         layer = self._current_selected_layer()
         if not layer:
             return

@@ -46,7 +46,7 @@ class AttributeTableDefinitions(BaseDefinitions):
         }
         self._layer_config['hideAsChild'] = {
             'type': InputType.CheckBox,
-            'header': tr('Hide in child subpanels'),
+            'header': tr('Hide in child sub-panels'),
             'default': False,
             'tooltip': tr('Do not display the layer in a relation when the layer is a child.')
         }

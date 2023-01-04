@@ -694,7 +694,7 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_dataviz(data):
-        """Read legacy dataviz without the traces config."""
+        """Read legacy dataviz without the trace config."""
 
         # Todo, we should read the definition file
         legacy = [
@@ -853,7 +853,9 @@ class TableManager:
                                     break
                             else:
                                 default_list_value = definition.get('default').value['data']
-                                msg = 'Error with value = "{}" in list "{}", set default to {}'.format(value, key, default_list_value)
+                                msg = (
+                                    'Error with value = "{}" in list "{}", set default to {}'.format(
+                                        value, key, default_list_value))
                                 LOGGER.warning(msg)
                                 value = default_list_value
                         layer_data[key] = value

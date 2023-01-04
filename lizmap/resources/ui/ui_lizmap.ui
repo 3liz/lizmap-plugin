@@ -115,7 +115,7 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Baselayers</string>
+           <string>Base-layers</string>
           </property>
          </item>
          <item>
@@ -292,7 +292,7 @@ QListWidget::item::selected {
              <item row="0" column="1">
               <widget class="QLabel" name="label_27">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mailinglist &lt;a href=&quot;https://lists.osgeo.org/mailman/listinfo/lizmap&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;mail&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mailing-list &lt;a href=&quot;https://lists.osgeo.org/mailman/listinfo/lizmap&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;mail&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="openExternalLinks">
                 <bool>true</bool>
@@ -533,7 +533,7 @@ QListWidget::item::selected {
            <item>
             <widget class="QLabel" name="label_qgis_different_version">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;This project has been saved previously with {previous_version} which is different than {current_version}. Please check the version on QGIS server.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;This project has been saved previously with {previous_version} which is different from {current_version}. Please check the version on QGIS server.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -543,7 +543,7 @@ QListWidget::item::selected {
            <item>
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>You can add our Lizmap server URL to keep track of the its version number.</string>
+              <string>You can add our Lizmap server URL to keep track of its version number.</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -1208,7 +1208,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </layout>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkbox_scale_overiew_map">
+                   <widget class="QCheckBox" name="checkbox_scale_overview_map">
                     <property name="toolTip">
                      <string/>
                     </property>
@@ -1229,7 +1229,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item row="0" column="1">
                    <widget class="QLabel" name="label_75">
                     <property name="text">
-                     <string notr="true">This is currently an experimental feature. Only the &quot;.qgs&quot; and the &quot;.qgs.cfg&quot; will be transfered. For other kind of files, a proper FTP client must be used.</string>
+                     <string notr="true">This is currently an experimental feature. Only the &quot;.qgs&quot; and the &quot;.qgs.cfg&quot; will be transferred. For other kind of files, a proper FTP client must be used.</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -1445,7 +1445,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QCheckBox" name="activate_first_maptheme">
+                   <widget class="QCheckBox" name="activate_first_map_theme">
                     <property name="text">
                      <string>Activate first map theme on startup</string>
                     </property>
@@ -1602,7 +1602,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            <item>
                             <widget class="QCheckBox" name="cbGroupAsLayer">
                              <property name="toolTip">
-                              <string>Useful for groups, we want to manage all layers inluded in the group as a single layer</string>
+                              <string>Useful for groups if we want to manage all layers included in the group as a single layer</string>
                              </property>
                              <property name="text">
                               <string>Group as layer</string>
@@ -1641,7 +1641,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLineEdit" name="list_group_visiblity"/>
+                            <widget class="QLineEdit" name="list_group_visibility"/>
                            </item>
                            <item>
                             <widget class="QPushButton" name="button_wizard_group_visibility_layer">
@@ -3057,7 +3057,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <widget class="QCheckBox" name="cbLimitDataToBbox">
                     <property name="toolTip">
-                     <string>The attribute table will only show the data for the map extent, and only if the layer if visible at current map scale. Useful for big datasets.</string>
+                     <string>The attribute table will only show the data for the map extent, and only if the layer is visible at current map scale. Useful for big datasets.</string>
                     </property>
                     <property name="styleSheet">
                      <string notr="true"/>
@@ -3621,7 +3621,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_dataviz">
                  <property name="text">
-                  <string>Lizmap can use data from project layers to draw and display charts, such as bar charts, pie charts or scatter plots. You can add a layer in the following table and choose the type of chart and which data field must be used. We recommand to use PostGIS views or virtual layers to prepare the data, and to keep data small.</string>
+                  <string>Lizmap can use data from project layers to draw and display charts, such as bar charts, pie charts or scatter plots. You can add a layer in the following table and choose the type of chart and which data field must be used. We recommend to use PostGIS views or virtual layers to prepare the data, and to keep data small.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -3732,7 +3732,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        <item>
                         <widget class="QLabel" name="label_filtered_plot">
                          <property name="text">
-                          <string>You have checked the 'Popup for children'. The plot for all features is currently displayed.</string>
+                          <string>You have checked the checkbox 'Popup for children'. However, the plot for all features is currently displayed.</string>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
@@ -3749,7 +3749,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                          <property name="url">
                           <url>
-                           <string>about:blank</string>
+                           <string notr="true">about:blank</string>
                           </url>
                          </property>
                         </widget>
@@ -3885,7 +3885,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_41">
                  <property name="text">
-                  <string>Add layers here to let the user play an animation based on an date or date/time attribute value. Similar to QGIS Timemanager plugin, but web based.</string>
+                  <string>Add layers here to let the user play an animation based on a date or date/time attribute value. Similar to QGIS time manager, but web based.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -4085,7 +4085,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_atlas_34">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Several layers can be added with Lizmap Web Client 3.4 and above. The auto-play checkbox is used only on the first layer in the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Several layers can be added with Lizmap Web Client 3.4 and above. The autoplay checkbox is used only on the first layer in the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -4166,7 +4166,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <widget class="QCheckBox" name="atlasAutoPlay">
                     <property name="toolTip">
-                     <string>If you want to launch the auto-play mode when you open your project</string>
+                     <string>If you want to launch the autoplay mode when you open your project</string>
                     </property>
                     <property name="text">
                      <string>Auto-play on startup</string>
@@ -4207,7 +4207,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="btClearlog">
+            <widget class="QPushButton" name="button_clear_log">
              <property name="text">
               <string>Clear log</string>
              </property>
@@ -4313,7 +4313,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>inSourceRepository</tabstop>
   <tabstop>inSourceProject</tabstop>
   <tabstop>cbHideGroupCheckbox</tabstop>
-  <tabstop>activate_first_maptheme</tabstop>
+  <tabstop>activate_first_map_theme</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>cbOsmMapnik</tabstop>
   <tabstop>cbOsmStamenToner</tabstop>
@@ -4369,7 +4369,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>add_filter_form_button</tabstop>
   <tabstop>remove_filter_form_button</tabstop>
   <tabstop>outLog</tabstop>
-  <tabstop>btClearlog</tabstop>
+  <tabstop>button_clear_log</tabstop>
   <tabstop>mGroupBox_2</tabstop>
   <tabstop>mGroupBox_4</tabstop>
   <tabstop>checkbox_save_project</tabstop>

@@ -221,7 +221,8 @@ class DatavizDefinitions(BaseDefinitions):
             'default': '',
             'tooltip': tr(
                 'You can choose or not a color field to customize the color of each category of your chart. '
-                'Choose the field of your layer which contains the colors you want to use. The color can be written like "red" or "blue" but it can be an HTML color code like "#01DFD7" for example.')
+                'Choose the field of your layer which contains the colors you want to use. The color can be written '
+                'like "red" or "blue" but it can be an HTML color code like "#01DFD7" for example.')
         }
         self._layer_config['z_field'] = {
             'plural': 'z_field_{}',
@@ -242,7 +243,8 @@ class DatavizDefinitions(BaseDefinitions):
             'type': InputType.Json,
             'header': tr('Layout'),
             'default': '',
-            'tooltip': tr('You can add here a JSON configuration to override the default layout object created by Lizmap.'),
+            'tooltip': tr(
+                'You can add here a JSON configuration to override the default layout object created by Lizmap.'),
             'version': LwcVersions.Lizmap_3_4,
         }
         self._layer_config['popup_display_child_plot'] = {
@@ -252,7 +254,8 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr(
                 'If you check this checkbox, the graph will be shown in the pop-up of the parent layer, '
                 'with data filtered according to a QGIS relation between the graph layer and the parent layer. '
-                'For example show the repartition between men and women employment rate filtered by the town selected in the pop-up.')
+                'For example show the repartition between men and women employment rate filtered by the town selected '
+                'in the pop-up.')
         }
         self._layer_config['stacked'] = {
             'type': InputType.CheckBox,
