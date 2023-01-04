@@ -73,7 +73,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtWidgets import QLineEdit
 
-from lizmap.table_manager.table_manager_layouts import TableManagerLayouts
+from lizmap.table_manager.layouts import TableManagerLayouts
 
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
@@ -133,8 +133,8 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
-from lizmap.table_manager.table_manager import TableManager
-from lizmap.table_manager.table_manager_dataviz import TableManagerDataviz
+from lizmap.table_manager.base import TableManager
+from lizmap.table_manager.dataviz import TableManagerDataviz
 
 try:
     from lizmap.plugin_manager import PluginManager

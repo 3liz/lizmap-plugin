@@ -28,7 +28,7 @@ from lizmap.qgis_plugin_tools.tools.resources import (
     plugin_name,
     resources_path,
 )
-from lizmap.table_manager.table_manager import TableManager
+from lizmap.table_manager.base import TableManager
 from lizmap.tools import to_bool
 
 LOGGER = logging.getLogger(plugin_name())

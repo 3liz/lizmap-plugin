@@ -11,7 +11,7 @@ from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.base import BaseDefinitions
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
-from lizmap.table_manager.table_manager import TableManager
+from lizmap.table_manager.base import TableManager
 
 LOGGER = logging.getLogger(plugin_name())
 
