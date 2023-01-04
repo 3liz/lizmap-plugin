@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.9.9 - 2023-01-04
+
 * Fix issue when reading the CFG file about the new configuration legend image option.
 * Fix the theme selector in the dataviz panel
 * Add a converter from Lizmap HTML popup to QGIS HTML popup
