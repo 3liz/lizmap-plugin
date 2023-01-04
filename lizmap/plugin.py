@@ -293,7 +293,9 @@ class Lizmap:
         ]
 
         self.populate_lwc_combo()
-        self.lwc_version_changed()
+
+        # Keep for a few months, 04/01/2022
+        QgsSettings().remove('lizmap/instance_target_url_authid')
 
         # Temporary until LWC 3.6.1
         # Edit also in forms/edition_edition.py file
@@ -765,6 +767,7 @@ class Lizmap:
             if index:
                 self.dlg.server_combo.setCurrentIndex(index)
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
+        self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
         self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
         self.refresh_combo_repositories()
@@ -876,6 +879,9 @@ class Lizmap:
             # We come from a higher version of Lizmap (from dev to master)
             current_version = DEFAULT_LWC_VERSION
 
+        LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
+        QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+
         found = False
         for lwc_version, items in self.lwc_versions.items():
             if found:
@@ -907,8 +913,6 @@ class Lizmap:
             manager = self.layers_table[key].get('manager')
             if manager:
                 manager.set_lwc_version(current_version)
-
-        QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
 
         # Compare the LWC version with the current QGIS Desktop version and the release JSON file
         version_file = os.path.join(lizmap_user_folder(), 'released_versions.json')
@@ -1339,7 +1343,8 @@ class Lizmap:
         json_file = '{}.cfg'.format(self.project.fileName())
         json_options = {}
         if os.path.exists(json_file):
-            LOGGER.info('Reading the CFG file')
+            target_version = self.dlg.combo_lwc_version.currentData()
+            LOGGER.info('Reading the CFG file with a LWC target version {}'.format(target_version.value))
             cfg_file = open(json_file, 'r')
             json_file_reader = cfg_file.read()
             # noinspection PyBroadException
@@ -2600,7 +2605,6 @@ class Lizmap:
                         continue
 
                     target_version = self.dlg.combo_lwc_version.currentData()
-                    LOGGER.info("Reading current Lizmap Web Client target version {}".format(target_version.value))
                     max_version = val.get('max_version')
                     if max_version and target_version > max_version:
                         LOGGER.info("Skipping key '{}' because of max_version.".format(key))
