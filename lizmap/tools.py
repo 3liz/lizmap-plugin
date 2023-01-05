@@ -228,7 +228,8 @@ def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List
     If one or more field couldn't be found in the layer fields/alias, returned in errors.
     If all fields could be converted, an empty list is returned.
     """
-    pattern = re.compile(r"(\{\s?\$([a-zA-Z\s]+)\s?\})")
+    # An alias can have accent, space etc...
+    pattern = re.compile(r"(\{\s?\$([_\w\s]+)\s?\})")
     lizmap_variables = pattern.findall(content)
     fields = layer.fields()
 

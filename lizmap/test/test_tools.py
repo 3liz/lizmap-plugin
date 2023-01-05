@@ -42,39 +42,69 @@ class TestTools(unittest.TestCase):
         self.assertEqual("030708", format_version_integer("3.7.8-alpha"))
         self.assertEqual("000000", format_version_integer("master"))
 
-    def test_convert_lizmap_popup(self):
-        """ Test to convert a popup. """
+    def _layer_lizmap_popup(self) -> QgsVectorLayer:
+        """ Internal function for setting up the layer. """
         layer = QgsVectorLayer('Point?crs=epsg:4326', 'Layer', "memory")
         self.assertTrue(layer.startEditing())
+
+        # Normal field
         field_1 = QgsField("name", QVariant.String)
         layer.addAttribute(field_1)
+
+        # Field with alias
         field_2 = QgsField("longfield", QVariant.String)
         field_2.setAlias("an alias")
         layer.addAttribute(field_2)
-        self.assertTrue(layer.commitChanges())
 
-        # First one
+        # Field with underscore, accents, digit
+        field_3 = QgsField("îD_cödÊ_1", QVariant.String)
+        layer.addAttribute(field_3)
+
+        self.assertTrue(layer.commitChanges())
+        return layer
+
+    def test_convert_lizmap_popup_1(self):
+        """ Normal test about the Lizmap popup. """
+        layer = self._layer_lizmap_popup()
+
         text = '''
-<p style="background-color:{$color}">
-    <b>LINE</b> : { $an alias } - {$name}
-<p/>'''
+        <p style="background-color:{$color}">
+            <b>LINE</b> : { $an alias } - {$name}
+        </p>'''
         expected = '''
-<p style="background-color:{$color}">
-    <b>LINE</b> : [% "longfield" %] - [% "name" %]
-<p/>'''
+        <p style="background-color:{$color}">
+            <b>LINE</b> : [% "longfield" %] - [% "name" %]
+        </p>'''
         result = convert_lizmap_popup(text, layer)
         self.assertEqual(expected, result[0])
         self.assertListEqual(['color'], result[1])
 
-        # Second one
+    def test_convert_lizmap_popup_2(self):
+        """ Normal test with an alias. """
+        layer = self._layer_lizmap_popup()
         text = '''
-        <p">
+        <p>
             <b>LINE</b> : { $an alias } - {$name}
-        <p/>'''
+        </p>'''
         expected = '''
-        <p">
+        <p>
             <b>LINE</b> : [% "longfield" %] - [% "name" %]
-        <p/>'''
+        </p>'''
+        result = convert_lizmap_popup(text, layer)
+        self.assertEqual(expected, result[0])
+        self.assertListEqual([], result[1])
+
+    def test_convert_lizmap_popup_3(self):
+        """ Test with accents, digit, underscores. """
+        layer = self._layer_lizmap_popup()
+        text = '''
+        <a href="media/pdf/{$îD_cödÊ_1}.pdf" target="_blank">
+            Link
+        </a>'''
+        expected = '''
+        <a href="media/pdf/[% "îD_cödÊ_1" %].pdf" target="_blank">
+            Link
+        </a>'''
         result = convert_lizmap_popup(text, layer)
         self.assertEqual(expected, result[0])
         self.assertListEqual([], result[1])

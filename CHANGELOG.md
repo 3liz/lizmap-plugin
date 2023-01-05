@@ -6,6 +6,8 @@
   * Add a preview about a plot in the dataviz panel
   * Better error message if the credentials to connect to Lizmap Web Client is wrong
   * Group wizard
+* Fix the converter from Lizmap HTML popup to QGIS HTML popup when the alias/field has an underscore or other 
+  accented characters.
 
 ## 3.9.10 - 2023-01-05
 
