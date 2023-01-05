@@ -300,8 +300,10 @@ class Lizmap:
         # Temporary until LWC 3.6.1
         # Edit also in forms/edition_edition.py file
         # Edit also the changelog file
-        self.dlg.button_wizard_group_visibility_project.setVisible(False)
-        self.dlg.button_wizard_group_visibility_layer.setVisible(False)
+        self.dlg.button_wizard_group_visibility_project.setVisible(self.is_dev_version)
+        self.dlg.button_wizard_group_visibility_layer.setVisible(self.is_dev_version)
+        self.dlg.stacked_dataviz_preview.setVisible(self.is_dev_version)
+        self.dlg.label_helper_dataviz.setVisible(self.is_dev_version)
 
         self.dlg.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))

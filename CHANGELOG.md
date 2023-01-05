@@ -6,8 +6,12 @@
   * Add a preview about a plot in the dataviz panel
   * Better error message if the credentials to connect to Lizmap Web Client is wrong
   * Group wizard
+
+## 3.9.10 - 2023-01-05
+
 * Fix the dropdown menu about the Lizmap Web Client target version
 * Reduce some logs
+* Review some strings in English
 
 ## 3.9.9 - 2023-01-04
 
