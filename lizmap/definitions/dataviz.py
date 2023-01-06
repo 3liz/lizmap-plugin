@@ -158,7 +158,14 @@ class DatavizDefinitions(BaseDefinitions):
             'type': InputType.Text,
             'header': tr('Title'),
             'default': '',
-            'tooltip': tr('The title of the graph')
+            'tooltip': tr('The title of the plot, when displayed in the dataviz dock')
+        }
+        self._layer_config['title_popup'] = {
+            'type': InputType.Text,
+            'header': tr('Title in popup'),
+            'default': '',
+            'tooltip': tr('The title of the plot, when displayed in a popup'),
+            'version': LwcVersions.Lizmap_3_7,
         }
         self._layer_config['description'] = {
             'type': InputType.MultiLine,
@@ -256,6 +263,16 @@ class DatavizDefinitions(BaseDefinitions):
                 'with data filtered according to a QGIS relation between the graph layer and the parent layer. '
                 'For example show the repartition between men and women employment rate filtered by the town selected '
                 'in the pop-up.')
+        }
+        self._layer_config['trigger_filter'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Filterable'),
+            'default': True,
+            'tooltip': tr(
+                'By default, a plot is filtered if the data is filtered. By unchecking this option, the plot '
+                'will not be refreshed when the layer data is filtered in the layer.'
+            ),
+            'use_json': True,
         }
         self._layer_config['stacked'] = {
             'type': InputType.CheckBox,

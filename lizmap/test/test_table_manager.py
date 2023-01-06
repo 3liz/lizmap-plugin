@@ -316,8 +316,8 @@ class TestTableManager(unittest.TestCase):
         table_manager = TableManager(
             None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
         expected = [
-            'type', 'title', 'description', 'layerId', 'x_field', 'aggregation',
-            'traces', 'html_template', 'layout', 'popup_display_child_plot', 'stacked',
+            'type', 'title', 'title_popup', 'description', 'layerId', 'x_field', 'aggregation',
+            'traces', 'html_template', 'layout', 'popup_display_child_plot', 'trigger_filter', 'stacked',
             'horizontal', 'only_show_child', 'display_legend', 'display_when_layer_visible',
         ]
         self.assertListEqual(expected, table_manager.keys)
@@ -387,6 +387,7 @@ class TestTableManager(unittest.TestCase):
         json = {
             '0': {
                 'title': 'My graph',
+                'title_popup': 'My filtered plot',
                 'type': 'scatter',
                 'x_field': 'id',
                 'aggregation': '',
@@ -408,6 +409,7 @@ class TestTableManager(unittest.TestCase):
             'layers': [
                 {
                     'title': 'My graph',
+                    'title_popup': 'My filtered plot',
                     'type': 'scatter',
                     'x_field': 'id',
                     'aggregation': '',
@@ -432,6 +434,7 @@ class TestTableManager(unittest.TestCase):
             'layers': [
                 {
                     'title': 'My graph',
+                    'title_popup': 'My filtered plot',
                     'type': 'scatter',
                     'x_field': 'id',
                     'aggregation': '',
@@ -460,6 +463,7 @@ class TestTableManager(unittest.TestCase):
         expected = {
             '0': {
                 'title': 'My graph',
+                'title_popup': 'My filtered plot',
                 'type': 'scatter',
                 'x_field': 'id',
                 'aggregation': 'sum',
@@ -478,6 +482,7 @@ class TestTableManager(unittest.TestCase):
                 'stacked': 'False',
                 'horizontal': 'False',
                 'popup_display_child_plot': 'False',
+                'trigger_filter': True,
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
                 'layerId': self.layer.id(),
@@ -495,6 +500,7 @@ class TestTableManager(unittest.TestCase):
         expected = {
             '0': {
                 'title': 'My graph',
+                'title_popup': 'My filtered plot',
                 'type': 'scatter',
                 'x_field': 'id',
                 'aggregation': 'sum',
@@ -507,6 +513,7 @@ class TestTableManager(unittest.TestCase):
                 # 'colorfield2': '',
                 'stacked': 'False',
                 'horizontal': 'False',
+                'trigger_filter': True,
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
@@ -622,6 +629,7 @@ class TestTableManager(unittest.TestCase):
                 ],
                 'stacked': 'False',
                 'horizontal': 'False',
+                'trigger_filter': True,
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
@@ -653,6 +661,7 @@ class TestTableManager(unittest.TestCase):
                 'stacked': 'False',
                 'horizontal': 'False',
                 'popup_display_child_plot': 'False',
+                'trigger_filter': True,
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
                 'layerId': self.layer.id(),
@@ -715,6 +724,7 @@ class TestTableManager(unittest.TestCase):
                         'y_field': 'name'
                     }
                 ],
+                'trigger_filter': True,
                 'display_legend': 'True',
                 'display_when_layer_visible': 'False',
                 'horizontal': 'False',

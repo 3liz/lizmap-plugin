@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* New with Lizmap Web Client 3.7.0:
+  * For a layer in the dataviz, it's possible to define a specific title when displayed in a popup
+  * For plot can now be "not refreshed" if the layer data has been filtered
 * New with Lizmap Web Client 3.6.1:
   * Add a preview about a plot in the dataviz panel
   * Better error message if the credentials to connect to Lizmap Web Client is wrong
