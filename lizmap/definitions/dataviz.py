@@ -269,8 +269,8 @@ class DatavizDefinitions(BaseDefinitions):
             'header': tr('Filterable'),
             'default': True,
             'tooltip': tr(
-                'By default, a plot is filtered if the data is filtered. By unchecking this option, the plot '
-                'will not be refreshed when the layer data is filtered in the layer.'
+                'By default, a plot is refreshed if the data is filtered. By unchecking this option, the plot '
+                'will not be refreshed when the data is filtered in the layer.'
             ),
             'use_json': True,
         }
