@@ -38,7 +38,7 @@ class TableManager:
 
     def __init__(
             self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
-            up_button, down_button, server_manager):
+            up_button, down_button):
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
@@ -47,8 +47,6 @@ class TableManager:
         self.edit_button = edit_button
         self.up_button = up_button
         self.down_button = down_button
-        # Hack to get the JSON metadata when editing a row
-        self.server_manager = server_manager
 
         self.lwc_versions = list()
         self.lwc_versions.append(LwcVersions.Lizmap_3_1)
@@ -166,8 +164,8 @@ class TableManager:
         # noinspection PyCallingNonCallable
         row = self.table.rowCount()
 
+        # We give the main UI of the plugin in the edition dialog
         dialog = self.edition(self.parent, self._primary_keys())
-        dialog.server_manager = self.server_manager
         result = dialog.exec_()
         if result == QDialog.Accepted:
             data = dialog.save_form()
@@ -189,8 +187,8 @@ class TableManager:
             value = cell.data(Qt.UserRole)
             data[key] = value
 
-        dialog = self.edition()
-        dialog.server_manager = self.server_manager
+        # We give the main UI of the plugin in the edition dialog
+        dialog = self.edition(self.parent, self._primary_keys())
         dialog.load_form(data)
         result = dialog.exec_()
         if result == QDialog.Accepted:
@@ -281,20 +279,29 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
                 items = self.definitions.layer_config[key].get('items')
+                multiple_selection = self.definitions.layer_config[key].get('multiple_selection', False)
                 if items:
-                    for item_enum in items:
-                        if item_enum.value['data'] == value:
-                            text = item_enum.value['label']
-                            icon = item_enum.value.get('icon')
-                            break
+                    if not multiple_selection:
+                        for item_enum in items:
+                            if item_enum.value['data'] == value:
+                                text = item_enum.value['label']
+                                icon = item_enum.value.get('icon')
+                                break
+                        else:
+                            msg = 'Error with value = "{}" in list "{}"'.format(value, key)
+                            LOGGER.critical(msg)
+                            raise Exception(msg)
+                        cell.setText(text)
+                        if icon:
+                            cell.setIcon(QIcon(icon))
                     else:
-                        msg = 'Error with value = "{}" in list "{}"'.format(value, key)
-                        LOGGER.critical(msg)
-                        raise Exception(msg)
-                    cell.setText(text)
-                    if icon:
-                        cell.setIcon(QIcon(icon))
-                else:
+                        labels = []
+                        for item_enum in items:
+                            if item_enum.value['data'] in value:
+                                # TODO
+                                # We should add the label and not the data, but there is a bug later when opening the form
+                                labels.append(item_enum.value['data'])
+                        value = ','.join(labels)
                     cell.setText(value)
 
             elif input_type == InputType.SpinBox:
@@ -390,6 +397,11 @@ class TableManager:
     def use_single_row(self):
         return self.definitions.use_single_row
 
+    @staticmethod
+    def label_dictionary_list() -> str:
+        """ The label in the CFG file prefixing the list. """
+        return "layers"
+
     def to_json(self, version=None) -> dict:
         """Write the configuration to JSON.
 
@@ -423,7 +435,7 @@ class TableManager:
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(input_type))
 
-        data['layers'] = list()
+        data[self.label_dictionary_list()] = list()
 
         rows = self.table.rowCount()
 
@@ -568,7 +580,7 @@ class TableManager:
                     layer_data['atlasMaxWidth'] = 25
                 return layer_data
 
-            data['layers'].append(layer_data)
+            data[self.label_dictionary_list()].append(layer_data)
 
         # Check for PG with centroid options
         # Maybe move this code later if we have more checks to do when saving CFG
@@ -804,7 +816,7 @@ class TableManager:
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
-        layers = data.get('layers')
+        layers = data.get(self.label_dictionary_list())
 
         if not layers:
             layers = self._from_json_legacy(data)
@@ -847,18 +859,28 @@ class TableManager:
                         layer_data[key] = value
                     elif definition['type'] == InputType.List:
                         items = definition.get('items')
-                        if items:
-                            for item_enum in items:
-                                if item_enum.value['data'] == value:
-                                    break
-                            else:
-                                default_list_value = definition.get('default').value['data']
-                                msg = (
-                                    'Error with value = "{}" in list "{}", set default to {}'.format(
-                                        value, key, default_list_value))
-                                LOGGER.warning(msg)
-                                value = default_list_value
-                        layer_data[key] = value
+                        multiple_selection = definition.get('multiple_selection', False)
+                        if multiple_selection:
+                            layer_data[key] = ''
+                            for single_value in value:
+                                for item_enum in items:
+                                    if item_enum.value['data'] == single_value:
+                                        layer_data[key] += single_value
+                        else:
+                            # Single value
+                            if items:
+                                for item_enum in items:
+                                    if item_enum.value['data'] == value:
+                                        break
+                                else:
+                                    default_list_value = definition.get('default').value['data']
+                                    msg = (
+                                        'Error with value = "{}" in list "{}", set default to {}'.format(
+                                            value, key, default_list_value)
+                                    )
+                                    LOGGER.warning(msg)
+                                    value = default_list_value
+                            layer_data[key] = value
                     elif definition['type'] == InputType.SpinBox:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Text:

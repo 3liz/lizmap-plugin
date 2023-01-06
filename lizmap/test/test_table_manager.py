@@ -14,12 +14,14 @@ from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
+from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.forms.atlas_edition import AtlasEditionDialog
-from lizmap.forms.table_manager import TableManager
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.table_manager.base import TableManager
+from lizmap.table_manager.layouts import TableManagerLayouts
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -35,8 +37,13 @@ class TestTableManager(unittest.TestCase):
         self.assertTrue(self.layer.isValid())
 
     def tearDown(self) -> None:
-        QgsProject.instance().removeMapLayer(self.layer)
-        del self.layer
+        try:
+            self.layer
+            QgsProject.instance().removeMapLayer(self.layer)
+            del self.layer
+        except RuntimeError:
+            pass
+        QgsProject.instance().clear()
 
     def test_form_filter(self):
         """Test table manager with filter by form."""
@@ -44,7 +51,7 @@ class TestTableManager(unittest.TestCase):
         definitions = FilterByFormDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             '0': {
@@ -128,7 +135,7 @@ class TestTableManager(unittest.TestCase):
     def test_form_filter_3_7(self):
         """ Test to write to 3.6 format. """
         table_manager = TableManager(
-            None, FilterByFormDefinitions(), None, QTableWidget(), None, None, None, None, None)
+            None, FilterByFormDefinitions(), None, QTableWidget(), None, None, None, None)
 
         json = {
             '0': {
@@ -188,7 +195,7 @@ class TestTableManager(unittest.TestCase):
         definitions = FilterByLoginDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             'lines': {
@@ -214,10 +221,100 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+    def test_layout_definitions(self):
+        """ Test layout definitions. """
+        table = QTableWidget()
+        definitions = LayoutsDefinitions()
+
+        QgsProject.instance().read(plugin_test_data_path('print.qgs'))
+
+        # Without the legacy checkbox, all default values from the definitions
+        table_manager = TableManagerLayouts(
+            None, definitions, None, table, None, None, None)
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        cfg = {
+            "list": [
+                {
+                    "layout": "A4 Landscape",
+                    "enabled": False,
+                    "formats_available": (
+                        "pdf",
+                        "png",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                        "300",
+                    ),
+                    "default_dpi": "300"
+                }
+            ]
+        }
+        table_manager.load_qgis_layouts(cfg)
+        self.assertEqual(table_manager.table.rowCount(), 4)
+
+        data = table_manager.to_json()
+        expected = {
+            "list": [
+                {
+                    "layout": "A4 Landscape",
+                    "enabled": False,  # Value overriden by the CFG file compare to other layouts.
+                    "formats_available": (
+                        "pdf",
+                        "png"
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                        "300"
+                    ),
+                    "default_dpi": "300"
+                },
+                {
+                    "layout": "Cadastre",
+                    "enabled": True,
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                },
+                {
+                    "layout": "Local planning",
+                    "enabled": True,
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                },
+                {
+                    "layout": "Economy",
+                    "enabled": True,
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                }
+            ]
+        }
+        self.assertDictEqual(data, expected)
+
     def test_dataviz_definitions(self):
         """Test dataviz collections keys."""
         table_manager = TableManager(
-            None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None, None)
+            None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
         expected = [
             'type', 'title', 'description', 'layerId', 'x_field', 'aggregation',
             'traces', 'html_template', 'layout', 'popup_display_child_plot', 'stacked',
@@ -231,7 +328,7 @@ class TestTableManager(unittest.TestCase):
         definitions = DatavizDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         # Lizmap 3.3
         json = {
@@ -284,7 +381,7 @@ class TestTableManager(unittest.TestCase):
         definitions = DatavizDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         # Lizmap 3.3
         json = {
@@ -425,7 +522,7 @@ class TestTableManager(unittest.TestCase):
         definitions = DatavizDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         # Lizmap 3.3
         json = {
@@ -574,7 +671,7 @@ class TestTableManager(unittest.TestCase):
         definitions = DatavizDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             '0': {
@@ -633,7 +730,7 @@ class TestTableManager(unittest.TestCase):
     def test_dataviz(self):
         """Test we can read dataviz 3.4 format."""
         table_manager = TableManager(
-            None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None, None)
+            None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
 
         json = {
             '0': {
@@ -717,7 +814,7 @@ class TestTableManager(unittest.TestCase):
     def test_filter_by_polygon(self):
         """ Test table manager with filter by polygon. """
         table_manager = TableManager(
-            None, FilterByPolygonDefinitions(), None, QTableWidget(), None, None, None, None, None)
+            None, FilterByPolygonDefinitions(), None, QTableWidget(), None, None, None, None)
 
         json = {
             'config': {
@@ -750,7 +847,7 @@ class TestTableManager(unittest.TestCase):
         definitions = ToolTipDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             'lines': {
@@ -774,7 +871,7 @@ class TestTableManager(unittest.TestCase):
         definitions = AttributeTableDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             'lines': {
@@ -803,7 +900,7 @@ class TestTableManager(unittest.TestCase):
         definitions = TimeManagerDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         # JSON from 3.3 with all fields
         json = {
@@ -870,7 +967,7 @@ class TestTableManager(unittest.TestCase):
         definitions = EditionDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             'lines': {
@@ -953,7 +1050,7 @@ class TestTableManager(unittest.TestCase):
         definitions = LocateByLayerDefinitions()
 
         table_manager = TableManager(
-            None, definitions, None, table, None, None, None, None, None)
+            None, definitions, None, table, None, None, None, None)
 
         json = {
             'lines': {
@@ -1034,7 +1131,7 @@ class TestTableManager(unittest.TestCase):
         definitions = AtlasDefinitions()
 
         table_manager = TableManager(
-            None, definitions, AtlasEditionDialog, table, None, None, None, None, None)
+            None, definitions, AtlasEditionDialog, table, None, None, None, None)
 
         self.assertEqual(table.columnCount(), len(definitions.layer_config.keys()))
 
@@ -1073,7 +1170,7 @@ class TestTableManager(unittest.TestCase):
         definitions._use_single_row = False
 
         table_manager = TableManager(
-            None, definitions, AtlasEditionDialog, table, None, None, None, None, None)
+            None, definitions, AtlasEditionDialog, table, None, None, None, None)
 
         self.assertEqual(table.columnCount(), len(definitions.layer_config.keys()))
 
@@ -1171,7 +1268,7 @@ class TestTableManager(unittest.TestCase):
         definitions = AtlasDefinitions()
         definitions._use_single_row = False
         table_manager = TableManager(
-            None, definitions, AtlasEditionDialog, table, None, None, None, None, None)
+            None, definitions, AtlasEditionDialog, table, None, None, None, None)
 
         json = {
             'layers': [
@@ -1228,7 +1325,7 @@ class TestTableManager(unittest.TestCase):
         }
 
         table_manager = TableManager(
-            None, definitions, AtlasEditionDialog, table, None, None, None, None, None)
+            None, definitions, AtlasEditionDialog, table, None, None, None, None)
 
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)

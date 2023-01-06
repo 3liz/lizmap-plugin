@@ -172,6 +172,8 @@ class LizmapConfig:
             'draw': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            # Deprecated since LWC 3.7.0
+            # There is a new "print" panel
             'print': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },

@@ -120,6 +120,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Layouts</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Locate by layer</string>
           </property>
          </item>
@@ -2842,6 +2847,58 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </layout>
              </widget>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_layouts">
+          <layout class="QVBoxLayout" name="verticalLayout_52">
+           <item>
+            <widget class="QLabel" name="label_layout_panel">
+             <property name="text">
+              <string>You can configure permissions, icon and formats per layouts.</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="table_layout"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_44">
+             <item>
+              <widget class="QPushButton" name="edit_layout_form_button">
+               <property name="text">
+                <string notr="true">edit</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="up_layout_form_button">
+               <property name="text">
+                <string notr="true">up</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="down_layout_form_button">
+               <property name="text">
+                <string notr="true">down</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_41">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>

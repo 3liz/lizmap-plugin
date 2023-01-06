@@ -51,6 +51,7 @@ import sys
 
 from collections import OrderedDict
 from functools import partial
+from pathlib import Path
 from shutil import copyfile
 from typing import Optional, Tuple
 
@@ -111,6 +112,7 @@ from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
+from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -122,14 +124,16 @@ from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
+from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
-from lizmap.forms.table_manager import TableManager
-from lizmap.forms.table_manager_dataviz import TableManagerDataviz
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
+from lizmap.table_manager.base import TableManager
+from lizmap.table_manager.dataviz import TableManagerDataviz
+from lizmap.table_manager.layouts import TableManagerLayouts
 
 try:
     from lizmap.plugin_manager import PluginManager
@@ -290,6 +294,10 @@ class Lizmap:
             self.dlg.label_helper_dataviz,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
+            self.dlg.label_layout_panel,
+            self.dlg.edit_layout_form_button,
+            self.dlg.up_layout_form_button,
+            self.dlg.down_layout_form_button,
         ]
 
         self.populate_lwc_combo()
@@ -338,6 +346,13 @@ class Lizmap:
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
+        self.dlg.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Layouts
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
         self.dlg.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
@@ -458,6 +473,7 @@ class Lizmap:
         self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_map_theme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
         self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
+        # Deprecated since LWC 3.7.0
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
         self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
@@ -692,6 +708,13 @@ class Lizmap:
                 'downButton': self.dlg.down_edition_layer,
                 'manager': None,
             },
+            'layouts': {
+                'tableWidget': self.dlg.table_layout,
+                'editButton': self.dlg.edit_layout_form_button,
+                'upButton': self.dlg.up_layout_form_button,
+                'downButton': self.dlg.down_layout_form_button,
+                'manager': None,
+            },
             'loginFilteredLayers': {
                 'tableWidget': self.dlg.table_login_filter,
                 'removeButton': self.dlg.remove_filter_login_layer_button,
@@ -884,6 +907,11 @@ class Lizmap:
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
 
+        # New print panel
+        # The checkbox is deprecated since LWC 3.7.0
+        self.dlg.cbActivatePrint.setVisible(current_version <= LwcVersions.Lizmap_3_6)
+        self.dlg.cbActivatePrint.setEnabled(current_version <= LwcVersions.Lizmap_3_6)
+
         found = False
         for lwc_version, items in self.lwc_versions.items():
             if found:
@@ -1009,19 +1037,21 @@ class Lizmap:
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():
-            control = item['removeButton']
-            slot = partial(self.remove_selected_layer_from_table, key)
-            control.clicked.connect(slot)
-            # noinspection PyCallByClass,PyArgumentList
-            control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-            control.setText('')
-            control.setToolTip(tr('Remove the selected layer from the list'))
+            control = item.get('removeButton')
+            if control:
+                slot = partial(self.remove_selected_layer_from_table, key)
+                control.clicked.connect(slot)
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+                control.setText('')
+                control.setToolTip(tr('Remove the selected layer from the list'))
 
             control = item.get('addButton')
-            control.setText('')
-            # noinspection PyCallByClass,PyArgumentList
-            control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-            control.setToolTip(tr('Add a new layer in the list'))
+            if control:
+                control.setText('')
+                # noinspection PyCallByClass,PyArgumentList
+                control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+                control.setToolTip(tr('Add a new layer in the list'))
 
             control = item.get('editButton')
             if control:
@@ -1034,7 +1064,9 @@ class Lizmap:
                 control.setToolTip(tr('Edit the current layer configuration'))
 
                 slot = partial(self.add_new_layer, key)
-                item.get('addButton').clicked.connect(slot)
+                add_button = item.get('addButton')
+                if add_button:
+                    add_button.clicked.connect(slot)
                 if key == 'atlas':
                     definition = AtlasDefinitions()
                     dialog = AtlasEditionDialog
@@ -1047,6 +1079,9 @@ class Lizmap:
                 elif key == 'datavizLayers':
                     definition = DatavizDefinitions()
                     dialog = DatavizEditionDialog
+                elif key == 'layouts':
+                    definition = LayoutsDefinitions()
+                    dialog = LayoutEditionDialog
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
@@ -1079,7 +1114,16 @@ class Lizmap:
                         item['editButton'],
                         item.get('upButton'),
                         item.get('downButton'),
-                        self.server_manager,
+                    )
+                elif key == 'layouts':
+                    item['manager'] = TableManagerLayouts(
+                        self.dlg,
+                        definition,
+                        dialog,
+                        item['tableWidget'],
+                        item['editButton'],
+                        item.get('upButton'),
+                        item.get('downButton'),
                     )
                 else:
                     item['manager'] = TableManager(
@@ -1091,7 +1135,6 @@ class Lizmap:
                         item['editButton'],
                         item.get('upButton'),
                         item.get('downButton'),
-                        self.server_manager,
                     )
 
                 control = item.get('upButton')
@@ -1115,6 +1158,11 @@ class Lizmap:
         # Delete layers from table when deleted from registry
         # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
+
+        # Layouts
+        # Not connecting the "layoutAdded" signal, it's done when opening the Lizmap plugin
+        self.project.layoutManager().layoutRenamed.connect(self.layout_renamed)
+        self.project.layoutManager().layoutRemoved.connect(self.layout_removed)
 
         # Lizmap external layers as baselayers
         # add a layer to the lizmap external baselayers
@@ -1237,6 +1285,7 @@ class Lizmap:
 
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """ Open the group wizard and set the output in the line edit. """
+        # Duplicated in base_edition_dialog.py, open_wizard_dialog()
         url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not url:
             QMessageBox.critical(
@@ -1270,6 +1319,7 @@ class Lizmap:
                 QMessageBox.Ok
             )
             return None
+        # End of duplicated
 
         current_acl = line_edit.text()
         wizard_dialog = WizardGroupDialog(helper, current_acl, acl['groups'])
@@ -1368,7 +1418,13 @@ class Lizmap:
 
                     manager = self.layers_table[key].get('manager')
                     if manager:
+
                         manager.truncate()
+
+                        if key == 'layouts':
+                            manager.load_qgis_layouts(sjson.get(key, {}))
+                            continue
+
                         if key in sjson:
                             manager.from_json(sjson[key])
                         else:
@@ -1653,12 +1709,15 @@ class Lizmap:
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
+    def check_cfg_file_exists(self) -> bool:
+        """ Return boolean if a CFG file exists for the given project. """
+        return Path(self.project.fileName() + '.cfg').exists()
+
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
         Remove layers from tables when deleted from layer registry
         """
-        json_file = '{}.cfg'.format(self.project.fileName())
-        if not os.path.exists(json_file):
+        if not self.check_cfg_file_exists():
             return
 
         for key, item in self.layers_table.items():
@@ -1688,6 +1747,20 @@ class Lizmap:
                         tw.removeRow(row)
 
         LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
+
+    def layout_renamed(self, layout, new_name: str):
+        """ When a layout has been renamed in the project. """
+        if not self.check_cfg_file_exists():
+            return
+
+        self.layers_table['layouts']['manager'].layout_renamed(layout, new_name)
+
+    def layout_removed(self, name: str):
+        """ When a layout has been removed from the project. """
+        if not self.check_cfg_file_exists():
+            return
+
+        self.layers_table['layouts']['manager'].layout_removed(name)
 
     def check_wfs_is_checked(self, layer):
         wfs_layers_list = self.project.readListEntry('WFSLayers', '')[0]
@@ -2504,6 +2577,20 @@ class Lizmap:
             manager = self.layers_table[key].get('manager')
             if manager:
                 data = manager.to_json()
+
+                if key == 'layouts':
+                    # The print combobox is removed
+                    # Let's remove from the CFG file
+                    if lwc_version >= LwcVersions.Lizmap_3_7:
+                        try:
+                            del liz2json['options']['print']
+                        except KeyError:
+                            pass
+                    else:
+                        # We do not want to save this table if it's less than LWC 3.7
+                        LOGGER.info("Skipping the 'layout' table because version if less than LWC 3.7")
+                        continue
+
                 if manager.use_single_row() and manager.table.rowCount() == 1:
                     liz2json['options'].update(data)
                 else:

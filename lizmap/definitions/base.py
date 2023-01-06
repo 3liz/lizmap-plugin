@@ -18,7 +18,7 @@ class InputType(Enum):
     Json = 'Json'  # QTextEdit then JsonEditor, a custom widget in qgis_plugin_tools
     Layer = 'Layer'  # QgsMapLayerComboBox
     Layers = 'Layers'  # ListLayersSelection
-    List = 'List'  # QComboBox
+    List = 'List'  # QComboBox with multiple_selection=False (by default), otherwise a QgsCheckableComboBox
     SpinBox = 'SpinBox'  # QSpinbox
     Text = 'Text'  # QLineEdit
     MultiLine = 'MultiLine'  # QPlainTextEdit or QgsCodeEditorHTML
