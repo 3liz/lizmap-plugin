@@ -36,6 +36,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.parent = parent
         self.config = DatavizDefinitions()
         self.config.add_layer_widget('title', self.title)
+        self.config.add_layer_widget('title_popup', self.title_popup)
         self.config.add_layer_widget('type', self.type_graph)
         self.config.add_layer_widget('description', self.text_description)
         self.config.add_layer_widget('layerId', self.layer)
@@ -47,11 +48,13 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('horizontal', self.horizontal)
         self.config.add_layer_widget('stacked', self.stacked)
         self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
+        self.config.add_layer_widget('trigger_filter', self.refresh_if_filtered)
         self.config.add_layer_widget('only_show_child', self.only_show_child)
         self.config.add_layer_widget('display_legend', self.display_legend)
         self.config.add_layer_widget('display_when_layer_visible', self.display_when_layer_visible)
 
         self.config.add_layer_label('title', self.label_title)
+        self.config.add_layer_label('title_popup', self.label_title_popup)
         self.config.add_layer_label('type', self.label_type)
         self.config.add_layer_label('description', self.label_description)
         self.config.add_layer_label('layerId', self.label_layer)
@@ -98,6 +101,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [
             self.label_graph_34
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_7] = [
+            self.label_title_popup,
+            self.refresh_if_filtered,
         ]
 
         self.setup_ui()
@@ -151,7 +158,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
                 cell = item.data(Qt.UserRole)
                 if cell is None:
-                    # Safe guard
+                    # Safeguard
                     # Do not put if not cell, it might be False
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
 
