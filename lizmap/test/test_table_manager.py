@@ -14,12 +14,14 @@ from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
+from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.table_manager.base import TableManager
+from lizmap.table_manager.layouts import TableManagerLayouts
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -35,8 +37,13 @@ class TestTableManager(unittest.TestCase):
         self.assertTrue(self.layer.isValid())
 
     def tearDown(self) -> None:
-        QgsProject.instance().removeMapLayer(self.layer)
-        del self.layer
+        try:
+            self.layer
+            QgsProject.instance().removeMapLayer(self.layer)
+            del self.layer
+        except RuntimeError:
+            pass
+        QgsProject.instance().clear()
 
     def test_form_filter(self):
         """Test table manager with filter by form."""
@@ -216,8 +223,93 @@ class TestTableManager(unittest.TestCase):
 
     def test_layout_definitions(self):
         """ Test layout definitions. """
-        # TODO
-        pass
+        table = QTableWidget()
+        definitions = LayoutsDefinitions()
+
+        QgsProject.instance().read(plugin_test_data_path('print.qgs'))
+
+        # Without the legacy checkbox, all default values from the definitions
+        table_manager = TableManagerLayouts(
+            None, definitions, None, table, None, None, None)
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        cfg = {
+            "list": [
+                {
+                    "layout": "A4 Landscape",
+                    "enabled": False,
+                    "formats_available": (
+                        "pdf",
+                        "png",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                        "300",
+                    ),
+                    "default_dpi": "300"
+                }
+            ]
+        }
+        table_manager.load_qgis_layouts(cfg)
+        self.assertEqual(table_manager.table.rowCount(), 4)
+
+        data = table_manager.to_json()
+        expected = {
+            "list": [
+                {
+                    "layout": "A4 Landscape",
+                    "enabled": False,  # Value overriden by the CFG file compare to other layouts.
+                    "formats_available": (
+                        "pdf",
+                        "png"
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                        "300"
+                    ),
+                    "default_dpi": "300"
+                },
+                {
+                    "layout": "Cadastre",
+                    "enabled": True,
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                },
+                {
+                    "layout": "Local planning",
+                    "enabled": True,
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                },
+                {
+                    "layout": "Economy",
+                    "enabled": True,
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                }
+            ]
+        }
+        self.assertDictEqual(data, expected)
 
     def test_dataviz_definitions(self):
         """Test dataviz collections keys."""

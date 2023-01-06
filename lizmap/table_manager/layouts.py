@@ -3,13 +3,14 @@
 import logging
 
 from enum import Enum
-from typing import List, Type
+from typing import Type
 
 from qgis.core import QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.base import BaseDefinitions
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.table_manager.base import TableManager
 
@@ -35,17 +36,29 @@ class TableManagerLayouts(TableManager):
         """ The label in the CFG file prefixing the list. """
         return "list"
 
-    def load_qgis_layouts(self, data: List):
+    def load_qgis_layouts(self, data: dict):
         """ Load QGIS layouts into the table. """
+        LOGGER.debug("Loading all layouts from the QGIS project :")
         tmp_layout_cfg = {}
-        for layout in data.get(self.label_dictionary_list()):
-            tmp = dict(layout)
-            # Remove the name of the layout, it's now the key of the dictionary
-            del tmp['layout']
-            tmp_layout_cfg[layout.get('layout')] = tmp
+        if data:
+            for layout in data.get(self.label_dictionary_list()):
+                tmp = dict(layout)
+                # Remove the name of the layout, it's now the key of the dictionary
+                del tmp['layout']
+                tmp_layout_cfg[layout.get('layout')] = tmp
+
+        # Previous print from <= LWC 3.6 was activated or not
+        # Do not break pre-existing format
+        if self.parent:
+            legacy_print_checkbox = \
+                (self.parent.cbActivatePrint.isChecked()
+                 or self.parent.combo_lwc_version.currentData() <= LwcVersions.Lizmap_3_6)
+        else:
+            legacy_print_checkbox = False
 
         # For all layouts in the project already loaded
         for layout in QgsProject.instance().layoutManager().printLayouts():
+            LOGGER.debug("  * reading layout {}".format(layout.name()))
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
 
@@ -53,7 +66,7 @@ class TableManagerLayouts(TableManager):
             json = dict()
 
             # We fill with the layout name
-            json[self.definitions.primary_keys()[0]] = layout.name()
+            json['layout'] = layout.name()
 
             # We first fill with None or default values from definitions
             for key, values in self.definitions.layer_config.items():
@@ -66,8 +79,15 @@ class TableManagerLayouts(TableManager):
                 if isinstance(default, Enum):
                     default = default.value['data']
 
-                if default:
+                if default is not None:
+                    # Be careful, default can an empty string...
                     json[key] = default
+
+                if legacy_print_checkbox and key == 'dpi_available':
+                    json['dpi_available'] = ('100', '200', '300')
+
+                if legacy_print_checkbox and key == 'formats_available':
+                    json['formats_available'] = ('pdf', 'png', 'jpeg', 'svg')
 
             # Then we override by the CFG file
             if layout.name() in tmp_layout_cfg.keys():
@@ -99,6 +119,7 @@ class TableManagerLayouts(TableManager):
         # Make the diff
         diff = [x for x in lizmap_layouts if x not in qgis_layouts]
 
+        # Logically, it must be only one in the diff...
         if len(diff) >= 2:
             # Sorry, I don't know which one it was.
             return

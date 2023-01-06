@@ -16,6 +16,7 @@ from qgis.PyQt.QtWidgets import (
     QPlainTextEdit,
 )
 
+from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import (
     DOC_URL,
@@ -147,7 +148,10 @@ class BaseEditionDialog(QDialog):
 
     def version_lwc(self):
         """ Make all colors about widgets if it is available or not. """
-        current_version = self.parent.combo_lwc_version.currentData()
+        if self.parent:
+            current_version = self.parent.combo_lwc_version.currentData()
+        else:
+            current_version = DEFAULT_LWC_VERSION
 
         # For labels in the UI files, which are not part of the definitions.
         found = False
@@ -426,20 +430,20 @@ class BaseEditionDialog(QDialog):
     def open_wizard_dialog(self, helper: str):
         """ Internal function to open the wizard ACL. """
         # Duplicated in plugin.py, _open_wizard_group()
-        url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        url = self.parent.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not url:
             QMessageBox.critical(
-                self.dlg,
+                self,
                 tr('Server URL Error'),
                 tr("You must have selected a server before opening the wizard, on the left panel."),
                 QMessageBox.Ok
             )
             return None
 
-        json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        json_metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not json_metadata:
             QMessageBox.critical(
-                self.dlg,
+                self,
                 tr('Server URL Error'),
                 tr("Check your server information table about the current selected server.")
                 + "<br><br>" + url,
@@ -450,7 +454,7 @@ class BaseEditionDialog(QDialog):
         acl = json_metadata.get('acl')
         if not acl:
             QMessageBox.critical(
-                self.dlg,
+                self,
                 tr('Upgrade your Lizmap instance'),
                 tr(
                     "Your current Lizmap instance, running version {}, is not providing the needed information. "

@@ -37,7 +37,6 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
     UNSTABLE_VERSION_PREFIX,
@@ -539,8 +538,7 @@ class ServerManager:
         # Markdown
         markdown = '**Versions :**\n\n'
         markdown += '* Lizmap Web Client : {}\n'.format(lizmap_version)
-        markdown += '* Lizmap Web Client target version : {}\n'.format(
-            QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str))
+        markdown += '* Lizmap Web Client target version : {}\n'.format(self.parent.combo_lwc_version.currentData().value)
         markdown += '* Lizmap plugin : {}\n'.format(version())
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)

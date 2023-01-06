@@ -73,8 +73,6 @@ from qgis.core import (
 )
 from qgis.PyQt.QtWidgets import QLineEdit
 
-from lizmap.table_manager.layouts import TableManagerLayouts
-
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
 
@@ -135,6 +133,7 @@ from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
+from lizmap.table_manager.layouts import TableManagerLayouts
 
 try:
     from lizmap.plugin_manager import PluginManager
@@ -295,6 +294,10 @@ class Lizmap:
             self.dlg.label_helper_dataviz,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
+            self.dlg.label_layout_panel,
+            self.dlg.edit_layout_form_button,
+            self.dlg.up_layout_form_button,
+            self.dlg.down_layout_form_button,
         ]
 
         self.populate_lwc_combo()
@@ -470,7 +473,8 @@ class Lizmap:
         self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_map_theme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
         self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
-        # self.global_options['print']['widget'] = self.dlg.cbActivatePrint
+        # Deprecated since LWC 3.7.0
+        self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
         self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
         self.global_options['geolocation']['widget'] = self.dlg.cbActivateGeolocation
@@ -902,6 +906,11 @@ class Lizmap:
 
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+
+        # New print panel
+        # The checkbox is deprecated since LWC 3.7.0
+        self.dlg.cbActivatePrint.setVisible(current_version <= LwcVersions.Lizmap_3_6)
+        self.dlg.cbActivatePrint.setEnabled(current_version <= LwcVersions.Lizmap_3_6)
 
         found = False
         for lwc_version, items in self.lwc_versions.items():
@@ -1413,8 +1422,7 @@ class Lizmap:
                         manager.truncate()
 
                         if key == 'layouts':
-                            # TODO rename to from_json and merge this line with the other one ?
-                            manager.load_qgis_layouts(sjson[key])
+                            manager.load_qgis_layouts(sjson.get(key, {}))
                             continue
 
                         if key in sjson:
@@ -1702,6 +1710,7 @@ class Lizmap:
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
     def check_cfg_file_exists(self) -> bool:
+        """ Return boolean if a CFG file exists for the given project. """
         return Path(self.project.fileName() + '.cfg').exists()
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
@@ -1751,7 +1760,7 @@ class Lizmap:
         if not self.check_cfg_file_exists():
             return
 
-        self.layers_table['layouts']['manager'].layout_renamed(name)
+        self.layers_table['layouts']['manager'].layout_removed(name)
 
     def check_wfs_is_checked(self, layer):
         wfs_layers_list = self.project.readListEntry('WFSLayers', '')[0]
@@ -2568,6 +2577,20 @@ class Lizmap:
             manager = self.layers_table[key].get('manager')
             if manager:
                 data = manager.to_json()
+
+                if key == 'layouts':
+                    # The print combobox is removed
+                    # Let's remove from the CFG file
+                    if lwc_version >= LwcVersions.Lizmap_3_7:
+                        try:
+                            del liz2json['options']['print']
+                        except KeyError:
+                            pass
+                    else:
+                        # We do not want to save this table if it's less than LWC 3.7
+                        LOGGER.info("Skipping the 'layout' table because version if less than LWC 3.7")
+                        continue
+
                 if manager.use_single_row() and manager.table.rowCount() == 1:
                     liz2json['options'].update(data)
                 else:

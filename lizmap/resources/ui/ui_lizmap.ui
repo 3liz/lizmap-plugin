@@ -243,7 +243,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -670,7 +670,7 @@ QListWidget::item::selected {
                 <x>0</x>
                 <y>0</y>
                 <width>815</width>
-                <height>1300</height>
+                <height>1323</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -726,23 +726,13 @@ QListWidget::item::selected {
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_4">
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="cbActivateGeolocation">
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbActivateMeasure">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Automatic geolocation (Only available in HTTPS)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QCheckBox" name="activate_drawing_tools">
-                      <property name="toolTip">
-                       <string>If drawing tools are activated or not</string>
-                      </property>
-                      <property name="text">
-                       <string>Draw</string>
+                       <string>Measure</string>
                       </property>
                      </widget>
                     </item>
@@ -756,17 +746,37 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="cbActivateMeasure">
+                    <item row="1" column="1">
+                     <widget class="QCheckBox" name="cbActivateGeolocation">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Measure</string>
+                       <string>Automatic geolocation (Only available in HTTPS)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cbActivatePrint">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Print</string>
                       </property>
                      </widget>
                     </item>
                     <item row="2" column="0">
+                     <widget class="QCheckBox" name="activate_drawing_tools">
+                      <property name="toolTip">
+                       <string>If drawing tools are activated or not</string>
+                      </property>
+                      <property name="text">
+                       <string>Draw</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_14">
                       <item>
                        <widget class="QLabel" name="label_19">
@@ -1379,8 +1389,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>829</width>
-                <height>851</height>
+                <width>497</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1465,8 +1475,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>473</width>
-                       <height>1062</height>
+                       <width>375</width>
+                       <height>1130</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2160,8 +2170,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>815</width>
-                <height>862</height>
+                <width>577</width>
+                <height>879</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2840,12 +2850,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page">
+         <widget class="QWidget" name="page_layouts">
           <layout class="QVBoxLayout" name="verticalLayout_52">
            <item>
-            <widget class="QLabel" name="label_66">
+            <widget class="QLabel" name="label_layout_panel">
              <property name="text">
-              <string>LAYOUT HELPER</string>
+              <string>You can configure permissions, icon and formats per layouts.</string>
              </property>
             </widget>
            </item>
@@ -2919,8 +2929,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>829</width>
-                <height>851</height>
+                <width>450</width>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -3025,8 +3035,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>829</width>
-                <height>851</height>
+                <width>497</width>
+                <height>373</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3150,8 +3160,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>829</width>
-                <height>851</height>
+                <width>450</width>
+                <height>283</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3260,8 +3270,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>829</width>
-                <height>851</height>
+                <width>450</width>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -3351,8 +3361,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>809</width>
-                <height>831</height>
+                <width>450</width>
+                <height>300</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -4279,14 +4289,20 @@ This is different to the map maximum extent (defined in QGIS project properties,
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QTextEdit</extends>
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
@@ -4300,14 +4316,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <header location="global">QtWebKitWidgets/QWebView</header>
   </customwidget>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCodeEditorHTML</class>
-   <extends>QTextEdit</extends>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
@@ -4317,6 +4327,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbHideProject</tabstop>
   <tabstop>inAcl</tabstop>
   <tabstop>cbActivateMeasure</tabstop>
+  <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateZoomHistory</tabstop>
   <tabstop>cbActivateGeolocation</tabstop>
   <tabstop>activate_drawing_tools</tabstop>

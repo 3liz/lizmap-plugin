@@ -52,12 +52,12 @@ class LayoutsDefinitions(BaseDefinitions):
         self._layer_config['layout'] = {
             'type': InputType.Text,
             'header': tr('Layout'),
-            'tooltip': tr('The name of the layout.')
+            'tooltip': tr('The name of the layout, read-only because it\'s inherited from the QGIS project.')
         }
         self._layer_config['enabled'] = {
             'type': InputType.CheckBox,
             'header': tr('Enabled'),
-            'default': False,
+            'default': True,
             'use_json': True,
             'tooltip': tr('If the layout is enabled.')
         }
@@ -74,7 +74,7 @@ class LayoutsDefinitions(BaseDefinitions):
             'multiple_selection': True,
             'header': tr('Formats'),
             'items': FormatType,
-            'default': ('pdf', ),
+            'default': ('pdf', ),  # This value is overriden if the legacy checkbox was used adding all other formats.
             'tooltip': tr("The list of formats to be displayed in the interface.")
         }
         self._layer_config['default_format'] = {
@@ -89,7 +89,7 @@ class LayoutsDefinitions(BaseDefinitions):
             'multiple_selection': True,
             'header': tr('DPI'),
             'items': Dpi,
-            'default': ('100', ),
+            'default': ('100', ),  # This value is overriden if the legacy checkbox was used adding all other formats.
             'tooltip': tr("The list of DPI to be displayed.")
         }
         self._layer_config['default_dpi'] = {
@@ -105,10 +105,6 @@ class LayoutsDefinitions(BaseDefinitions):
             'tooltip': tr('The icon to use.'),
             'default': '',
         }
-
-    @staticmethod
-    def primary_keys() -> tuple:
-        return 'layout',
 
     def key(self) -> str:
         return 'layouts'
