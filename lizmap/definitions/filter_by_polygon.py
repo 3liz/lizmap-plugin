@@ -131,8 +131,11 @@ class FilterByPolygonDefinitions(BaseDefinitions):
         message = tr('The layer is stored in PostgreSQL and the option "Use Centroid" is used.')
         message += '\n'
         message += tr(
-            'However, we could not detect a spatial index on the centroid. The given query must be executed :'
-        )
+            'However, we could not detect a spatial index on the centroid. It\'s not possible to use the '
+            'option "Use Centroid" <b>without</b> a spatial index.')
+        message += '\n'
+        message += tr(
+            '<b>Either</b> do not use this option, <b>or</b> the following query must be executed by <b>yourself</b>')
         message += '\n'
         message += "CREATE INDEX ON \"{schema}\".\"{table}\" USING GIST (ST_Centroid({geom}));".format(
             schema=datasource.schema(),
