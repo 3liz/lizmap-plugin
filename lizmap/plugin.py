@@ -2489,9 +2489,12 @@ class Lizmap:
             'lizmap_plugin_version': int(format_version_integer(current_version)),
             'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version.value))),
             'lizmap_web_client_target_status': target_status.value,
-            'instance_target_repository': self.current_repository(),
             'instance_target_url': self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         }
+        repository = self.current_repository()
+        if repository:
+            metadata['instance_target_repository'] = repository
+
         if valid is not None:
             metadata['project_valid'] = valid
             if not valid:
@@ -2753,7 +2756,7 @@ class Lizmap:
                 layerOptions['popupSource'] = 'auto'
 
             if layerOptions.get("geometryType") in ('point', 'line', 'polygon'):
-                if layerOptions.get('popupSource') == 'lizmap':
+                if layerOptions.get('popupSource') == 'lizmap' and layerOptions.get('popup', '').lower() == 'true':
                     QMessageBox.warning(
                         self.dlg,
                         tr('Deprecated feature'),
