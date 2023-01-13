@@ -15,7 +15,7 @@ from qgis.core import (
     QgsBlockingNetworkRequest,
 )
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtGui import QDesktopServices, QPixmap
+from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
