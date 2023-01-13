@@ -45,9 +45,6 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
             self.update_existing_credentials()
             self.name.setText(name)
 
-        self.widget_warning_password.setVisible(not self.auth_manager.masterPasswordIsSet())
-        self.label_warning.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
-
         # Tooltip
         url = tr(
             'The URL of the Lizmap instance. You can visit the administration panel, then "Server information" tab and '
@@ -157,6 +154,24 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
                 + message,
                 QMessageBox.Ok)
             return
+
+        if not self.auth_manager.masterPasswordIsSet():
+            result = QMessageBox.warning(
+                self.parent,
+                tr('QGIS Authentication'),
+                tr(
+                    "It's the first time you are using the QGIS native authentication database. When pressing the OK "
+                    "button, you will be prompted for another password to secure your password manager. "
+                    "This password is <b>not</b> related to Lizmap, only to <b>your QGIS current profile on this "
+                    "computer</b> to unlock your password manager. "
+                    "This password is not recoverable. Read more on the <a href=\""
+                    "https://docs.qgis.org/latest/en/docs/user_manual/auth_system/auth_overview.html#master-password"
+                    "\">QGIS documentation</a>."
+                ),
+                QMessageBox.Ok | QMessageBox.Cancel
+            )
+            if result == QMessageBox.Cancel:
+                return
 
         config = QgsAuthMethodConfig()
         config.setUri(url)
