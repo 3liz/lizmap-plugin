@@ -327,7 +327,8 @@ class DatavizDefinitions(BaseDefinitions):
             'tooltip': tr('The UUID of the plot'),
             'default': generate_uuid,
             'read_only': True,
-            'visible': False,
+            'visible': True,
+            'update_on_saving': False,
         }
 
         self._general_config['datavizLocation'] = {

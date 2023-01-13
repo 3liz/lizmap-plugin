@@ -3727,7 +3727,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="widgetResizable">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <widget class="QWidget" name="scrollAreaWidgetContents_11">
               <property name="geometry">
@@ -3754,7 +3754,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <property name="currentIndex">
                   <number>0</number>
                  </property>
-                 <widget class="QWidget" name="tab">
+                 <widget class="QWidget" name="setup_dataviz">
                   <attribute name="title">
                    <string>Setup</string>
                   </attribute>
@@ -3931,9 +3931,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </item>
                   </layout>
                  </widget>
-                 <widget class="QWidget" name="tab_2">
+                 <widget class="QWidget" name="html_layout">
                   <attribute name="title">
-                   <string>Advanced</string>
+                   <string>HTML Layout</string>
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout">
                    <item>
@@ -3952,6 +3952,132 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </sizepolicy>
                      </property>
                     </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="dd_layout">
+                  <attribute name="title">
+                   <string>Drag and Drop Layout</string>
+                  </attribute>
+                  <layout class="QHBoxLayout" name="horizontalLayout_45">
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_59">
+                     <item>
+                      <layout class="QFormLayout" name="formLayout_3">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_81">
+                         <property name="text">
+                          <string>Container</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <layout class="QHBoxLayout" name="horizontalLayout_48">
+                         <item>
+                          <widget class="QPushButton" name="button_add_dd_dataviz">
+                           <property name="text">
+                            <string notr="true">+</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="button_remove_dd_dataviz">
+                           <property name="text">
+                            <string notr="true">-</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="button_edit_dd_dataviz">
+                           <property name="text">
+                            <string notr="true">edit</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="button_up_dd_dataviz">
+                           <property name="text">
+                            <string notr="true">up</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="button_down_dd_dataviz">
+                           <property name="text">
+                            <string notr="true">down</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_16">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_80">
+                         <property name="text">
+                          <string>Plots</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <layout class="QHBoxLayout" name="horizontalLayout_46">
+                         <item>
+                          <widget class="QComboBox" name="combo_plots"/>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="button_add_plot">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string notr="true">+</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_11">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_47"/>
+                     </item>
+                     <item>
+                      <widget class="QTreeWidget" name="tree_dd_plots">
+                       <column>
+                        <property name="text">
+                         <string>Tree</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </widget>

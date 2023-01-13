@@ -3,7 +3,7 @@
 import copy
 
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.PyQt.QtWidgets import QTableWidget
+from qgis.PyQt.QtWidgets import QComboBox, QTableWidget, QTreeWidget
 from qgis.testing import unittest
 
 from lizmap.definitions.atlas import AtlasDefinitions
@@ -18,6 +18,7 @@ from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
+from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.table_manager.base import TableManager
@@ -487,12 +488,12 @@ class TestTableManager(unittest.TestCase):
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
                 'layerId': self.layer.id(),
+                'uuid': data['0']['uuid'],
                 'order': 0
             }
         }
         expected_traces = expected['0'].pop('traces')
         data_traces = data['0'].pop('traces')
-        del data['0']['uuid']
         self.assertDictEqual(data, expected)
         for exp, got in zip(expected_traces, data_traces):
             self.assertDictEqual(exp, got)
@@ -520,10 +521,10 @@ class TestTableManager(unittest.TestCase):
                 'only_show_child': 'True',
                 'display_when_layer_visible': 'False',
                 'layerId': self.layer.id(),
+                'uuid': data['0']['uuid'],
                 'order': 0
             }
         }
-        del data['0']['uuid']
         self.assertDictEqual(data, expected)
 
     def test_dataviz_legacy_3_3_with_2_traces(self):
@@ -746,8 +747,10 @@ class TestTableManager(unittest.TestCase):
 
     def test_dataviz(self):
         """Test we can read dataviz 3.4 format."""
+        table_widget = QTableWidget()
+        definitions = DatavizDefinitions()
         table_manager = TableManager(
-            None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
+            None, definitions, None, table_widget, None, None, None, None)
 
         json = {
             '0': {
@@ -827,6 +830,18 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         # self.assertEqual(table_manager.table.rowCount(), 1)
+
+        # Drag and drop
+        # We need the table to be populated with data.
+        self.assertEqual(1, table_widget.rowCount())
+        tree_widget = QTreeWidget()
+        combo = QComboBox()
+        dd_manager = DragDropDatavizManager(None, definitions, table_widget, tree_widget, combo)
+        dd_manager.load_dataviz_list_from_main_table()
+        self.assertEqual(1, combo.count())
+        self.assertEqual(0, dd_manager.count_lines())
+        dd_manager.add_current_plot_from_combo()
+        self.assertEqual(1, dd_manager.count_lines())
 
     def test_filter_by_polygon(self):
         """ Test table manager with filter by polygon. """
