@@ -3822,7 +3822,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                          <property name="url">
                           <url>
-                           <string>about:blank</string>
+                           <string notr="true">about:blank</string>
                           </url>
                          </property>
                         </widget>
