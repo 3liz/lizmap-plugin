@@ -279,6 +279,32 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
+            <widget class="QWidget" name="project_valid" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_45">
+              <item>
+               <widget class="QLabel" name="image_warning_project">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string notr="true">IMAGE WARNING</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_warning_project">
+                <property name="text">
+                 <string notr="true">ERROR SET IN PYTHON</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="Line" name="line_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -564,16 +590,6 @@ QListWidget::item::selected {
               <bool>true</bool>
              </property>
              <property name="openExternalLinks">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_no_server">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;You haven't added any server yet. You should consider adding at least one, so you will be able to have its version number and be aware of any new version.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="wordWrap">
               <bool>true</bool>
              </property>
             </widget>
@@ -3806,7 +3822,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                          <property name="url">
                           <url>
-                           <string notr="true">about:blank</string>
+                           <string>about:blank</string>
                           </url>
                          </property>
                         </widget>

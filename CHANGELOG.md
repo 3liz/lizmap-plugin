@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Allow to open the first tab in Lizmap without a project, to be able to visit links
 * New with Lizmap Web Client 3.7.0:
   * For a layer in the dataviz, it's possible to define a specific title when displayed in a popup
   * For plot can now be "not refreshed" if the layer data has been filtered

@@ -73,8 +73,8 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent, table, add_button, remove_button, edit_button, refresh_button, label_no_server,
-            up_button, down_button, server_combo, function_refresh_repositories
+            self, parent, table, add_button, remove_button, edit_button, refresh_button,
+            up_button, down_button, server_combo, function_refresh_repositories, function_check_dialog_validity
     ):
         self.parent = parent
         self.table = table
@@ -84,9 +84,9 @@ class ServerManager:
         self.refresh_button = refresh_button
         self.up_button = up_button
         self.down_button = down_button
-        self.label_no_server = label_no_server
         self.server_combo = server_combo
         self.refresh_repositories = function_refresh_repositories
+        self.check_dialog_validity = function_check_dialog_validity
 
         # Network
         self.fetchers = {}
@@ -195,6 +195,29 @@ class ServerManager:
 
         return conf
 
+    def check_validity_servers(self) -> bool:
+        """ Check if all servers are valid with at least a login. """
+        if self.table.rowCount() == 0:
+            # At least one server minimum for all
+            return False
+
+        current = version()
+        if current in ('master', 'dev') or 'alpha' in current:
+            # For developers, we bypass this check :)
+            return True
+
+        if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+            # For advanced users with an environment variable, we bypass as well
+            return True
+
+        for row in range(self.table.rowCount()):
+            login = self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole)
+            if not login:
+                # All rows must have a login
+                return False
+
+        return True
+
     def check_lwc_version(self, version_check: str) -> bool:
         """ Check if the given LWC version is at least in the table. """
         for row in range(self.table.rowCount()):
@@ -244,7 +267,6 @@ class ServerManager:
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
         self.refresh_server_combo()
-        self.check_display_warning_no_server()
 
     def _fetch_cells(self, row: int) -> tuple:
         """ Fetch the URL and the authid in the cells. """
@@ -285,7 +307,6 @@ class ServerManager:
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
         self.save_table()
         self.refresh_server_combo()
-        self.check_display_warning_no_server()
 
     def remove_row(self):
         """ Remove the selected row from the table. """
@@ -320,7 +341,6 @@ class ServerManager:
             del self.fetchers[row]
         self.save_table()
         self.refresh_server_combo()
-        self.check_display_warning_no_server()
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
@@ -664,6 +684,7 @@ class ServerManager:
                 self.server_combo.setCurrentIndex(index)
 
         self.server_combo.blockSignals(False)
+        self.check_dialog_validity()
 
     def load_table(self):
         """ Load the table by reading the user configuration file. """
@@ -683,7 +704,6 @@ class ServerManager:
                 server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
             )
 
-        self.check_display_warning_no_server()
         self.refresh_server_combo()
 
     def save_table(self):
@@ -707,10 +727,6 @@ class ServerManager:
 
         with open(self.user_settings(), 'w') as json_file:
             json_file.write(json_file_content)
-
-    def check_display_warning_no_server(self):
-        """ If we should display or not if there isn't server configured. """
-        self.label_no_server.setVisible(self.table.rowCount() == 0)
 
     def update_action_version(
             self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str = None,

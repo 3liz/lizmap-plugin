@@ -560,12 +560,14 @@ class Lizmap:
         # file. The check is done only when saving.
         # self.dlg.liExternalSearch.currentIndexChanged.connect(self.check_api_key_address)
 
+        warning_icon = QPixmap(":images/themes/default/mIconWarning.svg")
+
         # Scales
         self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
         self.dlg.min_scale_pic.setText('')
         self.dlg.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
         self.dlg.max_scale_pic.setText('')
-        self.dlg.label_warning_crs.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
+        self.dlg.label_warning_crs.setPixmap(warning_icon)
         ui_items = (
             self.dlg.label_min_scale, self.dlg.label_max_scale,
             self.dlg.min_scale_pic, self.dlg.max_scale_pic,
@@ -574,8 +576,11 @@ class Lizmap:
         for item in ui_items:
             item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
 
+        self.dlg.image_warning_project.setText("")
+        self.dlg.image_warning_project.setPixmap(warning_icon)
+
         # Popup configuration
-        self.dlg.image_warning_lizmap_popup.setPixmap(QPixmap(":images/themes/default/mIconWarning.svg"))
+        self.dlg.image_warning_lizmap_popup.setPixmap(warning_icon)
         self.dlg.image_warning_lizmap_popup.setText('')
 
         widget_source_popup = self.layer_options_list['popupSource']['widget']
@@ -646,11 +651,11 @@ class Lizmap:
             self.dlg.remove_server_button,
             self.dlg.edit_server_button,
             self.dlg.refresh_versions_button,
-            self.dlg.label_no_server,
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
             self.dlg.server_combo,
             self.refresh_combo_repositories,
+            self.check_dialog_validity,
         )
 
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
@@ -832,6 +837,7 @@ class Lizmap:
         current_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         QgsSettings().setValue('lizmap/instance_target_url', current_url)
         QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
+        self.check_dialog_validity()
         self.refresh_combo_repositories()
 
     def target_repository_changed(self):
@@ -988,6 +994,7 @@ class Lizmap:
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
         self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
 
+        # Connect the left menu to the right panel
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
 
         # clear log button clicked
@@ -1203,6 +1210,49 @@ class Lizmap:
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
+
+    def check_dialog_validity(self):
+        """ Check the global dialog validity if we have :
+         * at least one server
+         * all servers with a login associated
+         * a QGS project
+
+        Only the first tab is always allowed.
+        All other tabs must have these conditions.
+        """
+        self.dlg.project_valid.setVisible(False)
+        allow_navigation = True
+
+        valid, msg = self.check_global_project_options()
+        if not valid:
+            allow_navigation = False
+            self.dlg.project_valid.setVisible(True)
+            self.dlg.label_warning_project.setText(msg)
+
+        # Project is valid, now check the server table validity
+        try:
+            self.server_manager
+            if valid and not self.server_manager.check_validity_servers():
+                allow_navigation = False
+                msg = tr(
+                    'You must have all Lizmap servers with a valid URL and a login provided before using the plugin.'
+                )
+                self.dlg.project_valid.setVisible(True)
+                self.dlg.label_warning_project.setText(msg)
+        except AttributeError:
+            # Somehow in tests, we don't have the variable
+            pass
+
+        # Check the current selected server
+        # Not relevant for now
+        # server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+
+        for i in range(1, self.dlg.mOptionsListWidget.count()):
+            item = self.dlg.mOptionsListWidget.item(i)
+            if allow_navigation:
+                item.setFlags(item.flags() | Qt.ItemIsEnabled)
+            else:
+                item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
 
     def add_new_layer(self, key):
         self.layers_table[key]['manager'].add_new_row()
@@ -2843,25 +2893,25 @@ class Lizmap:
         :return: Flag if the project is valid and an error message.
         :rtype: bool, basestring
         """
-        message = tr(
-            'You need to open a QGIS project, using the QGS extension, before using Lizmap.')
+        base_message = "<br>" + tr("This is needed before using other tabs in the plugin.")
+        message = tr('You need to open a QGIS project, using the QGS extension.')
         if not self.project.fileName():
-            return False, message
+            return False, message + base_message
 
         if not self.project.fileName().lower().endswith('qgs'):
             message += "\n\n" + tr(
                 "Your extension is QGZ. Please save again the project using the other extension.")
-            return False, message
+            return False, message + base_message
 
         if QRegExp(r'\s').indexIn(self.project.baseName()) >= 0:
             message = tr(
                 "Your file name has a space in its name. The project file name mustn't have a space in its name.")
-            return False, message
+            return False, message + base_message
 
         if self.project.baseName() != unaccent(self.project.baseName()):
             message = tr(
                 "Your file name has some accents in its name. The project file name mustn't have accents in its name.")
-            return False, message
+            return False, message + base_message
 
         # Check if Qgis/capitaliseLayerName is set
         settings = QgsSettings()
@@ -2869,14 +2919,14 @@ class Lizmap:
             message = tr(
                 'Please deactivate the option "Capitalize layer names" in the tab "Canvas and legend" '
                 'in the QGIS option dialog, as it could cause issues with Lizmap.')
-            return False, message
+            return False, message + base_message
 
         # Check relative/absolute path
         if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
             message = tr(
                 'The project layer paths must be set to relative. '
                 'Please change this options in the project settings.')
-            return False, message
+            return False, message + base_message
 
         # check if a title has been given in the project QGIS Server tab configuration
         # first set the WMSServiceCapabilities to true
@@ -2928,6 +2978,12 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
+        if not self.check_dialog_validity():
+            LOGGER.debug("Leaving the dialog without a project.")
+            return False
+
+        self.isok = 1
+
         stop = tr("The process is stopping.")
 
         if self.dlg.table_server.rowCount() < 1 and not self.is_dev_version:
@@ -3172,7 +3228,7 @@ class Lizmap:
         self.reinitDefaultProperties()
         self.dlg.close()
 
-    def run(self):
+    def run(self) -> bool:
         """Plugin run method : launch the GUI."""
         if self.dlg.isVisible():
             # show dialog in front of QGIS
@@ -3180,61 +3236,51 @@ class Lizmap:
             self.dlg.activateWindow()
             return False
 
-        # show the dialog only if checkGlobalProjectOptions is true
-        if not self.dlg.isVisible():
-            project_is_valid, message = self.check_global_project_options()
+        self.populate_lwc_combo()
 
-            if not project_is_valid:
-                QMessageBox.critical(
-                    self.dlg,
-                    tr('Lizmap Error'),
-                    message,
-                    QMessageBox.Ok)
-                return False
+        self.check_dialog_validity()
 
-            self.populate_lwc_combo()
+        # QGIS Plugin manager
+        qgis_plugin_manager = None
+        if QGIS_PLUGIN_MANAGER:
+            # noinspection PyBroadException
+            try:
+                plugin_manager = PluginManager()
+                self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
+                self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
+                self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
+                qgis_plugin_manager = True
+            except Exception as e:
+                # Core QGIS plugin manager API might not be well stable ?
+                LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
+        if not qgis_plugin_manager:
+            self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
+            self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
+            self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
 
-            # QGIS Plugin manager
-            qgis_plugin_manager = None
-            if QGIS_PLUGIN_MANAGER:
-                # noinspection PyBroadException
-                try:
-                    plugin_manager = PluginManager()
-                    self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
-                    self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
-                    self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
-                    qgis_plugin_manager = True
-                except Exception as e:
-                    # Core QGIS plugin manager API might not be well stable ?
-                    LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
-            if not qgis_plugin_manager:
-                self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
-                self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
-                self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
+        version_checker = VersionChecker(self.dlg, VERSION_URL)
+        version_checker.fetch()
+        self.set_previous_qgis_version(None)
 
-            version_checker = VersionChecker(self.dlg, VERSION_URL)
-            version_checker.fetch()
-            self.set_previous_qgis_version(None)
+        self.dlg.show()
 
-            self.dlg.show()
+        # Get config file data
+        self.get_config()
 
-            # Get config file data
-            self.get_config()
+        self.layerList = dict()
 
-            self.layerList = dict()
+        # Get embedded groups
+        self.embeddedGroups = None
 
-            # Get embedded groups
-            self.embeddedGroups = None
+        # Fill the layer tree
+        self.populate_layer_tree()
 
-            # Fill the layer tree
-            self.populate_layer_tree()
+        # Fill base-layer startup
+        self.onBaselayerCheckboxChange()
+        self.setStartupBaselayerFromConfig()
 
-            # Fill baselayer startup
-            self.onBaselayerCheckboxChange()
-            self.setStartupBaselayerFromConfig()
+        auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
+        self.dlg.checkbox_save_project.setChecked(auto_save)
 
-            auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
-            self.dlg.checkbox_save_project.setChecked(auto_save)
-
-            self.dlg.exec_()
-            return True
+        self.dlg.exec_()
+        return True
