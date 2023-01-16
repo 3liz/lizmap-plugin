@@ -10,3 +10,4 @@ from enum import Enum, unique
 class Warnings(Enum):
     OgcNotValid = 'ogc_not_valid'
     UseLayerIdAsName = 'use_layer_id_as_name'
+    SaasLizmapDotCom = 'saas_lizmap_dot_com_invalid'

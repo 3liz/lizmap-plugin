@@ -131,6 +131,7 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.lizmap_dialog import LizmapDialog
 from lizmap.lizmap_popup_dialog import LizmapPopupDialog
+from lizmap.saas import is_lizmap_dot_com_hosting, valid_saas_lizmap_dot_com
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
@@ -1211,7 +1212,7 @@ class Lizmap:
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
-    def check_dialog_validity(self):
+    def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :
          * at least one server
          * all servers with a login associated
@@ -1253,6 +1254,8 @@ class Lizmap:
                 item.setFlags(item.flags() | Qt.ItemIsEnabled)
             else:
                 item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
+
+        return allow_navigation
 
     def add_new_layer(self, key):
         self.layers_table[key]['manager'].add_new_row()
@@ -2533,6 +2536,21 @@ class Lizmap:
         if not target_status:
             target_status = ReleaseStatus.Unknown
 
+        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+
+        if is_lizmap_dot_com_hosting(server_metadata):
+            error, results = valid_saas_lizmap_dot_com(self.project)
+            if error:
+                warnings.append(Warnings.SaasLizmapDotCom.value)
+
+                message = tr('Some configuration are not valid when used with a Lizmap.com hosting :')
+                message += "<br><ul>"
+                for error in results.values():
+                    message += "<li>{}</li>".format(error)
+                message += "</ul><br>"
+                message += tr("The process is continuing but expect some layers to not be visible.")
+                QMessageBox.warning(self.dlg, tr('Lizmap.com hosting'), message, QMessageBox.Ok)
+
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
             'lizmap_plugin_version_str': current_version,
@@ -2979,12 +2997,12 @@ class Lizmap:
         Check the user defined data from GUI and save them to both global and project config files.
         """
         if not self.check_dialog_validity():
-            LOGGER.debug("Leaving the dialog without a project.")
+            LOGGER.debug("Leaving the dialog without valid project and/or server.")
             return False
 
         self.isok = 1
 
-        stop = tr("The process is stopping.")
+        stop_process = tr("The process is stopping.")
 
         if self.dlg.table_server.rowCount() < 1 and not self.is_dev_version:
             # But by making this condition, we force people to at least have one server in the list,
@@ -3000,7 +3018,7 @@ class Lizmap:
                     tr(
                         "By providing a URL, you will be able to check its version number for instance."
                     ),
-                    stop
+                    stop_process
                 ), QMessageBox.Ok)
             return False
 
@@ -3014,7 +3032,7 @@ class Lizmap:
                         "login/password."
                     ),
                     tr("Please go back to the server panel and edit the server to add a login."),
-                    stop
+                    stop_process
                 ), QMessageBox.Ok)
             return False
 
@@ -3032,7 +3050,7 @@ class Lizmap:
                             "Either check your Lizmap Web Client target version in the first panel of the plugin or "
                             "check you have provided the correct server URL."
                         ),
-                        stop
+                        stop_process
                     ), QMessageBox.Ok)
                 return False
 
@@ -3040,7 +3058,7 @@ class Lizmap:
         is_valid, message = self.check_global_project_options()
         if not is_valid:
             QMessageBox.critical(
-                self.dlg, tr('Lizmap Error'), '{}\n\n{}'.format(message, stop), QMessageBox.Ok)
+                self.dlg, tr('Lizmap Error'), '{}\n\n{}'.format(message, stop_process), QMessageBox.Ok)
             return False
 
         # Get configuration from input fields

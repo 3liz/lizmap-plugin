@@ -45,6 +45,7 @@ from lizmap.definitions.definitions import (
 from lizmap.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
+from lizmap.saas import is_lizmap_dot_com_hosting
 from lizmap.tools import lizmap_user_folder, to_bool
 
 LOGGER = logging.getLogger('Lizmap')
@@ -562,6 +563,10 @@ class ServerManager:
         markdown += '* Lizmap plugin : {}\n'.format(version())
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)
+
+        # Only adding Lizmap saas if set to true
+        if is_lizmap_dot_com_hosting(content):
+            markdown += '* Lizmap.com : Yes\n'
 
         # QGIS Server info
         qgis_server_info = content.get('qgis_server_info')

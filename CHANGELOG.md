@@ -13,6 +13,7 @@
 * Fix the converter from Lizmap HTML popup to QGIS HTML popup when the alias/field has an underscore or other 
   accented characters.
 * Add the Lizmap Web Client target version in the copy/paste text available on a server
+* Help users about layers which can not be valid when hosted on lizmap.com such as QGIS authentication database for PostgreSQL
 
 ## 3.9.10 - 2023-01-05
 
