@@ -70,11 +70,6 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             self.button_wizard_group,
         ]
 
-        # Temporary until LWC 3.6.1
-        # Edit also in plugin.py file
-        # Edit also the changelog file
-        self.button_wizard_group.setVisible(False)
-
         # Wizard ACL group
         icon = QIcon(resources_path('icons', 'user_group.svg'))
         self.button_wizard_group.setText('')

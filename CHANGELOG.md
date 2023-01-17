@@ -2,17 +2,19 @@
 
 ## Unreleased
 
-* Allow to open the first tab in Lizmap without a project, to be able to visit links
-* New with Lizmap Web Client 3.7.0:
-  * For a layer in the dataviz, it's possible to define a specific title when displayed in a popup
-  * For plot can now be "not refreshed" if the layer data has been filtered
+## 3.10.0 - 2023-01-17
+
+* Allow to open the first tab in Lizmap without a project, to be able to visit links, documentation
+* Fix the converter from Lizmap HTML popup to QGIS HTML popup when the alias/field has an underscore or other 
+  accented characters.
+* Add the Lizmap Web Client target version in the copy/paste text available on a server
 * New with Lizmap Web Client 3.6.1:
   * Add a preview about a plot in the dataviz panel
   * Better error message if the credentials to connect to Lizmap Web Client is wrong
   * Group wizard
-* Fix the converter from Lizmap HTML popup to QGIS HTML popup when the alias/field has an underscore or other 
-  accented characters.
-* Add the Lizmap Web Client target version in the copy/paste text available on a server
+* New with Lizmap Web Client 3.7.0:
+  * For a layer in the dataviz, it's possible to define a specific title when displayed in a popup
+  * For plot can now be "not refreshed" if the layer data has been filtered
 * Help users about layers which can not be valid when hosted on lizmap.com such as QGIS authentication database for PostgreSQL
 
 ## 3.9.10 - 2023-01-05
