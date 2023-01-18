@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add a feature selector for the plot preview in the dataviz panel
+
 ## 3.10.0 - 2023-01-17
 
 * Allow to open the first tab in Lizmap without a project, to be able to visit links, documentation

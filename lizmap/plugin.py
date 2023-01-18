@@ -840,7 +840,6 @@ class Lizmap:
 
     def refresh_combo_repositories(self):
         """ Refresh the combobox about repositories. """
-        self.dlg.label_filtered_plot.setVisible(False)
         error = tr(
             "Your current version of the selected server doesn't support the plot preview. "
             "You must upgrade at least to Lizmap Web Client "
