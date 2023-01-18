@@ -2,7 +2,7 @@
 import json
 import logging
 
-from typing import Type
+from typing import Optional, Type
 
 from qgis.core import (
     QgsApplication,
@@ -59,13 +59,14 @@ class TableManagerDataviz(TableManager):
         self.parent.label_helper_dataviz.setText(label)
 
         self.table.itemSelectionChanged.connect(self.preview_dataviz_dialog)
+        self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
+        self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
 
     def preview_dataviz_dialog(self):
         """ Open a new dialog with a preview of the dataviz. """
         # Always display the text by default
         self.parent.stacked_dataviz_preview.setCurrentIndex(1)
-
-        self.parent.label_filtered_plot.setVisible(False)
+        self.parent.dataviz_feature_picker.setVisible(False)
 
         selection = self.table.selectedIndexes()
         if len(selection) <= 0:
@@ -90,8 +91,14 @@ class TableManagerDataviz(TableManager):
         json_data = {
             "repository": repository,
             "project": project,
-            "plot_config": plot_config
+            "plot_config": plot_config,
         }
+        if to_bool(plot_config.get('popup_display_child_plot', False)):
+            self.parent.dataviz_feature_picker.setAllowNull(not to_bool(plot_config.get('only_show_child', False)))
+            expression_filter = self.dataviz_expression_filter(plot_config['layerId'])
+            if expression_filter:
+                json_data['exp_filter'] = expression_filter
+
         json_object = json.dumps(json_data, indent=4)
 
         url = QUrl('{}index.php/dataviz/service/'.format(server))
@@ -149,8 +156,8 @@ class TableManagerDataviz(TableManager):
                 message += '<br><br>' + tr("Given context for the request") + ' : <br>'
                 message += '<b>' + tr('Server') + '</b> : ' + server + '<br>'
                 message += (
-                    '<b>' + tr('Repository') + '</b> : ' + repository
-                    + ', <b>' + tr('alias') + '</b> : ' + repository_label
+                        '<b>' + tr('Repository') + '</b> : ' + repository
+                        + ', <b>' + tr('alias') + '</b> : ' + repository_label
                 )
                 message += '<br>'
                 message += '<b>' + tr('Project') + '</b> : ' + project + '.qgs'
@@ -163,9 +170,6 @@ class TableManagerDataviz(TableManager):
 
         response = request.reply().content()
         json_response = json.loads(response.data().decode('utf-8'))
-
-        if to_bool(plot_config.get('popup_display_child_plot', False)):
-            self.parent.label_filtered_plot.setVisible(True)
 
         with open(resources_path('html', 'dataviz.html'), encoding='utf8') as f:
             html_template = f.read()
@@ -193,3 +197,40 @@ class TableManagerDataviz(TableManager):
 
         # Only when we are all good
         self.parent.stacked_dataviz_preview.setCurrentIndex(0)
+
+    def dataviz_expression_filter(self, layer_id: str) -> Optional[str]:
+        """ Return the expression filter if possible. """
+        project = QgsProject.instance()
+        layer = project.mapLayer(layer_id)
+        if not layer:
+            return
+
+        relations = project.relationManager().referencingRelations(layer)
+        if not relations:
+            return
+
+        if len(relations) >= 2:
+            LOGGER.warning(
+                "Many relations has been found for the dataviz preview with the layer ID '{}'. "
+                "Only the first one is used.".format(layer_id)
+            )
+
+        parent_layer = relations[0].referencingLayer()
+        child_layer = relations[0].referencedLayer()
+        field = relations[0].referencingFields()
+
+        # We use only the first field.
+        field = parent_layer.fields().at(field[0])
+
+        # Set the layer in the feature combobox if not set or if it's a different one
+        previous_layer = self.parent.dataviz_feature_picker.layer()
+        if previous_layer and previous_layer.id() != layer.id() or not previous_layer:
+            self.parent.dataviz_feature_picker.setLayer(child_layer)
+
+        # Make widget visible
+        self.parent.dataviz_feature_picker.setVisible(True)
+
+        feature = self.parent.dataviz_feature_picker.feature()
+        if feature.isValid():
+            # The current feature can be set to NULL because of "only_show_child"
+            return "\"{}\" IN ('{}')".format(field.name(), feature.id())
