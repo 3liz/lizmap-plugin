@@ -4,6 +4,7 @@
 
 * Add a feature selector for the plot preview in the dataviz panel
 * Fix the HTML is not saved in the CFG in the layer tab, abstract field
+* Fix an issue when a project is closed, and we open the plugin again
 
 ## 3.10.0 - 2023-01-17
 

@@ -1218,6 +1218,8 @@ class Lizmap:
 
         Only the first tab is always allowed.
         All other tabs must have these conditions.
+
+        Returns True if all tabs are available.
         """
         self.dlg.project_valid.setVisible(False)
         allow_navigation = True
@@ -2233,7 +2235,12 @@ class Lizmap:
                             text = ','.join(val['default'])
                         else:
                             text = val['default']
-                        val['widget'].setText(text)
+                        if val['wType'] == 'text':
+                            val['widget'].setText(text)
+                        else:
+                            # Abstract is the only textarea for now
+                            # We shouldn't have any default value, but let's support it
+                            val['widget'].setPlainText(text)
                     elif val['wType'] == 'spinbox':
                         val['widget'].setValue(val['default'])
                     elif val['wType'] == 'checkbox':
@@ -3258,7 +3265,7 @@ class Lizmap:
 
         self.populate_lwc_combo()
 
-        self.check_dialog_validity()
+        all_tabs = self.check_dialog_validity()
 
         # QGIS Plugin manager
         qgis_plugin_manager = None
@@ -3281,6 +3288,11 @@ class Lizmap:
         version_checker = VersionChecker(self.dlg, VERSION_URL)
         version_checker.fetch()
         self.set_previous_qgis_version(None)
+
+        if not all_tabs:
+            # Go back to the first panel because no project loaded.
+            # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
+            self.dlg.mOptionsListWidget.setCurrentRow(0)
 
         self.dlg.show()
 
