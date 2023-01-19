@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Add a feature selector for the plot preview in the dataviz panel
+* Fix the HTML is not saved in the CFG in the layer tab, abstract field
 
 ## 3.10.0 - 2023-01-17
 

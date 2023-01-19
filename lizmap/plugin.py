@@ -2139,7 +2139,11 @@ class Lizmap:
                             text = ','.join(data)
                         else:
                             text = selectedItem[key]
-                        val['widget'].setText(text)
+                        if val['wType'] == 'text':
+                            val['widget'].setText(text)
+                        else:
+                            # Abstract is the only textarea
+                            val['widget'].setPlainText(text)
                     elif val['wType'] == 'spinbox':
                         val['widget'].setValue(int(selectedItem[key]))
                     elif val['wType'] == 'checkbox':

@@ -1528,7 +1528,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             </widget>
                            </item>
                            <item row="1" column="1">
-                            <widget class="QTextEdit" name="teLayerAbstract">
+                            <widget class="QPlainTextEdit" name="teLayerAbstract">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                                <horstretch>0</horstretch>
@@ -4318,20 +4318,19 @@ This is different to the map maximum extent (defined in QGIS project properties,
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorHTML</class>
-   <extends>QTextEdit</extends>
+   <class>QgsFeaturePickerWidget</class>
+   <extends>QWidget</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
@@ -4340,18 +4339,19 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QWebView</class>
    <extends>QWidget</extends>
    <header location="global">QtWebKitWidgets/QWebView</header>
   </customwidget>
-    <customwidget>
-   <class>QgsFeaturePickerWidget</class>
-   <extends>QWidget</extends>
-   <header>qgis.gui</header>
-  </customwidget>
   <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QTextEdit</extends>
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
