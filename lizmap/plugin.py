@@ -837,9 +837,12 @@ class Lizmap:
         """ When the repository destination has changed in the selector. """
         current = self.dlg.repository_combo.currentData()
         QgsSettings().setValue('lizmap/instance_target_repository', current)
+        if self.dlg.page_dataviz.isVisible():
+            self.layers_table['datavizLayers'].get('manager').preview_dataviz_dialog()
 
     def refresh_combo_repositories(self):
         """ Refresh the combobox about repositories. """
+        # Set the default error message that could happen for the dataviz
         error = tr(
             "Your current version of the selected server doesn't support the plot preview. "
             "You must upgrade at least to Lizmap Web Client "
@@ -868,8 +871,12 @@ class Lizmap:
             self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
             return
 
+        # At this stage, a more precise error message for the dataviz
+        error = tr("You should select a plot to have the preview.")
+        self.dlg.dataviz_error_message.setText(error)
+
         self.dlg.repository_combo.setVisible(True)
-        self.dlg.stacked_dataviz_preview.setCurrentIndex(0)
+        self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
 
         for repository_id, repository_data in repositories.items():
             self.dlg.repository_combo.addItem(repository_data['label'], repository_id)

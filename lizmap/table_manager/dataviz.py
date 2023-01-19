@@ -75,6 +75,14 @@ class TableManagerDataviz(TableManager):
         if not self.parent.repository_combo.isVisible():
             return
 
+        # The check before is not enough if we just have changed the server while we are in the dataviz panel.
+        metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        if not metadata:
+            return
+
+        if not metadata.get("repositories"):
+            return
+
         data = self.to_json()
         row = str(selection[0].row())
         plot_config = data[row]
@@ -173,6 +181,13 @@ class TableManagerDataviz(TableManager):
 
         with open(resources_path('html', 'dataviz.html'), encoding='utf8') as f:
             html_template = f.read()
+
+        if json_response.get('errors'):
+            # Looks like we are on LWC < 3.6.1
+            # Shouldn't happen as well because of a previous check
+            self.parent.dataviz_error_message.setText(json_response.get('errors').get('title', 'Unknown error'))
+            self.parent.stacked_dataviz_preview.setCurrentIndex(1)
+            return
 
         if not json_response.get('data'):
             # Shouldn't happen ...

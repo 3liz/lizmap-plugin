@@ -161,9 +161,7 @@ class TableManager:
         return unicity_dict
 
     def add_new_row(self):
-        # noinspection PyCallingNonCallable
-        row = self.table.rowCount()
-
+        """ When adding a new row in the table. """
         # We give the main UI of the plugin in the edition dialog
         dialog = self.edition(self.parent, self._primary_keys())
         result = dialog.exec_()
@@ -338,7 +336,9 @@ class TableManager:
         self._layer = None
 
         if self.definitions.key() == 'dataviz':
+            # We want to refresh the plot.
             self.preview_dataviz_dialog()
+
         self.table.clearSelection()
 
     def move_layer_up(self):
