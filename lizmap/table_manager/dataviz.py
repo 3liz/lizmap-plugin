@@ -18,10 +18,12 @@ from qgis.PyQt.QtCore import (
     QUrl,
     QUrlQuery,
 )
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.base import BaseDefinitions
+from lizmap.definitions.dataviz import GraphType
 from lizmap.definitions.definitions import ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import (
@@ -62,6 +64,20 @@ class TableManagerDataviz(TableManager):
         self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
         self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
 
+        self.parent.enable_dataviz_preview.setText('')
+        self.parent.enable_dataviz_preview.setCheckable(True)
+        self.parent.enable_dataviz_preview.setChecked(True)
+        self.toggle_preview()
+        self.parent.enable_dataviz_preview.clicked.connect(self.toggle_preview)
+
+    def toggle_preview(self):
+        """ When the toggle preview button is pressed. """
+        if self.parent.enable_dataviz_preview.isChecked():
+            self.parent.enable_dataviz_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
+        else:
+            self.parent.enable_dataviz_preview.setIcon(QIcon(":images/themes/default/mActionHideAllLayers.svg"))
+        self.preview_dataviz_dialog()
+
     def preview_dataviz_dialog(self):
         """ Open a new dialog with a preview of the dataviz. """
         # Always display the text by default
@@ -83,9 +99,17 @@ class TableManagerDataviz(TableManager):
         if not metadata.get("repositories"):
             return
 
+        if not self.parent.enable_dataviz_preview.isChecked():
+            self.parent.dataviz_error_message.setText(tr('Dataviz preview is disabled.'))
+            return
+
         data = self.to_json()
         row = str(selection[0].row())
         plot_config = data[row]
+
+        if plot_config['type'] == GraphType.HtmlTemplate.value:
+            self.parent.dataviz_error_message.setText(tr('It\'s not possible to have a preview for an HTML plot.'))
+            return
 
         server = self.parent.server_combo.currentData(ServerComboData.ServerUrl.value)
         auth_id = self.parent.server_combo.currentData(ServerComboData.AuthId.value)

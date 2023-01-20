@@ -3759,6 +3759,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </widget>
                      </item>
                      <item>
+                      <widget class="QToolButton" name="enable_dataviz_preview">
+                       <property name="text">
+                        <string notr="true">preview</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
                       <spacer name="horizontalSpacer_36">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
@@ -3835,7 +3842,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                          <property name="url">
                           <url>
-                           <string notr="true">about:blank</string>
+                           <string>about:blank</string>
                           </url>
                          </property>
                         </widget>

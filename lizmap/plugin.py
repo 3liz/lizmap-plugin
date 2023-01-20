@@ -293,6 +293,7 @@ class Lizmap:
             self.dlg.button_wizard_group_visibility_project,
             self.dlg.button_wizard_group_visibility_layer,
             self.dlg.label_helper_dataviz,
+            self.dlg.enable_dataviz_preview,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
             self.dlg.label_layout_panel,
