@@ -155,9 +155,15 @@ class TableManager:
                 if config_key == key:
                     for row in range(rows):
                         item = self.table.item(row, i)
+                        item: QTableWidgetItem
                         if item is None:
                             # Do not put if not item, it might be False
                             raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+
+                        if item.isSelected():
+                            # We do not want to add selected values in the list.
+                            # When saving the form, we will check if the current input is already in this list.
+                            continue
 
                         cell = item.data(Qt.UserRole)
                         if cell is None:
