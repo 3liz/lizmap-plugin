@@ -35,8 +35,12 @@ __email__ = 'info@3liz.org'
 
 class BaseEditionDialog(QDialog):
 
+    """ Class managing the edition form, either creation or editing. """
+
     def __init__(self, parent: QDialog = None, unicity=None):
+        """ Constructor. """
         # parent is the main UI of the plugin
+        # noinspection PyArgumentList
         super().__init__(parent)
         self.parent = parent
         self.config = None
@@ -51,6 +55,7 @@ class BaseEditionDialog(QDialog):
         self.lwc_versions[LwcVersions.Lizmap_3_7] = []
 
     def setup_ui(self):
+        """ Build the UI. """
         self.button_box.button(QDialogButtonBox.Help).setToolTip(
             tr('Open the online documentation for this feature.'))
         self.error.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -144,6 +149,7 @@ class BaseEditionDialog(QDialog):
             locale = 'en'
 
         url = '{url}/{lang}/{page}'.format(url=DOC_URL, lang=locale, page=self.config.help_path())
+        # noinspection PyArgumentList
         QDesktopServices.openUrl(QUrl(url))
 
     def version_lwc(self):
@@ -236,6 +242,7 @@ class BaseEditionDialog(QDialog):
     @staticmethod
     def is_layer_in_wfs(layer: QgsVectorLayer) -> Union[None, str]:
         """ Check if the layer in the WFS capabilities. """
+        # noinspection PyArgumentList
         wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
         for wfs_layer in wfs_layers_list:
             if layer.id() == wfs_layer:
@@ -247,6 +254,10 @@ class BaseEditionDialog(QDialog):
             return msg
 
     def validate(self):
+        """ Validate the form or not.
+
+        It returns None if it's OK otherwise a message to be displayed.
+        """
         if self.unicity:
             for key in self.unicity:
                 for k, layer_config in self.config.layer_config.items():
@@ -278,6 +289,7 @@ class BaseEditionDialog(QDialog):
         return None
 
     def accept(self):
+        """ The "accept" slot to close the dialog. """
         message = self.validate()
         if message:
             self.error.setVisible(True)
@@ -315,7 +327,10 @@ class BaseEditionDialog(QDialog):
         pass
 
     def load_form(self, data: OrderedDict) -> None:
-        """A dictionary to load in the UI."""
+        """A dictionary to load in the UI.
+
+        If this function is called, it means we are editing an existing row.
+        """
         layer_properties = OrderedDict()
         for key, definition in self.config.layer_config.items():
             if definition.get('plural') is None:
@@ -325,6 +340,7 @@ class BaseEditionDialog(QDialog):
             value = data.get(key)
 
             if definition['type'] == InputType.Layer:
+                # noinspection PyArgumentList
                 layer = QgsProject.instance().mapLayer(value)
                 definition['widget'].setLayer(layer)
             elif definition['type'] == InputType.Layers:
@@ -432,6 +448,7 @@ class BaseEditionDialog(QDialog):
         # Duplicated in plugin.py, _open_wizard_group()
         url = self.parent.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not url:
+            # noinspection PyArgumentList
             QMessageBox.critical(
                 self,
                 tr('Server URL Error'),
@@ -442,6 +459,7 @@ class BaseEditionDialog(QDialog):
 
         json_metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not json_metadata:
+            # noinspection PyArgumentList
             QMessageBox.critical(
                 self,
                 tr('Server URL Error'),
@@ -453,6 +471,7 @@ class BaseEditionDialog(QDialog):
 
         acl = json_metadata.get('acl')
         if not acl:
+            # noinspection PyArgumentList
             QMessageBox.critical(
                 self,
                 tr('Upgrade your Lizmap instance'),

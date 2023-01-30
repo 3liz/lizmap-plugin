@@ -5,7 +5,7 @@ import logging
 import os
 
 from collections import namedtuple
-from typing import Type
+from typing import Type, Union
 
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -36,9 +36,12 @@ __email__ = 'info@3liz.org'
 
 class TableManager:
 
+    """ Class to manage a table with add, edit, remove, reorder rows. """
+
     def __init__(
             self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
             up_button, down_button):
+        """ Constructor. """
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
@@ -115,7 +118,11 @@ class TableManager:
             current_version = self.parent.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
             self.set_lwc_version(current_version)
 
+        # noinspection PyArgumentList
+        self.project = QgsProject.instance()
+
     def set_lwc_version(self, current_version):
+        """ When the target LWC version is changed, we need to update all widgets to set the color. """
         found = False
         for lwc_version in self.lwc_versions:
             if found:
@@ -137,6 +144,7 @@ class TableManager:
                 found = True
 
     def _primary_keys(self) -> dict:
+        """ Fetch the list of values part of the primary key for each row. """
         unicity_dict = dict()
         rows = self.table.rowCount()
 
@@ -172,6 +180,7 @@ class TableManager:
             self._edit_row(row, data)
 
     def edit_existing_row(self):
+        """ When editing an existing row in the table. """
         selection = self.table.selectedIndexes()
 
         if len(selection) <= 0:
@@ -196,7 +205,7 @@ class TableManager:
         return result
 
     def _edit_row(self, row, data):
-        """Internal function to edit a row."""
+        """ Internal function to edit a row. """
         self._layer = None
         for i, key in enumerate(data.keys()):
             value = data[key]
@@ -210,18 +219,19 @@ class TableManager:
                 value = value(self._layer)
 
             if input_type == InputType.Layer:
-                layer = QgsProject.instance().mapLayer(value)
+                layer = self.project.mapLayer(value)
                 self._layer = layer
                 cell.setText(layer.name())
                 cell.setData(Qt.UserRole, layer.id())
                 cell.setData(Qt.ToolTipRole, '{} ({})'.format(layer.name(), layer.crs().authid()))
+                # noinspection PyArgumentList
                 cell.setIcon(QgsMapLayerModel.iconForLayer(layer))
 
             elif input_type == InputType.Layers:
                 names = []
                 for layer in value:
                     if layer != '':
-                        vector = QgsProject.instance().mapLayer(layer)
+                        vector = self.project.mapLayer(layer)
                         if vector:
                             names.append(vector.name())
                 display = ' ,'.join(names)
@@ -297,7 +307,8 @@ class TableManager:
                         for item_enum in items:
                             if item_enum.value['data'] in value:
                                 # TODO
-                                # We should add the label and not the data, but there is a bug later when opening the form
+                                # We should add the label and not the data, but there is a bug later when opening the
+                                # form
                                 labels.append(item_enum.value['data'])
                         value = ','.join(labels)
                     cell.setText(value)
@@ -337,6 +348,7 @@ class TableManager:
 
         if self.definitions.key() == 'dataviz':
             # We want to refresh the plot.
+            # noinspection PyUnresolvedReferences
             self.preview_dataviz_dialog()
 
         self.table.clearSelection()
@@ -502,7 +514,7 @@ class TableManager:
                 if default_value is not None and hasattr(default_value, '__call__') and is_read_only:
                     # Value is a for now a function, we need to evaluate it
                     # We assume for now we only use the QgsVectorLayer for the input
-                    vector_layer = QgsProject.instance().mapLayer(layer_data['layerId'])
+                    vector_layer = self.project.mapLayer(layer_data['layerId'])
                     layer_data[key] = default_value(vector_layer)
 
                     if isinstance(layer_data[key], bool):
@@ -534,7 +546,7 @@ class TableManager:
                     3: 'unknown',
                     4: 'none'
                 }
-                vector_layer = QgsProject.instance().mapLayer(layer_data['layerId'])
+                vector_layer = self.project.mapLayer(layer_data['layerId'])
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
             if self.definitions.key() == 'datavizLayers':
@@ -587,12 +599,12 @@ class TableManager:
         if self.definitions.key() == 'filter_by_polygon':
             for layer_data in data['layers']:
                 if layer_data['use_centroid']:
-                    vector_layer = QgsProject.instance().mapLayer(layer_data['layer'])
+                    vector_layer = self.project.mapLayer(layer_data['layer'])
                     if vector_layer.providerType() == 'postgres':
                         # noinspection PyUnresolvedReferences
                         has_index, message = self.definitions.has_spatial_centroid_index(vector_layer)
                         if not has_index:
-                            # noinspection PyUnresolvedReferences
+                            # noinspection PyUnresolvedReferences,PyArgumentList
                             QMessageBox.critical(self.parent, tr('Filter by polygon'), message, QMessageBox.Ok)
 
         if self.definitions.key() in [
@@ -608,7 +620,7 @@ class TableManager:
             result = {}
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
-                vector_layer = QgsProject.instance().mapLayer(layer_id)
+                vector_layer = self.project.mapLayer(layer_id)
                 layer_name = vector_layer.name()
                 if self.definitions.key() in ['formFilterLayers', 'datavizLayers']:
                     key = str(i)
@@ -777,9 +789,10 @@ class TableManager:
             data = self._from_json_legacy_form_filter(data)
 
         config = data.get('config')
-        # config: Union[dict, None]
+        config: Union[dict, None]
         if config:
             settings = []
+            widget_type = None
             Setting = namedtuple('Setting', ['widget', 'type', 'value'])
             for config_key, value in config.items():
                 if config_key not in self.definitions.general_config:
@@ -790,7 +803,7 @@ class TableManager:
                     continue
                 widget_type = self.definitions.general_config[config_key]['type']
                 if widget_type == InputType.Layer:
-                    vector_layer = QgsProject.instance().mapLayer(value)
+                    vector_layer = self.project.mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
                         LOGGER.warning(
                             'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not '
@@ -837,7 +850,7 @@ class TableManager:
                 value = layer.get(key)
                 if value:
                     if definition['type'] == InputType.Layer:
-                        vector_layer = QgsProject.instance().mapLayer(value)
+                        vector_layer = self.project.mapLayer(value)
                         if not vector_layer or not vector_layer.isValid():
                             LOGGER.warning(
                                 'In CFG file, section "{}", the layer with ID "{}" is invalid or does not exist.'
@@ -894,7 +907,8 @@ class TableManager:
                 else:
                     default_value = definition.get('default')
                     if default_value is not None and not hasattr(default_value, '__call__'):
-                        if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box' and key == 'aggregation':
+                        if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box'\
+                                and key == 'aggregation':
                             layer_data[key] = AggregationType.No.value['data']
                         elif definition['type'] == InputType.List and default_value != '':
                             layer_data[key] = default_value.value['data']
