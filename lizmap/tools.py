@@ -222,6 +222,19 @@ def format_version_integer(version_string: str) -> str:
     return output
 
 
+def merge_strings(string_1: str, string_2: str) -> str:
+    """ Merge two strings by removing the common part in between.
+
+    'I like chocolate' and 'chocolate and banana' → 'I like chocolate and banana'
+    """
+    k = 0
+    for i in range(1, len(string_2)):
+        if string_1.endswith(string_2[:i]):
+            k = i
+
+    return string_1 + (string_2 if k is None else string_2[k:])
+
+
 def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List[str]]:
     """ Convert an HTML Lizmap popup to QGIS HTML Maptip.
 

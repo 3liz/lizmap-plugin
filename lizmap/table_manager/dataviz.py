@@ -31,7 +31,7 @@ from lizmap.qgis_plugin_tools.tools.resources import (
     resources_path,
 )
 from lizmap.table_manager.base import TableManager
-from lizmap.tools import to_bool
+from lizmap.tools import merge_strings, to_bool
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -228,8 +228,8 @@ class TableManagerDataviz(TableManager):
                 "locale": locale,
                 "responsive": True,
             }),
-            plotly=server + json_response['plotly']['script'],
-            locale=server + json_response['plotly']['locale'],
+            plotly=merge_strings(server, json_response['plotly']['script']),
+            locale=merge_strings(server, json_response['plotly']['locale']),
         )
         base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
         self.parent.dataviz_viewer.setHtml(html_content, base_url)
