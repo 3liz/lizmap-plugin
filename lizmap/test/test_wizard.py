@@ -7,7 +7,7 @@ __email__ = 'info@3liz.org'
 from qgis.PyQt.QtCore import Qt
 from qgis.testing import unittest
 
-from lizmap.dialogs.wizard_group_dialog import WizardGroupDialog
+from lizmap.dialogs.wizard_group import WizardGroupDialog
 
 
 class TestWizardGroupAclDialog(unittest.TestCase):

@@ -24,7 +24,7 @@ from lizmap.definitions.definitions import (
     LwcVersions,
     ServerComboData,
 )
-from lizmap.dialogs.wizard_group_dialog import WizardGroupDialog
+from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 

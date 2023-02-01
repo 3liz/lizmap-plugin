@@ -117,8 +117,8 @@ from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
-from lizmap.dialogs.lizmap_dialog import LizmapDialog
-from lizmap.dialogs.lizmap_popup_dialog import LizmapPopupDialog
+from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
@@ -143,7 +143,7 @@ except ModuleNotFoundError:
     # In a standalone application
     QGIS_PLUGIN_MANAGER = False
 
-from lizmap.dialogs.wizard_group_dialog import WizardGroupDialog
+from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
