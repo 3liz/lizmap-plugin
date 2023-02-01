@@ -42,7 +42,7 @@ from lizmap.definitions.definitions import (
     UNSTABLE_VERSION_PREFIX,
     ServerComboData,
 )
-from lizmap.dialog_server_form import LizmapServerInfoForm
+from lizmap.dialogs.dialog_server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.saas import is_lizmap_dot_com_hosting

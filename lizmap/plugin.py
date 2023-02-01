@@ -117,6 +117,8 @@ from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
+from lizmap.dialogs.lizmap_dialog import LizmapDialog
+from lizmap.dialogs.lizmap_popup_dialog import LizmapPopupDialog
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
@@ -129,8 +131,6 @@ from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
-from lizmap.lizmap_dialog import LizmapDialog
-from lizmap.lizmap_popup_dialog import LizmapPopupDialog
 from lizmap.saas import is_lizmap_dot_com_hosting, valid_saas_lizmap_dot_com
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
@@ -143,6 +143,7 @@ except ModuleNotFoundError:
     # In a standalone application
     QGIS_PLUGIN_MANAGER = False
 
+from lizmap.dialogs.wizard_group_dialog import WizardGroupDialog
 from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
@@ -174,7 +175,6 @@ from lizmap.tools import (
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
-from lizmap.wizard_group_dialog import WizardGroupDialog
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
