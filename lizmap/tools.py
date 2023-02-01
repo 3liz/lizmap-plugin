@@ -62,7 +62,7 @@ from lizmap.definitions.definitions import LayerProperties
 def unaccent(a_string: str) -> str:
     """ Return the unaccentuated string. """
     return ''.join(
-        (c for c in unicodedata.normalize('NFD', a_string) if unicodedata.category(c) != 'Mn'))
+        c for c in unicodedata.normalize('NFD', a_string) if unicodedata.category(c) != 'Mn')
 
 
 def get_layer_wms_parameters(layer):

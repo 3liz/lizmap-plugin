@@ -955,7 +955,7 @@ class Lizmap:
         if not os.path.exists(version_file):
             return
 
-        with open(version_file, 'r') as json_file:
+        with open(version_file) as json_file:
             json_content = json.loads(json_file.read())
 
         for lzm_version in json_content:
@@ -1451,7 +1451,7 @@ class Lizmap:
         if os.path.exists(json_file):
             target_version = self.dlg.combo_lwc_version.currentData()
             LOGGER.info('Reading the CFG file with a LWC target version {}'.format(target_version.value))
-            cfg_file = open(json_file, 'r')
+            cfg_file = open(json_file)
             json_file_reader = cfg_file.read()
             # noinspection PyBroadException
             try:
@@ -2072,7 +2072,7 @@ class Lizmap:
         json_file = '{}.cfg'.format(self.project.fileName())
         json_layers = {}
         if os.path.exists(str(json_file)):
-            f = open(json_file, 'r')
+            f = open(json_file)
             json_file_reader = f.read()
             # noinspection PyBroadException
             try:
@@ -3228,7 +3228,7 @@ class Lizmap:
         # Get the project config file (projectname.qgs.cfg)
         json_file = '{}.cfg'.format(self.project.fileName())
         if os.path.exists(json_file):
-            f = open(json_file, 'r')
+            f = open(json_file)
             json_file_reader = f.read()
             # noinspection PyBroadException
             try:

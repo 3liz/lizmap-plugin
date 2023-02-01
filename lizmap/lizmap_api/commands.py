@@ -164,7 +164,7 @@ def create_config(argv=None):
             print("Templates requires Jinja2 package", file=sys.stderr)
             sys.exit(1)
 
-        with open(args.template,'r') as fp:
+        with open(args.template) as fp:
             tpl = Template(fp.read())
 
         json_config = config.from_template(tpl)

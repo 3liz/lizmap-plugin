@@ -263,7 +263,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
 
         net_req = QNetworkRequest()
         net_req.setUrl(QUrl(url))
-        token = b64encode(f"{login}:{password}".encode('utf-8'))
+        token = b64encode(f"{login}:{password}".encode())
         net_req.setRawHeader(b"Authorization", b"Basic %s" % token)
         request = QgsBlockingNetworkRequest()
         error = request.get(net_req)

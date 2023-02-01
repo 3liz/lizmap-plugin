@@ -206,10 +206,10 @@ class Tooltip:
 
         field_view = '''
                     aggregate(
-                        layer:='{0}',
+                        layer:='{}',
                         aggregate:='concatenate',
-                        expression:={1},
-                        filter:={2}
+                        expression:={},
+                        filter:={}
                     )'''.format(
             layer_id,
             display_expression,
@@ -351,10 +351,10 @@ class Tooltip:
 
         field_view = '''
                     aggregate(
-                        layer:='{0}',
+                        layer:='{}',
                         aggregate:='concatenate',
-                        expression:="{1}",
-                        filter:={2}
+                        expression:="{}",
+                        filter:={}
                     )'''.format(
                                 vlid,
                                 widget_config['Value'],

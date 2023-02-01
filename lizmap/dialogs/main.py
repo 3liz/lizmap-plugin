@@ -54,5 +54,5 @@ FORM_CLASS = load_ui('ui_lizmap.ui')
 class LizmapDialog(QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
-        super(LizmapDialog, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)

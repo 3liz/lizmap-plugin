@@ -660,7 +660,7 @@ class ServerManager:
         if not os.path.exists(user_file):
             return list()
 
-        with open(user_file, 'r') as json_file:
+        with open(user_file) as json_file:
             json_content = json.loads(json_file.read())
 
         return json_content
@@ -757,7 +757,7 @@ class ServerManager:
         # fixme, qgis_version is not used for now
         _ = qgis_version
 
-        with open(json_path, 'r') as json_file:
+        with open(json_path) as json_file:
             json_content = json.loads(json_file.read())
 
         split_version = lizmap_version.split('.')

@@ -530,7 +530,7 @@ class LizmapConfig:
             # Fix https://github.com/3liz/lizmap-web-client/issues/925
             # copy config
             def map_dict(ob):
-                if isinstance(ob, collections.Mapping):
+                if isinstance(ob, collections.abc.Mapping):
                     return {k: map_dict(v) for k, v in ob.items()}
                 elif isinstance(ob, bool):
                     return str(ob)

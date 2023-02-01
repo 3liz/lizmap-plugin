@@ -28,7 +28,7 @@ class TestCodeLayout(unittest.TestCase):
         list_files = []
         expression = r'<header>qgs[a-z]*\.h<\/header>'
         for ui in self.ui_files():
-            with open(ui, 'r') as ui_file:
+            with open(ui) as ui_file:
                 matches = re.findall(
                     expression, ui_file.read(), re.MULTILINE)
                 if len(matches):
@@ -41,7 +41,7 @@ class TestCodeLayout(unittest.TestCase):
         list_files = []
         expression = r'</connections>'
         for ui in self.ui_files():
-            with open(ui, 'r') as ui_file:
+            with open(ui) as ui_file:
                 matches = re.findall(
                     expression, ui_file.read(), re.MULTILINE)
                 if len(matches):
