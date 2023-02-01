@@ -3,6 +3,8 @@
 ## Unreleased
 
 * Add a feature selector for the plot preview in the dataviz panel
+* Disable HTML plot preview
+* Fix the plot preview with some URL configuration
 * Fix the HTML is not saved in the CFG in the layer tab, abstract field
 * Fix an issue when a project is closed, and we open the plugin again
 * Fix editing a table was raising an error about duplicated row

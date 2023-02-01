@@ -13,6 +13,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import (
     QByteArray,
+    QCoreApplication,
     QJsonDocument,
     QLocale,
     QUrl,
@@ -74,15 +75,33 @@ class TableManagerDataviz(TableManager):
         """ When the toggle preview button is pressed. """
         if self.parent.enable_dataviz_preview.isChecked():
             self.parent.enable_dataviz_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
+            self.parent.enable_dataviz_preview.setToolTip(tr(
+                "The preview of plots is currently activated. Click on a plot to have its preview."))
         else:
             self.parent.enable_dataviz_preview.setIcon(QIcon(":images/themes/default/mActionHideAllLayers.svg"))
+            self.parent.enable_dataviz_preview.setToolTip(tr("The preview of plots is currently disabled."))
         self.preview_dataviz_dialog()
+
+    def display_error(self, error_text: str):
+        """ Display an error message and change the tab. """
+        self.parent.dataviz_error_message.setText(error_text)
+        index = self.parent.stacked_dataviz_preview.indexOf(self.parent.error_content)
+        self.parent.stacked_dataviz_preview.setCurrentIndex(index)
+        QCoreApplication.processEvents()
 
     def preview_dataviz_dialog(self):
         """ Open a new dialog with a preview of the dataviz. """
-        # Always display the text by default
-        self.parent.stacked_dataviz_preview.setCurrentIndex(1)
         self.parent.dataviz_feature_picker.setVisible(False)
+        # Not an error, just a message...
+        self.display_error(tr('Loading preview' + '…'))
+
+        # Try to display a GIF instead of the text
+        # html_content = "<body><center><img src=\"{}\"></center><body>".format(resources_path('icons/loading.gif'))
+        # base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
+        # self.parent.dataviz_viewer.setHtml(html_content, base_url)
+        # index = self.parent.stacked_dataviz_preview.indexOf(self.parent.html_content)
+        # self.parent.stacked_dataviz_preview.setCurrentIndex(index)
+        # QCoreApplication.processEvents()
 
         selection = self.table.selectedIndexes()
         if len(selection) <= 0:
@@ -100,15 +119,15 @@ class TableManagerDataviz(TableManager):
             return
 
         if not self.parent.enable_dataviz_preview.isChecked():
-            self.parent.dataviz_error_message.setText(tr('Dataviz preview is disabled.'))
+            self.display_error(tr('Dataviz preview is disabled.'))
             return
 
         data = self.to_json()
         row = str(selection[0].row())
         plot_config = data[row]
 
-        if plot_config['type'] == GraphType.HtmlTemplate.value:
-            self.parent.dataviz_error_message.setText(tr('It\'s not possible to have a preview for an HTML plot.'))
+        if plot_config['type'] == GraphType.HtmlTemplate.value['data']:
+            self.display_error(tr('It\'s not possible to have a preview for an HTML plot.'))
             return
 
         server = self.parent.server_combo.currentData(ServerComboData.ServerUrl.value)
@@ -117,6 +136,11 @@ class TableManagerDataviz(TableManager):
             return
 
         repository = self.parent.repository_combo.currentData()
+        if not repository:
+            # Shouldn't happen, but maybe we have changed the server somehow ?
+            self.display_error(tr('No repository selected.'))
+            return
+
         repository_label = self.parent.repository_combo.currentText()
         project = QgsProject.instance().baseName()
 
@@ -146,12 +170,6 @@ class TableManagerDataviz(TableManager):
             )
             self.parent.dataviz_error_message.setText(error)
             return
-
-        # Until now, we are all good to make the HTTP request, let's display the GIF
-        html_content = "<body><center><img src=\"{}\"></center><body>".format(resources_path('icons/loading.gif'))
-        base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
-        self.parent.dataviz_viewer.setHtml(html_content, base_url)
-        self.parent.stacked_dataviz_preview.setCurrentIndex(0)
 
         locale = QgsSettings().value("locale/userLocale", QLocale().name())[0:2]
 
@@ -196,28 +214,27 @@ class TableManagerDataviz(TableManager):
             else:
                 message = tr("Unknown error : code {}").format(error)
 
-            self.parent.dataviz_error_message.setText(message)
-            self.parent.stacked_dataviz_preview.setCurrentIndex(1)
+            self.display_error(message)
             return
 
         response = request.reply().content()
         json_response = json.loads(response.data().decode('utf-8'))
 
-        with open(resources_path('html', 'dataviz.html'), encoding='utf8') as f:
-            html_template = f.read()
-
         if json_response.get('errors'):
             # Looks like we are on LWC < 3.6.1
             # Shouldn't happen as well because of a previous check
-            self.parent.dataviz_error_message.setText(json_response.get('errors').get('title', 'Unknown error'))
-            self.parent.stacked_dataviz_preview.setCurrentIndex(1)
+            self.display_error(json_response.get('errors').get('title', 'Unknown error'))
             return
 
         if not json_response.get('data'):
             # Shouldn't happen ...
-            self.parent.dataviz_error_message.setText("Unknown error")
-            self.parent.stacked_dataviz_preview.setCurrentIndex(1)
+            self.display_error("Unknown error")
             return
+
+        # Here, we are all good, we can finally display the plot.
+
+        with open(resources_path('html', 'dataviz.html'), encoding='utf8') as f:
+            html_template = f.read()
 
         html_content = html_template.format(
             plot_data=json.dumps(json_response['data']),
@@ -234,8 +251,9 @@ class TableManagerDataviz(TableManager):
         base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
         self.parent.dataviz_viewer.setHtml(html_content, base_url)
 
-        # Only when we are all good
-        self.parent.stacked_dataviz_preview.setCurrentIndex(0)
+        # Only when we are all good, we display the final tab
+        index = self.parent.stacked_dataviz_preview.indexOf(self.parent.html_content)
+        self.parent.stacked_dataviz_preview.setCurrentIndex(index)
 
     def dataviz_expression_filter(self, layer_id: str) -> Optional[str]:
         """ Return the expression filter if possible. """
