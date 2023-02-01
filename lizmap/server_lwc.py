@@ -271,9 +271,11 @@ class ServerManager:
 
     def _fetch_cells(self, row: int) -> tuple:
         """ Fetch the URL and the authid in the cells. """
-        if not self.table:
+        try:
             # When we are reloading the plugin
             # I'm not sure why ...
+            self.table
+        except AttributeError:
             return None, None, None
 
         url_item = self.table.item(row, TableCell.Url.value)

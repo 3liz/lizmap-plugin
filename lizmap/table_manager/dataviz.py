@@ -2,7 +2,7 @@
 import json
 import logging
 
-from typing import Optional, Type
+from typing import Optional
 
 from qgis.core import (
     QgsApplication,
@@ -51,7 +51,7 @@ class TableManagerDataviz(TableManager):
     """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, edit_button, up_button,
+            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, edit_button, up_button,
             down_button):
         TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
 

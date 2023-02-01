@@ -5,7 +5,7 @@ import logging
 import os
 
 from collections import namedtuple
-from typing import Type, Union
+from typing import Optional, Union
 
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -39,7 +39,7 @@ class TableManager:
     """ Class to manage a table with add, edit, remove, reorder rows. """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, remove_button, edit_button,
+            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, remove_button, edit_button,
             up_button, down_button):
         """ Constructor. """
         self.parent = parent
@@ -175,7 +175,7 @@ class TableManager:
         return unicity_dict
 
     def add_new_row(self):
-        """ When adding a new row in the table. """
+        """ When clicking on the "add" button, to add new row in the table. """
         # We give the main UI of the plugin in the edition dialog
         dialog = self.edition(self.parent, self._primary_keys())
         result = dialog.exec_()

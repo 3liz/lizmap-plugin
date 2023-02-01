@@ -3,7 +3,7 @@
 import logging
 
 from enum import Enum
-from typing import Type
+from typing import Optional
 
 from qgis.core import QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -27,7 +27,7 @@ class TableManagerLayouts(TableManager):
     """ Table manager for layouts. """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Type[QDialog], table, edit_button, up_button,
+            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, edit_button, up_button,
             down_button):
         TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
 
