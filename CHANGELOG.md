@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.10.1 - 2023-02-07
+
 * Add a feature selector for the plot preview in the dataviz panel
 * Disable HTML plot preview
 * Fix the plot preview with some URL configuration
