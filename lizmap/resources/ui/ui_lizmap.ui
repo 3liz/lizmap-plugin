@@ -1828,6 +1828,30 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </widget>
                          </item>
                          <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_37">
+                           <item>
+                            <widget class="QLabel" name="label_max_feature_popup">
+                             <property name="text">
+                              <string>Maximum features in the popup dock</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QSpinBox" name="sbPopupMaxFeatures">
+                             <property name="minimum">
+                              <number>1</number>
+                             </property>
+                             <property name="maximum">
+                              <number>999</number>
+                             </property>
+                             <property name="value">
+                              <number>10</number>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
                           <widget class="QGroupBox" name="groupBox_11">
                            <property name="title">
                             <string>Relations</string>
@@ -1885,30 +1909,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                                     </property>
                                     <property name="wordWrap">
                                      <bool>true</bool>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                 </layout>
-                                </item>
-                                <item>
-                                 <layout class="QHBoxLayout" name="horizontalLayout_37">
-                                  <item>
-                                   <widget class="QLabel" name="label_max_feature_popup">
-                                    <property name="text">
-                                     <string>Maximum children features in a popup</string>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item>
-                                   <widget class="QSpinBox" name="sbPopupMaxFeatures">
-                                    <property name="minimum">
-                                     <number>1</number>
-                                    </property>
-                                    <property name="maximum">
-                                     <number>999</number>
-                                    </property>
-                                    <property name="value">
-                                     <number>10</number>
                                     </property>
                                    </widget>
                                   </item>

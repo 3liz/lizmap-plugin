@@ -8,6 +8,7 @@
 * Fix the HTML is not saved in the CFG in the layer tab, abstract field
 * Fix an issue when a project is closed, and we open the plugin again
 * Fix editing a table was raising an error about duplicated row
+* Move the spinbox about the maximum feature in the popup dock outside the relation group box
 
 ## 3.10.0 - 2023-01-17
 
