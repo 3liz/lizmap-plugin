@@ -79,6 +79,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
 
         self.setup_ui()
         self.check_layer_wfs()
+        self.layer_changed()
 
     def check_layer_wfs(self):
         """ When the layer has changed in the combobox, check if the layer is published as WFS. """
@@ -96,6 +97,22 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
     def layer_changed(self):
         layer = self.layer.currentLayer()
         self.provider.setText(layer_provider(layer))
+
+        if not layer:
+            return
+
+        if layer.isSpatial():
+            self.without_geom.setEnabled(True)
+            self.edit_geometry.setEnabled(True)
+            self.label_edit_geometry.setEnabled(True)
+            self.label_without_geom.setEnabled(True)
+        else:
+            self.without_geom.setEnabled(False)
+            self.edit_geometry.setEnabled(False)
+            self.label_edit_geometry.setEnabled(False)
+            self.label_without_geom.setEnabled(False)
+            self.without_geom.setChecked(False)
+            self.edit_geometry.setChecked(False)
 
     def open_wizard_group(self):
         """ When the user clicks on the group wizard. """

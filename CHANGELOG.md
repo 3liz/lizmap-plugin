@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Improve the editing form with non spatial layers
+
 ## 3.10.1 - 2023-02-07
 
 * Add a feature selector for the plot preview in the dataviz panel
