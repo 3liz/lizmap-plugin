@@ -186,14 +186,16 @@ class ServerManager:
         """ Fetch the authentication settings for a given token. """
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
-            LOGGER.warning("Master password is not set")
+            LOGGER.warning("Master password is not set, could not look for ID {}".format(auth_id))
             return None
 
         conf = QgsAuthMethodConfig()
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
         if not conf.id():
+            LOGGER.debug("Skipping password ID {}, it wasn't found in the password manager".format(auth_id))
             return None
 
+        LOGGER.info("Found password ID {}".format(auth_id))
         return conf
 
     def check_validity_servers(self) -> bool:
