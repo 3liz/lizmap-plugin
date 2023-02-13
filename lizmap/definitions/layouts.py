@@ -100,9 +100,9 @@ class LayoutsDefinitions(BaseDefinitions):
             'tooltip': tr("The default DPI")
         }
         self._layer_config['icon'] = {
-            'type': InputType.Text,
+            'type': InputType.File,
             'header': tr('Icon'),
-            'tooltip': tr('The icon to use.'),
+            'tooltip': tr('The icon to use, stored in a "media" folder.'),
             'default': '',
         }
 

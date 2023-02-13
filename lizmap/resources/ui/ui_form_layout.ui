@@ -81,9 +81,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="icon"/>
-     </item>
      <item row="5" column="1">
       <widget class="QgsCheckableComboBox" name="dpi"/>
      </item>
@@ -113,6 +110,9 @@
         <string>Default DPI</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsFileWidget" name="icon"/>
      </item>
     </layout>
    </item>
@@ -145,6 +145,11 @@
   <customwidget>
    <class>QgsCheckableComboBox</class>
    <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>

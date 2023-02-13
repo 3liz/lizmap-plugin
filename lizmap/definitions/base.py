@@ -15,6 +15,7 @@ class InputType(Enum):
     CheckBox = 'CheckBox'  # QCheckbox
     Field = 'Field'  # QgsFieldMapLayerComboBox
     Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget in qgis_plugin_tools
+    File = 'File'  # QgsFileWidget
     Json = 'Json'  # QTextEdit then JsonEditor, a custom widget in qgis_plugin_tools
     Layer = 'Layer'  # QgsMapLayerComboBox
     Layers = 'Layers'  # ListLayersSelection

@@ -349,6 +349,8 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setField(value)
             elif definition['type'] == InputType.Fields:
                 definition['widget'].set_selection(value.split(','))
+            elif definition['type'] == InputType.File:
+                definition['widget'].setFilePath(value)
             elif definition['type'] == InputType.CheckBox:
                 definition['widget'].setChecked(value)
             elif definition['type'] == InputType.Color:
@@ -405,6 +407,8 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].currentField()
             elif definition['type'] == InputType.Fields:
                 value = ','.join(definition['widget'].selection())
+            elif definition['type'] == InputType.File:
+                value = definition['widget'].filePath()
             elif definition['type'] == InputType.Color:
                 widget = definition['widget']
                 if widget.isNull():

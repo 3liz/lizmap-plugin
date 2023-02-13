@@ -261,6 +261,11 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
+            elif input_type == InputType.File:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
+
             elif input_type == InputType.Color:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
@@ -489,6 +494,8 @@ class TableManager:
                 elif input_type == InputType.Field:
                     layer_data[key] = cell
                 elif input_type == InputType.Fields:
+                    layer_data[key] = cell
+                elif input_type == InputType.File:
                     layer_data[key] = cell
                 elif input_type == InputType.Json:
                     layer_data[key] = cell
@@ -874,6 +881,8 @@ class TableManager:
                         layer_data[key] = value
                     elif definition['type'] == InputType.CheckBox:
                         layer_data[key] = True if value in ['true', 'True'] else False
+                    elif definition['type'] == InputType.File:
+                        layer_data[key] = value
                     elif definition['type'] == InputType.Json:
                         layer_data[key] = value
                     elif definition['type'] == InputType.List:

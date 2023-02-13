@@ -1,5 +1,6 @@
 """Dialog for layout edition."""
 
+from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtGui import QIcon
 
 from lizmap.definitions.layouts import LayoutsDefinitions
@@ -48,6 +49,13 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         self.button_wizard_group.setIcon(icon)
         self.button_wizard_group.clicked.connect(self.open_wizard_group)
         self.button_wizard_group.setToolTip(tr("Open the group wizard"))
+
+        # Icon
+        # TODO, this can be improved according to the hosting variable
+        # "media" folder, SVG directory or absolute path
+        self.icon: QgsFileWidget
+        self.icon.setFilter("Images SVG, PNG, JPG (*.png *.jpg *.jpeg *.svg)")
+        self.icon.setRelativeStorage(QgsFileWidget.RelativeProject)
 
         self.setup_ui()
 
