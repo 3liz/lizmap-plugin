@@ -7,6 +7,7 @@ import os
 from collections import namedtuple
 from typing import Optional, Union
 
+from qgis._core import QgsMasterLayoutInterface
 from qgis.core import QgsMapLayerModel, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
@@ -100,6 +101,9 @@ class TableManager:
 
             self.definitions.add_general_label('polygon_layer_id', self.parent.label_layer_filter_polygon)
             self.definitions.add_general_label('group_field', self.parent.label_field_filter_polygon)
+
+        elif self.definitions.key() == 'layouts' and self.parent:
+            self.definitions.add_general_widget('default_popup_print', self.parent.checkbox_default_print)
 
         # Set tooltips
         for general_config in self.definitions.general_config.values():
@@ -339,6 +343,27 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
+                if self.definitions.key() == 'layouts' and key == 'layout':
+                    manager = QgsProject.instance().layoutManager()
+                    layout = manager.layoutByName(value)
+
+                    atlas_layout = None
+                    if layout.layoutType() == QgsMasterLayoutInterface.PrintLayout:
+                        for _print_layout in manager.printLayouts():
+                            if _print_layout.name() == value:
+                                atlas_layout = _print_layout
+                                break
+
+                    if not atlas_layout:
+                        # The report shouldn't be loaded
+                        return
+
+                    if atlas_layout.atlas().enabled():
+                        icon = QIcon(":images/themes/default/mIconAtlas.svg")
+                    else:
+                        icon = QIcon(":images/themes/default/mActionFilePrint.svg")
+                    cell.setIcon(icon)
+
             elif input_type == InputType.MultiLine:
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
@@ -438,7 +463,7 @@ class TableManager:
 
         data = dict()
 
-        if self.definitions.key() in ('filter_by_polygon',):
+        if self.definitions.key() in ('filter_by_polygon', 'layouts', ):
             data['config'] = dict()
             for config_key, general_config in self.definitions.general_config.items():
                 widget = general_config.get('widget')

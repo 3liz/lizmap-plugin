@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-* Improve the editing form with non spatial layers
+* Improve the editing form with non-spatial layers
+* Improve the new layout panel for Lizmap Web Client 3.7
 
 ## 3.10.1 - 2023-02-07
 

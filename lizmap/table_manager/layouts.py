@@ -58,6 +58,7 @@ class TableManagerLayouts(TableManager):
 
         # For all layouts in the project already loaded
         for layout in QgsProject.instance().layoutManager().printLayouts():
+            # TODO check for report ?
             LOGGER.debug("  * reading layout {}".format(layout.name()))
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)

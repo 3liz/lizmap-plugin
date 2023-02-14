@@ -106,6 +106,11 @@ class LayoutsDefinitions(BaseDefinitions):
             'default': '',
         }
 
+        self._general_config['default_popup_print'] = {
+            'type': InputType.CheckBox,
+            'default': True,
+        }
+
     def key(self) -> str:
         return 'layouts'
 

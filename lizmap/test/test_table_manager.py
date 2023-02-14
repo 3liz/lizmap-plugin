@@ -256,6 +256,7 @@ class TestTableManager(unittest.TestCase):
 
         data = table_manager.to_json()
         expected = {
+            "config": {},
             "list": [
                 {
                     "layout": "A4 Landscape",

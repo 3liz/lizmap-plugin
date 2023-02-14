@@ -2876,6 +2876,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
             </widget>
            </item>
            <item>
+            <widget class="QLabel" name="label_79">
+             <property name="text">
+              <string>According if an atlas is enabled or not in the layout, some settings are available or not. If the atlas status has changed in the layout, you can reopen the layout edition dialog by double-clicking in the table below, it will refresh some settings.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QTableWidget" name="table_layout"/>
            </item>
            <item>
@@ -2915,6 +2925,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </spacer>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkbox_default_print">
+             <property name="text">
+              <string>Enable the print button exporting the popup content</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
