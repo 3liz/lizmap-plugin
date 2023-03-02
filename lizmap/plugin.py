@@ -1252,6 +1252,8 @@ class Lizmap:
         """ Check the global dialog validity if we have :
          * at least one server
          * all servers with a login associated
+         * LWC 3.5 doesn't check the status of QGIS server
+         * LWC 3.6 must have a valid QGIS server setup
          * a QGS project
 
         Only the first tab is always allowed.

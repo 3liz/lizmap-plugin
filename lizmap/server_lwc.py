@@ -214,10 +214,18 @@ class ServerManager:
             # For advanced users with an environment variable, we bypass as well
             return True
 
+        # All rows must have a login
         for row in range(self.table.rowCount()):
             login = self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole)
             if not login:
                 # All rows must have a login
+                return False
+
+        # For LWC ≥ 3.6, rows must have QGIS server version
+        for row in range(self.table.rowCount()):
+            qgis_server = self.table.item(row, TableCell.QgisVersion.value).data(Qt.UserRole + 1)
+            if isinstance(qgis_server, bool):
+                # It means QGIS server is not configured correctly.
                 return False
 
         return True
@@ -433,12 +441,21 @@ class ServerManager:
             self.fetch(url, auth_id, row)
 
     @staticmethod
-    def url_metadata(base_url) -> str:
+    def url_metadata(base_url: str) -> str:
         """ Return the URL to fetch metadata from LWC server. """
         if not base_url.endswith('/'):
             base_url += '/'
 
         url = '{}index.php/view/app/metadata'.format(base_url)
+        return url
+
+    @staticmethod
+    def url_server_info(base_url: str) -> str:
+        """ Return the URL to the server information panel. """
+        if not base_url.endswith('/'):
+            base_url += '/'
+
+        url = '{}admin.php/admin/server_information'.format(base_url)
         return url
 
     def fetch(self, url: str, auth_id: str, row: int):
@@ -747,15 +764,24 @@ class ServerManager:
         if not version_file.exists():
             return
 
-        level, messages = self._messages_for_version(lizmap_version, qgis_version, login, version_file, error)
+        level, messages, qgis_valid = self._messages_for_version(
+            lizmap_version, qgis_version, login, version_file, error)
+        if isinstance(qgis_valid, bool) and not qgis_valid:
+            self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.UserRole + 1)
+            self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
+
         self.display_action(row, level, '\n'.join(messages))
 
     @staticmethod
     def _messages_for_version(
             lizmap_version: str, qgis_version: Union[str, None], login: str, json_path: Path,
             error: str = '',
-    ) -> Tuple[Qgis.MessageLevel, List[str]]:
-        """Returns the list of messages and the color to use."""
+    ) -> Tuple[Qgis.MessageLevel, List[str], bool]:
+        """Returns the list of messages and the color to use.
+
+        The last returned value is a boolean if the QGIS server is valid or not. It's blocker to continue with this
+        server.
+        """
 
         # fixme, qgis_version is not used for now
         _ = qgis_version
@@ -781,89 +807,104 @@ class ServerManager:
             messages.append(
                 '⚠ ' + tr(
                     "Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version."))
-            return Qgis.Critical, messages
+            # Return False for QGIS server status, considering blocking
+            return Qgis.Critical, messages, False
 
         is_dev_version = False
         for i, json_version in enumerate(json_content):
+            if not json_version['branch'] == branch:
+                continue
+
+            qgis_server_valid = True
             status = ReleaseStatus.find(json_version['status'])
-            if json_version['branch'] == branch:
-                if status in (ReleaseStatus.Dev, ReleaseStatus.ReleaseCandidate):
-                    messages.append(tr('A dev version, warrior !') + ' 👍')
+            if status in (ReleaseStatus.Dev, ReleaseStatus.ReleaseCandidate):
+                messages.append(tr('A dev version, warrior !') + ' 👍')
+                level = Qgis.Success
+                is_dev_version = True
+            if status == ReleaseStatus.Retired:
+                # Upgrade because the branch is not maintained anymore
+                messages.append(tr('Version {version} not maintained anymore').format(version=branch))
+                level = Qgis.Critical
+
+            # Remember a version can be 3.4.2-pre
+            items_bugfix = split_version[2].split('-')
+            is_pre_package = len(items_bugfix) > 1
+            bugfix = int(items_bugfix[0])
+            latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
+            if json_version['latest_release_version'] != full_version or is_pre_package:
+
+                if is_dev_version and login:
+                    pass
+                    # We continue
+                    # return level, messages
+
+                if bugfix > latest_bugfix:
+                    # Congratulations :)
+                    messages.append(tr('Higher than a public release') + ' 👍')
                     level = Qgis.Success
-                    is_dev_version = True
-                if status == ReleaseStatus.Retired:
-                    # Upgrade because the branch is not maintained anymore
-                    messages.append(tr('Version {version} not maintained anymore').format(version=branch))
+
+                elif bugfix < latest_bugfix or is_pre_package:
+                    # The user is not running the latest bugfix release on the maintained branch
+
+                    if bugfix + 2 < latest_bugfix:
+                        # Let's make it clear when they are 2 release late
+                        level = Qgis.Critical
+
+                    if bugfix == 0 and status == ReleaseStatus.Stable:
+                        # I consider a .0 version fragile
+                        # People upgrading to a major version but keeping a .0 version have skills to upgrade to
+                        # a .1 version
+                        messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
+                    elif bugfix != 0 and status in (ReleaseStatus.Stable, ReleaseStatus.Retired):
+                        # Even if the branch is retired, we encourage people upgrading to the latest
+                        messages.append(
+                            tr(
+                                'Not latest bugfix release, {version} is available'
+                            ).format(version=json_version['latest_release_version']))
+
+                    if is_pre_package:
+                        # Pre-release, maybe the package got some updates
+                        messages.append('. ' + tr('This version is not based on a tag.'))
+
+            if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
+                # Running 3.5.X
+                if not login:
+                    messages.insert(0, tr('No administrator/publisher login provided'))
                     level = Qgis.Critical
+                    if int(split_version[1]) >= 6:
+                        qgis_server_valid = False
 
-                # Remember a version can be 3.4.2-pre
-                items_bugfix = split_version[2].split('-')
-                is_pre_package = len(items_bugfix) > 1
-                bugfix = int(items_bugfix[0])
-                latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
-                if json_version['latest_release_version'] != full_version or is_pre_package:
+                if login and error == "NO_ACCESS":
+                    messages.insert(0, tr('The login is not a publisher/administrator'))
+                    # Starting from version 3.9.2, login is required
+                    level = Qgis.Critical
+                    if int(split_version[1]) >= 6:
+                        qgis_server_valid = False
 
-                    if is_dev_version and login:
-                        pass
-                        # We continue
-                        # return level, messages
+                if login and error == "WRONG_CREDENTIALS":
+                    messages.insert(0, tr('Check your credentials, wrong login/password'))
+                    # Starting from version 3.9.2, login is required
+                    level = Qgis.Critical
+                    if int(split_version[1]) >= 6:
+                        qgis_server_valid = False
 
-                    if bugfix > latest_bugfix:
-                        # Congratulations :)
-                        messages.append(tr('Higher than a public release') + ' 👍')
-                        level = Qgis.Success
+                if login and error == 'HTTP_ERROR':
+                    messages.insert(0, tr(
+                        'Please check your "Server Information" panel in the Lizmap administration interface. '
+                        'There is an error reading the QGIS Server configuration.'
+                    ))
+                    level = Qgis.Critical
+                    if int(split_version[1]) >= 6:
+                        qgis_server_valid = False
 
-                    elif bugfix < latest_bugfix or is_pre_package:
-                        # The user is not running the latest bugfix release on the maintained branch
+            if len(messages) == 0:
+                level = Qgis.Success
+                messages.append("👍")
 
-                        if bugfix + 2 < latest_bugfix:
-                            # Let's make it clear when they are 2 release late
-                            level = Qgis.Critical
-
-                        if bugfix == 0 and status == ReleaseStatus.Stable:
-                            # I consider a .0 version fragile
-                            messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
-                        elif bugfix != 0 and status == ReleaseStatus.Stable:
-                            messages.append(
-                                tr(
-                                    'Not latest bugfix release, {version} is available'
-                                ).format(version=json_version['latest_release_version']))
-
-                        if is_pre_package:
-                            # Pre-release, maybe the package got some updates
-                            messages.append('. ' + tr('This version is not based on a tag.'))
-
-                if int(split_version[0]) >= 3 and int(split_version[1]) >= 5:
-                    # Running 3.5.X
-                    if not login:
-                        messages.insert(0, tr('No administrator login provided'))
-                        level = Qgis.Critical
-
-                    if login and error == "NO_ACCESS":
-                        messages.insert(0, tr('The login is not a publisher/administrator'))
-                        # Starting from version 3.9.2, login is required
-                        level = Qgis.Critical
-
-                    if login and error == "WRONG_CREDENTIALS":
-                        messages.insert(0, tr('Check your credentials, wrong login/password'))
-                        # Starting from version 3.9.2, login is required
-                        level = Qgis.Critical
-
-                    if login and error and error != 'NO_ACCESS':
-                        messages.insert(0, tr(
-                            'Please check your "Server Information" panel in the Lizmap administration interface. '
-                            'There is an error reading the QGIS Server configuration.'
-                        ))
-                        level = Qgis.Critical
-
-                if len(messages) == 0:
-                    level = Qgis.Success
-                    messages.append("👍")
-
-                return level, messages
+            return level, messages, qgis_server_valid
 
         # This should not happen
-        return Qgis.Critical, [f"Version {branch} has not been detected as a known version."]
+        return Qgis.Critical, [f"Version {branch} has not been detected as a known version."], False
 
     @staticmethod
     def _split_lizmap_version(lwc_version: str) -> tuple:
@@ -930,14 +971,20 @@ class ServerManager:
         edit_url = menu.addAction(tr("Edit server") + "…")
         edit_url.triggered.connect(self.edit_row)
 
-        open_url = menu.addAction(tr("Open URL") + "…")
+        open_url = menu.addAction(tr("Open home page URL") + "…")
         left_item = self.table.item(item.row(), TableCell.Url.value)
         url = left_item.data(Qt.UserRole)
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
+        open_server_info_url = menu.addAction(tr("Open server information URL") + "…")
+        left_item = self.table.item(item.row(), TableCell.Url.value)
+        url = left_item.data(Qt.UserRole)
+        slot = partial(QDesktopServices.openUrl, QUrl(self.url_server_info(url)))
+        open_server_info_url.triggered.connect(slot)
+
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX) or to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
-            open_url = menu.addAction(tr("Open raw JSON file") + "…")
+            open_url = menu.addAction(tr("Open raw JSON file URL") + "…")
             left_item = self.table.item(item.row(), TableCell.Url.value)
             url = left_item.data(Qt.UserRole)
             slot = partial(QDesktopServices.openUrl, QUrl(self.url_metadata(url)))
