@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Trumbowyg editor</title>
+        <!-- Include stylesheet -->
+        <link rel="stylesheet" href="file:./trumbowyg/ui/trumbowyg.min.css">
+        <link rel="stylesheet" href="file:./trumbowyg/plugins/table/ui/trumbowyg.table.min.css">
+    </head>
+    <body>
+        <!-- Create the editor container -->
+        <div id="trumbowyg-editor">
+        </div>
+
+        <!-- Include the Trumbowyg library -->
+        <script src="file:./trumbowyg/jquery.min.js"></script>
+        <script src="file:./trumbowyg/trumbowyg.min.js"></script>
+        <script src="file:./trumbowyg/plugins/table/trumbowyg.table.min.js"></script>
+
+        <!-- Initialize Trumbowyg editor -->
+        <script>
+        var tEditor = function() {
+            $('#trumbowyg-editor').trumbowyg({
+                btns: [
+                    ['viewHTML'],
+                    ['undo', 'redo'], // Only supported in Blink browsers
+                    ['formatting'],
+                    ['strong', 'em', 'del'],
+                    ['superscript', 'subscript'],
+                    ['link'],
+                    ['insertImage'],
+                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                    ['unorderedList', 'orderedList'],
+                    ['horizontalRule'],
+                    ['removeformat'],
+                    ['fullscreen'],
+                    ['table']
+                ],
+                plugins: {
+                    table: {
+                        // Some table plugin options, see details below
+                    }
+                }
+            });
+            var obj = {
+                getHtml: function(aHtml) {
+                    return $('#trumbowyg-editor').trumbowyg('html');
+                },
+                setHtml: function(aHtml) {
+                    $('#trumbowyg-editor').trumbowyg('html', aHtml);
+                },
+                getSelectedText: function() {
+                    $('#trumbowyg-editor').trumbowyg('getRange');
+                    return $('#trumbowyg-editor').trumbowyg('getRangeText');
+                },
+                insertText: function(aText) {
+                    $('#trumbowyg-editor').trumbowyg('execCmd', {
+                        cmd: 'insertText',
+                        param: aText
+                    });
+                },
+            };
+            return obj;
+        }();
+        </script>
+
+    </body>
+</html>

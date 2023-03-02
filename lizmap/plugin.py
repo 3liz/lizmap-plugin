@@ -117,6 +117,7 @@ from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
+from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.forms.atlas_edition import AtlasEditionDialog
@@ -1013,7 +1014,9 @@ class Lizmap:
         self.dlg.button_wizard_group_visibility_layer.setToolTip(tooltip)
 
         # configure popup button
-        self.dlg.btConfigurePopup.clicked.connect(self.configure_popup_lizmap)
+        self.dlg.btConfigurePopup.setText('')
+        self.dlg.btConfigurePopup.setIcon(QIcon(":images/themes/default/console/iconSettingsConsole.svg"))
+        self.dlg.btConfigurePopup.clicked.connect(self.configure_html_popup)
         self.dlg.convert_html_maptip.clicked.connect(self.convert_html_maptip)
         self.dlg.btQgisPopupFromForm.clicked.connect(self.maptip_from_form)
         self.dlg.button_generate_html_table.clicked.connect(self.html_table_from_layer)
@@ -1313,7 +1316,7 @@ class Lizmap:
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
         data = self.layer_options_list['popupSource']['widget'].currentData()
-        self.dlg.btConfigurePopup.setVisible(data == 'lizmap')
+        self.dlg.btConfigurePopup.setVisible(data in ('lizmap', 'qgis'))
         self.dlg.widget_qgis_maptip.setVisible(data == 'qgis')
 
         if data == 'lizmap':
@@ -2383,23 +2386,37 @@ class Lizmap:
                     index = self.layer_options_list['popupSource']['widget'].findData('qgis')
                     self.layer_options_list['popupSource']['widget'].setCurrentIndex(index)
 
-    def configure_popup_lizmap(self):
+    def configure_html_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
         # get the selected item in the layer tree
         item = self.dlg.layer_tree.currentItem()
-        if item and item.text(1) in self.layerList:
-            # do nothing if no popup configured for this layer/group
-            if self.layerList[item.text(1)]['popup'] == 'False':
-                return
+        if not item:
+            return
 
-            # Set the content of the QTextEdit if needed
-            if 'popupTemplate' in self.layerList[item.text(1)]:
-                self.layerList[item.text(1)]['popup'] = True
-                text = self.layerList[item.text(1)]['popupTemplate']
-            else:
-                text = ''
+        if not item.text(1) in self.layerList:
+            return
 
-            LOGGER.info('Opening the popup configuration')
+        # do nothing if no popup configured for this layer/group
+        if self.layerList[item.text(1)]['popup'] == 'False':
+            return
+
+        # Set the content of the QTextEdit if needed
+        if 'popupTemplate' in self.layerList[item.text(1)]:
+            self.layerList[item.text(1)]['popup'] = True
+            text = self.layerList[item.text(1)]['popupTemplate']
+        else:
+            text = ''
+
+        LOGGER.info('Opening the popup configuration')
+
+        layer = self._current_selected_layer()
+        data = self.layer_options_list['popupSource']['widget'].currentData()
+        if data == 'lizmap':
+            # Legacy
+            # Lizmap HTML popup
+            if isinstance(layer, QgsVectorLayer):
+                LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
+
             popup_dialog = LizmapPopupDialog(self.style_sheet, text)
             if not popup_dialog.exec_():
                 return
@@ -2411,9 +2428,18 @@ class Lizmap:
             if item and item.text(1) in self.layerList:
                 # Write the content into the global object
                 self.layerList[item.text(1)]['popupTemplate'] = content
-                layer = self._current_selected_layer()
                 if isinstance(layer, QgsVectorLayer):
                     LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
+
+        else:
+            # QGIS HTML maptip
+            layer: QgsVectorLayer
+            html_editor = HtmlEditorDialog(layer)
+            html_editor.set_html_content(layer.mapTipTemplate())
+            if not html_editor.exec_():
+                return
+
+            self._set_maptip(layer, html_editor.html_content(), False)
 
     def _current_selected_layer(self) -> QgsMapLayer:
         """ Current selected map layer in the tree. """
@@ -2436,9 +2462,9 @@ class Lizmap:
         value = layer_property(layer, LayerProperties.DataUrl)
         self.layer_options_list['link']['widget'].setText(value)
 
-    def _set_maptip(self, layer: QgsVectorLayer, html_content: str) -> bool:
+    def _set_maptip(self, layer: QgsVectorLayer, html_content: str, check: bool = True) -> bool:
         """ Internal function to set the maptip on a layer. """
-        if layer.mapTipTemplate() != '':
+        if check and layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Question)
             box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
@@ -2454,7 +2480,11 @@ class Lizmap:
 
         layer.setMapTipTemplate(html_content)
         QMessageBox.information(
-            self.dlg, tr('Maptip'), tr('The maptip has been set in the layer.'), QMessageBox.Ok)
+            self.dlg,
+            tr('Maptip'),
+            tr('The maptip has been set in the layer "{}".').format(layer.name()),
+            QMessageBox.Ok
+        )
         return True
 
     def html_table_from_layer(self):
