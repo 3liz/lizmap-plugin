@@ -1720,7 +1720,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                            <item>
                             <widget class="QPushButton" name="btConfigurePopup">
                              <property name="text">
-                              <string>Configure</string>
+                              <string notr="true">SETUP</string>
                              </property>
                             </widget>
                            </item>
