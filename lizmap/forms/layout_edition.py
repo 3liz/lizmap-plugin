@@ -123,5 +123,5 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
 
     def open_wizard_group(self):
         """ Open the wizard about ACL. """
-        helper = tr("Setting groups for the layout print capabilities'{}'".format(self.layout.text()))
+        helper = tr("Setting groups for the layout print capabilities '{}'".format(self.layout.text()))
         super().open_wizard_dialog(helper)

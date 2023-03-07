@@ -49,7 +49,7 @@ class HtmlEditorDialog(QDialog, FORM_CLASS):
         self.setupUi(self)
 
         if layer:
-            self.setWindowTitle(tr("HTML tooltip for the layer '{}'").format(layer.name()))
+            self.setWindowTitle(tr("HTML maptip for the layer '{}'").format(layer.name()))
 
         self.add_field_expression.setText('')
         self.add_field_expression.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
