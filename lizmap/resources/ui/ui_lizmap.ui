@@ -1048,7 +1048,7 @@ QListWidget::item::selected {
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_13">
                     <property name="text">
-                     <string>These scales are used for printing too, regardless of the projection.</string>
+                     <string>These scales are used for printing too, regardless of the projection of the main map.</string>
                     </property>
                    </widget>
                   </item>
