@@ -2,9 +2,9 @@
 
 import unittest
 
-from lizmap.dialogs.html_editor import (
+from lizmap.widgets.html_editor import (
     QGIS_EXPRESSION_TEXT,
-    HtmlEditorDialog,
+    HtmlEditorWidget,
     expression_from_html_to_qgis,
     expression_from_qgis_to_html,
 )
@@ -14,13 +14,13 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 
-class TestHtmlEditorDialog(unittest.TestCase):
+class TestHtmlEditorWidget(unittest.TestCase):
 
     # It seems I can't get trumbowyg loading if it's not show in a UI ?
     @unittest.expectedFailure
     def test_html_editor_dialog(self):
         """ Test to open, save some HTML. """
-        html_editor = HtmlEditorDialog()
+        html_editor = HtmlEditorWidget()
         html = "<p>Lizmap is <strong>cool</strong></p>"
         html_editor.set_html_content(html)
         self.assertEqual(html, html_editor.html_content())

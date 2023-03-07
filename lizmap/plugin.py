@@ -2435,11 +2435,11 @@ class Lizmap:
             # QGIS HTML maptip
             layer: QgsVectorLayer
             html_editor = HtmlEditorDialog(layer)
-            html_editor.set_html_content(layer.mapTipTemplate())
+            html_editor.editor.set_html_content(layer.mapTipTemplate())
             if not html_editor.exec_():
                 return
 
-            self._set_maptip(layer, html_editor.html_content(), False)
+            self._set_maptip(layer, html_editor.editor.html_content(), False)
 
     def _current_selected_layer(self) -> QgsMapLayer:
         """ Current selected map layer in the tree. """
