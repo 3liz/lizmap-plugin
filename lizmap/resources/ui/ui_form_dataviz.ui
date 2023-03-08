@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>641</width>
-    <height>757</height>
+    <width>858</width>
+    <height>733</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>607</width>
-        <height>1268</height>
+        <width>824</width>
+        <height>974</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -41,16 +41,6 @@
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="1">
-          <widget class="QPlainTextEdit" name="text_description"/>
-         </item>
-         <item row="12" column="1">
-          <widget class="QCheckBox" name="stacked">
-           <property name="text">
-            <string>Stacked</string>
-           </property>
-          </widget>
-         </item>
          <item row="7" column="0">
           <widget class="QLabel" name="label_traces">
            <property name="text">
@@ -58,67 +48,13 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_title">
+         <item row="18" column="1">
+          <widget class="QCheckBox" name="display_legend">
            <property name="text">
-            <string>Title</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QgsMapLayerComboBox" name="layer"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_title_popup">
-           <property name="text">
-            <string>Title in a popup</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="title_popup"/>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="label_layout">
-           <property name="text">
-            <string>Layout</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="1">
-          <widget class="QCheckBox" name="popup_display_child_plot">
-           <property name="text">
-            <string>Display filtered plot in popups of parent layer</string>
+            <string>Display the legend</string>
            </property>
            <property name="checked">
             <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="16" column="1">
-          <widget class="QCheckBox" name="only_show_child">
-           <property name="text">
-            <string>Only show in child popup</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_x_field">
-           <property name="text">
-            <string>X field</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_description">
-           <property name="text">
-            <string>Description</string>
            </property>
           </widget>
          </item>
@@ -129,25 +65,25 @@
            </property>
           </widget>
          </item>
-         <item row="13" column="1">
-          <widget class="QCheckBox" name="horizontal">
+         <item row="16" column="1">
+          <widget class="QCheckBox" name="refresh_if_filtered">
            <property name="text">
-            <string>Horizontal</string>
+            <string>Refresh the plot if the layer data is filtered</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_layer">
+         <item row="11" column="1">
+          <widget class="HtmlEditorWidget" name="html_template" native="true"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_title">
            <property name="text">
-            <string>Layer</string>
+            <string>Title</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="title"/>
-         </item>
-         <item row="10" column="1">
-          <widget class="QgsCodeEditorHTML" name="html_template"/>
          </item>
          <item row="8" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -180,44 +116,58 @@
            </item>
           </layout>
          </item>
-         <item row="17" column="1">
-          <widget class="QCheckBox" name="display_legend">
+         <item row="7" column="1">
+          <widget class="QTableWidget" name="traces"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_description">
            <property name="text">
-            <string>Display the legend</string>
+            <string>Description</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QgsMapLayerComboBox" name="layer"/>
+         </item>
+         <item row="15" column="1">
+          <widget class="QCheckBox" name="popup_display_child_plot">
+           <property name="text">
+            <string>Display filtered plot in popups of parent layer</string>
            </property>
            <property name="checked">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="label_html_template">
-           <property name="text">
-            <string>HTML template</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="JsonEditor" name="json_layout"/>
-         </item>
-         <item row="5" column="1">
-          <widget class="QgsFieldComboBox" name="x_field"/>
-         </item>
-         <item row="18" column="1">
+         <item row="19" column="1">
           <widget class="QCheckBox" name="display_when_layer_visible">
            <property name="text">
             <string>Display plot only when the layer is visible</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
-          <widget class="QTableWidget" name="traces"/>
+         <item row="3" column="1">
+          <widget class="HtmlEditorWidget" name="text_description" native="true"/>
          </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="type_graph"/>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_title_popup">
+           <property name="text">
+            <string>Title in a popup</string>
+           </property>
+          </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QComboBox" name="aggregation"/>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="title"/>
+         </item>
+         <item row="17" column="1">
+          <widget class="QCheckBox" name="only_show_child">
+           <property name="text">
+            <string>Only show in child popup</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_type">
@@ -226,10 +176,81 @@
            </property>
           </widget>
          </item>
-         <item row="15" column="1">
-          <widget class="QCheckBox" name="refresh_if_filtered">
+         <item row="0" column="1">
+          <widget class="QComboBox" name="type_graph"/>
+         </item>
+         <item row="12" column="0">
+          <widget class="QLabel" name="label_layout">
            <property name="text">
-            <string>Refresh the plot if the layer data is filtered</string>
+            <string>Layout</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QComboBox" name="aggregation"/>
+         </item>
+         <item row="9" column="1">
+          <widget class="QLabel" name="label_help_html_template">
+           <property name="text">
+            <string>An HTML template example is provided on the online help with the button below.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="title_popup"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_x_field">
+           <property name="text">
+            <string>X field</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="1">
+          <widget class="QCheckBox" name="stacked">
+           <property name="text">
+            <string>Stacked</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QgsFieldComboBox" name="x_field"/>
+         </item>
+         <item row="10" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QComboBox" name="trace_combo"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="add_trace_html">
+             <property name="text">
+              <string notr="true">+</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="12" column="1">
+          <widget class="JsonEditor" name="json_layout"/>
+         </item>
+         <item row="14" column="1">
+          <widget class="QCheckBox" name="horizontal">
+           <property name="text">
+            <string>Horizontal</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QLabel" name="label_html_template">
+           <property name="text">
+            <string>HTML template</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_layer">
+           <property name="text">
+            <string>Layer</string>
            </property>
           </widget>
          </item>
@@ -284,6 +305,12 @@
    <class>JsonEditor</class>
    <extends>QTextEdit</extends>
    <header>lizmap.qgis_plugin_tools.widgets.json_editor</header>
+  </customwidget>
+  <customwidget>
+   <class>HtmlEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>lizmap.widgets.html_editor</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

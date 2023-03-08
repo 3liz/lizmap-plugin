@@ -16,6 +16,7 @@ class InputType(Enum):
     Field = 'Field'  # QgsFieldMapLayerComboBox
     Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget in qgis_plugin_tools
     File = 'File'  # QgsFileWidget
+    HtmlWysiwyg = 'HtmlWysiwyg'  # Own Lizmap Wysiwyg widget
     Json = 'Json'  # QTextEdit then JsonEditor, a custom widget in qgis_plugin_tools
     Layer = 'Layer'  # QgsMapLayerComboBox
     Layers = 'Layers'  # ListLayersSelection

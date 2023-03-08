@@ -268,7 +268,7 @@ class LizmapConfig:
                 'wType': 'list', 'type': 'string', 'default': 'dock', 'list': ['dock', 'bottomdock', 'right-dock']
             },
             'datavizTemplate': {
-                'wType': 'html', 'type': 'string', 'default': ''
+                'wType': 'wysiwyg', 'type': 'string', 'default': ''
             },
             'theme': {
                 # If the default value is changed, must be changed in the definitions python file as well

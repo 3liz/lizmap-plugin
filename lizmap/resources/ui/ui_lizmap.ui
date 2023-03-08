@@ -3948,7 +3948,14 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </widget>
                    </item>
                    <item>
-                    <widget class="QgsCodeEditorHTML" name="inDatavizTemplate"/>
+                    <widget class="HtmlEditorWidget" name="dataviz_html_template" native="true">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -4374,9 +4381,10 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <header location="global">QtWebKitWidgets/QWebView</header>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorHTML</class>
-   <extends>QTextEdit</extends>
-   <header>qgis.gui</header>
+   <class>HtmlEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>lizmap.widgets.html_editor</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -4516,7 +4524,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>up_dataviz_layer</tabstop>
   <tabstop>down_dataviz_layer</tabstop>
   <tabstop>liDatavizContainer</tabstop>
-  <tabstop>inDatavizTemplate</tabstop>
+  <tabstop>dataviz_html_template</tabstop>
   <tabstop>time_manager_table</tabstop>
   <tabstop>edit_time_manager_layer</tabstop>
   <tabstop>up_time_manager_layer</tabstop>

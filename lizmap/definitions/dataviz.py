@@ -168,7 +168,7 @@ class DatavizDefinitions(BaseDefinitions):
             'version': LwcVersions.Lizmap_3_7,
         }
         self._layer_config['description'] = {
-            'type': InputType.MultiLine,
+            'type': InputType.HtmlWysiwyg,
             'header': tr('Description'),
             'default': '',
             'tooltip': tr('The description of the graph. HTML is supported.'),
@@ -240,7 +240,7 @@ class DatavizDefinitions(BaseDefinitions):
             'version': LwcVersions.Lizmap_3_4,
         }
         self._layer_config['html_template'] = {
-            'type': InputType.MultiLine,
+            'type': InputType.HtmlWysiwyg,
             'header': tr('HTML template'),
             'default': '',
             'tooltip': tr('The HTML template.'),
@@ -319,7 +319,7 @@ class DatavizDefinitions(BaseDefinitions):
         }
 
         self._general_config['datavizTemplate'] = {
-            'type': InputType.MultiLine,
+            'type': InputType.HtmlWysiwyg,
             'tooltip': tr('You can write our own HTML layout. Follow the documentation online to have an example.'),
             'version': LwcVersions.Lizmap_3_2,
         }

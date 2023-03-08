@@ -82,3 +82,23 @@ class TestHtmlEditorWidget(unittest.TestCase):
             ),
             """<p style="color:[% if("POPULATION" > 5000, 'red', 'black') %]">[% POPULATION %]</p>"""
         )
+
+    def test_regex_from_qgis_to_html_lizmap_template(self):
+        """ Test the regex about QGIS expression from QGIS to HTML with Lizmap template. """
+        self.assertEqual(
+            QGIS_EXPRESSION_TEXT.sub(
+                expression_from_qgis_to_html,
+                '<p>Hi [% "name" %] ! Trace {$y1}.</p>'
+            ),
+            '<p>Hi [% &quot;name&quot; %] ! Trace {$y1}.</p>'
+        )
+
+    def test_regex_from_html_to_qgis_lizmap_template(self):
+        """ Test the regex about QGIS expression from HTML to QGIS with Lizmap template. """
+        self.assertEqual(
+            QGIS_EXPRESSION_TEXT.sub(
+                expression_from_html_to_qgis,
+                '<p>Hi [% &quot;name&quot; %] ! Trace {$y1}.</p>'
+            ),
+            '<p>Hi [% "name" %] ! Trace {$y1}.</p>'
+        )

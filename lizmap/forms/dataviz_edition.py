@@ -72,6 +72,11 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.remove_trace.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
         self.remove_trace.setToolTip(tr('Remove the selected trace from the chart.'))
 
+        self.add_trace_html.setText('')
+        self.add_trace_html.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+        self.add_trace_html.setToolTip(tr('Add the trace in the HTML.'))
+        self.add_trace_html.clicked.connect(self.add_current_trace_html)
+
         # Set traces table
         items = self.config.layer_config['traces']['items']
         self.traces.setColumnCount(len(items))
@@ -127,7 +132,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             row = self.traces.rowCount()
             self.traces.setRowCount(row + 1)
             self._edit_trace_row(row, trace)
-        self.disable_more_trace()
+        self.check_trace_action()
 
     def primary_keys_collection(self) -> list:
         """Return the list of unique values in the collection."""
@@ -191,12 +196,14 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         dialog = TraceDatavizEditionDialog(
             self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection())
         result = dialog.exec_()
-        if result == QDialog.Accepted:
-            data = dialog.save_form()
-            row = self.traces.rowCount()
-            self.traces.setRowCount(row + 1)
-            self._edit_trace_row(row, data)
-            self.disable_more_trace()
+        if result != QDialog.Accepted:
+            return
+
+        data = dialog.save_form()
+        row = self.traces.rowCount()
+        self.traces.setRowCount(row + 1)
+        self._edit_trace_row(row, data)
+        self.check_trace_action()
 
     def _edit_trace_row(self, row, data):
         """Internal function to edit a row."""
@@ -244,9 +251,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         row = selection[0].row()
         self.traces.clearSelection()
         self.traces.removeRow(row)
-        self.disable_more_trace()
+        self.check_trace_action()
 
-    def disable_more_trace(self):
+    def check_trace_action(self):
         """According to the kind of graph, the button might be disabled."""
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
@@ -260,6 +267,12 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.add_trace.setEnabled(False)
         else:
             self.add_trace.setEnabled(True)
+
+        if graph == GraphType.HtmlTemplate:
+            self.trace_combo.clear()
+            for i in range(self.traces.rowCount()):
+                item = self.traces.item(i, 0)
+                self.trace_combo.addItem(item.icon(), item.text(), i + 1)
 
         version = QgsSettings().value(
             'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
@@ -303,10 +316,17 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         is_html_template = graph == GraphType.HtmlTemplate
         self.label_html_template.setVisible(is_html_template)
         self.html_template.setVisible(is_html_template)
+        self.label_help_html_template.setVisible(is_html_template)
+        self.add_trace_html.setVisible(is_html_template)
+        self.trace_combo.setVisible(is_html_template)
         self.display_legend.setVisible(not is_html_template)
 
         # Add more trace button
-        self.disable_more_trace()
+        self.check_trace_action()
+
+    def add_current_trace_html(self):
+        """ Add the current trace from the combobox in the HTML template. """
+        self.html_template.insert_text("{{$y{}}}".format(self.trace_combo.currentData()))
 
     def validate(self) -> str:
         upstream = super().validate()

@@ -43,13 +43,10 @@ def expression_from_html_to_qgis(match) -> str:
 
 class HtmlEditorWidget(QWidget, FORM_CLASS):
 
-    def __init__(self, layer: QgsVectorLayer = None):
+    def __init__(self, parent):
         # noinspection PyArgumentList
-        QWidget.__init__(self)
+        QWidget.__init__(self, parent=parent)
         self.setupUi(self)
-
-        if layer:
-            self.setWindowTitle(tr("HTML maptip for the layer '{}'").format(layer.name()))
 
         self.add_field_expression.setText('')
         self.add_field_expression.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
@@ -75,11 +72,22 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         self.web_view.settings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
         self.web_view.settings().setAttribute(QWebSettings.DnsPrefetchEnabled, True)
 
-        if layer:
-            index = self.stacked_expression.indexOf(self.page_layer)
-            self.field_expression_widget.setLayer(layer)
-        else:
-            index = self.stacked_expression.indexOf(self.page_no_layer)
+        # By default, without any expression
+        index = self.stacked_expression.indexOf(self.page_no_expression)
+        self.stacked_expression.setVisible(False)
+        self.stacked_expression.setCurrentIndex(index)
+
+    def enable_expression(self):
+        """ Enable the expression widget without any layer. """
+        self.stacked_expression.setVisible(True)
+        index = self.stacked_expression.indexOf(self.page_expression)
+        self.stacked_expression.setCurrentIndex(index)
+
+    def set_layer(self, layer: QgsVectorLayer):
+        """ Enable the field expression widget. """
+        self.field_expression_widget.setLayer(layer)
+        self.stacked_expression.setVisible(True)
+        index = self.stacked_expression.indexOf(self.page_expression_layer)
         self.stacked_expression.setCurrentIndex(index)
 
     def html_content(self) -> str:
@@ -92,10 +100,14 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         html_content = QGIS_EXPRESSION_TEXT.sub(expression_from_qgis_to_html, content)
         self._js('tEditor.setHtml(`{}`);'.format(html_content))
 
-    def _insert_text(self, text: str):
+    def _insert_qgis_expression(self, text: str):
         """ Insert text at the current cursor position. """
         LOGGER.debug("Adding expression '{}' in the HTML".format(text))
-        self._js('tEditor.insertText(`[% {} %]`);'.format(text))
+        self.insert_text('[% {} %]'.format(text))
+
+    def insert_text(self, text: str):
+        """ Insert text at the current cursor position. """
+        self._js('tEditor.insertText(`{}`);'.format(text))
 
     def selected_text(self) -> str:
         """ Get Text selected by the user """
@@ -103,14 +115,14 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
     def add_expression_field_in_html(self):
         """ To add the pre-defined expression from the widget in the HTML editor. """
-        self._insert_text(self.field_expression_widget.expression())
+        self._insert_qgis_expression(self.field_expression_widget.expression())
 
     def add_expression_in_html(self):
         """ Open the expression builder dialog without any layer set. """
         dialog = QgsExpressionBuilderDialog(None)
         if not dialog.exec_():
             return
-        self._insert_text(dialog.expressionText())
+        self._insert_qgis_expression(dialog.expressionText())
 
     def _js(self, command) -> str:
         """ Internal function to execute Javascript in the editor. """

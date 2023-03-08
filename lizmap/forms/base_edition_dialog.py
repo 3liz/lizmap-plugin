@@ -381,6 +381,8 @@ class BaseEditionDialog(QDialog):
                     widget.setPlainText(value)
                 else:
                     widget.setText(value)
+            elif definition['type'] == InputType.HtmlWysiwyg:
+                definition['widget'].set_html_content(value)
             elif definition['type'] == InputType.Collection:
                 self.load_collection(value)
             else:
@@ -433,6 +435,8 @@ class BaseEditionDialog(QDialog):
                 else:
                     value = definition['widget'].text()
                 value = value.strip(' \t')
+            elif definition['type'] == InputType.HtmlWysiwyg:
+                value = definition['widget'].html_content()
             elif definition['type'] == InputType.Json:
                 text = definition['widget'].text()
                 if text:

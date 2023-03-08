@@ -489,7 +489,7 @@ class Lizmap:
         self.global_options['startupBaselayer']['widget'] = self.dlg.cbStartupBaselayer
         self.global_options['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
         self.global_options['datavizLocation']['widget'] = self.dlg.liDatavizContainer
-        self.global_options['datavizTemplate']['widget'] = self.dlg.inDatavizTemplate
+        self.global_options['datavizTemplate']['widget'] = self.dlg.dataviz_html_template
         self.global_options['theme']['widget'] = self.dlg.combo_theme
         self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
         self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
@@ -1539,6 +1539,9 @@ class Lizmap:
                         else:
                             item['widget'].setText(str(json_options[key]))
 
+                if item['wType'] == 'wysiwyg':
+                    item['widget'].set_html_content(str(item['default']))
+
                 # if item['wType'] in ('html'):
                 # if isinstance(item['default'], (list, tuple)):
                 # item['widget'].setHtml(", ".join(map(str, item['default'])))
@@ -2434,7 +2437,8 @@ class Lizmap:
         else:
             # QGIS HTML maptip
             layer: QgsVectorLayer
-            html_editor = HtmlEditorDialog(layer)
+            html_editor = HtmlEditorDialog()
+            html_editor.set_layer(layer)
             html_editor.editor.set_html_content(layer.mapTipTemplate())
             if not html_editor.exec_():
                 return
@@ -2634,6 +2638,9 @@ class Lizmap:
                 # Get field value depending on widget type
                 if item['wType'] in ['text', 'html']:
                     inputValue = item['widget'].text().strip(' \t')
+
+                if item['wType'] == 'wysiwyg':
+                    inputValue = item['widget'].html_content().strip(' \t')
 
                 if item['wType'] == 'textarea':
                     inputValue = item['widget'].toPlainText().strip(' \t')

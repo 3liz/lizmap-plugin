@@ -87,7 +87,7 @@ class TableManager:
 
         if self.definitions.key() == 'datavizLayers' and self.parent:
             self.definitions.add_general_widget('datavizLocation', self.parent.liDatavizContainer)
-            self.definitions.add_general_widget('datavizTemplate', self.parent.inDatavizTemplate)
+            self.definitions.add_general_widget('datavizTemplate', self.parent.dataviz_html_template)
             self.definitions.add_general_widget('theme', self.parent.combo_theme)
 
             self.definitions.add_general_label('datavizLocation', self.parent.label_dataviz_location)
@@ -369,6 +369,11 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
+            elif input_type == InputType.HtmlWysiwyg:
+                cell.setText(value)
+                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ToolTipRole, value)
+
             elif input_type == InputType.Collection:
                 json_dump = json.dumps(value)
                 cell.setText(json_dump)
@@ -537,6 +542,8 @@ class TableManager:
                 elif input_type == InputType.Text:
                     layer_data[key] = cell
                 elif input_type == InputType.MultiLine:
+                    layer_data[key] = cell
+                elif input_type == InputType.HtmlWysiwyg:
                     layer_data[key] = cell
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
@@ -939,6 +946,8 @@ class TableManager:
                     elif definition['type'] == InputType.Text:
                         layer_data[key] = value
                     elif definition['type'] == InputType.MultiLine:
+                        layer_data[key] = value
+                    elif definition['type'] == InputType.HtmlWysiwyg:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Collection:
                         layer_data[key] = value
