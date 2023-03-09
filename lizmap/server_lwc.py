@@ -40,6 +40,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
     UNSTABLE_VERSION_PREFIX,
+    ReleaseStatus,
     ServerComboData,
 )
 from lizmap.dialogs.server_form import LizmapServerInfoForm
@@ -784,17 +785,16 @@ class ServerManager:
 
         is_dev_version = False
         for i, json_version in enumerate(json_content):
+            status = ReleaseStatus.find(json_version['status'])
             if json_version['branch'] == branch:
-                if not json_version['maintained']:
-                    if i == 0:
-                        # Not maintained, but a dev version
-                        messages.append(tr('A dev version, warrior !') + ' 👍')
-                        level = Qgis.Success
-                        is_dev_version = True
-                    else:
-                        # Upgrade because the branch is not maintained anymore
-                        messages.append(tr('Version {version} not maintained anymore').format(version=branch))
-                        level = Qgis.Critical
+                if status in (ReleaseStatus.Dev, ReleaseStatus.ReleaseCandidate):
+                    messages.append(tr('A dev version, warrior !') + ' 👍')
+                    level = Qgis.Success
+                    is_dev_version = True
+                if status == ReleaseStatus.Retired:
+                    # Upgrade because the branch is not maintained anymore
+                    messages.append(tr('Version {version} not maintained anymore').format(version=branch))
+                    level = Qgis.Critical
 
                 # Remember a version can be 3.4.2-pre
                 items_bugfix = split_version[2].split('-')
@@ -820,10 +820,10 @@ class ServerManager:
                             # Let's make it clear when they are 2 release late
                             level = Qgis.Critical
 
-                        if bugfix == 0 and json_version['maintained']:
+                        if bugfix == 0 and status == ReleaseStatus.Stable:
                             # I consider a .0 version fragile
                             messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
-                        elif bugfix != 0 and json_version['maintained']:
+                        elif bugfix != 0 and status == ReleaseStatus.Stable:
                             messages.append(
                                 tr(
                                     'Not latest bugfix release, {version} is available'
