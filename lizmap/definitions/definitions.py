@@ -38,7 +38,7 @@ DEV_VERSION_PREFIX = ('master', 'dev')
 @total_ordering
 class ReleaseStatus(Enum):
     Unknown = 'Unknown'
-    NotMaintained = 'NotMaintained'
+    Retired = 'Retired'
     Stable = 'Stable'
     ReleaseCandidate = 'ReleaseCandidate'
     Dev = 'Dev'
@@ -47,6 +47,14 @@ class ReleaseStatus(Enum):
         if self.__class__ is other.__class__:
             return self.value < other.value
         return NotImplemented
+
+    @classmethod
+    def find(cls, status_string: str):
+        """Return the release status from the string."""
+        for status in cls.__members__.values():
+            if str(status.value).lower() == status_string:
+                return status
+        return None
 
 
 @unique

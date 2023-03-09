@@ -53,8 +53,6 @@ class VersionChecker:
 
     def update_lwc_selector(self, released_versions: dict):
         """ Update LWC selector showing outdated versions. """
-        # TODO remove this variable as well soon
-        first_stable_release = False
         for i, json_version in enumerate(released_versions):
             try:
                 lwc_version = LwcVersions(json_version['branch'])
@@ -66,55 +64,27 @@ class VersionChecker:
 
             index = self.dialog.combo_lwc_version.findData(lwc_version, LwcVersionComboData.LwcVersion.value)
             status = json_version.get('status')
-            if status:
-                if status == 'dev':
-                    flag = ReleaseStatus.Dev
-                    suffix = tr('Next')
-                elif status == 'feature_freeze':
-                    flag = ReleaseStatus.ReleaseCandidate
-                    suffix = tr('Feature freeze')
-                elif status == 'stable':
-                    flag = ReleaseStatus.Stable
-                    suffix = tr('Stable')
-                elif status == 'retired':
-                    flag = ReleaseStatus.NotMaintained
-                    suffix = tr('Not maintained')
-                else:
-                    flag = ReleaseStatus.Unknown
-                    suffix = tr('Inconnu')
-
-                text = self.dialog.combo_lwc_version.itemText(index)
-                if suffix:
-                    text += ' - ' + suffix
-                    self.dialog.combo_lwc_version.setItemText(index, text)
-                self.dialog.combo_lwc_version.setItemData(index, flag, LwcVersionComboData.LwcBranchStatus.value)
-
+            if status == 'dev':
+                flag = ReleaseStatus.Dev
+                suffix = tr('Next')
+            elif status == 'feature_freeze':
+                flag = ReleaseStatus.ReleaseCandidate
+                suffix = tr('Feature freeze')
+            elif status == 'stable':
+                flag = ReleaseStatus.Stable
+                suffix = tr('Stable')
+            elif status == 'Retired':
+                flag = ReleaseStatus.Retired
+                suffix = tr('Not maintained')
             else:
-                # Legacy
-                # TODO remove in a few weeks
-                # ET 1/12/2022
-                if not json_version['maintained']:
-                    if not index and json_version['branch'] != LwcVersions.Lizmap_3_1.value:
-                        LOGGER.warning(
-                            "We did not find the version {} in the selector version".format(
-                                json_version['branch'])
-                        )
-                        continue
-                    text = self.dialog.combo_lwc_version.itemText(index)
+                flag = ReleaseStatus.Unknown
+                suffix = tr('Inconnu')
 
-                    if not first_stable_release:
-                        # All dev version are for now tagged "not maintained" in the JSON file
-                        new_text = text + ' - ' + tr('Next')
-                        flag = ReleaseStatus.Dev
-                    else:
-                        new_text = text + ' - ' + tr('Not maintained')
-                        flag = ReleaseStatus.NotMaintained
-                    self.dialog.combo_lwc_version.setItemText(index, new_text)
-                else:
-                    first_stable_release = True
-                    flag = ReleaseStatus.Stable
-                self.dialog.combo_lwc_version.setItemData(index, flag, LwcVersionComboData.LwcBranchStatus.value)
-                # End of legacy
+            text = self.dialog.combo_lwc_version.itemText(index)
+            if suffix:
+                text += ' - ' + suffix
+                self.dialog.combo_lwc_version.setItemText(index, text)
+            self.dialog.combo_lwc_version.setItemData(index, flag, LwcVersionComboData.LwcBranchStatus.value)
 
     def update_lwc_releases(self, released_versions: dict):
         """ Update labels about latest releases. """
@@ -129,7 +99,8 @@ class VersionChecker:
                 json_version['latest_release_date'],
                 "yyyy-MM-dd")
             date_string = qdate.toString(QLocale().dateFormat(QLocale.ShortFormat))
-            if json_version['maintained']:
+            status = ReleaseStatus.find(json_version['status'])
+            if status == ReleaseStatus.Stable:
                 if i == 0:
                     text = template.format(
                         tag=json_version['latest_release_version'],
