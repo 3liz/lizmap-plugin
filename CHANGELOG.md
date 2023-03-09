@@ -2,13 +2,15 @@
 
 ## Unreleased
 
+## 3.11.0 - 2023-03-09
+
 * Improve the editing form with non-spatial layers
-* Improve the new layout panel for Lizmap Web Client 3.7
 * Add a new HTML wizard for the
   * QGIS HTML Maptip popup
   * HTML template in the dataviz
   * HTML layout in the dataviz
   * plot description in the dataviz
+* Improve the new layout panel for Lizmap Web Client 3.7
 
 ## 3.10.1 - 2023-02-07
 
