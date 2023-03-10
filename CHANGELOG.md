@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix saving an HTML dataviz
+
 ## 3.11.0 - 2023-03-09
 
 * Improve the editing form with non-spatial layers
