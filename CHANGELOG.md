@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+## 3.11.1 - 2023-03-21
+
+* Add more translated sentences
 * Fix saving an HTML dataviz
+* Avoid a Python error if the metadata couldn't have been fetched before saving the CFG file
 
 ## 3.11.0 - 2023-03-09
 
