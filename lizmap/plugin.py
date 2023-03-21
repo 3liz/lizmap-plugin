@@ -2836,10 +2836,10 @@ class Lizmap:
                                     'Be careful, the option "Expand at startup" for the layer "{layer_name}" is not '
                                     'available for your Lizmap Web Client target version {target}.'
                                 ).format(layer_name=k, target=lwc_version.value)
-                                + '\n\n' +
-                                tr('Falling back to "Hide at startup" in the configuration file.')
-                                + '\n\n' +
-                                tr('This option is only available for Lizmap Web Client 3.6 and above.')
+                                + '\n\n'
+                                + tr('Falling back to "Hide at startup" in the configuration file.')
+                                + '\n\n'
+                                + tr('This option is only available for Lizmap Web Client 3.6 and above.')
                             )
 
                     if isinstance(propVal, tuple):
