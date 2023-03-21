@@ -190,9 +190,7 @@ class LizmapConfig:
                     ), (
                         'nominatim',
                         tr('Nominatim (OSM)'),
-                        tr(
-                            'Nominatim is using OpenStreetMap data'
-                        ),
+                        tr('Nominatim is using OpenStreetMap data'),
                         ('icons', 'osm-32-32.png'),
                     ), (
                         'google',
@@ -393,8 +391,8 @@ class LizmapConfig:
                         'expand_at_startup',
                         tr('Show legend image at startup'),
                         tr(
-                            'The legend image will be displayed be default at startup. This will make more request to QGIS '
-                            'server. Use with cautious.'
+                            'The legend image will be displayed be default at startup. This will make more request to '
+                            'QGIS server. Use with cautious.'
                         ),
                         ':images/themes/default/mActionShowAllLayers.svg',
                     ), (

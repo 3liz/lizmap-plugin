@@ -377,7 +377,7 @@ class ServerManager:
 
         # LWC Version
         cell = QTableWidgetItem()
-        cell.setText(tr(''))
+        cell.setText('')
         cell.setData(Qt.UserRole, None)
         self.table.setItem(row, TableCell.LizmapVersion.value, cell)
 

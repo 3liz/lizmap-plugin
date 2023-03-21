@@ -62,8 +62,8 @@ class FilterByFormDefinitions(BaseDefinitions):
             'header': tr('Format'),
             'default': '',
             'tooltip': tr(
-                'It can be select, which will show a combo box, or checkboxes which will show one checkbox for each distinct value. '
-                'The distinct values are dynamically queried by Lizmap Web Client.')
+                'It can be select, which will show a combo box, or checkboxes which will show one checkbox for each '
+                'distinct value. The distinct values are dynamically queried by Lizmap Web Client.')
         }
         self._layer_config['splitter'] = {
             'type': InputType.Text,

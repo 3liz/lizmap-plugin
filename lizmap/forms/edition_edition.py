@@ -120,7 +120,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         if not layer:
             return
 
-        helper = tr("Setting groups for the layer editing capabilities '{}'".format(layer.name()))
+        helper = tr("Setting groups for the layer editing capabilities '{}'").format(layer.name())
         super().open_wizard_dialog(helper)
 
     def validate(self) -> str:
@@ -176,5 +176,5 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             missing_layers = [QgsProject.instance().mapLayer(layer_id).name() for layer_id in missing_layers]
             msg = tr(
                 'The layer "{}" for the snapping must be checked in the "WFS Capabilities"\n'
-                ' option of the QGIS Server tab in the "Project Properties" dialog.'.format(', '.join(missing_layers)))
+                ' option of the QGIS Server tab in the "Project Properties" dialog.').format(', '.join(missing_layers))
             return msg

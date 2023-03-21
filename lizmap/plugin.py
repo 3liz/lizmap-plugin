@@ -845,10 +845,13 @@ class Lizmap:
     def refresh_combo_repositories(self):
         """ Refresh the combobox about repositories. """
         # Set the default error message that could happen for the dataviz
+        # TODO change to latest 3.6.X in a few months
         error = tr(
             "Your current version of the selected server doesn't support the plot preview. "
             "You must upgrade at least to Lizmap Web Client "
             "<a href=\"https://github.com/3liz/lizmap-web-client/releases/tag/3.6.1\">3.6.1</a>."
+            "\n\n"
+            "Upgrade to the latest 3.6.X available."
         )
         self.dlg.dataviz_error_message.setText(error)
 
@@ -1331,7 +1334,7 @@ class Lizmap:
         layer = self._current_selected_layer()
         if not layer:
             return
-        helper = tr("Setting groups for the layer visibility '{}'".format(layer.name()))
+        helper = tr("Setting groups for the layer visibility '{}'").format(layer.name())
         self._open_wizard_group(line_edit, helper)
 
     def open_wizard_group_project(self):
@@ -2582,7 +2585,9 @@ class Lizmap:
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
-        if is_lizmap_dot_com_hosting(server_metadata):
+        if server_metadata and is_lizmap_dot_com_hosting(server_metadata):
+            # This shouldn't happen, but if we are very quick closing the plugin, we might not have metadata yet.
+            # Ticket https://github.com/3liz/lizmap-plugin/issues/481
             error, results = valid_saas_lizmap_dot_com(self.project)
             if error:
                 warnings.append(Warnings.SaasLizmapDotCom.value)
@@ -3095,7 +3100,7 @@ class Lizmap:
                     '{}\n\n{}\n\n{}'.format(
                         tr(
                             "Your Lizmap Web Client target version {version} has not been found in the server "
-                            "table.".format(version=lwc_version.value)),
+                            "table.").format(version=lwc_version.value),
                         tr(
                             "Either check your Lizmap Web Client target version in the first panel of the plugin or "
                             "check you have provided the correct server URL."
@@ -3192,9 +3197,8 @@ class Lizmap:
                 return False
 
             msg = tr(
-                'Lizmap configuration file has been updated and sent to the FTP {}.'.format(
-                    self.server_ftp.host)
-            )
+                'Lizmap configuration file has been updated and sent to the FTP {}.'
+            ).format(self.server_ftp.host)
 
         self.iface.messageBar().pushMessage(
             'Lizmap',

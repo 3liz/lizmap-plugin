@@ -43,8 +43,8 @@ class LocateByLayerDefinitions(BaseDefinitions):
             'header': tr('Number of characters before autocompletion'),
             'default': 0,
             'tooltip': tr(
-                'If you set a value above 0, autocompletion will be used after this amount of characters while the user types. '
-                'The classical combobox will be replaced by a editable text input.')
+                'If you set a value above 0, autocompletion will be used after this amount of characters while the '
+                'user types. The classical combobox will be replaced by a editable text input.')
         }
         self._layer_config['filterOnLocate'] = {
             'type': InputType.CheckBox,
@@ -52,8 +52,8 @@ class LocateByLayerDefinitions(BaseDefinitions):
             'default': False,
             'tooltip': tr(
                 'If the layer is published via the attribute layers tool below, and this checkbox is checked, '
-                'zooming on a feature with the locate tool will trigger the filter of the layer for the selected feature. '
-                'Only the selected feature will be visible on the map.')
+                'zooming on a feature with the locate tool will trigger the filter of the layer for the selected '
+                'feature. Only the selected feature will be visible on the map.')
         }
 
     @staticmethod
