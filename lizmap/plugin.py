@@ -2448,18 +2448,19 @@ class Lizmap:
 
             self._set_maptip(layer, html_editor.editor.html_content(), False)
 
-    def _current_selected_layer(self) -> QgsMapLayer:
+    def _current_selected_layer(self) -> Optional[QgsMapLayer]:
         """ Current selected map layer in the tree. """
         item = self.dlg.layer_tree.currentItem()
         if item and item.text(1) in self.layerList:
             lid = item.text(1)
-            layers = [a for a in self.project.mapLayers().values() if a.id() == lid]
+            layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
             if not layers:
-                LOGGER.warning('Layers not found.')
+                LOGGER.warning('Layers not found with searched text from the tree : {}'.format(lid))
                 return
         else:
-            LOGGER.warning('No item.')
+            LOGGER.warning('No item selected in the Lizmap layer tree.')
             return
+
         layer = layers[0]
         return layer
 
