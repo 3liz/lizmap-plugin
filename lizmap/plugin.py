@@ -71,7 +71,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtWidgets import QLineEdit
+from qgis.PyQt.QtWidgets import QLabel, QLineEdit
 
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
@@ -926,8 +926,7 @@ class Lizmap:
         for lwc_version, items in self.lwc_versions.items():
             if found:
                 for item in items:
-                    if hasattr(item, 'setStyleSheet'):
-                        # QLabel
+                    if isinstance(item, QLabel):
                         item.setStyleSheet(NEW_FEATURE_CSS)
                     elif isinstance(item, QStandardItem):
                         # QComboBox
@@ -938,8 +937,7 @@ class Lizmap:
                         item.setBackground(brush)
             else:
                 for item in items:
-                    if hasattr(item, 'setStyleSheet'):
-                        # QLabel
+                    if isinstance(item, QLabel):
                         item.setStyleSheet('')
                     elif isinstance(item, QStandardItem):
                         # QComboBox
@@ -2360,12 +2358,11 @@ class Lizmap:
             # modify the layer.title|abstract|link() if possible
             if self.layerList[item.text(1)]['type'] == 'layer':
                 layer = self.get_qgis_layer_by_id(item.text(1))
-                if layer:
-                    if hasattr(layer, key):
-                        if key == 'title':
-                            layer.setTitle(self.layerList[item.text(1)][key])
-                        if key == 'abstract':
-                            layer.setAbstract(self.layerList[item.text(1)][key])
+                if isinstance(layer, QgsMapLayer):
+                    if key == 'title':
+                        layer.setTitle(self.layerList[item.text(1)][key])
+                    if key == 'abstract':
+                        layer.setAbstract(self.layerList[item.text(1)][key])
 
     def convert_html_maptip(self):
         """ Trying to convert a Lizmap popup to HTML popup. """
@@ -2782,9 +2779,8 @@ class Lizmap:
                 layerOptions['crs'] = layer.crs().authid()
 
             # styles
-            if layer and hasattr(layer, 'styleManager'):
-                lsm = layer.styleManager()
-                ls = lsm.styles()
+            if isinstance(layer, QgsMapLayer):
+                ls = layer.styleManager().styles()
                 if len(ls) > 1:
                     layerOptions['styles'] = ls
 
@@ -2893,15 +2889,12 @@ class Lizmap:
                     )
 
             # Add external WMS options if needed
-            if layer and hasattr(layer, 'providerType') \
-                    and 'externalWmsToggle' in layerOptions \
-                    and layerOptions['externalWmsToggle'].lower() == 'true':
-                layerProviderKey = layer.providerType()
+            if isinstance(layer, QgsMapLayer) and layerOptions.get('externalWmsToggle', '').lower() == 'true':
                 # Only for layers stored in disk
-                if layerProviderKey in ['wms']:
-                    wmsParams = get_layer_wms_parameters(layer)
-                    if wmsParams:
-                        layerOptions['externalAccess'] = wmsParams
+                if layer.providerType() == 'wms':
+                    wms_params = get_layer_wms_parameters(layer)
+                    if wms_params:
+                        layerOptions['externalAccess'] = wms_params
                     else:
                         layerOptions['externalWmsToggle'] = "False"
                 else:
