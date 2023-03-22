@@ -1,12 +1,13 @@
 """Test code layout."""
 
-import os
 import re
 import unittest
 
+from pathlib import Path
+
 from lizmap.qgis_plugin_tools.tools.resources import resources_path
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -15,13 +16,8 @@ class TestCodeLayout(unittest.TestCase):
 
     @staticmethod
     def ui_files():
-        list_files = []
-        for root, _, files in os.walk(resources_path('ui')):
-            for file in files:
-                if file.lower().endswith('.ui'):
-                    file_path = os.path.join(root, file)
-                    list_files.append(file_path)
-        return list_files
+        """ List of UI files in the plugin. """
+        return [x for x in Path(resources_path('ui')).iterdir() if x.suffix == 'ui']
 
     def test_qgis_widgets(self):
         """Test imports are correct in UI file."""
@@ -32,7 +28,7 @@ class TestCodeLayout(unittest.TestCase):
                 matches = re.findall(
                     expression, ui_file.read(), re.MULTILINE)
                 if len(matches):
-                    list_files.append(ui)
+                    list_files.append(str(ui))
 
         self.assertListEqual(list_files, [], 'Some imports are wrong : {}'.format(', '.join(list_files)))
 
@@ -45,6 +41,6 @@ class TestCodeLayout(unittest.TestCase):
                 matches = re.findall(
                     expression, ui_file.read(), re.MULTILINE)
                 if len(matches):
-                    list_files.append(ui)
+                    list_files.append(str(ui))
 
         self.assertListEqual(list_files, [], 'Use PyQt connect in Python files, not UI : {}'.format(', '.join(list_files)))

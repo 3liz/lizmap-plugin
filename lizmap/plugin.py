@@ -955,11 +955,11 @@ class Lizmap:
                 manager.set_lwc_version(current_version)
 
         # Compare the LWC version with the current QGIS Desktop version and the release JSON file
-        version_file = os.path.join(lizmap_user_folder(), 'released_versions.json')
-        if not os.path.exists(version_file):
+        version_file = lizmap_user_folder().joinpath('released_versions.json')
+        if not version_file.exists():
             return
 
-        with open(version_file) as json_file:
+        with open(version_file, encoding='utf8') as json_file:
             json_content = json.loads(json_file.read())
 
         for lzm_version in json_content:
@@ -1447,18 +1447,18 @@ class Lizmap:
         self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
 
     def get_config(self):
-        """Get the saved configuration from the projet.qgs.cfg config file.
+        """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
         """
-        # Get the project config file (projectname.qgs.cfg)
-        json_file = '{}.cfg'.format(self.project.fileName())
         json_options = {}
-        if os.path.exists(json_file):
+        json_file = self.cfg_file()
+        if json_file.exists():
             target_version = self.dlg.combo_lwc_version.currentData()
             LOGGER.info('Reading the CFG file with a LWC target version {}'.format(target_version.value))
-            cfg_file = open(json_file)
-            json_file_reader = cfg_file.read()
+            with open(json_file, encoding='utf-8') as f:
+                json_file_reader = f.read()
+
             # noinspection PyBroadException
             try:
                 sjson = json.loads(json_file_reader)
@@ -1506,8 +1506,6 @@ class Lizmap:
                     self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
                 self.log(message, abort=True, textarea=self.dlg.outLog)
                 LOGGER.critical('Error while reading the CFG file')
-            finally:
-                cfg_file.close()
 
         else:
             LOGGER.info('Lizmap CFG does not exist for this project.')
@@ -1602,7 +1600,7 @@ class Lizmap:
 
         self.check_ign_french_free_key()
         # self.check_api_key_address() Done when the CFG is loaded
-        LOGGER.info('CFG file has been loaded')
+        LOGGER.info('Dialog has been loaded successful, with CFG file : {}'.format(json_file.exists()))
 
     def set_previous_qgis_version(self, qgis_version):
         """ Manage the label about the QGIS Desktop version and previous version used. """
@@ -1772,9 +1770,13 @@ class Lizmap:
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
+    def cfg_file(self) -> Path:
+        """ Return the path to the current CFG file. """
+        return Path(self.project.fileName() + '.cfg')
+
     def check_cfg_file_exists(self) -> bool:
         """ Return boolean if a CFG file exists for the given project. """
-        return Path(self.project.fileName() + '.cfg').exists()
+        return self.cfg_file().exists()
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
@@ -2077,28 +2079,26 @@ class Lizmap:
 
     def read_lizmap_config_file(self) -> dict:
         """ Read the CFG file and returns the JSON content. """
-        # Check if a json configuration file exists (myproject.qgs.cfg)
-        json_file = '{}.cfg'.format(self.project.fileName())
-        json_layers = {}
-        if os.path.exists(str(json_file)):
-            f = open(json_file)
+        if not self.check_cfg_file_exists():
+            return {}
+
+        with open(self.cfg_file(), encoding='utf8') as f:
             json_file_reader = f.read()
-            # noinspection PyBroadException
-            try:
-                sjson = json.loads(json_file_reader)
-                json_layers = sjson['layers']
-            except Exception:
-                if self.is_dev_version:
-                    raise
-                message = tr(
-                    'Errors encountered while reading the last layer tree state. '
-                    'Please re-configure the options in the Layers tab completely'
-                )
-                QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
-                self.log(message, abort=True, textarea=self.dlg.outLog)
-            finally:
-                f.close()
-        return json_layers
+
+        # noinspection PyBroadException
+        try:
+            sjson = json.loads(json_file_reader)
+            return sjson['layers']
+        except Exception:
+            if self.is_dev_version:
+                raise
+            message = tr(
+                'Errors encountered while reading the last layer tree state. '
+                'Please re-configure the options in the Layers tab completely'
+            )
+            QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
+            self.log(message, abort=True, textarea=self.dlg.outLog)
+            return {}
 
     def populate_layer_tree(self):
         """Populate the layer tree of the Layers tab from QGIS legend interface.
@@ -2919,8 +2919,8 @@ class Lizmap:
         json_file_content += '\n'
 
         # Get the project data
-        json_file = '{}.cfg'.format(self.project.fileName())
-        with open(json_file, 'w') as cfg_file:
+        json_file = self.cfg_file()
+        with open(json_file, 'w', encoding='utf8') as cfg_file:
             cfg_file.write(json_file_content)
 
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
@@ -3270,25 +3270,28 @@ class Lizmap:
         Read lizmap current cfg configuration
         and set the startup base-layer if found
         """
-        # Get the project config file (projectname.qgs.cfg)
-        json_file = '{}.cfg'.format(self.project.fileName())
-        if os.path.exists(json_file):
-            f = open(json_file)
+        if not self.check_cfg_file_exists():
+            return
+
+        with open(self.cfg_file(), encoding='utf8') as f:
             json_file_reader = f.read()
-            # noinspection PyBroadException
-            try:
-                sjson = json.loads(json_file_reader)
-                jsonOptions = sjson['options']
-                if 'startupBaselayer' in jsonOptions:
-                    sb = jsonOptions['startupBaselayer']
-                    cb = self.dlg.cbStartupBaselayer
-                    i = cb.findData(sb)
-                    if i >= 0:
-                        cb.setCurrentIndex(i)
-            except Exception:
-                pass
-            finally:
-                f.close()
+
+        # noinspection PyBroadException
+        try:
+            json_content = json.loads(json_file_reader)
+            json_options = json_content['options']
+
+            base_layer = json_options.get('startupBaselayer')
+            if not base_layer:
+                return
+
+            i = self.dlg.cbStartupBaselayer.findData(base_layer)
+            if i < 0:
+                return
+
+            self.dlg.cbStartupBaselayer.setCurrentIndex(i)
+        except Exception:
+            pass
 
     def reinitDefaultProperties(self):
         for key in self.layers_table.keys():

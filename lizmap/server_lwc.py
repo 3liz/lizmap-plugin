@@ -659,7 +659,7 @@ class ServerManager:
     def existing_json_server_list(self) -> List:
         """ Read the JSON file and return its content. """
         user_file = self.user_settings()
-        if not os.path.exists(user_file):
+        if not user_file.exists():
             return list()
 
         with open(user_file) as json_file:
@@ -742,7 +742,7 @@ class ServerManager:
             error: str = None,
     ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
-        version_file = Path(lizmap_user_folder()).joinpath('released_versions.json')
+        version_file = lizmap_user_folder().joinpath('released_versions.json')
         if not version_file.exists():
             return
 
@@ -992,14 +992,14 @@ class ServerManager:
             QMessageBox.Ok)
 
     @staticmethod
-    def released_versions():
+    def released_versions() -> Path:
         """ Path to the release file from LWC. """
-        return os.path.join(lizmap_user_folder(), 'released_versions.json')
+        return lizmap_user_folder().joinpath('released_versions.json')
 
     @staticmethod
-    def user_settings():
+    def user_settings() -> Path:
         """ Path to the user file configuration. """
-        return os.path.join(lizmap_user_folder(), 'user_servers.json')
+        return lizmap_user_folder().joinpath('user_servers.json')
 
     def migrate_password_manager(self, servers: list):
         """ Migrate all servers in the QGIS authentication database to a better format in the QGIS API.

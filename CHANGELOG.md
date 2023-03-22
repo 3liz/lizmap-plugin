@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Some Python cleaning about handling file path, related to CFG file for instance
+
 ## 3.11.1 - 2023-03-21
 
 * Add more translated sentences

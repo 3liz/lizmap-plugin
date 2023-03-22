@@ -4,7 +4,6 @@ __email__ = 'info@3liz.org'
 
 import json
 import logging
-import os
 
 from qgis.core import QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
@@ -49,8 +48,7 @@ class VersionChecker:
 
         # Cache the file
         content += '\n'
-        folder = lizmap_user_folder()
-        with open(os.path.join(folder, "released_versions.json"), "w") as output:
+        with open(lizmap_user_folder().joinpath("released_versions.json"), "w") as output:
             output.write(content)
 
     def update_lwc_selector(self, released_versions: dict):

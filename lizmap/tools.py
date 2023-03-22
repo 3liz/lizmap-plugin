@@ -51,6 +51,7 @@ import unicodedata
 import urllib.parse
 
 from os.path import abspath, join
+from pathlib import Path
 from typing import List, Tuple, Union
 
 from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
@@ -120,7 +121,7 @@ def format_qgis_version(qgis_version) -> tuple:
     return major, minor, bug_fix
 
 
-def lizmap_user_folder() -> str:
+def lizmap_user_folder() -> Path:
     """ Get the Lizmap user folder.
 
     If the folder does not exist, it will create it.
@@ -132,7 +133,7 @@ def lizmap_user_folder() -> str:
     if not QDir(path).exists():
         QDir().mkdir(path)
 
-    return path
+    return Path(path)
 
 
 def current_git_hash() -> str:
