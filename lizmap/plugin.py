@@ -1598,7 +1598,30 @@ class Lizmap:
 
         self.check_ign_french_free_key()
         # self.check_api_key_address() Done when the CFG is loaded
-        LOGGER.info('Dialog has been loaded successful, with CFG file : {}'.format(json_file.exists()))
+        out = '' if json_file.exists() else 'out'
+        LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
+
+        previous_config = 'lizmap_user' in self.project.customVariables().keys()
+        # The variable is empty, but present
+        if previous_config and not self.check_cfg_file_exists():
+            # The variable 'lizmap_user' exists in the project as a variable
+            # But no CFG was found, maybe the project has been renamed.
+            message = tr(
+                'We have detected that this QGIS project has been used before with the Lizmap plugin (due to the '
+                'variable "lizmap_user" in your project properties dialog).'
+            )
+            message += '\n\n'
+            message += tr(
+                "However, we couldn't detect the Lizmap configuration file '{}' anymore. A new "
+                "configuration from scratch is used."
+            ).format(self.cfg_file())
+            message += '\n\n'
+            message += tr(
+                'Did you rename this QGIS project file ? If you want to keep your previous configuration, you '
+                'should find your previous Lizmap CFG file and use the path above. Lizmap will load it.'
+            )
+            QMessageBox.warning(
+                self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
 
     def set_previous_qgis_version(self, qgis_version):
         """ Manage the label about the QGIS Desktop version and previous version used. """
