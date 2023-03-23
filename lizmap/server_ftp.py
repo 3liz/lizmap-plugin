@@ -67,7 +67,7 @@ class FtpServer:
             self.dialog.button_ftp_reset.setEnabled(False)
             self.dialog.button_ftp_check.setEnabled(False)
             # self.dialog.input_ftp_port.setEnabled(False)
-            self.dialog.input_ftp_host.ssetEnabled(False)
+            self.dialog.input_ftp_host.setEnabled(False)
             self.dialog.input_ftp_user.setEnabled(False)
             self.dialog.input_ftp_password.setEnabled(False)
             self.dialog.input_ftp_directory.setEnabled(False)
