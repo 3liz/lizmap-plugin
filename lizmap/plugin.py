@@ -191,6 +191,11 @@ class Lizmap:
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
 
+        # Connect the current project filepath
+        self.current_path = None
+        self.project.fileNameChanged.connect(self.filename_changed)
+        self.filename_changed()
+
         setup_logger(plugin_name())
 
         locale, file_path = setup_translation(
@@ -802,6 +807,34 @@ class Lizmap:
         self.embeddedGroups = None
         self.myDic = None
         self.help_action = None
+
+    def filename_changed(self):
+        """ When the current project has been renamed. """
+        if not self.project.absoluteFilePath():
+            return
+
+        new_path = Path(self.project.absoluteFilePath())
+
+        if self.current_path and new_path != self.current_path:
+            old_cfg = self.current_path.with_suffix('.qgs.cfg')
+            if old_cfg.exists():
+                box = QMessageBox(self.dlg)
+                box.setIcon(QMessageBox.Question)
+                box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+                box.setWindowTitle(tr('Project has been renamed'))
+                box.setText(tr(
+                    'The previous project located at "{}" was associated to a Lizmap configuration. '
+                    'Do you want to copy the previous Lizmap configuration file to this new project ?').format(self.current_path))
+                box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                box.setDefaultButton(QMessageBox.No)
+                result = box.exec_()
+                if result == QMessageBox.No:
+                    return
+
+                copyfile(str(old_cfg), str(new_path.with_suffix('.qgs.cfg')))
+                LOGGER.info("Project has been renamed and CFG file has been copied as well.")
+
+        self.current_path = new_path
 
     def populate_lwc_combo(self):
         """ Fill the LWC selector about all versions. """
@@ -2962,7 +2995,7 @@ class Lizmap:
             return None, None
 
         validator = QgsProjectServerValidator()
-        valid, results = validator.validate(QgsProject.instance())
+        valid, results = validator.validate(self.project)
 
         if not valid:
             message = tr(

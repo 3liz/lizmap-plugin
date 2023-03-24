@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-* Warn the user if a new CFG is being created, when the project has been moved/renamed.
+* Better handling when a QGIS project has been renamed :
+  * Either from QGIS when "save as" is used
+  * Or when the QGIS project has the `lizmap_user` project variable but no CFG file
 * Some Python cleaning about handling file path, related to CFG file for instance
 
 ## 3.11.1 - 2023-03-21
