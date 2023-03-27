@@ -1487,7 +1487,7 @@ class Lizmap:
         json_options = {}
         json_file = self.cfg_file()
         if json_file.exists():
-            target_version = self.dlg.combo_lwc_version.currentData()
+            target_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
             LOGGER.info('Reading the CFG file with a LWC target version {}'.format(target_version.value))
             with open(json_file, encoding='utf-8') as f:
                 json_file_reader = f.read()
@@ -2064,7 +2064,7 @@ class Lizmap:
                                     jsonLayers[json_key].get('noLegendImage')))
                         self.myDic[itemKey]['legend_image_option'] = tmp
 
-                    LOGGER.info('Skip key {} because no UI widget'.format(key))
+                    # LOGGER.info('Skip key {} because no UI widget'.format(key))
 
                 # popupContent
                 if key == 'popupTemplate':
@@ -2871,14 +2871,13 @@ class Lizmap:
                         # Let's skip, the key is already saved
                         continue
 
-                    target_version = self.dlg.combo_lwc_version.currentData()
                     max_version = val.get('max_version')
-                    if max_version and target_version > max_version:
+                    if max_version and lwc_version > max_version:
                         LOGGER.info("Skipping key '{}' because of max_version.".format(key))
                         continue
 
                     min_version = val.get('min_version')
-                    if min_version and target_version < min_version:
+                    if min_version and lwc_version < min_version:
                         LOGGER.info("Skipping key '{}' because of min_version.".format(key))
                         continue
 
