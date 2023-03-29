@@ -601,7 +601,7 @@ class Lizmap:
                 slot = partial(self.set_layer_property, key)
                 if item['wType'] in ('text', 'spinbox'):
                     control.editingFinished.connect(slot)
-                elif item['wType'] in ('textarea', 'html'):
+                elif item['wType'] == 'textarea':
                     control.textChanged.connect(slot)
                 elif item['wType'] == 'checkbox':
                     control.stateChanged.connect(slot)
@@ -1563,7 +1563,7 @@ class Lizmap:
                         elif isinstance(json_options[key], bool):
                             item['widget'].setChecked(json_options[key])
 
-                if item['wType'] in ('text', 'textarea', 'html'):
+                if item['wType'] in ('text', 'textarea'):
                     if isinstance(item['default'], (list, tuple)):
                         item['widget'].setText(", ".join(map(str, item['default'])))
                     else:
@@ -2698,7 +2698,7 @@ class Lizmap:
             if item.get('widget'):
                 inputValue = None
                 # Get field value depending on widget type
-                if item['wType'] in ['text', 'html']:
+                if item['wType'] == 'text':
                     inputValue = item['widget'].text().strip(' \t')
 
                 if item['wType'] == 'wysiwyg':

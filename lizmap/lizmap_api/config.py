@@ -297,6 +297,7 @@ class LizmapConfig:
                 'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
             },
             'abstract': {
+                # Last textarea from the plugin, can be cleaned in plugin.py after it
                 'wType': 'textarea', 'type': 'string', 'default': '', 'isMetadata': True
             },
             'link': {
