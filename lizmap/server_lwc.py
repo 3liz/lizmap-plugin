@@ -471,6 +471,13 @@ class ServerManager:
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
+        try:
+            # When we are reloading the plugin
+            # I'm not sure why ...
+            self.table
+        except AttributeError:
+            return
+
         url, auth_id, _ = self._fetch_cells(row)
 
         login = ''
