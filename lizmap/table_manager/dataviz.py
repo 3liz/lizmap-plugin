@@ -4,6 +4,7 @@ import logging
 
 from typing import Optional
 
+from PyQt5.QtWidgets import QLabel
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
@@ -91,6 +92,11 @@ class TableManagerDataviz(TableManager):
 
     def preview_dataviz_dialog(self):
         """ Open a new dialog with a preview of the dataviz. """
+        if isinstance(self.parent.dataviz_viewer, QLabel):
+            # QtWebkit not available
+            self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
+            return
+
         self.parent.dataviz_feature_picker.setVisible(False)
         # Not an error, just a message...
         self.display_error(tr('Loading preview' + '…'))

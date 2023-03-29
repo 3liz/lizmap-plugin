@@ -46,6 +46,14 @@
 
 from qgis.PyQt.QtWidgets import QDialog
 
+try:
+    from qgis.PyQt.QtWebKitWidgets import QWebView
+    WEBKIT_AVAILABLE = True
+except ModuleNotFoundError:
+    WEBKIT_AVAILABLE = False
+from qgis.PyQt.QtWidgets import QLabel
+
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
@@ -56,3 +64,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
+
+        if WEBKIT_AVAILABLE:
+            self.dataviz_viewer = QWebView()
+        else:
+            self.dataviz_viewer = QLabel(tr('You must install Qt Webkit to enable this feature.'))
+        self.html_content.layout().addWidget(self.dataviz_viewer)

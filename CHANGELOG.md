@@ -8,6 +8,7 @@
   * Or when the QGIS project has the `lizmap_user` project variable but no CFG file
 * Some Python cleaning about handling file path, related to CFG file for instance
 * When running Lizmap Web Client 3.6, the QGIS server must be OK before going in other tabs of the plugin
+* Disable or replace graphical components if Qt Webkit is not available on the computer.
 
 ## 3.11.1 - 2023-03-21
 

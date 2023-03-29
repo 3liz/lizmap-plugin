@@ -3849,21 +3849,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        <property name="bottomMargin">
                         <number>0</number>
                        </property>
-                       <item>
-                        <widget class="QWebView" name="dataviz_viewer">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>300</height>
-                          </size>
-                         </property>
-                         <property name="url">
-                          <url>
-                           <string notr="true">about:blank</string>
-                          </url>
-                         </property>
-                        </widget>
-                       </item>
                       </layout>
                      </widget>
                      <widget class="QWidget" name="error_content">
@@ -4374,11 +4359,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <extends>QLineEdit</extends>
    <header>qgis.gui</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header location="global">QtWebKitWidgets/QWebView</header>
   </customwidget>
   <customwidget>
    <class>HtmlEditorWidget</class>
