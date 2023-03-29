@@ -901,13 +901,13 @@ class Lizmap:
         metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not metadata:
             self.dlg.repository_combo.setVisible(False)
-            self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
+            self.dlg.stacked_dataviz_preview.setCurrentWidget(self.dlg.error_content)
             return
 
         repositories = metadata.get("repositories")
         if not repositories:
             self.dlg.repository_combo.setVisible(False)
-            self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
+            self.dlg.stacked_dataviz_preview.setCurrentWidget(self.dlg.error_content)
             return
 
         # At this stage, a more precise error message for the dataviz
@@ -915,7 +915,7 @@ class Lizmap:
         self.dlg.dataviz_error_message.setText(error)
 
         self.dlg.repository_combo.setVisible(True)
-        self.dlg.stacked_dataviz_preview.setCurrentIndex(1)
+        self.dlg.stacked_dataviz_preview.setCurrentWidget(self.dlg.error_content)
 
         for repository_id, repository_data in repositories.items():
             self.dlg.repository_combo.addItem(repository_data['label'], repository_id)
@@ -2287,11 +2287,11 @@ class Lizmap:
             #     self.enable_or_not_toggle_checkbox()
 
             # Checkbox display children features
-            self.dlg.relation_stacked_widget.setCurrentIndex(0)
+            self.dlg.relation_stacked_widget.setCurrentWidget(self.dlg.page_no_relation)
             if is_vector:
                 if len(self.project.relationManager().referencedRelations(layer)) >= 1:
                     # We display options
-                    self.dlg.relation_stacked_widget.setCurrentIndex(1)
+                    self.dlg.relation_stacked_widget.setCurrentWidget(self.dlg.page_display_relation)
 
         else:
             # set default values for this layer/group

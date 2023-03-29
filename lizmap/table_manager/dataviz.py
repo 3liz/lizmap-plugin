@@ -86,8 +86,7 @@ class TableManagerDataviz(TableManager):
     def display_error(self, error_text: str):
         """ Display an error message and change the tab. """
         self.parent.dataviz_error_message.setText(error_text)
-        index = self.parent.stacked_dataviz_preview.indexOf(self.parent.error_content)
-        self.parent.stacked_dataviz_preview.setCurrentIndex(index)
+        self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.error_content)
         QCoreApplication.processEvents()
 
     def preview_dataviz_dialog(self):
@@ -105,8 +104,7 @@ class TableManagerDataviz(TableManager):
         # html_content = "<body><center><img src=\"{}\"></center><body>".format(resources_path('icons/loading.gif'))
         # base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
         # self.parent.dataviz_viewer.setHtml(html_content, base_url)
-        # index = self.parent.stacked_dataviz_preview.indexOf(self.parent.html_content)
-        # self.parent.stacked_dataviz_preview.setCurrentIndex(index)
+        # self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
         # QCoreApplication.processEvents()
 
         selection = self.table.selectedIndexes()
@@ -258,8 +256,7 @@ class TableManagerDataviz(TableManager):
         self.parent.dataviz_viewer.setHtml(html_content, base_url)
 
         # Only when we are all good, we display the final tab
-        index = self.parent.stacked_dataviz_preview.indexOf(self.parent.html_content)
-        self.parent.stacked_dataviz_preview.setCurrentIndex(index)
+        self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
 
     def dataviz_expression_filter(self, layer_id: str) -> Optional[str]:
         """ Return the expression filter if possible. """

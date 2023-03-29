@@ -61,9 +61,8 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
         self.layout().addWidget(self.web_view)
 
-        index = self.stacked_expression.indexOf(self.page_no_expression)
         self.stacked_expression.setVisible(False)
-        self.stacked_expression.setCurrentIndex(index)
+        self.stacked_expression.setCurrentWidget(self.page_no_expression)
 
         if not WEBKIT_AVAILABLE:
             return
@@ -95,15 +94,13 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
     def enable_expression(self):
         """ Enable the expression widget without any layer. """
         self.stacked_expression.setVisible(True)
-        index = self.stacked_expression.indexOf(self.page_expression)
-        self.stacked_expression.setCurrentIndex(index)
+        self.stacked_expression.setCurrentWidget(self.page_expression)
 
     def set_layer(self, layer: QgsVectorLayer):
         """ Enable the field expression widget. """
         self.field_expression_widget.setLayer(layer)
         self.stacked_expression.setVisible(True)
-        index = self.stacked_expression.indexOf(self.page_expression_layer)
-        self.stacked_expression.setCurrentIndex(index)
+        self.stacked_expression.setCurrentWidget(self.page_expression_layer)
 
     def html_content(self) -> str:
         """ Returns the content as an HTML string. """
