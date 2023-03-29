@@ -8,10 +8,16 @@ import re
 from html import escape, unescape
 
 from qgis.core import QgsApplication, QgsVectorLayer
-from qgis.gui import QgsExpressionBuilderDialog
+from qgis.gui import QgsCodeEditorHTML, QgsExpressionBuilderDialog
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWebKit import QWebSettings
+
+try:
+    from qgis.PyQt.QtWebKit import QWebSettings
+    from qgis.PyQt.QtWebKitWidgets import QWebView
+    WEBKIT_AVAILABLE = True
+except ModuleNotFoundError:
+    WEBKIT_AVAILABLE = False
 from qgis.PyQt.QtWidgets import QWidget
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -48,6 +54,20 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         QWidget.__init__(self, parent=parent)
         self.setupUi(self)
 
+        if not WEBKIT_AVAILABLE:
+            self.web_view = QgsCodeEditorHTML()
+        else:
+            self.web_view = QWebView()
+
+        self.layout().addWidget(self.web_view)
+
+        index = self.stacked_expression.indexOf(self.page_no_expression)
+        self.stacked_expression.setVisible(False)
+        self.stacked_expression.setCurrentIndex(index)
+
+        if not WEBKIT_AVAILABLE:
+            return
+
         self.add_field_expression.setText('')
         self.add_field_expression.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
         self.add_field_expression.setToolTip(tr('Add the current expression in the HTML'))
@@ -72,11 +92,6 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         self.web_view.settings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
         self.web_view.settings().setAttribute(QWebSettings.DnsPrefetchEnabled, True)
 
-        # By default, without any expression
-        index = self.stacked_expression.indexOf(self.page_no_expression)
-        self.stacked_expression.setVisible(False)
-        self.stacked_expression.setCurrentIndex(index)
-
     def enable_expression(self):
         """ Enable the expression widget without any layer. """
         self.stacked_expression.setVisible(True)
@@ -92,13 +107,19 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
     def html_content(self) -> str:
         """ Returns the content as an HTML string. """
-        html_content = self._js('tEditor.getHtml();')
+        if WEBKIT_AVAILABLE:
+            html_content = self._js('tEditor.getHtml();')
+        else:
+            html_content = self.web_view.text()
         return QGIS_EXPRESSION_TEXT.sub(expression_from_html_to_qgis, html_content)
 
     def set_html_content(self, content: str):
         """ Set the HTML in the editor. """
         html_content = QGIS_EXPRESSION_TEXT.sub(expression_from_qgis_to_html, content)
-        self._js('tEditor.setHtml(`{}`);'.format(html_content))
+        if WEBKIT_AVAILABLE:
+            self._js('tEditor.setHtml(`{}`);'.format(html_content))
+        else:
+            self.web_view.setText(html_content)
 
     def _insert_qgis_expression(self, text: str):
         """ Insert text at the current cursor position. """
@@ -107,11 +128,15 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
     def insert_text(self, text: str):
         """ Insert text at the current cursor position. """
-        self._js('tEditor.insertText(`{}`);'.format(text))
+        if WEBKIT_AVAILABLE:
+            self._js('tEditor.insertText(`{}`);'.format(text))
+        else:
+            self.web_view.insertText(text)
 
-    def selected_text(self) -> str:
-        """ Get Text selected by the user """
-        return self._js('tEditor.getSelectedText();')
+    # def selected_text(self) -> str:
+    #     """ Get Text selected by the user """
+    # Take care of non Qt Webkit
+    #     return self._js('tEditor.getSelectedText();')
 
     def add_expression_field_in_html(self):
         """ To add the pre-defined expression from the widget in the HTML editor. """
@@ -126,4 +151,6 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
     def _js(self, command) -> str:
         """ Internal function to execute Javascript in the editor. """
+        if not WEBKIT_AVAILABLE:
+            return None
         return self.web_view.page().currentFrame().evaluateJavaScript(command)
