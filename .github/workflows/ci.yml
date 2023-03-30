@@ -43,6 +43,15 @@ jobs:
     defaults:
       run:
         working-directory: .docker
+    strategy:
+      matrix:
+        qgis_version: [
+            # "release-3_10",
+            "release-3_16",
+            # "release-3_22",
+            # "release-3_28",
+            # "latest",
+        ]
     steps:
 
       - name: Check out repository
@@ -50,8 +59,11 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Make env
+        run: cd .. && make env
+
       - name: Launching docker compose
-        run: ./start.sh
+        run: ./start.sh QGIS_VERSION=${{ matrix.qgis_version }}
 
       - name: Running tests
         run: ./exec.sh

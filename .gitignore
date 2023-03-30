@@ -27,6 +27,9 @@ dist/
 .pytest_cache
 __output__
 
+# Docker
+.docker/.env
+
 *.qgz
 
 # QGIS-Plugin-CI
