@@ -3805,27 +3805,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </widget>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_46">
-                     <item>
-                      <widget class="QgsFeaturePickerWidget" name="dataviz_feature_picker"/>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_11">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Maximum</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
+                    <layout class="QHBoxLayout" name="feature_picker_layout"/>
                    </item>
                    <item>
                     <widget class="QStackedWidget" name="stacked_dataviz_preview">
@@ -4338,11 +4318,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFeaturePickerWidget</class>
-   <extends>QWidget</extends>
-   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>

@@ -44,13 +44,14 @@
  ***** END LICENSE BLOCK ***** */
 """
 
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QSpacerItem
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
     WEBKIT_AVAILABLE = True
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
+from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QLabel
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -70,3 +71,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.dataviz_viewer = QLabel(tr('You must install Qt Webkit to enable this feature.'))
         self.html_content.layout().addWidget(self.dataviz_viewer)
+
+        if Qgis.QGIS_VERSION_INT >= 31400:
+            from qgis.gui import QgsFeaturePickerWidget
+            self.dataviz_feature_picker = QgsFeaturePickerWidget()
+        else:
+            self.dataviz_feature_picker = QLabel(tr("You must install QGIS 3.16 to enable the dataviz preview."))
+
+        self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
+        self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))

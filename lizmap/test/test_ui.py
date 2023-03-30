@@ -17,7 +17,10 @@ __email__ = 'info@3liz.org'
 class TestUiLizmapDialog(unittest.TestCase):
 
     def tearDown(self) -> None:
-        Path(plugin_test_data_path('unittest.qgs')).unlink(missing_ok=True)
+        """ Cleaning data."""
+        filepath = Path(plugin_test_data_path('unittest.qgs'))
+        if filepath.exists():
+            filepath.unlink()
 
     def test_ui(self):
         """ Test opening the Lizmap dialog with some basic checks."""

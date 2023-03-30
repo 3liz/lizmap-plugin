@@ -4,8 +4,8 @@ import logging
 
 from typing import Optional
 
-from PyQt5.QtWidgets import QLabel
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
     QgsBlockingNetworkRequest,
@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtNetwork import QNetworkRequest
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QLabel
 
 from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.dataviz import GraphType
@@ -63,8 +63,10 @@ class TableManagerDataviz(TableManager):
         self.parent.label_helper_dataviz.setText(label)
 
         self.table.itemSelectionChanged.connect(self.preview_dataviz_dialog)
-        self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
-        self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
+
+        if Qgis.QGIS_VERSION_INT >= 31400:
+            self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
+            self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
 
         self.parent.enable_dataviz_preview.setText('')
         self.parent.enable_dataviz_preview.setCheckable(True)
@@ -93,6 +95,11 @@ class TableManagerDataviz(TableManager):
         """ Open a new dialog with a preview of the dataviz. """
         if isinstance(self.parent.dataviz_viewer, QLabel):
             # QtWebkit not available
+            self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
+            return
+
+        # QGIS_VERSION_INT < 3.14
+        if isinstance(self.parent.dataviz_feature_picker, QLabel):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return
 
