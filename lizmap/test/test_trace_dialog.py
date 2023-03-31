@@ -1,7 +1,7 @@
 """Test Traces."""
 from collections import OrderedDict
 
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import Qgis, QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 
 from lizmap.definitions.dataviz import GraphType
@@ -43,22 +43,32 @@ class TestTraceDialog(unittest.TestCase):
         """Test Y is unique when we add a new row."""
         dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
         self.assertFalse(dialog.error.isVisible())
-        self.assertEqual('Y field is required.', dialog.validate())
-        dialog.y_field.setCurrentIndex(0)
+        if Qgis.QGIS_VERSION_INT < 32200:
+            self.assertEqual('', dialog.y_field.currentField())
+            self.assertEqual('Y field is required.', dialog.validate())
+            dialog.y_field.setCurrentIndex(0)
+        else:
+            self.assertEqual('id', dialog.y_field.currentField())
         self.assertIsNone(dialog.validate())
 
         # Same but with a unique value not existing
         dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, ['hello'])
         self.assertFalse(dialog.error.isVisible())
-        self.assertEqual('Y field is required.', dialog.validate())
-        dialog.y_field.setCurrentIndex(0)
+        if Qgis.QGIS_VERSION_INT < 32200:
+            self.assertEqual('Y field is required.', dialog.validate())
+            dialog.y_field.setCurrentIndex(0)
+        else:
+            self.assertEqual('id', dialog.y_field.currentField())
         self.assertIsNone(dialog.validate())
 
         # Same but with a unique value
         dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, ['id'])
         self.assertFalse(dialog.error.isVisible())
-        self.assertEqual('Y field is required.', dialog.validate())
-        dialog.y_field.setCurrentIndex(0)
+        if Qgis.QGIS_VERSION_INT < 32200:
+            self.assertEqual('Y field is required.', dialog.validate())
+            dialog.y_field.setCurrentIndex(0)
+        else:
+            self.assertEqual('id', dialog.y_field.currentField())
         self.assertEqual('This Y field is already existing.', dialog.validate())
 
     def test_trace_dialog(self):
@@ -66,10 +76,19 @@ class TestTraceDialog(unittest.TestCase):
         dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
         self.assertFalse(dialog.error.isVisible())
 
-        self.assertEqual('Y field is required.', dialog.validate())
-        self.assertEqual('#086fa1', dialog.color.color().name())
-        self.assertEqual('', dialog.color_field.currentField())
-        self.assertTrue(dialog.color.isEnabled())
+        if Qgis.QGIS_VERSION_INT < 32200:
+            self.assertEqual('', dialog.y_field.currentField())
+            self.assertEqual('Y field is required.', dialog.validate())
+            self.assertEqual('#086fa1', dialog.color.color().name())
+            self.assertEqual('', dialog.color_field.currentField())
+            self.assertTrue(dialog.color.isEnabled())
+        else:
+            # TODO better to check these ones
+            self.assertEqual('id', dialog.y_field.currentField())
+            self.assertEqual('#000000', dialog.color.color().name())
+            self.assertEqual('id', dialog.color_field.currentField())
+            self.assertFalse(dialog.color.isEnabled())
+
         self.assertTrue(dialog.color_field.allowEmptyFieldName())
 
         dialog.color_field.setCurrentIndex(1)

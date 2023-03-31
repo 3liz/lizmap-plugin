@@ -15,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QPlainTextEdit,
 )
+from qgis.server import QgsServerProjectUtils
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
@@ -243,15 +244,14 @@ class BaseEditionDialog(QDialog):
     def is_layer_in_wfs(layer: QgsVectorLayer) -> Union[None, str]:
         """ Check if the layer in the WFS capabilities. """
         # noinspection PyArgumentList
-        wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
-        for wfs_layer in wfs_layers_list:
+        for wfs_layer in QgsServerProjectUtils.wfsLayerIds(QgsProject.instance()):
             if layer.id() == wfs_layer:
                 return None
-        else:
-            msg = tr(
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
-                ' option of the QGIS Server tab in the "Project Properties" dialog.')
-            return msg
+
+        msg = tr(
+            'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
+            ' option of the QGIS Server tab in the "Project Properties" dialog.')
+        return msg
 
     def validate(self):
         """ Validate the form or not.
