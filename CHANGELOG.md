@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.11.3 - 2023-03-31
+
+* Fix a possible regression from 3.11.2
+
 ## 3.11.2 - 2023-03-31
 
 * Set shortnames when it's possible for layers, groups and project when Lizmap Web Client ≥ 3.6

@@ -15,7 +15,6 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QPlainTextEdit,
 )
-from qgis.server import QgsServerProjectUtils
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
@@ -244,7 +243,7 @@ class BaseEditionDialog(QDialog):
     def is_layer_in_wfs(layer: QgsVectorLayer) -> Union[None, str]:
         """ Check if the layer in the WFS capabilities. """
         # noinspection PyArgumentList
-        for wfs_layer in QgsServerProjectUtils.wfsLayerIds(QgsProject.instance()):
+        for wfs_layer in QgsProject.instance().readListEntry('WFSLayers', '')[0]:
             if layer.id() == wfs_layer:
                 return None
 
