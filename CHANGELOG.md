@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.11.2 - 2023-03-31
+
 * Set shortnames when it's possible for layers, groups and project when Lizmap Web Client ≥ 3.6
 * Better handling when a QGIS project has been renamed :
   * Either from QGIS when "save as" is used
