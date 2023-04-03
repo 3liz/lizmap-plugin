@@ -3104,11 +3104,10 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
+        lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
         if not self.check_dialog_validity():
             LOGGER.debug("Leaving the dialog without valid project and/or server.")
             return False
-
-        self.isok = 1
 
         stop_process = tr("The process is stopping.")
 
@@ -3145,7 +3144,6 @@ class Lizmap:
             return False
 
         if not self.is_dev_version:
-            lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
             if not self.server_manager.check_lwc_version(lwc_version.value):
                 QMessageBox.critical(
                     self.dlg,
