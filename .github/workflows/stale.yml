@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/stale@v8
       with:
-        repo-token: ${{ secrets.GH_TOKEN }}
+        repo-token: ${{ secrets.BOT_HUB_TOKEN }}
         days-before-stale: 60
         days-before-close: 14
         stale-issue-message: |
