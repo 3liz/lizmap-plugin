@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.11.4 - 2023-04-05
+
+* Fix possible regressions from 3.11.2
+
 ## 3.11.3 - 2023-03-31
 
 * Fix a possible regression from 3.11.2
