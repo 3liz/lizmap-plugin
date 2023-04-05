@@ -1865,7 +1865,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <property name="currentIndex">
                                <number>0</number>
                               </property>
-                              <widget class="QWidget" name="page">
+                              <widget class="QWidget" name="page_no_relation">
                                <layout class="QVBoxLayout" name="verticalLayout_54">
                                 <item>
                                  <widget class="QLabel" name="label_78">
@@ -1879,7 +1879,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                                 </item>
                                </layout>
                               </widget>
-                              <widget class="QWidget" name="page_2">
+                              <widget class="QWidget" name="page_display_relation">
                                <layout class="QVBoxLayout" name="verticalLayout_55">
                                 <item>
                                  <layout class="QHBoxLayout" name="horizontalLayout_36">
