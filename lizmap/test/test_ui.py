@@ -6,6 +6,7 @@ from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.plugin import Lizmap
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 
@@ -62,15 +63,23 @@ class TestUiLizmapDialog(unittest.TestCase):
         lizmap.process_node(root, None, config)
         lizmap.layerList = lizmap.myDic
 
-        layers = lizmap.layerList
         self.assertEqual(
             'disabled',
-            layers.get('legend_disabled_layer_id').get('legend_image_option'))
+            lizmap.myDic.get('legend_disabled_layer_id').get('legend_image_option'))
 
         self.assertEqual(
             'expand_at_startup',
-            layers.get('legend_displayed_startup_layer_id').get('legend_image_option'))
+            lizmap.myDic.get('legend_displayed_startup_layer_id').get('legend_image_option'))
 
         self.assertEqual(
             'hide_at_startup',
-            layers.get('legend_hidden_startup_layer_id').get('legend_image_option'))
+            lizmap.myDic.get('legend_hidden_startup_layer_id').get('legend_image_option'))
+
+        # For LWC 3.6
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6)
+        self.assertEqual(output['layers']['legend_displayed_startup']['legend_image_option'], 'expand_at_startup')
+
+        # For LWC 3.5
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False)
+        self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
+        self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], 'False')

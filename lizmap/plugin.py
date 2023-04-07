@@ -53,7 +53,7 @@ from collections import OrderedDict
 from functools import partial
 from pathlib import Path
 from shutil import copyfile
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -1443,7 +1443,7 @@ class Lizmap:
         self.dlg.inMaxScale.setText(str(max_scale))
         self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
 
-    def get_config(self):
+    def read_cfg_file(self):
         """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
@@ -1620,6 +1620,18 @@ class Lizmap:
             )
             QMessageBox.warning(
                 self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
+
+        self.layerList = dict()
+
+        # Get embedded groups
+        self.embeddedGroups = None
+
+        # Fill the layer tree
+        self.populate_layer_tree()
+
+        # Fill base-layer startup
+        self.onBaselayerCheckboxChange()
+        self.setStartupBaselayerFromConfig()
 
     def set_previous_qgis_version(self, qgis_version):
         """ Manage the label about the QGIS Desktop version and previous version used. """
@@ -2127,7 +2139,6 @@ class Lizmap:
         self.dlg.block_signals_address(True)
 
         self.dlg.layer_tree.clear()
-        self.dlg.layer_tree.headerItem().setText(0, tr('List of layers'))
         self.myDic = {}
 
         json_layers = self.read_lizmap_config_file()
@@ -2567,13 +2578,29 @@ class Lizmap:
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
 
-    def write_project_config_file(self):
-        """Get general project options and user edited layers options from plugin gui.
-        Save them into the project.qgs.cfg config file in the project.qgs folder (json format)."""
+    def write_project_config_file(self, lwc_version: LwcVersions):
+        """ Write a Lizmap configuration to the file. """
+        liz2json = self.project_config_file(lwc_version)
+        # Write json to the cfg file
+        json_file_content = json.dumps(
+            liz2json,
+            sort_keys=False,
+            indent=4
+        )
+        json_file_content += '\n'
 
+        # Get the project data
+        json_file = self.cfg_file()
+        with open(json_file, 'w', encoding='utf8') as cfg_file:
+            cfg_file.write(json_file_content)
+
+        LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
+        self.clean_project()
+
+    def project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True) -> Dict:
+        """ Generate the CFG file with all options. """
         valid, _ = self.check_project_validity()
 
-        lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
         LOGGER.info("Writing CFG file for LWC version {}".format(lwc_version.value))
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
         if self.is_dev_version:
@@ -2859,7 +2886,7 @@ class Lizmap:
                         propVal = 'False'
                         if v['legend_image_option'] == 'disabled':
                             propVal = 'True'
-                        if v['legend_image_option'] == 'expand_at_startup':
+                        if v['legend_image_option'] == 'expand_at_startup' and with_gui:
                             # We keep False
                             QMessageBox.warning(
                                 self.dlg,
@@ -2933,21 +2960,7 @@ class Lizmap:
             # Add layer options to the json object
             liz2json["layers"]["{}".format(v['name'])] = layerOptions
 
-        # Write json to the cfg file
-        json_file_content = json.dumps(
-            liz2json,
-            sort_keys=False,
-            indent=4
-        )
-        json_file_content += '\n'
-
-        # Get the project data
-        json_file = self.cfg_file()
-        with open(json_file, 'w', encoding='utf8') as cfg_file:
-            cfg_file.write(json_file_content)
-
-        LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
-        self.clean_project()
+        return liz2json
 
     def clean_project(self):
         """Clean a little the QGIS project.
@@ -3071,12 +3084,16 @@ class Lizmap:
         # Only close the dialog if no error
         self.dlg.close()
 
-    def save_cfg_file(self) -> bool:
+    def save_cfg_file(self, lwc_version: LwcVersions = None, save_project: bool = None) -> bool:
         """Save the CFG file.
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
-        lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+        if not lwc_version:
+            lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+
+        lwc_version: LwcVersions
+
         if not self.check_dialog_validity():
             LOGGER.debug("Leaving the dialog without valid project and/or server.")
             return False
@@ -3198,7 +3215,7 @@ class Lizmap:
                 self.project.writeEntry('WMSCrsList', '', crs_list[0])
 
         # write data in the lizmap json config file
-        self.write_project_config_file()
+        self.write_project_config_file(lwc_version)
 
         self.log(
             tr('All the map parameters are correctly set'),
@@ -3214,9 +3231,12 @@ class Lizmap:
 
         # Ask to save the project
         auto_save = self.dlg.checkbox_save_project.isChecked()
-        QgsSettings().setValue('lizmap/auto_save_project', auto_save)
+        if save_project is None:
+            # Only save when we are in GUI
+            QgsSettings().setValue('lizmap/auto_save_project', auto_save)
+
         if self.project.isDirty():
-            if auto_save:
+            if save_project or auto_save:
                 # Do not use QgsProject.write() as it will trigger file
                 # modified warning in QGIS Desktop later
                 self.iface.actionSaveProject().trigger()
@@ -3421,19 +3441,7 @@ class Lizmap:
         self.dlg.show()
 
         # Get config file data
-        self.get_config()
-
-        self.layerList = dict()
-
-        # Get embedded groups
-        self.embeddedGroups = None
-
-        # Fill the layer tree
-        self.populate_layer_tree()
-
-        # Fill base-layer startup
-        self.onBaselayerCheckboxChange()
-        self.setStartupBaselayerFromConfig()
+        self.read_cfg_file()
 
         auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
         self.dlg.checkbox_save_project.setChecked(auto_save)

@@ -85,6 +85,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.inIgnKey.textChanged.connect(self.check_api_key_address)
         self.inGoogleKey.textChanged.connect(self.check_api_key_address)
 
+        # Layer tree
+        self.layer_tree.headerItem().setText(0, tr('List of layers'))
+
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
         provider = self.liExternalSearch.currentData()
