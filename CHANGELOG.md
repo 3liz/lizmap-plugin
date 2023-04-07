@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+* Display the current size of the project thumbnail if found
+* Avoid a warning when reading the CFG file and an address provider was found with an API key
+* Add QGIS desktop 3.22 for automatic testing
+
 ## 3.11.4 - 2023-04-05
 
 * Fix possible regressions from 3.11.2

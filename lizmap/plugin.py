@@ -560,11 +560,6 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
-        # External search
-        # Commented because when loading the CFG, the combobox is updated before we can read the API key from the CFG
-        # file. The check is done only when saving.
-        # self.dlg.liExternalSearch.currentIndexChanged.connect(self.check_api_key_address)
-
         warning_icon = QPixmap(":images/themes/default/mIconWarning.svg")
 
         # Scales
@@ -1223,11 +1218,6 @@ class Lizmap:
         self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
 
-        # IGN and google
-        self.global_options['ignKey']['widget'].textChanged.connect(self.check_ign_french_free_key)
-        self.global_options['ignKey']['widget'].textChanged.connect(self.check_api_key_address)
-        self.global_options['googleKey']['widget'].textChanged.connect(self.check_api_key_address)
-
         server_side = tr(
             "This value will be replaced on the server side when evaluating the expression thanks to "
             "the QGIS server Lizmap plugin.")
@@ -1322,37 +1312,6 @@ class Lizmap:
         if self.help_action:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
-
-    def check_api_key_address(self):
-        """ Check the API key is provided for the address search bar. """
-        provider = self.dlg.liExternalSearch.currentData()
-        if provider in ('google', 'ign'):
-            if provider == 'google':
-                key = self.dlg.inGoogleKey.text()
-            else:
-                key = self.dlg.inIgnKey.text()
-
-            if not key:
-                QMessageBox.critical(
-                    self.dlg,
-                    tr('Address provider'),
-                    tr('You have selected "{}" for the address search bar.').format(provider)
-                    + "\n\n"
-                    + tr(
-                        'However, you have not provided any API key for this provider. Please add one in the '
-                        '"Basemaps" panel to use this provider.'
-                    ),
-                    QMessageBox.Ok
-                )
-
-    def check_ign_french_free_key(self):
-        """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
-        key = self.global_options['ignKey']['widget'].text()
-        if not key:
-            self.global_options['ignTerrain']['widget'].setEnabled(False)
-            self.global_options['ignTerrain']['widget'].setChecked(False)
-        else:
-            self.global_options['ignTerrain']['widget'].setEnabled(True)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
@@ -1636,8 +1595,7 @@ class Lizmap:
         for key, item in self.layers_table.items():
             self.load_config_into_table_widget(key)
 
-        self.check_ign_french_free_key()
-        # self.check_api_key_address() Done when the CFG is loaded
+        self.dlg.check_ign_french_free_key()
         out = '' if json_file.exists() else 'out'
         LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
 
@@ -2166,6 +2124,8 @@ class Lizmap:
 
         Needs to be refactored.
         """
+        self.dlg.block_signals_address(True)
+
         self.dlg.layer_tree.clear()
         self.dlg.layer_tree.headerItem().setText(0, tr('List of layers'))
         self.myDic = {}
@@ -2180,6 +2140,7 @@ class Lizmap:
         # Add the self.myDic to the global layerList dictionary
         self.layerList = self.myDic
 
+        self.dlg.block_signals_address(False)
         self.enable_check_box(False)
 
     def setItemOptions(self):
@@ -3013,7 +2974,7 @@ class Lizmap:
                 'Lizmap', message, level=Qgis.Warning, duration=15
             )
 
-        self.check_api_key_address()
+        self.dlg.check_api_key_address()
 
         return valid, results
 

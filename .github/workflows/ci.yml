@@ -48,7 +48,7 @@ jobs:
         qgis_version: [
             "release-3_10",
             "release-3_16",
-            # "release-3_22",
+            "release-3_22",
             "release-3_28",
             "latest",
         ]

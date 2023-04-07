@@ -43,8 +43,7 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-
-from qgis.PyQt.QtWidgets import QDialog, QSizePolicy, QSpacerItem
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSpacerItem
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -80,3 +79,49 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
         self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+        # IGN and google
+        self.inIgnKey.textChanged.connect(self.check_ign_french_free_key)
+        self.inIgnKey.textChanged.connect(self.check_api_key_address)
+        self.inGoogleKey.textChanged.connect(self.check_api_key_address)
+
+    def check_api_key_address(self):
+        """ Check the API key is provided for the address search bar. """
+        provider = self.liExternalSearch.currentData()
+        if provider in ('google', 'ign'):
+            if provider == 'google':
+                key = self.inGoogleKey.text()
+            else:
+                provider = 'IGN'
+                key = self.inIgnKey.text()
+
+            if not key:
+                QMessageBox.critical(
+                    self.dlg,
+                    tr('Address provider'),
+                    tr('You have selected "{}" for the address search bar.').format(provider)
+                    + "\n\n"
+                    + tr(
+                        'However, you have not provided any API key for this provider. Please add one in the '
+                        '"Basemaps" panel to use this provider.'
+                    ),
+                    QMessageBox.Ok
+                )
+
+    def block_signals_address(self, flag: bool):
+        """Block or not signals when reading the CFG to avoid the message box."""
+        # https://github.com/3liz/lizmap-plugin/issues/477
+        # When reading the CFG file, the address provider is set, before the key field is filled.
+        # The signal is too early
+        self.inIgnKey.blockSignals(flag)
+        self.inGoogleKey.blockSignals(flag)
+        self.liExternalSearch.blockSignals(flag)
+
+    def check_ign_french_free_key(self):
+        """ French IGN free API keys choisirgeoportail/pratique do not include all layers. """
+        key = self.inIgnKey.text()
+        if not key:
+            self.cbIgnTerrain.setEnabled(False)
+            self.cbIgnTerrain.setChecked(False)
+        else:
+            self.cbIgnTerrain.setEnabled(True)
