@@ -21,11 +21,12 @@ def is_lizmap_dot_com_hosting(metadata: dict) -> bool:
     return metadata.get('hosting', '') == 'lizmap.com'
 
 
-def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]]:
+def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str], str]:
     """ Check the project when it's hosted on Lizmap.com hosting. """
     project_home = Path(project.homePath())
     layer_error: Dict[str, str] = {}
 
+    connection_error = False
     for layer in project.mapLayers().values():
         if isinstance(layer, QgsVectorLayer):
             if layer.dataProvider().name() == "postgres":
@@ -34,6 +35,7 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
                     layer_error[layer.name()] = tr(
                         'The layer "{}" is using the QGIS authentication database. You must either use a PostgreSQL '
                         'service or store the login and password in the layer.').format(layer.name())
+                    connection_error = True
 
                 if datasource.service():
                     # We trust the user about login, password etc ...
@@ -43,8 +45,10 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
                 if datasource.host().endswith("lizmap.com"):
                     if not datasource.username() or not datasource.password():
                         layer_error[layer.name()] = tr(
-                            'The layer "{}" is missing credentials, either user and/or password.'
+                            'The layer "{}" is missing some credentials. Either the user and/or the password is not in '
+                            'the layer datasource.'
                         ).format(layer.name())
+                        connection_error = True
 
         components = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
         if 'path' not in components.keys():
@@ -64,4 +68,13 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
                 'parent\'s folder. The current path from the project home path to the given layer is "{}".'
             ).format(layer.name(), relative_path)
 
-    return len(layer_error) != 0, layer_error
+    more = ''
+    if connection_error:
+        more = tr(
+            "You must edit the database connection. If you use a login/password, these ones must be saved by default "
+            "without the QGIS authentication database. Then for each layer, you must right click in the legend and "
+            "click 'Change datasource' to pick the layer again with the updated connection. When opening a QGIS "
+            "project in your desktop, you mustn't have any prompt for a user&password."
+        )
+
+    return len(layer_error) != 0, layer_error, more

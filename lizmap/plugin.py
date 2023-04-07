@@ -2610,16 +2610,23 @@ class Lizmap:
         if server_metadata and is_lizmap_dot_com_hosting(server_metadata):
             # This shouldn't happen, but if we are very quick closing the plugin, we might not have metadata yet.
             # Ticket https://github.com/3liz/lizmap-plugin/issues/481
-            error, results = valid_saas_lizmap_dot_com(self.project)
+            error, results, more = valid_saas_lizmap_dot_com(self.project)
             if error:
                 warnings.append(Warnings.SaasLizmapDotCom.value)
 
-                message = tr('Some configuration are not valid when used with a Lizmap.com hosting :')
+                message = tr('Some configurations are not valid when used with a Lizmap.com hosting :')
+
                 message += "<br><ul>"
                 for error in results.values():
                     message += "<li>{}</li>".format(error)
                 message += "</ul><br>"
-                message += tr("The process is continuing but expect some layers to not be visible.")
+
+                if more:
+                    message += more
+                    message += "<br>"
+
+                message += tr(
+                    "The process is continuing but expect some layers to not be visible in Lizmap Web Client.")
                 QMessageBox.warning(self.dlg, tr('Lizmap.com hosting'), message, QMessageBox.Ok)
 
         metadata = {
