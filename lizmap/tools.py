@@ -100,6 +100,11 @@ def is_database_layer(layer) -> bool:
     return False
 
 
+def human_size(byte_size, units=[' bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']):
+    """ Returns a human-readable string representation of bytes """
+    return str(byte_size) + units[0] if byte_size < 1024 else human_size(byte_size >> 10, units[1:])
+
+
 def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:
     if item_property == LayerProperties.DataUrl:
         return layer.dataUrl()

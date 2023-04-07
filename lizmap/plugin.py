@@ -71,6 +71,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtGui import QImageReader
 from qgis.PyQt.QtWidgets import QLabel, QLineEdit
 
 if Qgis.QGIS_VERSION_INT >= 31400:
@@ -169,6 +170,7 @@ from lizmap.tools import (
     format_version_integer,
     get_layer_wms_parameters,
     has_git,
+    human_size,
     layer_property,
     lizmap_user_folder,
     next_git_tag,
@@ -437,6 +439,8 @@ class Lizmap:
         self.style_sheet = style
         self.dlg.gb_tree.setStyleSheet(self.style_sheet)
         self.dlg.gb_layerSettings.setStyleSheet(self.style_sheet)
+        self.dlg.gb_ftp.setStyleSheet(self.style_sheet)
+        self.dlg.gb_project_thumbnail.setStyleSheet(self.style_sheet)
         self.dlg.gb_visibleTools.setStyleSheet(self.style_sheet)
         self.dlg.gb_Scales.setStyleSheet(self.style_sheet)
         self.dlg.gb_extent.setStyleSheet(self.style_sheet)
@@ -3411,6 +3415,40 @@ class Lizmap:
             # Go back to the first panel because no project loaded.
             # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
             self.dlg.mOptionsListWidget.setCurrentRow(0)
+
+        # Check the project image
+        # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
+        # Line 251
+        images_types = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']
+        images_types.extend([f.upper() for f in images_types])
+        tooltip = tr(
+            "You can add a file named {}.qgs.EXTENSION with one of the following extension : jpg, jpeg, png, gif."
+        ).format(self.project.baseName())
+        tooltip += '\n'
+        tooltip += tr('Lizmap Web Client 3.6 adds webp and avif formats.')
+        tooltip += '\n'
+        tooltip += tr('The width and height should be maximum 250x250px.')
+        tooltip += tr('The size should be ideally less than 50 KB for JPG, 150KB for PNG.')
+        tooltip += '\n'
+        tooltip += tr('You can use this online tool to optimize the size of the picture :')
+        tooltip += ' https://squoosh.app'
+        self.dlg.label_project_thumbnail.setToolTip(tooltip)
+        self.dlg.label_project_thumbnail.setOpenExternalLinks(True)
+
+        if self.check_cfg_file_exists():
+            for test_file in images_types:
+                thumbnail = Path(f'{self.project.fileName()}.{test_file}')
+                if thumbnail.exists():
+                    image_size = QImageReader(str(thumbnail)).size()
+                    self.dlg.label_project_thumbnail.setText(
+                        tr("Thumbnail detected, {}x{}px, {}").format(
+                            image_size.width(),
+                            image_size.height(),
+                            human_size(thumbnail.stat().st_size))
+                    )
+                    break
+            else:
+                self.dlg.label_project_thumbnail.setText(tr("No thumbnail detected.") + '<br>' + tooltip)
 
         self.dlg.show()
 
