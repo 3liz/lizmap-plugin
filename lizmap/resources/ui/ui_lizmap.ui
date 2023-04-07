@@ -735,6 +735,22 @@ QListWidget::item::selected {
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="gb_project_thumbnail">
+                 <property name="title">
+                  <string>Project thumbnail</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_46">
+                  <item>
+                   <widget class="QLabel" name="label_project_thumbnail">
+                    <property name="text">
+                     <string notr="true">SET IN PYTHON</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QGroupBox" name="gb_visibleTools">
                  <property name="title">
                   <string>Map tools</string>
@@ -742,37 +758,7 @@ QListWidget::item::selected {
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_4">
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="cbActivateMeasure">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Measure</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="cbActivateZoomHistory">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Zoom history</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="1" column="1">
-                     <widget class="QCheckBox" name="cbActivateGeolocation">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Automatic geolocation (Only available in HTTPS)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
                      <widget class="QCheckBox" name="cbActivatePrint">
                       <property name="enabled">
                        <bool>true</bool>
@@ -783,6 +769,26 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item row="2" column="0">
+                     <widget class="QCheckBox" name="cbActivateZoomHistory">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Zoom history</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="cbActivateMeasure">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Measure</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
                      <widget class="QCheckBox" name="activate_drawing_tools">
                       <property name="toolTip">
                        <string>If drawing tools are activated or not</string>
@@ -793,6 +799,16 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item row="2" column="1">
+                     <widget class="QCheckBox" name="cbActivateGeolocation">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Automatic geolocation (Only available in HTTPS)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_14">
                       <item>
                        <widget class="QLabel" name="label_19">
@@ -805,6 +821,13 @@ QListWidget::item::selected {
                        <widget class="QComboBox" name="liExternalSearch"/>
                       </item>
                      </layout>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_80">
+                      <property name="text">
+                       <string>TextLabel</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -1242,7 +1265,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_9">
+                <widget class="QGroupBox" name="gb_ftp">
                  <property name="title">
                   <string>FTP transfert</string>
                  </property>
