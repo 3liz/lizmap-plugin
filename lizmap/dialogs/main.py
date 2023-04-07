@@ -97,7 +97,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
             if not key:
                 QMessageBox.critical(
-                    self.dlg,
+                    self,
                     tr('Address provider'),
                     tr('You have selected "{}" for the address search bar.').format(provider)
                     + "\n\n"
