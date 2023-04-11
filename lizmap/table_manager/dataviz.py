@@ -176,8 +176,8 @@ class TableManagerDataviz(TableManager):
             # TODO, should be removed soon, because we should force migrate existing servers.
             # PR https://github.com/3liz/lizmap-plugin/pull/449
             error = tr(
-                'You must fill authentification for the given server on the left panel. Go back in the first '
-                'panel of the plugin and fill the login/password for the server.'
+                'You must fill authentication for the given server in the first tab of the plugin. Go back in the '
+                'tab panel of the plugin and fill the login/password for the server.'
             )
             self.parent.dataviz_error_message.setText(error)
             return

@@ -1279,9 +1279,13 @@ class Lizmap:
             # Somehow in tests, we don't have the variable
             pass
 
-        # Check the current selected server
-        # Not relevant for now
-        # server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        # Check the current selected server in the combobox
+        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        if not metadata:
+            allow_navigation = False
+            msg = tr('The selected server in the combobox must be reachable.')
+            self.dlg.project_valid.setVisible(True)
+            self.dlg.label_warning_project.setText(msg)
 
         for i in range(1, self.dlg.mOptionsListWidget.count()):
             item = self.dlg.mOptionsListWidget.item(i)
@@ -1348,7 +1352,7 @@ class Lizmap:
             QMessageBox.critical(
                 self.dlg,
                 tr('Server URL Error'),
-                tr("You must have selected a server before opening the wizard, on the left panel."),
+                tr("You must have selected a server before opening the wizard, on the first tab of the plugin."),
                 QMessageBox.Ok
             )
             return None

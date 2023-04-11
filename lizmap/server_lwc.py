@@ -355,6 +355,7 @@ class ServerManager:
             del self.fetchers[row]
         self.save_table()
         self.refresh_server_combo()
+        self.refresh_repositories()
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
@@ -580,6 +581,8 @@ class ServerManager:
         # Add the JSON metadata in the server combobox
         index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
         self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
+        # Server combo is refreshed, maybe we can allow the menu bar
+        self.check_dialog_validity()
 
         # and refresh repositories if needed about the new metadata downloaded about repositories available
         if self.server_combo.currentData(ServerComboData.ServerUrl.value) == url:

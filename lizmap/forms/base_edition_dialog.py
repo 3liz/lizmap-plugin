@@ -459,7 +459,7 @@ class BaseEditionDialog(QDialog):
             QMessageBox.critical(
                 self,
                 tr('Server URL Error'),
-                tr("You must have selected a server before opening the wizard, on the left panel."),
+                tr("You must have selected a server before opening the wizard, on the first tab of the plugin."),
                 QMessageBox.Ok
             )
             return None
