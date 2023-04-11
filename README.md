@@ -101,6 +101,53 @@ Software distributed under the License is distributed on an "AS IS" basis, WITHO
 
 ### API
 
+If you want to update a bunch of QGIS projects with their CFG, in the QGIS python script dialog, you can run this
+script below.
+
+The script will update both the QGS file to the running QGIS version, and also the CFG file to the version described
+at the top of the script.
+
+**This script will overwrite your files (qgs and cfg)**. Either make a backup or use a versioning system.
+
+You might have some UI prompts that you need to take care of. Either from QGIS desktop when opening the project, or from
+Lizmap plugin when converting CFG files.
+
+```python
+from lizmap.definitions.definitions import LwcVersions
+from pathlib import Path
+
+# Adapt these 2 variables
+projects = Path("/home/etienne/dev/lizmap/lizmap-web-client/tests/qgis-projects/tests")
+lwc_version_target = LwcVersions.Lizmap_3_6
+
+# Do not change under this line, unless you have some Python skills.
+
+from qgis.utils import plugins
+
+lizmap = plugins['lizmap']
+
+projects = Path(projects)
+project = QgsProject.instance()
+
+for i, qgs_file in enumerate(projects.glob('*.qgs')):    
+    print(f"Processing {i + 1} : {qgs_file.name}")
+
+    if not project.read(str(qgs_file)):
+        print(f'Error while reading the project : {qgs_file.name}')
+        exit(1)
+    
+    lizmap.read_cfg_file()
+    lizmap.save_cfg_file(
+        lwc_version_target, 
+        save_project=False,
+        with_gui=False,
+    )
+    project.write()
+    project.clear()
+```
+
+#### Legacy
+
 You can use the `lizmap_api` class of `lizmap.py` to get the Lizmap JSON configuration for a specific project.
 
 For example:

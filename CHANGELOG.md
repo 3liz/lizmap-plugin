@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+## 3.11.5 - 2023-04-11
+
 * Display the current size of the project thumbnail if found
 * Avoid a warning when reading the CFG file and an address provider was found with an API key
+* Add some Python functions to make it easier to upgrade a bunch of projects automatically.
+  Read the README.md on GitHub for the Python script to update a folder with some QGIS projects.
 * Add QGIS desktop 3.22 for automatic testing
 
 ## 3.11.4 - 2023-04-05
