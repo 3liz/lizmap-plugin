@@ -78,6 +78,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         # For LWC 3.6
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_6)
         self.assertEqual(output['layers']['legend_displayed_startup']['legend_image_option'], 'expand_at_startup')
+        self.assertIsNone(output['layers']['legend_displayed_startup'].get('noLegendImage'))
 
         # For LWC 3.5
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False)

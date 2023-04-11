@@ -2578,10 +2578,9 @@ class Lizmap:
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
 
-    def write_project_config_file(self, lwc_version: LwcVersions):
+    def write_project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True):
         """ Write a Lizmap configuration to the file. """
-        liz2json = self.project_config_file(lwc_version)
-        # Write json to the cfg file
+        liz2json = self.project_config_file(lwc_version, with_gui)
         json_file_content = json.dumps(
             liz2json,
             sort_keys=False,
@@ -2799,17 +2798,14 @@ class Lizmap:
 
         # gui user defined layers options
         for k, v in self.layerList.items():
-            ltype = v['type']
-            gal = v['groupAsLayer']
             layer = False
-            if gal:
+            if v['groupAsLayer']:
                 ltype = 'layer'
             else:
                 ltype = 'group'
 
             if self.get_qgis_layer_by_id(k):
                 ltype = 'layer'
-                gal = True
 
             # ~ # add layerOption only for geo layers
             # ~ if geometryType != 4:
@@ -2821,9 +2817,8 @@ class Lizmap:
             geometryType = -1
             if ltype == 'layer':
                 layer = self.get_qgis_layer_by_id(k)
-                if layer:
-                    if layer.type() == QgsMapLayer.VectorLayer:  # if it is a vector layer
-                        geometryType = layer.geometryType()
+                if layer and layer.type() == QgsMapLayer.VectorLayer:  # if it is a vector layer:
+                    geometryType = layer.geometryType()
 
             # geometry type
             if geometryType != -1:
@@ -3084,7 +3079,12 @@ class Lizmap:
         # Only close the dialog if no error
         self.dlg.close()
 
-    def save_cfg_file(self, lwc_version: LwcVersions = None, save_project: bool = None) -> bool:
+    def save_cfg_file(
+            self,
+            lwc_version: LwcVersions = None,
+            save_project: bool = None,
+            with_gui: bool = True,
+    ) -> bool:
         """Save the CFG file.
 
         Check the user defined data from GUI and save them to both global and project config files.
@@ -3215,7 +3215,7 @@ class Lizmap:
                 self.project.writeEntry('WMSCrsList', '', crs_list[0])
 
         # write data in the lizmap json config file
-        self.write_project_config_file(lwc_version)
+        self.write_project_config_file(lwc_version, with_gui)
 
         self.log(
             tr('All the map parameters are correctly set'),
