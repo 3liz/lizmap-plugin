@@ -259,6 +259,12 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         if not url.endswith('/'):
             url += '/'
 
+        if ' ' in url:
+            return False, tr(
+                "The URL provided is not correct. It contains spaces. Please check that the URL is correct and leads "
+                "to the Lizmap Web Client home page."
+            )
+
         url = '{}index.php/view/app/metadata'.format(url)
 
         net_req = QNetworkRequest()

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Check for space in the Lizmap URL before requesting metadata
+
 ## 3.11.5 - 2023-04-11
 
 * Display the current size of the project thumbnail if found
