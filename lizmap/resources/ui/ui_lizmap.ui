@@ -201,9 +201,6 @@ QListWidget::item::selected {
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="server_combo"/>
-       </item>
-       <item>
         <widget class="QComboBox" name="repository_combo"/>
        </item>
       </layout>
@@ -535,6 +532,20 @@ QListWidget::item::selected {
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Servers&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_47">
+             <item>
+              <widget class="QLabel" name="label_81">
+               <property name="text">
+                <string>Current server</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="server_combo"/>
+             </item>
+            </layout>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_12">
