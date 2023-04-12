@@ -73,7 +73,7 @@ class VersionChecker:
             elif status == 'stable':
                 flag = ReleaseStatus.Stable
                 suffix = tr('Stable')
-            elif status == 'Retired':
+            elif status == 'retired':
                 flag = ReleaseStatus.Retired
                 suffix = tr('Not maintained')
             else:
