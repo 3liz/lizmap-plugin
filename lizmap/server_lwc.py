@@ -5,6 +5,7 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 import os
+import time
 
 from enum import Enum
 from functools import partial
@@ -180,6 +181,7 @@ class ServerManager:
         self.down_button.clicked.connect(self.move_server_down)
 
         # Actions
+        self.clean_cache()
         self.load_table()
 
     @staticmethod
@@ -198,6 +200,24 @@ class ServerManager:
 
         LOGGER.info("Found password ID {}".format(auth_id))
         return conf
+
+    @classmethod
+    def clean_cache(cls, force=False):
+        """ Remove all files in the server cache directory older than 2 days. """
+        now = time.time()
+        cache_dir = lizmap_user_folder().joinpath("cache_server_metadata")
+        for item in cache_dir.glob('*'):
+            if os.stat(item).st_mtime < now - 2 * 86400:
+                item.unlink()
+            elif force:
+                item.unlink()
+
+    @classmethod
+    def cache_file_for_name(cls, name: str) -> Path:
+        """ Return a cache file name according to a server name. """
+        name = name.replace('/', '-')
+        cache_file = lizmap_user_folder().joinpath("cache_server_metadata").joinpath('{}.json'.format(name))
+        return cache_file
 
     def check_validity_servers(self) -> bool:
         """ Check if all servers are valid with at least a login. """
@@ -436,6 +456,7 @@ class ServerManager:
 
     def refresh_table(self):
         """ Refresh all rows with the server status. """
+        self.clean_cache(True)
         for row in range(self.table.rowCount()):
             url, auth_id, _ = self._fetch_cells(row)
             self.fetch(url, auth_id, row)
@@ -577,6 +598,17 @@ class ServerManager:
                 return
 
         lizmap_cell.setText(lizmap_version)
+
+        # Reply is good at this step, let's save it in our cache
+        server_alias = self.table.item(row, TableCell.Name.value).data(Qt.UserRole)
+        json_file_content = json.dumps(
+            content,
+            sort_keys=False,
+            indent=4
+        )
+        json_file_content += '\n'
+        with open(self.cache_file_for_name(server_alias), 'w', encoding='utf8') as json_file:
+            json_file.write(json_file_content)
 
         # TODO, I think there something wrong here
         # action_text_cell.setData(Qt.UserRole, content)

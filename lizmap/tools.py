@@ -138,7 +138,13 @@ def lizmap_user_folder() -> Path:
     if not QDir(path).exists():
         QDir().mkdir(path)
 
-    return Path(path)
+    lizmap_path = Path(path)
+
+    cache_dir = lizmap_path.joinpath("cache_server_metadata")
+    if not cache_dir.exists():
+        QDir().mkdir(str(cache_dir))
+
+    return lizmap_path
 
 
 def current_git_hash() -> str:
