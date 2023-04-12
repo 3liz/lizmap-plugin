@@ -743,7 +743,16 @@ class ServerManager:
             self.server_combo.addItem(name, auth_id)
             index = self.server_combo.findData(auth_id, ServerComboData.AuthId.value)
             self.server_combo.setItemData(index, url, ServerComboData.ServerUrl.value)
-            self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
+            cache_file = self.cache_file_for_name(name)
+            if cache_file.exists():
+                with open(cache_file, encoding='utf8') as f:
+                    metadata = json.load(f)
+                    self.server_combo.setItemData(index, metadata, ServerComboData.JsonMetadata.value)
+                    LOGGER.info("Loading server '{}' using cache in the drop down list".format(name))
+            else:
+                self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
+                LOGGER.info("Loading server '{}' without metadata in the drop down list".format(name))
+
             self.server_combo.setItemData(index, url, Qt.ToolTipRole)
 
         # Restore previous value
