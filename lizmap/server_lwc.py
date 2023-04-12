@@ -27,7 +27,7 @@ from qgis.PyQt.QtGui import (
     QGuiApplication,
     QIcon,
 )
-from qgis.PyQt.QtNetwork import QNetworkReply
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QDialog,
@@ -467,7 +467,11 @@ class ServerManager:
         if auth_id:
             QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
 
-        self.fetchers[row].fetchContent(QUrl(self.url_metadata(url)), auth_id)
+        request = QNetworkRequest()
+        request.setUrl(QUrl(self.url_metadata(url)))
+        # According to QGIS debug panel, this is not working for now
+        request.setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.PreferNetwork)
+        self.fetchers[row].fetchContent(request, auth_id)
 
     def request_finished(self, row: int):
         """ Dispatch the answer to update the GUI. """
