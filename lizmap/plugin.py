@@ -810,6 +810,9 @@ class Lizmap:
             return
 
         new_path = Path(self.project.absoluteFilePath())
+        if str(new_path).endswith('.bak'):
+            # We skip, it's from the QGIS plugin autoSaver
+            return
 
         if self.current_path and new_path != self.current_path:
             old_cfg = self.current_path.with_suffix('.qgs.cfg')
