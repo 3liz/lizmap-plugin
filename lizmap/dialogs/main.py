@@ -43,6 +43,7 @@
 
  ***** END LICENSE BLOCK ***** */
 """
+from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSpacerItem
 
 try:
@@ -56,6 +57,7 @@ from qgis.PyQt.QtWidgets import QLabel
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.tools import format_qgis_version
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
 
@@ -129,6 +131,37 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.cbIgnTerrain.setChecked(False)
         else:
             self.cbIgnTerrain.setEnabled(True)
+
+    def check_qgis_version(self):
+        """ Compare QGIS desktop and server versions. """
+        current = format_qgis_version(Qgis.QGIS_VERSION_INT)
+        qgis_desktop = (current[0], current[1])
+
+        metadata = self.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        try:
+            qgis_server = metadata.get('qgis_server_info').get('metadata').get('version').split('.')
+            qgis_server = (int(qgis_server[0]), int(qgis_server[1]))
+        except AttributeError:
+            # Maybe returning LWC 3.4 or LWC 3.5 without server plugin
+            return
+
+        if qgis_server < qgis_desktop:
+            QMessageBox.warning(
+                self,
+                tr('QGIS server version behind QGIS desktop version'),
+                tr('Current QGIS server selected : ')
+                + '<b>{}.{}</b>'.format(qgis_server[0], qgis_server[1])
+                + "<br>"
+                + tr('Current QGIS desktop : ')
+                + '<b>{}.{}</b>'.format(qgis_desktop[0], qgis_desktop[1])
+                + "<br><br>"
+                + tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
+                + "<br>"
+                + tr(
+                    'You are strongly encouraged to upgrade your QGIS server. You will have issues when your QGIS '
+                    'server will read your QGS project made with this version of QGIS desktop.'),
+                QMessageBox.Ok
+            )
 
     def current_lwc_version(self) -> LwcVersions:
         """ Return the current LWC version from the server combobox. """

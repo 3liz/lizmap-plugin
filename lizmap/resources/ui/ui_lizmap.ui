@@ -539,13 +539,6 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
-            <widget class="QLabel" name="label_53">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check that your QGIS Server is running the &lt;span style=&quot; font-weight:600;&quot;&gt;same&lt;/span&gt; version as this QGIS Desktop.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QLabel" name="qgis_and_lwc_versions_issue">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;There is some known issues using this version of Lizmap Web Client and this QGIS Desktop and QGIS Server {version}. &lt;/span&gt;Check the &lt;a href=&quot;https://github.com/3liz/lizmap-web-client/wiki/Versions&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;version compatibility.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -559,19 +552,9 @@ QListWidget::item::selected {
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_qgis_different_version">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;This project has been saved previously with {previous_version} which is different from {current_version}. Please check the version on QGIS server.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>You can add our Lizmap server URL to keep track of its version number.</string>
+              <string>You must add our Lizmap server URL to keep track of its version number.</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>

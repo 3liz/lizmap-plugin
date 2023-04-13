@@ -846,6 +846,7 @@ class Lizmap:
             'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         if current_version != old_version:
             self.lwc_version_changed()
+        self.dlg.check_qgis_version()
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
@@ -1423,13 +1424,6 @@ class Lizmap:
             # noinspection PyBroadException
             try:
                 sjson = json.loads(json_file_reader)
-
-                # Metadata section
-                meta = sjson.get('metadata')
-                if meta:
-                    qgis_version = meta.get('qgis_desktop_version')
-                    self.set_previous_qgis_version(qgis_version)
-
                 json_options = sjson['options']
                 for key in self.layers_table.keys():
                     if key in sjson:
@@ -1596,29 +1590,6 @@ class Lizmap:
         # Fill base-layer startup
         self.onBaselayerCheckboxChange()
         self.setStartupBaselayerFromConfig()
-
-    def set_previous_qgis_version(self, qgis_version):
-        """ Manage the label about the QGIS Desktop version and previous version used. """
-        if not qgis_version:
-            self.dlg.label_qgis_different_version.setVisible(False)
-            return
-
-        project = format_qgis_version(qgis_version)
-        current = format_qgis_version(Qgis.QGIS_VERSION_INT)
-
-        if project[0] * 100 + project[1] == current[0] * 100 + current[1]:
-            self.dlg.label_qgis_different_version.setVisible(False)
-            return
-
-        self.dlg.label_qgis_different_version.setVisible(True)
-        text = self.dlg.label_qgis_different_version.text()
-        previous = '{}.{}'.format(project[0], project[1])
-        current = '{}.{}'.format(current[0], current[1])
-        text = text.format(previous_version=previous, current_version=current)
-        self.dlg.label_qgis_different_version.setText(text)
-        LOGGER.warning(
-            'New QGIS version detected from the Lizmap CFG file. You should check QGIS Server version as '
-            'well.')
 
     def load_config_into_table_widget(self, key):
         """Load data from lizmap config file into the widget.
@@ -3051,6 +3022,7 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
+        self.dlg.check_qgis_version()
         if not lwc_version:
             lwc_version = self.dlg.current_lwc_version()
 
@@ -3339,7 +3311,6 @@ class Lizmap:
 
         version_checker = VersionChecker(self.dlg, VERSION_URL)
         version_checker.fetch()
-        self.set_previous_qgis_version(None)
 
         if not all_tabs:
             # Go back to the first panel because no project loaded.
