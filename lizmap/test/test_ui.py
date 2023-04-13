@@ -76,11 +76,11 @@ class TestUiLizmapDialog(unittest.TestCase):
             lizmap.myDic.get('legend_hidden_startup_layer_id').get('legend_image_option'))
 
         # For LWC 3.6
-        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6)
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False)
         self.assertEqual(output['layers']['legend_displayed_startup']['legend_image_option'], 'expand_at_startup')
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('noLegendImage'))
 
         # For LWC 3.5
-        output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False)
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False, check_server=False)
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], 'False')

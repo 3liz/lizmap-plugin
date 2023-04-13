@@ -172,15 +172,6 @@ class TableManagerDataviz(TableManager):
 
         conf = QgsAuthMethodConfig()
         QgsApplication.authManager().loadAuthenticationConfig(auth_id, conf, True)
-        if not conf.id():
-            # TODO, should be removed soon, because we should force migrate existing servers.
-            # PR https://github.com/3liz/lizmap-plugin/pull/449
-            error = tr(
-                'You must fill authentification for the given server on the left panel. Go back in the first '
-                'panel of the plugin and fill the login/password for the server.'
-            )
-            self.parent.dataviz_error_message.setText(error)
-            return
 
         locale = QgsSettings().value("locale/userLocale", QLocale().name())[0:2]
 

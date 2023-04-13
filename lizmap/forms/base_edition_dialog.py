@@ -453,29 +453,7 @@ class BaseEditionDialog(QDialog):
     def open_wizard_dialog(self, helper: str):
         """ Internal function to open the wizard ACL. """
         # Duplicated in plugin.py, _open_wizard_group()
-        url = self.parent.server_combo.currentData(ServerComboData.ServerUrl.value)
-        if not url:
-            # noinspection PyArgumentList
-            QMessageBox.critical(
-                self,
-                tr('Server URL Error'),
-                tr("You must have selected a server before opening the wizard, on the left panel."),
-                QMessageBox.Ok
-            )
-            return None
-
         json_metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        if not json_metadata:
-            # noinspection PyArgumentList
-            QMessageBox.critical(
-                self,
-                tr('Server URL Error'),
-                tr("Check your server information table about the current selected server.")
-                + "<br><br>" + url,
-                QMessageBox.Ok
-            )
-            return None
-
         acl = json_metadata.get('acl')
         if not acl:
             # noinspection PyArgumentList

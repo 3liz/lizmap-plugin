@@ -1279,9 +1279,16 @@ class Lizmap:
             # Somehow in tests, we don't have the variable
             pass
 
-        # Check the current selected server
-        # Not relevant for now
-        # server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        # Check the current selected server in the combobox
+        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        if not metadata:
+            allow_navigation = False
+            msg = tr(
+                'The selected server in the combobox must be reachable. The server has not been reachable for 2 '
+                'days.'
+            )
+            self.dlg.project_valid.setVisible(True)
+            self.dlg.label_warning_project.setText(msg)
 
         for i in range(1, self.dlg.mOptionsListWidget.count()):
             item = self.dlg.mOptionsListWidget.item(i)
@@ -1343,27 +1350,7 @@ class Lizmap:
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """ Open the group wizard and set the output in the line edit. """
         # Duplicated in base_edition_dialog.py, open_wizard_dialog()
-        url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
-        if not url:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Server URL Error'),
-                tr("You must have selected a server before opening the wizard, on the left panel."),
-                QMessageBox.Ok
-            )
-            return None
-
         json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        if not json_metadata:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Server URL Error'),
-                tr("Check your server information table about the current selected server.")
-                + "<br><br>" + url,
-                QMessageBox.Ok
-            )
-            return None
-
         acl = json_metadata.get('acl')
         if not acl:
             QMessageBox.critical(
@@ -2596,7 +2583,7 @@ class Lizmap:
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
         self.clean_project()
 
-    def project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True) -> Dict:
+    def project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True) -> Dict:
         """ Generate the CFG file with all options. """
         valid, _ = self.check_project_validity()
 
@@ -2633,9 +2620,7 @@ class Lizmap:
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
-        if server_metadata and is_lizmap_dot_com_hosting(server_metadata):
-            # This shouldn't happen, but if we are very quick closing the plugin, we might not have metadata yet.
-            # Ticket https://github.com/3liz/lizmap-plugin/issues/481
+        if check_server and is_lizmap_dot_com_hosting(server_metadata):
             error, results, more = valid_saas_lizmap_dot_com(self.project)
             if error:
                 warnings.append(Warnings.SaasLizmapDotCom.value)
@@ -3099,24 +3084,6 @@ class Lizmap:
             return False
 
         stop_process = tr("The process is stopping.")
-
-        if self.dlg.table_server.rowCount() < 1 and not self.is_dev_version:
-            # But by making this condition, we force people to at least have one server in the list,
-            # so they can be more aware about versioning later
-            QMessageBox.critical(
-                self.dlg,
-                tr('Lizmap Server URL'),
-                '{}\n\n{}\n\n{}\n\n{}'.format(
-                    tr("You haven't provided any Lizmap URL in the first Information panel."),
-                    tr(
-                        "Publishing a project on Lizmap requires to have a server running with the Lizmap "
-                        "application."),
-                    tr(
-                        "By providing a URL, you will be able to check its version number for instance."
-                    ),
-                    stop_process
-                ), QMessageBox.Ok)
-            return False
 
         if not self.server_manager.check_admin_login_provided() and not self.is_dev_version:
             QMessageBox.critical(
