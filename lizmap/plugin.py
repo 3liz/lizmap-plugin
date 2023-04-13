@@ -104,7 +104,6 @@ from lizmap.definitions.definitions import (
     ONLINE_HELP_LANGUAGES,
     UNSTABLE_VERSION_PREFIX,
     LayerProperties,
-    LwcVersionComboData,
     LwcVersions,
     ReleaseStatus,
     ServerComboData,
@@ -310,8 +309,6 @@ class Lizmap:
             self.dlg.up_layout_form_button,
             self.dlg.down_layout_form_button,
         ]
-
-        self.populate_lwc_combo()
 
         # Keep for a few months, 04/01/2022
         QgsSettings().remove('lizmap/instance_target_url_authid')
@@ -797,7 +794,6 @@ class Lizmap:
             if index:
                 self.dlg.server_combo.setCurrentIndex(index)
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
-        self.dlg.combo_lwc_version.currentIndexChanged.connect(self.lwc_version_changed)
         self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
         self.refresh_combo_repositories()
@@ -836,29 +832,6 @@ class Lizmap:
 
         self.current_path = new_path
 
-    def populate_lwc_combo(self):
-        """ Fill the LWC selector about all versions. """
-        self.dlg.combo_lwc_version.blockSignals(True)
-        self.dlg.combo_lwc_version.clear()
-        for lwc_version in LwcVersions:
-            self.dlg.combo_lwc_version.addItem(lwc_version.value, lwc_version)
-
-        # Find latest LWC version saved on the computer
-        lwc_version = QgsSettings().value('lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        try:
-            lwc_version = LwcVersions(lwc_version)
-        except ValueError:
-            # The QgsSettings does not contain a valid LWC version item
-            # Fallback on the default one from the plugin
-            lwc_version = DEFAULT_LWC_VERSION
-            LOGGER.info("Set value to default LWC version {}".format(lwc_version.value))
-
-        index = self.dlg.combo_lwc_version.findData(lwc_version, LwcVersionComboData.LwcVersion.value)
-        self.dlg.combo_lwc_version.setCurrentIndex(index)
-
-        self.dlg.combo_lwc_version.blockSignals(False)
-        self.lwc_version_changed()
-
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
@@ -867,6 +840,12 @@ class Lizmap:
         QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
         self.check_dialog_validity()
         self.refresh_combo_repositories()
+
+        current_version = self.dlg.current_lwc_version()
+        old_version = QgsSettings().value(
+            'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        if current_version != old_version:
+            self.lwc_version_changed()
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
@@ -941,7 +920,7 @@ class Lizmap:
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
-        current_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+        current_version = self.dlg.current_lwc_version()
 
         if current_version is None:
             # We come from a higher version of Lizmap (from dev to master)
@@ -1438,7 +1417,7 @@ class Lizmap:
         json_options = {}
         json_file = self.cfg_file()
         if json_file.exists():
-            target_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+            target_version = self.dlg.current_lwc_version()
             LOGGER.info('Reading the CFG file with a LWC target version {}'.format(target_version.value))
             with open(json_file, encoding='utf-8') as f:
                 json_file_reader = f.read()
@@ -2614,7 +2593,7 @@ class Lizmap:
                 )
                 warnings.append(Warnings.UseLayerIdAsName.value)
 
-        target_status = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcBranchStatus.value)
+        target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
             target_status = ReleaseStatus.Unknown
 
@@ -3075,7 +3054,7 @@ class Lizmap:
         Check the user defined data from GUI and save them to both global and project config files.
         """
         if not lwc_version:
-            lwc_version = self.dlg.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+            lwc_version = self.dlg.current_lwc_version()
 
         lwc_version: LwcVersions
 
@@ -3339,8 +3318,6 @@ class Lizmap:
             self.dlg.raise_()
             self.dlg.activateWindow()
             return False
-
-        self.populate_lwc_combo()
 
         all_tabs = self.check_dialog_validity()
 

@@ -26,6 +26,14 @@ class LwcVersions(Enum):
             return self.value < other.value
         return NotImplemented
 
+    @classmethod
+    def find(cls, version_string: str):
+        """Return the LWC version for the given string."""
+        for lwc_version in cls.__members__.values():
+            if version_string.startswith(lwc_version.value):
+                return lwc_version
+        return None
+
 
 # Possible prefix before a stable release
 # Note that 'pre' is not supported by the QGIS Desktop plugin manager
@@ -74,10 +82,5 @@ class ServerComboData(Enum):
     AuthId = Qt.UserRole  # String with the authentication ID
     ServerUrl = Qt.UserRole + 1  # String with the server URL
     JsonMetadata = Qt.UserRole + 2  # JSON from the server, raw
-
-
-@unique
-class LwcVersionComboData(Enum):
-    """ The LWC version combo. """
-    LwcVersion = Qt.UserRole  # Enum item with the LWC version
-    LwcBranchStatus = Qt.UserRole + 1  # Enum item about the release status at that time.
+    LwcVersion = Qt.UserRole + 3  # Enum item with the LWC version
+    LwcBranchStatus = Qt.UserRole + 4  # Enum item about the release status at that time.

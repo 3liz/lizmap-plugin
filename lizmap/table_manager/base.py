@@ -21,7 +21,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
-from lizmap.definitions.definitions import LwcVersionComboData, LwcVersions
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
@@ -119,8 +119,7 @@ class TableManager:
 
         # Set versions
         if self.parent:
-            current_version = self.parent.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
-            self.set_lwc_version(current_version)
+            self.set_lwc_version(self.parent.current_lwc_version())
 
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
@@ -462,7 +461,7 @@ class TableManager:
         """
         if not version:
             if self.parent:
-                version = self.parent.combo_lwc_version.currentData(LwcVersionComboData.LwcVersion.value)
+                version = self.parent.current_lwc_version()
             else:
                 version = DEFAULT_LWC_VERSION
 

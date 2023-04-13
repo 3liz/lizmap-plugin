@@ -53,6 +53,7 @@ except ModuleNotFoundError:
 from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QLabel
 
+from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
 
@@ -128,3 +129,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.cbIgnTerrain.setChecked(False)
         else:
             self.cbIgnTerrain.setEnabled(True)
+
+    def current_lwc_version(self) -> LwcVersions:
+        """ Return the current LWC version from the server combobox. """
+        return self.server_combo.currentData(ServerComboData.LwcVersion.value)

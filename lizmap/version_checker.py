@@ -5,14 +5,16 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 
+from typing import Tuple
+
 from qgis.core import QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
 from qgis.PyQt.QtWidgets import QDialog
 
 from lizmap.definitions.definitions import (
-    LwcVersionComboData,
     LwcVersions,
     ReleaseStatus,
+    ServerComboData,
 )
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
@@ -44,47 +46,53 @@ class VersionChecker:
         # Update the UI
         released_versions = json.loads(content)
         self.update_lwc_releases(released_versions)
-        self.update_lwc_selector(released_versions)
+        self.update_lwc_servers(released_versions)
 
         # Cache the file
         content += '\n'
         with open(lizmap_user_folder().joinpath("released_versions.json"), "w") as output:
             output.write(content)
 
-    def update_lwc_selector(self, released_versions: dict):
-        """ Update LWC selector showing outdated versions. """
-        for i, json_version in enumerate(released_versions):
-            try:
-                lwc_version = LwcVersions(json_version['branch'])
-            except ValueError:
-                # The version is found in the online JSON file
-                # But not in the Lizmap source code, in the "definitions.py" file
-                # We can continue, we do nothing with this version. It's not displayed in the UI.
-                continue
+    @classmethod
+    def version_status(cls, status) -> Tuple[str, ReleaseStatus]:
+        """ Return the release status according to the JSON content. """
+        if status == 'dev':
+            flag = ReleaseStatus.Dev
+            suffix = tr('Next')
+        elif status == 'feature_freeze':
+            flag = ReleaseStatus.ReleaseCandidate
+            suffix = tr('Feature freeze')
+        elif status == 'stable':
+            flag = ReleaseStatus.Stable
+            suffix = tr('Stable')
+        elif status == 'retired':
+            flag = ReleaseStatus.Retired
+            suffix = tr('Not maintained')
+        else:
+            flag = ReleaseStatus.Unknown
+            suffix = tr('Inconnu')
 
-            index = self.dialog.combo_lwc_version.findData(lwc_version, LwcVersionComboData.LwcVersion.value)
-            status = json_version.get('status')
-            if status == 'dev':
-                flag = ReleaseStatus.Dev
-                suffix = tr('Next')
-            elif status == 'feature_freeze':
-                flag = ReleaseStatus.ReleaseCandidate
-                suffix = tr('Feature freeze')
-            elif status == 'stable':
-                flag = ReleaseStatus.Stable
-                suffix = tr('Stable')
-            elif status == 'retired':
-                flag = ReleaseStatus.Retired
-                suffix = tr('Not maintained')
-            else:
-                flag = ReleaseStatus.Unknown
-                suffix = tr('Inconnu')
+        return flag, suffix
 
-            text = self.dialog.combo_lwc_version.itemText(index)
-            if suffix:
-                text += ' - ' + suffix
-                self.dialog.combo_lwc_version.setItemText(index, text)
-            self.dialog.combo_lwc_version.setItemData(index, flag, LwcVersionComboData.LwcBranchStatus.value)
+    def update_lwc_servers(self, released_versions: dict):
+        """ Update LWC version status for each server. """
+        for index in range(self.dialog.server_combo.count()):
+            version = self.dialog.current_lwc_version()
+
+            for i, json_version in enumerate(released_versions):
+                try:
+                    lwc_version = LwcVersions(json_version['branch'])
+                except ValueError:
+                    # The version is found in the online JSON file
+                    # But not in the Lizmap source code, in the "definitions.py" file
+                    # We can continue, we do nothing with this version. It's not displayed in the UI.
+                    continue
+
+                if lwc_version != version:
+                    continue
+
+                flag, suffix = self.version_status(json_version.get('status'))
+                self.dialog.server_combo.setItemData(index, flag, ServerComboData.LwcBranchStatus.value)
 
     def update_lwc_releases(self, released_versions: dict):
         """ Update labels about latest releases. """

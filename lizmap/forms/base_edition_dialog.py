@@ -155,7 +155,7 @@ class BaseEditionDialog(QDialog):
     def version_lwc(self):
         """ Make all colors about widgets if it is available or not. """
         if self.parent:
-            current_version = self.parent.combo_lwc_version.currentData()
+            current_version = self.parent.current_lwc_version()
         else:
             current_version = DEFAULT_LWC_VERSION
 

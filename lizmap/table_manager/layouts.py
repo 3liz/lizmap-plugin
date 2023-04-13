@@ -52,7 +52,7 @@ class TableManagerLayouts(TableManager):
         if self.parent:
             legacy_print_checkbox = \
                 (self.parent.cbActivatePrint.isChecked()
-                 or self.parent.combo_lwc_version.currentData() <= LwcVersions.Lizmap_3_6)
+                 or self.parent.current_lwc_version() <= LwcVersions.Lizmap_3_6)
         else:
             legacy_print_checkbox = False
 

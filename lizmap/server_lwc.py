@@ -41,6 +41,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
     UNSTABLE_VERSION_PREFIX,
+    LwcVersions,
     ReleaseStatus,
     ServerComboData,
 )
@@ -627,7 +628,7 @@ class ServerManager:
         # Markdown
         markdown = '**Versions :**\n\n'
         markdown += '* Lizmap Web Client : {}\n'.format(lizmap_version)
-        markdown += '* Lizmap Web Client target version : {}\n'.format(self.parent.combo_lwc_version.currentData().value)
+        markdown += '* Lizmap Web Client target version : {}\n'.format(self.parent.current_lwc_version().value)
         markdown += '* Lizmap plugin : {}\n'.format(version())
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)
@@ -751,6 +752,11 @@ class ServerManager:
                 with open(cache_file, encoding='utf8') as f:
                     metadata = json.load(f)
                     self.server_combo.setItemData(index, metadata, ServerComboData.JsonMetadata.value)
+                    self.server_combo.setItemData(
+                        index,
+                        LwcVersions.find(metadata['info']['version']),
+                        ServerComboData.LwcVersion.value
+                    )
                     LOGGER.info("Loading server '{}' using cache in the drop down list".format(name))
             else:
                 self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
