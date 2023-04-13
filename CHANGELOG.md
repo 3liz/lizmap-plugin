@@ -3,6 +3,9 @@
 ## Unreleased
 
 * Check for space in the Lizmap URL before requesting metadata
+* Remove the target version dropdown menu, it will now use the server dropdown menu
+* The server must have a valid status before using the plugin
+* The metadata for each server is stored for maximum two days
 
 ## 3.11.5 - 2023-04-11
 

@@ -132,4 +132,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def current_lwc_version(self) -> LwcVersions:
         """ Return the current LWC version from the server combobox. """
-        return self.server_combo.currentData(ServerComboData.LwcVersion.value)
+        version = self.server_combo.currentData(ServerComboData.LwcVersion.value)
+        if version:
+            return version
+
+        # This is temporary
+        return LwcVersions.Lizmap_3_2

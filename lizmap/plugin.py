@@ -1417,8 +1417,6 @@ class Lizmap:
         json_options = {}
         json_file = self.cfg_file()
         if json_file.exists():
-            target_version = self.dlg.current_lwc_version()
-            LOGGER.info('Reading the CFG file with a LWC target version {}'.format(target_version.value))
             with open(json_file, encoding='utf-8') as f:
                 json_file_reader = f.read()
 
