@@ -43,7 +43,6 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSpacerItem
 
 try:
@@ -51,6 +50,7 @@ try:
     WEBKIT_AVAILABLE = True
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
+
 from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QLabel
 
