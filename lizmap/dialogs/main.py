@@ -148,7 +148,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if qgis_server < qgis_desktop:
             QMessageBox.warning(
                 self,
-                tr('QGIS server version behind QGIS desktop version'),
+                tr('QGIS server version is lower than QGIS desktop version'),
                 tr('Current QGIS server selected : ')
                 + '<b>{}.{}</b>'.format(qgis_server[0], qgis_server[1])
                 + "<br>"
