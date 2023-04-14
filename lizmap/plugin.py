@@ -2955,6 +2955,12 @@ class Lizmap:
                 "Your file name has some accents in its name. The project file name mustn't have accents in its name.")
             return False, message + base_message
 
+        if 'dav.php' in self.project.fileName():
+            message = tr(
+                "You mustn't open the QGS file located in your local webdav directory. Please open a local copy of the "
+                "project.")
+            return False, message + base_message
+
         # Check if Qgis/capitaliseLayerName is set
         settings = QgsSettings()
         if settings.value('Qgis/capitaliseLayerName') and settings.value('Qgis/capitaliseLayerName', type=bool):
