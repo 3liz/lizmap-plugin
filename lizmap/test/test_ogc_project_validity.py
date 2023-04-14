@@ -22,10 +22,15 @@ class TestShortNames(unittest.TestCase):
         self.assertEqual("l_1_layer", OgcProjectValidity.short_name("!1 layer", []))
         self.assertEqual("l_1_layer", OgcProjectValidity.short_name("_1 layer", []))
         self.assertEqual("l_1_layer", OgcProjectValidity.short_name("__1 layer", []))
-        self.assertEqual("a_layer", OgcProjectValidity.short_name("a-layer", []))
+        self.assertEqual("a_layer", OgcProjectValidity.short_name("a_layer", []))
+        self.assertEqual("osm-mapnik", OgcProjectValidity.short_name("osm-mapnik", []))
+        self.assertEqual("osm-mapnik", OgcProjectValidity.short_name("-osm-mapnik", []))
         self.assertEqual("a_lAyer", OgcProjectValidity.short_name("à lÂyér", []))
         self.assertEqual("l_123_a_layer", OgcProjectValidity.short_name("123 a layer", []))
-        self.assertEqual("こんにちは", OgcProjectValidity.short_name('こんにちは', []))
+
+        shortname = OgcProjectValidity.short_name('こんにちは', [])
+        self.assertEqual(5, len(shortname))
+        self.assertTrue(shortname.isalpha())
 
     def test_shortname_prefix(self):
         """ Test with different prefix. """
@@ -52,7 +57,7 @@ class TestShortNames(unittest.TestCase):
         self.assertListEqual(validator.existing_shortnames(), ['lines-1', 'sub-group'])
 
         validator.add_shortnames()
-        self.assertListEqual(validator.existing_shortnames(), ['lines-1', 'lines_1', 'group_1', 'sub-group', 'lines_2'])
+        self.assertListEqual(validator.existing_shortnames(), ['lines-1', 'lines-1_1', 'group-1', 'sub-group', 'lines-2'])
 
         # Project short name
         self.assertEqual("", project.readEntry("WMSRootName", "/", "")[0])

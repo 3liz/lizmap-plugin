@@ -12,6 +12,7 @@ from lizmap.tools import (
     format_version_integer,
     is_database_layer,
     merge_strings,
+    unaccent,
 )
 
 __copyright__ = 'Copyright 2023, 3Liz'
@@ -42,6 +43,10 @@ class TestTools(unittest.TestCase):
         self.assertEqual("100912", format_version_integer("10.9.12"))
         self.assertEqual("030708", format_version_integer("3.7.8-alpha"))
         self.assertEqual("000000", format_version_integer("master"))
+
+    def test_unaccent(self):
+        """ Test to unaccent a string. """
+        self.assertEqual("a lAyer", unaccent("à lÂyér"))
 
     def test_merge_strings(self):
         """ Test to merge two strings and remove common parts. """

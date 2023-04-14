@@ -3,7 +3,9 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import logging
+import random
 import re
+import string
 
 from typing import List
 
@@ -94,13 +96,16 @@ class OgcProjectValidity:
 
         Default prefix is 'l' for layer.
         """
+        layer_name = unaccent(layer_name)
         # Inspired by QgsMapLayer::generateId()
         # https://github.com/qgis/QGIS/blob/master/src/core/qgsmaplayer.cpp#L2181
-        # \W <=> [^a-zA-Z0-9_]
-        layer_short_name = re.sub(r'\W', '_', layer_name)
+        layer_short_name = re.sub(r'[^a-zA-Z0-9_-]', '_', layer_name)
 
-        layer_short_name = unaccent(layer_short_name)
-        layer_short_name = layer_short_name.strip('_')
+        layer_short_name = layer_short_name.strip('_-')
+
+        if len(layer_short_name) == 0:
+            # No more chars left, let's add some
+            layer_short_name = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
 
         if layer_short_name[0].isdigit():
             layer_short_name = '{}_{}'.format(prefix, layer_short_name)
