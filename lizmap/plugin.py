@@ -74,6 +74,8 @@ from qgis.core import (
 from qgis.PyQt.QtGui import QImageReader
 from qgis.PyQt.QtWidgets import QLabel, QLineEdit
 
+from lizmap.dialogs.scroll_message_box import ScrollMessageBox
+
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
 
@@ -2390,7 +2392,7 @@ class Lizmap:
 
                 message += tr(
                     "The process is continuing but expect some layers to not be visible in Lizmap Web Client.")
-                QMessageBox.warning(self.dlg, tr('Lizmap.com hosting'), message, QMessageBox.Ok)
+                ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Lizmap.com hosting'), message)
 
         metadata = {
             'qgis_desktop_version': Qgis.QGIS_VERSION_INT,
