@@ -45,6 +45,7 @@ from lizmap.definitions.definitions import (
     ReleaseStatus,
     ServerComboData,
 )
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
@@ -77,8 +78,8 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent, table, add_button, remove_button, edit_button, refresh_button,
-            up_button, down_button, server_combo, function_refresh_repositories, function_check_dialog_validity
+            self, parent: LizmapDialog, table, add_button, remove_button, edit_button, refresh_button,
+            up_button, down_button, server_combo, function_check_dialog_validity
     ):
         self.parent = parent
         self.table = table
@@ -89,7 +90,6 @@ class ServerManager:
         self.up_button = up_button
         self.down_button = down_button
         self.server_combo = server_combo
-        self.refresh_repositories = function_refresh_repositories
         self.check_dialog_validity = function_check_dialog_validity
 
         # Network
@@ -376,7 +376,7 @@ class ServerManager:
             del self.fetchers[row]
         self.save_table()
         self.refresh_server_combo()
-        self.refresh_repositories()
+        self.parent.refresh_combo_repositories()
 
     def _edit_row(self, row: int, server_url: str, auth_id: str, name: str):
         """ Internal function to edit a row. """
@@ -623,7 +623,7 @@ class ServerManager:
 
         # and refresh repositories if needed about the new metadata downloaded about repositories available
         if self.server_combo.currentData(ServerComboData.ServerUrl.value) == url:
-            self.refresh_repositories()
+            self.parent.refresh_combo_repositories()
 
         # Markdown
         markdown = '**Versions :**\n\n'
@@ -736,6 +736,7 @@ class ServerManager:
         servers = self.existing_json_server_list()
 
         self.server_combo.blockSignals(True)
+        self.parent.repository_combo.blockSignals(True)
 
         self.server_combo.clear()
 
@@ -771,6 +772,8 @@ class ServerManager:
                 self.server_combo.setCurrentIndex(index)
 
         self.server_combo.blockSignals(False)
+        self.parent.repository_combo.blockSignals(False)
+        self.parent.refresh_combo_repositories()
         self.check_dialog_validity()
 
     def load_table(self):

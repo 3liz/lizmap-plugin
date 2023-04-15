@@ -7,6 +7,7 @@
 * The server must have a valid status before using the plugin
 * The metadata for each server is stored for maximum two days
 * Fix the shortname generation when the layer name contains a `-`
+* Fix the last used repository used in the dropdown menu
 
 ## 3.11.5 - 2023-04-11
 

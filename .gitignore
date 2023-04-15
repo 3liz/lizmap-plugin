@@ -31,6 +31,9 @@ __output__
 .docker/.env
 
 *.qgz
+*_attachments.zip
+*_bak.qgs
+*_bak.qgs.cfg
 
 # QGIS-Plugin-CI
 lizmap.*.zip

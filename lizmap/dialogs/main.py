@@ -45,7 +45,7 @@
 """
 import sys
 
-from qgis.core import Qgis, QgsApplication
+from qgis.core import Qgis, QgsApplication, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
@@ -56,18 +56,16 @@ from qgis.PyQt.QtWidgets import (
     QSpacerItem,
 )
 
-from lizmap.qt_style_sheets import STYLESHEET
-
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
     WEBKIT_AVAILABLE = True
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
-
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.qt_style_sheets import STYLESHEET
 from lizmap.tools import format_qgis_version
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
@@ -78,6 +76,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
+        self.project = QgsProject.instance()
 
         self.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
@@ -190,6 +189,70 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # This is temporary
         return LwcVersions.Lizmap_3_2
+
+    def current_repository(self) -> str:
+        """ Fetch the current directory on the server if available. """
+        if not self.repository_combo.isVisible():
+            return ''
+
+        return self.repository_combo.currentData()
+
+    def refresh_combo_repositories(self):
+        """ Refresh the combobox about repositories. """
+        # Set the default error message that could happen for the dataviz
+        # TODO change to latest 3.6.X in a few months
+        error = tr(
+            "Your current version of the selected server doesn't support the plot preview. "
+            "You must upgrade at least to Lizmap Web Client "
+            "<a href=\"https://github.com/3liz/lizmap-web-client/releases/tag/3.6.1\">3.6.1</a>."
+            "\n\n"
+            "Upgrade to the latest 3.6.X available."
+        )
+        self.dataviz_error_message.setText(error)
+
+        self.repository_combo.clear()
+
+        current = self.server_combo.currentData(ServerComboData.ServerUrl.value)
+        if not current:
+            return
+
+        if not current.endswith('/'):
+            current += '/'
+
+        metadata = self.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        if not metadata:
+            self.repository_combo.setVisible(False)
+            self.stacked_dataviz_preview.setCurrentWidget(self.error_content)
+            return
+
+        repositories = metadata.get("repositories")
+        if not repositories:
+            self.repository_combo.setVisible(False)
+            self.stacked_dataviz_preview.setCurrentWidget(self.error_content)
+            return
+
+        # At this stage, a more precise error message for the dataviz
+        error = tr("You should select a plot to have the preview.")
+        self.dataviz_error_message.setText(error)
+
+        self.repository_combo.setVisible(True)
+        self.stacked_dataviz_preview.setCurrentWidget(self.error_content)
+
+        for repository_id, repository_data in repositories.items():
+            self.repository_combo.addItem(repository_data['label'], repository_id)
+            index = self.repository_combo.findData(repository_id)
+            self.repository_combo.setItemData(index, repository_id, Qt.ToolTipRole)
+
+        # Restore the previous value if possible
+        previous = self.project.customVariables().get('lizmap_repository')
+        if not previous:
+            return
+
+        index = self.repository_combo.findData(previous)
+        if not index:
+            return
+
+        self.repository_combo.setCurrentIndex(index)
 
     def setup_icons(self):
         """ Setup icons in the left menu. """

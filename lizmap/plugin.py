@@ -189,6 +189,12 @@ class Lizmap:
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
 
+        # Keep it for a few months
+        # 2023/04/15
+        QgsSettings().remove('lizmap/instance_target_repository')
+        # 04/01/2022
+        QgsSettings().remove('lizmap/instance_target_url_authid')
+
         # Connect the current project filepath
         self.current_path = None
         self.project.fileNameChanged.connect(self.filename_changed)
@@ -305,9 +311,6 @@ class Lizmap:
             self.dlg.up_layout_form_button,
             self.dlg.down_layout_form_button,
         ]
-
-        # Keep for a few months, 04/01/2022
-        QgsSettings().remove('lizmap/instance_target_url_authid')
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
@@ -513,7 +516,6 @@ class Lizmap:
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
             self.dlg.server_combo,
-            self.refresh_combo_repositories,
             self.check_dialog_validity,
         )
 
@@ -658,7 +660,7 @@ class Lizmap:
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
         self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
-        self.refresh_combo_repositories()
+        self.dlg.refresh_combo_repositories()
 
         self.layerList = None
         self.action = None
@@ -704,7 +706,7 @@ class Lizmap:
         QgsSettings().setValue('lizmap/instance_target_url', current_url)
         QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
         self.check_dialog_validity()
-        self.refresh_combo_repositories()
+        self.dlg.refresh_combo_repositories()
 
         current_version = self.dlg.current_lwc_version()
         old_version = QgsSettings().value(
@@ -715,74 +717,10 @@ class Lizmap:
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
-        current = self.dlg.repository_combo.currentData()
-        QgsSettings().setValue('lizmap/instance_target_repository', current)
+        # The new repository is only set when we save the CFG file
+        # Otherwise, it will make a mess with the signals abotu the last repository used and the server refreshed list
         if self.dlg.page_dataviz.isVisible():
             self.layers_table['datavizLayers'].get('manager').preview_dataviz_dialog()
-
-    def refresh_combo_repositories(self):
-        """ Refresh the combobox about repositories. """
-        # Set the default error message that could happen for the dataviz
-        # TODO change to latest 3.6.X in a few months
-        error = tr(
-            "Your current version of the selected server doesn't support the plot preview. "
-            "You must upgrade at least to Lizmap Web Client "
-            "<a href=\"https://github.com/3liz/lizmap-web-client/releases/tag/3.6.1\">3.6.1</a>."
-            "\n\n"
-            "Upgrade to the latest 3.6.X available."
-        )
-        self.dlg.dataviz_error_message.setText(error)
-
-        self.dlg.repository_combo.clear()
-
-        current = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
-        if not current:
-            return
-
-        if not current.endswith('/'):
-            current += '/'
-
-        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        if not metadata:
-            self.dlg.repository_combo.setVisible(False)
-            self.dlg.stacked_dataviz_preview.setCurrentWidget(self.dlg.error_content)
-            return
-
-        repositories = metadata.get("repositories")
-        if not repositories:
-            self.dlg.repository_combo.setVisible(False)
-            self.dlg.stacked_dataviz_preview.setCurrentWidget(self.dlg.error_content)
-            return
-
-        # At this stage, a more precise error message for the dataviz
-        error = tr("You should select a plot to have the preview.")
-        self.dlg.dataviz_error_message.setText(error)
-
-        self.dlg.repository_combo.setVisible(True)
-        self.dlg.stacked_dataviz_preview.setCurrentWidget(self.dlg.error_content)
-
-        for repository_id, repository_data in repositories.items():
-            self.dlg.repository_combo.addItem(repository_data['label'], repository_id)
-            index = self.dlg.repository_combo.findData(repository_id)
-            self.dlg.repository_combo.setItemData(index, repository_id, Qt.ToolTipRole)
-
-        # Restore the previous value if possible
-        previous = QgsSettings().value('lizmap/instance_target_repository')
-        if not previous:
-            return
-
-        index = self.dlg.repository_combo.findData(previous)
-        if not index:
-            return
-
-        self.dlg.repository_combo.setCurrentIndex(index)
-
-    def current_repository(self) -> str:
-        """ Fetch the current directory on the server if available. """
-        if not self.dlg.repository_combo.isVisible():
-            return ''
-
-        return self.dlg.repository_combo.currentData()
 
     def lwc_version_changed(self):
         """When the version has changed in the selector."""
@@ -1084,6 +1022,7 @@ class Lizmap:
                     server_side,
                 )
             )
+            QgsExpression.addVariableHelpText("lizmap_repository", tr("The current repository ID on the server."))
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
@@ -2461,7 +2400,7 @@ class Lizmap:
             'lizmap_web_client_target_status': target_status.value,
             'instance_target_url': self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         }
-        repository = self.current_repository()
+        repository = self.dlg.current_repository()
         if repository:
             metadata['instance_target_repository'] = repository
 
@@ -2893,6 +2832,10 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
+        variables = self.project.customVariables()
+        variables['lizmap_repository'] = self.dlg.current_repository()
+        self.project.setCustomVariables(variables)
+
         self.dlg.check_qgis_version()
         if not lwc_version:
             lwc_version = self.dlg.current_lwc_version()
