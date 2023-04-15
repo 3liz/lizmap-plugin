@@ -1,3 +1,7 @@
+__copyright__ = 'Copyright 2023, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+
 # Both colors MUST be synchronized
 NEW_FEATURE_COLOR = '#aaffff'
 NEW_FEATURE_CSS = 'background-color:rgb(170, 255, 255);'
