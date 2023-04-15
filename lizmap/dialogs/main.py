@@ -43,7 +43,20 @@
 
  ***** END LICENSE BLOCK ***** */
 """
-from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSpacerItem
+import sys
+
+from qgis.core import Qgis, QgsApplication
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QLabel,
+    QMessageBox,
+    QSizePolicy,
+    QSpacerItem,
+)
+
+from lizmap.qt_style_sheets import STYLESHEET
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -51,12 +64,10 @@ try:
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
-from qgis.core import Qgis
-from qgis.PyQt.QtWidgets import QLabel
 
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.tools import format_qgis_version
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
@@ -67,6 +78,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
+
+        self.label_lizmap_logo.setText('')
+        pixmap = QPixmap(resources_path('icons', 'logo.png'))
+        # noinspection PyUnresolvedReferences
+        pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
+        self.label_lizmap_logo.setPixmap(pixmap)
 
         if WEBKIT_AVAILABLE:
             self.dataviz_viewer = QWebView()
@@ -90,6 +107,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
+
+        self.setup_icons()
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
@@ -171,3 +190,133 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # This is temporary
         return LwcVersions.Lizmap_3_2
+
+    def setup_icons(self):
+        """ Setup icons in the left menu. """
+        i = 0
+
+        # Information
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Map options
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Layers
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Base layer
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Layouts
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Locate by layer
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Attribute table
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Layer editing
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Tooltip layer
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Filter data with form
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Filter layer by user
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Dataviz
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Time manager
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Atlas
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Log
+        # noinspection PyCallByClass,PyArgumentList
+        icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Set stylesheet for QGroupBox
+        if sys.platform.startswith('win'):
+            style = ['0', '0', '0', '5%']
+            margin = '4.0'
+        else:
+            style = ['225', '225', '225', '90%']
+            margin = '2.5'
+        style = STYLESHEET.format(*style, margin)
+
+        self.gb_tree.setStyleSheet(style)
+        self.gb_layerSettings.setStyleSheet(style)
+        self.gb_ftp.setStyleSheet(style)
+        self.gb_project_thumbnail.setStyleSheet(style)
+        self.gb_visibleTools.setStyleSheet(style)
+        self.gb_Scales.setStyleSheet(style)
+        self.gb_extent.setStyleSheet(style)
+        self.gb_externalLayers.setStyleSheet(style)
+        self.gb_lizmapExternalBaselayers.setStyleSheet(style)
+        self.gb_generalOptions.setStyleSheet(style)
+        self.gb_interface.setStyleSheet(style)
+        self.gb_baselayersOptions.setStyleSheet(style)
