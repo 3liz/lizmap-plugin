@@ -185,7 +185,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return
 
         repositories = metadata.get("repositories")
-        if not repositories:
+        if repositories is None:
             self.repository_combo.setVisible(False)
             self.stacked_dataviz_preview.setCurrentWidget(self.error_content)
             return
@@ -196,6 +196,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.repository_combo.setVisible(True)
         self.stacked_dataviz_preview.setCurrentWidget(self.error_content)
+
+        if len(repositories) == 0:
+            # The list might be empty on the server
+            self.repository_combo.setToolTip("There isn't repository on the server")
+            return
+
+        self.repository_combo.setToolTip("List of repositories found on the server")
 
         for repository_id, repository_data in repositories.items():
             self.repository_combo.addItem(repository_data['label'], repository_id)
