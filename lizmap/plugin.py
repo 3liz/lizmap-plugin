@@ -3057,9 +3057,13 @@ class Lizmap:
                 # Core QGIS plugin manager API might not be well stable ?
                 LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
         if not qgis_plugin_manager:
-            self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
-            self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
-            self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
+            # self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
+            # self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
+            # self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
+            self.dlg.label_lizmap_plugin.setVisible(False)
+            self.dlg.label_wfsoutputextension_plugin.setVisible(False)
+            self.dlg.label_atlasprint_plugin.setVisible(False)
+            self.dlg.label_qgis_server_plugins.setVisible(False)
 
         version_checker = VersionChecker(self.dlg, VERSION_URL)
         version_checker.fetch()

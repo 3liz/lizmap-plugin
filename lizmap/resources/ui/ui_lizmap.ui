@@ -452,7 +452,7 @@ QListWidget::item::selected {
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_8">
                <item>
-                <widget class="QLabel" name="label_57">
+                <widget class="QLabel" name="label_qgis_server_plugins">
                  <property name="text">
                   <string>QGIS Server plugins</string>
                  </property>
