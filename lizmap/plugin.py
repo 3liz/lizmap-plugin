@@ -117,7 +117,7 @@ from lizmap.qgis_plugin_tools.tools.resources import (
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.server_ftp import FtpServer
-from lizmap.server_lwc import ServerManager
+from lizmap.server_lwc import MAX_DAYS, ServerManager
 from lizmap.tools import (
     convert_lizmap_popup,
     current_git_hash,
@@ -999,48 +999,37 @@ class Lizmap:
 
         Returns True if all tabs are available.
         """
-        self.dlg.project_valid.setVisible(False)
-        allow_navigation = True
+        # Check the current selected server in the combobox
+        if not self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value):
+            msg = tr('Please add your Lizmap server in the table below.')
+            self.dlg.allow_navigation(False, msg)
+            return False
 
         valid, msg = self.check_global_project_options()
         if not valid:
-            allow_navigation = False
-            self.dlg.project_valid.setVisible(True)
-            self.dlg.label_warning_project.setText(msg)
+            self.dlg.allow_navigation(False, msg)
+            return False
 
         # Project is valid, now check the server table validity
-        try:
-            self.server_manager
-            if valid and not self.server_manager.check_validity_servers():
-                allow_navigation = False
-                msg = tr(
-                    'You must have all Lizmap servers with a valid URL and a login provided before using the plugin.'
-                )
-                self.dlg.project_valid.setVisible(True)
-                self.dlg.label_warning_project.setText(msg)
-        except AttributeError:
-            # Somehow in tests, we don't have the variable
-            pass
+        # Somehow in tests, we don't have the variable
+        if hasattr(self, 'server_manager') and not self.server_manager.check_validity_servers():
+            msg = tr(
+                'You must have all Lizmap servers with a valid URL and a login provided before using the plugin.'
+            )
+            self.dlg.allow_navigation(False, msg)
+            return False
 
-        # Check the current selected server in the combobox
         metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not metadata:
-            allow_navigation = False
             msg = tr(
-                'The selected server in the combobox must be reachable. The server has not been reachable for 2 '
+                'The selected server in the combobox must be reachable. The server has not been reachable for {number} '
                 'days.'
-            )
-            self.dlg.project_valid.setVisible(True)
-            self.dlg.label_warning_project.setText(msg)
+            ).format(number=MAX_DAYS)
+            self.dlg.allow_navigation(False, msg)
+            return False
 
-        for i in range(1, self.dlg.mOptionsListWidget.count()):
-            item = self.dlg.mOptionsListWidget.item(i)
-            if allow_navigation:
-                item.setFlags(item.flags() | Qt.ItemIsEnabled)
-            else:
-                item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
-
-        return allow_navigation
+        self.dlg.allow_navigation(True)
+        return True
 
     def add_new_layer(self, key):
         self.layers_table[key]['manager'].add_new_row()
@@ -3054,8 +3043,6 @@ class Lizmap:
             self.dlg.activateWindow()
             return False
 
-        all_tabs = self.check_dialog_validity()
-
         # QGIS Plugin manager
         qgis_plugin_manager = None
         if QGIS_PLUGIN_MANAGER:
@@ -3077,7 +3064,7 @@ class Lizmap:
         version_checker = VersionChecker(self.dlg, VERSION_URL)
         version_checker.fetch()
 
-        if not all_tabs:
+        if not self.check_dialog_validity():
             # Go back to the first panel because no project loaded.
             # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
             self.dlg.mOptionsListWidget.setCurrentRow(0)

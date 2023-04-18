@@ -399,6 +399,22 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Return boolean if a CFG file exists for the given project. """
         return self.cfg_file().exists()
 
+    def allow_navigation(self, allow_navigation: bool, message: str = ''):
+        """ Allow the navigation or not in the UI. """
+        for i in range(1, self.mOptionsListWidget.count()):
+            item = self.mOptionsListWidget.item(i)
+            if allow_navigation:
+                item.setFlags(item.flags() | Qt.ItemIsEnabled)
+            else:
+                item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
+
+        if allow_navigation:
+            self.project_valid.setVisible(False)
+            self.label_warning_project.setText('')
+        else:
+            self.project_valid.setVisible(True)
+            self.label_warning_project.setText(message)
+
     def activateWindow(self):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """
         self.check_project_thumbnail()

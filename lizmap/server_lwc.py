@@ -74,6 +74,9 @@ class Color(Enum):
     Normal = QColor("black")
 
 
+MAX_DAYS = 7
+
+
 class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
@@ -204,11 +207,11 @@ class ServerManager:
 
     @classmethod
     def clean_cache(cls, force=False):
-        """ Remove all files in the server cache directory older than 2 days. """
+        """ Remove all files in the server cache directory older than X days. """
         now = time.time()
         cache_dir = lizmap_user_folder().joinpath("cache_server_metadata")
         for item in cache_dir.glob('*'):
-            if os.stat(item).st_mtime < now - 2 * 86400:
+            if os.stat(item).st_mtime < now - MAX_DAYS * 86400:
                 item.unlink()
             elif force:
                 item.unlink()
