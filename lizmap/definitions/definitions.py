@@ -27,12 +27,12 @@ class LwcVersions(Enum):
         return NotImplemented
 
     @staticmethod
-    def list():
+    def as_list():
         return list(map(lambda c: c, LwcVersions))
 
     @staticmethod
     def latest():
-        return LwcVersions.list()[-1]
+        return LwcVersions.as_list()[-1]
 
     @classmethod
     def find(cls, version_string: str):

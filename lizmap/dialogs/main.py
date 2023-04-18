@@ -2,11 +2,14 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import logging
 import sys
+
+from pathlib import Path
 
 from qgis.core import Qgis, QgsApplication, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtGui import QIcon, QImageReader, QPixmap
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QLabel,
@@ -25,9 +28,10 @@ from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import STYLESHEET
-from lizmap.tools import format_qgis_version
+from lizmap.tools import format_qgis_version, human_size
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
+LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
@@ -66,6 +70,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
 
+        self.check_project_thumbnail()
         self.setup_icons()
 
     def check_api_key_address(self):
@@ -349,3 +354,53 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.gb_generalOptions.setStyleSheet(style)
         self.gb_interface.setStyleSheet(style)
         self.gb_baselayersOptions.setStyleSheet(style)
+
+    def check_project_thumbnail(self):
+        """ Check the project thumbnail and display the metadata. """
+        # Check the project image
+        # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
+        # Line 251
+        images_types = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']
+        images_types.extend([f.upper() for f in images_types])
+        tooltip = tr(
+            "You can add a file named {}.qgs.EXTENSION with one of the following extension : jpg, jpeg, png, gif."
+        ).format(self.project.baseName())
+        tooltip += '\n'
+        tooltip += tr('Lizmap Web Client 3.6 adds webp and avif formats.')
+        tooltip += '\n'
+        tooltip += tr('The width and height should be maximum 250x250px.')
+        tooltip += tr('The size should be ideally less than 50 KB for JPG, 150KB for PNG.')
+        tooltip += '\n'
+        tooltip += tr('You can use this online tool to optimize the size of the picture :')
+        tooltip += ' https://squoosh.app'
+        self.label_project_thumbnail.setToolTip(tooltip)
+        self.label_project_thumbnail.setOpenExternalLinks(True)
+
+        self.label_project_thumbnail.setText(tr("No thumbnail detected."))
+
+        if self.check_cfg_file_exists():
+            for test_file in images_types:
+                thumbnail = Path(f'{self.project.fileName()}.{test_file}')
+                if thumbnail.exists():
+                    image_size = QImageReader(str(thumbnail)).size()
+                    self.label_project_thumbnail.setText(
+                        tr("Thumbnail detected, {}x{}px, {}").format(
+                            image_size.width(),
+                            image_size.height(),
+                            human_size(thumbnail.stat().st_size))
+                    )
+                    break
+
+    def cfg_file(self) -> Path:
+        """ Return the path to the current CFG file. """
+        return Path(self.project.fileName() + '.cfg')
+
+    def check_cfg_file_exists(self) -> bool:
+        """ Return boolean if a CFG file exists for the given project. """
+        return self.cfg_file().exists()
+
+    def activateWindow(self):
+        """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """
+        self.check_project_thumbnail()
+        LOGGER.info("Opening the Lizmap dialog.")
+        super().activateWindow()

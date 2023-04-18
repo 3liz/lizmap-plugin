@@ -725,6 +725,9 @@ QListWidget::item::selected {
                     <property name="text">
                      <string notr="true">SET IN PYTHON</string>
                     </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                  </layout>

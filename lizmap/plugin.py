@@ -30,7 +30,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtGui import QImageReader
 from qgis.PyQt.QtWidgets import QLabel, QLineEdit
 
 from lizmap.dialogs.scroll_message_box import ScrollMessageBox
@@ -126,7 +125,6 @@ from lizmap.tools import (
     format_version_integer,
     get_layer_wms_parameters,
     has_git,
-    human_size,
     layer_property,
     lizmap_user_folder,
     next_git_tag,
@@ -1181,7 +1179,7 @@ class Lizmap:
         Populate the gui fields accordingly
         """
         json_options = {}
-        json_file = self.cfg_file()
+        json_file = self.dlg.cfg_file()
         if json_file.exists():
             with open(json_file, encoding='utf-8') as f:
                 json_file_reader = f.read()
@@ -1324,7 +1322,7 @@ class Lizmap:
 
         previous_config = 'lizmap_user' in self.project.customVariables().keys()
         # The variable is empty, but present
-        if previous_config and not self.check_cfg_file_exists():
+        if previous_config and not self.dlg.check_cfg_file_exists():
             # The variable 'lizmap_user' exists in the project as a variable
             # But no CFG was found, maybe the project has been renamed.
             message = tr(
@@ -1335,7 +1333,7 @@ class Lizmap:
             message += tr(
                 "However, we couldn't detect the Lizmap configuration file '{}' anymore. A new "
                 "configuration from scratch is used."
-            ).format(self.cfg_file())
+            ).format(self.dlg.cfg_file())
             message += '\n\n'
             message += tr(
                 'Did you rename this QGIS project file ? If you want to keep your previous configuration, you '
@@ -1501,19 +1499,11 @@ class Lizmap:
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
-    def cfg_file(self) -> Path:
-        """ Return the path to the current CFG file. """
-        return Path(self.project.fileName() + '.cfg')
-
-    def check_cfg_file_exists(self) -> bool:
-        """ Return boolean if a CFG file exists for the given project. """
-        return self.cfg_file().exists()
-
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
         Remove layers from tables when deleted from layer registry
         """
-        if not self.check_cfg_file_exists():
+        if not self.dlg.check_cfg_file_exists():
             return
 
         for key, item in self.layers_table.items():
@@ -1546,14 +1536,14 @@ class Lizmap:
 
     def layout_renamed(self, layout, new_name: str):
         """ When a layout has been renamed in the project. """
-        if not self.check_cfg_file_exists():
+        if not self.dlg.check_cfg_file_exists():
             return
 
         self.layers_table['layouts']['manager'].layout_renamed(layout, new_name)
 
     def layout_removed(self, name: str):
         """ When a layout has been removed from the project. """
-        if not self.check_cfg_file_exists():
+        if not self.dlg.check_cfg_file_exists():
             return
 
         self.layers_table['layouts']['manager'].layout_removed(name)
@@ -1810,10 +1800,10 @@ class Lizmap:
 
     def read_lizmap_config_file(self) -> dict:
         """ Read the CFG file and returns the JSON content. """
-        if not self.check_cfg_file_exists():
+        if not self.dlg.check_cfg_file_exists():
             return {}
 
-        with open(self.cfg_file(), encoding='utf8') as f:
+        with open(self.dlg.cfg_file(), encoding='utf8') as f:
             json_file_reader = f.read()
 
         # noinspection PyBroadException
@@ -2289,7 +2279,7 @@ class Lizmap:
         json_file_content += '\n'
 
         # Get the project data
-        json_file = self.cfg_file()
+        json_file = self.dlg.cfg_file()
         with open(json_file, 'w', encoding='utf8') as cfg_file:
             cfg_file.write(json_file_content)
 
@@ -3022,10 +3012,10 @@ class Lizmap:
         Read lizmap current cfg configuration
         and set the startup base-layer if found
         """
-        if not self.check_cfg_file_exists():
+        if not self.dlg.check_cfg_file_exists():
             return
 
-        with open(self.cfg_file(), encoding='utf8') as f:
+        with open(self.dlg.cfg_file(), encoding='utf8') as f:
             json_file_reader = f.read()
 
         # noinspection PyBroadException
@@ -3091,40 +3081,6 @@ class Lizmap:
             # Go back to the first panel because no project loaded.
             # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
             self.dlg.mOptionsListWidget.setCurrentRow(0)
-
-        # Check the project image
-        # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
-        # Line 251
-        images_types = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']
-        images_types.extend([f.upper() for f in images_types])
-        tooltip = tr(
-            "You can add a file named {}.qgs.EXTENSION with one of the following extension : jpg, jpeg, png, gif."
-        ).format(self.project.baseName())
-        tooltip += '\n'
-        tooltip += tr('Lizmap Web Client 3.6 adds webp and avif formats.')
-        tooltip += '\n'
-        tooltip += tr('The width and height should be maximum 250x250px.')
-        tooltip += tr('The size should be ideally less than 50 KB for JPG, 150KB for PNG.')
-        tooltip += '\n'
-        tooltip += tr('You can use this online tool to optimize the size of the picture :')
-        tooltip += ' https://squoosh.app'
-        self.dlg.label_project_thumbnail.setToolTip(tooltip)
-        self.dlg.label_project_thumbnail.setOpenExternalLinks(True)
-
-        if self.check_cfg_file_exists():
-            for test_file in images_types:
-                thumbnail = Path(f'{self.project.fileName()}.{test_file}')
-                if thumbnail.exists():
-                    image_size = QImageReader(str(thumbnail)).size()
-                    self.dlg.label_project_thumbnail.setText(
-                        tr("Thumbnail detected, {}x{}px, {}").format(
-                            image_size.width(),
-                            image_size.height(),
-                            human_size(thumbnail.stat().st_size))
-                    )
-                    break
-            else:
-                self.dlg.label_project_thumbnail.setText(tr("No thumbnail detected.") + '<br>' + tooltip)
 
         self.dlg.show()
 
