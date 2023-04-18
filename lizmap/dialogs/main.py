@@ -147,7 +147,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return version
 
         # This is temporary
-        return LwcVersions.Lizmap_3_2
+        return LwcVersions.latest()
 
     def current_repository(self) -> str:
         """ Fetch the current directory on the server if available. """

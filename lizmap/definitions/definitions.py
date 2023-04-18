@@ -26,6 +26,14 @@ class LwcVersions(Enum):
             return self.value < other.value
         return NotImplemented
 
+    @staticmethod
+    def list():
+        return list(map(lambda c: c, LwcVersions))
+
+    @staticmethod
+    def latest():
+        return LwcVersions.list()[-1]
+
     @classmethod
     def find(cls, version_string: str):
         """Return the LWC version for the given string."""
