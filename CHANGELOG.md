@@ -65,7 +65,7 @@
 ## 3.10.0 - 2023-01-17
 
 * Allow to open the first tab in Lizmap without a project, to be able to visit links, documentation
-* Fix the converter from Lizmap HTML popup to QGIS HTML popup when the alias/field has an underscore or other 
+* Fix the converter from Lizmap HTML popup to QGIS HTML popup when the alias/field has an underscore or other
   accented characters.
 * Add the Lizmap Web Client target version in the copy/paste text available on a server
 * New with Lizmap Web Client 3.6.1:

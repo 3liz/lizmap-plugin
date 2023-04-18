@@ -8,6 +8,6 @@ labels: 'Question'
 ## Description
 
 ## Context
-* QGIS version: 
+* QGIS version:
 * Lizmap version:
-* OS: 
+* OS:

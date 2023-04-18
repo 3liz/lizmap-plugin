@@ -13,3 +13,4 @@ pylint
 # pycodestyle
 # PyQt5
 # PyQt5-stubs
+pre-commit

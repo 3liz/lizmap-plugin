@@ -129,16 +129,16 @@ lizmap = plugins['lizmap']
 projects = Path(projects)
 project = QgsProject.instance()
 
-for i, qgs_file in enumerate(projects.glob('*.qgs')):    
+for i, qgs_file in enumerate(projects.glob('*.qgs')):
     print(f"Processing {i + 1} : {qgs_file.name}")
 
     if not project.read(str(qgs_file)):
         print(f'Error while reading the project : {qgs_file.name}')
         exit(1)
-    
+
     lizmap.read_cfg_file()
     lizmap.save_cfg_file(
-        lwc_version_target, 
+        lwc_version_target,
         save_project=False,
         with_gui=False,
     )
