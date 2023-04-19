@@ -4,7 +4,7 @@ SHELL:=bash
 
 QGIS_VERSION ?= release-3_16
 
-start_tests: env
+start_tests:
 	@echo 'Start docker compose'
 	@cd .docker && ./start.sh
 

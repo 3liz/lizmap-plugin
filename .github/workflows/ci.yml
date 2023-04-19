@@ -60,10 +60,10 @@ jobs:
           submodules: 'true'
 
       - name: Make env
-        run: cd .. && make env
+        run: cd .. && make env QGIS_VERSION=${{ matrix.qgis_version }}
 
       - name: Launching docker compose
-        run: ./start.sh QGIS_VERSION=${{ matrix.qgis_version }}
+        run: ./start.sh
 
       - name: Running tests
         run: ./exec.sh
