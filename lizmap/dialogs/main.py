@@ -7,16 +7,18 @@ import sys
 
 from pathlib import Path
 
-from qgis.core import Qgis, QgsApplication, QgsProject
+from qgis.core import Qgis, QgsApplication, QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QImageReader, QPixmap
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QLabel,
     QMessageBox,
+    QPushButton,
     QSizePolicy,
     QSpacerItem,
 )
+from qgis.utils import iface
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -128,22 +130,22 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return
 
         if qgis_server < qgis_desktop:
-            QMessageBox.warning(
-                self,
-                tr('QGIS server version is lower than QGIS desktop version'),
-                tr('Current QGIS server selected : ')
-                + '<b>{}.{}</b>'.format(qgis_server[0], qgis_server[1])
-                + "<br>"
-                + tr('Current QGIS desktop : ')
-                + '<b>{}.{}</b>'.format(qgis_desktop[0], qgis_desktop[1])
-                + "<br><br>"
-                + tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
-                + "<br>"
-                + tr(
+            title = tr('QGIS server version is lower than QGIS desktop version')
+            description = tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
+            more = tr('Current QGIS server selected : ')
+            more += '<b>{}.{}</b>'.format(qgis_server[0], qgis_server[1])
+            more += "<br>"
+            more += tr('Current QGIS desktop : ')
+            more += '<b>{}.{}</b>'.format(qgis_desktop[0], qgis_desktop[1])
+            more += "<br><br>"
+            more += tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
+            more += "<br>"
+            more += tr(
                     'You are strongly encouraged to upgrade your QGIS server. You will have issues when your QGIS '
-                    'server will read your QGS project made with this version of QGIS desktop.'),
-                QMessageBox.Ok
+                    'server will read your QGS project made with this version of QGIS desktop.'
             )
+            LOGGER.error(title)
+            self.display_message_bar(title, description, Qgis.Warning, more_details=more)
 
     def current_lwc_version(self) -> LwcVersions:
         """ Return the current LWC version from the server combobox. """
@@ -224,6 +226,56 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return
 
         self.repository_combo.setCurrentIndex(index)
+
+    def display_message_bar(
+            self,
+            title: str,
+            message: str = None,
+            level: Qgis.MessageLevel = Qgis.Info,
+            duration: int = None,
+            more_details: str = None,
+            open_logs: bool = False):
+        """Display a message.
+
+        :param title: Title of the message.
+        :type title: basestring
+
+        :param message: The message.
+        :type message: basestring
+
+        :param level: A QGIS error level.
+
+        :param duration: Duration in second.
+        :type duration: int
+
+        :param open_logs: If we need to add a button for the log panel.
+        :type open_logs: bool
+
+        :param more_details: The message to display in the "More button".
+        :type more_details: basestring
+        """
+        widget = self.message_bar.createMessage(title, message)
+
+        if more_details or open_logs:
+            # Adding the button
+            button = QPushButton(widget)
+            widget.layout().addWidget(button)
+
+            if open_logs:
+                button.setText(tr('Open log panel'))
+                # noinspection PyUnresolvedReferences
+                button.pressed.connect(
+                    lambda: iface.openMessageLog())
+            else:
+                button.setText(tr('More details'))
+                # noinspection PyUnresolvedReferences
+                button.pressed.connect(
+                    lambda: QMessageBox.information(None, title, more_details))
+
+        if duration is None:
+            duration = int(QgsSettings().value("qgis/messageTimeout", 5))
+
+        self.message_bar.pushWidget(widget, level, duration)
 
     def setup_icons(self):
         """ Setup icons in the left menu. """

@@ -219,18 +219,16 @@ QListWidget::item::selected {
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_33">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
+       <item>
+        <widget class="QgsMessageBar" name="message_bar">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="sizePolicy">
@@ -4345,6 +4343,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <class>HtmlEditorWidget</class>
    <extends>QWidget</extends>
    <header>lizmap.widgets.html_editor</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QFrame</extends>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

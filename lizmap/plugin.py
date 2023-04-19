@@ -672,7 +672,7 @@ class Lizmap:
             'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         if current_version != old_version:
             self.lwc_version_changed()
-        self.dlg.check_qgis_version()
+        # self.dlg.check_qgis_version()
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
