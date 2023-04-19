@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.12.0 - 2023-04-19
+
 * Check for space in the Lizmap URL before requesting metadata
 * Remove the target version dropdown menu, it will now use the server dropdown menu
 * The server must have a valid status before using the plugin
