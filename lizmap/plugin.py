@@ -30,6 +30,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QStorageInfo
 from qgis.PyQt.QtWidgets import QLabel, QLineEdit
 
 from lizmap.dialogs.scroll_message_box import ScrollMessageBox
@@ -2696,10 +2697,21 @@ class Lizmap:
                 "Your file name has some accents in its name. The project file name mustn't have accents in its name.")
             return False, message + base_message
 
+        message = tr(
+            "You mustn't open the QGS file located in your local webdav directory. Please open a local copy of the "
+            "project.")
+        # Windows
+        network_dav = []
+        for i in QStorageInfo.mountedVolumes():
+            # Mapping table between 'Z:/' and
+            # \\demo.snap.lizmap.com@SSL\DavWWWRoot\lizmap_3_6\dav.php\
+            if 'dav.php' in i.device().data().decode():
+                network_dav.append(i.rootPath())
+        if self.project.fileName().startswith(tuple(network_dav)):
+            return False, message + base_message
+
+        # Linux : /run/user/1000/gvfs/dav:host=...,ssl=true,....,prefix=%2Flizmap_3_6%2Fdav.php/...tests_projects/..qgs
         if 'dav.php' in self.project.fileName():
-            message = tr(
-                "You mustn't open the QGS file located in your local webdav directory. Please open a local copy of the "
-                "project.")
             return False, message + base_message
 
         # Check if Qgis/capitaliseLayerName is set
