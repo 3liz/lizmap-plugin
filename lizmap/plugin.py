@@ -267,6 +267,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
             self.dlg.label_layout_panel,
+            self.dlg.label_layout_panel_description,
             self.dlg.edit_layout_form_button,
             self.dlg.up_layout_form_button,
             self.dlg.down_layout_form_button,
