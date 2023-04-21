@@ -59,8 +59,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         config = lizmap.read_lizmap_config_file()
 
         lizmap.myDic = {}
-        root = project.layerTreeRoot()
-        lizmap.process_node(root, None, config)
+        lizmap.process_node(project.layerTreeRoot(), None, config)
         lizmap.layerList = lizmap.myDic
 
         self.assertEqual(
@@ -84,3 +83,36 @@ class TestUiLizmapDialog(unittest.TestCase):
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False, check_server=False)
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], 'False')
+
+    def test_lizmap_layer_acl(self):
+        """ Test apply a layer ACL in the dialog. """
+        project = QgsProject.instance()
+        project.read(plugin_test_data_path('legend_image_option.qgs'))
+
+        lizmap = Lizmap(get_iface())
+        config = lizmap.read_lizmap_config_file()
+
+        # Config is empty in the CFG file
+        self.assertListEqual(config['legend_disabled']['group_visibility'], [])
+
+        # Some process
+        lizmap.myDic = {}
+        lizmap.process_node(project.layerTreeRoot(), None, config)
+        lizmap.layerList = lizmap.myDic
+
+        # Click the layer
+        item = lizmap.dlg.layer_tree.topLevelItem(0)
+        self.assertEqual(item.text(0), 'legend_disabled')
+        self.assertEqual(item.text(1), 'legend_disabled_layer_id')
+        self.assertEqual(item.text(2), 'layer')
+        lizmap.dlg.layer_tree.setCurrentItem(lizmap.dlg.layer_tree.topLevelItem(0))
+
+        # Fill the field
+        lizmap.dlg.list_group_visibility.setText("a_group_id")
+
+        # Triggered automatically when editing is finished in the UI.
+        lizmap.save_value_layer_group_data('group_visibility')
+
+        # Check the new value
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False)
+        self.assertListEqual(output['layers']['legend_disabled']['group_visibility'], ['a_group_id'])

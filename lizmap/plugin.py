@@ -378,7 +378,7 @@ class Lizmap:
         self.dlg.gb_lizmapExternalBaselayers.setVisible(False)
 
         # Catch user interaction on layer tree and inputs
-        self.dlg.layer_tree.itemSelectionChanged.connect(self.setItemOptions)
+        self.dlg.layer_tree.itemSelectionChanged.connect(self.from_data_to_ui_for_layer_group)
 
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
@@ -420,7 +420,7 @@ class Lizmap:
         for key, item in self.layer_options_list.items():
             if item.get('widget'):
                 control = item['widget']
-                slot = partial(self.set_layer_property, key)
+                slot = partial(self.save_value_layer_group_data, key)
                 if item['wType'] in ('text', 'spinbox'):
                     control.editingFinished.connect(slot)
                 elif item['wType'] == 'textarea':
@@ -1074,6 +1074,8 @@ class Lizmap:
             return
         helper = tr("Setting groups for the layer visibility '{}'").format(layer.name())
         self._open_wizard_group(line_edit, helper)
+        # Trigger saving of the new value
+        self.save_value_layer_group_data('group_visibility')
 
     def open_wizard_group_project(self):
         """ Open the group wizard for the project visibility. """
@@ -1835,8 +1837,8 @@ class Lizmap:
         self.dlg.block_signals_address(False)
         self.enable_check_box(False)
 
-    def setItemOptions(self):
-        """Restore layer/group input values when selecting a layer tree item"""
+    def from_data_to_ui_for_layer_group(self):
+        """ Restore layer/group values into each field when selecting a layer in the tree. """
         # get the selected item
         item = self.dlg.layer_tree.currentItem()
         if item:
@@ -2017,9 +2019,10 @@ class Lizmap:
         data = [item.strip() for item in data]
         return data
 
-    def set_layer_property(self, key):
-        """Set a layer property in global self.layerList
-        when the corresponding ui widget has sent changed signal.
+    def save_value_layer_group_data(self, key: str):
+        """ Save the new value from the UI in the global layer property self.layerList.
+
+        Function called the corresponding UI widget has sent changed signal.
         """
         key = str(key)
         # get the selected item in the layer tree
