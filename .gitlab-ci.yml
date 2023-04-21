@@ -7,6 +7,10 @@ stages:
 - deploy 🚀
 
 version:
+  only:
+    - master
+  except:
+    - tags
   stage: tests 🎳
   image:
     name: $REGISTRY_URI/infra/ci-tools:latest
@@ -19,6 +23,10 @@ version:
       dotenv: build.env
 
 package-zip:
+  only:
+    - master
+  except:
+    - tags
   dependencies:
     - version
   stage: package 📦
@@ -39,6 +47,10 @@ package-zip:
       - plugins.xml
 
 push-zip:
+  only:
+    - master
+  except:
+    - tags
   dependencies:
     - version
     - package-zip
