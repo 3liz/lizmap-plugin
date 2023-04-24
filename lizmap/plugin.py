@@ -175,6 +175,7 @@ class Lizmap:
 
         self.dlg = LizmapDialog()
         self.version = version()
+        self.version_checker = None
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg.label_dev_version.setVisible(False)
         if self.is_dev_version:
@@ -2796,7 +2797,16 @@ class Lizmap:
         if not lwc_version:
             lwc_version = self.dlg.current_lwc_version()
 
+        defined_env_target = os.getenv('LIZMAP_TARGET_VERSION')
+        if defined_env_target:
+            LOGGER.warning("Version defined by environment variable : {}".format(defined_env_target))
+            lwc_version = LwcVersions.find(defined_env_target)
+
         lwc_version: LwcVersions
+
+        if self.version_checker:
+            # Maybe running from CLI tools about the version_checker object
+            self.version_checker.check_outdated_version(lwc_version, with_gui=with_gui)
 
         if not self.check_dialog_validity():
             LOGGER.debug("Leaving the dialog without valid project and/or server.")
@@ -3081,8 +3091,8 @@ class Lizmap:
             self.dlg.label_atlasprint_plugin.setVisible(False)
             self.dlg.label_qgis_server_plugins.setVisible(False)
 
-        version_checker = VersionChecker(self.dlg, VERSION_URL)
-        version_checker.fetch()
+        self.version_checker = VersionChecker(self.dlg, VERSION_URL)
+        self.version_checker.fetch()
 
         if not self.check_dialog_validity():
             # Go back to the first panel because no project loaded.

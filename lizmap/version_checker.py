@@ -9,7 +9,7 @@ from typing import Tuple
 
 from qgis.core import QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from lizmap.definitions.definitions import (
     LwcVersions,
@@ -20,6 +20,7 @@ from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
 
 LOGGER = logging.getLogger('Lizmap')
+DAYS_BEING_OUTDATED = 90
 
 
 class VersionChecker:
@@ -30,6 +31,11 @@ class VersionChecker:
         self.url = url
         self.fetcher = None
         self.json = None
+        self.date_oldest_release_branch = None
+        self.date_newest_release_branch = None
+        self.oldest_release_branche = None
+        self.newest_release_branch = None
+        self.outdated = []
 
     def fetch(self):
         """ Fetch the JSON file and call the function when it's finished. """
@@ -115,10 +121,46 @@ class VersionChecker:
                         date=date_string,
                     )
                     self.dialog.lwc_version_latest.setText(text)
+                    self.date_newest_release_branch = qdate
+                    self.newest_release_branch = json_version['latest_release_version']
                 elif i == 1:
                     text = template.format(
                         tag=json_version['latest_release_version'],
                         date=date_string,
                     )
                     self.dialog.lwc_version_oldest.setText(text)
+                    self.date_oldest_release_branch = qdate
+                    self.oldest_release_branche = json_version['latest_release_version']
                 i += 1
+            elif status == ReleaseStatus.Retired:
+                lwc_version = LwcVersions.find(json_version['branch'])
+                if qdate.daysTo(QDate.currentDate()) > DAYS_BEING_OUTDATED:
+                    self.outdated.append(lwc_version)
+
+    def check_outdated_version(self, lwc_version: LwcVersions, with_gui: True):
+        """ Display a warning about outdated LWC version. """
+        if lwc_version in self.outdated:
+            if with_gui or True:
+                msg = tr('Outdated branch of Lizmap Web Client')
+                msg += '<br><br>'
+                msg += tr(
+                    "This branch of Lizmap Web Client {} is already outdated for more than 90 days.").format(
+                    lwc_version.value)
+                msg += '<br><br>'
+                msg += tr(
+                    'We encourage you strongly to upgrade to the latest {} or {} as soon as possible. A possible '
+                    'update of the plugin in a few months will remove the support for writing CFG file to this '
+                    'version.'.format(self.newest_release_branch, self.oldest_release_branche)
+                )
+                QMessageBox.warning(
+                    self.dialog, tr('Outdated branch of Lizmap Web Client'), msg, QMessageBox.Ok)
+            else:
+                LOGGER.warning(
+                    "This branch of Lizmap Web Client {} is already outdated for more than 90 days. We encourage you "
+                    "to upgrade to the latest {} or {}. A possible update of the plugin in a few months will remove "
+                    "the support for writing CFG file to this version".format(
+                        lwc_version.value,
+                        self.newest_release_branch,
+                        self.oldest_release_branche
+                    )
+                )
