@@ -9,6 +9,7 @@ from qgis.testing.mocked import get_iface
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.plugin import Lizmap
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.test.utils import temporary_file_path
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
@@ -84,35 +85,42 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], 'False')
 
-    def test_lizmap_layer_acl(self):
-        """ Test apply a layer ACL in the dialog. """
+    def test_lizmap_layer_properties(self):
+        """ Test apply some properties in a layer in the dialog. """
         project = QgsProject.instance()
-        project.read(plugin_test_data_path('legend_image_option.qgs'))
+        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        project.addMapLayer(layer)
+        project.setFileName(temporary_file_path())
 
         lizmap = Lizmap(get_iface())
         config = lizmap.read_lizmap_config_file()
 
-        # Config is empty in the CFG file
-        self.assertListEqual(config['legend_disabled']['group_visibility'], [])
+        # Config is empty in the CFG file because it's a new project
+        self.assertDictEqual({}, config)
 
         # Some process
         lizmap.myDic = {}
-        lizmap.process_node(project.layerTreeRoot(), None, config)
+        lizmap.process_node(project.layerTreeRoot(), None, {})
         lizmap.layerList = lizmap.myDic
 
         # Click the layer
         item = lizmap.dlg.layer_tree.topLevelItem(0)
-        self.assertEqual(item.text(0), 'legend_disabled')
-        self.assertEqual(item.text(1), 'legend_disabled_layer_id')
+        self.assertEqual(item.text(0), 'lines')
+        self.assertTrue(item.text(1).startswith('lines_'))
         self.assertEqual(item.text(2), 'layer')
         lizmap.dlg.layer_tree.setCurrentItem(lizmap.dlg.layer_tree.topLevelItem(0))
 
-        # Fill the field
-        lizmap.dlg.list_group_visibility.setText("a_group_id")
-
-        # Triggered automatically when editing is finished in the UI.
+        # Fill the ACL field
+        acl_layer = "a_group_id"
+        lizmap.dlg.list_group_visibility.setText(acl_layer)
         lizmap.save_value_layer_group_data('group_visibility')
 
-        # Check the new value
-        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False)
-        self.assertListEqual(output['layers']['legend_disabled']['group_visibility'], ['a_group_id'])
+        # Fill the abstract field
+        html_abstract = "<strong>Hello</strong>"
+        lizmap.dlg.teLayerAbstract.setPlainText(html_abstract)
+        lizmap.save_value_layer_group_data('abstract')
+
+        # Check new values in the output config
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        self.assertListEqual(output['layers']['lines']['group_visibility'], [acl_layer])
+        self.assertEqual(output['layers']['lines']['abstract'], html_abstract)
