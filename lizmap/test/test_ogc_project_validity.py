@@ -13,6 +13,7 @@ from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 class TestShortNames(unittest.TestCase):
 
     def tearDown(self) -> None:
+        # noinspection PyArgumentList
         QgsProject.instance().clear()
 
     def test_shortname_generation(self):
@@ -54,10 +55,27 @@ class TestShortNames(unittest.TestCase):
         project.read(project_file)
 
         validator = OgcProjectValidity(project)
-        self.assertListEqual(validator.existing_shortnames(), ['lines-1', 'sub-group'])
+        # There are duplicated shortname in the project by default
+        existing, duplicated = validator.existing_shortnames()
+        self.assertListEqual(
+            existing,
+            ['lines-1', 'sub-group', 'duplicated-layer', 'duplicated-layer']
+        )
+        self.assertListEqual(
+            duplicated,
+            ['duplicated-layer']
+        )
 
         validator.add_shortnames()
-        self.assertListEqual(validator.existing_shortnames(), ['lines-1', 'lines-1_1', 'group-1', 'sub-group', 'lines-2'])
+        existing, duplicated = validator.existing_shortnames()
+        self.assertListEqual(
+            existing,
+            ['lines-1', 'lines-1_1', 'group-1', 'sub-group', 'lines-2', 'duplicated-layer_1', 'duplicated-layer_2']
+        )
+        self.assertListEqual(
+            duplicated,
+            []
+        )
 
         # Project short name
         self.assertEqual("", project.readEntry("WMSRootName", "/", "")[0])
