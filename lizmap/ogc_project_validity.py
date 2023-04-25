@@ -4,9 +4,7 @@ __email__ = 'info@3liz.org'
 
 import collections
 import logging
-import random
 import re
-import string
 
 from typing import List, Tuple
 
@@ -18,7 +16,7 @@ from qgis.core import (
     QgsProject,
 )
 
-from lizmap.tools import unaccent
+from lizmap.tools import random_string, unaccent
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -123,7 +121,7 @@ class OgcProjectValidity:
 
         if len(layer_short_name) == 0:
             # No more chars left, let's add some
-            layer_short_name = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
+            layer_short_name = random_string(5)
 
         if layer_short_name[0].isdigit():
             layer_short_name = '{}_{}'.format(prefix, layer_short_name)

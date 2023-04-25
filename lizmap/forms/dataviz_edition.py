@@ -52,6 +52,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('only_show_child', self.only_show_child)
         self.config.add_layer_widget('display_legend', self.display_legend)
         self.config.add_layer_widget('display_when_layer_visible', self.display_when_layer_visible)
+        self.config.add_layer_widget('uuid', self.uuid)
 
         self.config.add_layer_label('title', self.label_title)
         self.config.add_layer_label('title_popup', self.label_title_popup)
@@ -63,6 +64,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('traces', self.label_traces)
         self.config.add_layer_label('html_template', self.label_html_template)
         self.config.add_layer_label('html_template', self.label_layout)
+        self.config.add_layer_label('uuid', self.label_uuid)
 
         # noinspection PyCallByClass,PyArgumentList
         self.add_trace.setText('')

@@ -2,14 +2,23 @@
 
 from enum import Enum, unique
 
+from qgis.core import QgsVectorLayer
+
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.tools import random_string
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+
+
+def generate_uuid(layer: QgsVectorLayer, plot_type: str) -> str:
+    """ Generate a UUID for the given layer. """
+    uuid = '{}_plot_{}_{}'.format(layer.name(), plot_type, random_string())
+    return uuid
 
 
 @unique
@@ -292,7 +301,9 @@ class DatavizDefinitions(BaseDefinitions):
             'type': InputType.CheckBox,
             'header': tr('Only show child'),
             'default': False,
-            'tooltip': tr('The main graph will not be shown in the main container and only the filtered graph of the relation of the layer will be displayed in the popup when you select the element.')
+            'tooltip': tr(
+                'The main graph will not be shown in the main container and only the filtered graph of the relation of '
+                'the layer will be displayed in the popup when you select the element.')
         }
         self._layer_config['display_legend'] = {
             'type': InputType.CheckBox,
@@ -309,6 +320,14 @@ class DatavizDefinitions(BaseDefinitions):
                 'If checked, the chart will be shown only if the source layer is visible in the map (checked '
                 'in the legend panel)'),
             'version': LwcVersions.Lizmap_3_4,
+        }
+        self._layer_config['uuid'] = {
+            'type': InputType.Text,
+            'header': tr('UUID'),
+            'tooltip': tr('The UUID of the plot'),
+            'default': generate_uuid,
+            'read_only': True,
+            'visible': False,
         }
 
         self._general_config['datavizLocation'] = {

@@ -1,5 +1,5 @@
 """Table manager."""
-
+import inspect
 import json
 import logging
 import os
@@ -71,6 +71,8 @@ class TableManager:
             if tooltip:
                 column.setToolTip(tooltip)
             self.table.setHorizontalHeaderItem(i, column)
+            if not item.get('visible', True):
+                self.table.setColumnHidden(i, True)
 
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -224,8 +226,12 @@ class TableManager:
 
             if self._layer and hasattr(value, '__call__'):
                 # Value is a for now a function, we need to evaluate it
-                # We assume for now we only use the QgsVectorLayer for the input
-                value = value(self._layer)
+                sig = inspect.signature(value)
+                if 'plot_type' in [i for i in sig.parameters]:
+                    # TODO fixme for dataviz
+                    value = value(self._layer, data.get('type'))
+                else:
+                    value = value(self._layer)
 
             if input_type == InputType.Layer:
                 layer = self.project.mapLayer(value)
@@ -557,9 +563,15 @@ class TableManager:
                 is_read_only = self.definitions.layer_config[key].get('read_only', False)
                 if default_value is not None and hasattr(default_value, '__call__') and is_read_only:
                     # Value is a for now a function, we need to evaluate it
-                    # We assume for now we only use the QgsVectorLayer for the input
                     vector_layer = self.project.mapLayer(layer_data['layerId'])
-                    layer_data[key] = default_value(vector_layer)
+                    # TODO to make it future proof by inspecting parameters etc
+                    # We assume for now we use the QgsVectorLayer for the input and optional dataviz type
+                    sig = inspect.signature(default_value)
+                    if 'plot_type' in [i for i in sig.parameters]:
+                        # hack, only for dataviz UUID
+                        layer_data[key] = default_value(vector_layer, layer_data['type'])
+                    else:
+                        layer_data[key] = default_value(vector_layer)
 
                     if isinstance(layer_data[key], bool):
                         if not self.definitions.layer_config[key].get('use_json', False):

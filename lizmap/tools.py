@@ -3,7 +3,9 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import os
+import random
 import re
+import string
 import subprocess
 import unicodedata
 import urllib.parse
@@ -68,6 +70,11 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
         return layer.dataUrl()
     else:
         raise NotImplementedError
+
+
+def random_string(length: int = 5) -> str:
+    """ Generate a random string with the given length. """
+    return ''.join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
 def format_qgis_version(qgis_version) -> tuple:

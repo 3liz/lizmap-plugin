@@ -319,7 +319,7 @@ class TestTableManager(unittest.TestCase):
         expected = [
             'type', 'title', 'title_popup', 'description', 'layerId', 'x_field', 'aggregation',
             'traces', 'html_template', 'layout', 'popup_display_child_plot', 'trigger_filter', 'stacked',
-            'horizontal', 'only_show_child', 'display_legend', 'display_when_layer_visible',
+            'horizontal', 'only_show_child', 'display_legend', 'display_when_layer_visible', 'uuid',
         ]
         self.assertListEqual(expected, table_manager.keys)
 
@@ -492,6 +492,7 @@ class TestTableManager(unittest.TestCase):
         }
         expected_traces = expected['0'].pop('traces')
         data_traces = data['0'].pop('traces')
+        del data['0']['uuid']
         self.assertDictEqual(data, expected)
         for exp, got in zip(expected_traces, data_traces):
             self.assertDictEqual(exp, got)
@@ -522,6 +523,7 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             }
         }
+        del data['0']['uuid']
         self.assertDictEqual(data, expected)
 
     def test_dataviz_legacy_3_3_with_2_traces(self):
@@ -640,6 +642,7 @@ class TestTableManager(unittest.TestCase):
         }
         expected_traces = expected['0'].pop('traces')
         data_traces = data['0'].pop('traces')
+        del data['0']['uuid']
         self.assertDictEqual(data, expected)
         for exp, got in zip(expected_traces, data_traces):
             self.assertDictEqual(exp, got)
@@ -669,6 +672,7 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             }
         }
+        del data['0']['uuid']
         self.assertDictEqual(data, expected)
 
     def test_dataviz_box(self):
@@ -736,6 +740,8 @@ class TestTableManager(unittest.TestCase):
                 'order': 0
             }
         }
+        self.assertTrue('_plot_' in data['0']['uuid'])
+        del data['0']['uuid']
         self.assertDictEqual(data, expected)
 
     def test_dataviz(self):
