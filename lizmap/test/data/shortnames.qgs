@@ -41,11 +41,9 @@
       </customproperties>
       <layer-tree-group groupLayer="" checked="Qt::Checked" expanded="1" name="sub-group1-shortname">
         <customproperties>
-          <Option type="Map">
-            <Option type="QString" value="" name="wmsAbstract"/>
-            <Option type="QString" value="sub-group" name="wmsShortName"/>
-            <Option type="QString" value="" name="wmsTitle"/>
-          </Option>
+          <property key="wmsAbstract" value=""/>
+          <property key="wmsShortName" value="sub-group"/>
+          <property key="wmsTitle" value=""/>
         </customproperties>
         <layer-tree-layer checked="Qt::Unchecked" patch_size="-1,-1" providerKey="ogr" source="./lines.geojson" legend_split_behavior="0" expanded="1" name="lines-2" id="lines_1_2e63e109_924d_47ea_aadd_6e9bc66abc3f" legend_exp="">
           <customproperties>
