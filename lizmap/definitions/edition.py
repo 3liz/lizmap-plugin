@@ -124,6 +124,7 @@ class EditionDefinitions(BaseDefinitions):
             'header': tr('Provider name'),
             'tooltip': tr('Provider name, read only field.'),
             'version': LwcVersions.Lizmap_3_3,
+            'visible': False,
         }
 
     @staticmethod
