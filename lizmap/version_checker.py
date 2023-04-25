@@ -144,8 +144,8 @@ class VersionChecker:
                 msg = tr('Outdated branch of Lizmap Web Client')
                 msg += '<br><br>'
                 msg += tr(
-                    "This branch of Lizmap Web Client {} is already outdated for more than 90 days.").format(
-                    lwc_version.value)
+                    "This branch of Lizmap Web Client {} is already outdated for more than {} days.").format(
+                    lwc_version.value, DAYS_BEING_OUTDATED)
                 msg += '<br><br>'
                 msg += tr(
                     'We encourage you strongly to upgrade to the latest {} or {} as soon as possible. A possible '
@@ -156,10 +156,11 @@ class VersionChecker:
                     self.dialog, tr('Outdated branch of Lizmap Web Client'), msg, QMessageBox.Ok)
             else:
                 LOGGER.warning(
-                    "This branch of Lizmap Web Client {} is already outdated for more than 90 days. We encourage you "
+                    "This branch of Lizmap Web Client {} is already outdated for more than {} days. We encourage you "
                     "to upgrade to the latest {} or {}. A possible update of the plugin in a few months will remove "
                     "the support for writing CFG file to this version".format(
                         lwc_version.value,
+                        DAYS_BEING_OUTDATED,
                         self.newest_release_branch,
                         self.oldest_release_branche
                     )
