@@ -299,12 +299,12 @@
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>HtmlEditorWidget</class>
