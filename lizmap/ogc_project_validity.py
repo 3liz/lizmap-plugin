@@ -9,7 +9,13 @@ import string
 
 from typing import List
 
-from qgis.core import QgsLayerTree, QgsProject
+from qgis.core import (
+    QgsLayerTree,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
+    QgsLayerTreeNode,
+    QgsProject,
+)
 
 from lizmap.tools import unaccent
 
@@ -23,33 +29,37 @@ class OgcProjectValidity:
     def __init__(self, project: QgsProject):
         """ Constructor. """
         self.project = project
-        self.shortnames_added = []
+        self.new_shortnames_added = []
 
     def add_shortnames(self):
         """ Add shortnames on all layer and groups. """
         existing = self.existing_shortnames()
         layer_tree = self.project.layerTreeRoot()
         self._add_all_shortnames(layer_tree, existing)
-        LOGGER.info(f"New shortnames added : {len(self.shortnames_added)}")
+        LOGGER.info(f"New shortnames added : {len(self.new_shortnames_added)}")
 
-    def _add_all_shortnames(self, layer_tree: QgsLayerTree, existing_shortnames):
+    def _add_all_shortnames(self, layer_tree: QgsLayerTreeNode, existing_shortnames):
         """ Recursive function to add shortnames. """
         for child in layer_tree.children():
+            # noinspection PyArgumentList
             if QgsLayerTree.isLayer(child):
+                child: QgsLayerTreeLayer
                 layer = self.project.mapLayer(child.layerId())
-                if not layer.shortName():
+                short_name = layer.shortName()
+                if not short_name:
                     new_shortname = self.short_name(layer.name(), existing_shortnames)
                     existing_shortnames.append(new_shortname)
                     layer.setShortName(new_shortname)
                     LOGGER.info(f"New shortname added on layer '{layer.name()}' : {new_shortname}")
-                    self.shortnames_added.append(new_shortname)
+                    self.new_shortnames_added.append(new_shortname)
             else:
+                child: QgsLayerTreeGroup
                 if not child.customProperty("wmsShortName"):
                     new_shortname = self.short_name(child.name(), existing_shortnames)
                     existing_shortnames.append(new_shortname)
                     child.setCustomProperty("wmsShortName", new_shortname)
                     LOGGER.info(f"New shortname added on group '{child.name()}' : {new_shortname}")
-                    self.shortnames_added.append(new_shortname)
+                    self.new_shortnames_added.append(new_shortname)
                 self._add_all_shortnames(child, existing_shortnames)
 
     def existing_shortnames(self) -> List[str]:
@@ -59,14 +69,17 @@ class OgcProjectValidity:
         LOGGER.info('Existing shortnames detected before in project : ' + ', '.join(existing))
         return existing
 
-    def _read_all_shortnames(self, group: QgsLayerTree, existing_shortnames: List[str]) -> List[str]:
+    def _read_all_shortnames(self, group: QgsLayerTreeNode, existing_shortnames: List[str]) -> List[str]:
         """ Recursive function to fetch all shortnames. """
         for child in group.children():
+            # noinspection PyArgumentList
             if QgsLayerTree.isLayer(child):
+                child: QgsLayerTreeLayer
                 layer = self.project.mapLayer(child.layerId())
                 if layer.shortName():
                     existing_shortnames.append(layer.shortName())
             else:
+                child: QgsLayerTreeGroup
                 group_shortname = child.customProperty("wmsShortName")
                 if group_shortname:
                     existing_shortnames.append(group_shortname)
