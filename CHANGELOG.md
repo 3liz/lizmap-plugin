@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+* Improve the server dropdown menu and server metadata
+* Display the message bar if the branch of Lizmap Web Client is outdated
+* Fix shortname generation when the layer has been duplicated in the project
+* Fix saving the output of the group wizard
+* Fix wrong warning about previous QGS project file without finding the Lizmap CFG file
+* Hide the provider type from the user interface for edition layers
+* Improve unittests of the plugin from QGIS 3.10 to the latest QGIS
+
 ## 3.12.0 - 2023-04-19
 
 * Check for space in the Lizmap URL before requesting metadata
