@@ -7,8 +7,10 @@
 * Fix shortname generation when the layer has been duplicated in the project
 * Fix saving the output of the group wizard
 * Fix wrong warning about previous QGS project file without finding the Lizmap CFG file
+* Fix opening the Lizmap popup dialog
 * Hide the provider type from the user interface for edition layers
 * Improve unittests of the plugin from QGIS 3.10 to the latest QGIS
+* Under the hood cleanup in Python files
 
 ## 3.12.0 - 2023-04-19
 

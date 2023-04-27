@@ -49,7 +49,7 @@ from lizmap.dialogs.server_form import LizmapServerInfoForm
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.saas import is_lizmap_dot_com_hosting
-from lizmap.tools import lizmap_user_folder, to_bool
+from lizmap.tools import lizmap_user_folder, qgis_version, to_bool
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -1144,7 +1144,7 @@ class ServerManager:
                 config.setConfig('password', password)
                 config.setConfig('realm', QUrl(url).host())
 
-                if Qgis.QGIS_VERSION_INT < 320000:
+                if qgis_version() < 320000:
                     auth_manager.removeAuthenticationConfig(auth_id)
                     result = auth_manager.storeAuthenticationConfig(config)
                 else:

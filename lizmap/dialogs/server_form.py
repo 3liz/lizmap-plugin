@@ -9,7 +9,6 @@ from base64 import b64encode
 from typing import Tuple
 
 from qgis.core import (
-    Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
     QgsBlockingNetworkRequest,
@@ -21,6 +20,7 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.tools import qgis_version
 
 FORM_CLASS = load_ui('ui_form_server.ui')
 LOGGER = logging.getLogger('Lizmap')
@@ -183,7 +183,7 @@ class LizmapServerInfoForm(QDialog, FORM_CLASS):
         if self.auth_id:
             # Edit
             config.setId(self.auth_id)
-            if Qgis.QGIS_VERSION_INT < 32000:
+            if qgis_version() < 32000:
                 self.auth_manager.removeAuthenticationConfig(self.auth_id)
                 result = self.auth_manager.storeAuthenticationConfig(config)
             else:

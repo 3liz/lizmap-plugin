@@ -5,7 +5,6 @@ import logging
 from typing import Optional
 
 from qgis.core import (
-    Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
     QgsBlockingNetworkRequest,
@@ -33,7 +32,7 @@ from lizmap.qgis_plugin_tools.tools.resources import (
     resources_path,
 )
 from lizmap.table_manager.base import TableManager
-from lizmap.tools import merge_strings, to_bool
+from lizmap.tools import merge_strings, qgis_version, to_bool
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -64,7 +63,7 @@ class TableManagerDataviz(TableManager):
 
         self.table.itemSelectionChanged.connect(self.preview_dataviz_dialog)
 
-        if Qgis.QGIS_VERSION_INT >= 31400:
+        if qgis_version() >= 31400:
             self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
             self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
 
@@ -98,7 +97,7 @@ class TableManagerDataviz(TableManager):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return
 
-        # QGIS_VERSION_INT < 3.14
+        # qgis_version() < 3.14
         if isinstance(self.parent.dataviz_feature_picker, QLabel):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return

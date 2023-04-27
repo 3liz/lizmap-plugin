@@ -2,6 +2,8 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import sys
+
 # Both colors MUST be synchronized
 NEW_FEATURE_COLOR = '#aaffff'
 NEW_FEATURE_CSS = 'background-color:rgb(170, 255, 255);'
@@ -22,3 +24,12 @@ QGroupBox {{
     margin-top: {}ex;
 }}
 ''')
+
+if sys.platform.startswith('win'):
+    style = ['0', '0', '0', '5%']
+    margin = '4.0'
+else:
+    style = ['225', '225', '225', '90%']
+    margin = '2.5'
+
+COMPLETE_STYLE_SHEET = STYLESHEET.format(*style, margin)

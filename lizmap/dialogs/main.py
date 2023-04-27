@@ -3,7 +3,6 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import logging
-import sys
 
 from pathlib import Path
 from typing import Optional
@@ -30,8 +29,8 @@ except ModuleNotFoundError:
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
-from lizmap.qt_style_sheets import STYLESHEET
-from lizmap.tools import format_qgis_version, human_size
+from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
+from lizmap.tools import format_qgis_version, human_size, qgis_version
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
 LOGGER = logging.getLogger("Lizmap")
@@ -56,7 +55,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.dataviz_viewer = QLabel(tr('You must install Qt Webkit to enable this feature.'))
         self.html_content.layout().addWidget(self.dataviz_viewer)
 
-        if Qgis.QGIS_VERSION_INT >= 31400:
+        if qgis_version() >= 31400:
             from qgis.gui import QgsFeaturePickerWidget
             self.dataviz_feature_picker = QgsFeaturePickerWidget()
         else:
@@ -119,7 +118,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def check_qgis_version(self):
         """ Compare QGIS desktop and server versions. """
-        current = format_qgis_version(Qgis.QGIS_VERSION_INT)
+        current = format_qgis_version(qgis_version())
         qgis_desktop = (current[0], current[1])
 
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
@@ -411,26 +410,18 @@ class LizmapDialog(QDialog, FORM_CLASS):
         i += 1
 
         # Set stylesheet for QGroupBox
-        if sys.platform.startswith('win'):
-            style = ['0', '0', '0', '5%']
-            margin = '4.0'
-        else:
-            style = ['225', '225', '225', '90%']
-            margin = '2.5'
-        style = STYLESHEET.format(*style, margin)
-
-        self.gb_tree.setStyleSheet(style)
-        self.gb_layerSettings.setStyleSheet(style)
-        self.gb_ftp.setStyleSheet(style)
-        self.gb_project_thumbnail.setStyleSheet(style)
-        self.gb_visibleTools.setStyleSheet(style)
-        self.gb_Scales.setStyleSheet(style)
-        self.gb_extent.setStyleSheet(style)
-        self.gb_externalLayers.setStyleSheet(style)
-        self.gb_lizmapExternalBaselayers.setStyleSheet(style)
-        self.gb_generalOptions.setStyleSheet(style)
-        self.gb_interface.setStyleSheet(style)
-        self.gb_baselayersOptions.setStyleSheet(style)
+        self.gb_tree.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_layerSettings.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_ftp.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_project_thumbnail.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_visibleTools.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_Scales.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_extent.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_externalLayers.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_lizmapExternalBaselayers.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_generalOptions.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_interface.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.gb_baselayersOptions.setStyleSheet(COMPLETE_STYLE_SHEET)
 
     def check_project_thumbnail(self):
         """ Check the project thumbnail and display the metadata. """

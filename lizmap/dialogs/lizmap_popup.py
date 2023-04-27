@@ -5,13 +5,14 @@ __email__ = 'info@3liz.org'
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
 
 FORM_CLASS = load_ui('ui_lizmap_popup.ui')
 
 
 class LizmapPopupDialog(QDialog, FORM_CLASS):
 
-    def __init__(self, style_sheet, content):
+    def __init__(self, content):
         QDialog.__init__(self)
         self.setupUi(self)
 
@@ -20,8 +21,8 @@ class LizmapPopupDialog(QDialog, FORM_CLASS):
         cancel_button = self.bbConfigurePopup.button(QDialogButtonBox.Cancel)
         cancel_button.clicked.connect(self.reject)
 
-        self.groupBox.setStyleSheet(style_sheet)
-        self.groupBox_2.setStyleSheet(style_sheet)
+        self.groupBox.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.groupBox_2.setStyleSheet(COMPLETE_STYLE_SHEET)
         self.txtPopup.textChanged.connect(self.update_html)
 
         self.txtPopup.setText(content)

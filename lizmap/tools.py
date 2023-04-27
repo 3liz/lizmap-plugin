@@ -14,6 +14,7 @@ from os.path import abspath, join
 from pathlib import Path
 from typing import List, Tuple, Union
 
+from qgis._core import Qgis
 from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QDir
 
@@ -60,8 +61,18 @@ def is_database_layer(layer) -> bool:
     return False
 
 
-def human_size(byte_size, units=[' bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']):
+def qgis_version():
+    """ Return the QGIS version as integers. """
+    # The API has changed in QGIS 3.12
+    # Use the function layer
+    # noinspection PyUnresolvedReferences
+    return Qgis.QGIS_VERSION_INT
+
+
+def human_size(byte_size, units=None):
     """ Returns a human-readable string representation of bytes """
+    if not units:
+        units = [' bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']
     return str(byte_size) + units[0] if byte_size < 1024 else human_size(byte_size >> 10, units[1:])
 
 
