@@ -50,7 +50,16 @@ class VersionChecker:
             return
 
         # Update the UI
-        released_versions = json.loads(content)
+        try:
+            released_versions = json.loads(content)
+        except json.JSONDecodeError:
+            # Issue reported by rldhont by mail
+            LOGGER.error(
+                "Error while reading the JSON file from Lizmap Web Client main repository, check the content with the "
+                "QGIS debug panel"
+            )
+            return
+
         self.update_lwc_releases(released_versions)
         self.update_lwc_servers(released_versions)
 
