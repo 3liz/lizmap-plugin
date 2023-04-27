@@ -453,7 +453,7 @@ class BaseEditionDialog(QDialog):
     def open_wizard_dialog(self, helper: str):
         """ Internal function to open the wizard ACL. """
         # Duplicated in plugin.py, _open_wizard_group()
-        json_metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        json_metadata = self.parent.current_server_info(ServerComboData.JsonMetadata.value)
         acl = json_metadata.get('acl')
         if not acl:
             # noinspection PyArgumentList

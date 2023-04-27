@@ -90,5 +90,5 @@ class ServerComboData(Enum):
     AuthId = Qt.UserRole  # String with the authentication ID
     ServerUrl = Qt.UserRole + 1  # String with the server URL
     JsonMetadata = Qt.UserRole + 2  # JSON from the server, raw
-    LwcVersion = Qt.UserRole + 3  # Enum item with the LWC version
+    # LwcVersion = Qt.UserRole + 3  # Enum item with the LWC version
     LwcBranchStatus = Qt.UserRole + 4  # Enum item about the release status at that time.

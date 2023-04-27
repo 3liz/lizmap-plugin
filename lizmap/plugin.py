@@ -35,6 +35,7 @@ from qgis.PyQt.QtWidgets import QLabel, QLineEdit
 
 from lizmap.dialogs.scroll_message_box import ScrollMessageBox
 
+# noinspection PyUnresolvedReferences
 if Qgis.QGIS_VERSION_INT >= 31400:
     from qgis.core import QgsProjectServerValidator
 
@@ -145,6 +146,7 @@ class Lizmap:
 
     def __init__(self, iface):
         """Constructor of the Lizmap plugin."""
+        LOGGER.info("Plugin starting")
         self.iface = iface
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
@@ -477,7 +479,6 @@ class Lizmap:
             self.dlg.refresh_versions_button,
             self.dlg.move_up_server_button,
             self.dlg.move_down_server_button,
-            self.dlg.server_combo,
             self.check_dialog_validity,
         )
         # Debug
@@ -651,7 +652,8 @@ class Lizmap:
                 box.setWindowTitle(tr('Project has been renamed'))
                 box.setText(tr(
                     'The previous project located at "{}" was associated to a Lizmap configuration. '
-                    'Do you want to copy the previous Lizmap configuration file to this new project ?').format(self.current_path))
+                    'Do you want to copy the previous Lizmap configuration file to this new project ?'
+                ).format(self.current_path))
                 box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                 box.setDefaultButton(QMessageBox.No)
                 result = box.exec_()
@@ -757,6 +759,7 @@ class Lizmap:
     # noinspection PyPep8Naming
     def initGui(self):
         """Create action that will start plugin configuration"""
+        LOGGER.debug("Plugin starting in the initGui")
         icon = QIcon(resources_path('icons', 'icon.png'))
         self.action = QAction(icon, 'Lizmap', self.iface.mainWindow())
 
@@ -1316,34 +1319,35 @@ class Lizmap:
         out = '' if json_file.exists() else 'out'
         LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
 
-        # Manage lizmap_user project variable
-        variables = self.project.customVariables()
-        if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists():
-            # The variable 'lizmap_user' exists in the project as a variable
-            # But no CFG was found, maybe the project has been renamed.
-            message = tr(
-                'We have detected that this QGIS project has been used before with the Lizmap plugin (due to the '
-                'variable "lizmap_user" in your project properties dialog).'
-            )
-            message += '\n\n'
-            message += tr(
-                "However, we couldn't detect the Lizmap configuration file '{}' anymore. A new "
-                "configuration from scratch is used."
-            ).format(self.dlg.cfg_file())
-            message += '\n\n'
-            message += tr(
-                'Did you rename this QGIS project file ? If you want to keep your previous configuration, you '
-                'should find your previous Lizmap CFG file and use the path above. Lizmap will load it.'
-            )
-            QMessageBox.warning(
-                self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
+        if self.project.fileName().lower().endswith('qgs'):
+            # Manage lizmap_user project variable
+            variables = self.project.customVariables()
+            if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists():
+                # The variable 'lizmap_user' exists in the project as a variable
+                # But no CFG was found, maybe the project has been renamed.
+                message = tr(
+                    'We have detected that this QGIS project has been used before with the Lizmap plugin (due to the '
+                    'variable "lizmap_user" in your project properties dialog).'
+                )
+                message += '\n\n'
+                message += tr(
+                    "However, we couldn't detect the Lizmap configuration file '{}' anymore. A new "
+                    "configuration from scratch is used."
+                ).format(self.dlg.cfg_file())
+                message += '\n\n'
+                message += tr(
+                    'Did you rename this QGIS project file ? If you want to keep your previous configuration, you '
+                    'should find your previous Lizmap CFG file and use the path above. Lizmap will load it.'
+                )
+                QMessageBox.warning(
+                    self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
 
-        # Add default variables in the project
-        if not variables.get('lizmap_user'):
-            variables['lizmap_user'] = ''
-        if not variables.get('lizmap_user_groups'):
-            variables['lizmap_user_groups'] = list()
-        self.project.setCustomVariables(variables)
+            # Add default variables in the project
+            if not variables.get('lizmap_user'):
+                variables['lizmap_user'] = ''
+            if not variables.get('lizmap_user_groups'):
+                variables['lizmap_user_groups'] = list()
+            self.project.setCustomVariables(variables)
 
         self.layerList = dict()
 
@@ -2809,6 +2813,11 @@ class Lizmap:
 
         if not self.check_dialog_validity():
             LOGGER.debug("Leaving the dialog without valid project and/or server.")
+            self.dlg.display_message_bar(
+                tr("No project or server"),
+                tr('Either you do not have a server reachable for a long time or you do not have a project opened.'),
+                Qgis.Warning,
+            )
             return False
 
         stop_process = tr("The process is stopping.")

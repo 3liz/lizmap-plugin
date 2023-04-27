@@ -69,25 +69,36 @@ class VersionChecker:
             output.write(content)
 
     @classmethod
-    def version_status(cls, status) -> Tuple[str, ReleaseStatus]:
+    def version_status(cls, status: str) -> Tuple[ReleaseStatus, str]:
         """ Return the release status according to the JSON content. """
         if status == 'dev':
             flag = ReleaseStatus.Dev
-            suffix = tr('Next')
         elif status == 'feature_freeze':
             flag = ReleaseStatus.ReleaseCandidate
-            suffix = tr('Feature freeze')
         elif status == 'stable':
             flag = ReleaseStatus.Stable
-            suffix = tr('Stable')
         elif status == 'retired':
             flag = ReleaseStatus.Retired
-            suffix = tr('Not maintained')
         else:
             flag = ReleaseStatus.Unknown
-            suffix = tr('Inconnu')
 
-        return flag, suffix
+        return flag, cls.status_display_string(flag)
+
+    @classmethod
+    def status_display_string(cls, status: ReleaseStatus) -> str:
+        """ Return a human display string status. """
+        if status == ReleaseStatus.Dev:
+            return tr('Next')
+        elif status == ReleaseStatus.ReleaseCandidate:
+            return tr('Feature freeze')
+        elif status == ReleaseStatus.Stable:
+            return tr('Stable')
+        elif status == ReleaseStatus.Retired:
+            return tr('Not maintained')
+        elif status is None or status == ReleaseStatus.Unknown:
+            return tr('Inconnu')
+        else:
+            raise Exception('Unknown status type : {}'.format(status))
 
     def update_lwc_servers(self, released_versions: dict):
         """ Update LWC version status for each server. """

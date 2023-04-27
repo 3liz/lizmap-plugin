@@ -6,6 +6,7 @@ import logging
 import sys
 
 from pathlib import Path
+from typing import Optional
 
 from qgis.core import Qgis, QgsApplication, QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
@@ -121,7 +122,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
         qgis_desktop = (current[0], current[1])
 
-        metadata = self.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         try:
             qgis_server = metadata.get('qgis_server_info').get('metadata').get('version').split('.')
             qgis_server = (int(qgis_server[0]), int(qgis_server[1]))
@@ -147,14 +148,21 @@ class LizmapDialog(QDialog, FORM_CLASS):
             LOGGER.error(title)
             self.display_message_bar(title, description, Qgis.Warning, more_details=more)
 
-    def current_lwc_version(self) -> LwcVersions:
-        """ Return the current LWC version from the server combobox. """
-        version = self.server_combo.currentData(ServerComboData.LwcVersion.value)
-        if version:
-            return version
+    def current_server_info(self, info: ServerComboData):
+        """ Return the current LWC server information from the server combobox. """
+        return self.server_combo.currentData(info)
 
-        # This is temporary
-        return LwcVersions.latest()
+    def current_lwc_version(self) -> Optional[LwcVersions]:
+        """ Return the current LWC version from the server combobox. """
+        return self.metadata_to_lwc_version(self.current_server_info(ServerComboData.JsonMetadata.value))
+
+    @classmethod
+    def metadata_to_lwc_version(cls, metadata: dict) -> Optional[LwcVersions]:
+        """ Check in a metadata for the LWC version."""
+        if not metadata:
+            # When the server is not reachable
+            return None
+        return LwcVersions.find(metadata['info']['version'])
 
     def current_repository(self) -> str:
         """ Fetch the current directory on the server if available. """
@@ -162,6 +170,23 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return ''
 
         return self.repository_combo.currentData()
+
+    def tooltip_server_combo(self, index: int):
+        """ Set the tooltip for a given row in the server combo. """
+        # This method must use itemData() as we are not the current selected server in the combobox.
+        url = self.server_combo.itemData(index, ServerComboData.ServerUrl.value)
+        metadata = self.server_combo.itemData(index, ServerComboData.JsonMetadata.value)
+        target_version = self.metadata_to_lwc_version(metadata)
+        if target_version:
+            target_version = target_version.value
+        else:
+            target_version = tr('Unknown')
+
+        msg = tr(
+            '<b>URL</b> {}<br>'
+            '<b>Target branch</b> {}'
+        ).format(url, target_version)
+        self.server_combo.setItemData(index, msg, Qt.ToolTipRole)
 
     def refresh_combo_repositories(self):
         """ Refresh the combobox about repositories. """
@@ -178,14 +203,14 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.repository_combo.clear()
 
-        current = self.server_combo.currentData(ServerComboData.ServerUrl.value)
+        current = self.current_server_info(ServerComboData.ServerUrl.value)
         if not current:
             return
 
         if not current.endswith('/'):
             current += '/'
 
-        metadata = self.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         if not metadata:
             self.repository_combo.setVisible(False)
             self.stacked_dataviz_preview.setCurrentWidget(self.error_content)

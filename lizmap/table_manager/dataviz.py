@@ -122,7 +122,7 @@ class TableManagerDataviz(TableManager):
             return
 
         # The check before is not enough if we just have changed the server while we are in the dataviz panel.
-        metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        metadata = self.parent.current_server_info(ServerComboData.JsonMetadata.value)
         if not metadata:
             return
 
@@ -141,8 +141,8 @@ class TableManagerDataviz(TableManager):
             self.display_error(tr('It\'s not possible to have a preview for an HTML plot.'))
             return
 
-        server = self.parent.server_combo.currentData(ServerComboData.ServerUrl.value)
-        auth_id = self.parent.server_combo.currentData(ServerComboData.AuthId.value)
+        server = self.parent.current_server_info(ServerComboData.ServerUrl.value)
+        auth_id = self.parent.current_server_info(ServerComboData.AuthId.value)
         if not server or not auth_id:
             return
 

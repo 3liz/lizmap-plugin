@@ -50,9 +50,12 @@ class TableManagerLayouts(TableManager):
         # Previous print from <= LWC 3.6 was activated or not
         # Do not break pre-existing format
         if self.parent:
-            legacy_print_checkbox = \
-                (self.parent.cbActivatePrint.isChecked()
-                 or self.parent.current_lwc_version() <= LwcVersions.Lizmap_3_6)
+            current_version = self.parent.current_lwc_version()
+            if current_version:
+                legacy_print_checkbox = (
+                        self.parent.cbActivatePrint.isChecked() or current_version <= LwcVersions.Lizmap_3_6)
+            else:
+                legacy_print_checkbox = False
         else:
             legacy_print_checkbox = False
 

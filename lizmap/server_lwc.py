@@ -41,7 +41,6 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
     UNSTABLE_VERSION_PREFIX,
-    LwcVersions,
     ReleaseStatus,
     ServerComboData,
 )
@@ -82,7 +81,7 @@ class ServerManager:
 
     def __init__(
             self, parent: LizmapDialog, table, add_button, remove_button, edit_button, refresh_button,
-            up_button, down_button, server_combo, function_check_dialog_validity
+            up_button, down_button, function_check_dialog_validity
     ):
         self.parent = parent
         self.table = table
@@ -92,7 +91,7 @@ class ServerManager:
         self.refresh_button = refresh_button
         self.up_button = up_button
         self.down_button = down_button
-        self.server_combo = server_combo
+        self.server_combo = parent.server_combo
         self.check_dialog_validity = function_check_dialog_validity
 
         # Network
@@ -621,6 +620,7 @@ class ServerManager:
         # Add the JSON metadata in the server combobox
         index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
         self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
+        self.parent.tooltip_server_combo(index)
         # Server combo is refreshed, maybe we can allow the menu bar
         self.check_dialog_validity()
 
@@ -755,17 +755,12 @@ class ServerManager:
                 with open(cache_file, encoding='utf8') as f:
                     metadata = json.load(f)
                     self.server_combo.setItemData(index, metadata, ServerComboData.JsonMetadata.value)
-                    self.server_combo.setItemData(
-                        index,
-                        LwcVersions.find(metadata['info']['version']),
-                        ServerComboData.LwcVersion.value
-                    )
                     LOGGER.info("Loading server '{}' using cache in the drop down list".format(name))
             else:
                 self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
                 LOGGER.info("Loading server '{}' without metadata in the drop down list".format(name))
 
-            self.server_combo.setItemData(index, url, Qt.ToolTipRole)
+            self.parent.tooltip_server_combo(index)
 
         # Restore previous value
         server = QgsSettings().value('lizmap/instance_target_url', '')
