@@ -480,6 +480,8 @@ class Lizmap:
             self.dlg.server_combo,
             self.check_dialog_validity,
         )
+        # Debug
+        # self.server_manager.clean_cache(True)
 
         current = format_qgis_version(Qgis.QGIS_VERSION_INT)
         current = '{}.{}'.format(current[0], current[1])
@@ -1314,9 +1316,9 @@ class Lizmap:
         out = '' if json_file.exists() else 'out'
         LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
 
-        previous_config = 'lizmap_user' in self.project.customVariables().keys()
-        # The variable is empty, but present
-        if previous_config and not self.dlg.check_cfg_file_exists():
+        # Manage lizmap_user project variable
+        variables = self.project.customVariables()
+        if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists():
             # The variable 'lizmap_user' exists in the project as a variable
             # But no CFG was found, maybe the project has been renamed.
             message = tr(
@@ -1335,6 +1337,13 @@ class Lizmap:
             )
             QMessageBox.warning(
                 self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
+
+        # Add default variables in the project
+        if not variables.get('lizmap_user'):
+            variables['lizmap_user'] = ''
+        if not variables.get('lizmap_user_groups'):
+            variables['lizmap_user_groups'] = list()
+        self.project.setCustomVariables(variables)
 
         self.layerList = dict()
 
@@ -2758,16 +2767,6 @@ class Lizmap:
                 project_wms_extent[2] = str(full_extent.xMaximum())
                 project_wms_extent[3] = str(full_extent.yMaximum())
                 self.project.writeEntry('WMSExtent', '', project_wms_extent)
-
-        # Add default variables in the project
-        variables = self.project.customVariables()
-        if not variables.get('lizmap_user'):
-            variables['lizmap_user'] = ''
-
-        if not variables.get('lizmap_user_groups'):
-            variables['lizmap_user_groups'] = list()
-
-        self.project.setCustomVariables(variables)
 
         return True, ''
 
