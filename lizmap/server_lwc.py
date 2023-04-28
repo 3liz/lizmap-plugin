@@ -45,7 +45,7 @@ from lizmap.definitions.definitions import (
     ServerComboData,
 )
 from lizmap.dialogs.main import LizmapDialog
-from lizmap.dialogs.server_form import LizmapServerInfoForm
+from lizmap.dialogs.server_wizard import NamePage, ServerWizard
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.saas import is_lizmap_dot_com_hosting
@@ -291,7 +291,7 @@ class ServerManager:
     def add_row(self):
         """ Add a new row in the table, asking the URL to the user. """
         existing = self.existing_json_server_list()
-        dialog = LizmapServerInfoForm(self.parent, existing)
+        dialog = ServerWizard(self.parent, existing)
         result = dialog.exec_()
 
         if result != QDialog.Accepted:
@@ -335,7 +335,7 @@ class ServerManager:
         for i, server in enumerate(existing):
             if server.get('url') != url:
                 data.append({'url': server.get('url'), 'auth_id': auth_id})
-        dialog = LizmapServerInfoForm(self.parent, data, url=url, auth_id=auth_id, name=name)
+        dialog = ServerWizard(self.parent, data, url=url, auth_id=auth_id, name=name)
         result = dialog.exec_()
 
         if result != QDialog.Accepted:
@@ -746,7 +746,7 @@ class ServerManager:
         for server in servers:
             url = server.get('url')
             auth_id = server.get('auth_id')
-            name = server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
+            name = server.get('name', NamePage.automatic_name(server.get('url')))
             self.server_combo.addItem(name, auth_id)
             index = self.server_combo.findData(auth_id, ServerComboData.AuthId.value)
             self.server_combo.setItemData(index, url, ServerComboData.ServerUrl.value)
@@ -789,7 +789,7 @@ class ServerManager:
                 row,
                 server.get('url'),
                 server.get('auth_id', ''),
-                server.get('name', LizmapServerInfoForm.automatic_name(server.get('url')))
+                server.get('name', NamePage.automatic_name(server.get('url')))
             )
 
         self.refresh_server_combo()
