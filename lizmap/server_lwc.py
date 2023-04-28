@@ -215,7 +215,7 @@ class ServerManager:
             LOGGER.debug("Skipping password ID {}, it wasn't found in the password manager".format(auth_id))
             return None
 
-        LOGGER.info("Found password ID {}".format(auth_id))
+        # LOGGER.info("Found password ID {}".format(auth_id))
         return conf
 
     @classmethod

@@ -86,3 +86,10 @@ class ServerComboData(Enum):
     JsonMetadata = Qt.UserRole + 2  # JSON from the server, raw
     # LwcVersion = Qt.UserRole + 3  # Enum item with the LWC version
     LwcBranchStatus = Qt.UserRole + 4  # Enum item about the release status at that time.
+
+
+@unique
+class RepositoryComboData(Enum):
+    """ The repository combobox. """
+    Id = Qt.UserRole  # ID of the repository
+    Path = Qt.UserRole + 1  # Path on the server

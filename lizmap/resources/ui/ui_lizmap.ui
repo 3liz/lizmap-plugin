@@ -191,6 +191,9 @@ QListWidget::item::selected {
         </widget>
        </item>
        <item>
+        <widget class="QComboBox" name="repository_combo"/>
+       </item>
+       <item>
         <widget class="QCheckBox" name="checkbox_save_project">
          <property name="toolTip">
           <string>Save the QGIS project too at the same time as the Lizmap config file.</string>
@@ -201,7 +204,11 @@ QListWidget::item::selected {
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="repository_combo"/>
+        <widget class="QCheckBox" name="send_webdav">
+         <property name="text">
+          <string>Send with webdav if possible</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

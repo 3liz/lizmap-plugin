@@ -26,7 +26,11 @@ try:
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
-from lizmap.definitions.definitions import LwcVersions, ServerComboData
+from lizmap.definitions.definitions import (
+    LwcVersions,
+    RepositoryComboData,
+    ServerComboData,
+)
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
@@ -174,12 +178,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return None
         return LwcVersions.find(metadata['info']['version'])
 
-    def current_repository(self) -> str:
+    def current_repository(self, role=RepositoryComboData.Id) -> str:
         """ Fetch the current directory on the server if available. """
         if not self.repository_combo.isVisible():
             return ''
 
-        return self.repository_combo.currentData()
+        return self.repository_combo.currentData(role.value)
 
     def tooltip_server_combo(self, index: int):
         """ Set the tooltip for a given row in the server combo. """
@@ -249,7 +253,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
         for repository_id, repository_data in repositories.items():
             self.repository_combo.addItem(repository_data['label'], repository_id)
             index = self.repository_combo.findData(repository_id)
-            self.repository_combo.setItemData(index, repository_id, Qt.ToolTipRole)
+            self.repository_combo.setItemData(
+                index,
+                "ID : {}<br>Path : {}".format(repository_id, repository_data['path']),
+                Qt.ToolTipRole)
+            self.repository_combo.setItemData(index, repository_data['path'], RepositoryComboData.Path.value)
 
         # Restore the previous value if possible
         previous = self.project.customVariables().get('lizmap_repository')

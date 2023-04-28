@@ -14,3 +14,4 @@ pylint
 # PyQt5
 # PyQt5-stubs
 pre-commit
+webdavclient3
