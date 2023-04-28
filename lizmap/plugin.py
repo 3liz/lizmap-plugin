@@ -39,6 +39,7 @@ from qgis.PyQt.QtCore import (
     QStorageInfo,
     Qt,
     QTranslator,
+    QUrl,
 )
 from qgis.PyQt.QtGui import (
     QBrush,
@@ -58,6 +59,7 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
     QWidget,
 )
+from qgis.utils import OverrideCursor
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
@@ -68,6 +70,7 @@ from lizmap.definitions.definitions import (
     LayerProperties,
     LwcVersions,
     ReleaseStatus,
+    RepositoryComboData,
     ServerComboData,
 )
 from lizmap.definitions.edition import EditionDefinitions
@@ -146,6 +149,8 @@ from lizmap.version_checker import VersionChecker
 
 if qgis_version() >= 31400:
     from qgis.core import QgsProjectServerValidator
+if qgis_version() >= 32200:
+    from lizmap.server_dav import WebDav
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
@@ -198,6 +203,14 @@ class Lizmap:
                 text = self.dlg.label_dev_version.text().format(self.version)
                 self.dlg.label_dev_version.setText(text)
                 self.dlg.label_dev_version.setVisible(True)
+
+        if Qgis.QGIS_VERSION_INT >= 32200:
+            self.webdav = WebDav()
+            # Give the dialog only the first time
+            self.webdav.setup_webdav_dialog(self.dlg)
+        else:
+            self.webdav = None
+        self.check_webdav()
 
         self.layers_table = dict()
 
@@ -701,6 +714,7 @@ class Lizmap:
         if current_version != old_version:
             self.lwc_version_changed()
         # self.dlg.check_qgis_version()
+        self.check_webdav()
 
         # For deprecated features in LWC 3.7 about base layers
         self.check_visibility_crs_3857()
@@ -781,6 +795,21 @@ class Lizmap:
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
             else:
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
+
+    def check_webdav(self):
+        """ Check if we can enable or the webdav, according to the current selected server. """
+        if not self.webdav:
+            # QGIS <= 3.22
+            self.dlg.send_webdav.setChecked(False)
+            self.dlg.send_webdav.setEnabled(False)
+            return
+
+        # The dialog is already given.
+        if self.webdav.setup_webdav_dialog():
+            self.dlg.send_webdav.setEnabled(True)
+        else:
+            self.dlg.send_webdav.setChecked(False)
+            self.dlg.send_webdav.setEnabled(False)
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -2614,7 +2643,7 @@ class Lizmap:
                             pass
                     else:
                         # We do not want to save this table if it's less than LWC 3.7
-                        LOGGER.info("Skipping the 'layout' table because version if less than LWC 3.7")
+                        LOGGER.info("Skipping the 'layout' table because version is less than LWC 3.7")
                         continue
 
                 if manager.use_single_row() and manager.table.rowCount() == 1:
@@ -3127,29 +3156,104 @@ class Lizmap:
                     duration=30
                 )
 
-        if auto_save and self.dlg.checkbox_ftp_transfer.isChecked():
-            valid, message = self.server_ftp.connect(send_files=True)
-            if not valid:
+        if not auto_save:
+            # noinspection PyUnresolvedReferences
+            self.iface.messageBar().pushMessage(
+                'Lizmap',
+                msg,
+                level=Qgis.Success,
+                duration=3
+            )
+            # No automatic saving, the process is finished
+            return True
+
+        if not self.dlg.send_webdav.isChecked() and not self.dlg.checkbox_ftp_transfer.isChecked():
+            # No FTP and no webdav
+            return True
+
+        if self.dlg.send_webdav.isChecked():
+            with OverrideCursor(Qt.WaitCursor):
+                result, _, url = self.send_webdav()
+
+            if result:
                 # noinspection PyUnresolvedReferences
                 self.iface.messageBar().pushMessage(
                     'Lizmap',
-                    message,
-                    level=Qgis.Critical,
+                    msg + '. ' + tr('Project <a href="{}">published !</a>'.format(url)),
+                    level=Qgis.Success,
                 )
-                return False
+            return True
 
-            msg = tr(
-                'Lizmap configuration file has been updated and sent to the FTP {}.'
-            ).format(self.server_ftp.host)
+        # Only deprecated FTP now
+        valid, message = self.server_ftp.connect(send_files=True)
+        if not valid:
+            # noinspection PyUnresolvedReferences
+            self.iface.messageBar().pushMessage(
+                'Lizmap',
+                message,
+                level=Qgis.Critical,
+            )
+            return False
 
         # noinspection PyUnresolvedReferences
         self.iface.messageBar().pushMessage(
             'Lizmap',
-            msg,
+            tr(
+                'Lizmap configuration file has been updated and sent to the FTP {}.'
+            ).format(self.server_ftp.host),
             level=Qgis.Success,
             duration=3
         )
-        return True
+
+    def send_webdav(self) -> Tuple[bool, str, str]:
+        """ Sync the QGS and CFG file over the webdav. """
+        folder = self.dlg.current_repository(RepositoryComboData.Path)
+        if not folder:
+            # Maybe we are on a new server ?
+            return False, '', ''
+
+        qgis_exists, error = self.webdav.check_qgs_exist()
+        if error:
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical)
+            return False, '', ''
+
+        server = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        if not qgis_exists:
+            box = QMessageBox(self.dlg)
+            box.setIcon(QMessageBox.Question)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+            box.setWindowTitle(tr('The project is not published yet'))
+            box.setText(tr(
+                'The project <b>"{}"</b> does not exist yet on the server <br>'
+                '<b>"{}"</b> '
+                'in the folder <b>"{}"</b>.'
+                '<br><br>'
+                'Do you want to publish it for the first time in this directory ?'
+            ).format(
+                self.project.baseName(), server, folder))
+            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            box.setDefaultButton(QMessageBox.No)
+            result = box.exec_()
+            if result == QMessageBox.No:
+                return False, '', ''
+
+        flag, error, url = self.webdav.send_qgs_and_cfg()
+        if not flag:
+            # Error while sending files
+            LOGGER.error(error)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical)
+            return False, error, ''
+
+        LOGGER.debug("Webdav has been OK : {}".format(url))
+
+        if flag and qgis_exists:
+            # Everything went fine
+            return True, '', url
+
+        # Only the first time if the project didn't exist before
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(QUrl(url))
+        return True, '', url
 
     def check_visibility_crs_3857(self):
         """ Check if we display the warning about scales.

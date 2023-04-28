@@ -26,6 +26,7 @@ from qgis.PyQt.QtWidgets import QDialog, QLabel
 from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.dataviz import GraphType
 from lizmap.definitions.definitions import ServerComboData
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import (
     plugin_name,
@@ -51,8 +52,8 @@ class TableManagerDataviz(TableManager):
     """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, edit_button, up_button,
-            down_button):
+            self, parent: LizmapDialog, definitions: BaseDefinitions, edition: Optional[QDialog], table, edit_button,
+            up_button, down_button):
         TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
 
         label = tr(
@@ -145,7 +146,7 @@ class TableManagerDataviz(TableManager):
         if not server or not auth_id:
             return
 
-        repository = self.parent.repository_combo.currentData()
+        repository = self.parent.current.currentData()
         if not repository:
             # Shouldn't happen, but maybe we have changed the server somehow ?
             self.display_error(tr('No repository selected.'))
