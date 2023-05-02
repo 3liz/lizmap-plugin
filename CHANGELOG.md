@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.13.0 - 2023-05-01
+
 * Add a new wizard for the server/instance creation, it will allow more options soon in a next version
 * Improve the server dropdown menu and server metadata
 * Display the message bar if the branch of Lizmap Web Client is outdated
