@@ -80,12 +80,13 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent: LizmapDialog, table, add_button, remove_button, edit_button, refresh_button,
+            self, parent: LizmapDialog, table, add_button, add_first_server, remove_button, edit_button, refresh_button,
             up_button, down_button, function_check_dialog_validity
     ):
         self.parent = parent
         self.table = table
         self.add_button = add_button
+        self.add_first_server = add_first_server
         self.remove_button = remove_button
         self.edit_button = edit_button
         self.refresh_button = refresh_button
@@ -96,6 +97,11 @@ class ServerManager:
 
         # Network
         self.fetchers = {}
+
+        # First new server
+        self.add_first_server.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+        self.add_first_server.setToolTip(tr('Add a new server in the list'))
+        self.add_first_server.clicked.connect(self.add_button.click)
 
         # Icons and tooltips
         self.remove_button.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
@@ -186,6 +192,14 @@ class ServerManager:
         # Actions
         self.clean_cache()
         self.load_table()
+        self.visible_new_server_button()
+
+    def visible_new_server_button(self):
+        """ Make the new server button visible only when we do not have a server yet. """
+        if self.table.rowCount() == 0:
+            self.add_first_server.setVisible(True)
+        else:
+            self.add_first_server.setVisible(True)
 
     @staticmethod
     def config_for_id(auth_id: str) -> Optional[QgsAuthMethodConfig]:

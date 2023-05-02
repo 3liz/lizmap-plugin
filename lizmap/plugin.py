@@ -480,6 +480,7 @@ class Lizmap:
             self.dlg,
             self.dlg.table_server,
             self.dlg.add_server_button,
+            self.dlg.add_first_server,
             self.dlg.remove_server_button,
             self.dlg.edit_server_button,
             self.dlg.refresh_versions_button,
