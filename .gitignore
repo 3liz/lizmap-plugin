@@ -46,6 +46,7 @@ lizmap/test/data/*.gpkg-wal
 test/server/data/*.gpkg-shm
 test/server/data/*.gpkg-wal
 lizmap/test/data/lizmap_3_3.qgs.cfg.back
+lizmap/test/credentials.py.back
 lizmap/test/credentials.py
 **/symbology-style.db
 **/*.qgs.bak

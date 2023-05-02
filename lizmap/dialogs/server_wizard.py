@@ -20,11 +20,12 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsPasswordLineEdit
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import Qt, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QApplication,
+    QCheckBox,
     QLabel,
     QLineEdit,
     QRadioButton,
@@ -33,42 +34,31 @@ from qgis.PyQt.QtWidgets import (
     QWizard,
     QWizardPage,
 )
-from qgis.utils import iface
+from qgis.utils import OverrideCursor, iface
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import qgis_version
 
 LOGGER = logging.getLogger('Lizmap')
-DEBUG = False
 THUMBS = " 👍"
 
 
 class WizardPages(IntEnum):
-    CredentialPage = auto()
+    UrlPage = auto()
+    LoginPasswordPage = auto()
     NamePage = auto()
     MasterPasswordPage = auto()
     AddOrNotPostgresqlPage = auto()
     PostgresqlPage = auto()
 
 
-class Fields(IntEnum):
-    Url = auto()
-    Login = auto()
-    Password = auto()
-    Alias = auto()
-    YesPg = auto()
-    NoPg = auto()
+class UrlPage(QWizardPage):
 
-
-class CredentialsPage(QWizardPage):
-
-    def __init__(self, url, auth_id, auth_manager, parent=None):
+    def __init__(self, url, parent=None):
         super().__init__(parent)
-        self.setTitle(tr("URL and credentials of the instance"))
+        self.setTitle(tr("URL of the instance"))
 
         self.url = url
-        self.auth_id = auth_id
-        self.auth_manager = auth_manager
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -77,23 +67,18 @@ class CredentialsPage(QWizardPage):
             'If you are using Lizmap Web Client ≥ 3.6, visit your administration panel, then "Server information" and '
             'copy/paste the URL of your instance.'))
         label.setWordWrap(True)
-        layout.addWidget(label)
-
-        label = QLabel(tr(
-            'Login and password are the ones you are using in your web browser, to connect to the administration '
-            'interface.'
-        ))
-        label.setWordWrap(True)
+        # noinspection PyArgumentList
         layout.addWidget(label)
 
         label = QLabel(tr(
             'Do not use any URL redirection. For instance, '
             '<a href="https://demo.lizmap.com/">https://demo.lizmap.com/</a> is a redirection to '
             '<a href="https://demo.lizmap.com/lizmap/">https://demo.lizmap.com/lizmap/</a>. Only the second one will '
-            'work. Your URL mustn\'t contain &quot;php&quot; extension at the end.'
+            'work. Your URL must not contain ".php" extension at the end.'
         ))
         label.setOpenExternalLinks(True)
         label.setWordWrap(True)
+        # noinspection PyArgumentList
         layout.addWidget(label)
 
         self.url_label = QLabel(tr("URL"))
@@ -107,33 +92,15 @@ class CredentialsPage(QWizardPage):
         )
         self.url_label.setToolTip(url)
         self.url_edit.setToolTip(url)
+        # noinspection PyArgumentList
         layout.addWidget(self.url_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.url_edit)
 
-        self.login_label = QLabel(tr("Login"))
-        self.login_edit = QLineEdit()
-        # noinspection PyUnresolvedReferences
-        self.login_edit.textChanged.connect(self.isComplete)
-        self.registerField("login*", self.login_edit)
-        login = tr("The login used to connect in your web browser.")
-        self.login_label.setToolTip(login)
-        self.login_edit.setToolTip(login)
-        layout.addWidget(self.login_label)
-        layout.addWidget(self.login_edit)
-
-        self.password_label = QLabel(tr("Password"))
-        self.password_edit = QgsPasswordLineEdit()
-        self.password_edit.textChanged.connect(self.isComplete)
-        self.registerField("password*", self.password_edit)
-        password = tr("The password used to connect in your web browser.")
-        self.password_label.setToolTip(password)
-        self.password_edit.setToolTip(password)
-        layout.addWidget(self.password_label)
-        layout.addWidget(self.password_edit)
-
-        self.result_credential = QLabel()
-        self.result_credential.setWordWrap(True)
-        layout.addWidget(self.result_credential)
+        self.result_url = QLabel()
+        self.result_url.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(self.result_url)
 
     def isComplete(self) -> bool:
         result = super().isComplete()
@@ -145,23 +112,77 @@ class CredentialsPage(QWizardPage):
         # noinspection PyUnresolvedReferences
         if not url.scheme().startswith('http'):
             # TODO make a better check
-            self.result_credential.setText(tr("URL is not valid"))
+            self.result_url.setText(tr("URL is not valid"))
             return False
 
-        self.result_credential.setText("")
+        self.result_url.setText("")
         return True
 
     def initializePage(self) -> None:
-        if DEBUG:
-            self.url_edit.setText('http://localhost:8130/')
-            self.login_edit.setText('admin')
-            self.password_edit.setText('admin')
-
         if self.url:
             self.url_edit.setText(self.url)
-            if not self.auth_manager.masterPasswordIsSet():
-                return
 
+
+class LoginPasswordPage(QWizardPage):
+
+    def __init__(self, auth_id, auth_manager, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("Login and password of the instance"))
+
+        self.auth_id = auth_id
+        self.auth_manager = auth_manager
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        label = QLabel(tr(
+            'Login and password are the ones you are using in your web browser, to connect to the administration '
+            'interface.'
+        ))
+        label.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(label)
+
+        self.login_label = QLabel(tr("Login"))
+        self.login_edit = QLineEdit()
+        # noinspection PyUnresolvedReferences
+        self.login_edit.textChanged.connect(self.isComplete)
+        self.registerField("login*", self.login_edit)
+        login = tr("The login used to connect in your web browser.")
+        self.login_label.setToolTip(login)
+        self.login_edit.setToolTip(login)
+        # noinspection PyArgumentList
+        layout.addWidget(self.login_label)
+        # noinspection PyArgumentList
+        layout.addWidget(self.login_edit)
+
+        self.password_label = QLabel(tr("Password"))
+        self.password_edit = QgsPasswordLineEdit()
+        self.password_edit.textChanged.connect(self.isComplete)
+        self.registerField("password*", self.password_edit)
+        password = tr("The password used to connect in your web browser.")
+        self.password_label.setToolTip(password)
+        self.password_edit.setToolTip(password)
+        # noinspection PyArgumentList
+        layout.addWidget(self.password_label)
+        # noinspection PyArgumentList
+        layout.addWidget(self.password_edit)
+
+        self.result_login_password = QLabel()
+        self.result_login_password.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(self.result_login_password)
+
+        # def isComplete(self) -> bool:
+        #     result = super().isComplete()
+        #     if not result:
+        #         return False
+        #
+        #     self.result_login_password.setText("")
+        #     return True
+
+    def initializePage(self) -> None:
+        if self.auth_id:
             conf = QgsAuthMethodConfig()
             self.auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
             if conf.id():
@@ -172,6 +193,14 @@ class CredentialsPage(QWizardPage):
             # The credentials have been removed from the password database
             # Must do something
             return
+
+    def nextId(self) -> int:
+        if self.wizard().page(WizardPages.UrlPage).result_url.text() != '':
+            # The URL is not valid
+            self.wizard().restart()
+            return WizardPages.UrlPage
+
+        return WizardPages.NamePage
 
 
 class NamePage(QWizardPage):
@@ -191,7 +220,9 @@ class NamePage(QWizardPage):
         name = tr("The name that you want to see in the plugin. It's only a alias to help you.")
         self.name_label.setToolTip(name)
         self.name_edit.setToolTip(name)
+        # noinspection PyArgumentList
         layout.addWidget(self.name_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.name_edit)
 
     def initializePage(self) -> None:
@@ -224,7 +255,8 @@ class MasterPasswordPage(QWizardPage):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        layout.addWidget(QLabel(tr("Lizmap will now save your credentials in the QGIS password manager.")))
+        # noinspection PyArgumentList
+        layout.addWidget(QLabel(tr("Lizmap will now save your login and password in the QGIS password manager.")))
         label_warning = QLabel(tr(
             "It's the first time you are using the QGIS native authentication database. When pressing the Next "
             "button, you will be prompted for another password to secure your password manager. "
@@ -236,6 +268,7 @@ class MasterPasswordPage(QWizardPage):
         ))
         label_warning.setOpenExternalLinks(True)
         label_warning.setWordWrap(True)
+        # noinspection PyArgumentList
         layout.addWidget(label_warning)
 
         if not auth_manager.masterPasswordIsSet():
@@ -245,15 +278,16 @@ class MasterPasswordPage(QWizardPage):
 
         self.result_master_password = QLabel()
         self.result_master_password.setWordWrap(True)
+        # noinspection PyArgumentList
         layout.addWidget(self.result_master_password)
 
-    def nextId(self) -> int:
-        parent_wizard = self.wizard()
-        parent_wizard: ServerWizard
-        if parent_wizard.is_lizmap_dot_com:
-            return WizardPages.AddOrNotPostgresqlPage
-
-        return -1
+    # def nextId(self) -> int:
+    #     parent_wizard = self.wizard()
+    #     parent_wizard: ServerWizard
+    #     if parent_wizard.is_lizmap_dot_com:
+    #         return WizardPages.AddOrNotPostgresqlPage
+    #
+    #     return -1
 
 
 class AddOrNotPostgresqlPage(QWizardPage):
@@ -265,14 +299,18 @@ class AddOrNotPostgresqlPage(QWizardPage):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
+        # noinspection PyArgumentList
         layout.addWidget(QLabel(tr("Would you like to add the PostgreSQL connection provided with your instance ?")))
+        # noinspection PyArgumentList
         layout.addWidget(QLabel(tr("It's recommended as it will set up the connection with optimized parameters.")))
 
         self.no = QRadioButton(tr("No"))
         self.yes = QRadioButton(tr("Yes (recommended)"))
         self.yes.setChecked(True)
 
+        # noinspection PyArgumentList
         layout.addWidget(self.yes)
+        # noinspection PyArgumentList
         layout.addWidget(self.no)
 
         self.registerField("no", self.no)
@@ -293,6 +331,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
         return super().isComplete()
 
 
+# noinspection PyArgumentList
 class PostgresqlPage(QWizardPage):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -306,14 +345,18 @@ class PostgresqlPage(QWizardPage):
         self.pg_name_label = QLabel(tr("Name"))
         self.pg_name_edit = QLineEdit()
         self.registerField("pg_name*", self.pg_name_edit)
+        # noinspection PyArgumentList
         layout.addWidget(self.pg_name_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.pg_name_edit)
 
         # Host
         self.host_label = QLabel(tr("Host"))
         self.host_edit = QLineEdit()
         self.registerField("pg_host*", self.host_edit)
+        # noinspection PyArgumentList
         layout.addWidget(self.host_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.host_edit)
 
         # Port
@@ -323,21 +366,27 @@ class PostgresqlPage(QWizardPage):
         self.port_edit.setMinimum(1)
         self.port_edit.setMaximum(65535)
         self.registerField("pg_port*", self.port_edit)
+        # noinspection PyArgumentList
         layout.addWidget(self.port_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.port_edit)
 
         # DB name
         self.db_name_label = QLabel(tr("Database name"))
         self.db_name_edit = QLineEdit()
         self.registerField("pg_db_name*", self.db_name_edit)
+        # noinspection PyArgumentList
         layout.addWidget(self.db_name_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.db_name_edit)
 
         # User
         self.pg_user_label = QLabel(tr("User"))
         self.pg_user_edit = QLineEdit()
         self.registerField("pg_user*", self.pg_user_edit)
+        # noinspection PyArgumentList
         layout.addWidget(self.pg_user_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.pg_user_edit)
 
         # Password
@@ -348,13 +397,31 @@ class PostgresqlPage(QWizardPage):
         password = tr("The password used to connect to your PostgreSQL database")
         self.pg_password_label.setToolTip(password)
         self.pg_password_edit.setToolTip(password)
+        # noinspection PyArgumentList
         layout.addWidget(self.pg_password_label)
+        # noinspection PyArgumentList
         layout.addWidget(self.pg_password_edit)
 
         # Result
+        self.skip_db = QCheckBox()
+        self.skip_db.setText(tr("Skip the database creation if a failure happen again."))
+        self.skip_db.setVisible(False)
+        self.registerField("skip_pg", self.skip_db)
+
+        self.skip_label = QLabel(tr(
+            "If checked and if it fails again, you will need to use the native QGIS dialog to setup your connection. "
+            "Remember to not use the QGIS password manager for storing login and password about PostGIS, instead use "
+            "a plain text storage, by checking both buttons 'Store' for login and password. We also recommend checking "
+            "'Use estimated table metadata' and 'Also list tables with no geometry'."))
+        self.skip_label.setVisible(False)
+        self.skip_label.setWordWrap(True)
+
         self.result_pg = QLabel()
         self.result_pg.setWordWrap(True)
+        # noinspection PyArgumentList
         layout.addWidget(self.result_pg)
+        layout.addWidget(self.skip_db)
+        layout.addWidget(self.skip_label)
 
     def initializePage(self) -> None:
         self.pg_name_edit.setText(self.field("name"))
@@ -362,16 +429,10 @@ class PostgresqlPage(QWizardPage):
         self.pg_user_edit.setText(self.field("login"))
         self.pg_password_edit.setText(self.field("password"))
 
-        if DEBUG:
-            self.host_edit.setText("localhost")
-            self.port_edit.setValue(8132)
-            self.db_name_edit.setText("lizmap")
-            self.pg_user_edit.setText("lizmap")
-            self.pg_password_edit.setText("lizmap1234!")
-
 
 class ServerWizard(QWizard):
     def __init__(self, parent=None, existing: list = None, url: str = '', auth_id: str = None, name: str = ''):
+        # noinspection PyArgumentList
         super().__init__(parent)
         self.setWindowTitle(tr("Lizmap Web Client instance"))
         self.setWizardStyle(QWizard.ClassicStyle)
@@ -394,11 +455,12 @@ class ServerWizard(QWizard):
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
 
-        self.setPage(WizardPages.CredentialPage, CredentialsPage(url, auth_id, self.auth_manager))
+        self.setPage(WizardPages.UrlPage, UrlPage(url))
+        self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id, self.auth_manager))
         self.setPage(WizardPages.NamePage, NamePage(name))
         self.setPage(WizardPages.MasterPasswordPage, MasterPasswordPage(self.auth_manager))
-        self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
-        self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
+        # self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
+        # self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
 
     def helpRequested(self) -> None:
         """ Open the online help about this form. """
@@ -407,23 +469,45 @@ class ServerWizard(QWizard):
             QUrl('https://docs.lizmap.com/current/en/publish/lizmap_plugin/information.html'))
 
     def validateCurrentPage(self):
-        if self.currentId() == WizardPages.CredentialPage:
-            self.currentPage().result_credential.setText(tr("Fetching") + "…")
-            flag, message = self.request_check_url(
-                self.field('url'),
-                self.field('login'),
-                self.field('password'))
+        if self.currentId() == WizardPages.LoginPasswordPage:
+            self.page(WizardPages.UrlPage).result_url.setText('')
+            self.currentPage().result_login_password.setText(tr("Fetching") + "…")
+
+            with OverrideCursor(Qt.WaitCursor):
+                flag, message, url_valid = self.request_check_url(
+                    self.field('url'),
+                    self.field('login'),
+                    self.field('password'))
             if flag:
-                self.currentPage().result_credential.setText(THUMBS)
+                self.currentPage().result_login_password.setText(THUMBS)
                 return True
-            else:
-                self.currentPage().result_credential.setText(message)
-                return False
+
+            # The config was not correct, let's check which panel
+
+            if not url_valid:
+                # The URL was not a JSON file, so we return true and the nextId will take of it
+                # Even with bad login & password
+                self.page(WizardPages.UrlPage).result_url.setText(tr('The URL was not valid : {}').format(
+                    self.field('url')))
+                self.currentPage().result_login_password.setText("")
+                return True
+
+            # Only login & password were not correct
+            self.page(WizardPages.UrlPage).result_url.setText("")
+            self.currentPage().result_login_password.setText(message)
+            return False
+
         elif self.currentId() == WizardPages.MasterPasswordPage:
             return self.save_auth_id()
         elif self.currentId() == WizardPages.PostgresqlPage:
+            skip_pg_saving = self.field("skip_pg")
             if not self.test_pg():
-                return False
+                if skip_pg_saving:
+                    # Second tentative, we skip
+                    return True
+                else:
+                    return False
+
             return self.save_pg()
 
         return super().validateCurrentPage()
@@ -488,8 +572,12 @@ class ServerWizard(QWizard):
         )
         return False
 
-    def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str]:
-        """ Check the URL and given login. """
+    def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
+        """ Check the URL and given login.
+
+        First boolean is about the server status.
+        Last boolean is about the URL check if it's a JSON document
+        """
         if not url.endswith('/'):
             url += '/'
 
@@ -497,7 +585,7 @@ class ServerWizard(QWizard):
             return False, tr(
                 "The URL provided is not correct. It contains spaces. Please check that the URL is correct and leads "
                 "to the Lizmap Web Client home page."
-            )
+            ), False
 
         url = '{}index.php/view/app/metadata'.format(url)
 
@@ -509,33 +597,33 @@ class ServerWizard(QWizard):
         request = QgsBlockingNetworkRequest()
         error = request.get(net_req)
         if error == QgsBlockingNetworkRequest.NetworkError:
-            return False, tr("Network error")
+            return False, tr("Network error"), False
         elif error == QgsBlockingNetworkRequest.ServerExceptionError:
-            return False, tr("Server exception error")
+            return False, tr("Server exception error"), False
         elif error == QgsBlockingNetworkRequest.TimeoutError:
-            return False, tr("Timeout error")
+            return False, tr("Timeout error"), False
         elif error != QgsBlockingNetworkRequest.NoError:
-            return False, tr("Unknown error")
+            return False, tr("Unknown error"), False
 
         response = request.reply().content()
         try:
             content = json.loads(response.data().decode('utf-8'))
         except json.JSONDecodeError:
-            return False, tr('Not a JSON document, is-it the correct URL ?')
+            return False, tr('Not a JSON document, is-it the correct URL ?'), False
 
         info = content.get('info')
         if not info:
-            return False, tr('No "info" in the JSON document')
+            return False, tr('No "info" in the JSON document'), False
 
         lizmap_version = info.get('version')
         if lizmap_version.startswith(('3.1', '3.2', '3.3', '3.4')):
             # Wait for EOL QGIS 3.10 because linked to LWC 3.5
-            return True, ''
+            return True, '', True
 
         # For other versions, we continue to see the access
         qgis_info = content.get('qgis_server_info')
         if not qgis_info:
-            return False, 'Missing QGIS server info in the response, is-it the correct URL ?'
+            return False, 'Missing QGIS server info in the response, is-it the correct URL ?', True
 
         error = qgis_info.get('error')
         if error:
@@ -548,16 +636,15 @@ class ServerWizard(QWizard):
                     message = tr("The given user does not have the right <b>View the detailed server information</b>.")
                     message += "<br><br>"
                     message += tr('Right') + " : lizmap.admin.server.information.view"
-                return False, message
+                return False, message, True
             elif error == 'WRONG_CREDENTIALS':
                 message = tr(
-                    "Either the login or the password is wrong. Please check your credentials. It must be your login "
-                    "you use in your web-browser.")
-                return False, message
+                    "Either the login or the password is wrong. It must be your login you use in your web-browser.")
+                return False, message, True
 
         self.server_info = content
         self.is_lizmap_dot_com = content.get('hosting', '') == 'lizmap.com'
-        return True, ''
+        return True, '', True
 
     def _uri(self) -> QgsDataSourceUri:
         """ URI of the current PG credentials. """
@@ -584,7 +671,9 @@ class ServerWizard(QWizard):
             return True
 
         self.currentPage().result_pg.setText(tr(
-            'Error, please check your credentials, or do with the native QGIS connection dialog'))
+            'Error, please check your inputs, or do with the native QGIS connection dialog.'))
+        self.currentPage().skip_pg.setVisible(True)
+        self.currentPage().skip_label.setVisible(True)
         return False
 
     def save_pg(self) -> bool:
@@ -597,12 +686,14 @@ class ServerWizard(QWizard):
             return False
 
         uri = self._uri()
+        # TODO Switch to PyQGIS API for saving
         settings = QgsSettings()
         settings.setValue('PostgreSQL/connections/{}/host'.format(name), uri.host())
         settings.setValue('PostgreSQL/connections/{}/database'.format(name), uri.database())
         settings.setValue('PostgreSQL/connections/{}/username'.format(name), uri.username())
         settings.setValue('PostgreSQL/connections/{}/password'.format(name), uri.password())
         settings.setValue('PostgreSQL/connections/{}/port'.format(name), uri.port())
+        # noinspection SpellCheckingInspection
         settings.setValue('PostgreSQL/connections/{}/allowGeometrylessTables'.format(name), 'true')
         settings.setValue('PostgreSQL/connections/{}/authcfg'.format(name), '')
         settings.setValue('PostgreSQL/connections/{}/dontResolveType'.format(name), 'false')
