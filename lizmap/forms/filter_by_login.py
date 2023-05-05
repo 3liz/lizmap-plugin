@@ -23,11 +23,12 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
         self.config = FilterByLoginDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
         self.config.add_layer_widget('filterAttribute', self.field)
-        self.config.add_layer_widget('filterPrivate', self.filter_by_user)
+        self.config.add_layer_widget('filterPrivate', self.filter_by)
         self.config.add_layer_widget('edition_only', self.edition_only)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('filterAttribute', self.label_field)
+        self.config.add_layer_label('filterPrivate', self.label_filter_by)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.field.setLayer)

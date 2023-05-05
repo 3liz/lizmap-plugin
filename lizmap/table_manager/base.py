@@ -1,4 +1,5 @@
 """Table manager."""
+import enum
 import inspect
 import json
 import logging
@@ -103,21 +104,44 @@ class TableManager:
 
             self.definitions.add_general_label('polygon_layer_id', self.parent.label_layer_filter_polygon)
             self.definitions.add_general_label('group_field', self.parent.label_field_filter_polygon)
+            self.definitions.add_general_label('filter_by_user', self.parent.label_filter_polygon_by_user)
 
         elif self.definitions.key() == 'layouts' and self.parent:
             self.definitions.add_general_widget('default_popup_print', self.parent.checkbox_default_print)
 
-        # Set tooltips
+        # Set tooltips and combobox items if needed
         for general_config in self.definitions.general_config.values():
+            general_config: dict
             widget = general_config.get('widget')
-            if not widget:
+            if widget is None:
                 continue
+
             tooltip = general_config.get('tooltip')
             if tooltip:
                 widget.setToolTip(tooltip)
                 label = general_config.get('label')
                 if label:
                     label.setToolTip(tooltip)
+
+            if general_config['type'] == InputType.CheckBoxAsDropdown:
+                # Duplicated code from base_edition_dialog.py
+                items = general_config.get('items')
+                for item in items:
+                    icon = item.value.get('icon')
+                    if icon:
+                        widget.addItem(QIcon(icon), item.value['label'], item.value['data'])
+                    else:
+                        widget.addItem(item.value['label'], item.value['data'])
+                    index = widget.findData(item.value['data'])
+                    tooltip = item.value.get('tooltip')
+                    if tooltip:
+                        widget.setItemData(index, tooltip, Qt.ToolTipRole)
+                default = general_config.get('default')
+                default: enum
+                if default:
+                    index = widget.findData(default.value['data'])
+                    widget.setCurrentIndex(index)
+                # End of duplicated code from base_edition_dialog.py
 
         # Set versions
         if self.parent:
@@ -303,7 +327,7 @@ class TableManager:
                     cell.setData(Qt.UserRole, '')
                     cell.setData(Qt.ToolTipRole, '')
 
-            elif input_type == InputType.List:
+            elif input_type in (InputType.List, InputType.CheckBoxAsDropdown):
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
                 items = self.definitions.layer_config[key].get('items')
@@ -331,7 +355,7 @@ class TableManager:
                                 # form
                                 labels.append(item_enum.value['data'])
                         value = ','.join(labels)
-                    cell.setText(value)
+                        cell.setText(value)
 
             elif input_type == InputType.SpinBox:
                 unit = self.definitions.layer_config[key].get('unit')
@@ -490,6 +514,8 @@ class TableManager:
                     data['config'][config_key] = widget.currentField()
                 elif input_type == InputType.CheckBox:
                     data['config'][config_key] = widget.isChecked()
+                elif input_type == InputType.CheckBoxAsDropdown:
+                    data['config'][config_key] = widget.currentData()
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(input_type))
 
@@ -534,7 +560,7 @@ class TableManager:
                     layer_data[key] = cell
                 elif input_type == InputType.Json:
                     layer_data[key] = cell
-                elif input_type == InputType.CheckBox:
+                elif input_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     if use_bool_type:
                         layer_data[key] = cell
                     else:
@@ -853,10 +879,12 @@ class TableManager:
             for config_key, value in config.items():
                 if config_key not in self.definitions.general_config:
                     continue
+
                 widget = self.definitions.general_config[config_key].get('widget')
                 if not widget:
                     # In tests, we don't have this dialog with general config
                     continue
+
                 widget_type = self.definitions.general_config[config_key]['type']
                 if widget_type == InputType.Layer:
                     vector_layer = self.project.mapLayer(value)
@@ -869,7 +897,7 @@ class TableManager:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
                 elif widget_type == InputType.Field:
                     settings.append(Setting(widget, widget_type, value))
-                elif widget_type == InputType.CheckBox:
+                elif widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     settings.append(Setting(widget, widget_type, value))
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
@@ -882,6 +910,9 @@ class TableManager:
                     setting.widget.setField(setting.value)
                 elif setting.type == InputType.CheckBox:
                     setting.widget.setChecked(setting.value)
+                elif setting.type == InputType.CheckBoxAsDropdown:
+                    index = setting.widget.findData(setting.value)
+                    setting.widget.setCurrentIndex(index)
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
 
@@ -922,7 +953,7 @@ class TableManager:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Color:
                         layer_data[key] = value
-                    elif definition['type'] == InputType.CheckBox:
+                    elif definition['type'] in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                         layer_data[key] = to_bool(value, False)
                     elif definition['type'] == InputType.File:
                         layer_data[key] = value

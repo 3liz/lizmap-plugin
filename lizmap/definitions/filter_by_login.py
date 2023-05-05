@@ -2,6 +2,7 @@
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.filter_by_polygon import FilterLogin
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -26,10 +27,11 @@ class FilterByLoginDefinitions(BaseDefinitions):
             'tooltip': tr('The field to use for filtering.')
         }
         self._layer_config['filterPrivate'] = {
-            'type': InputType.CheckBox,
-            'header': tr('Filter by user'),
-            'default': False,
-            'tooltip': tr('If Lizmap should use the group or the username for filtering data.')
+            'type': InputType.CheckBoxAsDropdown,
+            'header': tr('Filter by'),
+            'items': FilterLogin,
+            'default': FilterLogin.Group,
+            'tooltip': tr('If the filtering is done using user or groups. It is comma separated list of value.'),
         }
         self._layer_config['edition_only'] = {
             'type': InputType.CheckBox,

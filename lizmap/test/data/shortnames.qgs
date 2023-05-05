@@ -2492,12 +2492,8 @@ def my_form_open(dialog, layer, feature):
     </SpatialRefSys>
     <Variables>
       <variableNames type="QStringList">
-        <value>lizmap_user</value>
-        <value>lizmap_user_groups</value>
       </variableNames>
       <variableValues type="QStringList">
-        <value></value>
-        <value></value>
       </variableValues>
     </Variables>
     <WCSLayers type="QStringList"/>

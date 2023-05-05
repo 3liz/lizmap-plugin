@@ -13,6 +13,7 @@ class InputType(Enum):
     Collection = 'Collection'  # Does not have an input widget, it's a JSON representation
     Color = 'Color'  # QgsColorButton
     CheckBox = 'CheckBox'  # QCheckbox
+    CheckBoxAsDropdown = 'CheckBoxAsDropdown'  # QComboBox with only two options
     Field = 'Field'  # QgsFieldComboBox
     Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget in qgis_plugin_tools
     File = 'File'  # QgsFileWidget

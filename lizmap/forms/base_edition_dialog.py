@@ -75,7 +75,7 @@ class BaseEditionDialog(QDialog):
                 if widget:
                     widget.setToolTip(tooltip)
 
-            if layer_config['type'] == InputType.List:
+            if layer_config['type'] in (InputType.List, InputType.CheckBoxAsDropdown):
                 if widget is not None:
                     items = layer_config.get('items')
                     if items:
@@ -85,6 +85,10 @@ class BaseEditionDialog(QDialog):
                                 widget.addItem(QIcon(icon), item.value['label'], item.value['data'])
                             else:
                                 widget.addItem(item.value['label'], item.value['data'])
+                            index = widget.findData(item.value['data'])
+                            tooltip = item.value.get('tooltip')
+                            if tooltip:
+                                widget.setItemData(index, tooltip, Qt.ToolTipRole)
                         default = layer_config.get('default')
                         if default and not isinstance(default, (list, tuple)):
                             index = widget.findData(default.value['data'])
@@ -348,7 +352,7 @@ class BaseEditionDialog(QDialog):
                     definition['widget'].setColor(color)
                 else:
                     definition['widget'].setToNull()
-            elif definition['type'] == InputType.List:
+            elif definition['type'] in (InputType.List, InputType.CheckBoxAsDropdown):
                 if definition.get('multiple_selection', False):
                     for val in value:
                         index = definition['widget'].findData(val)
@@ -407,7 +411,7 @@ class BaseEditionDialog(QDialog):
                     value = widget.color().name()
             elif definition['type'] == InputType.CheckBox:
                 value = definition['widget'].isChecked()
-            elif definition['type'] == InputType.List:
+            elif definition['type'] in (InputType.List, InputType.CheckBoxAsDropdown):
                 if definition.get('multiple_selection', False):
                     value = definition['widget'].checkedItemsData()
                 else:

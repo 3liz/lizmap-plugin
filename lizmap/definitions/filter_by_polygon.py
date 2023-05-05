@@ -17,6 +17,8 @@ __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from lizmap.qgis_plugin_tools.tools.resources import resources_path
+
 
 @unique
 class FilterMode(Enum):
@@ -29,6 +31,22 @@ class FilterMode(Enum):
         'data': 'editing',
         'label': tr('Editing only'),
         'icon': QgsApplication.iconPath("mActionToggleEditing.svg"),
+    }
+
+
+@unique
+class FilterLogin(Enum):
+    Login = {
+        'data': True,
+        'label': tr('users'),
+        'icon': resources_path('icons', 'user.svg'),
+        'tooltip': tr('The field muse contain a separated list of users.')
+    }
+    Group = {
+        'data': False,
+        'label': tr('groups'),
+        'icon': resources_path('icons', 'user_group.svg'),
+        'tooltip': tr('The field muse contain a separated list of group IDs.')
     }
 
 
@@ -100,10 +118,10 @@ class FilterByPolygonDefinitions(BaseDefinitions):
         }
 
         self._general_config['filter_by_user'] = {
-            'type': InputType.CheckBox,
-            'header': tr('Filter by user'),
-            'default': False,
-            'tooltip': tr('If checked, the chosen field above should contain a list of users, not groups.')
+            'type': InputType.CheckBoxAsDropdown,
+            'items': FilterLogin,
+            'default': FilterLogin.Group,
+            'tooltip': tr('If the filtering is done using user or groups. It is comma separated list of value.'),
         }
 
     @classmethod
