@@ -14,8 +14,7 @@ from os.path import abspath, join
 from pathlib import Path
 from typing import List, Tuple, Union
 
-from qgis._core import Qgis
-from qgis.core import QgsApplication, QgsProviderRegistry, QgsVectorLayer
+from qgis.core import Qgis, QgsApplication, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QDir
 
 from lizmap.definitions.definitions import LayerProperties

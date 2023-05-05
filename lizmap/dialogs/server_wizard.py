@@ -36,6 +36,7 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
+from lizmap.definitions.online_help import online_help
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import qgis_version
 
@@ -455,6 +456,8 @@ class ServerWizard(QWizard):
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
 
+        self.helpRequested.connect(self.open_online_help)
+
         self.setPage(WizardPages.UrlPage, UrlPage(url))
         self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id, self.auth_manager))
         self.setPage(WizardPages.NamePage, NamePage(name))
@@ -462,11 +465,11 @@ class ServerWizard(QWizard):
         # self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
         # self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
 
-    def helpRequested(self) -> None:
+    @staticmethod
+    def open_online_help() -> None:
         """ Open the online help about this form. """
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(
-            QUrl('https://docs.lizmap.com/current/en/publish/lizmap_plugin/information.html'))
+        QDesktopServices.openUrl(online_help('publish/lizmap_plugin/information.html'))
 
     def validateCurrentPage(self):
         if self.currentId() == WizardPages.LoginPasswordPage:

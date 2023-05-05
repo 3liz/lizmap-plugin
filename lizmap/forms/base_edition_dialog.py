@@ -6,8 +6,8 @@ import re
 from collections import OrderedDict
 from typing import Union
 
-from qgis.core import QgsProject, QgsSettings, QgsVectorLayer
-from qgis.PyQt.QtCore import QLocale, Qt, QUrl
+from qgis.core import QgsProject, QgsVectorLayer
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QColor, QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import (
     QDialog,
@@ -18,12 +18,8 @@ from qgis.PyQt.QtWidgets import (
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
-from lizmap.definitions.definitions import (
-    DOC_URL,
-    ONLINE_HELP_LANGUAGES,
-    LwcVersions,
-    ServerComboData,
-)
+from lizmap.definitions.definitions import LwcVersions, ServerComboData
+from lizmap.definitions.online_help import online_help
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
@@ -142,15 +138,8 @@ class BaseEditionDialog(QDialog):
 
     def open_help(self):
         """ Open the online documentation for the panel. """
-        locale = QgsSettings().value("locale/userLocale", QLocale().name())
-        locale = locale[0:2]
-
-        if locale not in ONLINE_HELP_LANGUAGES:
-            locale = 'en'
-
-        url = '{url}/{lang}/{page}'.format(url=DOC_URL, lang=locale, page=self.config.help_path())
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(QUrl(url))
+        QDesktopServices.openUrl(online_help(self.config.help_path()))
 
     def version_lwc(self):
         """ Make all colors about widgets if it is available or not. """

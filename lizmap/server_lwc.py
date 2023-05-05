@@ -787,6 +787,7 @@ class ServerManager:
         self.parent.repository_combo.blockSignals(False)
         self.parent.refresh_combo_repositories()
         self.check_dialog_validity()
+        self.visible_new_server_button()
 
     def load_table(self):
         """ Load the table by reading the user configuration file. """

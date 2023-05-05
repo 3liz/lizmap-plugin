@@ -37,7 +37,6 @@ from qgis.PyQt.QtCore import (
     QStorageInfo,
     Qt,
     QTranslator,
-    QUrl,
 )
 from qgis.PyQt.QtGui import (
     QBrush,
@@ -62,8 +61,6 @@ from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
-    DOC_URL,
-    ONLINE_HELP_LANGUAGES,
     UNSTABLE_VERSION_PREFIX,
     LayerProperties,
     LwcVersions,
@@ -76,6 +73,7 @@ from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
+from lizmap.definitions.online_help import online_help
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
@@ -170,9 +168,7 @@ class Lizmap:
 
         setup_logger(plugin_name())
 
-        locale, file_path = setup_translation(
-            'lizmap_qgis_plugin_{}.qm', plugin_path('i18n'))
-        self.locale = locale[0:2]  # For the online help
+        _, file_path = setup_translation('lizmap_qgis_plugin_{}.qm', plugin_path('i18n'))
 
         if file_path:
             self.translator = QTranslator()
@@ -1130,16 +1126,11 @@ class Lizmap:
 
         line_edit.setText(text)
 
-    def show_help(self):
+    @staticmethod
+    def show_help():
         """Opens the html help file content with default browser."""
-        if self.locale in ONLINE_HELP_LANGUAGES:
-            locale = self.locale
-        else:
-            locale = 'en'
-
-        url = '{url}/{lang}/'.format(url=DOC_URL, lang=locale)
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(QUrl(url))
+        QDesktopServices.openUrl(online_help())
 
     @staticmethod
     def log(msg, abort=None, textarea=None):
