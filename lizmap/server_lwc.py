@@ -199,7 +199,7 @@ class ServerManager:
         if self.table.rowCount() == 0:
             self.add_first_server.setVisible(True)
         else:
-            self.add_first_server.setVisible(True)
+            self.add_first_server.setVisible(False)
 
     @staticmethod
     def config_for_id(auth_id: str) -> Optional[QgsAuthMethodConfig]:
