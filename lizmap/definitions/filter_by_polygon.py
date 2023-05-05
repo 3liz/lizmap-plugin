@@ -40,13 +40,13 @@ class FilterLogin(Enum):
         'data': True,
         'label': tr('users'),
         'icon': resources_path('icons', 'user.svg'),
-        'tooltip': tr('The field muse contain a separated list of users.')
+        'tooltip': tr('The field must contain a list of users separated by comma.')
     }
     Group = {
         'data': False,
         'label': tr('groups'),
         'icon': resources_path('icons', 'user_group.svg'),
-        'tooltip': tr('The field muse contain a separated list of group IDs.')
+        'tooltip': tr('The field must contain a list of group IDs separated by comma.')
     }
 
 
@@ -121,7 +121,8 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             'type': InputType.CheckBoxAsDropdown,
             'items': FilterLogin,
             'default': FilterLogin.Group,
-            'tooltip': tr('If the filtering is done using user or groups. It is comma separated list of value.'),
+            'tooltip': tr(
+                "If the filtering is done either using users or groups. It's a comma separated list of values."),
         }
 
     @classmethod

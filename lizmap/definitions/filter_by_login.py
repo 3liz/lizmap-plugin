@@ -31,7 +31,8 @@ class FilterByLoginDefinitions(BaseDefinitions):
             'header': tr('Filter by'),
             'items': FilterLogin,
             'default': FilterLogin.Group,
-            'tooltip': tr('If the filtering is done using user or groups. It is comma separated list of value.'),
+            'tooltip': tr(
+                "If the filtering is done either using users or groups. It's a comma separated list of values."),
         }
         self._layer_config['edition_only'] = {
             'type': InputType.CheckBox,
