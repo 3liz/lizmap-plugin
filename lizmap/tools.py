@@ -179,6 +179,8 @@ def next_git_tag():
 
 def to_bool(val: Union[str, int, float, bool], default_value: bool = True) -> bool:
     """ Convert lizmap config value to boolean """
+    if isinstance(val, bool):
+        return val
     if isinstance(val, str):
         # For string, compare lower value to True string
         return val.lower() in ('yes', 'true', 't', '1')

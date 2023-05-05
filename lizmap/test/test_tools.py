@@ -12,6 +12,7 @@ from lizmap.tools import (
     format_version_integer,
     is_database_layer,
     merge_strings,
+    to_bool,
     unaccent,
 )
 
@@ -43,6 +44,18 @@ class TestTools(unittest.TestCase):
         self.assertEqual("100912", format_version_integer("10.9.12"))
         self.assertEqual("030708", format_version_integer("3.7.8-alpha"))
         self.assertEqual("000000", format_version_integer("master"))
+
+    def test_to_bool(self):
+        """ Test the to_bool function. """
+        self.assertTrue(to_bool('trUe'))
+        self.assertTrue(to_bool('1'))
+        self.assertTrue(to_bool(1))
+        self.assertTrue(to_bool(True))
+
+        self.assertFalse(to_bool('fal'))
+        self.assertFalse(to_bool('0'))
+        self.assertFalse(to_bool(0))
+        self.assertFalse(to_bool(False))
 
     def test_unaccent(self):
         """ Test to unaccent a string. """
