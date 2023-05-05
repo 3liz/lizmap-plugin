@@ -51,11 +51,23 @@ class TestTools(unittest.TestCase):
         self.assertTrue(to_bool('1'))
         self.assertTrue(to_bool(1))
         self.assertTrue(to_bool(True))
+        self.assertTrue(to_bool(None, default_value=True))
+        self.assertTrue(to_bool(tuple('no')))
+        self.assertTrue(to_bool({'no': 'no'}))
+        self.assertTrue(to_bool((1, 2, 3)))
 
         self.assertFalse(to_bool('fal'))
+        self.assertFalse(to_bool(''))
+        self.assertFalse(to_bool(''), False)
+        self.assertFalse(to_bool(''), True)
         self.assertFalse(to_bool('0'))
         self.assertFalse(to_bool(0))
+        self.assertFalse(to_bool(-1))
         self.assertFalse(to_bool(False))
+        self.assertFalse(to_bool(None, default_value=False))
+        self.assertFalse(to_bool(tuple()))
+        self.assertFalse(to_bool(dict()))
+        self.assertFalse(to_bool(list()))
 
     def test_unaccent(self):
         """ Test to unaccent a string. """

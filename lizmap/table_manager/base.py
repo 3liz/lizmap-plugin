@@ -539,7 +539,7 @@ class TableManager:
                         layer_data[key] = cell
                     else:
                         # Lizmap 4 #176
-                        layer_data[key] = 'True' if cell else 'False'
+                        layer_data[key] = str(True) if cell else str(False)
                 elif input_type == InputType.SpinBox:
                     layer_data[key] = cell
                 elif input_type == InputType.List:
@@ -576,7 +576,7 @@ class TableManager:
                     if isinstance(layer_data[key], bool):
                         if not self.definitions.layer_config[key].get('use_json', False):
                             # Ticket #176 about true boolean
-                            layer_data[key] = 'True' if layer_data[key] else 'False'
+                            layer_data[key] = str(True) if layer_data[key] else str(False)
 
             if self.definitions.key() == 'datavizLayers':
                 if layer_data['type'] == GraphType.Box.value['data']:
@@ -644,7 +644,7 @@ class TableManager:
 
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
-                    layer_data['atlasEnabled'] = 'True'
+                    layer_data['atlasEnabled'] = str(True)
                     layer_data['atlasMaxWidth'] = 25
                 return layer_data
 
@@ -923,7 +923,7 @@ class TableManager:
                     elif definition['type'] == InputType.Color:
                         layer_data[key] = value
                     elif definition['type'] == InputType.CheckBox:
-                        layer_data[key] = True if value in ['true', 'True'] else False
+                        layer_data[key] = to_bool(value, False)
                     elif definition['type'] == InputType.File:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Json:

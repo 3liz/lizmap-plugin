@@ -83,7 +83,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         # For LWC 3.5
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False, check_server=False)
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
-        self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], 'False')
+        self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], str(False))
 
     def test_lizmap_layer_properties(self):
         """ Test apply some properties in a layer in the dialog. """

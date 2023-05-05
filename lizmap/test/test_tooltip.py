@@ -83,12 +83,12 @@ class TestToolTip(unittest.TestCase):
 
     def test_visibility_expression(self):
         """Test the visibility expression."""
-        expression = Tooltip._generate_eval_visibility('True')
+        expression = Tooltip._generate_eval_visibility(str(True))
         self.assertEqual("[% if (True, '', 'hidden') %]", expression)
         expression = QgsExpression().replaceExpressionText(expression, QgsExpressionContext())
         self.assertEqual('', expression)
 
-        expression = Tooltip._generate_eval_visibility('False')
+        expression = Tooltip._generate_eval_visibility(str(False))
         self.assertEqual("[% if (False, '', 'hidden') %]", expression)
         expression = QgsExpression().replaceExpressionText(expression, QgsExpressionContext())
         self.assertEqual('hidden', expression)
@@ -451,8 +451,8 @@ class TestToolTip(unittest.TestCase):
 </div>'''
         self.assertEqual(expected, html_content)
 
-        tab_1.setVisibilityExpression(QgsOptionalExpression(QgsExpression('True')))
-        tab_2.setVisibilityExpression(QgsOptionalExpression(QgsExpression('False')))
+        tab_1.setVisibilityExpression(QgsOptionalExpression(QgsExpression(str(True))))
+        tab_2.setVisibilityExpression(QgsOptionalExpression(QgsExpression(str(False))))
 
         expected = '''<ul class="nav nav-tabs">
 

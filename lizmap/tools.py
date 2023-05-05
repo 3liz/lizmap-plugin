@@ -177,18 +177,25 @@ def next_git_tag():
     return text
 
 
-def to_bool(val: Union[str, int, float, bool], default_value: bool = True) -> bool:
+def to_bool(val: Union[str, int, float, bool, None, dict, tuple, list], default_value: bool = True) -> bool:
     """ Convert lizmap config value to boolean """
     if isinstance(val, bool):
         return val
+
+    if val is None:
+        return default_value
+
     if isinstance(val, str):
         # For string, compare lower value to True string
         return val.lower() in ('yes', 'true', 't', '1')
-    elif not val:
-        # For value like False, 0, 0.0, None, empty list or dict returns False
-        return False
-    else:
-        return default_value
+
+    if isinstance(val, (int, float)):
+        return val >= 1
+
+    if isinstance(val, (tuple, dict, list)):
+        return len(val) >= 1
+
+    raise Exception('Unknown type : {}'.format(type(val)))
 
 
 def format_version_integer(version_string: str) -> str:

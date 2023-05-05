@@ -1253,11 +1253,7 @@ class Lizmap:
                 if item['wType'] == 'checkbox':
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
-                        if isinstance(json_options[key], str):
-                            if json_options[key].lower() in ('yes', 'true', 't', '1'):
-                                item['widget'].setChecked(True)
-                        elif isinstance(json_options[key], bool):
-                            item['widget'].setChecked(json_options[key])
+                        item['widget'].setChecked(to_bool(json_options[key]))
 
                 if item['wType'] in ('text', 'textarea'):
                     if isinstance(item['default'], (list, tuple)):
@@ -1711,13 +1707,7 @@ class Lizmap:
 
                         # checkboxes
                         if item['wType'] == 'checkbox':
-                            value = json_layers[json_key][key]
-                            if isinstance(value, bool):
-                                self.myDic[item_key][key] = value
-                            elif value.lower() in ('yes', 'true', 't', '1'):
-                                self.myDic[item_key][key] = True
-                            else:
-                                self.myDic[item_key][key] = False
+                            self.myDic[item_key][key] = to_bool(json_layers[json_key][key], False)
                         # spin box
                         elif item['wType'] == 'spinbox':
                             if json_layers[json_key][key] != '':
@@ -1740,12 +1730,8 @@ class Lizmap:
                 else:
                     if key == 'noLegendImage' and 'noLegendImage' in json_layers.get(json_key):
                         tmp = 'hide_at_startup'  # Default value
-                        if json_layers[json_key].get('noLegendImage') == 'True':
+                        if to_bool(json_layers[json_key].get('noLegendImage')):
                             tmp = 'disabled'
-                        elif json_layers[json_key].get('noLegendImage') != 'False':
-                            LOGGER.info(
-                                "Unknown value for key noLegendImage = {}".format(
-                                    json_layers[json_key].get('noLegendImage')))
                         self.myDic[item_key]['legend_image_option'] = tmp
 
                     # LOGGER.info('Skip key {} because no UI widget'.format(key))
@@ -2149,7 +2135,7 @@ class Lizmap:
             return
 
         # do nothing if no popup configured for this layer/group
-        if self.layerList[item.text(1)]['popup'] == 'False':
+        if not to_bool(self.layerList[item.text(1)]['popup']):
             return
 
         # Set the content of the QTextEdit if needed
@@ -2462,7 +2448,7 @@ class Lizmap:
                         input_value = str(input_value)
 
                 # Add value to the option
-                if (input_value and input_value != "False") or item.get('always_export'):
+                if (input_value and not to_bool(input_value)) or item.get('always_export'):
                     liz2json["options"][key] = input_value
 
         for key in self.layers_table.keys():
@@ -2594,9 +2580,9 @@ class Lizmap:
 
                     if key == 'noLegendImage':
                         # We take the value of legend_image_option
-                        property_value = 'False'
+                        property_value = str(False)
                         if v['legend_image_option'] == 'disabled':
-                            property_value = 'True'
+                            property_value = str(True)
                         if v['legend_image_option'] == 'expand_at_startup' and with_gui:
                             # We keep False
                             QMessageBox.warning(
@@ -2626,25 +2612,25 @@ class Lizmap:
             if not re.match(r'\d,\d', layer_options['metatileSize']):
                 del layer_options['metatileSize']
             # unset cacheExpiration if False
-            if layer_options['cached'].lower() == 'false':
+            if not to_bool(layer_options['cached']):
                 del layer_options['cacheExpiration']
             # unset clientCacheExpiration if not needed
             if layer_options['clientCacheExpiration'] < 0:
                 del layer_options['clientCacheExpiration']
             # unset externalWms if False
-            if layer_options['externalWmsToggle'].lower() == 'false':
+            if not to_bool(layer_options['externalWmsToggle']):
                 del layer_options['externalWmsToggle']
             # unset source project and repository if needed
             if not layer_options['sourceRepository'] or not layer_options['sourceProject']:
                 del layer_options['sourceRepository']
                 del layer_options['sourceProject']
             # set popupSource to auto if set to lizmap and no lizmap conf found
-            if layer_options['popup'].lower() == 'true' and layer_options['popupSource'] == 'lizmap' \
+            if to_bool(layer_options['popup']) and layer_options['popupSource'] == 'lizmap' \
                     and layer_options['popupTemplate'] == '':
                 layer_options['popupSource'] = 'auto'
 
             if layer_options.get("geometryType") in ('point', 'line', 'polygon'):
-                if layer_options.get('popupSource') == 'lizmap' and layer_options.get('popup', '').lower() == 'true':
+                if layer_options.get('popupSource') == 'lizmap' and to_bool(layer_options.get('popup')):
                     QMessageBox.warning(
                         self.dlg,
                         tr('Deprecated feature'),
@@ -2657,16 +2643,16 @@ class Lizmap:
                     )
 
             # Add external WMS options if needed
-            if isinstance(layer, QgsMapLayer) and layer_options.get('externalWmsToggle', '').lower() == 'true':
+            if isinstance(layer, QgsMapLayer) and to_bool(layer_options.get('externalWmsToggle')):
                 # Only for layers stored in disk
                 if layer.providerType() == 'wms':
                     wms_params = get_layer_wms_parameters(layer)
                     if wms_params:
                         layer_options['externalAccess'] = wms_params
                     else:
-                        layer_options['externalWmsToggle'] = "False"
+                        layer_options['externalWmsToggle'] = str(False)
                 else:
-                    layer_options['externalWmsToggle'] = "False"
+                    layer_options['externalWmsToggle'] = str(False)
 
             # Add layer options to the json object
             liz2json["layers"]["{}".format(v['name'])] = layer_options
@@ -2763,7 +2749,7 @@ class Lizmap:
             return False, message + base_message
 
         # Check relative/absolute path
-        if self.project.readEntry('Paths', 'Absolute')[0] == 'true':
+        if to_bool(self.project.readEntry('Paths', 'Absolute')[0]):
             message = tr(
                 'The project layer paths must be set to relative. '
                 'Please change this options in the project settings.')
@@ -2772,7 +2758,7 @@ class Lizmap:
         # check if a title has been given in the project QGIS Server tab configuration
         # first set the WMSServiceCapabilities to true
         if not self.project.readEntry('WMSServiceCapabilities', '/')[1]:
-            self.project.writeEntry('WMSServiceCapabilities', '/', 'True')
+            self.project.writeEntry('WMSServiceCapabilities', '/', str(True))
         if self.project.readEntry('WMSServiceTitle', '')[0] == '':
             self.project.writeEntry('WMSServiceTitle', '', self.project.baseName())
 
