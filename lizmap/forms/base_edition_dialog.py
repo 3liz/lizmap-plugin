@@ -267,7 +267,7 @@ class BaseEditionDialog(QDialog):
             if layer_config['type'] == InputType.Field:
                 widget = layer_config.get('widget')
 
-                if not widget:
+                if widget is None:
                     # Dataviz does not have widget for Y, Z
                     continue
 

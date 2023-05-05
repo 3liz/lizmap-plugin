@@ -501,7 +501,7 @@ class TableManager:
             data['config'] = dict()
             for config_key, general_config in self.definitions.general_config.items():
                 widget = general_config.get('widget')
-                if not widget:
+                if widget is None:
                     continue
 
                 input_type = general_config['type']
@@ -881,7 +881,7 @@ class TableManager:
                     continue
 
                 widget = self.definitions.general_config[config_key].get('widget')
-                if not widget:
+                if widget is None:
                     # In tests, we don't have this dialog with general config
                     continue
 
