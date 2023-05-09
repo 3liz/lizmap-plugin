@@ -85,8 +85,8 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], str(False))
 
-    def test_lizmap_layer_properties(self):
-        """ Test apply some properties in a layer in the dialog. """
+    def _setup_empty_project(self):
+        """ Internal function to add a layer and a basic check. """
         project = QgsProject.instance()
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         project.addMapLayer(layer)
@@ -95,6 +95,8 @@ class TestUiLizmapDialog(unittest.TestCase):
         lizmap = Lizmap(get_iface())
         config = lizmap.read_lizmap_config_file()
 
+        lizmap.set_initial_extent_from_canvas()
+
         # Config is empty in the CFG file because it's a new project
         self.assertDictEqual({}, config)
 
@@ -102,6 +104,12 @@ class TestUiLizmapDialog(unittest.TestCase):
         lizmap.myDic = {}
         lizmap.process_node(project.layerTreeRoot(), None, {})
         lizmap.layerList = lizmap.myDic
+
+        return lizmap
+
+    def test_lizmap_layer_properties(self):
+        """ Test apply some properties in a layer in the dialog. """
+        lizmap = self._setup_empty_project()
 
         # Click the layer
         item = lizmap.dlg.layer_tree.topLevelItem(0)
@@ -124,3 +132,46 @@ class TestUiLizmapDialog(unittest.TestCase):
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
         self.assertListEqual(output['layers']['lines']['group_visibility'], [acl_layer])
         self.assertEqual(output['layers']['lines']['abstract'], html_abstract)
+
+    def test_general_scales_properties(self):
+        """ Test some UI settings about general properties. """
+        lizmap = self._setup_empty_project()
+
+        # Check default values
+        self.assertEqual('', lizmap.dlg.inMapScales.text())
+        self.assertEqual('', lizmap.dlg.inMinScale.text())
+        self.assertEqual('', lizmap.dlg.inMaxScale.text())
+
+        scales = '1000, 5000, 15000'
+
+        # Fill scales
+        lizmap.dlg.inMapScales.setText(scales)
+        lizmap.get_min_max_scales()
+        self.assertEqual('1000', lizmap.dlg.inMinScale.text())
+        self.assertEqual('15000', lizmap.dlg.inMaxScale.text())
+        self.assertEqual(scales, lizmap.dlg.inMapScales.text())
+
+        # Check new values in the output config
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+
+        # Check scales in the CFG
+        self.assertEqual(1000, output['options']['minScale'])
+        self.assertEqual(15000, output['options']['maxScale'])
+        self.assertListEqual([1000, 5000, 15000], output['options']['mapScales'])
+
+    def test_general_properties_true_values(self):
+        """ Test some UI settings about boolean values. """
+        lizmap = self._setup_empty_project()
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        self.assertIsNone(output['options'].get('atlasAutoPlay'))
+
+        lizmap.dlg.atlasAutoPlay.setChecked(True)
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        self.assertTrue(output['options'].get('atlasAutoPlay'))
+
+        lizmap.dlg.atlasAutoPlay.setChecked(False)
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        self.assertIsNone(output['options'].get('atlasAutoPlay'))

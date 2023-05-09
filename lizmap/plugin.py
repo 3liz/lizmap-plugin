@@ -2439,8 +2439,12 @@ class Lizmap:
                         input_value = str(input_value)
 
                 # Add value to the option
-                if (input_value and not to_bool(input_value)) or item.get('always_export'):
-                    liz2json["options"][key] = input_value
+                if input_value:
+                    if isinstance(input_value, (list, tuple, dict)):
+                        liz2json["options"][key] = input_value
+                    else:
+                        if to_bool(input_value) or item.get('always_export'):
+                            liz2json["options"][key] = input_value
 
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
