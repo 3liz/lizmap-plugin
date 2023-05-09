@@ -23,7 +23,8 @@ def is_lizmap_dot_com_hosting(metadata: dict) -> bool:
 
 def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str], str]:
     """ Check the project when it's hosted on Lizmap.com hosting. """
-    project_home = Path(project.homePath())
+    # Do not use homePath, it's not designed for this if the user has set a custom home path
+    project_home = Path(project.absolutePath())
     layer_error: Dict[str, str] = {}
 
     connection_error = False
