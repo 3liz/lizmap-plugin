@@ -42,6 +42,7 @@ from lizmap.tools import qgis_version
 
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
+DEBUG = True
 
 
 class WizardPages(IntEnum):
@@ -282,13 +283,17 @@ class MasterPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.result_master_password)
 
-    # def nextId(self) -> int:
-    #     parent_wizard = self.wizard()
-    #     parent_wizard: ServerWizard
-    #     if parent_wizard.is_lizmap_dot_com:
-    #         return WizardPages.AddOrNotPostgresqlPage
-    #
-    #     return -1
+    def nextId(self) -> int:
+        if DEBUG:
+            return WizardPages.AddOrNotPostgresqlPage
+
+        return -1
+        # parent_wizard = self.wizard()
+        # parent_wizard: ServerWizard
+        # if parent_wizard.is_lizmap_dot_com:
+        #     return WizardPages.AddOrNotPostgresqlPage
+        #
+        # return -1
 
 
 class AddOrNotPostgresqlPage(QWizardPage):
@@ -462,8 +467,8 @@ class ServerWizard(QWizard):
         self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id, self.auth_manager))
         self.setPage(WizardPages.NamePage, NamePage(name))
         self.setPage(WizardPages.MasterPasswordPage, MasterPasswordPage(self.auth_manager))
-        # self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
-        # self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
+        self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
+        self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
 
     @staticmethod
     def open_online_help() -> None:
