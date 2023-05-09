@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Improve some UX forms about checkbox.
+* Fix the new server button display
+* Fix opening the online help from the wizard, it will choose the correct language if possible
+* Some Python refactoring about reading the CFG file with boolean values
+
 ## 3.13.0 - 2023-05-01
 
 * Add a new wizard for the server/instance creation, it will allow more options soon in a next version
