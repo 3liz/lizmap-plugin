@@ -181,7 +181,7 @@ def to_bool(val: Union[str, int, float, bool, None], default_value: bool = True)
     if isinstance(val, bool):
         return val
 
-    if val is None:
+    if val is None or val == '':
         return default_value
 
     if isinstance(val, str):

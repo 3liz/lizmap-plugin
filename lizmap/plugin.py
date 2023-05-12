@@ -1176,10 +1176,12 @@ class Lizmap:
         self.dlg.inMaxScale.setText(str(max_scale))
         self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
 
-    def read_cfg_file(self):
+    def read_cfg_file(self, skip_tables=False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
+
+        skip_tables is only used in tests, as we don't have "table managers". It's only for testing the "layer" panel.
         """
         json_options = {}
         json_file = self.dlg.cfg_file()
@@ -1313,6 +1315,8 @@ class Lizmap:
 
         # Fill the table widgets
         for key, item in self.layers_table.items():
+            if skip_tables:
+                continue
             self.load_config_into_table_widget(key)
 
         self.dlg.check_ign_french_free_key()
@@ -1322,7 +1326,7 @@ class Lizmap:
         if self.project.fileName().lower().endswith('qgs'):
             # Manage lizmap_user project variable
             variables = self.project.customVariables()
-            if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists():
+            if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists() and not skip_tables:
                 # The variable 'lizmap_user' exists in the project as a variable
                 # But no CFG was found, maybe the project has been renamed.
                 message = tr(
@@ -1355,11 +1359,14 @@ class Lizmap:
         self.embeddedGroups = None
 
         # Fill the layer tree
-        self.populate_layer_tree()
+        data = self.populate_layer_tree()
 
         # Fill base-layer startup
         self.on_baselayer_checkbox_change()
         self.set_startup_baselayer_from_config()
+
+        # The return is used in tests
+        return data
 
     def load_config_into_table_widget(self, key):
         """Load data from lizmap config file into the widget.
@@ -1821,7 +1828,7 @@ class Lizmap:
             self.log(message, abort=True, textarea=self.dlg.outLog)
             return {}
 
-    def populate_layer_tree(self):
+    def populate_layer_tree(self) -> dict:
         """Populate the layer tree of the Layers tab from QGIS legend interface.
 
         Needs to be refactored.
@@ -1843,6 +1850,9 @@ class Lizmap:
 
         self.dlg.block_signals_address(False)
         self.enable_check_box(False)
+
+        # The return is used in tests
+        return json_layers
 
     def from_data_to_ui_for_layer_group(self):
         """ Restore layer/group values into each field when selecting a layer in the tree. """
@@ -2304,7 +2314,7 @@ class Lizmap:
         # Layer ID as short name
         if lwc_version >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
-            if to_bool(use_layer_id):
+            if to_bool(use_layer_id, False):
                 QMessageBox.warning(
                     self.dlg,
                     tr('Use layer IDs as name'),
@@ -2439,12 +2449,17 @@ class Lizmap:
                         input_value = str(input_value)
 
                 # Add value to the option
-                if input_value:
-                    if isinstance(input_value, (list, tuple, dict)):
-                        liz2json["options"][key] = input_value
-                    else:
-                        if to_bool(input_value) or item.get('always_export'):
-                            liz2json["options"][key] = input_value
+                if item['type'] == 'boolean':
+                    if not to_bool(input_value):
+                        if not item.get('always_export'):
+                            continue
+
+                if item['type'] == 'string':
+                    if input_value == '':
+                        if not item.get('always_export'):
+                            continue
+
+                liz2json["options"][key] = input_value
 
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
@@ -2601,24 +2616,36 @@ class Lizmap:
                 layer_options[key] = property_value
 
             # Cache Metatile: unset metatileSize if empty
-            # this is to avoid, but lizmap web client must change accordingly to avoid using empty metatileSize
+            # this is to avoid, but LWC must change accordingly to avoid using empty metatileSize
             # (2.2.0 does not handle it)
+
             # unset metatileSize
-            if not re.match(r'\d,\d', layer_options['metatileSize']):
+            meta_tile_size = layer_options.get('metatileSize')
+            if meta_tile_size is not None and isinstance(meta_tile_size, str) and not re.match(r'\d,\d', meta_tile_size):
                 del layer_options['metatileSize']
+
             # unset cacheExpiration if False
-            if not to_bool(layer_options['cached']):
+            cached = layer_options.get('cached')
+            if cached and not to_bool(cached):
                 del layer_options['cacheExpiration']
+
             # unset clientCacheExpiration if not needed
-            if layer_options['clientCacheExpiration'] < 0:
+            client_cache = layer_options.get('clientCacheExpiration')
+            if client_cache and client_cache < 0:
                 del layer_options['clientCacheExpiration']
+
             # unset externalWms if False
-            if not to_bool(layer_options['externalWmsToggle']):
+            external_wms = layer_options.get('externalWmsToggle')
+            if external_wms and not to_bool(external_wms):
                 del layer_options['externalWmsToggle']
+
             # unset source project and repository if needed
-            if not layer_options['sourceRepository'] or not layer_options['sourceProject']:
+            source_repository = layer_options.get('sourceRepository')
+            source_project = layer_options.get('sourceProject')
+            if not source_repository or not source_project:
                 del layer_options['sourceRepository']
                 del layer_options['sourceProject']
+
             # set popupSource to auto if set to lizmap and no lizmap conf found
             if to_bool(layer_options['popup']) and layer_options['popupSource'] == 'lizmap' \
                     and layer_options['popupTemplate'] == '':
@@ -2638,7 +2665,7 @@ class Lizmap:
                     )
 
             # Add external WMS options if needed
-            if isinstance(layer, QgsMapLayer) and to_bool(layer_options.get('externalWmsToggle')):
+            if isinstance(layer, QgsMapLayer) and to_bool(layer_options.get('externalWmsToggle', False)):
                 # Only for layers stored in disk
                 if layer.providerType() == 'wms':
                     wms_params = get_layer_wms_parameters(layer)
@@ -2650,7 +2677,7 @@ class Lizmap:
                     layer_options['externalWmsToggle'] = str(False)
 
             # Add layer options to the json object
-            liz2json["layers"]["{}".format(v['name'])] = layer_options
+            liz2json["layers"][v['name']] = layer_options
 
         return liz2json
 

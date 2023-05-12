@@ -93,7 +93,9 @@ class TestUiLizmapDialog(unittest.TestCase):
         project.setFileName(temporary_file_path())
 
         lizmap = Lizmap(get_iface())
-        config = lizmap.read_lizmap_config_file()
+        # Do not use read_lizmap_config_file
+        # as it will be called by read_cfg_file and also the UI is set in read_cfg_file
+        config = lizmap.read_cfg_file(skip_tables=True)
 
         lizmap.set_initial_extent_from_canvas()
 
@@ -133,14 +135,27 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertListEqual(output['layers']['lines']['group_visibility'], [acl_layer])
         self.assertEqual(output['layers']['lines']['abstract'], html_abstract)
 
+        # Test a false value as a string which shouldn't be there by default
+        self.assertIsNone(output['layers']['lines'].get('externalWmsToggle'))
+        self.assertIsNone(output['layers']['lines'].get('metatileSize'))
+
     def test_general_scales_properties(self):
         """ Test some UI settings about general properties. """
         lizmap = self._setup_empty_project()
 
         # Check default values
-        self.assertEqual('', lizmap.dlg.inMapScales.text())
-        self.assertEqual('', lizmap.dlg.inMinScale.text())
-        self.assertEqual('', lizmap.dlg.inMaxScale.text())
+        self.assertEqual('10000, 25000, 50000, 100000, 250000, 500000', lizmap.dlg.inMapScales.text())
+
+        # Default values from config.py at the beginning only
+        self.assertEqual('1', lizmap.dlg.inMinScale.text())
+        self.assertEqual('1000000000', lizmap.dlg.inMaxScale.text())
+
+        # Trigger the signal
+        lizmap.get_min_max_scales()
+
+        # Values from the UI
+        self.assertEqual('10000', lizmap.dlg.inMinScale.text())
+        self.assertEqual('500000', lizmap.dlg.inMaxScale.text())
 
         scales = '1000, 5000, 15000'
 
@@ -175,3 +190,14 @@ class TestUiLizmapDialog(unittest.TestCase):
 
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
         self.assertIsNone(output['options'].get('atlasAutoPlay'))
+
+        # Test some strings as well as default value
+        self.assertEqual("dock", output['options'].get('popupLocation'))
+        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
+        # Not working for now, maybe because of the table manager
+        # self.assertEqual("light", output['options'].get('theme'))
+
+
+if __name__ == "__main__":
+    from qgis.testing import start_app
+    start_app()

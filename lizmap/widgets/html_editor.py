@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import logging
+import os
 import re
 
 from html import escape, unescape
@@ -12,12 +13,19 @@ from qgis.gui import QgsCodeEditorHTML, QgsExpressionBuilderDialog
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon
 
+from lizmap.tools import to_bool
+
 try:
     from qgis.PyQt.QtWebKit import QWebSettings
     from qgis.PyQt.QtWebKitWidgets import QWebView
     WEBKIT_AVAILABLE = True
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
+
+if to_bool(os.getenv("CI")):
+    # Failing in Pycharm when launching tests, maybe because of the QApplication ?
+    WEBKIT_AVAILABLE = False
+
 from qgis.PyQt.QtWidgets import QWidget
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
