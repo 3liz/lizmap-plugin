@@ -174,6 +174,12 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(15000, output['options']['maxScale'])
         self.assertListEqual([1000, 5000, 15000], output['options']['mapScales'])
 
+        # Check an empty list and a populated list then
+        self.assertIsNone(output['options'].get('acl'))
+        lizmap.dlg.inAcl.setText('cadastre,urbanism')
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        self.assertListEqual(['cadastre', 'urbanism'], output['options'].get('acl'))
+
     def test_general_properties_true_values(self):
         """ Test some UI settings about boolean values. """
         lizmap = self._setup_empty_project()

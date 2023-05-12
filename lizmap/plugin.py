@@ -2454,8 +2454,9 @@ class Lizmap:
                         if not item.get('always_export'):
                             continue
 
-                if item['type'] == 'string':
-                    if input_value == '':
+                if item['type'] in ('list', 'string'):
+                    if not input_value:
+                        # Empty list or string
                         if not item.get('always_export'):
                             continue
 
