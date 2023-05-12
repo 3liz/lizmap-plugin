@@ -607,7 +607,7 @@ class ServerWizard(QWizard):
         if error == QgsBlockingNetworkRequest.NetworkError:
             return False, tr("Network error"), False
         elif error == QgsBlockingNetworkRequest.ServerExceptionError:
-            return False, tr("Server exception error"), False
+            return False, tr("Server exception error") + ". " + tr('Please check the URL'), False
         elif error == QgsBlockingNetworkRequest.TimeoutError:
             return False, tr("Timeout error"), False
         elif error != QgsBlockingNetworkRequest.NoError:
