@@ -638,6 +638,10 @@ class Lizmap:
 
     def filename_changed(self):
         """ When the current project has been renamed. """
+        if os.getenv("QGIS_PLUGIN_AUTO_SAVING"):
+            # Special variable set from QGIS autoSaver plugin
+            return
+
         if not self.project.absoluteFilePath():
             return
 
