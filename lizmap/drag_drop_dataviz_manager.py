@@ -13,6 +13,7 @@ from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QComboBox,
     QDialog,
+    QInputDialog,
     QTableWidget,
     QTreeWidget,
     QTreeWidgetItem,
@@ -21,6 +22,7 @@ from qgis.PyQt.QtWidgets import (
 
 from lizmap.definitions.dataviz import DatavizDefinitions
 from lizmap.dialogs.drag_drop_dataviz_container import ContainerDatavizDialog
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -68,7 +70,6 @@ class DragDropDatavizManager:
             # Temporary until we implement these functions
             self.parent.button_up_dd_dataviz.setVisible(False)
             self.parent.button_down_dd_dataviz.setVisible(False)
-            self.parent.button_edit_dd_dataviz.setVisible(False)
             self.parent.button_remove_dd_dataviz.setVisible(False)
 
     def add_current_plot_from_combo(self):
@@ -228,10 +229,19 @@ class DragDropDatavizManager:
             return
 
         item = self.tree.itemFromIndex(selection[0])
+        # noinspection PyUnresolvedReferences
         if item.data(0, Qt.UserRole) == Container.Plot:
             return
 
-        # TODO continue
+        new_name, ok = QInputDialog.getText(
+            self.parent,
+            tr("Edit container name"),
+            tr("New name"),
+            text=item.text(0))
+        if not ok:
+            return
+
+        item.setText(0, new_name)
 
     def remove_item(self):
         """ When the remove item button is clicked.
