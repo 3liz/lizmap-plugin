@@ -49,11 +49,11 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
-    QLabel,
     QLineEdit,
     QMessageBox,
     QTableWidgetItem,
     QTreeWidgetItem,
+    QWidget,
 )
 
 from lizmap import DEFAULT_LWC_VERSION
@@ -709,7 +709,7 @@ class Lizmap:
             self.layers_table['datavizLayers'].get('manager').preview_dataviz_dialog()
 
     def lwc_version_changed(self):
-        """When the version has changed in the selector."""
+        """ When the version has changed in the selector, we update features with the blue background. """
         current_version = self.dlg.current_lwc_version()
 
         if current_version is None:
@@ -727,8 +727,9 @@ class Lizmap:
         found = False
         for lwc_version, items in self.lwc_versions.items():
             if found:
+                # Set some blue
                 for item in items:
-                    if isinstance(item, QLabel):
+                    if isinstance(item, QWidget):
                         item.setStyleSheet(NEW_FEATURE_CSS)
                     elif isinstance(item, QStandardItem):
                         # QComboBox
@@ -738,8 +739,9 @@ class Lizmap:
                         brush.setColor(QColor(NEW_FEATURE_COLOR))
                         item.setBackground(brush)
             else:
+                # Remove some blue
                 for item in items:
-                    if isinstance(item, QLabel):
+                    if isinstance(item, QWidget):
                         item.setStyleSheet('')
                     elif isinstance(item, QStandardItem):
                         # QComboBox

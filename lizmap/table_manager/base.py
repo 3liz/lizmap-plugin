@@ -150,8 +150,9 @@ class TableManager:
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
 
-    def set_lwc_version(self, current_version):
+    def set_lwc_version(self, current_version: LwcVersions):
         """ When the target LWC version is changed, we need to update all widgets to set the color. """
+        # LOGGER.debug("Set new LWC version {} in {}".format(current_version.value, self.definitions.key()))
         found = False
         for lwc_version in self.lwc_versions:
             if found:

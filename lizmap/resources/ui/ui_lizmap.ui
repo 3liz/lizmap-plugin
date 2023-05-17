@@ -3727,7 +3727,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <enum>QFrame::NoFrame</enum>
              </property>
              <property name="widgetResizable">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <widget class="QWidget" name="scrollAreaWidgetContents_11">
               <property name="geometry">
