@@ -96,6 +96,10 @@ from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
+from lizmap.project_checker_tools import (
+    invalid_int8_primary_key,
+    invalid_tid_field,
+)
 from lizmap.saas import is_lizmap_dot_com_hosting, valid_saas_lizmap_dot_com
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
@@ -2419,6 +2423,47 @@ class Lizmap:
                 message += tr(
                     "The process is continuing but expect some layers to not be visible in Lizmap Web Client.")
                 ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Lizmap.com hosting'), message)
+
+        if check_server:
+            results = {
+                'tid': [],
+                'int8': [],
+            }
+            for layer in self.project.mapLayers().values():
+                if not isinstance(layer, QgsVectorLayer):
+                    continue
+                if invalid_tid_field(layer):
+                    results['tid'].append(layer.name())
+                if invalid_int8_primary_key(layer):
+                    results['int8'].append(layer.name())
+
+            message = tr('Some fields are invalid for QGIS server.') + '<br>'
+
+            if results['tid']:
+                message += tr(
+                    "The field 'tid' has been detected as primary key for your layer. We highly recommend "
+                    "you to set a proper integer field, neither a bigint nor an integer8 :")
+                message += "<br><ul>"
+                for layer_name in results['tid']:
+                    message += "<li>{}</li>".format(layer_name)
+                message += "</ul><br>"
+
+            if results['int8']:
+                message += tr(
+                    "The primary key has been detected as a bigint (integer8) for your layer. We highly recommend "
+                    "you to set a proper integer field, neither a bigint nor an integer8 :")
+                message += "<br><ul>"
+                for layer_name in results['int8']:
+                    message += "<li>{}</li>".format(layer_name)
+                message += "</ul><br>"
+
+            message += "<br>"
+            message += tr(
+                "The process is continuing but expect some layers to not be visible in Lizmap Web Client.")
+
+            if results['tid'] or results['int8']:
+                warnings.append(Warnings.InvalidFieldType.value)
+                ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('QGIS server'), message)
 
         metadata = {
             'qgis_desktop_version': qgis_version(),

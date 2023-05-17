@@ -23,7 +23,7 @@ LOGGER = logging.getLogger('Lizmap')
 
 class OgcProjectValidity:
 
-    """ To make a QGIS project valid according to  OGC standards. """
+    """ To make a QGIS project valid according to OGC standards. """
 
     def __init__(self, project: QgsProject):
         """ Constructor. """
@@ -31,7 +31,7 @@ class OgcProjectValidity:
         self.new_shortnames_added = []
 
     def add_shortnames(self):
-        """ Add shortnames on all layer and groups. """
+        """ Add shortnames on all layers and groups. """
         existing, duplicated = self.existing_shortnames()
         layer_tree = self.project.layerTreeRoot()
         self._add_all_shortnames(layer_tree, existing, duplicated)
@@ -110,7 +110,7 @@ class OgcProjectValidity:
     def short_name(cls, layer_name: str, existing: List[str], prefix='l') -> str:
         """ Generate a layer short name.
 
-        Default prefix is 'l' for layer.
+        The default prefix is 'l' for layer.
         """
         layer_name = unaccent(layer_name)
         # Inspired by QgsMapLayer::generateId()
