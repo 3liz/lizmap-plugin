@@ -6,6 +6,10 @@
 * Fix the new server button display
 * Fix opening the online help from the wizard, it will choose the correct language if possible
 * Some Python refactoring about reading the CFG file with boolean values
+* Improve the new wizard for setting up the new server
+* Fix wrong the project home folder for checking path when it's hosted on Lizmap.com
+* Try to fix the popup when "Autosaver" plugin is installed
+* Add a new panel about LWC 3.7 and Drag&Drop layout for the dataviz
 
 ## 3.13.0 - 2023-05-01
 
