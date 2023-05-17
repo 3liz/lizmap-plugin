@@ -81,6 +81,8 @@ from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.scroll_message_box import ScrollMessageBox
+from lizmap.dialogs.wizard_group import WizardGroupDialog
+from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
@@ -106,7 +108,6 @@ except ModuleNotFoundError:
     # In a standalone application
     QGIS_PLUGIN_MANAGER = False
 
-from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
@@ -271,11 +272,20 @@ class Lizmap:
             self.dlg.enable_dataviz_preview,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
+            # Layout panel
             self.dlg.label_layout_panel,
             self.dlg.label_layout_panel_description,
             self.dlg.edit_layout_form_button,
             self.dlg.up_layout_form_button,
             self.dlg.down_layout_form_button,
+            # Drag drop dataviz designer
+            self.dlg.button_add_dd_dataviz,
+            self.dlg.button_remove_dd_dataviz,
+            self.dlg.button_edit_dd_dataviz,
+            self.dlg.button_up_dd_dataviz,
+            self.dlg.button_down_dd_dataviz,
+            self.dlg.button_add_plot,
+            self.dlg.combo_plots,
         ]
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
@@ -630,6 +640,9 @@ class Lizmap:
         self.target_server_changed()
         self.dlg.refresh_combo_repositories()
 
+        self.dlg.tabWidget.setCurrentIndex(0)
+
+        self.drag_drop_dataviz = None
         self.layerList = None
         self.action = None
         self.embeddedGroups = None
@@ -917,6 +930,14 @@ class Lizmap:
                         item.get('upButton'),
                         item.get('downButton'),
                     )
+                    # The drag&drop dataviz HTML layout
+                    self.drag_drop_dataviz = DragDropDatavizManager(
+                        self.dlg,
+                        definition,
+                        item['tableWidget'],
+                        self.dlg.tree_dd_plots,
+                        self.dlg.combo_plots,
+                    )
                 elif key == 'layouts':
                     # noinspection PyTypeChecker
                     item['manager'] = TableManagerLayouts(
@@ -962,6 +983,39 @@ class Lizmap:
         # Delete layers from table when deleted from registry
         # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
+
+        # Dataviz
+        self.dlg.button_add_dd_dataviz.setText('')
+        # noinspection PyCallByClass,PyArgumentList
+        self.dlg.button_add_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+        self.dlg.button_add_dd_dataviz.setToolTip(tr('Add a new container in the tree'))
+        self.dlg.button_add_dd_dataviz.clicked.connect(self.drag_drop_dataviz.add_container)
+
+        self.dlg.button_remove_dd_dataviz.setText('')
+        # noinspection PyCallByClass,PyArgumentList
+        self.dlg.button_remove_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
+        self.dlg.button_remove_dd_dataviz.setToolTip(tr('Remove a container or a field from the tree'))
+        self.dlg.button_remove_dd_dataviz.clicked.connect(self.drag_drop_dataviz.remove_item)
+
+        self.dlg.button_add_plot.setText('')
+        self.dlg.button_add_plot.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+        self.dlg.button_add_plot.setToolTip(tr('Add the plot in the layout'))
+        self.dlg.button_add_plot.clicked.connect(self.drag_drop_dataviz.add_current_plot_from_combo)
+
+        self.dlg.button_up_dd_dataviz.setText('')
+        self.dlg.button_up_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
+        self.dlg.button_up_dd_dataviz.setToolTip(tr('Move the selected row up'))
+        self.dlg.button_up_dd_dataviz.clicked.connect(self.drag_drop_dataviz.move_row_up)
+
+        self.dlg.button_down_dd_dataviz.setText('')
+        self.dlg.button_down_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
+        self.dlg.button_down_dd_dataviz.setToolTip(tr('Move the selected row down'))
+        self.dlg.button_down_dd_dataviz.clicked.connect(self.drag_drop_dataviz.move_row_down)
+
+        self.dlg.button_edit_dd_dataviz.setText('')
+        self.dlg.button_edit_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyEdit.svg')))
+        self.dlg.button_edit_dd_dataviz.setToolTip(tr('Edit the selected container/group'))
+        self.dlg.button_edit_dd_dataviz.clicked.connect(self.drag_drop_dataviz.edit_row_container)
 
         # Layouts
         # Not connecting the "layoutAdded" signal, it's done when opening the Lizmap plugin
@@ -1219,6 +1273,11 @@ class Lizmap:
                             data = {k: json_options[k] for k in json_options if k.startswith(manager.definitions.key())}
                             if data:
                                 manager.from_json(data)
+
+                        if key == 'datavizLayers':
+                            # The drag&drop dataviz HTML layout
+                            self.drag_drop_dataviz.load_dataviz_list_from_main_table()
+                            self.drag_drop_dataviz.load_tree_from_cfg(sjson.get('dataviz_drag_drop', []))
 
             except Exception as e:
                 if self.is_dev_version:
@@ -2488,6 +2547,11 @@ class Lizmap:
                     liz2json['options'].update(data)
                 else:
                     liz2json[key] = data
+
+        # Drag drop dataviz designer
+        if self.drag_drop_dataviz:
+            # In tests, we don't have the variable set
+            liz2json['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
 
         # list of Lizmap external baselayers
         table_widget_base_layer = self.dlg.twLizmapBaselayers

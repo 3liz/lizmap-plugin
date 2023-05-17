@@ -587,10 +587,18 @@ class TableManager:
 
                 default_value = self.definitions.layer_config[key].get('default')
                 is_read_only = self.definitions.layer_config[key].get('read_only', False)
-                if default_value is not None and hasattr(default_value, '__call__') and is_read_only:
+
+                # By default, some functions might be called everytime : feature count, min/max values of a field
+                update = self.definitions.layer_config[key].get('update_on_saving', True)
+                if key not in layer_data or layer_data[key] is None or layer_data[key] == '':
+                    if not update:
+                        # Only the first time if the value wasn't set, we compute the value anyway
+                        update = True
+
+                if default_value is not None and hasattr(default_value, '__call__') and is_read_only and update:
                     # Value is a for now a function, we need to evaluate it
                     vector_layer = self.project.mapLayer(layer_data['layerId'])
-                    # TODO to make it future proof by inspecting parameters etc
+                    # TODO to make it future-proof by inspecting parameters etc
                     # We assume for now we use the QgsVectorLayer for the input and optional dataviz type
                     sig = inspect.signature(default_value)
                     if 'plot_type' in [i for i in sig.parameters]:
