@@ -2438,20 +2438,21 @@ class Lizmap:
                     results['int8'].append(layer.name())
 
             message = tr('Some fields are invalid for QGIS server.') + '<br>'
+            end = tr("We highly recommend you to set a proper integer field, but neither a bigint nor an integer8 :")
 
             if results['tid']:
                 message += tr(
-                    "The field 'tid' has been detected as primary key for your layer. We highly recommend "
-                    "you to set a proper integer field, neither a bigint nor an integer8 :")
+                    "The field 'tid' has been detected as primary key for your layer but it wasn't found in the layer "
+                    "fields.") + " "
+                message += end
                 message += "<br><ul>"
                 for layer_name in results['tid']:
                     message += "<li>{}</li>".format(layer_name)
                 message += "</ul><br>"
 
             if results['int8']:
-                message += tr(
-                    "The primary key has been detected as a bigint (integer8) for your layer. We highly recommend "
-                    "you to set a proper integer field, neither a bigint nor an integer8 :")
+                message += tr("The primary key has been detected as a bigint (integer8) for your layer.") + " "
+                message += end
                 message += "<br><ul>"
                 for layer_name in results['int8']:
                     message += "<li>{}</li>".format(layer_name)
