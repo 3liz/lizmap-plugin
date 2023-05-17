@@ -988,13 +988,13 @@ class Lizmap:
         self.dlg.button_add_dd_dataviz.setText('')
         # noinspection PyCallByClass,PyArgumentList
         self.dlg.button_add_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.dlg.button_add_dd_dataviz.setToolTip(tr('Add a new container in the tree'))
+        self.dlg.button_add_dd_dataviz.setToolTip(tr('Add a new container in the layout'))
         self.dlg.button_add_dd_dataviz.clicked.connect(self.drag_drop_dataviz.add_container)
 
         self.dlg.button_remove_dd_dataviz.setText('')
         # noinspection PyCallByClass,PyArgumentList
         self.dlg.button_remove_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-        self.dlg.button_remove_dd_dataviz.setToolTip(tr('Remove a container or a field from the tree'))
+        self.dlg.button_remove_dd_dataviz.setToolTip(tr('Remove a container or a plot from the layout'))
         self.dlg.button_remove_dd_dataviz.clicked.connect(self.drag_drop_dataviz.remove_item)
 
         self.dlg.button_add_plot.setText('')
