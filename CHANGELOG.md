@@ -2,18 +2,20 @@
 
 ## Unreleased
 
+## 3.14.0 - 2023-05-30
+
 * Improve some UX forms about checkbox.
 * Fix the new server button display
 * Fix opening the online help from the wizard, it will choose the correct language if possible
 * Some Python refactoring about reading the CFG file with boolean values
 * Improve the new wizard for setting up the new server
-* Fix wrong the project home folder for checking path when it's hosted on Lizmap.com
+* Fix the wrong project home folder when checking if all paths are correct when it's hosted on Lizmap.com
 * Try to fix the popup when "Autosaver" plugin is installed
 * Add a new panel about LWC 3.7 and Drag&Drop layout for the dataviz
 
 ## 3.13.0 - 2023-05-01
 
-* Add a new wizard for the server/instance creation, it will allow more options soon in a next version
+* Add a new wizard for the server/instance creation, it will allow more options soon in a future version
 * Improve the server dropdown menu and server metadata
 * Display the message bar if the branch of Lizmap Web Client is outdated
 * Fix shortname generation when the layer has been duplicated in the project
