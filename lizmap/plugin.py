@@ -1283,7 +1283,7 @@ class Lizmap:
                         if key == 'datavizLayers':
                             # The drag&drop dataviz HTML layout
                             self.drag_drop_dataviz.load_dataviz_list_from_main_table()
-                            self.drag_drop_dataviz.load_tree_from_cfg(sjson.get('dataviz_drag_drop', []))
+                            self.drag_drop_dataviz.load_tree_from_cfg(sjson['options'].get('dataviz_drag_drop', []))
 
             except Exception as e:
                 if self.is_dev_version:
@@ -2599,7 +2599,7 @@ class Lizmap:
         # Drag drop dataviz designer
         if self.drag_drop_dataviz:
             # In tests, we don't have the variable set
-            liz2json['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
+            liz2json['options']['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
 
         # list of Lizmap external baselayers
         table_widget_base_layer = self.dlg.twLizmapBaselayers
