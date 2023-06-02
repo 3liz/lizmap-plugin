@@ -14,6 +14,7 @@ from qgis.PyQt.QtWidgets import (
     QComboBox,
     QDialog,
     QInputDialog,
+    QMessageBox,
     QTableWidget,
     QTreeWidget,
     QTreeWidgetItem,
@@ -23,6 +24,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.dataviz import DatavizDefinitions
 from lizmap.dialogs.drag_drop_dataviz_container import ContainerDatavizDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.resources import resources_path
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -54,6 +56,8 @@ class DragDropDatavizManager:
         self.table = table_widget
         self.combo_plots = combo
 
+        self.tree.itemDoubleClicked.connect(self.edit_row_container)
+
         # noinspection PyUnresolvedReferences
         self.table.model().rowsInserted.connect(self.dataviz_added)
         # noinspection PyUnresolvedReferences
@@ -70,7 +74,6 @@ class DragDropDatavizManager:
             # Temporary until we implement these functions
             self.parent.button_up_dd_dataviz.setVisible(False)
             self.parent.button_down_dd_dataviz.setVisible(False)
-            self.parent.button_remove_dd_dataviz.setVisible(False)
 
     def add_current_plot_from_combo(self):
         """ Button to add the current plot from the combobox into the tree widget. """
@@ -248,16 +251,47 @@ class DragDropDatavizManager:
 
         It can be either a plot or a container.
         """
-        # Copied from QGIS with the same button in the D&D dialog
+        # Alternative
+        # QGIS with the D&D dialog
         # https://github.com/qgis/QGIS/blob/8a82afd79b35f7640373d3394214ecb6cb7db17c/src/gui/vector/qgsattributesformproperties.cpp#L743
-        # deleting an item may delete any number of nested child items -- so we delete
-        # them one at a time and then see if there's any selection left
-        # while True:
-        #     items = self.tree.selectedIndexes()
-        #     if not items:
-        #         break
-        #     self.tree.removeItemWidget(self.tree.itemFromIndex(items[0]), 0)
-        pass
+        current_item = self.tree.currentItem()
+        if not current_item:
+            return
+
+        children = []
+        for child in range(current_item.childCount()):
+            children.append(current_item.child(child))
+
+        box = QMessageBox(self.parent)
+        box.setIcon(QMessageBox.Question)
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        box.setDefaultButton(QMessageBox.No)
+
+        if current_item.data(0, Qt.UserRole) == Container.Container:
+            box.setWindowTitle(tr('Remove the container'))
+            if children:
+                box.setText(tr('Are you sure you want to remove the container and all elements inside?'))
+            else:
+                box.setText(tr('Are you sure you want to remove the container?'))
+        else:
+            box.setWindowTitle(tr('Remove the plot'))
+            box.setText(tr('Are you sure you want to remove the plot from the layout?'))
+
+        result = box.exec_()
+        if result == QMessageBox.No:
+            return
+
+        for child in children:
+            current_item.removeChild(child)
+
+        parent_item = current_item.parent()
+        if parent_item:
+            parent_item.removeChild(current_item)
+            return
+
+        # We are at the first level already
+        self.tree.invisibleRootItem().removeChild(current_item)
 
     def to_json(self) -> list:
         """ Serialize the tree to a JSON list. """
