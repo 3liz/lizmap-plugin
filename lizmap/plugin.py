@@ -705,6 +705,9 @@ class Lizmap:
             self.lwc_version_changed()
         # self.dlg.check_qgis_version()
 
+        # For deprecated features in LWC 3.7 about base layers
+        self.check_visibility_crs_3857()
+
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
         # The new repository is only set when we save the CFG file
@@ -3126,13 +3129,41 @@ class Lizmap:
         return True
 
     def check_visibility_crs_3857(self):
-        """ Check if we display the warning about scales. """
+        """ Check if we display the warning about scales.
+
+        These checkboxes are deprecated starting from Lizmap Web Client 3.7.
+        """
         visible = False
         for item in self.crs_3857_base_layers_list.values():
             if item.isChecked():
                 visible = True
 
         self.dlg.scales_warning_layout.setVisible(visible)
+
+        current_version = self.dlg.current_lwc_version()
+        if not current_version:
+            # No server yet
+            return
+
+        if current_version >= LwcVersions.Lizmap_3_7:
+            # We start showing some deprecated warnings if needed
+            self.dlg.label_deprecated_base_layers.setVisible(True)
+
+            if visible:
+                # At least one checkbox was used, we still need to enable widgets
+                self.dlg.gb_externalLayers.setEnabled(True)
+            else:
+                # It means no checkboxes were used
+                self.dlg.gb_externalLayers.setEnabled(False)
+
+        else:
+            # We do nothing ...
+            self.dlg.label_deprecated_base_layers.setVisible(False)
+            self.dlg.gb_externalLayers.setEnabled(True)
+
+        # TODO later
+        # self.dlg.gb_baselayersOptions.setEnabled(True)
+        # TODO make string translatable in self.dlg.label_deprecated_base_layers
 
     def on_baselayer_checkbox_change(self):
         """
