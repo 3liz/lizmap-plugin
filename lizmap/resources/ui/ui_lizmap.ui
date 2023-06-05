@@ -2220,11 +2220,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
                <item>
-                <widget class="QLabel" name="label_deprecated_base_layers">
-                 <property name="text">
-                  <string notr="true">You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel is now deprecated.</string>
-                 </property>
-                </widget>
+                <widget class="WarningWidget" name="warning_base_layer_deprecated" native="true"/>
                </item>
                <item>
                 <widget class="QGroupBox" name="gb_externalLayers">
@@ -4509,6 +4505,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <class>QgsMessageBar</class>
    <extends>QFrame</extends>
    <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WarningWidget</class>
+   <extends>QWidget</extends>
+   <header>lizmap.widgets.warning_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -3147,7 +3147,7 @@ class Lizmap:
 
         if current_version >= LwcVersions.Lizmap_3_7:
             # We start showing some deprecated warnings if needed
-            self.dlg.label_deprecated_base_layers.setVisible(True)
+            self.dlg.warning_base_layer_deprecated.setVisible(True)
 
             if visible:
                 # At least one checkbox was used, we still need to enable widgets
@@ -3156,13 +3156,26 @@ class Lizmap:
                 # It means no checkboxes were used
                 self.dlg.gb_externalLayers.setEnabled(False)
 
+            if not self.dlg.cbAddEmptyBaselayer.isChecked():
+                # Only when the checkbox wasn't used before
+                self.dlg.cbAddEmptyBaselayer.setEnabled(False)
+
+            if self.dlg.cbStartupBaselayer.count() == 0:
+                # When no item in the combobox
+                self.dlg.cbStartupBaselayer.setEnabled(False)
+
+            if self.dlg.cbStartupBaselayer.count() == 1:
+                # When only one item in the combobox but it's the 'empty' base layer
+                if self.dlg.cb.StartBaselayer.itemText(0) == 'empty':
+                    self.dlg.cbStartupBaselayer.setEnabled(False)
+
         else:
             # We do nothing ...
-            self.dlg.label_deprecated_base_layers.setVisible(False)
+            self.dlg.warning_base_layer_deprecated.setVisible(False)
             self.dlg.gb_externalLayers.setEnabled(True)
+            self.dlg.cbAddEmptyBaselayer.setEnabled(True)
+            self.dlg.cbStartupBaselayer.setEnabled(True)
 
-        # TODO later
-        # self.dlg.gb_baselayersOptions.setEnabled(True)
         # TODO make string translatable in self.dlg.label_deprecated_base_layers
 
     def on_baselayer_checkbox_change(self):

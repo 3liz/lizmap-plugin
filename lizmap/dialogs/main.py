@@ -75,6 +75,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.check_project_thumbnail()
         self.setup_icons()
 
+        # TODO translate
+        self.warning_base_layer_deprecated.set_text(
+            "You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel is now "
+            "deprecated."
+        )
+
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
         provider = self.liExternalSearch.currentData()
