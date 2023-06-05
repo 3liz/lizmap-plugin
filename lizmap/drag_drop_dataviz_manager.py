@@ -192,6 +192,8 @@ class DragDropDatavizManager:
             # noinspection PyUnresolvedReferences
             uuid = self.table.item(row, uuid_index).data(Qt.UserRole)
             self.combo_plots.addItem(icon, title, uuid)
+            index = self.combo_plots.findData(uuid)
+            self.combo_plots.setItemData(index, uuid, Qt.ToolTipRole)
 
     def dataviz_added(self):
         """ When a dataviz has been added from the combobox into the tree. """
@@ -345,8 +347,11 @@ class DragDropDatavizManager:
             elif line['type'] == Container.Plot.value:
                 text, icon = self.metadata_from_uuid(line["uuid"])
                 if not icon:
-                    LOGGER.warning("Plot having UUID '{}' was not found, skipping this plot for the drag&drop layout.")
+                    LOGGER.warning(
+                        "Plot having UUID '{}' was not found in the plot combobox, D&D panel, skipping this plot for "
+                        "the drag&drop layout.".format(line["uuid"]))
                     continue
+
                 self._add_plot_in_tree(text, icon, line["uuid"], parent)
 
             else:
