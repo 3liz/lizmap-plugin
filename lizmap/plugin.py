@@ -286,8 +286,6 @@ class Lizmap:
             self.dlg.button_add_dd_dataviz,
             self.dlg.button_remove_dd_dataviz,
             self.dlg.button_edit_dd_dataviz,
-            self.dlg.button_up_dd_dataviz,
-            self.dlg.button_down_dd_dataviz,
             self.dlg.button_add_plot,
             self.dlg.combo_plots,
         ]
@@ -1010,16 +1008,6 @@ class Lizmap:
         self.dlg.button_add_plot.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
         self.dlg.button_add_plot.setToolTip(tr('Add the plot in the layout'))
         self.dlg.button_add_plot.clicked.connect(self.drag_drop_dataviz.add_current_plot_from_combo)
-
-        self.dlg.button_up_dd_dataviz.setText('')
-        self.dlg.button_up_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
-        self.dlg.button_up_dd_dataviz.setToolTip(tr('Move the selected row up'))
-        self.dlg.button_up_dd_dataviz.clicked.connect(self.drag_drop_dataviz.move_row_up)
-
-        self.dlg.button_down_dd_dataviz.setText('')
-        self.dlg.button_down_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
-        self.dlg.button_down_dd_dataviz.setToolTip(tr('Move the selected row down'))
-        self.dlg.button_down_dd_dataviz.clicked.connect(self.drag_drop_dataviz.move_row_down)
 
         self.dlg.button_edit_dd_dataviz.setText('')
         self.dlg.button_edit_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyEdit.svg')))

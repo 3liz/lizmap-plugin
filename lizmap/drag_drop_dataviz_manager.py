@@ -58,11 +58,6 @@ class DragDropDatavizManager:
 
         self.tree.itemDoubleClicked.connect(self.edit_row_container)
 
-        # noinspection PyUnresolvedReferences
-        self.table.model().rowsInserted.connect(self.dataviz_added)
-        # noinspection PyUnresolvedReferences
-        self.table.model().rowsRemoved.connect(self.dataviz_removed)
-
         # Drag and drop
         self.tree.setDragEnabled(True)
         self.tree.setAcceptDrops(True)
