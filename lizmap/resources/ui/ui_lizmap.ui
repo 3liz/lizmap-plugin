@@ -3998,20 +3998,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </widget>
                          </item>
                          <item>
-                          <widget class="QPushButton" name="button_up_dd_dataviz">
-                           <property name="text">
-                            <string notr="true">up</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QPushButton" name="button_down_dd_dataviz">
-                           <property name="text">
-                            <string notr="true">down</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
                           <spacer name="horizontalSpacer_16">
                            <property name="orientation">
                             <enum>Qt::Horizontal</enum>

@@ -8,7 +8,7 @@ from enum import Enum, unique
 from typing import List, Optional, Tuple, Union
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QBrush, QDragMoveEvent, QIcon
+from qgis.PyQt.QtGui import QBrush, QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -68,12 +68,6 @@ class DragDropDatavizManager:
         self.tree.setAcceptDrops(True)
         self.tree.setDragDropMode(QAbstractItemView.InternalMove)
         self.tree.setSelectionBehavior(QAbstractItemView.SelectRows)
-
-        # Hide some buttons
-        if self.parent:
-            # Temporary until we implement these functions
-            self.parent.button_up_dd_dataviz.setVisible(False)
-            self.parent.button_down_dd_dataviz.setVisible(False)
 
     def add_current_plot_from_combo(self):
         """ Button to add the current plot from the combobox into the tree widget. """
@@ -155,20 +149,6 @@ class DragDropDatavizManager:
             iterator += 1
         return count
 
-    def drag_event(self, event: QDragMoveEvent):
-        """ Drag event. """
-        # print("Drag event")
-        # print(event)
-        pass
-
-    def move_row_down(self):
-        """ Button to move a row down. """
-        pass
-
-    def move_row_up(self):
-        """ Button to move a row up. """
-        pass
-
     def load_dataviz_list_from_main_table(self):
         """ Load the combobox from the main dataviz table with all plots available. """
         # UUID column
@@ -194,19 +174,6 @@ class DragDropDatavizManager:
             self.combo_plots.addItem(icon, title, uuid)
             index = self.combo_plots.findData(uuid)
             self.combo_plots.setItemData(index, uuid, Qt.ToolTipRole)
-
-    def dataviz_added(self):
-        """ When a dataviz has been added from the combobox into the tree. """
-        pass
-        # print("Dataviz added")
-
-    def dataviz_removed(self):
-        """ When a dataviz has been removed from the table. """
-        # print("Dataviz removed")
-        # TODO
-        # Remove from the list
-        # Remove from the tree
-        pass
 
     def add_container(self):
         """ When the "add" container button is clicked, we add a new row in the tree widget. """
@@ -322,7 +289,7 @@ class DragDropDatavizManager:
                 # noinspection PyUnresolvedReferences
                 data.append({
                     'type': Container.Plot.value,
-                    # The name is not used and must be used for reading the CFG, it's just easier to debug the CFG
+                    # The name is not used and mustn't be used for reading the CFG, it's just easier to debug the CFG
                     # instead of dealing with a UUID
                     '_name': child.text(0),
                     'uuid': child.data(0, Qt.UserRole + 1),
