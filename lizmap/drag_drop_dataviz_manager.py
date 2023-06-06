@@ -87,7 +87,7 @@ class DragDropDatavizManager:
 
         # noinspection PyUnresolvedReferences
         index = self.combo_plots.findData(uuid, Qt.UserRole)
-        if not index:
+        if index < 0:
             return None, None
 
         text = self.combo_plots.itemText(index)
