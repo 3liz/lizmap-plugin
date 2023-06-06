@@ -1285,7 +1285,10 @@ class Lizmap:
 
                         if key == 'datavizLayers':
                             # The drag&drop dataviz HTML layout
+                            # First load plots into the combobox, because the main dataviz table has been loaded a few
+                            # lines before
                             self.drag_drop_dataviz.load_dataviz_list_from_main_table()
+                            # Then populate the tree. Icons and titles will use the combobox.
                             self.drag_drop_dataviz.load_tree_from_cfg(sjson['options'].get('dataviz_drag_drop', []))
 
             except Exception as e:

@@ -84,7 +84,7 @@ class DragDropDatavizManager:
     def metadata_from_uuid(self, uuid: str) -> Union[Tuple[None, None], Tuple[str, QIcon]]:
         """ Fetch title and icon from the plot UUID in the combobox.
 
-        Because this information is not stored in the CFG.
+        Because this information is not stored in the CFG in the D&D section.
         """
         if not self.parent:
             # In tests... :(
@@ -316,7 +316,11 @@ class DragDropDatavizManager:
                 if not icon:
                     LOGGER.warning(
                         "Plot having UUID '{}' was not found in the plot combobox, D&D panel, skipping this plot for "
-                        "the drag&drop layout.".format(line["uuid"]))
+                        "the drag&drop layout, only : {}.".format(
+                            line["uuid"],
+                            ','.join(
+                                [self.combo_plots.itemData(i, Qt.UserRole) for i in range(self.combo_plots.count())])
+                        ))
                     continue
 
                 self._add_plot_in_tree(text, icon, line["uuid"], parent)
