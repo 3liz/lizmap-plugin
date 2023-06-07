@@ -400,14 +400,16 @@ class Lizmap:
         # Catch user interaction on Map Scales input
         self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
 
-        warning_icon = QPixmap(":images/themes/default/mIconWarning.svg")
+        self.dlg.scales_warning.set_text(tr(
+            "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
+        ))
+        self.dlg.scales_warning.setVisible(False)
 
         # Scales
         self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
         self.dlg.min_scale_pic.setText('')
         self.dlg.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
         self.dlg.max_scale_pic.setText('')
-        self.dlg.label_warning_crs.setPixmap(warning_icon)
         ui_items = (
             self.dlg.label_min_scale, self.dlg.label_max_scale,
             self.dlg.min_scale_pic, self.dlg.max_scale_pic,
@@ -415,13 +417,6 @@ class Lizmap:
         )
         for item in ui_items:
             item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
-
-        self.dlg.image_warning_project.setText("")
-        self.dlg.image_warning_project.setPixmap(warning_icon)
-
-        # Popup configuration
-        self.dlg.image_warning_lizmap_popup.setPixmap(warning_icon)
-        self.dlg.image_warning_lizmap_popup.setText('')
 
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
@@ -642,7 +637,7 @@ class Lizmap:
         self.target_server_changed()
         self.dlg.refresh_combo_repositories()
 
-        self.dlg.tabWidget.setCurrentIndex(0)
+        self.dlg.tab_dataviz.setCurrentIndex(0)
 
         self.drag_drop_dataviz = None
         self.layerList = None
@@ -3129,7 +3124,7 @@ class Lizmap:
             if item.isChecked():
                 visible = True
 
-        self.dlg.scales_warning_layout.setVisible(visible)
+        self.dlg.scales_warning.setVisible(visible)
 
         current_version = self.dlg.current_lwc_version()
         if not current_version:

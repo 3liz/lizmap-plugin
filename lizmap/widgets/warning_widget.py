@@ -11,6 +11,7 @@ class WarningWidget(QWidget):
     """ Widget to show a warning sign with a text. """
 
     def __init__(self, flags, *args, **kwargs):
+        """ Constructor. """
         super().__init__(flags, *args, **kwargs)
 
         layout = QHBoxLayout(self)
@@ -32,4 +33,5 @@ class WarningWidget(QWidget):
         self.setLayout(layout)
 
     def set_text(self, text: str):
+        """ Set text in the label. """
         self.text_widget.setText(text)

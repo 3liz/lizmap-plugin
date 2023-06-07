@@ -274,30 +274,7 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
-            <widget class="QWidget" name="project_valid" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_45">
-              <item>
-               <widget class="QLabel" name="image_warning_project">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string notr="true">IMAGE WARNING</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_warning_project">
-                <property name="text">
-                 <string notr="true">ERROR SET IN PYTHON</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
+            <widget class="WarningWidget" name="label_warning_project" native="true"/>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -936,58 +913,22 @@ QListWidget::item::selected {
                   <string>Scales</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="5" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
-                    <item>
-                     <widget class="QLabel" name="label_15">
-                      <property name="text">
-                       <string>Map Scales</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inMapScales">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="inputMethodHints">
-                       <set>Qt::ImhDigitsOnly</set>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_17">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br/&gt;Ex: 1000, 250000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>These scales are used for printing too, regardless of the projection of the main map.</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QWidget" name="scales_warning_layout" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_34">
-                     <item>
-                      <widget class="QLabel" name="label_warning_crs">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string notr="true">WARNING</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_14">
-                       <property name="text">
-                        <string>The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map.</string>
-                       </property>
-                       <property name="wordWrap">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
+                   <widget class="WarningWidget" name="scales_warning" native="true"/>
                   </item>
                   <item row="6" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_11">
@@ -1066,19 +1007,29 @@ QListWidget::item::selected {
                     </item>
                    </layout>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_17">
-                    <property name="text">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br/&gt;Ex: 1000, 250000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_13">
-                    <property name="text">
-                     <string>These scales are used for printing too, regardless of the projection of the main map.</string>
-                    </property>
-                   </widget>
+                  <item row="5" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QLabel" name="label_15">
+                      <property name="text">
+                       <string>Map Scales</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="inMapScales">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="inputMethodHints">
+                       <set>Qt::ImhDigitsOnly</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -1771,31 +1722,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           <widget class="QWidget" name="widget_deprecated_lizmap_popup" native="true">
                            <layout class="QVBoxLayout" name="verticalLayout_56">
                             <item>
-                             <layout class="QHBoxLayout" name="horizontalLayout_43">
-                              <item>
-                               <widget class="QLabel" name="image_warning_lizmap_popup">
-                                <property name="sizePolicy">
-                                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                                  <horstretch>0</horstretch>
-                                  <verstretch>0</verstretch>
-                                 </sizepolicy>
-                                </property>
-                                <property name="text">
-                                 <string notr="true">IMAGE</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item>
-                               <widget class="QLabel" name="text_lizmap_popup">
-                                <property name="text">
-                                 <string>This source of popup is deprecated for vector layer. You should switch to another one, such as the QGIS HTML maptip which is the more powerful. This popup will be removed later for vector layer.</string>
-                                </property>
-                                <property name="wordWrap">
-                                 <bool>true</bool>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
+                             <widget class="WarningWidget" name="widget_deprecated_popup" native="true"/>
                             </item>
                             <item>
                              <widget class="QPushButton" name="convert_html_maptip">
@@ -3753,7 +3680,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QTabWidget" name="tabWidget">
+                <widget class="QTabWidget" name="tab_dataviz">
                  <property name="currentIndex">
                   <number>0</number>
                  </property>
@@ -4631,7 +4558,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>add_filter_login_layer_button</tabstop>
   <tabstop>remove_filter_login_layer_button</tabstop>
   <tabstop>edit_filter_login_layer_button</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>tab_dataviz</tabstop>
   <tabstop>table_dataviz</tabstop>
   <tabstop>edit_dataviz_layer</tabstop>
   <tabstop>up_dataviz_layer</tabstop>

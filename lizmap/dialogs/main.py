@@ -81,6 +81,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
             "deprecated."
         )
 
+        self.widget_deprecated_popup.set_text(tr(
+            "This source of popup is deprecated for vector layer. You should switch to another one, such as the QGIS "
+            "HTML maptip which is the more powerful. This popup will be removed later for vector layer."
+        ))
+
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
         provider = self.liExternalSearch.currentData()
@@ -483,11 +488,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
 
         if allow_navigation:
-            self.project_valid.setVisible(False)
-            self.label_warning_project.setText('')
+            self.label_warning_project.setVisible(False)
+            self.label_warning_project.set_text('')
         else:
-            self.project_valid.setVisible(True)
-            self.label_warning_project.setText(message)
+            self.label_warning_project.setVisible(True)
+            self.label_warning_project.set_text(message)
 
     def activateWindow(self):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """
