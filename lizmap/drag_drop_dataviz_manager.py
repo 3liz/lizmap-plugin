@@ -22,7 +22,6 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.dataviz import DatavizDefinitions
-from lizmap.dialogs.drag_drop_dataviz_container import ContainerDatavizDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import resources_path
 
@@ -172,22 +171,16 @@ class DragDropDatavizManager:
 
     def add_container(self):
         """ When the "add" container button is clicked, we add a new row in the tree widget. """
-        # Loop for all tabs/groups
-        tabs = []
-        for row in range(0, self.tree.topLevelItemCount()):
-            pass
-            # item = self.tree.topLevelItem(row)
-            # item_type = item.data(0, Qt.UserRole)
-            # if item_type == Container.Tab.value:
-            #     tabs.append(item.text(0))
-
-        dialog = ContainerDatavizDialog(self.parent, tabs)
-        if not dialog.exec_():
+        new_name, ok = QInputDialog.getText(
+            self.parent,
+            tr("New tab or group"),
+            tr("New name for the tab or group. You can drag and drop it after to create different kind of containers."),
+            text="",
+        )
+        if not ok:
             return
 
-        container_name = dialog.name()
-        parent_container = dialog.parent_name()
-        self._add_container(container_name, parent_container)
+        self._add_container(new_name, None)
 
     def edit_row_container(self):
         """ When a row is selected, and we click on the edit button. """
