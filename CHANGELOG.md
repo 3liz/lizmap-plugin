@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.14.1 - 2023-06-12
+
+* Fix check on composite primary keys for PostgreSQL layers
+* Rework the new panel for Lizmap Web Client 3.7 about the dataviz Drag&Drop layout
+* Start deprecating the base layer panel for Lizmap Web Client 3.7 as well
+* Code refactoring to display some warnings to the user
+
 ## 3.14.0 - 2023-05-30
 
 * Improve some UX forms about checkbox.
