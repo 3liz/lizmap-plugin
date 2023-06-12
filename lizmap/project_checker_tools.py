@@ -39,10 +39,12 @@ def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
     #     id bigint PRIMARY KEY,
     #     label text
     # )
-    if not layer.primaryKeyAttributes():
-        return False
     # QgsVectorLayer.primaryKeyAttributes is returning a list.
-    # TODO check, but with QgsDataSourceUri, we have a single field
+    if len(layer.primaryKeyAttributes()) != 1:
+        # We might have either no primary key,
+        # or a composite primary key
+        return False
+
     uri = QgsDataSourceUri(layer.source())
     primary_key = uri.keyColumn()
     if not primary_key:
