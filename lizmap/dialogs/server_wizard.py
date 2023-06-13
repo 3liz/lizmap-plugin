@@ -16,6 +16,7 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsBlockingNetworkRequest,
     QgsDataSourceUri,
+    QgsProviderConnectionException,
     QgsProviderRegistry,
 )
 from qgis.gui import QgsPasswordLineEdit
@@ -159,6 +160,7 @@ class LoginPasswordPage(QWizardPage):
 
         self.password_label = QLabel(tr("Password"))
         self.password_edit = QgsPasswordLineEdit()
+        # noinspection PyUnresolvedReferences
         self.password_edit.textChanged.connect(self.isComplete)
         self.registerField("password*", self.password_edit)
         password = tr("The password used to connect in your web browser.")
@@ -283,16 +285,12 @@ class MasterPasswordPage(QWizardPage):
         layout.addWidget(self.result_master_password)
 
     def nextId(self) -> int:
-        if DEBUG:
+        parent_wizard = self.wizard()
+        parent_wizard: ServerWizard
+        if parent_wizard.is_lizmap_dot_com:
             return WizardPages.AddOrNotPostgresqlPage
 
         return -1
-        # parent_wizard = self.wizard()
-        # parent_wizard: ServerWizard
-        # if parent_wizard.is_lizmap_dot_com:
-        #     return WizardPages.AddOrNotPostgresqlPage
-        #
-        # return -1
 
 
 class AddOrNotPostgresqlPage(QWizardPage):
@@ -341,10 +339,19 @@ class PostgresqlPage(QWizardPage):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setTitle(tr("Adding a PostgreSQL connection"))
-        # self.setSubTitle("Because you are on Lizmap.com")
+        self.setSubTitle("PostgreSQL database provided with the Lizmap instance")
 
         layout = QVBoxLayout()
         self.setLayout(layout)
+
+        # Helper
+        label = QLabel(tr(
+            'Fill your host, login and database name. Other fields should be correct already, but you should check. It'
+            'might be a little bit different for your own instance.'
+        ))
+        label.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(label)
 
         # Connection name
         self.pg_name_label = QLabel(tr("Name"))
@@ -397,6 +404,7 @@ class PostgresqlPage(QWizardPage):
         # Password
         self.pg_password_label = QLabel(tr("Password"))
         self.pg_password_edit = QgsPasswordLineEdit()
+        # noinspection PyUnresolvedReferences
         self.pg_password_edit.textChanged.connect(self.isComplete)
         self.registerField("pg_password*", self.pg_password_edit)
         password = tr("The password used to connect to your PostgreSQL database")
@@ -411,27 +419,27 @@ class PostgresqlPage(QWizardPage):
         self.skip_db = QCheckBox()
         self.skip_db.setText(tr("Skip the database creation if a failure happen again."))
         self.skip_db.setVisible(False)
-        self.registerField("skip_pg", self.skip_db)
+        self.registerField("skip_db", self.skip_db)
 
-        self.skip_label = QLabel(tr(
+        self.skip_db_label = QLabel(tr(
             "If checked and if it fails again, you will need to use the native QGIS dialog to setup your connection. "
             "Remember to not use the QGIS password manager for storing login and password about PostGIS, instead use "
             "a plain text storage, by checking both buttons 'Store' for login and password. We also recommend checking "
             "'Use estimated table metadata' and 'Also list tables with no geometry'."))
-        self.skip_label.setVisible(False)
-        self.skip_label.setWordWrap(True)
+        self.skip_db_label.setVisible(False)
+        self.skip_db_label.setWordWrap(True)
 
         self.result_pg = QLabel()
         self.result_pg.setWordWrap(True)
         # noinspection PyArgumentList
         layout.addWidget(self.result_pg)
         layout.addWidget(self.skip_db)
-        layout.addWidget(self.skip_label)
+        layout.addWidget(self.skip_db_label)
 
     def initializePage(self) -> None:
-        self.pg_name_edit.setText(self.field("name"))
+        self.pg_name_edit.setText(self.field("name").replace('/', '-'))
         self.port_edit.setValue(5432)
-        self.pg_user_edit.setText(self.field("login"))
+        # self.pg_user_edit.setText(self.field("login"))
         self.pg_password_edit.setText(self.field("password"))
 
 
@@ -460,6 +468,7 @@ class ServerWizard(QWizard):
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
 
+        # noinspection PyUnresolvedReferences
         self.helpRequested.connect(self.open_online_help)
 
         self.setPage(WizardPages.UrlPage, UrlPage(url))
@@ -507,10 +516,10 @@ class ServerWizard(QWizard):
         elif self.currentId() == WizardPages.MasterPasswordPage:
             return self.save_auth_id()
         elif self.currentId() == WizardPages.PostgresqlPage:
-            skip_pg_saving = self.field("skip_pg")
+            skip_db_saving = self.field("skip_db")
             if not self.test_pg():
-                if skip_pg_saving:
-                    # Second tentative, we skip
+                if skip_db_saving:
+                    # Second attempt, we skip
                     return True
                 else:
                     return False
@@ -582,8 +591,8 @@ class ServerWizard(QWizard):
     def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
         """ Check the URL and given login.
 
-        First boolean is about the server status.
-        Last boolean is about the URL check if it's a JSON document
+        The first boolean is about the server status.
+        The latest boolean is about the URL check if it's a JSON document
         """
         if not url.endswith('/'):
             url += '/'
@@ -673,15 +682,20 @@ class ServerWizard(QWizard):
         # noinspection PyTypeChecker
         connection = metadata.createConnection(uri.uri(), {})
         connection: QgsAbstractDatabaseProviderConnection
-        result = connection.executeSql("SELECT 1 AS lizmap_plugin_test")
-        if len(result) >= 1:
-            self.currentPage().result_pg.setText(THUMBS)
-            return True
+        try:
+            result = connection.executeSql("SELECT 1 AS lizmap_plugin_test")
+        except QgsProviderConnectionException:
+            # Credentials are wrong
+            LOGGER.warning("Wrong credentials about the PostgreSQL database")
+        else:
+            if len(result) >= 1:
+                self.currentPage().result_pg.setText(THUMBS)
+                return True
 
         self.currentPage().result_pg.setText(tr(
             'Error, please check your inputs, or do with the native QGIS connection dialog.'))
-        self.currentPage().skip_pg.setVisible(True)
-        self.currentPage().skip_label.setVisible(True)
+        self.currentPage().skip_db.setVisible(True)
+        self.currentPage().skip_db_label.setVisible(True)
         return False
 
     def save_pg(self) -> bool:
@@ -693,8 +707,7 @@ class ServerWizard(QWizard):
             self.currentPage().result_pg.setText(tr('Connection name is already existing, please choose another one'))
             return False
 
-        uri = self._uri()
-        self._save_pg(name, uri)
+        self._save_pg(name, self._uri())
         iface.browserModel().reload()
         self.currentPage().result_pg.setText(THUMBS)
         return True
@@ -712,7 +725,7 @@ class ServerWizard(QWizard):
             "estimatedMetadata": True,
             "metadataInDatabase": True,
             "allowGeometrylessTables": True,
-            "geometryColumnsOnly": False,
+            "geometryColumnsOnly": True,
             "dontResolveType": False,
             "publicOnly": False,
         }
