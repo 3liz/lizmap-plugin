@@ -11,13 +11,12 @@ from enum import IntEnum, auto
 from typing import Tuple
 
 from qgis.core import (
+    QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsAuthMethodConfig,
     QgsBlockingNetworkRequest,
     QgsDataSourceUri,
     QgsProviderRegistry,
-    QgsSettings,
-    QgsVectorLayer,
 )
 from qgis.gui import QgsPasswordLineEdit
 from qgis.PyQt.QtCore import Qt, QUrl
@@ -669,12 +668,13 @@ class ServerWizard(QWizard):
 
     def test_pg(self) -> bool:
         """ Test the connection. """
-        # Fixme make a single query, without a QgsVectorLayer
         uri = self._uri()
-        uri.setTable('(SELECT version())')
-        uri.setKeyColumn('version')
-        layer = QgsVectorLayer(uri.uri(), 'test', 'postgres')
-        if layer.featureCount() == 1:
+        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+        # noinspection PyTypeChecker
+        connection = metadata.createConnection(uri.uri(), {})
+        connection: QgsAbstractDatabaseProviderConnection
+        result = connection.executeSql("SELECT 1 AS lizmap_plugin_test")
+        if len(result) >= 1:
             self.currentPage().result_pg.setText(THUMBS)
             return True
 
@@ -694,27 +694,33 @@ class ServerWizard(QWizard):
             return False
 
         uri = self._uri()
-        # TODO Switch to PyQGIS API for saving
-        settings = QgsSettings()
-        settings.setValue('PostgreSQL/connections/{}/host'.format(name), uri.host())
-        settings.setValue('PostgreSQL/connections/{}/database'.format(name), uri.database())
-        settings.setValue('PostgreSQL/connections/{}/username'.format(name), uri.username())
-        settings.setValue('PostgreSQL/connections/{}/password'.format(name), uri.password())
-        settings.setValue('PostgreSQL/connections/{}/port'.format(name), uri.port())
-        # noinspection SpellCheckingInspection
-        settings.setValue('PostgreSQL/connections/{}/allowGeometrylessTables'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/authcfg'.format(name), '')
-        settings.setValue('PostgreSQL/connections/{}/dontResolveType'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/estimatedMetadata'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/geometryColumnsOnly'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/projectsInDatabase'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/publicOnly'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/savePassword'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/saveUsername'.format(name), str(True))
-        settings.setValue('PostgreSQL/connections/{}/service'.format(name), '')
-        settings.setValue('PostgreSQL/connections/{}/sslmode'.format(name), 'SslPrefer')
+        self._save_pg(name, uri)
         iface.browserModel().reload()
         self.currentPage().result_pg.setText(THUMBS)
+        return True
+
+    @classmethod
+    def _save_pg(cls, name: str, uri: QgsDataSourceUri) -> bool:
+        """ Save a PG connection from a URI. """
+        LOGGER.info(
+            "Create PG connection '{}' : host {}, database {}, user {}, pass XXXXX, port {}".format(
+                name, uri.host(), uri.database(), uri.username(), uri.port())
+        )
+        config = {
+            "saveUsername": True,
+            "savePassword": True,
+            "estimatedMetadata": True,
+            "metadataInDatabase": True,
+            "allowGeometrylessTables": True,
+            "geometryColumnsOnly": False,
+            "dontResolveType": False,
+            "publicOnly": False,
+        }
+        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+        # noinspection PyTypeChecker
+        connection = metadata.createConnection(uri.uri(), config)
+        connection: QgsAbstractDatabaseProviderConnection
+        connection.store(name)
         return True
 
 
