@@ -17,6 +17,7 @@ from typing import Dict, Optional, Tuple
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsDataSourceUri,
     QgsEditFormConfig,
     QgsExpression,
     QgsLayerTree,
@@ -25,6 +26,7 @@ from qgis.core import (
     QgsMapLayer,
     QgsMapLayerModel,
     QgsMapLayerProxyModel,
+    QgsMapLayerType,
     QgsProject,
     QgsSettings,
     QgsVectorLayer,
@@ -49,6 +51,7 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
+    QInputDialog,
     QLineEdit,
     QMessageBox,
     QTableWidgetItem,
@@ -642,6 +645,7 @@ class Lizmap:
         self.drag_drop_dataviz = None
         self.layerList = None
         self.action = None
+        self.action_debug_pg = None
         self.embeddedGroups = None
         self.myDic = None
         self.help_action = None
@@ -788,6 +792,12 @@ class Lizmap:
         # connect the action to the run method
         # noinspection PyUnresolvedReferences
         self.action.triggered.connect(self.run)
+
+        if self.is_dev_version:
+            self.action_debug_pg = QAction(icon, "Add PostgreSQL connection from datasource", self.iface.mainWindow())
+            self.action_debug_pg.triggered.connect(self.create_connection_from_datasource)
+            self.iface.addCustomActionForLayerType(
+                self.action_debug_pg, 'Lizmap dev', QgsMapLayerType.VectorLayer, True)
 
         # Open the online help
         self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
@@ -1052,6 +1062,30 @@ class Lizmap:
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
+    def create_connection_from_datasource(self):
+        """ For dev only, add a connection from a layer datasource. """
+        layer = self.iface.activeLayer()
+        if not isinstance(layer, QgsVectorLayer):
+            return
+
+        if layer.providerType() != 'postgres':
+            return
+
+        new_name, ok = QInputDialog.getText(
+            self.dlg,
+            "New connection from layer source",
+            "Set the new name",
+            text="Lizmap debug",
+        )
+        if not ok:
+            return
+
+        from lizmap.dialogs.server_wizard import ServerWizard
+
+        # noinspection PyProtectedMember
+        ServerWizard._save_pg(new_name, QgsDataSourceUri(self.iface.activeLayer().source()))
+        self.iface.browserModel().reload()
+
     def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :
          * at least one server
@@ -1117,6 +1151,9 @@ class Lizmap:
         if self.help_action:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
+
+        if self.action_debug_pg:
+            self.iface.removeCustomActionForLayerType(self.action_debug_pg)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
