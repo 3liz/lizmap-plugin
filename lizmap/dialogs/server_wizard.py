@@ -346,7 +346,7 @@ class PostgresqlPage(QWizardPage):
 
         # Helper
         label = QLabel(tr(
-            'Fill your host, login and database name. Other fields should be correct already, but you should check. It'
+            'Fill your host, login and database name. Other fields should be correct already, but you should check. It '
             'might be a little bit different for your own instance.'
         ))
         label.setWordWrap(True)
