@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Add wizard for setting up the PostgreSQL database
+* Fix a Python error about a wrong variable name
+
 ## 3.14.1 - 2023-06-12
 
 * Fix check on composite primary keys for PostgreSQL layers
