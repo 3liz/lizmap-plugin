@@ -100,7 +100,7 @@ class TestToolTip(unittest.TestCase):
                     aggregate(
                         layer:='layer_id',
                         aggregate:='concatenate',
-                        expression:=display_expression,
+                        expression:=to_string(display_expression),
                         filter:=
                     "parent_pk" = attribute(@parent, 'name')
                 
@@ -316,7 +316,7 @@ class TestToolTip(unittest.TestCase):
                     aggregate(
                         layer:='layer_id',
                         aggregate:='concatenate',
-                        expression:="value",
+                        expression:=to_string("value"),
                         filter:="key" = attribute(@parent, 'foo') AND filter_expression
                     )'''
         self.assertEqual(expected, result)
@@ -349,7 +349,7 @@ class TestToolTip(unittest.TestCase):
                     aggregate(
                         layer:='layer_id',
                         aggregate:='concatenate',
-                        expression:="value",
+                        expression:=to_string("value"),
                         filter:="key" = attribute(@parent, 'foo') AND intersects(geometry(@parent), $geometry)
                     )'''
         self.assertEqual(expected, result)
@@ -369,7 +369,7 @@ class TestToolTip(unittest.TestCase):
                     aggregate(
                         layer:='layer_id',
                         aggregate:='concatenate',
-                        expression:="value",
+                        expression:=to_string("value"),
                         filter:="key" = attribute(@parent, 'foo') AND "fkey" = attribute(@parent, 'bar')
                     )'''
         self.assertEqual(expected, result)
