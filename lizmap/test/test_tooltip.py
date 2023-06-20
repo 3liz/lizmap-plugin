@@ -329,7 +329,7 @@ class TestToolTip(unittest.TestCase):
                     aggregate(
                         layer:='layer_id',
                         aggregate:='concatenate',
-                        expression:="value",
+                        expression:=to_string("value"),
                         filter:="key" = attribute(@parent, 'foo')
                     )'''
         self.assertEqual(expected, result)
