@@ -208,7 +208,7 @@ class Tooltip:
                     aggregate(
                         layer:='{}',
                         aggregate:='concatenate',
-                        expression:={},
+                        expression:=to_string({}),
                         filter:={}
                     )'''.format(
             layer_id,
@@ -353,7 +353,7 @@ class Tooltip:
                     aggregate(
                         layer:='{}',
                         aggregate:='concatenate',
-                        expression:="{}",
+                        expression:=to_string("{}"),
                         filter:={}
                     )'''.format(
                                 vlid,
