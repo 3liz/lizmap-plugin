@@ -8,9 +8,11 @@ import sys
 
 from base64 import b64encode
 from enum import IntEnum, auto
+from functools import partial
 from typing import Tuple
 
 from qgis.core import (
+    Qgis,
     QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsAuthMethodConfig,
@@ -20,14 +22,16 @@ from qgis.core import (
     QgsProviderRegistry,
 )
 from qgis.gui import QgsPasswordLineEdit
-from qgis.PyQt.QtCore import Qt, QUrl
-from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtCore import QRegExp, Qt, QUrl
+from qgis.PyQt.QtGui import QDesktopServices, QRegExpValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QApplication,
     QCheckBox,
+    QHBoxLayout,
     QLabel,
     QLineEdit,
+    QPushButton,
     QRadioButton,
     QSpinBox,
     QVBoxLayout,
@@ -36,8 +40,14 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
+from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
 from lizmap.definitions.online_help import online_help
 from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.qgis_plugin_tools.tools.version import version
+
+if Qgis.QGIS_VERSION_INT >= 32200:
+    from lizmap.server_dav import WebDav
+
 from lizmap.tools import qgis_version
 
 LOGGER = logging.getLogger('Lizmap')
@@ -46,15 +56,21 @@ DEBUG = True
 
 
 class WizardPages(IntEnum):
+    """ Enum for all pages in the wizard. """
     UrlPage = auto()
     LoginPasswordPage = auto()
     NamePage = auto()
     MasterPasswordPage = auto()
     AddOrNotPostgresqlPage = auto()
     PostgresqlPage = auto()
+    SuggestionNewFolder = auto()
+    CreateNewFolderDav = auto()
+    LizmapNewRepository = auto()
 
 
 class UrlPage(QWizardPage):
+
+    """ Server URL page. """
 
     def __init__(self, url, parent=None):
         super().__init__(parent)
@@ -105,6 +121,7 @@ class UrlPage(QWizardPage):
         layout.addWidget(self.result_url)
 
     def isComplete(self) -> bool:
+        """ Form validation before the next step. """
         result = super().isComplete()
         if not result:
             return False
@@ -121,11 +138,14 @@ class UrlPage(QWizardPage):
         return True
 
     def initializePage(self) -> None:
+        """ Creation of the page. """
         if self.url:
             self.url_edit.setText(self.url)
 
 
 class LoginPasswordPage(QWizardPage):
+
+    """ Login and password for the server. """
 
     def __init__(self, auth_id, auth_manager, parent=None):
         super().__init__(parent)
@@ -176,15 +196,8 @@ class LoginPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.result_login_password)
 
-        # def isComplete(self) -> bool:
-        #     result = super().isComplete()
-        #     if not result:
-        #         return False
-        #
-        #     self.result_login_password.setText("")
-        #     return True
-
     def initializePage(self) -> None:
+        """ Page creation. """
         if self.auth_id:
             conf = QgsAuthMethodConfig()
             self.auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
@@ -198,6 +211,7 @@ class LoginPasswordPage(QWizardPage):
             return
 
     def nextId(self) -> int:
+        """ Next ID, only if the URL is correct. """
         if self.wizard().page(WizardPages.UrlPage).result_url.text() != '':
             # The URL is not valid
             self.wizard().restart()
@@ -207,6 +221,8 @@ class LoginPasswordPage(QWizardPage):
 
 
 class NamePage(QWizardPage):
+
+    """ Alias for the server. """
 
     def __init__(self, name: str = '', parent=None):
         super().__init__(parent)
@@ -229,6 +245,7 @@ class NamePage(QWizardPage):
         layout.addWidget(self.name_edit)
 
     def initializePage(self) -> None:
+        """ Page creation. """
         if self.name:
             self.name_edit.setText(self.name)
         else:
@@ -250,6 +267,8 @@ class NamePage(QWizardPage):
 
 
 class MasterPasswordPage(QWizardPage):
+
+    """ Save credentials in the QGIS password manager. """
 
     def __init__(self, auth_manager, parent=None):
         super().__init__(parent)
@@ -285,15 +304,19 @@ class MasterPasswordPage(QWizardPage):
         layout.addWidget(self.result_master_password)
 
     def nextId(self) -> int:
+        """ Next page, according to lizmap.com hosting. """
         parent_wizard = self.wizard()
         parent_wizard: ServerWizard
-        if parent_wizard.is_lizmap_dot_com:
-            return WizardPages.AddOrNotPostgresqlPage
+        if not parent_wizard.is_lizmap_dot_com:
+            # Finished
+            return -1
 
-        return -1
+        return WizardPages.AddOrNotPostgresqlPage
 
 
 class AddOrNotPostgresqlPage(QWizardPage):
+
+    """ Question for PostgreSQL connection. """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -316,8 +339,8 @@ class AddOrNotPostgresqlPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.no)
 
-        self.registerField("no", self.no)
-        self.registerField("yes", self.yes)
+        self.registerField("postgresql_no", self.no)
+        self.registerField("postgresql_yes", self.yes)
 
         # noinspection PyUnresolvedReferences
         self.yes.toggled.connect(self.isComplete)
@@ -325,17 +348,43 @@ class AddOrNotPostgresqlPage(QWizardPage):
         self.no.toggled.connect(self.isComplete)
 
     def isComplete(self) -> bool:
-        if self.field("no"):
-            self.setFinalPage(True)
-            self.wizard().button(QWizard.NextButton).setVisible(False)
+        """ Form validation before the next step. """
+
+        if self.field("postgresql_no"):
+            if not self.wizard().has_repository and self.wizard().dav_url:
+                # Webdav repository
+                self.setFinalPage(False)
+                self.wizard().button(QWizard.NextButton).setVisible(True)
+            else:
+                # Finish
+                self.setFinalPage(True)
+                self.wizard().button(QWizard.NextButton).setVisible(False)
         else:
+            # Add PG
             self.wizard().button(QWizard.NextButton).setVisible(True)
             self.setFinalPage(False)
+
         return super().isComplete()
+
+    def nextId(self) -> int:
+        """ Next step. """
+        if self.field("postgresql_yes"):
+            return WizardPages.PostgresqlPage
+
+        if self.wizard().has_repository:
+            return -1
+
+        if not self.wizard().dav_url:
+            return -1
+
+        return WizardPages.SuggestionNewFolder
 
 
 # noinspection PyArgumentList
 class PostgresqlPage(QWizardPage):
+
+    """ Wizard for the PostgreSQL connection. """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setTitle(tr("Adding a PostgreSQL connection"))
@@ -437,13 +486,222 @@ class PostgresqlPage(QWizardPage):
         layout.addWidget(self.skip_db_label)
 
     def initializePage(self) -> None:
+        """ Page creation. """
         self.pg_name_edit.setText(self.field("name").replace('/', '-'))
         self.port_edit.setValue(5432)
         # self.pg_user_edit.setText(self.field("login"))
         self.pg_password_edit.setText(self.field("password"))
 
+    def nextId(self) -> int:
+        """ Next ID. """
+        if self.wizard().has_repository:
+            # Finished
+            return -1
+
+        return WizardPages.SuggestionNewFolder
+
+
+class SuggestionNewFolderPage(QWizardPage):
+
+    """ Question for the first folder. """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("Create the first folder"))
+        self.setSubTitle(tr("A folder can contain one or many QGIS projects"))
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        helper = QLabel(tr(
+            "It seems it's your first time on this Lizmap instance, because you don't have any repository set up on "
+            "this server yet."
+        ))
+        helper.setWordWrap(True)
+        layout.addWidget(helper)
+
+        # noinspection PyArgumentList
+        layout.addWidget(QLabel(tr("Do you want to create your first folder ?")))
+
+        self.no = QRadioButton(tr("No"))
+        self.yes = QRadioButton(tr("Yes (recommended)"))
+        self.yes.setChecked(True)
+
+        # noinspection PyArgumentList
+        layout.addWidget(self.yes)
+        # noinspection PyArgumentList
+        layout.addWidget(self.no)
+
+        self.registerField("dav_no", self.no)
+        self.registerField("dav_yes", self.yes)
+
+        # noinspection PyUnresolvedReferences
+        self.yes.toggled.connect(self.isComplete)
+        # noinspection PyUnresolvedReferences
+        self.no.toggled.connect(self.isComplete)
+
+    def isComplete(self) -> bool:
+        """ Form validation before the next step. """
+
+        if self.field("dav_no"):
+            self.setFinalPage(True)
+            self.wizard().button(QWizard.NextButton).setVisible(False)
+        else:
+            self.wizard().button(QWizard.NextButton).setVisible(True)
+            self.setFinalPage(False)
+        return super().isComplete()
+
+
+class CreateNewFolderDavPage(QWizardPage):
+
+    """ Wizard for the first folder creation. """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("First folder"))
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        helper = QLabel(tr(
+            "A folder can contain one or many QGIS projects. Usually people create a folder for a common theme for a "
+            "set of QGIS projects, such as \"Urbanism\"."
+        ))
+        helper.setWordWrap(True)
+        layout.addWidget(helper)
+        layout.addWidget(QLabel(tr("This is only some suggestions, feel free to edit the name you would like.")))
+
+        helper_2 = QLabel(tr("This will create a proper folder on the file system."))
+        helper_2.setWordWrap(True)
+        layout.addWidget(helper_2)
+
+        horizontal = QHBoxLayout()
+
+        self.test_button = QPushButton(tr("test"))
+        self.cadastre_button = QPushButton(tr("cadastre"))
+        self.urbanisme_button = QPushButton(tr("urbanisme"))
+
+        self.test_button.clicked.connect(partial(self.add_suggestion, self.test_button.text()))
+        self.cadastre_button.clicked.connect(partial(self.add_suggestion, self.cadastre_button.text()))
+        self.urbanisme_button.clicked.connect(partial(self.add_suggestion, self.urbanisme_button.text()))
+
+        horizontal.addWidget(self.test_button)
+        horizontal.addWidget(self.cadastre_button)
+        horizontal.addWidget(self.urbanisme_button)
+        layout.addLayout(horizontal)
+
+        self.custom_name = QLineEdit()
+        regexp = QRegExp("^[a-z0-9]+$")
+        validator = QRegExpValidator(regexp, self.custom_name)
+        self.custom_name.setValidator(validator)
+        layout.addWidget(self.custom_name)
+        self.registerField("folder_name", self.custom_name)
+
+        self.create_button = QPushButton(tr("Create"))
+        layout.addWidget(self.create_button)
+        self.create_button.clicked.connect(self.create_remote_directory)
+
+        self.result = QLabel()
+        self.result.setWordWrap(True)
+        layout.addWidget(self.result)
+
+    def add_suggestion(self, suggestion):
+        """ Add the suggestion. """
+        self.custom_name.setText(suggestion)
+
+    def create_remote_directory(self):
+        """ Create a remote directory using webdav protocol. """
+        self.result.setText(tr("Wait") + '…')
+
+        parent_wizard = self.wizard()
+        parent_wizard: ServerWizard
+        dav_url = parent_wizard.dav_url
+        auth_id = parent_wizard.auth_id
+
+        LOGGER.debug("Creating a folder called '{}' on ")
+        with OverrideCursor(Qt.WaitCursor):
+            server_dav = WebDav(dav_url, auth_id)
+            result, msg = server_dav.make_dir(self.custom_name.text())
+
+        if result:
+            self.result.setText(tr("Folder created") + " " + THUMBS)
+            return
+
+        self.label_result_folder.setText(msg)
+
+
+class LizmapNewRepositoryPage(QWizardPage):
+
+    """ Web-browser step for the Lizmap repository creation. """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("Create a Lizmap repository"))
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        step_1 = QLabel(
+            "1. " + tr("Setup your folder \"{}\" to be recognised as a Lizmap repository in your web browser.").format(
+                self.field("folder_name")
+            )
+        )
+        step_1.setWordWrap(True)
+        layout.addWidget(step_1)
+
+        self.open_web_browser = QPushButton(tr("Open your web browser to finalise the repository creation"))
+        self.open_web_browser.clicked.connect(self.open_browser)
+        layout.addWidget(self.open_web_browser)
+
+        step_2 = QLabel(tr(
+            "When you have finalized the repository creation in your web browser, you can continue the process."))
+        step_2.setWordWrap(True)
+        layout.addWidget(step_2)
+
+        self.check_repository = QPushButton(
+            "2. " + tr("Check if the new repository is detected"))
+        self.check_repository.clicked.connect(self.refresh_list)
+        layout.addWidget(self.check_repository)
+
+        self.result = QLabel()
+        self.result.setWordWrap(True)
+        layout.addWidget(self.result)
+
+    def open_browser(self):
+        """ Open the web browser. """
+        # noinspection PyArgumentList
+        url = QUrl('{}/admin.php/admin/maps/createSection'.format(self.wizard().current_url()))
+        QDesktopServices.openUrl(url)
+
+    def refresh_list(self):
+        """ Check the newly created repository. """
+        self.result.setText(tr("Wait") + '…')
+
+        request = QNetworkRequest()
+        request.setUrl(QUrl('{}index.php/view/app/metadata'.format(self.wizard().current_url())))
+        network_request = QgsBlockingNetworkRequest()
+        network_request.setAuthCfg(self.wizard().auth_id)
+
+        with OverrideCursor(Qt.WaitCursor):
+            network_request.get(request)
+
+        response = network_request.reply().content()
+        repositories = json.loads(response.data().decode('utf-8')).get('repositories')
+        for repo_id, data in repositories.items():
+            if data['path'] == self.field("folder_name") + '/':
+                self.result.setText(tr("Found it") + " " + THUMBS)
+                break
+        else:
+            self.result.setText(
+                tr("The folder <b>{}</b> has not been found as a valid Lizmap repository.".format(
+                    self.field("folder_name")))
+            )
+
 
 class ServerWizard(QWizard):
+
+    """ Main wizard class. """
+
     def __init__(self, parent=None, existing: list = None, url: str = '', auth_id: str = None, name: str = ''):
         # noinspection PyArgumentList
         super().__init__(parent)
@@ -459,6 +717,9 @@ class ServerWizard(QWizard):
         self.auth_id = auth_id
         self.server_info = None
         self.is_lizmap_dot_com = False
+        self.has_repository = None
+        self.dav_url = None
+        self.dav_path = None
 
         if existing is None:
             existing = []
@@ -477,6 +738,9 @@ class ServerWizard(QWizard):
         self.setPage(WizardPages.MasterPasswordPage, MasterPasswordPage(self.auth_manager))
         self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
         self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
+        self.setPage(WizardPages.SuggestionNewFolder, SuggestionNewFolderPage())
+        self.setPage(WizardPages.CreateNewFolderDav, CreateNewFolderDavPage())
+        self.setPage(WizardPages.LizmapNewRepository, LizmapNewRepositoryPage())
 
     @staticmethod
     def open_online_help() -> None:
@@ -485,6 +749,7 @@ class ServerWizard(QWizard):
         QDesktopServices.openUrl(online_help('publish/lizmap_plugin/information.html'))
 
     def validateCurrentPage(self):
+        """Specific rules for page validation. """
         if self.currentId() == WizardPages.LoginPasswordPage:
             self.page(WizardPages.UrlPage).result_url.setText('')
             self.currentPage().result_login_password.setText(tr("Fetching") + "…")
@@ -549,6 +814,7 @@ class ServerWizard(QWizard):
         return self.clean_data(self.field("login"))
 
     def save_auth_id(self) -> bool:
+        """ Save login and password in the QGIS password manager. """
         url = self.current_url()
         login = self.current_login()
         password = self.field('password')
@@ -660,6 +926,15 @@ class ServerWizard(QWizard):
 
         self.server_info = content
         self.is_lizmap_dot_com = content.get('hosting', '') == 'lizmap.com'
+        self.has_repository = True if len(content.get('repositories', [])) >= 1 else False
+        if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
+            # Debug for devs
+            self.has_repository = False
+        self.dav_url = content.get('webdav')
+        if Qgis.QGIS_VERSION_INT < 32200:
+            # Missing PyQGIS class for managing webdav
+            self.dav_url = None
+        self.dav_path = content.get('webdav_path')
         return True, '', True
 
     def _uri(self) -> QgsDataSourceUri:
@@ -738,6 +1013,7 @@ class ServerWizard(QWizard):
 
 
 if __name__ == '__main__':
+    """ For manual tests. """
     app = QApplication(sys.argv)
     wizard = ServerWizard()
     wizard.show()
