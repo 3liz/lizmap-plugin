@@ -274,6 +274,9 @@ class LizmapConfig:
                 'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'popupFrame'
             },
             'popupFrame': {
+                'comment': (
+                    'This is not included in the CFG, I think it is used only because of parent/children, todo clean'
+                ),
                 'wType': 'frame', 'type': None, 'default': None, 'parent': 'popup'
             },
             'popupSource': {
@@ -410,6 +413,9 @@ class LizmapConfig:
                 'wType': 'checkbox', 'type': 'boolean', 'default': False, 'children': 'serverFrame', 'parent': 'singleTile'
             },
             'serverFrame': {
+                'comment': (
+                    'This is not included in the CFG, I think it is used only because of parent/children, todo clean'
+                ),
                 'wType': 'frame', 'type': None, 'default': None, 'parent': 'cached'
             },
             'cacheExpiration': {

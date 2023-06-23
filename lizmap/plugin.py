@@ -2848,6 +2848,12 @@ class Lizmap:
                 else:
                     layer_options['externalWmsToggle'] = str(False)
 
+            if 'serverFrame' in layer_options.keys():
+                del layer_options['serverFrame']
+
+            if 'popupFrame' in layer_options.keys():
+                del layer_options['popupFrame']
+
             # Add layer options to the json object
             liz2json["layers"][v['name']] = layer_options
 
