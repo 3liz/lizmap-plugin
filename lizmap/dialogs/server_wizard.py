@@ -471,7 +471,7 @@ class PostgresqlPage(QWizardPage):
         self.registerField("skip_db", self.skip_db)
 
         self.skip_db_label = QLabel(tr(
-            "If checked and if it fails again, you will need to use the native QGIS dialog to setup your connection. "
+            "If checked and if it fails again, you will need to use the native QGIS dialog to set-up your connection. "
             "Remember to not use the QGIS password manager for storing login and password about PostGIS, instead use "
             "a plain text storage, by checking both buttons 'Store' for login and password. We also recommend checking "
             "'Use estimated table metadata' and 'Also list tables with no geometry'."))
@@ -642,7 +642,7 @@ class LizmapNewRepositoryPage(QWizardPage):
         self.setLayout(layout)
 
         step_1 = QLabel(
-            "1. " + tr("Setup your folder \"{}\" to be recognised as a Lizmap repository in your web browser.").format(
+            "1. " + tr("Set-up your folder \"{}\" to be recognised as a Lizmap repository in your web browser.").format(
                 self.field("folder_name")
             )
         )
@@ -710,7 +710,7 @@ class ServerWizard(QWizard):
         self.setOption(QWizard.NoBackButtonOnStartPage)
         self.setOption(QWizard.HaveHelpButton)
 
-        self.setMinimumSize(800, 450)
+        self.setMinimumSize(800, 550)
 
         self.auth_manager = QgsApplication.authManager()
 

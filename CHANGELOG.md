@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+## 3.14.2 - 2023-06-23
+
 * Add wizard for setting up the PostgreSQL database
 * Fix a Python error about a wrong variable name
+* Fix concatenate with number in aggregate
+* Some cleaning in the CFG file about legacy keys
 
 ## 3.14.1 - 2023-06-12
 
