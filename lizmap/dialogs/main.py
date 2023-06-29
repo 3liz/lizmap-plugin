@@ -131,8 +131,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.cbIgnTerrain.setEnabled(True)
 
-    def check_qgis_version(self):
-        """ Compare QGIS desktop and server versions. """
+    def check_qgis_version(self, message_bar=False, widget=False):
+        """ Compare QGIS desktop and server versions and display results if necessary. """
         current = format_qgis_version(qgis_version())
         qgis_desktop = (current[0], current[1])
 
@@ -144,9 +144,18 @@ class LizmapDialog(QDialog, FORM_CLASS):
             # Maybe returning LWC 3.4 or LWC 3.5 without server plugin
             return
 
-        if qgis_server < qgis_desktop:
-            title = tr('QGIS server version is lower than QGIS desktop version')
-            description = tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
+        if qgis_server >= qgis_desktop:
+            # Alright
+            if widget:
+                self.warning_old_server.setVisible(False)
+            return
+
+        title = tr('QGIS server version is lower than QGIS desktop version')
+        LOGGER.error(title)
+
+        description = tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
+
+        if message_bar:
             more = tr('Current QGIS server selected : ')
             more += '<b>{}.{}</b>'.format(qgis_server[0], qgis_server[1])
             more += "<br>"
@@ -156,11 +165,17 @@ class LizmapDialog(QDialog, FORM_CLASS):
             more += tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
             more += "<br>"
             more += tr(
-                    'You are strongly encouraged to upgrade your QGIS server. You will have issues when your QGIS '
-                    'server will read your QGS project made with this version of QGIS desktop.'
-            )
-            LOGGER.error(title)
+                'You are strongly encouraged to upgrade your QGIS server. You will have issues when your QGIS '
+                'server {} will read your QGS project made with this version of QGIS desktop {}.'
+            ).format(str(qgis_desktop))
             self.display_message_bar(title, description, Qgis.Warning, more_details=more)
+
+        if widget:
+            self.warning_old_server.setVisible(True)
+            message = description
+            message += " "
+            message += tr("Either upgrade your QGIS Server or downgrade your QGIS Desktop, to have the same version.")
+            self.warning_old_server.set_text(message)
 
     def current_server_info(self, info: ServerComboData):
         """ Return the current LWC server information from the server combobox. """

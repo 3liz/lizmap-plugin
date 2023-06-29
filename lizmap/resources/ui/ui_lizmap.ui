@@ -545,6 +545,9 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
+            <widget class="WarningWidget" name="warning_old_server" native="true"/>
+           </item>
+           <item>
             <widget class="QLabel" name="qgis_and_lwc_versions_issue">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#cc0000;&quot;&gt;There is some known issues using this version of Lizmap Web Client and this QGIS Desktop and QGIS Server {version}. &lt;/span&gt;Check the &lt;a href=&quot;https://github.com/3liz/lizmap-web-client/wiki/Versions&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;version compatibility.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -747,27 +750,7 @@ QListWidget::item::selected {
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_4">
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="cbActivatePrint">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Print</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QCheckBox" name="cbActivateZoomHistory">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Zoom history</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
+                    <item row="0" column="0">
                      <widget class="QCheckBox" name="cbActivateMeasure">
                       <property name="enabled">
                        <bool>true</bool>
@@ -777,27 +760,7 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
-                     <widget class="QCheckBox" name="activate_drawing_tools">
-                      <property name="toolTip">
-                       <string>If drawing tools are activated or not</string>
-                      </property>
-                      <property name="text">
-                       <string>Draw</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="2" column="1">
-                     <widget class="QCheckBox" name="cbActivateGeolocation">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Automatic geolocation (Only available in HTTPS)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_14">
                       <item>
                        <widget class="QLabel" name="label_19">
@@ -811,10 +774,43 @@ QListWidget::item::selected {
                       </item>
                      </layout>
                     </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="label_80">
+                    <item row="1" column="1">
+                     <widget class="QCheckBox" name="cbActivateGeolocation">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
                       <property name="text">
-                       <string>TextLabel</string>
+                       <string>Automatic geolocation (Only available in HTTPS)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cbActivatePrint">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Print</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QCheckBox" name="activate_drawing_tools">
+                      <property name="toolTip">
+                       <string>If drawing tools are activated or not</string>
+                      </property>
+                      <property name="text">
+                       <string>Draw</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="cbActivateZoomHistory">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Zoom history</string>
                       </property>
                      </widget>
                     </item>

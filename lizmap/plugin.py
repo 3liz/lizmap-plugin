@@ -713,7 +713,7 @@ class Lizmap:
             'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
         if current_version != old_version:
             self.lwc_version_changed()
-        # self.dlg.check_qgis_version()
+        self.dlg.check_qgis_version(widget=True)
         self.check_webdav()
 
         # For deprecated features in LWC 3.7 about base layers
@@ -802,14 +802,17 @@ class Lizmap:
             # QGIS <= 3.22
             self.dlg.send_webdav.setChecked(False)
             self.dlg.send_webdav.setEnabled(False)
+            self.dlg.send_webdav.setVisible(False)
             return
 
         # The dialog is already given.
         if self.webdav.setup_webdav_dialog():
             self.dlg.send_webdav.setEnabled(True)
+            self.dlg.send_webdav.setVisible(True)
         else:
             self.dlg.send_webdav.setChecked(False)
             self.dlg.send_webdav.setEnabled(False)
+            self.dlg.send_webdav.setVisible(False)
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -3004,7 +3007,7 @@ class Lizmap:
         variables['lizmap_repository'] = self.dlg.current_repository()
         self.project.setCustomVariables(variables)
 
-        self.dlg.check_qgis_version()
+        self.dlg.check_qgis_version(message_bar=True)
         if not lwc_version:
             lwc_version = self.dlg.current_lwc_version()
 
