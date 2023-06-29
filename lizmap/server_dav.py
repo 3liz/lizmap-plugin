@@ -277,7 +277,10 @@ class WebDav:
         data = reply.readAll()
         content = data.data().decode('utf8')
         if not content:
-            return tr("Unknown error from the webdav server. No content has been returned.")
+            msg = tr(
+                "Unknown error from the webdav server. No content has been returned."
+            ) + " ; Error from the HTTP request " + reply.errorString()
+            return msg
 
         xml_dom = parseString(content)
         # noinspection PyBroadException
