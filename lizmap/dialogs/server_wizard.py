@@ -126,11 +126,8 @@ class UrlPage(QWizardPage):
         if not result:
             return False
 
-        # noinspection PyArgumentList
         url = QUrl(self.wizard().current_url())
-        # noinspection PyUnresolvedReferences
-        if not url.scheme().startswith('http'):
-            # TODO make a better check
+        if not self.url_valid(url):
             self.result_url.setText(tr("URL is not valid"))
             return False
 
@@ -141,6 +138,18 @@ class UrlPage(QWizardPage):
         """ Creation of the page. """
         if self.url:
             self.url_edit.setText(self.url)
+
+    @staticmethod
+    def url_valid(url: QUrl) -> bool:
+        """ Check if the URL provided looks correct. """
+        # noinspection PyUnresolvedReferences
+        if not url.scheme().startswith('http'):
+            return False
+
+        if 'php' in url.path():
+            return False
+
+        return True
 
 
 class LoginPasswordPage(QWizardPage):

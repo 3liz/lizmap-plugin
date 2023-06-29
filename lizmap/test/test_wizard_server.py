@@ -2,9 +2,15 @@
 import os
 import unittest
 
+from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QWizard
 
-from lizmap.dialogs.server_wizard import NamePage, ServerWizard, WizardPages
+from lizmap.dialogs.server_wizard import (
+    NamePage,
+    ServerWizard,
+    UrlPage,
+    WizardPages,
+)
 
 try:
     from lizmap.test.credentials import (
@@ -44,6 +50,14 @@ def skip_test():
 
 
 class TestWizardServer(unittest.TestCase):
+
+    def test_url(self):
+        """ Test the validity of the URL. """
+        self.assertFalse(UrlPage.url_valid(QUrl("https://demo.lizmap.com/lizmap/index.php")))
+        self.assertFalse(UrlPage.url_valid(QUrl("https://demo.lizmap.com/lizmap/index.php/")))
+        self.assertFalse(UrlPage.url_valid(QUrl("bourbon")))
+
+        self.assertTrue(UrlPage.url_valid(QUrl("http://lizmap.local:8130/")))
 
     def test_server_creation_wrong_data(self):
         """ Test to create a new server with wrong data only. """
