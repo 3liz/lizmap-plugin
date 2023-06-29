@@ -155,26 +155,31 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         description = tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
 
+        qgis_server = '{}.{}'.format(qgis_server[0], qgis_server[1])
+        qgis_desktop = '{}.{}'.format(qgis_desktop[0], qgis_desktop[1])
+
         if message_bar:
             more = tr('Current QGIS server selected : ')
-            more += '<b>{}.{}</b>'.format(qgis_server[0], qgis_server[1])
+            more += '<b>{}</b>'.format(qgis_server)
             more += "<br>"
             more += tr('Current QGIS desktop : ')
-            more += '<b>{}.{}</b>'.format(qgis_desktop[0], qgis_desktop[1])
+            more += '<b>{}</b>'.format(qgis_desktop)
             more += "<br><br>"
             more += tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
             more += "<br>"
             more += tr(
                 'You are strongly encouraged to upgrade your QGIS server. You will have issues when your QGIS '
                 'server {} will read your QGS project made with this version of QGIS desktop {}.'
-            ).format(str(qgis_desktop))
+            ).format(qgis_server, qgis_desktop)
             self.display_message_bar(title, description, Qgis.Warning, more_details=more)
 
         if widget:
             self.warning_old_server.setVisible(True)
             message = description
             message += " "
-            message += tr("Either upgrade your QGIS Server or downgrade your QGIS Desktop, to have the same version.")
+            message += tr(
+                "Either upgrade your QGIS Server {} or downgrade your QGIS Desktop {}, to have the same version."
+            ).format(qgis_server, qgis_desktop)
             self.warning_old_server.set_text(message)
 
     def current_server_info(self, info: ServerComboData):
