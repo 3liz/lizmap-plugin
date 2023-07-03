@@ -146,7 +146,7 @@ class TableManagerDataviz(TableManager):
         if not server or not auth_id:
             return
 
-        repository = self.parent.current.currentData()
+        repository = self.parent.repository_combo.currentData()
         if not repository:
             # Shouldn't happen, but maybe we have changed the server somehow ?
             self.display_error(tr('No repository selected.'))
@@ -202,8 +202,14 @@ class TableManagerDataviz(TableManager):
                 response = request.reply().content()
                 json_response = json.loads(response.data().decode('utf-8'))
                 errors = json_response.get('errors')
-                # Message from the server
-                message = '<b>{}</b><br><br>{}'.format(errors.get('title'), errors.get('detail'))
+                if errors:
+                    # Message from the server
+                    message = '<b>{}</b><br><br>{}'.format(errors.get('title'), errors.get('detail'))
+                elif json_response.get('errorMessage'):
+                    # Error from nginx or apache?
+                    message = '<b>{}</b><br><br>{}'.format(
+                        json_response.get('errorMessage'), json_response.get('errorCode'))
+
                 # Let's add some more context to help
                 message += '<br><br>' + tr("Given context for the request") + ' : <br>'
                 message += '<b>' + tr('Server') + '</b> : ' + server + '<br>'
