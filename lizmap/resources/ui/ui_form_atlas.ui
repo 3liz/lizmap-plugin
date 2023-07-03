@@ -106,7 +106,7 @@
      <item row="7" column="0">
       <widget class="QLabel" name="label_popup">
        <property name="text">
-        <string>Display popup</string>
+        <string>Display popup (if activated)</string>
        </property>
       </widget>
      </item>

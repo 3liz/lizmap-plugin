@@ -80,9 +80,11 @@ class AtlasDefinitions(BaseDefinitions):
         }
         self._layer_config['displayPopup'] = {
             'type': InputType.CheckBox,
-            'header': tr('Display popup'),
+            'header': tr('Display popup (if activated)'),
             'default': False,
-            'tooltip': tr('You can choose to display the popup in the feature in the atlas container or not.')
+            'tooltip': tr(
+                'You can choose to display the popup in the feature in the atlas container or not.'
+            ) + '<br>' + tr('The popup <b>must be</b> activated on the current layer by yourself.')
         }
         self._layer_config['triggerFilter'] = {
             'type': InputType.CheckBox,
