@@ -2,15 +2,22 @@
 
 ## Unreleased
 
+## 3.14.3 - 2023-07-03
+
 * Add support for the "Attribute Editor Relation" when generating the tooltip. It needs Lizmap Web Client 3.7.0.
 * Fix some User Experience issues
 * Improve the QGIS version checks between server and desktop
+* Fix a Python error when displaying the dataviz plot preview
+* Enable the HTML builtin editor, easier to write HTML content in Lizmap
+* Fix possible crash when adding a new server in the wizard
+* Add a file logger for Lizmap users not using a production version.
+  * Logs are stored in the OS temporary directory, then in the `QGIS_Lizmap` directory.
 
 ## 3.14.2 - 2023-06-23
 
 * Add wizard for setting up the PostgreSQL database
 * Fix a Python error about a wrong variable name
-* Fix concatenate with number in aggregate
+* Fix concatenate with number in aggregate (contribution from @ghtmtt)
 * Some cleaning in the CFG file about legacy keys
 
 ## 3.14.1 - 2023-06-12
