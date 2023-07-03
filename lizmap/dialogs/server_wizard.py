@@ -156,12 +156,12 @@ class LoginPasswordPage(QWizardPage):
 
     """ Login and password for the server. """
 
-    def __init__(self, auth_id, auth_manager, parent=None):
+    def __init__(self, auth_id, parent=None):
         super().__init__(parent)
         self.setTitle(tr("Login and password of the instance"))
 
         self.auth_id = auth_id
-        self.auth_manager = auth_manager
+        self.auth_manager = QgsApplication.authManager()
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -279,7 +279,7 @@ class MasterPasswordPage(QWizardPage):
 
     """ Save credentials in the QGIS password manager. """
 
-    def __init__(self, auth_manager, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.setTitle(tr("QGIS Password manager"))
 
@@ -302,7 +302,8 @@ class MasterPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(label_warning)
 
-        if not auth_manager.masterPasswordIsSet():
+        self.auth_manager = QgsApplication.authManager()
+        if not self.auth_manager.masterPasswordIsSet():
             label_warning.setVisible(True)
         else:
             label_warning.setVisible(False)
@@ -318,8 +319,10 @@ class MasterPasswordPage(QWizardPage):
         parent_wizard: ServerWizard
         if not parent_wizard.is_lizmap_dot_com:
             # Finished
+            LOGGER.debug("After saving the auth ID, it's finished")
             return -1
 
+        LOGGER.debug("After saving the auth ID, go the PostgreSQL page.")
         return WizardPages.AddOrNotPostgresqlPage
 
 
@@ -329,6 +332,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        LOGGER.debug("PostgreSQL question")
         self.setTitle(tr("PostgreSQL"))
 
         layout = QVBoxLayout()
@@ -742,9 +746,9 @@ class ServerWizard(QWizard):
         self.helpRequested.connect(self.open_online_help)
 
         self.setPage(WizardPages.UrlPage, UrlPage(url))
-        self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id, self.auth_manager))
+        self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id))
         self.setPage(WizardPages.NamePage, NamePage(name))
-        self.setPage(WizardPages.MasterPasswordPage, MasterPasswordPage(self.auth_manager))
+        self.setPage(WizardPages.MasterPasswordPage, MasterPasswordPage())
         self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
         self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
         self.setPage(WizardPages.SuggestionNewFolder, SuggestionNewFolderPage())
@@ -775,7 +779,7 @@ class ServerWizard(QWizard):
             # The config was not correct, let's check which panel
 
             if not url_valid:
-                # The URL was not a JSON file, so we return true and the nextId will take of it
+                # The URL was not a JSON file, so we return true and the nextId will take care of it
                 # Even with bad login & password
                 self.page(WizardPages.UrlPage).result_url.setText(tr('The URL was not valid : {}').format(
                     self.field('url')))
@@ -788,7 +792,10 @@ class ServerWizard(QWizard):
             return False
 
         elif self.currentId() == WizardPages.MasterPasswordPage:
-            return self.save_auth_id()
+            result = self.save_auth_id()
+            LOGGER.debug("Saving to the authentication database is : {}".format("valid" if result else "not valid"))
+            return result
+
         elif self.currentId() == WizardPages.PostgresqlPage:
             skip_db_saving = self.field("skip_db")
             if not self.test_pg():
@@ -837,6 +844,7 @@ class ServerWizard(QWizard):
         # noinspection PyArgumentList,PyUnresolvedReferences
         config.setConfig('realm', QUrl(url).host())
         if self.auth_id:
+            LOGGER.debug("Edit current information authentication ID : {}".format(self.auth_id))
             # Edit
             config.setId(self.auth_id)
             if qgis_version() < 32000:
@@ -847,6 +855,7 @@ class ServerWizard(QWizard):
         else:
             # Creation
             self.auth_id = self.auth_manager.uniqueConfigId()
+            LOGGER.debug("New authentication ID : {}".format(self.auth_id))
             config.setId(self.auth_id)
             result = self.auth_manager.storeAuthenticationConfig(config)
 

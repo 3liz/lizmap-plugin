@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import sys
+import tempfile
 
 from collections import OrderedDict
 from functools import partial
@@ -118,7 +119,10 @@ except ModuleNotFoundError:
     # In a standalone application
     QGIS_PLUGIN_MANAGER = False
 
-from lizmap.qgis_plugin_tools.tools.custom_logging import setup_logger
+from lizmap.qgis_plugin_tools.tools.custom_logging import (
+    add_logging_handler_once,
+    setup_logger,
+)
 from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
 from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
 from lizmap.qgis_plugin_tools.tools.resources import (
@@ -196,6 +200,27 @@ class Lizmap:
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg.label_dev_version.setVisible(False)
         if self.is_dev_version:
+
+            # File handler for logging
+            temp_dir = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
+            if not temp_dir.exists():
+                temp_dir.mkdir()
+            file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
+            file_handler.setLevel(logging.DEBUG)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            add_logging_handler_once(LOGGER, file_handler)
+            LOGGER.debug("The directory {} is currently used for file logging.".format(temp_dir))
+
+            # All logs
+            def write_log_message(message, tag, level):
+                """ Write all tabs from QGIS to files. """
+                temp_dir_log = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
+                with open(temp_dir_log.joinpath("all.log"), 'a') as log_file:
+                    log_file.write('{tag}({level}): {message}'.format(tag=tag, level=level, message=message))
+
+            QgsApplication.messageLog().messageReceived.connect(write_log_message)
+
             self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
                 self.version, current_git_hash(), next_git_tag()))
 
@@ -3420,7 +3445,8 @@ class Lizmap:
                 qgis_plugin_manager = True
             except Exception as e:
                 # Core QGIS plugin manager API might not be well stable ?
-                LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
+                # LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
+                _ = e
         if not qgis_plugin_manager:
             # self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
             # self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
