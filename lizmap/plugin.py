@@ -702,7 +702,7 @@ class Lizmap:
             # We skip, it's from the QGIS plugin autoSaver
             return
 
-        if self.current_path and new_path != self.current_path and not os.getenv("CI"):
+        if self.current_path and new_path != self.current_path and not to_bool(os.getenv("CI"), default_value=False):
             old_cfg = self.current_path.with_suffix('.qgs.cfg')
             if old_cfg.exists():
                 box = QMessageBox(self.dlg)

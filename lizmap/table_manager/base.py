@@ -1038,7 +1038,7 @@ class TableManager:
                 continue
 
             # For editing, keep only postgresql, follow up about #364, #361
-            if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI")):
+            if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI"), default_value=False):
                 # In CI, we still want to test this layer, sorry.
                 if vector_layer.dataProvider().name() != 'postgres':
                     LOGGER.warning(

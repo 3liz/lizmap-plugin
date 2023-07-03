@@ -22,7 +22,7 @@ try:
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
-if to_bool(os.getenv("CI")):
+if to_bool(os.getenv("CI"), default_value=False):
     # Failing in Pycharm when launching tests, maybe because of the QApplication ?
     WEBKIT_AVAILABLE = False
 
@@ -62,10 +62,14 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         QWidget.__init__(self, parent=parent)
         self.setupUi(self)
 
-        if not WEBKIT_AVAILABLE:
-            self.web_view = QgsCodeEditorHTML()
-        else:
+        if WEBKIT_AVAILABLE:
             self.web_view = QWebView()
+        else:
+            self.web_view = QgsCodeEditorHTML()
+            LOGGER.warning(
+                "WebKit is not available, falling back on the QGIS native plain HTML editor. Please upgrade your "
+                "set-up to have WebKit installed."
+            )
 
         self.layout().addWidget(self.web_view)
 
