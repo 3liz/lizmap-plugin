@@ -161,7 +161,6 @@ class LoginPasswordPage(QWizardPage):
         self.setTitle(tr("Login and password of the instance"))
 
         self.auth_id = auth_id
-        self.auth_manager = QgsApplication.authManager()
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -207,17 +206,19 @@ class LoginPasswordPage(QWizardPage):
 
     def initializePage(self) -> None:
         """ Page creation. """
-        if self.auth_id:
-            conf = QgsAuthMethodConfig()
-            self.auth_manager.loadAuthenticationConfig(self.auth_id, conf, True)
-            if conf.id():
-                self.login_edit.setText(conf.config('username'))
-                self.password_edit.setText(conf.config('password'))
-                return
-
-            # The credentials have been removed from the password database
-            # Must do something
+        if not self.auth_id:
             return
+
+        conf = QgsAuthMethodConfig()
+        QgsApplication.authManager().loadAuthenticationConfig(self.auth_id, conf, True)
+        if conf.id():
+            self.login_edit.setText(conf.config('username'))
+            self.password_edit.setText(conf.config('password'))
+            return
+
+        # The credentials have been removed from the password database
+        # Must do something
+        return
 
     def nextId(self) -> int:
         """ Next ID, only if the URL is correct. """
@@ -302,11 +303,10 @@ class MasterPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(label_warning)
 
-        self.auth_manager = QgsApplication.authManager()
-        if not self.auth_manager.masterPasswordIsSet():
-            label_warning.setVisible(True)
-        else:
+        if QgsApplication.authManager().masterPasswordIsSet():
             label_warning.setVisible(False)
+        else:
+            label_warning.setVisible(True)
 
         self.result_master_password = QLabel()
         self.result_master_password.setWordWrap(True)
@@ -332,7 +332,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        LOGGER.debug("PostgreSQL question")
+        LOGGER.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
         self.setTitle(tr("PostgreSQL"))
 
         layout = QVBoxLayout()
@@ -631,7 +631,7 @@ class CreateNewFolderDavPage(QWizardPage):
         dav_url = parent_wizard.dav_url
         auth_id = parent_wizard.auth_id
 
-        LOGGER.debug("Creating a folder called '{}' on ")
+        LOGGER.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
         with OverrideCursor(Qt.WaitCursor):
             server_dav = WebDav(dav_url, auth_id)
             result, msg = server_dav.make_dir(self.custom_name.text())
@@ -725,8 +725,6 @@ class ServerWizard(QWizard):
 
         self.setMinimumSize(800, 550)
 
-        self.auth_manager = QgsApplication.authManager()
-
         self.auth_id = auth_id
         self.server_info = None
         self.is_lizmap_dot_com = False
@@ -793,7 +791,7 @@ class ServerWizard(QWizard):
 
         elif self.currentId() == WizardPages.MasterPasswordPage:
             result = self.save_auth_id()
-            LOGGER.debug("Saving to the authentication database is : {}".format("valid" if result else "not valid"))
+            LOGGER.debug("Saving to the authentication database is : {} valid".format("" if result else "not"))
             return result
 
         elif self.currentId() == WizardPages.PostgresqlPage:
@@ -835,6 +833,8 @@ class ServerWizard(QWizard):
         login = self.current_login()
         password = self.field('password')
 
+        auth_manager = QgsApplication.authManager()
+
         config = QgsAuthMethodConfig()
         config.setUri(url)
         config.setName(login)
@@ -848,16 +848,16 @@ class ServerWizard(QWizard):
             # Edit
             config.setId(self.auth_id)
             if qgis_version() < 32000:
-                self.auth_manager.removeAuthenticationConfig(self.auth_id)
-                result = self.auth_manager.storeAuthenticationConfig(config)
+                auth_manager.removeAuthenticationConfig(self.auth_id)
+                result = auth_manager.storeAuthenticationConfig(config)
             else:
-                result = self.auth_manager.storeAuthenticationConfig(config, True)
+                result = auth_manager.storeAuthenticationConfig(config, True)
         else:
             # Creation
-            self.auth_id = self.auth_manager.uniqueConfigId()
+            self.auth_id = auth_manager.uniqueConfigId()
             LOGGER.debug("New authentication ID : {}".format(self.auth_id))
             config.setId(self.auth_id)
-            result = self.auth_manager.storeAuthenticationConfig(config)
+            result = auth_manager.storeAuthenticationConfig(config)
 
         if result[0]:
             self.currentPage().result_master_password.setText(THUMBS)
