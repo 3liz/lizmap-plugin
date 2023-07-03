@@ -1,6 +1,7 @@
 """ Table manager for dataviz. """
 import json
 import logging
+import os
 
 from typing import Optional
 
@@ -168,7 +169,10 @@ class TableManagerDataviz(TableManager):
 
         json_object = json.dumps(json_data, indent=4)
 
-        url = QUrl('{}index.php/dataviz/service/'.format(server))
+        if os.getenv('LIZMAP_DATAVIZ_URL'):
+            url = QUrl(os.getenv('LIZMAP_DATAVIZ_URL'))
+        else:
+            url = QUrl('{}index.php/dataviz/service/'.format(server))
 
         conf = QgsAuthMethodConfig()
         QgsApplication.authManager().loadAuthenticationConfig(auth_id, conf, True)

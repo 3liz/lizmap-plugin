@@ -482,6 +482,9 @@ class ServerManager:
     @staticmethod
     def url_metadata(base_url: str) -> str:
         """ Return the URL to fetch metadata from LWC server. """
+        if os.getenv('LIZMAP_METADATA_URL'):
+            return os.getenv('LIZMAP_METADATA_URL')
+
         if not base_url.endswith('/'):
             base_url += '/'
 

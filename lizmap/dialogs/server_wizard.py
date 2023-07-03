@@ -4,6 +4,7 @@ __email__ = 'info@3liz.org'
 
 import json
 import logging
+import os
 import sys
 
 from base64 import b64encode
@@ -691,7 +692,7 @@ class LizmapNewRepositoryPage(QWizardPage):
         self.result.setText(tr("Wait") + '…')
 
         request = QNetworkRequest()
-        request.setUrl(QUrl('{}index.php/view/app/metadata'.format(self.wizard().current_url())))
+        request.setUrl(QUrl(self.wizard().url_metadata(self.wizard().current_url())))
         network_request = QgsBlockingNetworkRequest()
         network_request.setAuthCfg(self.wizard().auth_id)
 
@@ -872,6 +873,18 @@ class ServerWizard(QWizard):
         )
         return False
 
+    @staticmethod
+    def url_metadata(base_url: str) -> str:
+        """ Return the URL to fetch metadata from LWC server. """
+        if os.getenv('LIZMAP_METADATA_URL'):
+            return os.getenv('LIZMAP_METADATA_URL')
+
+        if not base_url.endswith('/'):
+            base_url += '/'
+
+        url = '{}index.php/view/app/metadata'.format(base_url)
+        return url
+
     def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
         """ Check the URL and given login.
 
@@ -887,7 +900,7 @@ class ServerWizard(QWizard):
                 "to the Lizmap Web Client home page."
             ), False
 
-        url = '{}index.php/view/app/metadata'.format(url)
+        url = self.url_metadata(url)
 
         net_req = QNetworkRequest()
         # noinspection PyArgumentList
