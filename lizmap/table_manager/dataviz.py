@@ -1,7 +1,6 @@
 """ Table manager for dataviz. """
 import json
 import logging
-import os
 
 from typing import Optional
 
@@ -28,6 +27,7 @@ from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.dataviz import GraphType
 from lizmap.definitions.definitions import ServerComboData
 from lizmap.dialogs.main import LizmapDialog
+from lizmap.dialogs.server_wizard import ServerWizard
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import (
     plugin_name,
@@ -169,10 +169,7 @@ class TableManagerDataviz(TableManager):
 
         json_object = json.dumps(json_data, indent=4)
 
-        if os.getenv('LIZMAP_DATAVIZ_URL'):
-            url = QUrl(os.getenv('LIZMAP_DATAVIZ_URL'))
-        else:
-            url = QUrl('{}index.php/dataviz/service/'.format(server))
+        url = ServerWizard.url_dataviz(server)
 
         conf = QgsAuthMethodConfig()
         QgsApplication.authManager().loadAuthenticationConfig(auth_id, conf, True)

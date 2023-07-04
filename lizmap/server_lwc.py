@@ -479,27 +479,6 @@ class ServerManager:
             url, auth_id, _ = self._fetch_cells(row)
             self.fetch(url, auth_id, row)
 
-    @staticmethod
-    def url_metadata(base_url: str) -> str:
-        """ Return the URL to fetch metadata from LWC server. """
-        if os.getenv('LIZMAP_METADATA_URL'):
-            return os.getenv('LIZMAP_METADATA_URL')
-
-        if not base_url.endswith('/'):
-            base_url += '/'
-
-        url = '{}index.php/view/app/metadata'.format(base_url)
-        return url
-
-    @staticmethod
-    def url_server_info(base_url: str) -> str:
-        """ Return the URL to the server information panel. """
-        if not base_url.endswith('/'):
-            base_url += '/'
-
-        url = '{}admin.php/admin/server_information'.format(base_url)
-        return url
-
     def fetch(self, url: str, auth_id: str, row: int):
         """ Fetch the JSON file and call the function when it's finished. """
         self.display_action(row, False, tr('Fetching…'))
@@ -510,7 +489,7 @@ class ServerManager:
             QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
 
         request = QNetworkRequest()
-        request.setUrl(QUrl(self.url_metadata(url)))
+        request.setUrl(QUrl(ServerWizard.url_metadata(url)))
         # According to QGIS debug panel, this is not working for now
         request.setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.PreferNetwork)
         self.fetchers[row].fetchContent(request, auth_id)
@@ -1059,14 +1038,14 @@ class ServerManager:
         open_server_info_url = menu.addAction(tr("Open server information URL") + "…")
         left_item = self.table.item(item.row(), TableCell.Url.value)
         url = left_item.data(Qt.UserRole)
-        slot = partial(QDesktopServices.openUrl, QUrl(self.url_server_info(url)))
+        slot = partial(QDesktopServices.openUrl, QUrl(ServerWizard.url_server_info(url)))
         open_server_info_url.triggered.connect(slot)
 
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX) or to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
             open_url = menu.addAction(tr("Open raw JSON file URL") + "…")
             left_item = self.table.item(item.row(), TableCell.Url.value)
             url = left_item.data(Qt.UserRole)
-            slot = partial(QDesktopServices.openUrl, QUrl(self.url_metadata(url)))
+            slot = partial(QDesktopServices.openUrl, QUrl(ServerWizard.url_metadata(url)))
             open_url.triggered.connect(slot)
 
         action_item = self.table.item(item.row(), TableCell.Action.value)

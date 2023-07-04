@@ -2,15 +2,15 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import configparser
 import json
 import logging
-import os
 import sys
 
 from base64 import b64encode
 from enum import IntEnum, auto
 from functools import partial
-from typing import Tuple
+from typing import Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -49,7 +49,7 @@ from lizmap.qgis_plugin_tools.tools.version import version
 if Qgis.QGIS_VERSION_INT >= 32200:
     from lizmap.server_dav import WebDav
 
-from lizmap.tools import qgis_version
+from lizmap.tools import lizmap_user_folder, qgis_version
 
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
@@ -815,9 +815,7 @@ class ServerWizard(QWizard):
 
     def current_url(self) -> str:
         """ Cleaned input URL. """
-        url = self.clean_data(self.field('url'))
-        if not url.endswith('/'):
-            url += '/'
+        url = self.trailing_slash(self.clean_data(self.field('url')))
         return url
 
     def current_name(self) -> str:
@@ -873,16 +871,55 @@ class ServerWizard(QWizard):
         )
         return False
 
+    @classmethod
+    def override_url(cls, base_url: str, metadata=True) -> Optional[str]:
+        """ Override URL if the file is specified. """
+        ini = lizmap_user_folder().joinpath('urls.ini')
+        if not ini.exists():
+            return None
+
+        config = configparser.ConfigParser()
+        config.read(ini)
+        if base_url not in config.sections():
+            return None
+
+        LOGGER.info("Found a server override for server {}".format(base_url))
+        return config[base_url].get('metadata' if metadata else 'dataviz', '')
+
+    @classmethod
+    def trailing_slash(cls, url: str) -> str:
+        """ Add the trailing slash before URL concatenation. """
+        if not url.endswith('/'):
+            url += '/'
+        return url
+
     @staticmethod
     def url_metadata(base_url: str) -> str:
         """ Return the URL to fetch metadata from LWC server. """
-        if os.getenv('LIZMAP_METADATA_URL'):
-            return os.getenv('LIZMAP_METADATA_URL')
+        override = ServerWizard.override_url(base_url)
+        if override:
+            return override
 
-        if not base_url.endswith('/'):
-            base_url += '/'
-
+        base_url = ServerWizard.trailing_slash(base_url)
         url = '{}index.php/view/app/metadata'.format(base_url)
+        return url
+
+    @staticmethod
+    def url_dataviz(base_url: str) -> str:
+        """ Return the URL to fetch metadata from LWC server. """
+        override = ServerWizard.override_url(base_url, False)
+        if override:
+            return override
+
+        base_url = ServerWizard.trailing_slash(base_url)
+        url = '{}index.php/dataviz/service/'.format(base_url)
+        return url
+
+    @staticmethod
+    def url_server_info(base_url: str) -> str:
+        """ Return the URL to the server information panel. """
+        base_url = ServerWizard.trailing_slash(base_url)
+        url = '{}admin.php/admin/server_information'.format(base_url)
         return url
 
     def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
@@ -891,8 +928,7 @@ class ServerWizard(QWizard):
         The first boolean is about the server status.
         The latest boolean is about the URL check if it's a JSON document
         """
-        if not url.endswith('/'):
-            url += '/'
+        url = self.trailing_slash(url)
 
         if ' ' in url:
             return False, tr(
