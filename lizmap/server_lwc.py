@@ -490,6 +490,7 @@ class ServerManager:
 
         request = QNetworkRequest()
         request.setUrl(QUrl(ServerWizard.url_metadata(url)))
+        request.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         # According to QGIS debug panel, this is not working for now
         request.setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.PreferNetwork)
         self.fetchers[row].fetchContent(request, auth_id)

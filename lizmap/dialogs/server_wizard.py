@@ -951,6 +951,7 @@ class ServerWizard(QWizard):
         net_req.setUrl(QUrl(url))
         token = b64encode(f"{login}:{password}".encode())
         net_req.setRawHeader(b"Authorization", b"Basic %s" % token)
+        net_req.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         request = QgsBlockingNetworkRequest()
         error = request.get(net_req)
         if error == QgsBlockingNetworkRequest.NetworkError:
