@@ -878,13 +878,21 @@ class ServerWizard(QWizard):
         if not ini.exists():
             return None
 
+        # At that stage, there is a trailing slash at the end of the URL, whatever the input is.
+        # We can either have [https://ilovecookie.org/] or [https://ilovecookie.org] in the urls.ini
         config = configparser.ConfigParser()
         config.read(ini)
         if base_url not in config.sections():
-            return None
+            if base_url[0:-1] not in config.sections():
+                return None
 
         LOGGER.info("Found a server override for server {}".format(base_url))
-        return config[base_url].get('metadata' if metadata else 'dataviz', '')
+
+        key = 'metadata' if metadata else 'dataviz'
+        try:
+            return config.get(base_url, key)
+        except configparser.NoSectionError:
+            return config.get(base_url[0:-1], key)
 
     @classmethod
     def trailing_slash(cls, url: str) -> str:
