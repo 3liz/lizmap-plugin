@@ -2,7 +2,11 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer
+from typing import Optional
+
+from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer
+
+from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 """ Some checks which can be done on a layer. """
 
@@ -52,3 +56,38 @@ def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
 
     field_type = layer.fields().field(primary_key).typeName()
     return field_type.lower() == 'int8'
+
+
+def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
+    """ Check for duplicated layers with the same datasource but different filters. """
+    unique_datasource = {}
+    for layer in project.mapLayers().values():
+        uri = QgsDataSourceUri(layer.source())
+        uri_filter = uri.sql()
+        uri.setSql('')
+
+        uri_string = uri.uri(True)
+
+        if uri_string not in unique_datasource.keys():
+            unique_datasource[uri_string] = {}
+
+        if uri_filter not in unique_datasource[uri_string]:
+            unique_datasource[uri_string][uri_filter] = layer.name()
+
+    if len(unique_datasource.keys()) == 0:
+        return None
+
+    text = ''
+    for datasource, filters in unique_datasource.items():
+        layer_names = ','.join([f"'{k}'" for k in filters.values()])
+        uri_filter = ','.join([f"'{k}'" for k in filters.keys()])
+        text += tr(
+            "Review layers {layers} having the same datasource '{datasource}' with these filters {uri_filter}."
+        ).format(
+            layers=layer_names,
+            datasource=QgsDataSourceUri.removePassword(QgsDataSourceUri(datasource).uri(False)),
+            uri_filter=uri_filter
+        )
+        text += '<br>'
+
+    return text

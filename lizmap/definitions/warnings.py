@@ -12,3 +12,4 @@ class Warnings(Enum):
     UseLayerIdAsName = 'use_layer_id_as_name'
     SaasLizmapDotCom = 'saas_lizmap_dot_com_invalid'
     InvalidFieldType = 'invalid_field_type'
+    DuplicatedLayersWithFilters = 'duplicated_layers_with_filters'

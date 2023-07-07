@@ -104,6 +104,7 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.project_checker_tools import (
+    duplicated_layer_with_filter,
     invalid_int8_primary_key,
     invalid_tid_field,
 )
@@ -2548,6 +2549,14 @@ class Lizmap:
             if results['tid'] or results['int8']:
                 warnings.append(Warnings.InvalidFieldType.value)
                 ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('QGIS server'), message)
+
+            if lwc_version >= LwcVersions.Lizmap_3_7:
+                text = duplicated_layer_with_filter(self.project)
+                if text:
+                    message += tr(
+                        "The process is continuing but the project might be slow in Lizmap Web Client.")
+                    warnings.append(Warnings.DuplicatedLayersWithFilters.value)
+                    ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Optimisation'), text)
 
         metadata = {
             'qgis_desktop_version': qgis_version(),
