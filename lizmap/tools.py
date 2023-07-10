@@ -15,9 +15,10 @@ from pathlib import Path
 from typing import List, Tuple, Union
 
 from qgis.core import Qgis, QgsApplication, QgsProviderRegistry, QgsVectorLayer
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import QDateTime, QDir, Qt
 
 from lizmap.definitions.definitions import LayerProperties
+from lizmap.qgis_plugin_tools.tools.resources import metadata_config
 
 
 def unaccent(a_string: str) -> str:
@@ -174,6 +175,12 @@ def next_git_tag():
     versions = tag.split('.')
     text = '{}.{}.{}-alpha'.format(versions[0], versions[1], int(versions[2]) + 1)
     return text
+
+
+def plugin_date() -> QDateTime:
+    """Return the version defined in metadata.txt."""
+    date = metadata_config()["general"]["dateTime"]
+    return QDateTime().fromString(date, Qt.ISODate)
 
 
 def to_bool(val: Union[str, int, float, bool, None], default_value: bool = True) -> bool:

@@ -114,7 +114,7 @@ from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
 
 try:
-    from lizmap.plugin_manager import PluginManager
+    from lizmap.plugin_manager import QgisPluginManager
     QGIS_PLUGIN_MANAGER = True
 except ModuleNotFoundError:
     # In a standalone application
@@ -183,6 +183,7 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.project.fileNameChanged.connect(self.filename_changed)
         self.filename_changed()
+        self.update_plugin = None
 
         setup_logger(plugin_name())
 
@@ -1183,6 +1184,11 @@ class Lizmap:
                 'The selected server in the combobox must be reachable. The server has not been reachable for {number} '
                 'days.'
             ).format(number=MAX_DAYS)
+            self.dlg.allow_navigation(False, msg)
+            return False
+
+        if self.update_plugin:
+            msg = tr('Your plugin is outdated, please visit your QGIS plugin manager.')
             self.dlg.allow_navigation(False, msg)
             return False
 
@@ -3443,27 +3449,16 @@ class Lizmap:
             return False
 
         # QGIS Plugin manager
-        qgis_plugin_manager = None
         if QGIS_PLUGIN_MANAGER:
-            # noinspection PyBroadException
-            try:
-                plugin_manager = PluginManager()
-                self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
-                self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
-                self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
-                qgis_plugin_manager = True
-            except Exception as e:
-                # Core QGIS plugin manager API might not be well stable ?
-                # LOGGER.warning("Exception when reading the QGIS plugin manager : {}".format(str(e)))
-                _ = e
-        if not qgis_plugin_manager:
-            # self.dlg.label_lizmap_plugin.setText("Lizmap - Unknown")
-            # self.dlg.label_wfsoutputextension_plugin.setText("WfsOutputExtension - Unknown")
-            # self.dlg.label_atlasprint_plugin.setText("AtlasPrint - Unknown")
-            self.dlg.label_lizmap_plugin.setVisible(False)
-            self.dlg.label_wfsoutputextension_plugin.setVisible(False)
-            self.dlg.label_atlasprint_plugin.setVisible(False)
-            self.dlg.label_qgis_server_plugins.setVisible(False)
+            plugin_manager = QgisPluginManager()
+            self.update_plugin = plugin_manager.current_plugin_needs_update()
+            # self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
+            # self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
+            # self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
+        self.dlg.label_lizmap_plugin.setVisible(False)
+        self.dlg.label_wfsoutputextension_plugin.setVisible(False)
+        self.dlg.label_atlasprint_plugin.setVisible(False)
+        self.dlg.label_qgis_server_plugins.setVisible(False)
 
         self.version_checker = VersionChecker(self.dlg, VERSION_URL)
         self.version_checker.fetch()

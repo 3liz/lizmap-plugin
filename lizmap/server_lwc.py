@@ -561,7 +561,7 @@ class ServerManager:
             return
 
         # LWC version split
-        lizmap_version_split = self._split_lizmap_version(lizmap_version)
+        lizmap_version_split = self.split_lizmap_version(lizmap_version)
         branch = lizmap_version_split[0], lizmap_version_split[1]
 
         qgis_server = content.get('qgis_server')
@@ -965,8 +965,8 @@ class ServerManager:
         # This should not happen
         return Qgis.Critical, [f"Version {branch} has not been detected as a known version."], False
 
-    @staticmethod
-    def _split_lizmap_version(lwc_version: str) -> tuple:
+    @classmethod
+    def split_lizmap_version(cls, lwc_version: str) -> tuple:
         """ Split a Lizmap Web Client version. """
         lizmap_version_split = lwc_version.split('.')
         items_bugfix = lizmap_version_split[2].split('-')

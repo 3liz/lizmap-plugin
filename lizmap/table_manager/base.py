@@ -8,8 +8,7 @@ import os
 from collections import namedtuple
 from typing import Optional, Union
 
-from qgis._core import QgsMasterLayoutInterface
-from qgis.core import QgsMapLayerModel, QgsProject
+from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (

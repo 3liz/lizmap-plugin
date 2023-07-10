@@ -18,9 +18,9 @@ class TestVersionInfo(unittest.TestCase):
 
     def test_split_lizmap_version(self):
         """ Test to split the LWC version. """
-        self.assertTupleEqual(ServerManager._split_lizmap_version("3.5.2"), (3, 5, 2))
-        self.assertTupleEqual(ServerManager._split_lizmap_version("3.5.2-pre"), (3, 5, 2, 'pre'))
-        self.assertTupleEqual(ServerManager._split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, 'pre', 5204))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2"), (3, 5, 2))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre"), (3, 5, 2, 'pre'))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, 'pre', 5204))
 
     def test_version_info_lizmap_status(self):
         """ Test version info according to LWC version and QGIS version.
