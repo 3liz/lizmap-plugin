@@ -2,6 +2,7 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QPixmap
 from qgis.PyQt.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QWidget
 
@@ -26,6 +27,7 @@ class WarningWidget(QWidget):
         self.text_widget = QLabel()
         # self.text_widget.setText(text)
         self.text_widget.setWordWrap(True)
+        self.text_widget.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         # noinspection PyArgumentList
         layout.addWidget(self.text_widget)

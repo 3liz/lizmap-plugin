@@ -1145,7 +1145,7 @@ class Lizmap:
 
         # noinspection PyProtectedMember
         ServerWizard._save_pg(new_name, QgsDataSourceUri(self.iface.activeLayer().source()))
-        self.iface.browserModel().reload()
+        # self.iface.browserModel().reload()
 
     def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :

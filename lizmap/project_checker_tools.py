@@ -64,6 +64,9 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
     for layer in project.mapLayers().values():
         uri = QgsDataSourceUri(layer.source())
         uri_filter = uri.sql()
+        if uri_filter == '':
+            continue
+
         uri.setSql('')
 
         uri_string = uri.uri(True)
