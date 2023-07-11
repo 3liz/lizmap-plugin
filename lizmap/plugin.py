@@ -61,6 +61,7 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 from qgis.utils import OverrideCursor
+from qgis.utils import plugins as all_plugins
 
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
@@ -141,7 +142,6 @@ from lizmap.tools import (
     format_qgis_version,
     format_version_integer,
     get_layer_wms_parameters,
-    has_git,
     layer_property,
     lizmap_user_folder,
     next_git_tag,
@@ -200,7 +200,6 @@ class Lizmap:
         self.version = version()
         self.version_checker = None
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
-        self.dlg.label_dev_version.setVisible(False)
         if self.is_dev_version:
 
             # File handler for logging
@@ -225,11 +224,6 @@ class Lizmap:
 
             self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
                 self.version, current_git_hash(), next_git_tag()))
-
-            if not has_git():
-                text = self.dlg.label_dev_version.text().format(self.version)
-                self.dlg.label_dev_version.setText(text)
-                self.dlg.label_dev_version.setVisible(True)
 
         if Qgis.QGIS_VERSION_INT >= 32200:
             self.webdav = WebDav()
@@ -702,6 +696,10 @@ class Lizmap:
         new_path = Path(self.project.absoluteFilePath())
         if str(new_path).endswith('.bak'):
             # We skip, it's from the QGIS plugin autoSaver
+            return
+
+        if 'autoSaver' in all_plugins:
+            # Until https://github.com/enricofer/autoSaver/pull/22 is merged
             return
 
         if self.current_path and new_path != self.current_path and not to_bool(os.getenv("CI"), default_value=False):
