@@ -1833,12 +1833,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                                  <layout class="QHBoxLayout" name="horizontalLayout_36">
                                   <item>
                                    <widget class="QCheckBox" name="cbPopupDisplayChildren">
-                                    <property name="maximumSize">
-                                     <size>
-                                      <width>30</width>
-                                      <height>16777215</height>
-                                     </size>
-                                    </property>
                                     <property name="toolTip">
                                      <string>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</string>
                                     </property>
@@ -1846,17 +1840,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                                      <string notr="true"/>
                                     </property>
                                     <property name="text">
-                                     <string/>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                  <item>
-                                   <widget class="QLabel" name="label_66">
-                                    <property name="text">
                                      <string>Display related children</string>
-                                    </property>
-                                    <property name="wordWrap">
-                                     <bool>true</bool>
                                     </property>
                                    </widget>
                                   </item>
