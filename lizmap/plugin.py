@@ -874,6 +874,10 @@ class Lizmap:
         # clear log button clicked
         self.dlg.button_clear_log.clicked.connect(self.clear_log)
 
+        # Abstract HTML editor
+        self.dlg.button_abstract_html.setIcon(QIcon(":images/themes/default/mActionEditHtml.svg"))
+        self.dlg.button_abstract_html.clicked.connect(self.configure_html_abstract)
+
         # Group wizard
         icon = QIcon(resources_path('icons', 'user_group.svg'))
         self.dlg.button_wizard_group_visibility_project.setText('')
@@ -2281,6 +2285,18 @@ class Lizmap:
                 if flag:
                     index = self.layer_options_list['popupSource']['widget'].findData('qgis')
                     self.layer_options_list['popupSource']['widget'].setCurrentIndex(index)
+
+    def configure_html_abstract(self):
+        """ Open the dialog for setting HTML for the abstract. """
+        if not self._current_selected_layer():
+            return
+
+        html_editor = HtmlEditorDialog()
+        html_editor.editor.set_html_content(self.dlg.teLayerAbstract.toPlainText())
+        if not html_editor.exec_():
+            return
+
+        self.dlg.teLayerAbstract.setPlainText(html_editor.editor.html_content())
 
     def configure_html_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
