@@ -2,6 +2,7 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QGridLayout,
@@ -23,6 +24,7 @@ class ScrollMessageBox(QMessageBox):
         grid = self.findChild(QGridLayout)
         label = QLabel(children[1].text(), self)
         label.setWordWrap(True)
+        label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         scroll.setWidget(label)
         scroll.setMinimumSize(400, 200)
         grid.addWidget(scroll, 0, 1)
