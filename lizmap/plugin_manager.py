@@ -28,6 +28,9 @@ class QgisPluginManager:
     def __init__(self):
         plugin_manager = instance()
         plugin_manager.exportPluginsToManager()
+        # plugin_manager.repositories.checkingDone.connect(self.checkingDone)
+        # for key in repositories.allEnabled():
+        #     repositories.requestFetching(key)
 
         plugins = {
             'cadastre': 'https://github.com/3liz/QgisCadastrePlugin/releases/tag/{tag}',
