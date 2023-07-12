@@ -6,6 +6,7 @@ from os.path import relpath
 from pathlib import Path
 from typing import Dict, Tuple
 
+from qgis._core import QgsRasterLayer
 from qgis.core import (
     QgsDataSourceUri,
     QgsProject,
@@ -29,6 +30,13 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
 
     connection_error = False
     for layer in project.mapLayers().values():
+
+        if isinstance(layer, QgsRasterLayer):
+            if layer.source().lower().endswith('ecw'):
+                layer_error[layer.name()] = tr(
+                    'The layer "{}" is an ECW. Because of the ECW\'s licence, this format is not compatible with QGIS '
+                    'server. You should switch to a COG format.').format(layer.name())
+
         if isinstance(layer, QgsVectorLayer):
             if layer.dataProvider().name() == "postgres":
                 datasource = QgsDataSourceUri(layer.source())
