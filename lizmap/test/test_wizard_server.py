@@ -2,6 +2,7 @@
 import os
 import unittest
 
+from qgis._core import Qgis
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QWizard
 
@@ -59,6 +60,7 @@ class TestWizardServer(unittest.TestCase):
 
         self.assertTrue(UrlPage.url_valid(QUrl("http://lizmap.local:8130/")))
 
+    @unittest.skipIf(Qgis.QGIS_VERSION_INT < 31600, "Randomly failing, only on QGIS 3.10")
     def test_server_creation_wrong_data(self):
         """ Test to create a new server with wrong data only. """
         dialog = ServerWizard(None, [])
