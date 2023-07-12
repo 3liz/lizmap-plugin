@@ -1527,7 +1527,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             </widget>
                            </item>
                            <item row="2" column="0">
-                            <widget class="QLabel" name="label_10">
+                            <widget class="QLabel" name="label_link">
                              <property name="text">
                               <string>Link</string>
                              </property>

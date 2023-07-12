@@ -76,6 +76,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
 
+        tooltip = tr(
+            'You can add either a URL starting by "http" or insert a string starting by "media/", "../media/" to '
+            'insert a link to a media stored in the Lizmap instance.')
+        self.label_link.setToolTip(tooltip)
+        self.inLayerLink.setToolTip(tooltip)
+
         self.check_project_thumbnail()
         self.setup_icons()
 
