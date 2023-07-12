@@ -2,11 +2,16 @@
 
 ## Unreleased
 
+## 3.15.0 - 2023-07-12
+
+* Add the HTML code editor for the abstract on a layer
 * UX - Add note about popup must be activated in the atlas form
+* Fix some UX issues about a checkbox
 * Possible to override URLs in an `urls.ini` file
 * Follow HTTP redirections when connecting the Lizmap Web Client server
 * Check for duplicated layer having different filters, when used with Lizmap Web Client 3.7
 * Check the plugin version when possible with the native QGIS plugin manager
+* Check for ECW layers
 
 ## 3.14.3 - 2023-07-03
 
