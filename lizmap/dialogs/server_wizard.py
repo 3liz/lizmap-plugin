@@ -32,8 +32,11 @@ from qgis.PyQt.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QProgressBar,
     QPushButton,
     QRadioButton,
+    QSizePolicy,
+    QSpacerItem,
     QSpinBox,
     QVBoxLayout,
     QWizard,
@@ -199,6 +202,16 @@ class LoginPasswordPage(QWizardPage):
         layout.addWidget(self.password_label)
         # noinspection PyArgumentList
         layout.addWidget(self.password_edit)
+
+        # Progress bar
+        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        self.progress = QProgressBar()
+        self.progress.setMinimum(0)
+        self.progress.setValue(0)
+        self.progress.setMaximum(100)
+        self.progress.setVisible(False)
+        # noinspection PyArgumentList
+        layout.addWidget(self.progress)
 
         self.result_login_password = QLabel()
         self.result_login_password.setWordWrap(True)
@@ -767,10 +780,14 @@ class ServerWizard(QWizard):
             self.currentPage().result_login_password.setText(tr("Fetching") + "…")
 
             with OverrideCursor(Qt.WaitCursor):
+                self.currentPage().progress.setMaximum(0)
+
                 flag, message, url_valid = self.request_check_url(
                     self.field('url'),
                     self.field('login'),
                     self.field('password'))
+
+                self.currentPage().progress.setMaximum(100)
             if flag:
                 self.currentPage().result_login_password.setText(THUMBS)
                 return True
