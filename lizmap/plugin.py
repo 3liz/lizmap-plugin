@@ -1481,6 +1481,7 @@ class Lizmap:
             self.load_config_into_table_widget(key)
 
         self.dlg.check_ign_french_free_key()
+        self.dlg.enable_toggled_layer_checkbox()
         out = '' if json_file.exists() else 'out'
         LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
 
@@ -2157,6 +2158,7 @@ class Lizmap:
                         val['widget'].setCurrentIndex(index)
 
         self.enable_popup_source_button()
+        self.dlg.enable_toggled_layer_checkbox()
 
     # def enable_or_not_toggle_checkbox(self):
     #     """ Only for groups, to determine the state of the "toggled" option. """
