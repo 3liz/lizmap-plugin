@@ -1481,7 +1481,7 @@ class Lizmap:
             self.load_config_into_table_widget(key)
 
         self.dlg.check_ign_french_free_key()
-        self.dlg.enable_toggled_layer_checkbox()
+        self.dlg.follow_map_theme_toggled()
         out = '' if json_file.exists() else 'out'
         LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
 
@@ -2106,7 +2106,9 @@ class Lizmap:
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
             # For a group, there isn't the toggle option, #298, TEMPORARY DISABLED
-            tooltip = tr("If the layer is displayed by default")
+            tooltip = tr(
+                "If the layer is displayed by default. On a layer, if the map theme is used, this checkbox does not "
+                "have any effect.")
             self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
             # try:
             #     # We always disconnect everything
@@ -2158,7 +2160,7 @@ class Lizmap:
                         val['widget'].setCurrentIndex(index)
 
         self.enable_popup_source_button()
-        self.dlg.enable_toggled_layer_checkbox()
+        self.dlg.follow_map_theme_toggled()
 
     # def enable_or_not_toggle_checkbox(self):
     #     """ Only for groups, to determine the state of the "toggled" option. """

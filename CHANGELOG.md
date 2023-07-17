@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* The UX is improved about the checkbox "Activate first map theme on startup"
+
 ## 3.15.0 - 2023-07-12
 
 * Add the HTML code editor for the abstract on a layer

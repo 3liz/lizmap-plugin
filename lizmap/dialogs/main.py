@@ -75,7 +75,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
-        self.activate_first_map_theme.toggled.connect(self.enable_toggled_layer_checkbox)
+        self.activate_first_map_theme.toggled.connect(self.follow_map_theme_toggled)
 
         tooltip = tr(
             'You can add either a URL starting by "http" or insert a string starting by "media/", "../media/" to '
@@ -138,9 +138,48 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.cbIgnTerrain.setEnabled(True)
 
-    def enable_toggled_layer_checkbox(self):
-        """ If the theme is loaded at startup, the toggled checkbox is not used. """
-        self.cbToggled.setEnabled(not self.activate_first_map_theme.isChecked())
+    def follow_map_theme_toggled(self):
+        """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
+        text = ". " + tr("Overriden by the map theme")
+
+        # List of item data where we need to add the text suffix.
+        items = ('expand_at_startup', 'hide_at_startup')
+
+        if self.activate_first_map_theme.isChecked():
+            # Layer toggled checkbox must be disabled
+            self.cbToggled.setEnabled(False)
+
+            # Some legend options are not used anymore, we add the suffix text
+            for item in items:
+                index = self.combo_legend_option.findData(item)
+
+                current_text = self.combo_legend_option.itemText(index)
+                if not current_text.endswith(text):
+                    self.combo_legend_option.setItemText(index, current_text + text)
+
+            # Change current text item if necessary
+            if self.combo_legend_option.currentData() in items:
+                current_text = self.combo_legend_option.currentText()
+                if not current_text.endswith(text):
+                    self.combo_legend_option.setCurrentText(current_text + text)
+
+        else:
+            # Layer toggled checkbox must be enabled
+            self.cbToggled.setEnabled(True)
+
+            # All legend options are used, we remove the suffix text
+            for item in items:
+                index = self.combo_legend_option.findData(item)
+
+                current_text = self.combo_legend_option.itemText(index)
+                if current_text.endswith(text):
+                    self.combo_legend_option.setItemText(index, current_text.replace(text, ''))
+
+            # Change current item if necessary
+            if self.combo_legend_option.currentData() in items:
+                current_text = self.combo_legend_option.currentText()
+                if current_text.endswith(text):
+                    self.combo_legend_option.setCurrentText(current_text.replace(text, ''))
 
     def check_qgis_version(self, message_bar=False, widget=False):
         """ Compare QGIS desktop and server versions and display results if necessary. """
