@@ -75,6 +75,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
+        self.activate_first_map_theme.toggled.connect(self.enable_toggled_layer_checkbox)
 
         tooltip = tr(
             'You can add either a URL starting by "http" or insert a string starting by "media/", "../media/" to '
@@ -136,6 +137,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.cbIgnTerrain.setChecked(False)
         else:
             self.cbIgnTerrain.setEnabled(True)
+
+    def enable_toggled_layer_checkbox(self):
+        """ If the theme is loaded at startup, the toggled checkbox is not used. """
+        self.cbToggled.setEnabled(not self.activate_first_map_theme.isChecked())
 
     def check_qgis_version(self, message_bar=False, widget=False):
         """ Compare QGIS desktop and server versions and display results if necessary. """
