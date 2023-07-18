@@ -52,7 +52,7 @@ from lizmap.qgis_plugin_tools.tools.version import version
 if Qgis.QGIS_VERSION_INT >= 32200:
     from lizmap.server_dav import WebDav
 
-from lizmap.tools import lizmap_user_folder, qgis_version
+from lizmap.tools import lizmap_user_folder, qgis_version, user_settings
 
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
@@ -844,7 +844,10 @@ class ServerWizard(QWizard):
         return self.clean_data(self.field("login"))
 
     def save_auth_id(self) -> bool:
-        """ Save login and password in the QGIS password manager. """
+        """ Save login and password in the QGIS password manager.
+
+        Only if it's a new server, it will be saved in the JSON file.
+        """
         url = self.current_url()
         login = self.current_login()
         password = self.field('password')
@@ -868,12 +871,16 @@ class ServerWizard(QWizard):
                 result = auth_manager.storeAuthenticationConfig(config)
             else:
                 result = auth_manager.storeAuthenticationConfig(config, True)
+            # The JSON will be saved later, in the table
         else:
             # Creation
             self.auth_id = auth_manager.uniqueConfigId()
             LOGGER.debug("New authentication ID : {}".format(self.auth_id))
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config)
+            if result[0]:
+                # Only for creation of the server, we save in the JSON
+                self.save_json_server()
 
         if result[0]:
             self.currentPage().result_master_password.setText(THUMBS)
@@ -887,6 +894,32 @@ class ServerWizard(QWizard):
             tr("We couldn't save the login/password into the QGIS authentication database : NOK")
         )
         return False
+
+    def save_json_server(self):
+        """ Save the current login, password, and alias in the JSON file. """
+        user_file = user_settings()
+        if not user_file.exists():
+            json_data = []
+        else:
+            with open(user_file) as json_file:
+                json_data = json.loads(json_file.read())
+
+        json_data.append({
+            'url': self.current_url(),
+            'auth_id': self.auth_id,
+            'name': self.current_name(),
+        })
+        file_content = json.dumps(
+            json_data,
+            sort_keys=False,
+            indent=4
+        )
+        file_content += '\n'
+
+        with open(user_settings(), 'w') as json_file:
+            json_file.write(file_content)
+
+        LOGGER.debug("Server saved in the JSON file")
 
     @classmethod
     def override_url(cls, base_url: str, metadata=True) -> Optional[str]:

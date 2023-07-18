@@ -123,6 +123,11 @@ def lizmap_user_folder() -> Path:
     return lizmap_path
 
 
+def user_settings() -> Path:
+    """ Path to the user file configuration. """
+    return lizmap_user_folder().joinpath('user_servers.json')
+
+
 def current_git_hash() -> str:
     """ Retrieve the current git hash number of the git repo (first 6 digit). """
     repo_dir = os.path.dirname(os.path.abspath(__file__))

@@ -49,7 +49,12 @@ from lizmap.dialogs.server_wizard import NamePage, ServerWizard
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.saas import is_lizmap_dot_com_hosting
-from lizmap.tools import lizmap_user_folder, qgis_version, to_bool
+from lizmap.tools import (
+    lizmap_user_folder,
+    qgis_version,
+    to_bool,
+    user_settings,
+)
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -314,7 +319,8 @@ class ServerManager:
         row = self.table.rowCount()
         self.table.setRowCount(row + 1)
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
-        self.save_table()
+        # Add a new server is done in the wizard
+        # self.save_table()
         self.refresh_server_combo()
 
     def _fetch_cells(self, row: int) -> tuple:
@@ -356,6 +362,7 @@ class ServerManager:
             return
 
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
+        # In edit mode, the saving is not done in the wizard
         self.save_table()
         self.refresh_server_combo()
 
@@ -720,9 +727,10 @@ class ServerManager:
         qgis_cell.setData(Qt.UserRole, markdown)
         self.update_action_version(lizmap_version, None, row)
 
-    def existing_json_server_list(self) -> List:
+    @classmethod
+    def existing_json_server_list(cls) -> List:
         """ Read the JSON file and return its content. """
-        user_file = self.user_settings()
+        user_file = user_settings()
         if not user_file.exists():
             return list()
 
@@ -811,7 +819,7 @@ class ServerManager:
         )
         json_file_content += '\n'
 
-        with open(self.user_settings(), 'w') as json_file:
+        with open(user_settings(), 'w') as json_file:
             json_file.write(json_file_content)
 
     def update_action_version(
@@ -1101,11 +1109,6 @@ class ServerManager:
     def released_versions() -> Path:
         """ Path to the release file from LWC. """
         return lizmap_user_folder().joinpath('released_versions.json')
-
-    @staticmethod
-    def user_settings() -> Path:
-        """ Path to the user file configuration. """
-        return lizmap_user_folder().joinpath('user_servers.json')
 
     def migrate_password_manager(self, servers: list):
         """ Migrate all servers in the QGIS authentication database to a better format in the QGIS API.
