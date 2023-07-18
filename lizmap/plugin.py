@@ -211,7 +211,8 @@ class Lizmap:
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             file_handler.setFormatter(formatter)
             add_logging_handler_once(LOGGER, file_handler)
-            LOGGER.debug("The directory {} is currently used for file logging.".format(temp_dir))
+            LOGGER.debug(
+                "The directory <a href='file://{0}'>{0}</a> is currently used for file logging.".format(temp_dir))
 
             # All logs
             def write_log_message(message, tag, level):

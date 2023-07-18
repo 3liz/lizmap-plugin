@@ -493,7 +493,7 @@ class ServerManager:
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
 
         if auth_id:
-            QgsMessageLog.logMessage("Using the token for {}".format(url), "Lizmap", Qgis.Info)
+            QgsMessageLog.logMessage("Using the token for <a href='{0}'>{0}</a>".format(url), "Lizmap", Qgis.Info)
 
         request = QNetworkRequest()
         request.setUrl(QUrl(ServerWizard.url_metadata(url)))
@@ -760,10 +760,10 @@ class ServerManager:
                 with open(cache_file, encoding='utf8') as f:
                     metadata = json.load(f)
                     self.server_combo.setItemData(index, metadata, ServerComboData.JsonMetadata.value)
-                    LOGGER.info("Loading server '{}' using cache in the drop down list".format(name))
+                    LOGGER.info("Loading server <a href='{}'>{}</a> using cache in the drop down list".format(url, name))
             else:
                 self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
-                LOGGER.info("Loading server '{}' without metadata in the drop down list".format(name))
+                LOGGER.info("Loading server <a href='{}'>{}</a> without metadata in the drop down list".format(url, name))
 
             self.parent.tooltip_server_combo(index)
 
