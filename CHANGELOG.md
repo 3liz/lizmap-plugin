@@ -3,6 +3,7 @@
 ## Unreleased
 
 * The UX is improved about the checkbox "Activate first map theme on startup"
+* Refactor the server wizard to avoid a possible crash
 
 ## 3.15.0 - 2023-07-12
 
