@@ -680,7 +680,8 @@ class Lizmap:
         self.drag_drop_dataviz = None
         self.layerList = None
         self.action = None
-        self.action_debug_pg = None
+        self.action_debug_pg_qgis = None
+        self.action_debug_pg_psql = None
         self.embeddedGroups = None
         self.myDic = None
         self.help_action = None
@@ -852,10 +853,14 @@ class Lizmap:
         self.action.triggered.connect(self.run)
 
         if self.is_dev_version:
-            self.action_debug_pg = QAction(icon, "Add PostgreSQL connection from datasource", self.iface.mainWindow())
-            self.action_debug_pg.triggered.connect(self.create_connection_from_datasource)
-            self.iface.addCustomActionForLayerType(
-                self.action_debug_pg, 'Lizmap dev', QgsMapLayerType.VectorLayer, True)
+            label = 'Lizmap dev'
+            self.action_debug_pg_qgis = QAction(icon, "Add PostgreSQL connection from datasource", self.action_debug)
+            self.action_debug_pg_qgis.triggered.connect(self.create_connection_from_datasource)
+            self.iface.addCustomActionForLayerType(self.action_debug_pg_qgis, label, QgsMapLayerType.VectorLayer, True)
+
+            self.action_debug_pg_psql = QAction(icon, "Get PSQL CLI from datasource", self.action_debug)
+            self.action_debug_pg_psql.triggered.connect(self.psql_cli_line_from_datasource)
+            self.iface.addCustomActionForLayerType(self.action_debug_pg_psql, label, QgsMapLayerType.VectorLayer, True)
 
         # Open the online help
         self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
@@ -1124,6 +1129,26 @@ class Lizmap:
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
+    def psql_cli_line_from_datasource(self):
+        """ For dev only, add a connection from a layer datasource. """
+        layer = self.iface.activeLayer()
+        if not isinstance(layer, QgsVectorLayer):
+            return
+
+        if layer.providerType() != 'postgres':
+            return
+
+        uri = QgsDataSourceUri(self.iface.activeLayer().source())
+
+        text = f" PGPASSWORD={uri.password()} psql -h {uri.host()} -p {uri.port()} -U {uri.username()} -d {uri.database()}"
+
+        QInputDialog.getText(
+            self.dlg,
+            "PSQL from layer source",
+            "PSQL CLI line",
+            text=text,
+        )
+
     def create_connection_from_datasource(self):
         """ For dev only, add a connection from a layer datasource. """
         layer = self.iface.activeLayer()
@@ -1219,8 +1244,10 @@ class Lizmap:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
 
-        if self.action_debug_pg:
-            self.iface.removeCustomActionForLayerType(self.action_debug_pg)
+        if self.action_debug_pg_qgis:
+            self.iface.removeCustomActionForLayerType(self.action_debug_pg_qgis)
+        if self.action_debug_pg_psql:
+            self.iface.removeCustomActionForLayerType(self.action_debug_pg_psql)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
