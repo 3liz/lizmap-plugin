@@ -427,7 +427,7 @@ class Lizmap:
         }
 
         # Disable checkboxes on the layer tab
-        self.enable_check_box(False)
+        self.enable_check_box_in_layer_tab(False)
 
         # Disable deprecated lizmap functions #121
         self.dlg.gb_lizmapExternalBaselayers.setVisible(False)
@@ -1325,7 +1325,7 @@ class Lizmap:
         """Clear the content of the text area log."""
         self.dlg.outLog.clear()
 
-    def enable_check_box(self, value):
+    def enable_check_box_in_layer_tab(self, value: bool):
         """Enable/Disable checkboxes and fields of the Layer tab."""
         for key, item in self.layer_options_list.items():
             if item.get('widget') and key != 'sourceProject':
@@ -2039,22 +2039,21 @@ class Lizmap:
         self.layerList = self.myDic
 
         self.dlg.block_signals_address(False)
-        self.enable_check_box(False)
+        self.enable_check_box_in_layer_tab(False)
 
         # The return is used in tests
         return json_layers
 
     def from_data_to_ui_for_layer_group(self):
         """ Restore layer/group values into each field when selecting a layer in the tree. """
-        # get the selected item
-        item = self.dlg.layer_tree.currentItem()
-        if item:
-            self.enable_check_box(True)
+        i_key = self._current_selected_item_in_config()
+        if i_key:
+            self.enable_check_box_in_layer_tab(True)
         else:
-            self.enable_check_box(False)
+            self.enable_check_box_in_layer_tab(False)
 
-        i_key = item.text(1)
-        if i_key in self.layerList:
+        # i_key can be either a layer name or a group name
+        if i_key:
             # get information about the layer or the group from the layerList dictionary
             selected_item = self.layerList[i_key]
 
@@ -2236,91 +2235,103 @@ class Lizmap:
         Function called the corresponding UI widget has sent changed signal.
         """
         key = str(key)
-        # get the selected item in the layer tree
-        item = self.dlg.layer_tree.currentItem()
+        layer_or_group_text = self._current_selected_item_in_config()
+        if not layer_or_group_text:
+            return
+
         # get the definition for this property
         layer_option = self.layer_options_list[key]
         # modify the property for the selected item
-        if item and item.text(1) in self.layerList:
-            if layer_option['wType'] == 'text':
-                text = layer_option['widget'].text()
-                if layer_option['type'] == 'list':
-                    text = self.string_to_list(text)
-                self.layerList[item.text(1)][key] = text
-                self.set_layer_metadata(item, key)
-            elif layer_option['wType'] == 'textarea':
-                self.layerList[item.text(1)][key] = layer_option['widget'].toPlainText()
-                self.set_layer_metadata(item, key)
-            elif layer_option['wType'] == 'spinbox':
-                self.layerList[item.text(1)][key] = layer_option['widget'].value()
-            elif layer_option['wType'] == 'checkbox':
-                checked = layer_option['widget'].isChecked()
-                self.layerList[item.text(1)][key] = checked
-                children = layer_option.get('children')
-                if children:
-                    exclusive = layer_option.get('exclusive', False)
-                    if exclusive:
-                        is_enabled = not checked
-                    else:
-                        is_enabled = checked
-                    self.layer_options_list[children]['widget'].setEnabled(is_enabled)
-                    if self.layer_options_list[children]['wType'] == 'checkbox' and not is_enabled:
-                        if self.layer_options_list[children]['widget'].isChecked():
-                            self.layer_options_list[children]['widget'].setChecked(False)
-            elif layer_option['wType'] == 'list':
-                # New way with data, label, tooltip and icon
-                datas = [j[0] for j in layer_option['list']]
-                self.layerList[item.text(1)][key] = datas[layer_option['widget'].currentIndex()]
+        if layer_option['wType'] == 'text':
+            text = layer_option['widget'].text()
+            if layer_option['type'] == 'list':
+                text = self.string_to_list(text)
+            self.layerList[layer_or_group_text][key] = text
+            self.set_layer_metadata(layer_or_group_text, key)
+        elif layer_option['wType'] == 'textarea':
+            self.layerList[layer_or_group_text][key] = layer_option['widget'].toPlainText()
+            self.set_layer_metadata(layer_or_group_text, key)
+        elif layer_option['wType'] == 'spinbox':
+            self.layerList[layer_or_group_text][key] = layer_option['widget'].value()
+        elif layer_option['wType'] == 'checkbox':
+            checked = layer_option['widget'].isChecked()
+            self.layerList[layer_or_group_text][key] = checked
+            children = layer_option.get('children')
+            if children:
+                exclusive = layer_option.get('exclusive', False)
+                if exclusive:
+                    is_enabled = not checked
+                else:
+                    is_enabled = checked
+                self.layer_options_list[children]['widget'].setEnabled(is_enabled)
+                if self.layer_options_list[children]['wType'] == 'checkbox' and not is_enabled:
+                    if self.layer_options_list[children]['widget'].isChecked():
+                        self.layer_options_list[children]['widget'].setChecked(False)
+        elif layer_option['wType'] == 'list':
+            # New way with data, label, tooltip and icon
+            datas = [j[0] for j in layer_option['list']]
+            self.layerList[layer_or_group_text][key] = datas[layer_option['widget'].currentIndex()]
 
-            # Deactivate the "exclude" widget if necessary
-            if 'exclude' in layer_option \
-                    and layer_option['wType'] == 'checkbox' \
-                    and layer_option['widget'].isChecked() \
-                    and layer_option['exclude']['widget'].isChecked():
-                layer_option['exclude']['widget'].setChecked(False)
-                self.layerList[item.text(1)][layer_option['exclude']['key']] = False
+        # Deactivate the "exclude" widget if necessary
+        if 'exclude' in layer_option \
+                and layer_option['wType'] == 'checkbox' \
+                and layer_option['widget'].isChecked() \
+                and layer_option['exclude']['widget'].isChecked():
+            layer_option['exclude']['widget'].setChecked(False)
+            self.layerList[layer_or_group_text][layer_option['exclude']['key']] = False
 
-    def set_layer_metadata(self, item, key):
-        """Set the title/abstract/link QGIS metadata when corresponding item is changed
+    def set_layer_metadata(self, layer_or_group: str, key: str):
+        """Set the title/abstract/link QGIS metadata when the corresponding item is changed
         Used in setLayerProperty"""
-        if 'isMetadata' in self.layer_options_list[key]:
-            # modify the layer.title|abstract|link() if possible
-            if self.layerList[item.text(1)]['type'] == 'layer':
-                layer = self.get_qgis_layer_by_id(item.text(1))
-                if isinstance(layer, QgsMapLayer):
-                    if key == 'title':
-                        layer.setTitle(self.layerList[item.text(1)][key])
-                    if key == 'abstract':
-                        layer.setAbstract(self.layerList[item.text(1)][key])
+        if 'isMetadata' not in self.layer_options_list[key]:
+            return
+
+        # modify the layer.title|abstract|link() if possible
+        if self.layerList[layer_or_group]['type'] != 'layer':
+            return
+
+        layer = self.get_qgis_layer_by_id(layer_or_group)
+        if not isinstance(layer, QgsMapLayer):
+            return
+
+        if key == 'title':
+            layer.setTitle(self.layerList[layer_or_group][key])
+
+        if key == 'abstract':
+            layer.setAbstract(self.layerList[layer_or_group][key])
 
     def convert_html_maptip(self):
         """ Trying to convert a Lizmap popup to HTML popup. """
-        item = self.dlg.layer_tree.currentItem()
-        if item and item.text(1) in self.layerList:
-            if 'popupTemplate' in self.layerList[item.text(1)]:
-                self.layerList[item.text(1)]['popup'] = True
-                text = self.layerList[item.text(1)]['popupTemplate']
+        layer_or_group = self._current_selected_item_in_config()
+        if not layer_or_group:
+            return
 
-                layer = self._current_selected_layer()
-                html, errors = convert_lizmap_popup(text, layer)
-                if errors:
-                    QMessageBox.warning(
-                        self.dlg,
-                        tr('Lizmap - Warning'),
-                        tr(
-                            'Some fields or alias could not be found in the layer. You must check the result manually '
-                            'about these values below :'
-                        ) + '<br><br>' + ','.join(errors),
-                        QMessageBox.Ok)
+        if 'popupTemplate' not in self.layerList[layer_or_group]:
+            return
 
-                flag = self._set_maptip(layer, html)
-                if flag:
-                    index = self.layer_options_list['popupSource']['widget'].findData('qgis')
-                    self.layer_options_list['popupSource']['widget'].setCurrentIndex(index)
+        self.layerList[layer_or_group]['popup'] = True
+        text = self.layerList[layer_or_group]['popupTemplate']
+
+        layer = self._current_selected_layer()
+        html, errors = convert_lizmap_popup(text, layer)
+        if errors:
+            QMessageBox.warning(
+                self.dlg,
+                tr('Lizmap - Warning'),
+                tr(
+                    'Some fields or alias could not be found in the layer. You must check the result manually '
+                    'about these values below :'
+                ) + '<br><br>' + ','.join(errors),
+                QMessageBox.Ok)
+
+        flag = self._set_maptip(layer, html)
+        if flag:
+            index = self.layer_options_list['popupSource']['widget'].findData('qgis')
+            self.layer_options_list['popupSource']['widget'].setCurrentIndex(index)
 
     def configure_html_abstract(self):
         """ Open the dialog for setting HTML for the abstract. """
-        if not self._current_selected_layer():
+        if not self._current_selected_item_in_config():
             return
 
         html_editor = HtmlEditorDialog()
@@ -2333,21 +2344,18 @@ class Lizmap:
     def configure_html_popup(self):
         """Open the dialog with a text field to store the popup template for one layer/group"""
         # get the selected item in the layer tree
-        item = self.dlg.layer_tree.currentItem()
-        if not item:
-            return
-
-        if not item.text(1) in self.layerList:
+        layer_or_group = self._current_selected_item_in_config()
+        if not layer_or_group:
             return
 
         # do nothing if no popup configured for this layer/group
-        if not to_bool(self.layerList[item.text(1)]['popup']):
+        if not to_bool(self.layerList[layer_or_group]['popup']):
             return
 
         # Set the content of the QTextEdit if needed
-        if 'popupTemplate' in self.layerList[item.text(1)]:
-            self.layerList[item.text(1)]['popup'] = True
-            text = self.layerList[item.text(1)]['popupTemplate']
+        if 'popupTemplate' in self.layerList[layer_or_group]:
+            self.layerList[layer_or_group]['popup'] = True
+            text = self.layerList[layer_or_group]['popupTemplate']
         else:
             text = ''
 
@@ -2368,12 +2376,13 @@ class Lizmap:
             content = popup_dialog.txtPopup.text()
 
             # Get the selected item in the layer tree
-            item = self.dlg.layer_tree.currentItem()
-            if item and item.text(1) in self.layerList:
-                # Write the content into the global object
-                self.layerList[item.text(1)]['popupTemplate'] = content
-                if isinstance(layer, QgsVectorLayer):
-                    LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
+            layer_or_group = self._current_selected_item_in_config()
+            if not layer_or_group:
+                return
+            # Write the content into the global object
+            self.layerList[layer_or_group]['popupTemplate'] = content
+            if isinstance(layer, QgsVectorLayer):
+                LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
 
         else:
             # QGIS HTML maptip
@@ -2386,17 +2395,28 @@ class Lizmap:
 
             self._set_maptip(layer, html_editor.editor.html_content(), False)
 
+    def _current_selected_item_in_config(self) -> Optional[str]:
+        """ Either a group or a layer name. """
+        item = self.dlg.layer_tree.currentItem()
+        if not item:
+            return
+
+        text = item.text(1)
+        if text not in self.layerList:
+            return
+
+        return text
+
     def _current_selected_layer(self) -> Optional[QgsMapLayer]:
         """ Current selected map layer in the tree. """
-        item = self.dlg.layer_tree.currentItem()
-        if item and item.text(1) in self.layerList:
-            lid = item.text(1)
-            layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
-            if not layers:
-                LOGGER.warning('Layers not found with searched text from the tree : {}'.format(lid))
-                return
-        else:
+        lid = self._current_selected_item_in_config()
+        if not lid:
             LOGGER.warning('No item selected in the Lizmap layer tree.')
+            return
+
+        layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
+        if not layers:
+            LOGGER.warning('Layers not found with searched text from the tree : {}'.format(lid))
             return
 
         layer = layers[0]
