@@ -854,11 +854,11 @@ class Lizmap:
 
         if self.is_dev_version:
             label = 'Lizmap dev'
-            self.action_debug_pg_qgis = QAction(icon, "Add PostgreSQL connection from datasource", self.action_debug)
+            self.action_debug_pg_qgis = QAction(icon, "Add PostgreSQL connection from datasource")
             self.action_debug_pg_qgis.triggered.connect(self.create_connection_from_datasource)
             self.iface.addCustomActionForLayerType(self.action_debug_pg_qgis, label, QgsMapLayerType.VectorLayer, True)
 
-            self.action_debug_pg_psql = QAction(icon, "Get PSQL CLI from datasource", self.action_debug)
+            self.action_debug_pg_psql = QAction(icon, "Get PSQL CLI from datasource")
             self.action_debug_pg_psql.triggered.connect(self.psql_cli_line_from_datasource)
             self.iface.addCustomActionForLayerType(self.action_debug_pg_psql, label, QgsMapLayerType.VectorLayer, True)
 
