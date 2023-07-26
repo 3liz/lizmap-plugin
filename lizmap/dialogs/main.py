@@ -511,6 +511,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.gb_generalOptions.setStyleSheet(COMPLETE_STYLE_SHEET)
         self.gb_interface.setStyleSheet(COMPLETE_STYLE_SHEET)
         self.gb_baselayersOptions.setStyleSheet(COMPLETE_STYLE_SHEET)
+        self.predefined_groups.setStyleSheet(COMPLETE_STYLE_SHEET)
 
     def check_project_thumbnail(self):
         """ Check the project thumbnail and display the metadata. """

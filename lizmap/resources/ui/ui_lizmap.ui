@@ -2584,6 +2584,43 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="predefined_groups">
+                 <property name="title">
+                  <string>Add some predefined groups</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_43">
+                  <item>
+                   <widget class="QPushButton" name="add_group_hidden">
+                    <property name="text">
+                     <string>hidden</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="add_group_baselayers">
+                    <property name="text">
+                     <string>baselayers</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="add_group_empty">
+                    <property name="text">
+                     <string>project-background-color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="add_group_overview">
+                    <property name="text">
+                     <string>overview</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QGroupBox" name="gb_lizmapExternalBaselayers">
                  <property name="title">
                   <string>External Lizmap layers</string>

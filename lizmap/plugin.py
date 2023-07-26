@@ -326,6 +326,8 @@ class Lizmap:
             self.dlg.button_edit_dd_dataviz,
             self.dlg.button_add_plot,
             self.dlg.combo_plots,
+            self.dlg.add_group_empty,
+            self.dlg.add_group_baselayers,
         ]
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
@@ -455,6 +457,27 @@ class Lizmap:
         )
         for item in ui_items:
             item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
+
+        # Group helper
+        self.dlg.add_group_hidden.setToolTip(tr(
+            'Add a group which will be hidden by default on Lizmap Web Client. Some tables might be needed in the '
+            'QGIS projet but not needed for display on the map and in the legend.'
+        ))
+        self.dlg.add_group_baselayers.setToolTip(tr(
+            'Add a group called "baselayers", you can organize your layers inside, it will be displayed in a dropdown '
+            'menu.'
+        ))
+        self.dlg.add_group_empty.setToolTip(tr(
+            'Add a group which must stay empty. It will add an option in the base layer dropdown menu and allow '
+            'the default background color defined in the project properties to be displayed.'
+        ))
+        self.dlg.add_group_overview.setToolTip(tr(
+            'Add some layers in this group to make an overview map at a lower scale.'
+        ))
+        self.dlg.add_group_hidden.clicked.connect(self.add_group_hidden)
+        self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
+        self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
+        self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
 
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
@@ -2221,6 +2244,38 @@ class Lizmap:
                 if get_layer_wms_parameters(layer):
                     wms_enabled = True
         return wms_enabled
+
+    def _add_group_legend(self, label: str, parent: QgsLayerTreeGroup = None) -> QgsLayerTreeGroup:
+        """ Add a group in the legend. """
+        if parent:
+            root_group = parent
+        else:
+            root_group = self.project.layerTreeRoot()
+
+        groups = root_group.findGroups(False)
+        for qgis_group in groups:
+            qgis_group: QgsLayerTreeGroup
+            if qgis_group.name() == label:
+                return qgis_group
+
+        return root_group.addGroup(label)
+
+    def add_group_hidden(self):
+        """ Add the hidden group. """
+        self._add_group_legend('hidden')
+
+    def add_group_baselayers(self):
+        """ Add the baselayers group. """
+        self._add_group_legend('baselayers')
+
+    def add_group_empty(self):
+        """ Add the default background color. """
+        baselayers = self._add_group_legend('baselayers')
+        self._add_group_legend('project-background-color', baselayers)
+
+    def add_group_overview(self):
+        """ Add the overview group. """
+        self._add_group_legend('Overview')
 
     @staticmethod
     def string_to_list(text):
