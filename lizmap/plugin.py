@@ -2012,7 +2012,7 @@ class Lizmap:
                         predefined_group = PredefinedGroup.Hidden.value
                     if self.myDic[child_id]['name'] == 'baselayers':
                         predefined_group = PredefinedGroup.Baselayers.value
-                    if self.myDic[child_id]['name'] == 'Overview':
+                    if self.myDic[child_id]['name'].lower() == 'overview':
                         predefined_group = PredefinedGroup.Overview.value
 
                 elif parent_node.data(0, Qt.UserRole + 1) != PredefinedGroup.No.value:
@@ -2320,7 +2320,10 @@ class Lizmap:
 
     def add_group_overview(self):
         """ Add the overview group. """
-        self._add_group_legend('Overview')
+        label = 'overview'
+        if self.dlg.current_lwc_version() < LwcVersions.Lizmap_3_7:
+            label = 'Overview'
+        self._add_group_legend(label)
 
     @staticmethod
     def string_to_list(text):
