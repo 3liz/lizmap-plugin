@@ -3,10 +3,11 @@
 from pathlib import Path
 
 from qgis.core import QgsProject, QgsVectorLayer
+from qgis.PyQt.QtCore import Qt
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
-from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.definitions import LwcVersions, PredefinedGroup
 from lizmap.plugin import Lizmap
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.test.utils import temporary_file_path
@@ -93,6 +94,9 @@ class TestUiLizmapDialog(unittest.TestCase):
         project.setFileName(temporary_file_path())
 
         lizmap = Lizmap(get_iface())
+        baselayers = lizmap._add_group_legend('baselayers', parent=None, project=project)
+        lizmap._add_group_legend('project-background-color', baselayers, project=project)
+
         # Do not use read_lizmap_config_file
         # as it will be called by read_cfg_file and also the UI is set in read_cfg_file
         config = lizmap.read_cfg_file(skip_tables=True)
@@ -118,9 +122,16 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(item.text(0), 'lines')
         self.assertTrue(item.text(1).startswith('lines_'))
         self.assertEqual(item.text(2), 'layer')
+        self.assertEqual(item.data(0, Qt.UserRole + 1), PredefinedGroup.No.value)
+        self.assertEqual(item.text(3), '')  # Not used, just to test
+
+        self.assertFalse(lizmap.dlg.list_group_visibility.isEnabled())
+
+        # Click the first line
         lizmap.dlg.layer_tree.setCurrentItem(lizmap.dlg.layer_tree.topLevelItem(0))
 
         # Fill the ACL field
+        self.assertTrue(lizmap.dlg.list_group_visibility.isEnabled())
         acl_layer = "a_group_id"
         lizmap.dlg.list_group_visibility.setText(acl_layer)
         lizmap.save_value_layer_group_data('group_visibility')
@@ -130,10 +141,32 @@ class TestUiLizmapDialog(unittest.TestCase):
         lizmap.dlg.teLayerAbstract.setPlainText(html_abstract)
         lizmap.save_value_layer_group_data('abstract')
 
+        # Click the group base-layers
+        group_item = lizmap.dlg.layer_tree.findItems('baselayers', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        lizmap.dlg.layer_tree.setCurrentItem(group_item)
+        self.assertFalse(lizmap.dlg.gb_layerSettings.isEnabled())
+
+        # Click the group project-background-color
+        group_item = lizmap.dlg.layer_tree.findItems(
+            'project-background-color', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        lizmap.dlg.layer_tree.setCurrentItem(group_item)
+        self.assertFalse(lizmap.dlg.gb_layerSettings.isEnabled())
+
+        # Back to a layer outside of these groups
+        group_item = lizmap.dlg.layer_tree.findItems('lines', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        lizmap.dlg.layer_tree.setCurrentItem(group_item)
+        self.assertTrue(lizmap.dlg.list_group_visibility.isEnabled())
+
         # Check new values in the output config
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        # Layers
         self.assertListEqual(output['layers']['lines']['group_visibility'], [acl_layer])
         self.assertEqual(output['layers']['lines']['abstract'], html_abstract)
+        # Predefined groups, still in the CFG
+        self.assertListEqual(output['layers']['baselayers']['group_visibility'], [])
+        self.assertEqual(output['layers']['baselayers']['abstract'], '')
+        self.assertListEqual(output['layers']['project-background-color']['group_visibility'], [])
+        self.assertEqual(output['layers']['project-background-color']['abstract'], '')
 
         # Test a false value as a string which shouldn't be there by default
         self.assertIsNone(output['layers']['lines'].get('externalWmsToggle'))

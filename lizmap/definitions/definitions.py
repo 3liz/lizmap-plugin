@@ -93,3 +93,13 @@ class RepositoryComboData(Enum):
     """ The repository combobox. """
     Id = Qt.UserRole  # ID of the repository
     Path = Qt.UserRole + 1  # Path on the server
+
+
+@unique
+class PredefinedGroup(Enum):
+    """ The list of predefined group in LWC. """
+    No = Qt.UserRole
+    Hidden = Qt.UserRole + 1
+    Baselayers = Qt.UserRole + 2
+    BackgroundColor = Qt.UserRole + 3
+    Overview = Qt.UserRole + 4

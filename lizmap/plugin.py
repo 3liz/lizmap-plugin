@@ -71,6 +71,7 @@ from lizmap.definitions.definitions import (
     UNSTABLE_VERSION_PREFIX,
     LayerProperties,
     LwcVersions,
+    PredefinedGroup,
     ReleaseStatus,
     RepositoryComboData,
     ServerComboData,
@@ -1955,6 +1956,8 @@ class Lizmap:
     def process_node(self, node, parent_node, json_layers):
         """
         Process a single node of the QGIS layer tree and adds it to Lizmap layer tree.
+
+        Recursive function when it's a group in the legend.
         """
         for child in node.children():
             if QgsLayerTree.isGroup(child):
@@ -1984,9 +1987,11 @@ class Lizmap:
             if child_id in self.myDic:
                 # If the item already exists in self.myDic, select it
                 item = self.myDic[child_id]['item']
+
             elif child_id == '':
                 # If the id is empty string, this is a root layer, select the headerItem
                 item = self.dlg.layer_tree.headerItem()
+
             else:
                 # else create the item and add it to the header item
                 # add the item to the dictionary
@@ -1998,6 +2003,19 @@ class Lizmap:
                     # it is a layer
                     self.set_tree_item_data('layer', child_id, json_layers)
 
+                predefined_group = PredefinedGroup.No.value
+                if parent_node is None:
+                    if self.myDic[child_id]['name'] == 'hidden':
+                        predefined_group = PredefinedGroup.Hidden.value
+                    if self.myDic[child_id]['name'] == 'baselayers':
+                        predefined_group = PredefinedGroup.Baselayers.value
+                    if self.myDic[child_id]['name'] == 'Overview':
+                        predefined_group = PredefinedGroup.Overview.value
+
+                elif parent_node.data(0, Qt.UserRole + 1) != PredefinedGroup.No.value:
+                    # TODO fixme maybe ?
+                    predefined_group = PredefinedGroup.Hidden.value
+
                 item = QTreeWidgetItem(
                     [
                         str(self.myDic[child_id]['name']),
@@ -2005,8 +2023,13 @@ class Lizmap:
                         self.myDic[child_id]['type']
                     ]
                 )
-                item.setToolTip(0, self.myDic[child_id]['name'])
+                if predefined_group != PredefinedGroup.No.value:
+                    text = tr('Special group for Lizmap Web Client')
+                    item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
+                else:
+                    item.setToolTip(0, self.myDic[child_id]['name'])
                 item.setIcon(0, child_icon)
+                item.setData(0, Qt.UserRole + 1, predefined_group)
                 self.myDic[child_id]['item'] = item
 
                 # Move group or layer to its parent node
@@ -2069,6 +2092,12 @@ class Lizmap:
 
     def from_data_to_ui_for_layer_group(self):
         """ Restore layer/group values into each field when selecting a layer in the tree. """
+        # At the beginning, enable all widgets.
+        self.dlg.gb_layerSettings.setEnabled(True)
+        # for key, val in self.layer_options_list.items():
+        #     if val.get('widget'):
+        #         val.get('widget').setEnabled(True)
+
         i_key = self._current_selected_item_in_config()
         if i_key:
             self.enable_check_box_in_layer_tab(True)
@@ -2212,6 +2241,15 @@ class Lizmap:
         self.enable_popup_source_button()
         self.dlg.follow_map_theme_toggled()
 
+        if to_bool(os.getenv("CI"), default_value=False):
+            if self._current_item_predefined_group() != PredefinedGroup.No.value:
+                self.dlg.gb_layerSettings.setEnabled(False)
+                return
+
+        if self.dlg.current_lwc_version() >= LwcVersions.Lizmap_3_7:
+            if self._current_item_predefined_group() != PredefinedGroup.No.value:
+                self.dlg.gb_layerSettings.setEnabled(False)
+
     # def enable_or_not_toggle_checkbox(self):
     #     """ Only for groups, to determine the state of the "toggled" option. """
     #     if self.layer_options_list['groupAsLayer']['widget'].isChecked():
@@ -2245,14 +2283,18 @@ class Lizmap:
                     wms_enabled = True
         return wms_enabled
 
-    def _add_group_legend(self, label: str, parent: QgsLayerTreeGroup = None) -> QgsLayerTreeGroup:
+    def _add_group_legend(
+            self, label: str, parent: QgsLayerTreeGroup = None, project: QgsProject = None) -> QgsLayerTreeGroup:
         """ Add a group in the legend. """
+        if project is None:
+            project = self.project
+
         if parent:
             root_group = parent
         else:
-            root_group = self.project.layerTreeRoot()
+            root_group = project.layerTreeRoot()
 
-        groups = root_group.findGroups(False)
+        groups = root_group.findGroups()
         for qgis_group in groups:
             qgis_group: QgsLayerTreeGroup
             if qgis_group.name() == label:
@@ -2449,6 +2491,18 @@ class Lizmap:
                 return
 
             self._set_maptip(layer, html_editor.editor.html_content(), False)
+
+    def _current_item_predefined_group(self) -> Optional[PredefinedGroup]:
+        """ Get the current group type. """
+        item = self.dlg.layer_tree.currentItem()
+        if not item:
+            return None
+
+        text = item.text(1)
+        if text not in self.layerList:
+            return None
+
+        return item.data(0, Qt.UserRole + 1)
 
     def _current_selected_item_in_config(self) -> Optional[str]:
         """ Either a group or a layer name. """
