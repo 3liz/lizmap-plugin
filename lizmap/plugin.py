@@ -106,6 +106,7 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.project_checker_tools import (
+    duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
     invalid_int8_primary_key,
     invalid_tid_field,
@@ -3261,6 +3262,24 @@ class Lizmap:
                     tr("Please go back to the server panel and edit the server to add a login."),
                     stop_process
                 ), QMessageBox.Ok)
+            return False
+
+        duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
+        message = tr('Some layer(s) or group(s) have a duplicated name in the legend.')
+        message += '\n\n'
+        message += tr(
+            "It's not possible to store all the Lizmap configuration for these layer(s) or group(s), you should "
+            "change them to make them unique and reconfigure their settings in the 'Layers' tab of the plugin.")
+        message += '\n\n'
+        display = False
+        for name, count in duplicated_in_cfg.items():
+            if count >= 2:
+                display = True
+                message += '"{}" → count {}\n'.format(name, count)
+        message += '\n\n'
+        message += stop_process
+        if display:
+            ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Configuration error'), message)
             return False
 
         if not self.is_dev_version:
