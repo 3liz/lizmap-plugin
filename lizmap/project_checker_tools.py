@@ -4,7 +4,13 @@ __email__ = 'info@3liz.org'
 
 from typing import Optional
 
-from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer
+from qgis.core import (
+    QgsDataSourceUri,
+    QgsLayerTree,
+    QgsMapLayer,
+    QgsProject,
+    QgsVectorLayer,
+)
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
@@ -56,6 +62,30 @@ def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
 
     field_type = layer.fields().field(primary_key).typeName()
     return field_type.lower() == 'int8'
+
+
+def duplicated_layer_name_or_group(project: QgsProject) -> dict:
+    """ The CFG can only store layer/group names which are unique. """
+    result = {}
+    # Vector and raster layers
+    for layer in project.mapLayers().values():
+        layer: QgsMapLayer
+        name = layer.name()
+        if name not in result.keys():
+            result[name] = 1
+        else:
+            result[name] += 1
+
+    # Groups
+    for child in project.layerTreeRoot().children():
+        if QgsLayerTree.isGroup(child):
+            name = child.name()
+            if name not in result.keys():
+                result[name] = 1
+            else:
+                result[name] += 1
+
+    return result
 
 
 def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
