@@ -1366,6 +1366,8 @@ class Lizmap:
         max_scale = 1000000000
         in_map_scales = self.dlg.inMapScales.text()
         map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
+        # Remove scales which are lower or equal to 0
+        map_scales = [i for i in map_scales if int(i) > 0]
         map_scales.sort()
         if len(map_scales) < 2:
             QMessageBox.critical(
