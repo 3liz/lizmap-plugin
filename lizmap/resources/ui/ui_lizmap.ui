@@ -2592,28 +2592,28 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <widget class="QPushButton" name="add_group_hidden">
                     <property name="text">
-                     <string>hidden</string>
+                     <string notr="true">hidden</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="add_group_baselayers">
                     <property name="text">
-                     <string>baselayers</string>
+                     <string notr="true">baselayers</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="add_group_empty">
                     <property name="text">
-                     <string>project-background-color</string>
+                     <string notr="true">project-background-color</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="add_group_overview">
                     <property name="text">
-                     <string>overview</string>
+                     <string notr="true">overview</string>
                     </property>
                    </widget>
                   </item>
