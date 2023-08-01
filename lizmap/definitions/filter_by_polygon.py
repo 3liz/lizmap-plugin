@@ -74,7 +74,7 @@ class FilterByPolygonDefinitions(BaseDefinitions):
             'tooltip': tr('The vector layer to filter.')
         }
         self._layer_config['primary_key'] = {
-            'type': InputType.Field,
+            'type': InputType.PrimaryKeyField,
             'header': tr('Primary key'),
             'tooltip': tr('Layer primary key.')
         }

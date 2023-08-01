@@ -25,7 +25,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.setupUi(self)
         self.config = AttributeTableDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('primaryKey', self.field_primary_key)
+        self.config.add_layer_widget('primaryKey', self.primary_key)
         self.config.add_layer_widget('hiddenFields', self.fields_to_hide)
         self.config.add_layer_widget('pivot', self.pivot_table)
         self.config.add_layer_widget('hideAsChild', self.hide_subpanels)
@@ -43,13 +43,15 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.layer_changed)
-        self.layer.layerChanged.connect(self.field_primary_key.setLayer)
-        self.field_primary_key.setLayer(self.layer.currentLayer())
+        self.layer.layerChanged.connect(self.primary_key.setLayer)
+        self.layer.layerChanged.connect(self.enable_primary_key_field)
+        self.primary_key.setLayer(self.layer.currentLayer())
         self.layer.layerChanged.connect(self.fields_to_hide.set_layer)
         self.fields_to_hide.set_layer(self.layer.currentLayer())
 
         self.setup_ui()
         self.check_layer_wfs()
+        self.enable_primary_key_field()
 
     def check_layer_wfs(self):
         """ When the layer has changed in the combobox, check if the layer is published as WFS. """
@@ -67,6 +69,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
     def layer_changed(self):
         layer = self.layer.currentLayer()
         self.has_custom_config.setChecked(layer_has_custom_attribute_table(layer))
+        self.enable_primary_key_field()
 
     def validate(self) -> str:
         upstream = super().validate()
@@ -78,5 +81,5 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         if not_in_wfs:
             return not_in_wfs
 
-        if not self.field_primary_key.currentField():
+        if not self.primary_key.currentField():
             return tr('Primary key field is mandatory.')

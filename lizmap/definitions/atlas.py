@@ -38,7 +38,7 @@ class AtlasDefinitions(BaseDefinitions):
             'tooltip': tr('The vector layer for the atlas.')
         }
         self._layer_config['primaryKey'] = {
-            'type': InputType.Field,
+            'type': InputType.PrimaryKeyField,
             'header': tr('Primary key'),
             'default': None,
             'tooltip': tr('Layer primary key (must be integer for PostgreSQL).')

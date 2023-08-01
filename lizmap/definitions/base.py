@@ -15,6 +15,7 @@ class InputType(Enum):
     CheckBox = 'CheckBox'  # QCheckbox
     CheckBoxAsDropdown = 'CheckBoxAsDropdown'  # QComboBox with only two options
     Field = 'Field'  # QgsFieldComboBox
+    PrimaryKeyField = 'PrimaryKeyField'  # QgsFieldComboBox, enabled if not coming from a database (SQlite, GPKG, PG)
     Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget in qgis_plugin_tools
     File = 'File'  # QgsFileWidget
     HtmlWysiwyg = 'HtmlWysiwyg'  # Own Lizmap Wysiwyg widget

@@ -34,7 +34,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsFieldComboBox" name="field_primary_key"/>
+      <widget class="QgsFieldComboBox" name="primary_key"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_fields_to_hide">

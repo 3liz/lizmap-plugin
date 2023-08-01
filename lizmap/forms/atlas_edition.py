@@ -52,6 +52,7 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.layer.layerChanged.connect(self.primary_key.setLayer)
         self.layer.layerChanged.connect(self.feature_label.setLayer)
         self.layer.layerChanged.connect(self.sort_field.setLayer)
+        self.layer.layerChanged.connect(self.enable_primary_key_field)
 
         self.primary_key.setLayer(self.layer.currentLayer())
         self.feature_label.setLayer(self.layer.currentLayer())
@@ -59,6 +60,7 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
 
         self.setup_ui()
         self.check_layer_wfs()
+        self.enable_primary_key_field()
 
     def check_layer_wfs(self):
         """ When the layer has changed in the combobox, check if the layer is published as WFS. """
