@@ -278,7 +278,7 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, display)
 
-            elif input_type == InputType.Field:
+            elif input_type in (InputType.Field, InputType.PrimaryKeyField):
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
@@ -510,7 +510,7 @@ class TableManager:
                     layer = widget.currentLayer()
                     # The combobox might be empty, the layer me be deleted in the meantime
                     data['config'][config_key] = layer.id() if layer else None
-                elif input_type == InputType.Field:
+                elif input_type in (InputType.Field, InputType.PrimaryKeyField):
                     data['config'][config_key] = widget.currentField()
                 elif input_type == InputType.CheckBox:
                     data['config'][config_key] = widget.isChecked()
@@ -552,7 +552,7 @@ class TableManager:
                     layer_data[key] = cell
                 elif input_type == InputType.Color:
                     layer_data[key] = cell
-                elif input_type == InputType.Field:
+                elif input_type in (InputType.Field, InputType.PrimaryKeyField):
                     layer_data[key] = cell
                 elif input_type == InputType.Fields:
                     layer_data[key] = cell
@@ -903,7 +903,7 @@ class TableManager:
                                 self.definitions.key(), config_key, value))
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
-                elif widget_type == InputType.Field:
+                elif widget_type in (InputType.Field, InputType.PrimaryKeyField):
                     settings.append(Setting(widget, widget_type, value))
                 elif widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     settings.append(Setting(widget, widget_type, value))
@@ -914,7 +914,7 @@ class TableManager:
             for setting in settings:
                 if setting.type == InputType.Layer:
                     setting.widget.setLayer(setting.value)
-                elif setting.type == InputType.Field:
+                elif setting.type in (InputType.Field, InputType.PrimaryKeyField):
                     setting.widget.setField(setting.value)
                 elif setting.type == InputType.CheckBox:
                     setting.widget.setChecked(setting.value)
@@ -955,7 +955,7 @@ class TableManager:
                         layer_data[key] = value
                     elif definition['type'] == InputType.Layers:
                         layer_data[key] = value
-                    elif definition['type'] == InputType.Field:
+                    elif definition['type'] in (InputType.Field, InputType.PrimaryKeyField):
                         layer_data[key] = value
                     elif definition['type'] == InputType.Fields:
                         layer_data[key] = value

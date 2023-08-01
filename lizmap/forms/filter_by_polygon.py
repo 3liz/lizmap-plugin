@@ -37,11 +37,13 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.primary_key.setLayer)
+        self.layer.layerChanged.connect(self.enable_primary_key_field)
 
         self.primary_key.setAllowEmptyFieldName(False)
         self.primary_key.setLayer(self.layer.currentLayer())
 
         self.setup_ui()
+        self.enable_primary_key_field()
 
     def validate(self) -> str:
         layer = self.layer.currentLayer()

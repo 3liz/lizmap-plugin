@@ -27,7 +27,7 @@ class AttributeTableDefinitions(BaseDefinitions):
             'tooltip': tr('The vector layer for the attribute table.')
         }
         self._layer_config['primaryKey'] = {
-            'type': InputType.Field,
+            'type': InputType.PrimaryKeyField,
             'header': tr('Primary key'),
             'default': None,
             'tooltip': tr('Primary key of the layer.')

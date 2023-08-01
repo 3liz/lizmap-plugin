@@ -28,6 +28,8 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from lizmap.tools import is_database_layer
+
 
 class BaseEditionDialog(QDialog):
 
@@ -41,6 +43,12 @@ class BaseEditionDialog(QDialog):
         self.parent = parent
         self.config = None
         self.unicity = unicity
+
+        # Most edition dialogs are based on a layer as input. Only the layout dialog is not.
+        self.layer = None
+        self.primary_key = None
+        self.primary_key_valid = None
+
         self.lwc_versions = OrderedDict()
         self.lwc_versions[LwcVersions.Lizmap_3_1] = []
         self.lwc_versions[LwcVersions.Lizmap_3_2] = []
@@ -263,8 +271,16 @@ class BaseEditionDialog(QDialog):
                         else:
                             raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
 
+        if self.primary_key_valid is not None:
+            if not self.primary_key_valid:
+                msg = tr(
+                    "The primary key defined in your datasource for the layer '{}' is not valid. The layer is stored "
+                    "in a database and must have a valid primary key defined in the project."
+                ).format(self.layer.currentLayer().name())
+                return msg
+
         for k, layer_config in self.config.layer_config.items():
-            if layer_config['type'] == InputType.Field:
+            if layer_config['type'] in (InputType.Field, InputType.PrimaryKeyField):
                 widget = layer_config.get('widget')
 
                 if widget is None:
@@ -337,7 +353,7 @@ class BaseEditionDialog(QDialog):
                 definition['widget'].setLayer(layer)
             elif definition['type'] == InputType.Layers:
                 definition['widget'].set_selection(value)
-            elif definition['type'] == InputType.Field:
+            elif definition['type'] in (InputType.Field, InputType.PrimaryKeyField):
                 definition['widget'].setField(value)
             elif definition['type'] == InputType.Fields:
                 definition['widget'].set_selection(value.split(','))
@@ -381,6 +397,7 @@ class BaseEditionDialog(QDialog):
                 raise Exception('InputType "{}" not implemented'.format(definition['type']))
 
         self.post_load_form()
+        self.enable_primary_key_field()
 
     def save_form(self) -> OrderedDict:
         """Save the UI in the dictionary with QGIS objects"""
@@ -397,7 +414,7 @@ class BaseEditionDialog(QDialog):
                 value = definition['widget'].currentLayer().id()
             elif definition['type'] == InputType.Layers:
                 value = definition['widget'].selection()
-            elif definition['type'] == InputType.Field:
+            elif definition['type'] in (InputType.Field, InputType.PrimaryKeyField):
                 value = definition['widget'].currentField()
             elif definition['type'] == InputType.Fields:
                 value = ','.join(definition['widget'].selection())
@@ -442,6 +459,51 @@ class BaseEditionDialog(QDialog):
 
             data[key] = value
         return data
+
+    def enable_primary_key_field(self):
+        """ Enable or not the primary key widget.
+
+        For a database based layer (PG, SQLite, GPKG) the widget is disabled."""
+        if not self.layer:
+            self.primary_key_valid = None
+            return
+        if not self.primary_key:
+            self.primary_key_valid = None
+            return
+
+        tooltip = self.primary_key.toolTip()
+        extra_tooltip = tr('The primary key is defined by the dataprovider only for layer stored in a database.')
+        self.primary_key.setToolTip('{} {}'.format(tooltip, extra_tooltip))
+
+        layer = self.layer.currentLayer()
+        if not is_database_layer(layer):
+            self.primary_key.setEnabled(True)
+            self.primary_key.setAllowEmptyFieldName(False)
+            self.primary_key_valid = None
+            return
+
+        # We trust the datasource
+        # And we do not trust the legacy CFG
+        self.primary_key.setEnabled(False)
+        self.primary_key.setAllowEmptyFieldName(True)
+        pks = layer.primaryKeyAttributes()
+        if len(pks) == 0:
+            # Must be an issue for the user to validate the form, because the widget is disabled
+            # The datasource must be fixed
+            self.primary_key_valid = False
+            return
+
+        if len(pks) >= 2:
+            # As well, the user must add a PK and an unicity constraint
+            # Not possible to validate the form
+            self.primary_key_valid = False
+            return
+
+        # Single field as a primary key
+        # We do not trust the CFG anymore, let's go datasource
+        name = layer.fields().at(pks[0]).name()
+        self.primary_key.setField(name)
+        self.primary_key_valid = True
 
     def open_wizard_dialog(self, helper: str):
         """ Internal function to open the wizard ACL. """
