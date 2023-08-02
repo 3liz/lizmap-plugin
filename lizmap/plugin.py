@@ -1164,8 +1164,10 @@ class Lizmap:
             return
 
         uri = QgsDataSourceUri(self.iface.activeLayer().source())
-
-        text = f" PGPASSWORD={uri.password()} psql -h {uri.host()} -p {uri.port()} -U {uri.username()} -d {uri.database()}"
+        if uri.service():
+            text = f"psql service={uri.service()}"
+        else:
+            text = f" PGPASSWORD={uri.password()} psql -h {uri.host()} -p {uri.port()} -U {uri.username()} -d {uri.database()}"
 
         QInputDialog.getText(
             self.dlg,
