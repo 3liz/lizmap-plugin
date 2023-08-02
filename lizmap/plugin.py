@@ -3541,7 +3541,7 @@ class Lizmap:
 
             if self.dlg.cbStartupBaselayer.count() == 1:
                 # When only one item in the combobox but it's the 'empty' base layer
-                if self.dlg.cbStartBaselayer.itemText(0) == 'empty':
+                if self.dlg.cbStartupBaselayer.itemText(0) == 'empty':
                     self.dlg.cbStartupBaselayer.setEnabled(False)
 
         else:
