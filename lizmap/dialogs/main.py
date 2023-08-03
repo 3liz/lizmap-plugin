@@ -3,6 +3,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import logging
+import sys
 
 from pathlib import Path
 from typing import Optional
@@ -27,6 +28,7 @@ except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
 from lizmap.definitions.definitions import (
+    Html,
     LwcVersions,
     RepositoryComboData,
     ServerComboData,
@@ -67,6 +69,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
         self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+        # clear log button clicked
+        self.button_clear_log.clicked.connect(self.clear_log)
 
         # IGN and google
         self.inIgnKey.textChanged.connect(self.check_ign_french_free_key)
@@ -578,3 +583,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.check_project_thumbnail()
         LOGGER.info("Opening the Lizmap dialog.")
         super().activateWindow()
+
+    def append_log(self, msg, style: Html = None, abort=None):
+        """ Append text to the log. """
+        if abort:
+            sys.stdout = sys.stderr
+        if style:
+            msg = '<{0}>{1}</{0}>'.format(style.value, msg)
+        self.out_log.append(msg)
+
+    def clear_log(self):
+        """ Clear the content of the text area log. """
+        self.out_log.clear()

@@ -19,7 +19,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
-from lizmap.definitions.online_help import online_help
+from lizmap.definitions.online_help import online_lwc_help
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
@@ -151,7 +151,7 @@ class BaseEditionDialog(QDialog):
     def open_help(self):
         """ Open the online documentation for the panel. """
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_help(self.config.help_path()))
+        QDesktopServices.openUrl(online_lwc_help(self.config.help_path()))
 
     def version_lwc(self):
         """ Make all colors about widgets if it is available or not. """

@@ -79,6 +79,15 @@ class LayerProperties(Enum):
 
 
 @unique
+class Html(Enum):
+    H1 = 'h1'
+    H2 = 'h2'
+    H3 = 'h3'
+    H4 = 'h4'
+    Strong = 'strong'
+
+
+@unique
 class ServerComboData(Enum):
     """ The server combobox. """
     AuthId = Qt.UserRole  # String with the authentication ID

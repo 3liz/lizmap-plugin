@@ -4377,7 +4377,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
             <number>0</number>
            </property>
            <item>
-            <widget class="QTextEdit" name="outLog">
+            <widget class="QTextEdit" name="out_log">
              <property name="lineWrapMode">
               <enum>QTextEdit::NoWrap</enum>
              </property>
@@ -4556,7 +4556,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>table_form_filter</tabstop>
   <tabstop>add_filter_form_button</tabstop>
   <tabstop>remove_filter_form_button</tabstop>
-  <tabstop>outLog</tabstop>
+  <tabstop>out_log</tabstop>
   <tabstop>button_clear_log</tabstop>
   <tabstop>mGroupBox_2</tabstop>
   <tabstop>mGroupBox_4</tabstop>

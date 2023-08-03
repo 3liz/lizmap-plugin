@@ -45,7 +45,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor, iface
 
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
-from lizmap.definitions.online_help import online_help
+from lizmap.definitions.online_help import online_lwc_help
 from lizmap.logger import log_function
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
@@ -795,7 +795,7 @@ class ServerWizard(QWizard):
     def open_online_help() -> None:
         """ Open the online help about this form. """
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_help('publish/lizmap_plugin/information.html'))
+        QDesktopServices.openUrl(online_lwc_help('publish/lizmap_plugin/information.html'))
 
     @log_function
     def validateCurrentPage(self):

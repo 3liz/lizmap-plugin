@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import re
-import sys
 import tempfile
 
 from collections import OrderedDict
@@ -69,6 +68,7 @@ from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
     UNSTABLE_VERSION_PREFIX,
+    Html,
     LayerProperties,
     LwcVersions,
     PredefinedGroup,
@@ -82,7 +82,7 @@ from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
-from lizmap.definitions.online_help import online_help
+from lizmap.definitions.online_help import online_lwc_help
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
@@ -902,9 +902,6 @@ class Lizmap:
         # Connect the left menu to the right panel
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
 
-        # clear log button clicked
-        self.dlg.button_clear_log.clicked.connect(self.clear_log)
-
         # Abstract HTML editor
         self.dlg.button_abstract_html.setIcon(QIcon(":images/themes/default/mActionEditHtml.svg"))
         self.dlg.button_abstract_html.clicked.connect(self.configure_html_abstract)
@@ -1338,19 +1335,7 @@ class Lizmap:
     def show_help():
         """Opens the html help file content with default browser."""
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_help())
-
-    @staticmethod
-    def log(msg, abort=None, textarea=None):
-        """Log the actions and errors and optionally show them in given text area."""
-        if abort:
-            sys.stdout = sys.stderr
-        if textarea:
-            textarea.append(msg)
-
-    def clear_log(self):
-        """Clear the content of the text area log."""
-        self.dlg.outLog.clear()
+        QDesktopServices.openUrl(online_lwc_help())
 
     def enable_check_box_in_layer_tab(self, value: bool):
         """Enable/Disable checkboxes and fields of the Layer tab."""
@@ -1445,7 +1430,7 @@ class Lizmap:
                     'The previous .cfg has been saved as .cfg.back')
                 QMessageBox.critical(
                     self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
-                self.log(message, abort=True, textarea=self.dlg.outLog)
+                self.dlg.append_log(message, abort=True)
                 LOGGER.critical('Error while reading the CFG file')
 
         else:
@@ -2066,7 +2051,7 @@ class Lizmap:
                 'Please re-configure the options in the Layers tab completely'
             )
             QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
-            self.log(message, abort=True, textarea=self.dlg.outLog)
+            self.dlg.append_log(message, abort=True)
             return {}
 
     def populate_layer_tree(self) -> dict:
@@ -3352,9 +3337,9 @@ class Lizmap:
             self.dlg.cbIgnCadastral.isChecked(),
         ]
 
-        self.dlg.outLog.append('=' * 20)
-        self.dlg.outLog.append('<b>' + tr('Map - options') + '</b>')
-        self.dlg.outLog.append('=' * 20)
+        self.dlg.out_log.append('=' * 20)
+        self.dlg.out_log.append('<b>' + tr('Map - options') + '</b>')
+        self.dlg.out_log.append('=' * 20)
 
         # Checking configuration data
         # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
@@ -3374,14 +3359,8 @@ class Lizmap:
         # write data in the lizmap json config file
         self.write_project_config_file(lwc_version, with_gui)
 
-        self.log(
-            tr('All the map parameters are correctly set'),
-            abort=False,
-            textarea=self.dlg.outLog)
-        self.log(
-            '<b>' + tr('Lizmap configuration file has been updated') + '</b>',
-            abort=False,
-            textarea=self.dlg.outLog)
+        self.dlg.append_log(tr('All the map parameters are correctly set'), abort=False)
+        self.dlg.append_log(tr('Lizmap configuration file has been updated'), style=Html.Strong, abort=False)
 
         self.get_min_max_scales()
         msg = tr('Lizmap configuration file has been updated')
