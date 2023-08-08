@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## 3.16.0 - 2023-08-08
+
+* Check for any duplicated layer or group before storing them in the configuration.
+  These names need to be unique.
+* Add some new project checks for PostgreSQL layers :
+  * Use estimated metadata
+  * Use server side geometry simplification
+* Some refactoring about the "legacy" log panel.
+  Warnings will be displayed in the panel instead of some popups soon.
+* Add helpers about groups in the legend
+* Disable field checkbox when the plugin is asking for a primary key and the layer is stored in PostgreSQL.
+* For Lizmap Web Client 3.7 minimum, disable for now some options in the UX in the "Layers" tab.
+* Check if all scales are greater than 0.
+* Internal code refactoring about the layer tree
+* For developers, add more shortcuts to debug a PostgreSQL layer
+
 ## 3.15.1 - 2023-07-18
 
 * The UX is improved about the checkbox "Activate first map theme on startup"
