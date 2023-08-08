@@ -3,7 +3,6 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import logging
-import sys
 
 from pathlib import Path
 from typing import Optional
@@ -21,6 +20,8 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
+from lizmap.log_panel import LogPanel
+
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
     WEBKIT_AVAILABLE = True
@@ -28,7 +29,6 @@ except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
 from lizmap.definitions.definitions import (
-    Html,
     LwcVersions,
     RepositoryComboData,
     ServerComboData,
@@ -70,9 +70,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
         self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        # clear log button clicked
-        self.button_clear_log.clicked.connect(self.clear_log)
-
         # IGN and google
         self.inIgnKey.textChanged.connect(self.check_ign_french_free_key)
         self.inIgnKey.textChanged.connect(self.check_api_key_address)
@@ -87,6 +84,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
             'insert a link to a media stored in the Lizmap instance.')
         self.label_link.setToolTip(tooltip)
         self.inLayerLink.setToolTip(tooltip)
+
+        self.log_panel = LogPanel(self.out_log)
+        self.button_clear_log.clicked.connect(self.log_panel.clear)
 
         self.check_project_thumbnail()
         self.setup_icons()
@@ -400,6 +400,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         i = 0
 
         # Information
+        # It must be the first tab, wiht index 0.
         icon = QIcon()
         icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
@@ -498,6 +499,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         i += 1
 
         # Log
+        # It must be the last tab, with the higher index
         # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
         self.mOptionsListWidget.item(i).setIcon(icon)
@@ -583,15 +585,3 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.check_project_thumbnail()
         LOGGER.info("Opening the Lizmap dialog.")
         super().activateWindow()
-
-    def append_log(self, msg, style: Html = None, abort=None):
-        """ Append text to the log. """
-        if abort:
-            sys.stdout = sys.stderr
-        if style:
-            msg = '<{0}>{1}</{0}>'.format(style.value, msg)
-        self.out_log.append(msg)
-
-    def clear_log(self):
-        """ Clear the content of the text area log. """
-        self.out_log.clear()

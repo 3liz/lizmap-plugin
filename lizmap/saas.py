@@ -6,14 +6,14 @@ from os.path import relpath
 from pathlib import Path
 from typing import Dict, Tuple
 
-from qgis._core import QgsRasterLayer
 from qgis.core import (
     QgsDataSourceUri,
     QgsProject,
     QgsProviderRegistry,
-    QgsVectorLayer,
+    QgsRasterLayer,
 )
 
+from lizmap.project_checker_tools import _is_vector_pg
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 
@@ -37,27 +37,26 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
                     'The layer "{}" is an ECW. Because of the ECW\'s licence, this format is not compatible with QGIS '
                     'server. You should switch to a COG format.').format(layer.name())
 
-        if isinstance(layer, QgsVectorLayer):
-            if layer.dataProvider().name() == "postgres":
-                datasource = QgsDataSourceUri(layer.source())
-                if datasource.authConfigId() != '':
+        if _is_vector_pg(layer):
+            datasource = QgsDataSourceUri(layer.source())
+            if datasource.authConfigId() != '':
+                layer_error[layer.name()] = tr(
+                    'The layer "{}" is using the QGIS authentication database. You must either use a PostgreSQL '
+                    'service or store the login and password in the layer.').format(layer.name())
+                connection_error = True
+
+            if datasource.service():
+                # We trust the user about login, password etc ...
+                continue
+
+            # Users might be hosted on lizmap.com but using an external database
+            if datasource.host().endswith("lizmap.com"):
+                if not datasource.username() or not datasource.password():
                     layer_error[layer.name()] = tr(
-                        'The layer "{}" is using the QGIS authentication database. You must either use a PostgreSQL '
-                        'service or store the login and password in the layer.').format(layer.name())
+                        'The layer "{}" is missing some credentials. Either the user and/or the password is not in '
+                        'the layer datasource.'
+                    ).format(layer.name())
                     connection_error = True
-
-                if datasource.service():
-                    # We trust the user about login, password etc ...
-                    continue
-
-                # Users might be hosted on lizmap.com but using an external database
-                if datasource.host().endswith("lizmap.com"):
-                    if not datasource.username() or not datasource.password():
-                        layer_error[layer.name()] = tr(
-                            'The layer "{}" is missing some credentials. Either the user and/or the password is not in '
-                            'the layer datasource.'
-                        ).format(layer.name())
-                        connection_error = True
 
         components = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
         if 'path' not in components.keys():

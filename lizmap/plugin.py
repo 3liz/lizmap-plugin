@@ -48,6 +48,7 @@ from qgis.PyQt.QtGui import (
     QIcon,
     QPixmap,
     QStandardItem,
+    QTextCursor,
 )
 from qgis.PyQt.QtWidgets import (
     QAction,
@@ -110,6 +111,8 @@ from lizmap.project_checker_tools import (
     duplicated_layer_with_filter,
     invalid_int8_primary_key,
     invalid_tid_field,
+    simplify_provider_side,
+    use_estimated_metadata,
 )
 from lizmap.saas import is_lizmap_dot_com_hosting, valid_saas_lizmap_dot_com
 from lizmap.table_manager.base import TableManager
@@ -328,6 +331,7 @@ class Lizmap:
             self.dlg.button_edit_dd_dataviz,
             self.dlg.button_add_plot,
             self.dlg.combo_plots,
+            # Baselayers
             self.dlg.add_group_empty,
             self.dlg.add_group_baselayers,
         ]
@@ -1430,7 +1434,7 @@ class Lizmap:
                     'The previous .cfg has been saved as .cfg.back')
                 QMessageBox.critical(
                     self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
-                self.dlg.append_log(message, abort=True)
+                self.dlg.log_panel.append(message, abort=True)
                 LOGGER.critical('Error while reading the CFG file')
 
         else:
@@ -2051,7 +2055,7 @@ class Lizmap:
                 'Please re-configure the options in the Layers tab completely'
             )
             QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
-            self.dlg.append_log(message, abort=True)
+            self.dlg.log_panel.append(message, abort=True)
             return {}
 
     def populate_layer_tree(self) -> dict:
@@ -2732,6 +2736,35 @@ class Lizmap:
                     warnings.append(Warnings.DuplicatedLayersWithFilters.value)
                     ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Optimisation'), text)
 
+        show_log = False
+        results = simplify_provider_side(self.project)
+        if len(results):
+            self.dlg.log_panel.append(tr('Simplify on the provider side'), Html.H2)
+            self.dlg.log_panel.append(tr(
+                'These PostgreSQL vector layers can have the simplification on the provider side') + ':')
+            for layer in results:
+                self.dlg.log_panel.append('⚫ ' + layer)
+            self.dlg.log_panel.append(tr('Visit the layer properties, "Rendering" tab to enable it.'))
+            show_log = True
+
+        results = use_estimated_metadata(self.project)
+        if len(results):
+            self.dlg.log_panel.append(tr('Estimated metadata'), Html.H2)
+            self.dlg.log_panel.append(tr(
+                'These PostgreSQL layers can have the use estimated metadata option enabled') + ':')
+            for layer in results:
+                self.dlg.log_panel.append('⚫ ' + layer)
+            self.dlg.log_panel.append(tr(
+                'Edit your PostgreSQL connection to enable this option, then change the datasource by right clicking '
+                'on each layer above, then click "Change datasource" in the menu. Finally reselect your layer in the '
+                'new dialog.'))
+            show_log = True
+
+        if with_gui and show_log:
+            self.dlg.mOptionsListWidget.setCurrentRow(self.dlg.mOptionsListWidget.count() - 1)
+            self.dlg.out_log.moveCursor(QTextCursor.Start)
+            self.dlg.out_log.ensureCursorVisible()
+
         metadata = {
             'qgis_desktop_version': qgis_version(),
             'lizmap_plugin_version_str': current_version,
@@ -3092,6 +3125,11 @@ class Lizmap:
 
         validator = QgsProjectServerValidator()
         valid, results = validator.validate(self.project)
+        self.dlg.log_panel.append(tr("OGC validation"), style=Html.H2)
+        self.dlg.log_panel.append(tr("According to OGC standard : {}").format('VALID' if valid else 'NOT valid'))
+        if not valid:
+            self.dlg.log_panel.append(tr("According to OGC standard : {}").format('VALID' if valid else 'NOT valid'))
+
         LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
 
         if not valid:
@@ -3211,6 +3249,8 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
+        self.dlg.log_panel.clear()
+        self.dlg.log_panel.append(tr('Start saving the Lizmap configuration'), time=True)
         variables = self.project.customVariables()
         variables['lizmap_repository'] = self.dlg.current_repository()
         self.project.setCustomVariables(variables)
@@ -3221,7 +3261,9 @@ class Lizmap:
 
         defined_env_target = os.getenv('LIZMAP_TARGET_VERSION')
         if defined_env_target:
-            LOGGER.warning("Version defined by environment variable : {}".format(defined_env_target))
+            msg = "Version defined by environment variable : {}".format(defined_env_target)
+            LOGGER.warning(msg)
+            self.dlg.log_panel.append(msg)
             lwc_version = LwcVersions.find(defined_env_target)
 
         lwc_version: LwcVersions
@@ -3232,28 +3274,25 @@ class Lizmap:
 
         if not self.check_dialog_validity():
             LOGGER.debug("Leaving the dialog without valid project and/or server.")
-            # noinspection PyUnresolvedReferences
-            self.dlg.display_message_bar(
-                tr("No project or server"),
+            self.dlg.log_panel.append(tr("No project or server"), Html.H2)
+            self.dlg.log_panel.append(
                 tr('Either you do not have a server reachable for a long time or you do not have a project opened.'),
-                Qgis.Warning,
+                level=Qgis.Warning,
             )
             return False
 
         stop_process = tr("The process is stopping.")
 
         if not self.server_manager.check_admin_login_provided() and not self.is_dev_version:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Missing login on a server'),
-                '{}\n\n{}\n\n{}'.format(
+            self.dlg.log_panel.append(tr('Missing login on a server'), style=Html.H2)
+            self.dlg.log_panel.append('{}<br><br>{}<br><br><br>{}'.format(
                     tr(
                         "You have set up a server in the first panel of the plugin, but you have not provided a "
                         "login/password."
                     ),
                     tr("Please go back to the server panel and edit the server to add a login."),
                     stop_process
-                ), QMessageBox.Ok)
+            ))
             return False
 
         duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
@@ -3337,9 +3376,9 @@ class Lizmap:
             self.dlg.cbIgnCadastral.isChecked(),
         ]
 
-        self.dlg.out_log.append('=' * 20)
-        self.dlg.out_log.append('<b>' + tr('Map - options') + '</b>')
-        self.dlg.out_log.append('=' * 20)
+        self.dlg.log_panel.separator()
+        self.dlg.log_panel.append(tr('Map - options'), Html.Strong)
+        self.dlg.log_panel.separator()
 
         # Checking configuration data
         # Get the project data from api to check the "coordinate system restriction" of the WMS Server settings
@@ -3359,8 +3398,8 @@ class Lizmap:
         # write data in the lizmap json config file
         self.write_project_config_file(lwc_version, with_gui)
 
-        self.dlg.append_log(tr('All the map parameters are correctly set'), abort=False)
-        self.dlg.append_log(tr('Lizmap configuration file has been updated'), style=Html.Strong, abort=False)
+        self.dlg.log_panel.append(tr('All the map parameters are correctly set'), abort=False, time=True)
+        self.dlg.log_panel.append(tr('Lizmap configuration file has been updated'), style=Html.Strong, abort=False)
 
         self.get_min_max_scales()
         msg = tr('Lizmap configuration file has been updated')

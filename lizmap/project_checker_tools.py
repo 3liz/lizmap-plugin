@@ -2,7 +2,7 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from typing import Optional
+from typing import List, Optional
 
 from qgis.core import (
     QgsDataSourceUri,
@@ -10,6 +10,7 @@ from qgis.core import (
     QgsMapLayer,
     QgsProject,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -124,3 +125,60 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
         text += '<br>'
 
     return text
+
+
+def _is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
+    """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
+    if layer.type() != QgsMapLayer.VectorLayer:
+        return False
+
+    if layer.dataProvider().name() != 'postgres':
+        return False
+
+    if not geometry_check:
+        return True
+
+    if not layer.isSpatial():
+        return False
+
+    return True
+
+
+def simplify_provider_side(project: QgsProject) -> List[str]:
+    """ Return the list of layer name which can be simplified on the server side. """
+    results = []
+    for layer in project.mapLayers().values():
+        if not _is_vector_pg(layer, geometry_check=True):
+            continue
+
+        if layer.geometryType() == QgsWkbTypes.PointGeometry:
+            continue
+
+        if not layer.simplifyMethod().forceLocalOptimization():
+            continue
+
+        results.append(layer.name())
+        # sm.setForceLocalOptimization(False)
+        # layer.setSimplifyMethod(sm)
+
+    return results
+
+
+def use_estimated_metadata(project: QgsProject) -> List[str]:
+    """ Return the list of layer name which can use estimated metadata. """
+    results = []
+    for layer in project.mapLayers().values():
+        if not _is_vector_pg(layer, geometry_check=True):
+            continue
+
+        uri = layer.dataProvider().uri()
+        if not uri.useEstimatedMetadata():
+            results.append(layer.name())
+            # uri.setUseEstimatedMetadata(True)
+            # new_datasource = uri.uri()
+            # name = layer.name()
+            # provider_type = layer.providerType()
+            # options = dp.ProviderOptions()
+            # layer.setDataSource(new_datasource, name, provider_type, options)
+
+    return results
