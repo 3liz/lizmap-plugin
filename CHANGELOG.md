@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.16.2 - 2023-08-09
+
+* Report all layers having a primary key which is not in the layer's fields.
+
 ## 3.16.1 - 2023-08-09
 
 * Fix the use of OpenTopoMap background

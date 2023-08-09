@@ -2717,11 +2717,13 @@ class Lizmap:
                     "temporary field called '{}' to be a unique identifier. On QGIS Server, this will bring issues."
                 ).format(field))
                 self.dlg.log_panel.append("<br>")
+                layers.sort()
                 for layer_name in layers:
                     self.dlg.log_panel.append('⚫ {}'.format(layer_name))
                 self.dlg.log_panel.append("<br>")
 
             if int8:
+                int8.sort()
                 self.dlg.log_panel.append(tr(
                     "The primary key has been detected as a bigint (integer8) for your layer :"))
                 self.dlg.log_panel.append("<br>")
