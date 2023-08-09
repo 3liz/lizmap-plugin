@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.16.1 - 2023-08-09
+
+* Fix the use of OpenTopoMap background
+
 ## 3.16.0 - 2023-08-08
 
 * Check for any duplicated layer or group before storing them in the configuration.
