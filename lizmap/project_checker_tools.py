@@ -2,7 +2,7 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from qgis.core import (
     QgsDataSourceUri,
@@ -20,8 +20,8 @@ from lizmap.qgis_plugin_tools.tools.i18n import tr
 # https://github.com/3liz/lizmap-web-client/issues/3692
 
 
-def invalid_tid_field(layer: QgsVectorLayer) -> bool:
-    """ If the primary key has been detected as tid but the field does not exist. """
+def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optional[str]]:
+    """ If the primary key has been detected as tid/ctid but the field does not exist. """
     # Example
     # CREATE TABLE IF NOT EXISTS public.test_tid
     # (
@@ -29,17 +29,17 @@ def invalid_tid_field(layer: QgsVectorLayer) -> bool:
     #     label text
     # )
     # In QGIS source code, look for "Primary key is ctid"
-    uri = QgsDataSourceUri(layer.source())
+
     # QgsVectorLayer.primaryKeyAttributes is returning a list.
-    # TODO check, but with QgsDataSourceUri, we have a single field
-    if uri.keyColumn() != 'tid':
-        return False
+    if len(layer.primaryKeyAttributes()) >= 2:
+        # We don't check for composite keys here
+        return False, None
 
-    if 'tid' in layer.fields().names():
-        return False
+    if layer.dataProvider().uri().keyColumn() in layer.fields().names():
+        return False, None
 
-    # The layer has "tid" as a primary key, but the field is not found.
-    return True
+    # The layer has "tid" or "ctid" as a primary key, but the field is not found.
+    return True, layer.dataProvider().uri().keyColumn()
 
 
 def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
