@@ -88,7 +88,7 @@ class LizmapConfig:
             },
             'openTopoMap': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False,
-                'use_proper_boolean': True,
+                'use_proper_boolean': False,
             },
             'bingKey': {
                 'wType': 'text', 'type': 'string', 'default': ''
