@@ -30,6 +30,10 @@ def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optio
     # )
     # In QGIS source code, look for "Primary key is ctid"
 
+    if layer.dataProvider().uri().keyColumn() == '':
+        # GeoJSON etc
+        return False, None
+
     # QgsVectorLayer.primaryKeyAttributes is returning a list.
     if len(layer.primaryKeyAttributes()) >= 2:
         # We don't check for composite keys here

@@ -28,6 +28,8 @@ class TestShortNames(unittest.TestCase):
         self.assertEqual("osm-mapnik", OgcProjectValidity.short_name("-osm-mapnik", []))
         self.assertEqual("a_lAyer", OgcProjectValidity.short_name("à lÂyér", []))
         self.assertEqual("l_123_a_layer", OgcProjectValidity.short_name("123 a layer", []))
+        # German Eszett
+        self.assertEqual("B_B", OgcProjectValidity.short_name("BßB", []))
 
         shortname = OgcProjectValidity.short_name('こんにちは', [])
         self.assertEqual(5, len(shortname))

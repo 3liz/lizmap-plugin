@@ -1,0 +1,77 @@
+.overview {
+  font: 1.82em;
+  font-weight: bold;
+}
+body{
+  background: white;
+  color: black;
+  font-family: 'Lato', 'Open Sans', 'Lucida Grande', 'Segoe UI', 'Arial', sans-serif;
+  width: 100%;
+  margin: 10px;
+}
+h1{
+  background-color: #F6F6F6;
+  font-weight: normal;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 3em;
+}
+h2{
+  background-color: #F6F6F6;
+  font-weight: normal;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+}
+h3{
+  background-color: #F6F6F6;
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 5px solid #DCEB5C;
+}
+h4{
+  background-color: #F6F6F6;
+  font-weight: bold;
+  text-align: left;
+}
+h5{
+   background-color: #F6F6F6;
+   font-weight: bold;
+   text-align: left;
+}
+a{
+  color: #729FCF;
+  font-family: arial,sans-serif;
+}
+label{
+  background-color: #FFFFCC;
+  border: 1px solid black;
+  margin: 1px;
+  padding: 0px 3px;
+  font-size: small;
+}
+th .strong {
+  font-weight: bold;
+}
+hr {
+  border: 0;
+  height: 0;
+  border-top: 1px solid black;
+}
+.list-view .highlight {
+  text-align: left;
+  border: 0px;
+  width: 20%;
+  padding-right: 15px;
+  padding-left: 20px;
+  font-weight: bold;
+}
+.tabular-view .odd-row {
+  background-color: #f9f9f9;
+}
+.section {
+  font-weight: bold;
+  padding-top:25px;
+}

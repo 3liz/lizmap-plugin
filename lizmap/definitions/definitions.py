@@ -86,6 +86,8 @@ class Html(Enum):
     H4 = 'h4'
     Strong = 'strong'
     Li = 'li'
+    Td = 'td'
+    P = 'p'
 
 
 @unique

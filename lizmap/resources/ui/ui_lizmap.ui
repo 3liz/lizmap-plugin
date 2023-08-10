@@ -4378,9 +4378,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </property>
            <item>
             <widget class="QTextEdit" name="out_log">
-             <property name="lineWrapMode">
-              <enum>QTextEdit::NoWrap</enum>
-             </property>
              <property name="readOnly">
               <bool>true</bool>
              </property>
