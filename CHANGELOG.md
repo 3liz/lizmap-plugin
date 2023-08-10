@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.16.3 - 2023-08-10
+
+* Fix some display about the new log panel
+
 ## 3.16.2 - 2023-08-09
 
 * Report all layers having a primary key which is not in the layer's fields.
