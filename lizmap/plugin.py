@@ -12,7 +12,7 @@ from collections import OrderedDict
 from functools import partial
 from pathlib import Path
 from shutil import copyfile
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -1722,17 +1722,31 @@ class Lizmap:
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
-    def new_added_layers(self, layer_ids):
+    def new_added_layers(self, layers: List[QgsMapLayer]):
         """ Reminder to open the plugin to update the CFG file. """
         if not self.dlg.check_cfg_file_exists():
             return
 
-        if len(layer_ids) >= 2:
+        # Get layer IDs already in the CFG file
+        layer_ids = [f['id'] for f in self.layers_config_file().values()]
+        names = []
+        for layer in layers:
+            if layer.id() not in layer_ids:
+                names.append(layer.name())
+
+        if len(names) <= 0:
+            # The new loaded layer was in the CFG already
+            # It happens when we load the project
+            return
+
+        if len(names) >= 2:
             msg = tr("Some new layers have been detected into this Lizmap project.")
         else:
             msg = tr("A new layer has been detected into this Lizmap project.")
 
+        LOGGER.info("New layer(s) detected : {}".format(','.join(names)))
         msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.")
+        msg += ','.join(names)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning)
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
@@ -2050,8 +2064,8 @@ class Lizmap:
             if child_type == 'group':
                 self.process_node(child, item, json_layers)
 
-    def read_lizmap_config_file(self) -> dict:
-        """ Read the CFG file and returns the JSON content. """
+    def layers_config_file(self) -> dict:
+        """ Read the CFG file and returns the JSON content about 'layers'. """
         if not self.dlg.check_cfg_file_exists():
             return {}
 
@@ -2083,7 +2097,7 @@ class Lizmap:
         self.dlg.layer_tree.clear()
         self.myDic = {}
 
-        json_layers = self.read_lizmap_config_file()
+        json_layers = self.layers_config_file()
         root = self.project.layerTreeRoot()
 
         # Recursively process layer tree nodes

@@ -58,7 +58,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(3, len(project.mapLayers()))
 
         lizmap = Lizmap(get_iface())
-        config = lizmap.read_lizmap_config_file()
+        config = lizmap.layers_config_file()
 
         lizmap.myDic = {}
         lizmap.process_node(project.layerTreeRoot(), None, config)

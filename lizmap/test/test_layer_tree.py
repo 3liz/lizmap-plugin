@@ -44,7 +44,7 @@ class TestLayerTree(unittest.TestCase):
         lizmap = Lizmap(get_iface())
 
         # New project so Lizmap is empty
-        config = lizmap.read_lizmap_config_file()
+        config = lizmap.layers_config_file()
         self.assertDictEqual(config, {})
 
         # No link for now, config = {}
