@@ -2092,8 +2092,6 @@ class Lizmap:
 
         Needs to be refactored.
         """
-        self.dlg.block_signals_address(True)
-
         self.dlg.layer_tree.clear()
         self.myDic = {}
 
@@ -2107,7 +2105,6 @@ class Lizmap:
         # Add the self.myDic to the global layerList dictionary
         self.layerList = self.myDic
 
-        self.dlg.block_signals_address(False)
         self.enable_check_box_in_layer_tab(False)
 
         # The return is used in tests
@@ -3752,8 +3749,15 @@ class Lizmap:
 
         self.dlg.show()
 
+        # Reading the CFG will trigger signals with input text and the plugin will check the validity
+        # We do not that.
+        # https://github.com/3liz/lizmap-plugin/issues/513
+        self.dlg.block_signals_address(True)
+
         # Get config file data
         self.read_cfg_file()
+
+        self.dlg.block_signals_address(False)
 
         auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
         self.dlg.checkbox_save_project.setChecked(auto_save)
