@@ -188,6 +188,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def check_qgis_version(self, message_bar=False, widget=False):
         """ Compare QGIS desktop and server versions and display results if necessary. """
+        self.warning_old_server.setVisible(False)
+
         current = format_qgis_version(qgis_version())
         qgis_desktop = (current[0], current[1])
 
