@@ -1725,6 +1725,7 @@ class Lizmap:
     def new_added_layers(self, layers: List[QgsMapLayer]):
         """ Reminder to open the plugin to update the CFG file. """
         if not self.dlg.check_cfg_file_exists():
+            # Not a Lizmap project
             return
 
         # Get layer IDs already in the CFG file
@@ -1741,11 +1742,14 @@ class Lizmap:
 
         if len(names) >= 2:
             msg = tr("Some new layers have been detected into this Lizmap project.")
+            prefix = tr("Layers")
         else:
             msg = tr("A new layer has been detected into this Lizmap project.")
+            prefix = tr("Layer")
 
         LOGGER.info("New layer(s) detected : {}".format(','.join(names)))
         msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.")
+        msg += prefix + ' : '
         msg += ','.join(names)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning)
 
