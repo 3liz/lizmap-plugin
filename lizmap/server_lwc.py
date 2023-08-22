@@ -1,4 +1,4 @@
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -10,7 +10,7 @@ import time
 from enum import Enum
 from functools import partial
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -50,6 +50,7 @@ from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.saas import is_lizmap_dot_com_hosting
 from lizmap.tools import (
+    format_qgis_version,
     lizmap_user_folder,
     qgis_version,
     to_bool,
@@ -99,6 +100,10 @@ class ServerManager:
         self.down_button = down_button
         self.server_combo = parent.server_combo
         self.check_dialog_validity = function_check_dialog_validity
+
+        # QGIS desktop version tuple, eg (3, 22)
+        current = format_qgis_version(qgis_version())
+        self.qgis_desktop = (int(current[0]), int(current[1]))
 
         # Network
         self.fetchers = {}
@@ -659,18 +664,18 @@ class ServerManager:
         if qgis_server_info and "error" not in qgis_server_info.keys():
             # The current user is an admin, running at least LWC >= 3.5.1
             qgis_metadata = qgis_server_info.get('metadata')
-            qgis_version = qgis_metadata.get('version')
-            qgis_cell.setText(qgis_version)
+            qgis_server_version = qgis_metadata.get('version')
+            qgis_cell.setText(qgis_server_version)
 
             plugins = qgis_server_info.get('plugins')
             # plugins = {'atlasprint': {'version': '3.2.2'}}
             # Temporary, add plugins as markdown in the data
-            markdown += '* QGIS Server : {}\n'.format(qgis_version)
+            markdown += '* QGIS Server : {}\n'.format(qgis_server_version)
             markdown += '* Py-QGIS-Server : {}\n'.format(qgis_metadata.get('py_qgis_server_version', ''))
             for plugin, info in plugins.items():
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
             qgis_cell.setData(Qt.UserRole, markdown)
-            self.update_action_version(lizmap_version, qgis_version, row, login)
+            self.update_action_version(lizmap_version, qgis_server_version, row, login)
             return
 
         if branch < (3, 5):
@@ -823,7 +828,7 @@ class ServerManager:
             json_file.write(json_file_content)
 
     def update_action_version(
-            self, lizmap_version: str, qgis_version: Union[str, None], row: int, login: str = None,
+            self, lizmap_version: str, qgis_server_version, row: int, login: str = None,
             error: str = None,
     ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
@@ -832,7 +837,7 @@ class ServerManager:
             return
 
         level, messages, qgis_valid = self._messages_for_version(
-            lizmap_version, qgis_version, login, version_file, error)
+            lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error)
         if isinstance(qgis_valid, bool) and not qgis_valid:
             self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.UserRole + 1)
             self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
@@ -841,7 +846,8 @@ class ServerManager:
 
     @staticmethod
     def _messages_for_version(
-            lizmap_version: str, qgis_version: Union[str, None], login: str, json_path: Path,
+            lizmap_version: str, server_version: str, login: str, json_path: Path,
+            qgis_desktop: Tuple[int, int],
             error: str = '',
     ) -> Tuple[Qgis.MessageLevel, List[str], bool]:
         """Returns the list of messages and the color to use.
@@ -849,10 +855,6 @@ class ServerManager:
         The last returned value is a boolean if the QGIS server is valid or not. It's blocker to continue with this
         server.
         """
-
-        # fixme, qgis_version is not used for now
-        _ = qgis_version
-
         with open(json_path) as json_file:
             json_content = json.loads(json_file.read())
 
@@ -963,6 +965,17 @@ class ServerManager:
                     level = Qgis.Critical
                     if int(split_version[1]) >= 6:
                         qgis_server_valid = False
+
+                # Check QGIS server version against the desktop one
+                if server_version:
+                    split = server_version.split('.')
+                    qgis_server = (int(split[0]), int(split[1]))
+                    if qgis_server < qgis_desktop:
+                        messages.insert(0, tr(
+                            'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server {}.{} or '
+                            'downgrade your QGIS Desktop {}.{}'
+                        ).format(qgis_server[0], qgis_server[1], qgis_desktop[0], qgis_desktop[1]))
+                        level = Qgis.Critical
 
             if len(messages) == 0:
                 level = Qgis.Success

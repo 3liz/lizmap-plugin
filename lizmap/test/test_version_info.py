@@ -23,7 +23,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, 'pre', 5204))
 
     def test_version_info_lizmap_status(self):
-        """ Test version info according to LWC version and QGIS version.
+        """ Test version info according to LWC version.
 
         With the given JSON file, 3.6 was on development and login was not required.
         See the second test for a more up-to-date version file with 3.6 and server login required.
@@ -37,9 +37,11 @@ class TestVersionInfo(unittest.TestCase):
         # 3.3.X deprecated
         json_path = Path(plugin_test_data_path('version_info_15022022.json'))
 
-        # 3.6.0 without login
+        qgis_desktop = (3, 28)
+
+        # 3.6.0 without a login
         self.assertEqual(
-            ServerManager._messages_for_version('3.6.0', '', '', json_path),
+            ServerManager._messages_for_version('3.6.0', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -52,7 +54,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.6.0 with login
         self.assertEqual(
-            ServerManager._messages_for_version('3.6.0', '', 'bob_is_admin', json_path),
+            ServerManager._messages_for_version('3.6.0', '', 'bob_is_admin', json_path, qgis_desktop),
             (
                 Qgis.Success,
                 [
@@ -64,7 +66,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.1 with error
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, error='HTTP_ERROR'),
+            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, qgis_desktop, error='HTTP_ERROR'),
             (
                 Qgis.Critical,
                 [
@@ -78,7 +80,7 @@ class TestVersionInfo(unittest.TestCase):
         # 3.5.1 with login denied
         # Starting with the QGIS plugin version 3.9.2, login is required
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.1', '', 'bob_is_not_admin', json_path, error='NO_ACCESS'),
+            ServerManager._messages_for_version('3.5.1', '', 'bob_is_not_admin', json_path, qgis_desktop, error='NO_ACCESS'),
             (
                 Qgis.Critical,
                 [
@@ -90,7 +92,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.1
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path),
+            ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, qgis_desktop),
             (
                 Qgis.Success,
                 [
@@ -102,7 +104,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.1-pre
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.1-pre', '', '', json_path),
+            ServerManager._messages_for_version('3.5.1-pre', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -114,7 +116,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.1-pre.5110
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.1-pre.5110', '', '', json_path),
+            ServerManager._messages_for_version('3.5.1-pre.5110', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -126,7 +128,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.0
         self.assertEqual(
-            ServerManager._messages_for_version('3.5.0', '', '', json_path),
+            ServerManager._messages_for_version('3.5.0', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -138,7 +140,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.4.10-rc.4
         self.assertEqual(
-            ServerManager._messages_for_version('3.4.9', '', '', json_path),
+            ServerManager._messages_for_version('3.4.9', '', '', json_path, qgis_desktop),
             (
                 Qgis.Success,
                 [
@@ -150,7 +152,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # Latest 3.4.9 without login
         self.assertEqual(
-            ServerManager._messages_for_version('3.4.9', '', '', json_path),
+            ServerManager._messages_for_version('3.4.9', '', '', json_path, qgis_desktop),
             (
                 Qgis.Success,
                 [
@@ -162,7 +164,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # Latest 3.4.9-pre
         self.assertEqual(
-            ServerManager._messages_for_version('3.4.9-pre', '', '', json_path),
+            ServerManager._messages_for_version('3.4.9-pre', '', '', json_path, qgis_desktop),
             (
                 Qgis.Warning,
                 [
@@ -175,7 +177,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.4.8
         self.assertEqual(
-            ServerManager._messages_for_version('3.4.8', '', '', json_path),
+            ServerManager._messages_for_version('3.4.8', '', '', json_path, qgis_desktop),
             (
                 Qgis.Warning,
                 [
@@ -187,7 +189,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.4.5, critical because more than 2 releases late
         self.assertEqual(
-            ServerManager._messages_for_version('3.4.5', '', '', json_path),
+            ServerManager._messages_for_version('3.4.5', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -199,7 +201,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.3.16
         self.assertEqual(
-            ServerManager._messages_for_version('3.3.16', '', '', json_path),
+            ServerManager._messages_for_version('3.3.16', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -211,7 +213,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.2.0
         self.assertEqual(
-            ServerManager._messages_for_version('3.2.0', '', '', json_path),
+            ServerManager._messages_for_version('3.2.0', '', '', json_path, qgis_desktop),
             (
                 Qgis.Critical,
                 [
@@ -223,6 +225,8 @@ class TestVersionInfo(unittest.TestCase):
 
     def test_version_info_qgis_server_status(self):
         """ Test a valid QGIS server status."""
+        qgis_desktop = (3, 28)
+
         # Test file with
         # 3.7.0 active dev
         # 3.6.2 latest 3.6.X, QGIS server must be valid
@@ -230,11 +234,13 @@ class TestVersionInfo(unittest.TestCase):
         # 3.4.X deprecated
         json_path = Path(plugin_test_data_path('version_info_27032023.json'))
 
+        # QGIS server version = QGIS desktop version
         data = {
             'lizmap_version': '3.5.11',
-            'qgis_version': "",
+            'server_version': "3.28",
             'login': 'simple_lambda',
             'json_path': json_path,
+            'qgis_desktop': qgis_desktop,
             'error': "NO_ACCESS",
         }
 
@@ -261,5 +267,27 @@ class TestVersionInfo(unittest.TestCase):
                     'The login is not a publisher/administrator',
                 ],
                 False,
+            )
+        )
+
+        # QGIS server < QGIS desktop
+        data = {
+            'lizmap_version': '3.5.11',
+            'server_version': "3.22",
+            'login': 'simple_lambda',
+            'json_path': json_path,
+            'qgis_desktop': qgis_desktop,
+            'error': "NO_ACCESS",
+        }
+        self.assertEqual(
+            ServerManager._messages_for_version(**data),
+            (
+                Qgis.Critical,
+                [
+                    'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server 3.22 or downgrade '
+                    'your QGIS Desktop 3.28',
+                    'The login is not a publisher/administrator',
+                ],
+                True,
             )
         )
