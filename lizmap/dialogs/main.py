@@ -105,25 +105,30 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
         provider = self.liExternalSearch.currentData()
-        if provider in ('google', 'ign'):
-            if provider == 'google':
-                key = self.inGoogleKey.text()
-            else:
-                provider = 'IGN'
-                key = self.inIgnKey.text()
+        if provider not in ('google', 'ign'):
+            return
 
-            if not key:
-                QMessageBox.critical(
-                    self,
-                    tr('Address provider'),
-                    tr('You have selected "{}" for the address search bar.').format(provider)
-                    + "\n\n"
-                    + tr(
-                        'However, you have not provided any API key for this provider. Please add one in the '
-                        '"Basemaps" panel to use this provider.'
-                    ),
-                    QMessageBox.Ok
-                )
+        if provider == 'google':
+            provider = 'Google'
+            key = self.inGoogleKey.text()
+        else:
+            provider = 'IGN'
+            key = self.inIgnKey.text()
+
+        if key:
+            return
+
+        QMessageBox.critical(
+            self,
+            tr('Address provider'),
+            tr('You have selected "{}" for the address search bar.').format(provider)
+            + "\n\n"
+            + tr(
+                'However, you have not provided any API key for this provider. Please add one in the '
+                '"Basemaps" panel to use this provider.'
+            ),
+            QMessageBox.Ok
+        )
 
     def block_signals_address(self, flag: bool):
         """Block or not signals when reading the CFG to avoid the message box."""
@@ -198,13 +203,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
             qgis_server = metadata.get('qgis_server_info').get('metadata').get('version').split('.')
             qgis_server = (int(qgis_server[0]), int(qgis_server[1]))
         except AttributeError:
-            # Maybe returning LWC 3.4 or LWC 3.5 without server plugin
+            # Maybe returning LWC 3.4 or LWC 3.5 without the server plugin
             return
 
         if qgis_server >= qgis_desktop:
             # Alright
-            if widget:
-                self.warning_old_server.setVisible(False)
             return
 
         title = tr('QGIS server version is lower than QGIS desktop version')
