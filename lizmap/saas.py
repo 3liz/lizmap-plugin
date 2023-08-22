@@ -78,11 +78,17 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
 
     more = ''
     if connection_error:
-        more = tr(
-            "You must edit the database connection. If you use a login/password, these ones must be saved by default "
-            "without the QGIS authentication database. Then for each layer, you must right click in the legend and "
-            "click 'Change datasource' to pick the layer again with the updated connection. When opening a QGIS "
-            "project in your desktop, you mustn't have any prompt for a user&password."
+        more = tr("You must edit the database connection.") + " "
+        more += tr(
+            "If you use a login/password, these ones must be saved by default without the QGIS authentication "
+            "database. You should check in the 'Configurations' tab that there isn't "
+            "any previous authentication configuration set."
+        ) + " "
+        more += '<br>'
+        more += tr(
+            "Then for each layer, you must right click in the legend and click 'Change datasource' to pick the layer "
+            "again with the updated connection. When opening a QGIS project in your desktop, you mustn't have any "
+            "prompt for a user&password."
         )
 
     return len(layer_error) != 0, layer_error, more

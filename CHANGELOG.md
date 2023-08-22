@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Improve the QGIS server version check, it's now displayed in the server table
+* Add a reminder to open the plugin after a new layer is added in the project
+* Fix a wrong error message about missing the API key for the address search
+* Improve the error message about the QGIS authentication database for PostgreSQL layers
+
 ## 3.16.3 - 2023-08-10
 
 * Fix some display about the new log panel
