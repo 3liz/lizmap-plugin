@@ -1748,7 +1748,7 @@ class Lizmap:
             prefix = tr("Layer")
 
         LOGGER.info("New layer(s) detected : {}".format(','.join(names)))
-        msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.")
+        msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.") + ' '
         msg += prefix + ' : '
         msg += ','.join(names)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning)

@@ -1086,11 +1086,15 @@ class ServerWizard(QWizard):
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs
             self.has_repository = False
-        self.dav_url = content.get('webdav')
         if Qgis.QGIS_VERSION_INT < 32200:
             # Missing PyQGIS class for managing webdav
             self.dav_url = None
-        self.dav_path = content.get('webdav_path')
+        else:
+            dav_metadata = content.get('webdav')
+            if not dav_metadata:
+                self.dav_url = None
+            else:
+                self.dav_url = self.trailing_slash(dav_metadata.get('url')) + dav_metadata.get('projects_path')
         return True, '', True
 
     def _uri(self) -> QgsDataSourceUri:

@@ -37,6 +37,10 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+# To run these tests:
+# * copy credentials.py.example to credentials.py
+# * edit info credentials.py
+
 
 def skip_test():
     if not CREDENTIALS:

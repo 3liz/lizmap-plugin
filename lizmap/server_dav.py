@@ -63,16 +63,18 @@ class WebDav:
     def dav_server(self) -> Optional[str]:
         """ Return the URL to the DAV server, either from the dialog first, or the one in the constructor. """
         if self.parent:
-            url = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value).get('webdav')
-            if not url:
+            metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value).get('webdav')
+            if not metadata:
                 # Module not enabled
                 return None
-        else:
-            url = self._dav_server
+            return self.url_slash(metadata.get('url')) + metadata.get('projects_path')
 
+        return self._dav_server
+
+    @staticmethod
+    def url_slash(url: str) -> str:
         if not url.endswith('/'):
             url += '/'
-
         return url
 
     def dav_repository_url(self) -> Optional[str]:
@@ -82,10 +84,7 @@ class WebDav:
             # No repository yet
             return None
 
-        if not url.endswith('/'):
-            url += '/'
-
-        return url
+        return self.url_slash(url)
 
     def project_url(self) -> str:
         """ Returns the URL to the project in the web browser. """

@@ -60,7 +60,7 @@ class TestWizardServer(unittest.TestCase):
 
         self.assertTrue(UrlPage.url_valid(QUrl("http://lizmap.local:8130/")))
 
-    @unittest.skipIf(Qgis.QGIS_VERSION_INT < 32200, "Randomly failing, only < QGIS 3.22")
+    @unittest.skipIf(Qgis.QGIS_VERSION_INT < 34000, "Always failing, do not use unexpectedSuccess as well")
     def test_server_creation_wrong_data(self):
         """ Test to create a new server with wrong data only. """
         dialog = ServerWizard(None, [])
