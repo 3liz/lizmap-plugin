@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.16.4 - 2023-08-22
+
 * Improve the QGIS server version check, it's now displayed in the server table
 * Add a reminder to open the plugin after a new layer is added in the project
 * Fix a wrong error message about missing the API key for the address search
