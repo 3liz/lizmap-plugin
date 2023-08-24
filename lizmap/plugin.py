@@ -1751,7 +1751,7 @@ class Lizmap:
         msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.") + ' '
         msg += prefix + ' : '
         msg += ','.join(names)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning)
+        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=-1)
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
@@ -3170,9 +3170,7 @@ class Lizmap:
                 'Lizmap has found these layers which are ghost layers: {}. '
                 'They have been removed. You must save your project.').format(', '.join(layers))
             # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage(
-                'Lizmap', message, level=Qgis.Warning, duration=30
-            )
+            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=-1)
 
     def check_project_validity(self):
         """Project checker about issues that the user might hae when running in LWC."""
@@ -3197,12 +3195,10 @@ class Lizmap:
         if not valid:
             message = tr(
                 'The QGIS project is not valid according to OGC standards. You should check '
-                'messages in the Project properties -> QGIS Server tab then Test configuration. '
+                'messages in the "Project properties" → "QGIS Server" tab then "Test configuration" at the bottom. '
                 '{} error(s) have been found').format(len(results))
             # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage(
-                'Lizmap', message, level=Qgis.Warning, duration=15
-            )
+            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=-1)
 
         self.dlg.check_api_key_address()
 
@@ -3485,7 +3481,7 @@ class Lizmap:
                     'Lizmap',
                     tr('Please do not forget to save the QGIS project before publishing your map'),
                     level=Qgis.Warning,
-                    duration=30
+                    duration=-1
                 )
 
         if not auto_save:
@@ -3494,7 +3490,7 @@ class Lizmap:
                 'Lizmap',
                 msg,
                 level=Qgis.Success,
-                duration=3
+                duration=-1
             )
             # No automatic saving, the process is finished
             return True
@@ -3513,6 +3509,7 @@ class Lizmap:
                     'Lizmap',
                     msg + '. ' + tr('Project <a href="{}">published !</a>'.format(url)),
                     level=Qgis.Success,
+                    duration=-1,
                 )
             return True
 
@@ -3524,6 +3521,7 @@ class Lizmap:
                 'Lizmap',
                 message,
                 level=Qgis.Critical,
+                duration=-1,
             )
             return False
 
@@ -3534,7 +3532,7 @@ class Lizmap:
                 'Lizmap configuration file has been updated and sent to the FTP {}.'
             ).format(self.server_ftp.host),
             level=Qgis.Success,
-            duration=3
+            duration=-1,
         )
 
     def send_webdav(self) -> Tuple[bool, str, str]:
@@ -3546,7 +3544,7 @@ class Lizmap:
 
         qgis_exists, error = self.webdav.check_qgs_exist()
         if error:
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=-1)
             return False, '', ''
 
         server = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
@@ -3573,7 +3571,7 @@ class Lizmap:
         if not flag:
             # Error while sending files
             LOGGER.error(error)
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=-1)
             return False, error, ''
 
         LOGGER.debug("Webdav has been OK : {}".format(url))
