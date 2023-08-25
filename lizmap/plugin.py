@@ -1090,6 +1090,7 @@ class Lizmap:
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
         self.project.layersAdded.connect(self.new_added_layers)
+        self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
 
         # Dataviz
         self.dlg.button_add_dd_dataviz.setText('')
@@ -1751,6 +1752,20 @@ class Lizmap:
         msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.") + ' '
         msg += prefix + ' : '
         msg += ','.join(names)
+        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=-1)
+
+    def layer_renamed(self, node, name: str):
+        """ When a layer/group is renamed in the legend. """
+        _ = node
+        if not self.dlg.check_cfg_file_exists():
+            # Not a Lizmap project
+            return
+
+        # Temporary workaround for
+        # https://github.com/3liz/lizmap-plugin/issues/498
+        msg = tr(
+            "The layer '{}' has been renamed. The configuration in the Lizmap <b>Layers</b> tab only must be checked."
+        ).format(name)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=-1)
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
