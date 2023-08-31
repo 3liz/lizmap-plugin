@@ -56,6 +56,7 @@ from qgis.PyQt.QtWidgets import (
     QInputDialog,
     QLineEdit,
     QMessageBox,
+    QPushButton,
     QTableWidgetItem,
     QTreeWidgetItem,
     QWidget,
@@ -83,7 +84,7 @@ from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
-from lizmap.definitions.online_help import online_lwc_help
+from lizmap.definitions.online_help import online_cloud_help, online_lwc_help
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
@@ -336,6 +337,10 @@ class Lizmap:
             self.dlg.add_group_baselayers,
         ]
 
+        self.lizmap_dot_com = [
+            self.dlg.label_lizmap_search_grant,
+        ]
+
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
         self.global_options['mapScales']['widget'] = self.dlg.inMapScales
@@ -484,6 +489,12 @@ class Lizmap:
         self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
         self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
+
+        self.dlg.label_lizmap_search_grant.setText(tr(
+            "About \"lizmap_search\", for an instance hosted on lizmap.com cloud solution, you must do the \"GRANT\" "
+            "command according to the <a href=\"{}\">documentation</a>."
+        ).format(online_cloud_help("postgresql.html").url()))
+        self.dlg.label_lizmap_search_grant.setOpenExternalLinks(True)
 
         widget_source_popup = self.layer_options_list['popupSource']['widget']
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
@@ -714,6 +725,7 @@ class Lizmap:
         self.embeddedGroups = None
         self.myDic = None
         self.help_action = None
+        self.help_action_cloud = None
 
     def filename_changed(self):
         """ When the current project has been renamed. """
@@ -759,6 +771,7 @@ class Lizmap:
         """ When the server destination has changed in the selector. """
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
         current_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         QgsSettings().setValue('lizmap/instance_target_url', current_url)
         QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
         self.check_dialog_validity()
@@ -771,6 +784,10 @@ class Lizmap:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)
         self.check_webdav()
+
+        lizmap_cloud = is_lizmap_dot_com_hosting(current_metadata)
+        for item in self.lizmap_dot_com:
+            item.setVisible(lizmap_cloud)
 
         # For deprecated features in LWC 3.7 about base layers
         self.check_visibility_crs_3857()
@@ -897,11 +914,16 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.help_action.triggered.connect(self.show_help)
 
+        self.help_action_cloud = QAction(icon, 'Lizmap cloud', self.iface.mainWindow())
+        self.iface.pluginHelpMenu().addAction(self.help_action_cloud)
+        # noinspection PyUnresolvedReferences
+        self.help_action.triggered.connect(self.show_help_cloud)
+
         # connect Lizmap signals and functions
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
         self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_cfg_file)
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
-        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help)
+        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help_question)
 
         # Connect the left menu to the right panel
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
@@ -1275,6 +1297,10 @@ class Lizmap:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
 
+        if self.help_action_cloud:
+            self.iface.pluginHelpMenu().removeAction(self.help_action_cloud)
+            del self.help_action_cloud
+
         if self.action_debug_pg_qgis:
             self.iface.removeCustomActionForLayerType(self.action_debug_pg_qgis)
         if self.action_debug_pg_psql:
@@ -1338,11 +1364,46 @@ class Lizmap:
 
         line_edit.setText(text)
 
+    def show_help_question(self):
+        """ According to the Lizmap server, ask the user which online help to open. """
+        current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        if not is_lizmap_dot_com_hosting(current_metadata):
+            self.show_help()
+            return
+
+        box = QMessageBox(self.dlg)
+        box.setIcon(QMessageBox.Question)
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setWindowTitle(tr('Online documentation'))
+        box.setText(tr(
+            'Your instance is hosted on Lizmap Hosting solution. Which online documentation would you like to open ?'
+        ))
+        lwc_help = QPushButton("Lizmap Web Client")
+        box.addButton(lwc_help, QMessageBox.YesRole)
+        cloud_help = QPushButton("Lizmap Hosting")
+        box.addButton(cloud_help, QMessageBox.NoRole)
+        box.setStandardButtons(QMessageBox.Cancel)
+
+        result = box.exec_()
+
+        if result == QMessageBox.Cancel:
+            return
+        elif box.clickedButton() == lwc_help:
+            self.show_help()
+        else:
+            self.show_help_cloud()
+
     @staticmethod
     def show_help():
-        """Opens the html help file content with default browser."""
+        """ Opens the HTML online help with default browser and language. """
         # noinspection PyArgumentList
         QDesktopServices.openUrl(online_lwc_help())
+
+    @staticmethod
+    def show_help_cloud():
+        """ Opens the HTML online cloud help with default browser and language. """
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(online_cloud_help())
 
     def enable_check_box_in_layer_tab(self, value: bool):
         """Enable/Disable checkboxes and fields of the Layer tab."""

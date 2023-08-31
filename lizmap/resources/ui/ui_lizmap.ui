@@ -551,29 +551,6 @@ QListWidget::item::selected {
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>You must add our Lizmap server URL to keep track of its version number.</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_47">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Read the &lt;a href=&quot;https://docs.lizmap.com/current/en/publish/lizmap_plugin/information.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;documentation&lt;/span&gt;&lt;/a&gt;. The QGIS Server version is only available for Lizmap Web Client 3.5 and higher.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-             <property name="openExternalLinks">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QTableWidget" name="table_server"/>
            </item>
            <item>
@@ -2959,6 +2936,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <bool>true</bool>
                  </property>
                  <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_lizmap_search_grant">
+                 <property name="text">
+                  <string notr="true">SET IN PYTHON, about lizmap.com hosting</string>
+                 </property>
+                 <property name="wordWrap">
                   <bool>true</bool>
                  </property>
                 </widget>
