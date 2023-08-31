@@ -19,6 +19,10 @@ from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 def is_lizmap_dot_com_hosting(metadata: dict) -> bool:
     """ Return True if the metadata is coming from lizmap.com. """
+    if not metadata:
+        # Mainly in tests?
+        return False
+
     return metadata.get('hosting', '') == 'lizmap.com'
 
 
