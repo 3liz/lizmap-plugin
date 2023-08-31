@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Some GUI updates about :
+  * Message bars which are displayed
+  * Layer which is renamed
+* Add button to open the https://www.lizmap.com/ online cloud help if necessary
+
 ## 3.16.4 - 2023-08-22
 
 * Improve the QGIS server version check, it's now displayed in the server table
