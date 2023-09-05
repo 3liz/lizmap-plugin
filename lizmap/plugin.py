@@ -28,6 +28,7 @@ from qgis.core import (
     QgsMapLayerProxyModel,
     QgsMapLayerType,
     QgsProject,
+    QgsRasterLayer,
     QgsSettings,
     QgsVectorLayer,
     QgsWkbTypes,
@@ -335,6 +336,7 @@ class Lizmap:
             # Baselayers
             self.dlg.add_group_empty,
             self.dlg.add_group_baselayers,
+            self.dlg.predefined_baselayers,
         ]
 
         self.lizmap_dot_com = [
@@ -489,6 +491,9 @@ class Lizmap:
         self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
         self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
+
+        self.dlg.button_osm_mapnik.clicked.connect(self.add_osm_mapnik)
+        self.dlg.button_stamen_toner_lite.clicked.connect(self.add_stamen_toner_lite)
 
         self.dlg.label_lizmap_search_grant.setText(tr(
             "About \"lizmap_search\", for an instance hosted on lizmap.com cloud solution, you must do the \"GRANT\" "
@@ -2421,6 +2426,30 @@ class Lizmap:
         if self.dlg.current_lwc_version() < LwcVersions.Lizmap_3_7:
             label = 'Overview'
         self._add_group_legend(label)
+
+    def add_osm_mapnik(self):
+        """ Add the OSM mapnik base layer. """
+        source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0'
+        self._add_base_layer(source, 'OpenStreetMap')
+
+    def add_stamen_toner_lite(self):
+        """ Add the Stamen Toner lite base layer. """
+        source = 'type=xyz&zmin=0&zmax=20&url=https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
+        self._add_base_layer(source, 'Stamen Toner Lite')
+
+    def _add_base_layer(self, source: str, name: str):
+        """ Add a base layer to the "baselayers" group. """
+        self.add_group_baselayers()
+        raster = QgsRasterLayer(source, name, 'wms')
+        root_group = self.project.layerTreeRoot()
+
+        groups = root_group.findGroups()
+        for qgis_group in groups:
+            qgis_group: QgsLayerTreeGroup
+            if qgis_group.name() == 'baselayers':
+                self.project.addMapLayer(raster, False)  # False is the key
+                qgis_group.addLayer(raster)
+                return
 
     @staticmethod
     def string_to_list(text):

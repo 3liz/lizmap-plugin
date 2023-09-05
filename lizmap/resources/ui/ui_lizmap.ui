@@ -2561,37 +2561,94 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="predefined_groups">
+                <widget class="QGroupBox" name="predefined_groups_legend">
                  <property name="title">
-                  <string>Add some predefined groups</string>
+                  <string>Add some predefined groups/layers in the legend</string>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_43">
+                 <layout class="QVBoxLayout" name="verticalLayout_61">
                   <item>
-                   <widget class="QPushButton" name="add_group_hidden">
+                   <widget class="QLabel" name="label_10">
                     <property name="text">
-                     <string notr="true">hidden</string>
+                     <string>After clicking one of these buttons, please close and re-open the dialog, to update the tree in the 'layers' tab.</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="add_group_baselayers">
-                    <property name="text">
-                     <string notr="true">baselayers</string>
+                   <widget class="QGroupBox" name="predefined_groups">
+                    <property name="title">
+                     <string>Groups</string>
                     </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_43">
+                     <item>
+                      <widget class="QPushButton" name="add_group_hidden">
+                       <property name="text">
+                        <string notr="true">hidden</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="add_group_baselayers">
+                       <property name="text">
+                        <string notr="true">baselayers</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="add_group_empty">
+                       <property name="text">
+                        <string notr="true">project-background-color</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="add_group_overview">
+                       <property name="text">
+                        <string notr="true">overview</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="add_group_empty">
-                    <property name="text">
-                     <string notr="true">project-background-color</string>
+                   <widget class="QGroupBox" name="predefined_baselayers">
+                    <property name="title">
+                     <string>Layers</string>
                     </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="add_group_overview">
-                    <property name="text">
-                     <string notr="true">overview</string>
-                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_60">
+                     <item>
+                      <widget class="QLabel" name="label_3">
+                       <property name="text">
+                        <string>This is just some predefined base layers. You can have more using the &quot;QuickMapServices&quot; plugin.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>These layers will be added in the predefined group described above.</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_34">
+                       <item>
+                        <widget class="QPushButton" name="button_osm_mapnik">
+                         <property name="text">
+                          <string>OpenStreetMap Mapnik</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="button_stamen_toner_lite">
+                         <property name="text">
+                          <string>Stamen Toner Lite</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
