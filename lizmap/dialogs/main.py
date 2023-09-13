@@ -12,6 +12,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QImageReader, QPixmap
 from qgis.PyQt.QtWidgets import (
     QDialog,
+    QDialogButtonBox,
     QLabel,
     QMessageBox,
     QPushButton,
@@ -90,6 +91,23 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.check_project_thumbnail()
         self.setup_icons()
+
+        self.buttonBox.button(QDialogButtonBox.Help).setToolTip(tr(
+            'Open the help in the web-browser'
+        ))
+        self.buttonBox.button(QDialogButtonBox.Ok).setToolTip(tr(
+            'The Lizmap configuration file is generated and the dialog is closed.'
+        ))
+        self.buttonBox.button(QDialogButtonBox.Cancel).setToolTip(tr(
+            'The Lizmap configuration file is not generated and the dialog is closed.'
+        ))
+        self.buttonBox.button(QDialogButtonBox.Apply).setToolTip(tr(
+            'The Lizmap configuration file is generated, but the dialog stays opened.'
+        ))
+        self.checkbox_save_project.setToolTip(tr(
+            'When ever you click on "Apply" or "Ok" for saving the Lizmap configuration file, the QGS file can be '
+            'saved as well if necessary'
+        ))
 
         # TODO translate
         self.warning_base_layer_deprecated.set_text(

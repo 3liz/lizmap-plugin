@@ -135,4 +135,4 @@ class EditionDefinitions(BaseDefinitions):
         return 'editionLayers'
 
     def help_path(self) -> str:
-        return 'publish/lizmap_plugin/edition.html'
+        return 'publish/lizmap_plugin/editing.html'
