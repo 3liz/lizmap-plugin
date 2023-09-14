@@ -34,6 +34,7 @@ from lizmap.definitions.definitions import (
     RepositoryComboData,
     ServerComboData,
 )
+from lizmap.definitions.online_help import online_lwc_help
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
@@ -566,7 +567,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_project_thumbnail.setToolTip(tooltip)
         self.label_project_thumbnail.setOpenExternalLinks(True)
 
-        self.label_project_thumbnail.setText(tr("No thumbnail detected."))
+        text = tr("No thumbnail detected.")
+        text += tr(
+            "You can add one by reading the <a href='{}'>online documentation</a>."
+        ).format(online_lwc_help("publish/configuration/project_thumbnail.html").toString())
+        self.label_project_thumbnail.setText(text)
 
         if self.check_cfg_file_exists():
             for test_file in images_types:
