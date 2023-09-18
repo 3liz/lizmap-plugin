@@ -589,7 +589,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         tooltip += ' <br>'
         tooltip += tr('Lizmap Web Client 3.6 adds webp and avif formats.')
         tooltip += ' <br>'
-        tooltip += tr('The width and height should be ideally maximum 250x250px.') + ' '
+        tooltip += tr('The width and height should be ideally 250x250px.') + ' '
         tooltip += tr('The size should be ideally less than 50 KB for JPG, 150KB for PNG.')
         tooltip += ' <br>'
         tooltip += tr('You can use this online tool to optimize the size of the picture :')
