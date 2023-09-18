@@ -424,7 +424,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         i = 0
 
         # Information
-        # It must be the first tab, wiht index 0.
+        # It must be the first tab, with index 0.
         icon = QIcon()
         icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
@@ -452,20 +452,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
-        # Layouts
-        icon = QIcon()
-        icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        i += 1
-
-        # Locate by layer
-        icon = QIcon()
-        icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        i += 1
-
         # Attribute table
         icon = QIcon()
         icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
@@ -480,10 +466,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
-        # Tooltip layer
+        # Layouts
         icon = QIcon()
-        icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
+        icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
@@ -494,17 +480,17 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
-        # Filter layer by user
-        icon = QIcon()
-        icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
-        icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        i += 1
-
         # Dataviz
         icon = QIcon()
         icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Filter layer by user
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 
@@ -519,6 +505,20 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon = QIcon()
         icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Locate by layer
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Tooltip layer
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 

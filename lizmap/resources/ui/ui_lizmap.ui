@@ -120,16 +120,6 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Layouts</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Locate by layer</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Attribute table</string>
           </property>
          </item>
@@ -140,7 +130,7 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Tooltip layers</string>
+           <string>Layouts</string>
           </property>
          </item>
          <item>
@@ -150,22 +140,32 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Filter by user</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Dataviz</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Time Manager</string>
+           <string>Filter by user</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Time manager</string>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Atlas</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Locate by layer</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tooltip layers</string>
           </property>
          </item>
          <item>
@@ -346,7 +346,7 @@ QListWidget::item::selected {
              <item row="0" column="0">
               <widget class="QLabel" name="label_26">
                <property name="text">
-                <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Twitter &lt;a href=&quot;https://twitter.com/LizmapForQgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@LizmapForQgis&lt;/span&gt;&lt;/a&gt; &lt;a href=&quot;https://twitter.com/3lizrelease&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@3lizrelease&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;X &lt;a href=&quot;https://twitter.com/LizmapForQgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@LizmapForQgis&lt;/span&gt;&lt;/a&gt; &lt;a href=&quot;https://twitter.com/3lizrelease&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;@3lizrelease&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="openExternalLinks">
                 <bool>true</bool>
@@ -2903,191 +2903,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_layouts">
-          <layout class="QVBoxLayout" name="verticalLayout_52">
-           <item>
-            <widget class="QLabel" name="label_layout_panel">
-             <property name="text">
-              <string>You can configure permissions, icon and formats per layouts.</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_layout_panel_description">
-             <property name="text">
-              <string>According if an atlas is enabled or not in the layout, some settings are available or not. If the atlas status has changed in the layout, you can reopen the layout edition dialog by double-clicking in the table below, it will refresh some settings.</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTableWidget" name="table_layout"/>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_44">
-             <item>
-              <widget class="QPushButton" name="edit_layout_form_button">
-               <property name="text">
-                <string notr="true">edit</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="up_layout_form_button">
-               <property name="text">
-                <string notr="true">up</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="down_layout_form_button">
-               <property name="text">
-                <string notr="true">down</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_41">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkbox_default_print">
-             <property name="text">
-              <string>Enable the print button exporting the popup content</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="page_locate">
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QScrollArea" name="scrollArea_4">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_4">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>450</width>
-                <height>317</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_12">
-               <item>
-                <widget class="QLabel" name="label_28">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add some layers as a source of the locating tool. For your information, Lizmap provides another way, with better performance in some cases, using a &amp;quot;&lt;a href=&quot;https://docs.lizmap.com/current/en/publish/configuration/spatial_search.html#postgresql-search&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;lizmap_search&lt;/span&gt;&lt;/a&gt;&amp;quot; table in PostgreSQL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                 <property name="openExternalLinks">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_lizmap_search_grant">
-                 <property name="text">
-                  <string notr="true">SET IN PYTHON, about lizmap.com hosting</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QTableWidget" name="table_locate_by_layer"/>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <item>
-                  <widget class="QPushButton" name="add_locate_layer_button">
-                   <property name="text">
-                    <string notr="true">+</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="remove_locate_layer_button">
-                   <property name="text">
-                    <string notr="true">-</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="edit_locate_layer_button">
-                   <property name="text">
-                    <string notr="true">edit</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="up_locate_layer_button">
-                   <property name="text">
-                    <string notr="true">up</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="down_locate_layer_button">
-                   <property name="text">
-                    <string notr="true">down</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_12">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="page_attribute">
           <layout class="QVBoxLayout" name="verticalLayout_39">
            <property name="leftMargin">
@@ -3213,7 +3028,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_edition">
+         <widget class="QWidget" name="page_editing">
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="leftMargin">
             <number>0</number>
@@ -3323,108 +3138,71 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_tooltip">
-          <layout class="QVBoxLayout" name="verticalLayout_13">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
+         <widget class="QWidget" name="page_layouts">
+          <layout class="QVBoxLayout" name="verticalLayout_52">
            <item>
-            <widget class="QScrollArea" name="scrollArea_8">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+            <widget class="QLabel" name="label_layout_panel">
+             <property name="text">
+              <string>You can configure permissions, icon and formats per layouts.</string>
              </property>
-             <property name="widgetResizable">
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_layout_panel_description">
+             <property name="text">
+              <string>According if an atlas is enabled or not in the layout, some settings are available or not. If the atlas status has changed in the layout, you can reopen the layout edition dialog by double-clicking in the table below, it will refresh some settings.</string>
+             </property>
+             <property name="wordWrap">
               <bool>true</bool>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_8">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>450</width>
-                <height>317</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_27">
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="text">
-                  <string>You can let the user activate map tooltips when hovering features. Choose a layer, select some fields to display in the tooltip and optionally choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QTableWidget" name="table_tooltip"/>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QPushButton" name="add_tooltip_button">
-                   <property name="text">
-                    <string notr="true">+</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="remove_tooltip_button">
-                   <property name="text">
-                    <string notr="true">-</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="edit_tooltip_button">
-                   <property name="text">
-                    <string notr="true">edit</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="up_tooltip_button">
-                   <property name="text">
-                    <string notr="true">up</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="down_tooltip_button">
-                   <property name="text">
-                    <string notr="true">down</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_14">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="table_layout"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_44">
+             <item>
+              <widget class="QPushButton" name="edit_layout_form_button">
+               <property name="text">
+                <string notr="true">edit</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="up_layout_form_button">
+               <property name="text">
+                <string notr="true">up</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="down_layout_form_button">
+               <property name="text">
+                <string notr="true">down</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_41">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkbox_default_print">
+             <property name="text">
+              <string>Enable the print button exporting the popup content</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -3520,217 +3298,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </spacer>
                  </item>
                 </layout>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="page_filter_attribute_user">
-          <layout class="QVBoxLayout" name="verticalLayout_38">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QScrollArea" name="scrollArea_5">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_5">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>302</width>
-                <height>989</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_29">
-               <item>
-                <widget class="QLabel" name="label_49">
-                 <property name="text">
-                  <string>Authenticated user will only see the data, either by attribute or spatial filtering.</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
-                 <property name="title">
-                  <string>Attribute filtering</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_17">
-                  <item>
-                   <widget class="QLabel" name="label_22">
-                    <property name="text">
-                     <string>You need to choose an attribute where Lizmap groups are stored for each feature to display or not. It's possible to filter for a specific login instead group by using the checkbox. </string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QTableWidget" name="table_login_filter"/>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
-                    <item>
-                     <widget class="QPushButton" name="add_filter_login_layer_button">
-                      <property name="text">
-                       <string notr="true">+</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="remove_filter_login_layer_button">
-                      <property name="text">
-                       <string notr="true">-</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="edit_filter_login_layer_button">
-                      <property name="text">
-                       <string notr="true">edit</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_3">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_8">
-                 <property name="title">
-                  <string>Spatial filtering</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_24">
-                  <item>
-                   <widget class="QLabel" name="label_filter_polygon">
-                    <property name="text">
-                     <string>First you need to choose a layer used for filtering, by specifying the field where Lizmap groups (or users) are stored. Then, you can define one or many layers to be filtered. For each of them, you can choose if you want a strict &quot;contains&quot; spatial relationship or a simple &quot;intersection&quot; with the filtering layer.</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QGroupBox" name="groupBox_6">
-                    <property name="title">
-                     <string>Options</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_49">
-                     <item>
-                      <layout class="QFormLayout" name="formLayout">
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="label_layer_filter_polygon">
-                         <property name="text">
-                          <string>Layer</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QgsMapLayerComboBox" name="layer_filter_polygon"/>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_field_filter_polygon">
-                         <property name="text">
-                          <string>Field</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QgsFieldComboBox" name="field_filter_polygon"/>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label_filter_polygon_by_user">
-                         <property name="text">
-                          <string>Filter by</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QComboBox" name="filter_polygon_by_user"/>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QTableWidget" name="table_filter_polygon"/>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_41">
-                    <item>
-                     <widget class="QPushButton" name="add_filter_polygon_button">
-                      <property name="text">
-                       <string notr="true">+</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="remove_filter_polygon_button">
-                      <property name="text">
-                       <string notr="true">-</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="edit_filter_polygon_button">
-                      <property name="text">
-                       <string notr="true">edit</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_40">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
                </item>
               </layout>
              </widget>
@@ -4094,6 +3661,217 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page_filter_attribute_user">
+          <layout class="QVBoxLayout" name="verticalLayout_38">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QScrollArea" name="scrollArea_5">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_5">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>302</width>
+                <height>991</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_29">
+               <item>
+                <widget class="QLabel" name="label_49">
+                 <property name="text">
+                  <string>Authenticated user will only see the data, either by attribute or spatial filtering.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
+                 <property name="title">
+                  <string>Attribute filtering</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_17">
+                  <item>
+                   <widget class="QLabel" name="label_22">
+                    <property name="text">
+                     <string>You need to choose an attribute where Lizmap groups are stored for each feature to display or not. It's possible to filter for a specific login instead group by using the checkbox. </string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTableWidget" name="table_login_filter"/>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                    <item>
+                     <widget class="QPushButton" name="add_filter_login_layer_button">
+                      <property name="text">
+                       <string notr="true">+</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="remove_filter_login_layer_button">
+                      <property name="text">
+                       <string notr="true">-</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="edit_filter_login_layer_button">
+                      <property name="text">
+                       <string notr="true">edit</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_3">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_8">
+                 <property name="title">
+                  <string>Spatial filtering</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_24">
+                  <item>
+                   <widget class="QLabel" name="label_filter_polygon">
+                    <property name="text">
+                     <string>First you need to choose a layer used for filtering, by specifying the field where Lizmap groups (or users) are stored. Then, you can define one or many layers to be filtered. For each of them, you can choose if you want a strict &quot;contains&quot; spatial relationship or a simple &quot;intersection&quot; with the filtering layer.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupBox_6">
+                    <property name="title">
+                     <string>Options</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_49">
+                     <item>
+                      <layout class="QFormLayout" name="formLayout">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_layer_filter_polygon">
+                         <property name="text">
+                          <string>Layer</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QgsMapLayerComboBox" name="layer_filter_polygon"/>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_field_filter_polygon">
+                         <property name="text">
+                          <string>Field</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QgsFieldComboBox" name="field_filter_polygon"/>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label_filter_polygon_by_user">
+                         <property name="text">
+                          <string>Filter by</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QComboBox" name="filter_polygon_by_user"/>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTableWidget" name="table_filter_polygon"/>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_41">
+                    <item>
+                     <widget class="QPushButton" name="add_filter_polygon_button">
+                      <property name="text">
+                       <string notr="true">+</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="remove_filter_polygon_button">
+                      <property name="text">
+                       <string notr="true">-</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="edit_filter_polygon_button">
+                      <property name="text">
+                       <string notr="true">edit</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_40">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="page_time_manager">
           <layout class="QVBoxLayout" name="verticalLayout_30">
            <property name="leftMargin">
@@ -4419,6 +4197,228 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </item>
                  </layout>
                 </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_locate">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QScrollArea" name="scrollArea_4">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_4">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>450</width>
+                <height>340</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_12">
+               <item>
+                <widget class="QLabel" name="label_28">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add some layers as a source of the locating tool. For your information, Lizmap provides another way, with better performance in some cases, using a &amp;quot;&lt;a href=&quot;https://docs.lizmap.com/current/en/publish/configuration/spatial_search.html#postgresql-search&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;lizmap_search&lt;/span&gt;&lt;/a&gt;&amp;quot; table in PostgreSQL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_lizmap_search_grant">
+                 <property name="text">
+                  <string notr="true">SET IN PYTHON, about lizmap.com hosting</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="table_locate_by_layer"/>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                 <item>
+                  <widget class="QPushButton" name="add_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_locate_layer_button">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_12">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_tooltip">
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QScrollArea" name="scrollArea_8">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_8">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>450</width>
+                <height>317</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_27">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>You can let the user activate map tooltips when hovering features. Choose a layer, select some fields to display in the tooltip and optionally choose to display the geometry. You can also choose the geometry color (use an HTML color code)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="table_tooltip"/>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QPushButton" name="add_tooltip_button">
+                   <property name="text">
+                    <string notr="true">+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_tooltip_button">
+                   <property name="text">
+                    <string notr="true">-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="edit_tooltip_button">
+                   <property name="text">
+                    <string notr="true">edit</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="up_tooltip_button">
+                   <property name="text">
+                    <string notr="true">up</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="down_tooltip_button">
+                   <property name="text">
+                    <string notr="true">down</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_14">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
