@@ -5,7 +5,12 @@
 * Some GUI updates about :
   * Message bars which are displayed
   * Layer which is renamed
+  * Thumbnail detection
+* Review links to open the online documentation
+* New panel about "Actions" to make it easier to discover
 * Add button to open the https://www.lizmap.com/ online cloud help if necessary
+* For Lizmap Web Client 3.7, include buttons to add a base layer
+* Add some more links to social networks
 
 ## 3.16.4 - 2023-08-22
 

@@ -586,12 +586,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         tooltip = tr(
             "You can add a file named {}.qgs.EXTENSION with one of the following extension : jpg, jpeg, png, gif."
         ).format(self.project.baseName())
-        tooltip += '\n'
+        tooltip += ' <br>'
         tooltip += tr('Lizmap Web Client 3.6 adds webp and avif formats.')
-        tooltip += '\n'
-        tooltip += tr('The width and height should be maximum 250x250px.')
+        tooltip += ' <br>'
+        tooltip += tr('The width and height should be ideally maximum 250x250px.') + ' '
         tooltip += tr('The size should be ideally less than 50 KB for JPG, 150KB for PNG.')
-        tooltip += '\n'
+        tooltip += ' <br>'
         tooltip += tr('You can use this online tool to optimize the size of the picture :')
         tooltip += ' https://squoosh.app'
         self.label_project_thumbnail.setToolTip(tooltip)
