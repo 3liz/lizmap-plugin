@@ -300,6 +300,8 @@ class Lizmap:
             self.dlg.list_group_visibility,
             self.dlg.activate_first_map_theme,
             self.dlg.activate_drawing_tools,
+            # Actions
+            self.dlg.label_help_action,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_5] = [
             self.dlg.liPopupSource.model().item(
@@ -333,10 +335,12 @@ class Lizmap:
             self.dlg.button_edit_dd_dataviz,
             self.dlg.button_add_plot,
             self.dlg.combo_plots,
-            # Baselayers
+            # Base-layers
             self.dlg.add_group_empty,
             self.dlg.add_group_baselayers,
             self.dlg.predefined_baselayers,
+            # New scopes in actions
+            self.dlg.label_action_scope_layer_project,
         ]
 
         self.lizmap_dot_com = [
@@ -3828,6 +3832,9 @@ class Lizmap:
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""
+        self.dlg.check_action_file_exists()
+        self.dlg.check_project_thumbnail()
+
         if self.dlg.isVisible():
             # show dialog in front of QGIS
             self.dlg.raise_()

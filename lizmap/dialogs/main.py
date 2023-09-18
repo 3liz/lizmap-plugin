@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from qgis.core import Qgis, QgsApplication, QgsProject, QgsSettings
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QIcon, QImageReader, QPixmap
 from qgis.PyQt.QtWidgets import (
     QDialog,
@@ -120,6 +120,26 @@ class LizmapDialog(QDialog, FORM_CLASS):
             "This source of popup is deprecated for vector layer. You should switch to another one, such as the QGIS "
             "HTML maptip which is the more powerful. This popup will be removed later for vector layer."
         ))
+
+        text = tr(
+            "Actions in Lizmap Web Client are similar to <a href=\"{}\">Actions in QGIS</a> but it's using it's own "
+            "format. For now, creating a action requires manual editing of the action configuration file named below. "
+            "Please check the <a href=\"{}\">Lizmap documentation</a>. There is the 'Feature' scope."
+        ).format(
+            "https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html#"
+            "actions-properties",
+            online_lwc_help('publish/configuration/action_popup.html').url()
+        )
+        self.label_help_action.setText(text)
+        self.label_demo_action.setText(tr(
+            "See the <a href=\"{}\">online demo</a> for an example, using actions in the 'Feature' scope."
+        ).format(
+            "https://demo.lizmap.com/lizmap/index.php/view/map?repository=features&project=fire_hydrant_actions"))
+        self.label_file_action.setText(
+            tr("Configuration file") + " : <a href=\"file://{}\">".format(self.action_file().parent)
+            + self.action_file().name + "</a>"
+        )
+        self.label_file_action.setOpenExternalLinks(True)
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
@@ -421,6 +441,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def setup_icons(self):
         """ Setup icons in the left menu. """
+        self.mOptionsListWidget.setIconSize(QSize(20, 20))
         i = 0
 
         # Information
@@ -492,6 +513,14 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Actions
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'actions-white.svg'), mode=QIcon.Normal)
+        icon.addFile(resources_path('icons', 'actions-dark.svg'), mode=QIcon.Selected)
+        self.mOptionsListWidget.item(i).setIcon(icon)
+
         i += 1
 
         # Time manager
@@ -594,6 +623,19 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Return boolean if a CFG file exists for the given project. """
         return self.cfg_file().exists()
 
+    def action_file(self) -> Path:
+        """ Return the path to the current action file. """
+        return Path(self.project.fileName() + '.action')
+
+    def check_action_file_exists(self) -> bool:
+        """ Return boolean if an action file exists for the given project. """
+        if self.action_file().is_file():
+            self.label_file_action_found.setText('✔')
+            return True
+
+        self.label_file_action_found.setText("<strong>" + tr('Not found') + "</strong>")
+        return False
+
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
         for i in range(1, self.mOptionsListWidget.count()):
@@ -613,5 +655,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def activateWindow(self):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """
         self.check_project_thumbnail()
+        self.check_action_file_exists()
         LOGGER.info("Opening the Lizmap dialog.")
         super().activateWindow()

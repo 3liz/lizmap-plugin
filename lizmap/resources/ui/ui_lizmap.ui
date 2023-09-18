@@ -150,6 +150,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Actions</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Time manager</string>
           </property>
          </item>
@@ -3869,6 +3874,68 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </layout>
              </widget>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_actions">
+          <layout class="QVBoxLayout" name="verticalLayout_62">
+           <item>
+            <widget class="QLabel" name="label_help_action">
+             <property name="text">
+              <string notr="true">Help, set in Python</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+             <property name="openExternalLinks">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_demo_action">
+             <property name="text">
+              <string notr="true">Help demo action</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_action_scope_layer_project">
+             <property name="text">
+              <string>Actions can have different scopes : 'Feature', 'Layer' or 'Project'.</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_49">
+             <item>
+              <widget class="QLabel" name="label_file_action">
+               <property name="text">
+                <string notr="true">PROJECT NAME, set in Python</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_file_action_found">
+               <property name="text">
+                <string notr="true">Action found, set in Python</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
