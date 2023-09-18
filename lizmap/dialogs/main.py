@@ -597,7 +597,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_project_thumbnail.setToolTip(tooltip)
         self.label_project_thumbnail.setOpenExternalLinks(True)
 
-        text = tr("No thumbnail detected.")
+        text = tr("No thumbnail detected.") + " "
         text += tr(
             "You can add one by reading the <a href='{}'>online documentation</a>."
         ).format(online_lwc_help("publish/configuration/project_thumbnail.html").toString())
@@ -609,7 +609,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 if thumbnail.exists():
                     image_size = QImageReader(str(thumbnail)).size()
                     self.label_project_thumbnail.setText(
-                        tr("Thumbnail detected, {}x{}px, {}").format(
+                        tr("Thumbnail <a href=\"file://{}\">detected</a>, {}x{}px, {}").format(
+                            thumbnail.parent,
                             image_size.width(),
                             image_size.height(),
                             human_size(thumbnail.stat().st_size))

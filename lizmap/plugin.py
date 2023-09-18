@@ -70,6 +70,8 @@ from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
+    DURATION_MESSAGE_BAR,
+    DURATION_WARNING_BAR,
     UNSTABLE_VERSION_PREFIX,
     Html,
     LayerProperties,
@@ -1822,7 +1824,7 @@ class Lizmap:
         msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.") + ' '
         msg += prefix + ' : '
         msg += ','.join(names)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=-1)
+        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
 
     def layer_renamed(self, node, name: str):
         """ When a layer/group is renamed in the legend. """
@@ -1836,7 +1838,7 @@ class Lizmap:
         msg = tr(
             "The layer '{}' has been renamed. The configuration in the Lizmap <b>Layers</b> tab only must be checked."
         ).format(name)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=-1)
+        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids):
         """
@@ -3279,7 +3281,7 @@ class Lizmap:
                 'Lizmap has found these layers which are ghost layers: {}. '
                 'They have been removed. You must save your project.').format(', '.join(layers))
             # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=-1)
+            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
 
     def check_project_validity(self):
         """Project checker about issues that the user might hae when running in LWC."""
@@ -3307,7 +3309,7 @@ class Lizmap:
                 'messages in the "Project properties" → "QGIS Server" tab then "Test configuration" at the bottom. '
                 '{} error(s) have been found').format(len(results))
             # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=-1)
+            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
 
         self.dlg.check_api_key_address()
 
@@ -3590,7 +3592,7 @@ class Lizmap:
                     'Lizmap',
                     tr('Please do not forget to save the QGIS project before publishing your map'),
                     level=Qgis.Warning,
-                    duration=-1
+                    duration=DURATION_WARNING_BAR
                 )
 
         if not auto_save:
@@ -3599,7 +3601,7 @@ class Lizmap:
                 'Lizmap',
                 msg,
                 level=Qgis.Success,
-                duration=-1
+                duration=DURATION_MESSAGE_BAR
             )
             # No automatic saving, the process is finished
             return True
@@ -3618,7 +3620,7 @@ class Lizmap:
                     'Lizmap',
                     msg + '. ' + tr('Project <a href="{}">published !</a>'.format(url)),
                     level=Qgis.Success,
-                    duration=-1,
+                    duration=DURATION_MESSAGE_BAR,
                 )
             return True
 
@@ -3630,7 +3632,7 @@ class Lizmap:
                 'Lizmap',
                 message,
                 level=Qgis.Critical,
-                duration=-1,
+                duration=DURATION_WARNING_BAR,
             )
             return False
 
@@ -3641,7 +3643,7 @@ class Lizmap:
                 'Lizmap configuration file has been updated and sent to the FTP {}.'
             ).format(self.server_ftp.host),
             level=Qgis.Success,
-            duration=-1,
+            duration=DURATION_MESSAGE_BAR,
         )
 
     def send_webdav(self) -> Tuple[bool, str, str]:
@@ -3653,7 +3655,7 @@ class Lizmap:
 
         qgis_exists, error = self.webdav.check_qgs_exist()
         if error:
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=-1)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return False, '', ''
 
         server = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
@@ -3680,7 +3682,7 @@ class Lizmap:
         if not flag:
             # Error while sending files
             LOGGER.error(error)
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=-1)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return False, error, ''
 
         LOGGER.debug("Webdav has been OK : {}".format(url))
