@@ -3902,7 +3902,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
            <item>
             <widget class="QLabel" name="label_action_scope_layer_project">
              <property name="text">
-              <string>Actions can have different scopes : 'Feature', 'Layer' or 'Project'.</string>
+              <string>In newer versions of Lizmap Web Client, different scopes are available : 'Feature', 'Layer' or 'Project'.</string>
              </property>
             </widget>
            </item>

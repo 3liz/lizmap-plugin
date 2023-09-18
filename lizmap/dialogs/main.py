@@ -122,8 +122,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         ))
 
         text = tr(
-            "Actions in Lizmap Web Client are similar to <a href=\"{}\">Actions in QGIS</a> but it's using it's own "
-            "format. For now, creating a action requires manual editing of the action configuration file named below. "
+            "Actions in Lizmap Web Client are similar to <a href=\"{}\">Actions in QGIS</a> but it's using a custom "
+            "format and not the dedicated tab in the vector layer properties dialog. For now, creating a action "
+            "requires manual editing of the action configuration file named below. "
             "Please check the <a href=\"{}\">Lizmap documentation</a>. There is the 'Feature' scope."
         ).format(
             "https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html#"
