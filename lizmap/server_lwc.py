@@ -48,7 +48,7 @@ from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import NamePage, ServerWizard
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import version
-from lizmap.saas import is_lizmap_dot_com_hosting
+from lizmap.saas import is_lizmap_cloud
 from lizmap.tools import (
     format_qgis_version,
     lizmap_user_folder,
@@ -645,7 +645,7 @@ class ServerManager:
         qgis_cell.setData(Qt.UserRole, markdown)
 
         # Only adding Lizmap saas if set to true
-        if is_lizmap_dot_com_hosting(content):
+        if is_lizmap_cloud(content):
             markdown += '* Lizmap.com : Yes\n'
 
         # QGIS Server info

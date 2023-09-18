@@ -87,7 +87,11 @@ from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.layouts import LayoutsDefinitions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
-from lizmap.definitions.online_help import online_cloud_help, online_lwc_help
+from lizmap.definitions.online_help import (
+    MAPPING_INDEX_DOC,
+    online_cloud_help,
+    online_lwc_help,
+)
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
@@ -118,7 +122,7 @@ from lizmap.project_checker_tools import (
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.saas import is_lizmap_dot_com_hosting, valid_saas_lizmap_dot_com
+from lizmap.saas import is_lizmap_cloud, valid_saas_lizmap_dot_com
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
@@ -796,7 +800,7 @@ class Lizmap:
         self.dlg.check_qgis_version(widget=True)
         self.check_webdav()
 
-        lizmap_cloud = is_lizmap_dot_com_hosting(current_metadata)
+        lizmap_cloud = is_lizmap_cloud(current_metadata)
         for item in self.lizmap_dot_com:
             item.setVisible(lizmap_cloud)
 
@@ -1377,8 +1381,10 @@ class Lizmap:
 
     def show_help_question(self):
         """ According to the Lizmap server, ask the user which online help to open. """
+        index = self.dlg.mOptionsListWidget.currentRow()
+        page = MAPPING_INDEX_DOC.get(index)
         current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        if not is_lizmap_dot_com_hosting(current_metadata):
+        if not is_lizmap_cloud(current_metadata) and not page:
             self.show_help()
             return
 
@@ -1387,28 +1393,41 @@ class Lizmap:
         box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
         box.setWindowTitle(tr('Online documentation'))
         box.setText(tr(
-            'Your instance is hosted on Lizmap Hosting solution. Which online documentation would you like to open ?'
+            'Different documentations are possible. Which online documentation would you like to open ?'
         ))
+
+        if is_lizmap_cloud:
+            cloud_help = QPushButton("Lizmap Hosting")
+            box.addButton(cloud_help, QMessageBox.NoRole)
+
+        if page:
+            text = self.dlg.mOptionsListWidget.item(index).text()
+            current_page = QPushButton(tr("Page '{}' in the plugin").format(text))
+            box.addButton(current_page, QMessageBox.NoRole)
+        else:
+            current_page = None
+
         lwc_help = QPushButton("Lizmap Web Client")
         box.addButton(lwc_help, QMessageBox.YesRole)
-        cloud_help = QPushButton("Lizmap Hosting")
-        box.addButton(cloud_help, QMessageBox.NoRole)
         box.setStandardButtons(QMessageBox.Cancel)
 
         result = box.exec_()
 
         if result == QMessageBox.Cancel:
             return
-        elif box.clickedButton() == lwc_help:
+
+        if box.clickedButton() == lwc_help:
             self.show_help()
+        elif box.clickedButton() == current_page:
+            self.show_help(page)
         else:
             self.show_help_cloud()
 
     @staticmethod
-    def show_help():
+    def show_help(page=None):
         """ Opens the HTML online help with default browser and language. """
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_lwc_help())
+        QDesktopServices.openUrl(online_lwc_help(page))
 
     @staticmethod
     def show_help_cloud():
@@ -2807,7 +2826,7 @@ class Lizmap:
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
-        if check_server and is_lizmap_dot_com_hosting(server_metadata):
+        if check_server and is_lizmap_cloud(server_metadata):
             error, results, more = valid_saas_lizmap_dot_com(self.project)
             if error:
                 warnings.append(Warnings.SaasLizmapDotCom.value)

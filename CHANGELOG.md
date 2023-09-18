@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add the possibility to open the online documentation for the current panel in the plugin
+
 ## 3.17.0 - 2023-09-18
 
 * Some GUI updates about :

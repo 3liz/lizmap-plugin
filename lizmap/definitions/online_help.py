@@ -36,5 +36,29 @@ def online_lwc_help(page: str = '', version=VERSION) -> QUrl:
     if locale not in ONLINE_HELP_LANGUAGES:
         locale = 'en'
 
+    if page is None:
+        page = ''
+
     # noinspection PyArgumentList
     return QUrl(f"{DOMAIN}/{version}/{locale}/{page}")
+
+
+# When editing this mapping, it must be done in the definition/corresponding.py file
+
+MAPPING_INDEX_DOC = {
+    0: 'publish/lizmap_plugin/information.html',
+    1: 'publish/lizmap_plugin/map_options.html',
+    2: 'publish/lizmap_plugin/layers.html',
+    3: 'publish/lizmap_plugin/basemap.html',
+    4: 'publish/lizmap_plugin/attribute_table.html',
+    5: 'publish/lizmap_plugin/edition.html',  # TODO change soon
+    6: None,  # Layouts
+    7: 'publish/lizmap_plugin/form_filtering.html',
+    8: 'publish/lizmap_plugin/dataviz.html',
+    9: 'publish/lizmap_plugin/filtered_layers_login.html',
+    10: 'publish/configuration/action_popup.html',  # TODO move into the plugin section
+    11: 'publish/lizmap_plugin/time_manager.html',
+    12: 'publish/lizmap_plugin/atlas.html',
+    13: 'publish/lizmap_plugin/locate_by_layer.html',
+    14: 'publish/lizmap_plugin/tooltip.html',
+}
