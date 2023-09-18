@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.17.0 - 2023-09-18
+
 * Some GUI updates about :
   * Message bars which are displayed
   * Layer which is renamed
