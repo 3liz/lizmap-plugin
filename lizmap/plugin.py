@@ -96,6 +96,7 @@ from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
 from lizmap.dialogs.html_editor import HtmlEditorDialog
+from lizmap.dialogs.html_maptip import HtmlMapTipDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.scroll_message_box import ScrollMessageBox
@@ -2725,27 +2726,12 @@ class Lizmap:
         if not isinstance(layer, QgsVectorLayer):
             return
 
-        table_template = """<table class="table table-condensed table-striped table-bordered lizmapPopupTable">
-  <thead>
-    <tr>
-      <th>{field}</th>
-      <th>{value}</th>
-    </tr>
-  </thead>
-  <tbody>
-{fields_template}
-  </tbody>
-</table>"""
-        field_template = """    <tr>
-      <th>{name}</th>
-      <td>[% "{value}" %]</td>
-    </tr>
-"""
-        fields = ""
-        for field in layer.fields():
-            fields += field_template.format(name=field.displayName(), value=field.name())
-        result = table_template.format(field=tr("Field"), value=tr("Value"), fields_template=fields)
-        self._set_maptip(layer, result)
+        html_maptip_dialog = HtmlMapTipDialog(layer)
+        if not html_maptip_dialog.exec_():
+            return
+
+        result = html_maptip_dialog.map_tip()
+        self._set_maptip(layer, result, False)
 
     def maptip_from_form(self):
         """ Button set popup maptip from DND form in the Lizmap configuration. """

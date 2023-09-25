@@ -3,6 +3,8 @@
 ## Unreleased
 
 * Add the possibility to open the online documentation for the current panel in the plugin
+* Do not generate the HTML for a field if the field is excluded from WMS
+* Add an option to show empty rows in the HTML map tip to generate another QGIS expression
 
 ## 3.17.0 - 2023-09-18
 
