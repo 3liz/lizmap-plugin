@@ -21,7 +21,6 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExternalResourceWidget
-
 from qgis.PyQt.QtXml import QDomDocument
 
 LOGGER = logging.getLogger('Lizmap')
