@@ -22,6 +22,8 @@ from qgis.core import (
 )
 from qgis.gui import QgsExternalResourceWidget
 
+from qgis.PyQt.QtXml import QDomDocument
+
 LOGGER = logging.getLogger('Lizmap')
 SPACES = '  '
 
@@ -51,6 +53,16 @@ class Tooltip:
         regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
         a = ''
         h = ''
+
+        if isinstance(node, QgsAttributeEditorElement):
+            # for text widgets
+            if node.type() == 6:
+                label = node.name()
+                expression = node.toDomElement(QDomDocument()).text()
+
+                a += '\n' + SPACES * level
+                a += Tooltip._generate_text_label(label, expression)
+
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
                 # The form might have been imported from QML with some not existing fields
@@ -378,6 +390,18 @@ class Tooltip:
                                 expression
                             )
         return field_view
+
+    @staticmethod
+    def _generate_text_label(label: str, expression: str):
+        text = '''
+                    <p><b>{0}</b>
+                    <div class="field">{1}</div>
+                    </p>
+                    '''.format(
+            label,
+            expression
+        )
+        return text
 
     @staticmethod
     def css() -> str:
