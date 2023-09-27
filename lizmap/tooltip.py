@@ -55,6 +55,7 @@ class Tooltip:
 
         if isinstance(node, QgsAttributeEditorElement):
             # for text widgets
+            # TODO QGIS_VERSION_INT 3.32 change to "Qgis.AttributeEditorType.TextElement"
             if node.type() == 6:
                 label = node.name()
                 expression = node.toDomElement(QDomDocument()).text()
