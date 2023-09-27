@@ -272,7 +272,7 @@ class TestToolTip(unittest.TestCase):
         """Test to check the text widget."""
         expression = Tooltip._generate_text_label('a label', 'a text widget')
         expected = '''
-                    <p><b>a label</b>
+                    <p><strong>a label</strong>
                     <div class="field">a text widget</div>
                     </p>
                     '''
