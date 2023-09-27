@@ -393,7 +393,7 @@ class Tooltip:
     @staticmethod
     def _generate_text_label(label: str, expression: str):
         text = '''
-                    <p><b>{0}</b>
+                    <p><strong>{0}</strong>
                     <div class="field">{1}</div>
                     </p>
                     '''.format(
