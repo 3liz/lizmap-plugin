@@ -15,6 +15,7 @@ from lizmap.definitions.definitions import (
     ReleaseStatus,
     ServerComboData,
 )
+from lizmap.definitions.online_help import current_locale
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
@@ -127,6 +128,9 @@ class VersionChecker:
             '{tag}   -    {date}'
             '</a>')
 
+        self.dialog.lwc_version_latest_changelog.setVisible(False)
+        self.dialog.lwc_version_oldest_changelog.setVisible(False)
+
         i = 0
         for json_version in released_versions:
             qdate = QDate.fromString(
@@ -134,6 +138,18 @@ class VersionChecker:
                 "yyyy-MM-dd")
             date_string = qdate.toString(QLocale().dateFormat(QLocale.ShortFormat))
             status = ReleaseStatus.find(json_version['status'])
+
+            changelog = json_version.get('changelog')
+            if changelog:
+                changelog = json_version.get('changelog')
+                link = changelog.get(current_locale())
+                if not link:
+                    link = changelog.get('en')
+
+                link = '<a href="{}">{}</a>'.format(link, tr("What's new in {} ?").format(json_version['branch']))
+            else:
+                link = None
+
             if status == ReleaseStatus.Stable:
                 if i == 0:
                     text = template.format(
@@ -143,6 +159,11 @@ class VersionChecker:
                     self.dialog.lwc_version_latest.setText(text)
                     self.date_newest_release_branch = qdate
                     self.newest_release_branch = json_version['latest_release_version']
+
+                    if link:
+                        self.dialog.lwc_version_latest_changelog.setVisible(True)
+                        self.dialog.lwc_version_latest_changelog.setText(link)
+
                 elif i == 1:
                     text = template.format(
                         tag=json_version['latest_release_version'],
@@ -151,6 +172,11 @@ class VersionChecker:
                     self.dialog.lwc_version_oldest.setText(text)
                     self.date_oldest_release_branch = qdate
                     self.oldest_release_branche = json_version['latest_release_version']
+
+                    if link:
+                        self.dialog.lwc_version_oldest_changelog.setVisible(True)
+                        self.dialog.lwc_version_oldest_changelog.setText(link)
+
                 i += 1
             elif status == ReleaseStatus.Retired:
                 lwc_version = LwcVersions.find(json_version['branch'])

@@ -471,6 +471,37 @@ QListWidget::item::selected {
               </layout>
              </item>
              <item>
+              <layout class="QVBoxLayout" name="verticalLayout_63">
+               <item>
+                <widget class="QLabel" name="label_53">
+                 <property name="text">
+                  <string notr="true"/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lwc_version_latest_changelog">
+                 <property name="text">
+                  <string notr="true">CHANGELOG NEW</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lwc_version_oldest_changelog">
+                 <property name="text">
+                  <string notr="true">CHANGELOG OLD</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
               <layout class="QVBoxLayout" name="verticalLayout_8">
                <item>
                 <widget class="QLabel" name="label_qgis_server_plugins">

@@ -15,8 +15,8 @@ CLOUD = 'https://docs.lizmap.cloud'
 CLOUD_HELP_LANGUAGES = ('en', 'fr')
 
 
-def _locale() -> str:
-    """ Get the main language. """
+def current_locale() -> str:
+    """ Get the main language, with 2 characters only. """
     locale = QgsSettings().value("locale/userLocale", QLocale().name())
     locale = locale[0:2]
     return locale
@@ -24,7 +24,7 @@ def _locale() -> str:
 
 def online_cloud_help(page: str = '') -> QUrl:
     """ Online help URL according to locale and version. """
-    locale = _locale()
+    locale = current_locale()
     if locale not in CLOUD_HELP_LANGUAGES:
         locale = 'en'
     return QUrl(f"{CLOUD}/{locale}/{page}")
@@ -32,7 +32,7 @@ def online_cloud_help(page: str = '') -> QUrl:
 
 def online_lwc_help(page: str = '', version=VERSION) -> QUrl:
     """ Online help URL according to locale and version. """
-    locale = _locale()
+    locale = current_locale()
     if locale not in ONLINE_HELP_LANGUAGES:
         locale = 'en'
 
