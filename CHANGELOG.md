@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 3.17.1 - 2023-10-04
+
+* Add links to the corresponding blog post announcing a new release, if available
+* Support the "text widget" from QGIS 3.30 in the tooltip, contribution from @ghtmtt
 * Add the possibility to open the online documentation for the current panel in the plugin
 * Do not generate the HTML for a field if the field is excluded from WMS
 * Add an option to show empty rows in the HTML map tip to generate another QGIS expression

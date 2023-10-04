@@ -1397,7 +1397,7 @@ class Lizmap:
             'Different documentations are possible. Which online documentation would you like to open ?'
         ))
 
-        if is_lizmap_cloud:
+        if is_lizmap_cloud(current_metadata):
             cloud_help = QPushButton("Lizmap Hosting")
             box.addButton(cloud_help, QMessageBox.NoRole)
 
