@@ -72,7 +72,17 @@ def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str]
             # Let's skip, QGIS is already warning this layer
             continue
 
-        relative_path = relpath(layer_path, project_home)
+        try:
+            relative_path = relpath(layer_path, project_home)
+        except ValueError:
+            # https://docs.python.org/3/library/os.path.html#os.path.relpath
+            # On Windows, ValueError is raised when path and start are on different drives.
+            # For instance, H: and C:
+            layer_error[layer.name()] = tr(
+                'The layer "{}" can not be hosted on lizmap.com because the layer is hosted on a different drive.'
+            ).format(layer.name())
+            continue
+
         if '../../..' in relative_path:
             # The layer can only be hosted the in "/qgis" directory
             layer_error[layer.name()] = tr(

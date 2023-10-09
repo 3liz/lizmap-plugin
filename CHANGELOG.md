@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix an error on Windows when the path of a layer is on a different drive
+
 ## 3.17.1 - 2023-10-04
 
 * Add links to the corresponding blog post announcing a new release, if available
