@@ -248,6 +248,7 @@ class TableManagerDataviz(TableManager):
         html_content = html_template.format(
             plot_data=json.dumps(json_response['data']),
             plot_layout=json.dumps(json_response['layout']),
+            plot_user_layout=json.dumps(plot_config.get('layout', '')),
             plot_config=json.dumps({
                 "showLink": False,
                 "scrollZoom": False,
