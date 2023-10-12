@@ -671,7 +671,14 @@ class ServerManager:
             # plugins = {'atlasprint': {'version': '3.2.2'}}
             # Temporary, add plugins as markdown in the data
             markdown += '* QGIS Server : {}\n'.format(qgis_server_version)
-            markdown += '* Py-QGIS-Server : {}\n'.format(qgis_metadata.get('py_qgis_server_version', ''))
+            py_qgis = qgis_server_info.get('py_qgis_server')
+            if py_qgis:
+                py_qgis_version = py_qgis.get('version', 'Not used')
+            else:
+                # Legacy, old server running
+                py_qgis_version = qgis_metadata.get('py_qgis_server_version', 'Not used')
+
+            markdown += '* Py-QGIS-Server : {}\n'.format(py_qgis_version)
             for plugin, info in plugins.items():
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
             qgis_cell.setData(Qt.UserRole, markdown)
