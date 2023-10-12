@@ -368,6 +368,10 @@ class TableManager:
                 cell.setData(Qt.ToolTipRole, value)
 
             elif input_type == InputType.Text:
+                separator = self.definitions.layer_config[key].get('separator', ',')
+                if separator and isinstance(value, list):
+                    value = separator.join(value)
+
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
@@ -571,7 +575,12 @@ class TableManager:
                 elif input_type == InputType.List:
                     layer_data[key] = cell
                 elif input_type == InputType.Text:
-                    layer_data[key] = cell
+                    json_array = self.definitions.layer_config[key].get('use_json')
+                    separator = self.definitions.layer_config[key].get('separator', ',')
+                    if json_array and separator and cell:
+                        layer_data[key] = cell.split(separator)
+                    else:
+                        layer_data[key] = cell
                 elif input_type == InputType.MultiLine:
                     layer_data[key] = cell
                 elif input_type == InputType.HtmlWysiwyg:

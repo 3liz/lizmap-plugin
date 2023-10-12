@@ -239,6 +239,10 @@ class TestTableManager(unittest.TestCase):
                 {
                     "layout": "A4 Landscape",
                     "enabled": False,
+                    "allowed_groups": [
+                        'admins',
+                        'group_a',
+                    ],
                     "formats_available": (
                         "pdf",
                         "png",
@@ -249,7 +253,20 @@ class TestTableManager(unittest.TestCase):
                         "300",
                     ),
                     "default_dpi": "300"
-                }
+                },
+                {
+                    "layout": "Cadastre",
+                    "enabled": True,
+                    "allowed_groups": 'im,an,admin',  # input as a string, output as array
+                    "formats_available": (
+                        "pdf",
+                    ),
+                    "default_format": "pdf",
+                    "dpi_available": (
+                        "100",
+                    ),
+                    "default_dpi": "100"
+                },
             ]
         }
         table_manager.load_qgis_layouts(cfg)
@@ -262,6 +279,10 @@ class TestTableManager(unittest.TestCase):
                 {
                     "layout": "A4 Landscape",
                     "enabled": False,  # Value overriden by the CFG file compare to other layouts.
+                    "allowed_groups": [
+                        'admins',
+                        'group_a',
+                    ],
                     "formats_available": (
                         "pdf",
                         "png"
@@ -276,6 +297,11 @@ class TestTableManager(unittest.TestCase):
                 {
                     "layout": "Cadastre",
                     "enabled": True,
+                    "allowed_groups": [
+                        "im",
+                        "an",
+                        "admin",
+                    ],
                     "formats_available": (
                         "pdf",
                     ),
@@ -288,6 +314,7 @@ class TestTableManager(unittest.TestCase):
                 {
                     "layout": "Local planning",
                     "enabled": True,
+                    # "allowed_groups": [],
                     "formats_available": (
                         "pdf",
                     ),
@@ -300,6 +327,7 @@ class TestTableManager(unittest.TestCase):
                 {
                     "layout": "Economy",
                     "enabled": True,
+                    # "allowed_groups": [],
                     "formats_available": (
                         "pdf",
                     ),

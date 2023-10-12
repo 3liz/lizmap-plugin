@@ -65,6 +65,8 @@ class LayoutsDefinitions(BaseDefinitions):
             'type': InputType.Text,
             'header': tr('Allowed groups'),
             'default': '',
+            'separator': ',',
+            'use_json': True,
             'tooltip': tr(
                 'Use a comma separated list of Lizmap groups ids to restrict access '
                 'to this layer edition.')
