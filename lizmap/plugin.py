@@ -1186,7 +1186,7 @@ class Lizmap:
         if qgis_version() >= 32200:
             QgsExpression.addVariableHelpText(
                 "lizmap_user",
-                "{}<br/>{}<br/>{}".format(
+                "{}<br/><br/>{}<br/><br/>{}".format(
                     tr("The current Lizmap login as a string."),
                     tr("It might be an empty string if the user is not connected."),
                     server_side,
@@ -1194,9 +1194,12 @@ class Lizmap:
             )
             QgsExpression.addVariableHelpText(
                 "lizmap_user_groups",
-                "{}<br/>{}<br/>{}".format(
-                    tr("The current groups of the logged user as an array."),
+                "{}<br/><br/>{}<br/><br/>{}<br/><br/>{}".format(
+                    tr("The current groups of the logged user as an <strong>array</strong>."),
                     tr("It might be an empty array if the user is not connected."),
+                    tr(
+                        "You might need to use functions in the <strong>Array</strong> expression category, such as "
+                        "<pre>array_to_string</pre> to convert it to a string."),
                     server_side,
                 )
             )
