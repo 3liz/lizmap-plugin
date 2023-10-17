@@ -597,7 +597,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_project_thumbnail.setToolTip(tooltip)
         self.label_project_thumbnail.setOpenExternalLinks(True)
 
-        text = tr("No thumbnail detected.") + " "
+        folder = Path(self.project.fileName()).parent
+        text = "<a href=\"file://{}\">".format(folder) + tr("No thumbnail detected.") + "</a>" + " "
         text += tr(
             "You can add one by reading the <a href='{}'>online documentation</a>."
         ).format(online_lwc_help("publish/configuration/project_thumbnail.html").toString())
