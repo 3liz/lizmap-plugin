@@ -13,12 +13,13 @@ from qgis.core import (
     QgsRasterLayer,
 )
 
+from lizmap import LwcVersions
 from lizmap.project_checker_tools import _is_vector_pg
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 
 def is_lizmap_cloud(metadata: dict) -> bool:
-    """ Return True if the metadata is coming from lizmap.com. """
+    """ Return True if the metadata is coming from Lizmap Cloud. """
     if not metadata:
         # Mainly in tests?
         return False
@@ -26,8 +27,9 @@ def is_lizmap_cloud(metadata: dict) -> bool:
     return metadata.get('hosting', '') == 'lizmap.com'
 
 
-def valid_saas_lizmap_dot_com(project: QgsProject) -> Tuple[bool, Dict[str, str], str]:
-    """ Check the project when it's hosted on Lizmap.com hosting. """
+def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[bool, Dict[str, str], str]:
+    """ Check the project when it's hosted on Lizmap Cloud. """
+    _ = lwc_version
     # Do not use homePath, it's not designed for this if the user has set a custom home path
     project_home = Path(project.absolutePath())
     layer_error: Dict[str, str] = {}

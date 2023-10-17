@@ -123,7 +123,7 @@ from lizmap.project_checker_tools import (
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.saas import is_lizmap_cloud, valid_saas_lizmap_dot_com
+from lizmap.saas import is_lizmap_cloud, valid_lizmap_cloud
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
@@ -2825,7 +2825,7 @@ class Lizmap:
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
         if check_server and is_lizmap_cloud(server_metadata):
-            error, results, more = valid_saas_lizmap_dot_com(self.project)
+            error, results, more = valid_lizmap_cloud(self.project, lwc_version)
             if error:
                 warnings.append(Warnings.SaasLizmapDotCom.value)
 
