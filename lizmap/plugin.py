@@ -2829,7 +2829,7 @@ class Lizmap:
             if error:
                 warnings.append(Warnings.SaasLizmapCloud.value)
 
-                message = tr('Some configurations are not valid when used with a Lizmap.com hosting :')
+                message = tr('Some configurations are not valid when used with a Lizmap Cloud hosting :')
 
                 message += "<br><ul>"
                 for error in results.values():
@@ -2842,7 +2842,7 @@ class Lizmap:
 
                 message += tr(
                     "The process is continuing but expect these layers to not be visible in Lizmap Web Client.")
-                ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Lizmap.com hosting'), message)
+                ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Lizmap Cloud'), message)
 
         show_log = False
         if check_server:
@@ -2945,7 +2945,7 @@ class Lizmap:
             show_log = True
 
         if with_gui and show_log:
-            self.dlg.mOptionsListWidget.setCurrentRow(self.dlg.mOptionsListWidget.count() - 1)
+            self.dlg.mOptionsListWidget.setCurrentRow(self.dlg.mOptionsListWidget.count() - 2)
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
 

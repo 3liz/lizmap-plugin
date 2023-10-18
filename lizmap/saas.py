@@ -14,7 +14,7 @@ from qgis.core import (
 )
 
 from lizmap import LwcVersions
-from lizmap.project_checker_tools import _is_vector_pg
+from lizmap.project_checker_tools import is_vector_pg
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 
@@ -43,7 +43,7 @@ def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[b
                     'The layer "{}" is an ECW. Because of the ECW\'s licence, this format is not compatible with QGIS '
                     'server. You should switch to a COG format.').format(layer.name())
 
-        if _is_vector_pg(layer):
+        if is_vector_pg(layer):
             datasource = QgsDataSourceUri(layer.source())
             if datasource.authConfigId() != '':
                 layer_error[layer.name()] = tr(

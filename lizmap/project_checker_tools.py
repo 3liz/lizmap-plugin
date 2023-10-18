@@ -131,7 +131,7 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
     return text
 
 
-def _is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
+def is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
     """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
     if layer.type() != QgsMapLayer.VectorLayer:
         return False
@@ -152,7 +152,7 @@ def simplify_provider_side(project: QgsProject) -> List[str]:
     """ Return the list of layer name which can be simplified on the server side. """
     results = []
     for layer in project.mapLayers().values():
-        if not _is_vector_pg(layer, geometry_check=True):
+        if not is_vector_pg(layer, geometry_check=True):
             continue
 
         if layer.geometryType() == QgsWkbTypes.PointGeometry:
@@ -172,7 +172,7 @@ def use_estimated_metadata(project: QgsProject) -> List[str]:
     """ Return the list of layer name which can use estimated metadata. """
     results = []
     for layer in project.mapLayers().values():
-        if not _is_vector_pg(layer, geometry_check=True):
+        if not is_vector_pg(layer, geometry_check=True):
             continue
 
         uri = layer.dataProvider().uri()

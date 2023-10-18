@@ -553,9 +553,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         i += 1
 
         # Log
-        # It must be the last tab, with the higher index
+        # It must be the before last tab
         # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
+        self.mOptionsListWidget.item(i).setIcon(icon)
+        i += 1
+
+        # Settings
+        # noinspection PyCallByClass,PyArgumentList
+        icon = QIcon(QgsApplication.getThemeIcon("iconSettingsConsole.svg"))
         self.mOptionsListWidget.item(i).setIcon(icon)
         i += 1
 

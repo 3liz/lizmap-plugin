@@ -178,6 +178,11 @@ QListWidget::item::selected {
            <string>Log</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Settings</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -197,16 +202,6 @@ QListWidget::item::selected {
        </item>
        <item>
         <widget class="QComboBox" name="repository_combo"/>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkbox_save_project">
-         <property name="toolTip">
-          <string>Save the QGIS project too at the same time as the Lizmap config file.</string>
-         </property>
-         <property name="text">
-          <string>Save QGIS project too</string>
-         </property>
-        </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="send_webdav">
@@ -4554,6 +4549,33 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page_settings">
+          <layout class="QVBoxLayout" name="verticalLayout_64">
+           <item>
+            <widget class="QCheckBox" name="checkbox_save_project">
+             <property name="toolTip">
+              <string>Save the QGIS project too at the same time as the Lizmap config file.</string>
+             </property>
+             <property name="text">
+              <string>Save QGIS project too</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -4719,7 +4741,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>button_clear_log</tabstop>
   <tabstop>mGroupBox_2</tabstop>
   <tabstop>mGroupBox_4</tabstop>
-  <tabstop>checkbox_save_project</tabstop>
   <tabstop>checkbox_popup</tabstop>
   <tabstop>btConfigurePopup</tabstop>
   <tabstop>checkbox_server_cache</tabstop>
