@@ -335,7 +335,7 @@ class MasterPasswordPage(QWizardPage):
         """ Next page, according to lizmap.com hosting. """
         # Temporary disable the PG page
         # parent_wizard: ServerWizard = self.wizard()
-        # if parent_wizard.is_lizmap_dot_com:
+        # if parent_wizard.is_lizmap_cloud:
         #     LOGGER.debug("After saving the auth ID, go the PostgreSQL page.")
         #     return WizardPages.AddOrNotPostgresqlPage
 
@@ -765,7 +765,7 @@ class ServerWizard(QWizard):
 
         self.auth_id = auth_id
         self.server_info = None
-        self.is_lizmap_dot_com = False
+        self.is_lizmap_cloud = False
         self.has_repository = None
         self.dav_url = None
         self.dav_path = None
@@ -1081,7 +1081,7 @@ class ServerWizard(QWizard):
                 return False, message, True
 
         self.server_info = content
-        self.is_lizmap_dot_com = content.get('hosting', '') == 'lizmap.com'
+        self.is_lizmap_cloud = content.get('hosting', '') == 'lizmap.com'
         self.has_repository = True if len(content.get('repositories', [])) >= 1 else False
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs

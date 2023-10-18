@@ -350,7 +350,7 @@ class Lizmap:
             self.dlg.label_action_scope_layer_project,
         ]
 
-        self.lizmap_dot_com = [
+        self.lizmap_cloud = [
             self.dlg.label_lizmap_search_grant,
         ]
 
@@ -811,7 +811,7 @@ class Lizmap:
         self.check_webdav()
 
         lizmap_cloud = is_lizmap_cloud(current_metadata)
-        for item in self.lizmap_dot_com:
+        for item in self.lizmap_cloud:
             item.setVisible(lizmap_cloud)
 
         # For deprecated features in LWC 3.7 about base layers
@@ -2827,7 +2827,7 @@ class Lizmap:
         if check_server and is_lizmap_cloud(server_metadata):
             error, results, more = valid_lizmap_cloud(self.project, lwc_version)
             if error:
-                warnings.append(Warnings.SaasLizmapDotCom.value)
+                warnings.append(Warnings.SaasLizmapCloud.value)
 
                 message = tr('Some configurations are not valid when used with a Lizmap.com hosting :')
 
