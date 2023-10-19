@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.18.0 - 2023-10-19
+
 * Disabling Stamen base-maps checkbox, see https://stamen.com/faq
 * Fix an error on Windows when the path of a layer is on a different drive
 * Improve links to documentation
