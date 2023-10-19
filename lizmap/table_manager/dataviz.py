@@ -16,12 +16,14 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     QJsonDocument,
     QLocale,
+    Qt,
     QUrl,
     QUrlQuery,
 )
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QDialog, QLabel
+from qgis.utils import OverrideCursor
 
 from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.dataviz import GraphType
@@ -190,7 +192,9 @@ class TableManagerDataviz(TableManager):
         request.setAuthCfg(auth_id)
 
         doc = QJsonDocument.fromJson(json_object.encode('utf8'))
-        error = request.post(network_request, QByteArray(doc.toJson()))
+
+        with OverrideCursor(Qt.WaitCursor):
+            error = request.post(network_request, QByteArray(doc.toJson()))
 
         if error != QgsBlockingNetworkRequest.NoError:
             if error == QgsBlockingNetworkRequest.NetworkError:
