@@ -18,13 +18,13 @@ class TestSaas(unittest.TestCase):
             'sslmode=disable key=\'id\' estimatedmetadata=true srid=4326 type=MultiPoint '
             'checkPrimaryKeyUnicity=\'1\' table="demo"."point" (geom)'
         )
-        self.assertEqual(QgsDataSourceUri.SslMode.SslDisable, uri.sslMode())
+        self.assertEqual(QgsDataSourceUri.SslDisable, uri.sslMode())
 
-        new_ssl = QgsDataSourceUri.SslMode.SslPrefer
+        new_ssl = QgsDataSourceUri.SslPrefer
         new_uri = _update_ssl(uri, new_ssl)
         self.assertEqual(new_ssl, new_uri.sslMode())
 
-        new_ssl = QgsDataSourceUri.SslMode.SslRequire
+        new_ssl = QgsDataSourceUri.SslRequire
         new_uri = _update_ssl(uri, new_ssl)
         self.assertEqual(new_ssl, new_uri.sslMode())
 
@@ -35,8 +35,8 @@ class TestSaas(unittest.TestCase):
             'key=\'id\' estimatedmetadata=true srid=4326 type=MultiPoint '
             'checkPrimaryKeyUnicity=\'1\' table="demo"."point" (geom)'
         )
-        self.assertEqual(QgsDataSourceUri.SslMode.SslPrefer, uri.sslMode())
+        self.assertEqual(QgsDataSourceUri.SslPrefer, uri.sslMode())
 
-        new_ssl = QgsDataSourceUri.SslMode.SslRequire
+        new_ssl = QgsDataSourceUri.SslRequire
         new_uri = _update_ssl(uri, new_ssl, True)
         self.assertEqual(new_ssl, new_uri.sslMode())

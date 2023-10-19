@@ -1106,7 +1106,7 @@ class ServerWizard(QWizard):
             self.field("pg_db_name"),
             self.field("pg_user"),
             self.field("pg_password"),
-            QgsDataSourceUri.SslMode.SslPrefer,
+            QgsDataSourceUri.SslPrefer,
         )
         return uri
 

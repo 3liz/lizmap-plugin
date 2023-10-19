@@ -196,7 +196,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Enable or not the button. """
         if Qgis.QGIS_VERSION_INT <= 32200:
             self.button_convert_ssl.setToolTip(tr("QGIS 3.22 minimum is required"))
-            self.button_convert_ssl.setEnbled(False)
+            self.button_convert_ssl.setEnabled(False)
             return
 
         self.button_convert_ssl.setEnabled(status)

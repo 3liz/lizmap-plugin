@@ -166,10 +166,10 @@ def fix_ssl(project: QgsProject, force: bool = True) -> int:
         if not datasource.host().endswith(SAAS_DOMAIN):
             continue
 
-        if datasource.sslMode() in (QgsDataSourceUri.SslMode.SslPrefer, QgsDataSourceUri.SslMode.SslRequire):
+        if datasource.sslMode() in (QgsDataSourceUri.SslPrefer, QgsDataSourceUri.SslMode.SslRequire):
             continue
 
-        new_uri = _update_ssl(datasource, QgsDataSourceUri.SslMode.SslPrefer, force=force)
+        new_uri = _update_ssl(datasource, QgsDataSourceUri.SslPrefer, force=force)
         layer.setDataSource(new_uri.uri(True), layer.name(), layer.dataProvider().name())
         count += 1
 
@@ -178,7 +178,7 @@ def fix_ssl(project: QgsProject, force: bool = True) -> int:
 
 def _update_ssl(
         uri: QgsDataSourceUri,
-        mode: QgsDataSourceUri.SslMode = QgsDataSourceUri.SslMode.SslPrefer,
+        mode: QgsDataSourceUri.SslMode = QgsDataSourceUri.SslPrefer,
         force: bool = False,
         ) -> QgsDataSourceUri:
     """ Update SSL connection for a given URI. """
