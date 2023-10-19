@@ -4586,7 +4586,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <item row="0" column="1">
                <widget class="QLabel" name="label_57">
                 <property name="text">
-                 <string>Convert all connections to a PostgreSQL database to use SSL</string>
+                 <string>Convert all PostgreSQL connections used in this project to use SSL</string>
                 </property>
                </widget>
               </item>

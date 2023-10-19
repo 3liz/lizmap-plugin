@@ -195,7 +195,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def enabled_ssl_button(self, status: bool):
         """ Enable or not the button. """
         if Qgis.QGIS_VERSION_INT <= 32200:
-            self.button_convert_ssl.setToolTip(tr("QGIS 3.22 is required"))
+            self.button_convert_ssl.setToolTip(tr("QGIS 3.22 minimum is required"))
             self.button_convert_ssl.setEnbled(False)
             return
 
@@ -697,7 +697,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             count = fix_ssl(self.project, force=False)
 
         if count >= 2:
-            msg = tr('{} layer(s) updated').format(count)
+            msg = tr('{} layers updated').format(count)
         else:
             msg = tr('{} layer updated').format(count)
         self.display_message_bar("SSL", msg, Qgis.Success)

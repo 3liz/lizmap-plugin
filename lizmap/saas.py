@@ -148,6 +148,7 @@ def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[str], str]:
     more += edit_connection + " "
     more += '<br>'
     more += right_click_step + " "
+    more += tr("This right-click step in the legend is not required if use the button to fix the project.") + " "
     return layer_error, more
 
 
