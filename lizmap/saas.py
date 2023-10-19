@@ -1,10 +1,12 @@
+import re
+
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 from os.path import relpath
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from qgis.core import (
     QgsDataSourceUri,
@@ -17,6 +19,20 @@ from lizmap import LwcVersions
 from lizmap.project_checker_tools import is_vector_pg
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
+edit_connection_title = tr("You must edit the database connection.")
+edit_connection = tr(
+    "If you use a login/password, these ones must be saved by default without the QGIS authentication "
+    "database. You should check in the 'Configurations' tab that there isn't "
+    "any previous authentication configuration set, with SSL mode 'required' (or 'preferred' at least)."
+)
+right_click_step = tr(
+    "To make effect in the current project for already loaded layers, for each layer, you must right click in the "
+    "legend and click 'Change datasource' to pick the layer again with the updated connection."
+)
+
+SAAS_DOMAIN = 'lizmap.com'
+SAAS_NAME = 'Lizmap Cloud'
+
 
 def is_lizmap_cloud(metadata: dict) -> bool:
     """ Return True if the metadata is coming from Lizmap Cloud. """
@@ -24,7 +40,7 @@ def is_lizmap_cloud(metadata: dict) -> bool:
         # Mainly in tests?
         return False
 
-    return metadata.get('hosting', '') == 'lizmap.com'
+    return metadata.get('hosting', '') == SAAS_DOMAIN
 
 
 def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[bool, Dict[str, str], str]:
@@ -56,7 +72,7 @@ def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[b
                 continue
 
             # Users might be hosted on lizmap.com but using an external database
-            if datasource.host().endswith("lizmap.com"):
+            if datasource.host().endswith(SAAS_DOMAIN):
                 if not datasource.username() or not datasource.password():
                     layer_error[layer.name()] = tr(
                         'The layer "{}" is missing some credentials. Either the user and/or the password is not in '
@@ -94,17 +110,84 @@ def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[b
 
     more = ''
     if connection_error:
-        more = tr("You must edit the database connection.") + " "
-        more += tr(
-            "If you use a login/password, these ones must be saved by default without the QGIS authentication "
-            "database. You should check in the 'Configurations' tab that there isn't "
-            "any previous authentication configuration set."
-        ) + " "
+        more = edit_connection_title + " "
+        more += edit_connection + " "
         more += '<br>'
+        more += right_click_step + " "
         more += tr(
-            "Then for each layer, you must right click in the legend and click 'Change datasource' to pick the layer "
-            "again with the updated connection. When opening a QGIS project in your desktop, you mustn't have any "
+            "When opening a QGIS project in your desktop, you mustn't have any "
             "prompt for a user&password."
         )
 
     return len(layer_error) != 0, layer_error, more
+
+
+def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[str], str]:
+    """ Check if the project is not using SSL on some PostGIS layers which are on a lizmap.com database. """
+    layer_error: List[str] = []
+    for layer in project.mapLayers().values():
+        if not is_vector_pg(layer):
+            continue
+
+        datasource = QgsDataSourceUri(layer.source())
+
+        if datasource.service():
+            # Not sure what to do for now.
+            # Is QGIS using the SSL in the layer configuration ?
+            # We are not sure about which host the layer is using, maybe not lizmap.com
+            continue
+
+        # Users might be hosted on lizmap.com but using an external database
+        if not datasource.host().endswith(SAAS_DOMAIN):
+            continue
+
+        if datasource.sslMode() in (QgsDataSourceUri.SslMode.SslDisable, QgsDataSourceUri.SslMode.SslAllow):
+            layer_error.append(layer.name())
+
+    more = edit_connection_title + " "
+    more += edit_connection + " "
+    more += '<br>'
+    more += right_click_step + " "
+    return layer_error, more
+
+
+def fix_ssl(project: QgsProject, force: bool = True) -> int:
+    """ Fix PostgreSQL layers about SSL. """
+    count = 0
+    for layer in project.mapLayers().values():
+        if not is_vector_pg(layer):
+            continue
+
+        datasource = QgsDataSourceUri(layer.source())
+        if datasource.service():
+            continue
+
+        if not datasource.host().endswith(SAAS_DOMAIN):
+            continue
+
+        if datasource.sslMode() in (QgsDataSourceUri.SslMode.SslPrefer, QgsDataSourceUri.SslMode.SslRequire):
+            continue
+
+        new_uri = _update_ssl(datasource, QgsDataSourceUri.SslMode.SslPrefer, force=force)
+        layer.setDataSource(new_uri.uri(True), layer.name(), layer.dataProvider().name())
+        count += 1
+
+    return count
+
+
+def _update_ssl(
+        uri: QgsDataSourceUri,
+        mode: QgsDataSourceUri.SslMode = QgsDataSourceUri.SslMode.SslPrefer,
+        force: bool = False,
+        ) -> QgsDataSourceUri:
+    """ Update SSL connection for a given URI. """
+    current_ssl = QgsDataSourceUri.encodeSslMode(uri.sslMode())
+    replaced = re.sub(
+        r"sslmode=({})".format(current_ssl),
+        "sslmode={}".format(QgsDataSourceUri.encodeSslMode(mode)),
+        uri.uri(True))
+
+    if force and "sslmode" not in replaced:
+        replaced = 'sslmode={} {}'.format(QgsDataSourceUri.encodeSslMode(mode), replaced)
+
+    return QgsDataSourceUri(replaced)

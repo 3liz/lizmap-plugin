@@ -19,9 +19,10 @@ from qgis.PyQt.QtWidgets import (
     QSizePolicy,
     QSpacerItem,
 )
-from qgis.utils import iface
+from qgis.utils import OverrideCursor, iface
 
 from lizmap.log_panel import LogPanel
+from lizmap.saas import fix_ssl
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -92,6 +93,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.check_project_thumbnail()
         self.setup_icons()
+
+        self.button_convert_ssl.clicked.connect(self.fix_project_ssl)
+        self.button_convert_ssl.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
 
         self.buttonBox.button(QDialogButtonBox.Help).setToolTip(tr(
             'Open the help in the web-browser'
@@ -187,6 +191,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.cbIgnTerrain.setChecked(False)
         else:
             self.cbIgnTerrain.setEnabled(True)
+
+    def enabled_ssl_button(self, status: bool):
+        """ Enable or not the button. """
+        if Qgis.QGIS_VERSION_INT <= 32200:
+            self.button_convert_ssl.setToolTip(tr("QGIS 3.22 is required"))
+            self.button_convert_ssl.setEnbled(False)
+            return
+
+        self.button_convert_ssl.setEnabled(status)
 
     def follow_map_theme_toggled(self):
         """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
@@ -451,6 +464,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'info')
         i += 1
 
         # Map options
@@ -458,6 +472,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'map-options')
         i += 1
 
         # Layers
@@ -465,6 +480,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'layers')
         i += 1
 
         # Base layer
@@ -472,6 +488,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'base-layers')
         i += 1
 
         # Attribute table
@@ -479,6 +496,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'attribute-table')
         i += 1
 
         # Layer editing
@@ -486,6 +504,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'layer-editing')
         i += 1
 
         # Layouts
@@ -493,6 +512,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'layouts')
         i += 1
 
         # Filter data with form
@@ -500,6 +520,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'filter-data-form')
         i += 1
 
         # Dataviz
@@ -507,6 +528,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'dataviz')
         i += 1
 
         # Filter layer by user
@@ -514,6 +536,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'filter-data-user')
         i += 1
 
         # Actions
@@ -521,7 +544,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', 'actions-white.svg'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'actions-dark.svg'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
-
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'actions')
         i += 1
 
         # Time manager
@@ -529,6 +552,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'time-manager')
         i += 1
 
         # Atlas
@@ -536,6 +560,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'atlas')
         i += 1
 
         # Locate by layer
@@ -543,6 +568,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'locate-by-layer')
         i += 1
 
         # Tooltip layer
@@ -550,6 +576,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'tooltip-layer')
         i += 1
 
         # Log
@@ -557,12 +584,14 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # noinspection PyCallByClass,PyArgumentList
         icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'log')
         i += 1
 
         # Settings
         # noinspection PyCallByClass,PyArgumentList
-        icon = QIcon(QgsApplication.getThemeIcon("iconSettingsConsole.svg"))
+        icon = QIcon(":images/themes/default/console/iconSettingsConsole.svg")
         self.mOptionsListWidget.item(i).setIcon(icon)
+        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'settings')
         i += 1
 
         # Set stylesheet for QGroupBox
@@ -647,6 +676,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
+        self.enabled_ssl_button(False)
         for i in range(1, self.mOptionsListWidget.count()):
             item = self.mOptionsListWidget.item(i)
             if allow_navigation:
@@ -660,6 +690,17 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.label_warning_project.setVisible(True)
             self.label_warning_project.set_text(message)
+
+    def fix_project_ssl(self):
+        """ Fix the current project about SSL. """
+        with OverrideCursor(Qt.WaitCursor):
+            count = fix_ssl(self.project, force=False)
+
+        if count >= 2:
+            msg = tr('{} layer(s) updated').format(count)
+        else:
+            msg = tr('{} layer updated').format(count)
+        self.display_message_bar("SSL", msg, Qgis.Success)
 
     def activateWindow(self):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """

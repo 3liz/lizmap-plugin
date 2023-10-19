@@ -51,7 +51,7 @@ MAPPING_INDEX_DOC = {
     2: 'publish/lizmap_plugin/layers.html',
     3: 'publish/lizmap_plugin/basemap.html',
     4: 'publish/lizmap_plugin/attribute_table.html',
-    5: 'publish/lizmap_plugin/edition.html',  # TODO change soon
+    5: 'publish/lizmap_plugin/editing.html',
     6: None,  # Layouts
     7: 'publish/lizmap_plugin/form_filtering.html',
     8: 'publish/lizmap_plugin/dataviz.html',
@@ -61,4 +61,5 @@ MAPPING_INDEX_DOC = {
     12: 'publish/lizmap_plugin/atlas.html',
     13: 'publish/lizmap_plugin/locate_by_layer.html',
     14: 'publish/lizmap_plugin/tooltip.html',
+    15: None,
 }

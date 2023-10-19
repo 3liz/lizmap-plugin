@@ -2,7 +2,16 @@
 
 ## Unreleased
 
+* Disabling Stamen base-maps checkbox, see https://stamen.com/faq
 * Fix an error on Windows when the path of a layer is on a different drive
+* Improve links to documentation
+* Add a new panel for some settings and tools coming soon
+* Add an SSL connection checker for PostgreSQL layers
+* Add a link to the project folder if the thumbnail is not found
+* Review help about `@lizmap_user_groups`
+* Various minor fixes :
+  * Py-QGIS-Server version
+  * new layouts configuration for LWC 3.7
 
 ## 3.17.1 - 2023-10-04
 
