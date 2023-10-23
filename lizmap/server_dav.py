@@ -67,7 +67,10 @@ class WebDav:
             if not metadata:
                 # Module not enabled
                 return None
-            return self.url_slash(metadata.get('url')) + metadata.get('projects_path')
+            qgis_folder = self.url_slash(
+                self.url_slash(metadata.get('url'))
+                + metadata.get('projects_path'))
+            return qgis_folder
 
         return self._dav_server
 
