@@ -4575,20 +4575,100 @@ This is different to the map maximum extent (defined in QGIS project properties,
              <property name="title">
               <string>Auto repair tools on the project</string>
              </property>
-             <layout class="QFormLayout" name="formLayout_4">
-              <item row="0" column="0">
-               <widget class="QPushButton" name="button_convert_ssl">
+             <layout class="QVBoxLayout" name="verticalLayout_65">
+              <item>
+               <widget class="QLabel" name="fixer_project_label">
                 <property name="text">
-                 <string>Convert to SSL mode 'prefer'</string>
+                 <string notr="true">SET IN PYTHON, helper about these auto fix buttons</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_57">
-                <property name="text">
-                 <string>Convert all PostgreSQL connections used in this project to use SSL</string>
-                </property>
-               </widget>
+              <item>
+               <layout class="QFormLayout" name="formLayout_5">
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="button_convert_ssl">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Convert to SSL mode 'prefer'</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="label_57">
+                  <property name="text">
+                   <string>Convert all PostgreSQL layers used in this project to use SSL</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="button_use_estimated_md">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Use 'estimated metadata'</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="label_66">
+                  <property name="text">
+                   <string>Convert all PostgreSQL layers used in this project to 'estimated metadata'</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="button_trust_project">
+                  <property name="text">
+                   <string>Trust project</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLabel" name="label_79">
+                  <property name="text">
+                   <string>Enable the trust project option in the project properties dialog</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QPushButton" name="button_simplify_geom">
+                  <property name="text">
+                   <string>Simplify on the provider side</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLabel" name="label_82">
+                  <property name="text">
+                   <string>Enable provider geometry simplification when possible in the layer properties dialog</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>

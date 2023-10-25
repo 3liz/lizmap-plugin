@@ -107,9 +107,11 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
         uri_string = uri.uri(True)
 
         if uri_string not in unique_datasource.keys():
+            # First time we meet this datasource, we append
             unique_datasource[uri_string] = {}
 
         if uri_filter not in unique_datasource[uri_string]:
+            # We add the filter with the layer name
             unique_datasource[uri_string][uri_filter] = layer.name()
 
     if len(unique_datasource.keys()) == 0:
@@ -117,10 +119,14 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
 
     text = ''
     for datasource, filters in unique_datasource.items():
+        if len(filters.values()) <= 1:
+            continue
+
         layer_names = ','.join([f"'{k}'" for k in filters.values()])
         uri_filter = ','.join([f"'{k}'" for k in filters.keys()])
         text += tr(
-            "Review layers {layers} having the same datasource '{datasource}' with these filters {uri_filter}."
+            "Review layers <strong>{layers}</strong> having the same datasource '{datasource}' with these "
+            "filters {uri_filter}."
         ).format(
             layers=layer_names,
             datasource=QgsDataSourceUri.removePassword(QgsDataSourceUri(datasource).uri(False)),
@@ -128,6 +134,12 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
         )
         text += '<br>'
 
+    text += '<br>'
+    text += tr(
+        'Checkbox are supported natively in the legend. Using filters for the same '
+        'datasource are highly discouraged.'
+    )
+    text += '<br>'
     return text
 
 
@@ -148,7 +160,7 @@ def is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
     return True
 
 
-def simplify_provider_side(project: QgsProject) -> List[str]:
+def simplify_provider_side(project: QgsProject, fix=False) -> List[str]:
     """ Return the list of layer name which can be simplified on the server side. """
     results = []
     for layer in project.mapLayers().values():
@@ -162,13 +174,16 @@ def simplify_provider_side(project: QgsProject) -> List[str]:
             continue
 
         results.append(layer.name())
-        # sm.setForceLocalOptimization(False)
-        # layer.setSimplifyMethod(sm)
+
+        if fix:
+            simplify = layer.simplifyMethod()
+            simplify.setForceLocalOptimization(False)
+            layer.setSimplifyMethod(simplify)
 
     return results
 
 
-def use_estimated_metadata(project: QgsProject) -> List[str]:
+def use_estimated_metadata(project: QgsProject, fix: bool = False) -> List[str]:
     """ Return the list of layer name which can use estimated metadata. """
     results = []
     for layer in project.mapLayers().values():
@@ -178,11 +193,23 @@ def use_estimated_metadata(project: QgsProject) -> List[str]:
         uri = layer.dataProvider().uri()
         if not uri.useEstimatedMetadata():
             results.append(layer.name())
-            # uri.setUseEstimatedMetadata(True)
-            # new_datasource = uri.uri()
-            # name = layer.name()
-            # provider_type = layer.providerType()
-            # options = dp.ProviderOptions()
-            # layer.setDataSource(new_datasource, name, provider_type, options)
+
+            if fix:
+                uri.setUseEstimatedMetadata(True)
+                layer.setDataSource(
+                    uri.uri(True),
+                    layer.name(),
+                    layer.dataProvider().name(),
+                    layer.dataProvider().ProviderOptions()
+                )
 
     return results
+
+
+def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool:
+    """ Trust layer metadata at the project level. """
+    if not fix:
+        return project.trustLayerMetadata()
+
+    project.setTrustLayerMetadata(True)
+    return True

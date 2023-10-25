@@ -64,7 +64,12 @@ class LogPanel:
             output = ''
             if style in (Html.H1, Html.H2, Html.H3):
                 output += '<br>'
-            output += '<{0}>{1}</{0}>'.format(style.value, msg)
+            if level == Qgis.Warning:
+                output += '<{0} style="color: orange">{1}</{0}>'.format(style.value, msg)
+            elif level == Qgis.Critical:
+                output += '<{0} style="color: red">{1}</{0}>'.format(style.value, msg)
+            else:
+                output += '<{0}>{1}</{0}>'.format(style.value, msg)
             msg = output
 
         self.append_html(msg)

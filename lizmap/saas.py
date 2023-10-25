@@ -15,7 +15,6 @@ from qgis.core import (
     QgsRasterLayer,
 )
 
-from lizmap import LwcVersions
 from lizmap.project_checker_tools import is_vector_pg
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
@@ -43,9 +42,8 @@ def is_lizmap_cloud(metadata: dict) -> bool:
     return metadata.get('hosting', '') == SAAS_DOMAIN
 
 
-def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[bool, Dict[str, str], str]:
+def valid_lizmap_cloud(project: QgsProject) -> Tuple[Dict[str, str], str]:
     """ Check the project when it's hosted on Lizmap Cloud. """
-    _ = lwc_version
     # Do not use homePath, it's not designed for this if the user has set a custom home path
     project_home = Path(project.absolutePath())
     layer_error: Dict[str, str] = {}
@@ -71,7 +69,7 @@ def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[b
                 # We trust the user about login, password etc ...
                 continue
 
-            # Users might be hosted on lizmap.com but using an external database
+            # Users might be hosted on Lizmap Cloud but using an external database
             if datasource.host().endswith(SAAS_DOMAIN):
                 if not datasource.username() or not datasource.password():
                     layer_error[layer.name()] = tr(
@@ -97,16 +95,16 @@ def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[b
             # On Windows, ValueError is raised when path and start are on different drives.
             # For instance, H: and C:
             layer_error[layer.name()] = tr(
-                'The layer "{}" can not be hosted on lizmap.com because the layer is hosted on a different drive.'
-            ).format(layer.name())
+                'The layer "{}" can not be hosted on {} because the layer is hosted on a different drive.'
+            ).format(layer.name(), SAAS_NAME)
             continue
 
         if '../../..' in relative_path:
             # The layer can only be hosted the in "/qgis" directory
             layer_error[layer.name()] = tr(
-                'The layer "{}" can not be hosted on lizmap.com because the layer is located in too many '
+                'The layer "{}" can not be hosted on {} because the layer is located in too many '
                 'parent\'s folder. The current path from the project home path to the given layer is "{}".'
-            ).format(layer.name(), relative_path)
+            ).format(layer.name(), SAAS_NAME, relative_path)
 
     more = ''
     if connection_error:
@@ -119,11 +117,11 @@ def valid_lizmap_cloud(project: QgsProject, lwc_version: LwcVersions) -> Tuple[b
             "prompt for a user&password."
         )
 
-    return len(layer_error) != 0, layer_error, more
+    return layer_error, more
 
 
 def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[str], str]:
-    """ Check if the project is not using SSL on some PostGIS layers which are on a lizmap.com database. """
+    """ Check if the project is not using SSL on some PostGIS layers which are on a Lizmap Cloud database. """
     layer_error: List[str] = []
     for layer in project.mapLayers().values():
         if not is_vector_pg(layer):
@@ -134,10 +132,10 @@ def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[str], str]:
         if datasource.service():
             # Not sure what to do for now.
             # Is QGIS using the SSL in the layer configuration ?
-            # We are not sure about which host the layer is using, maybe not lizmap.com
+            # We are not sure about which host the layer is using, maybe not Lizmap Cloud
             continue
 
-        # Users might be hosted on lizmap.com but using an external database
+        # Users might be hosted on Lizmap Cloud but using an external database
         if not datasource.host().endswith(SAAS_DOMAIN):
             continue
 
@@ -170,7 +168,11 @@ def fix_ssl(project: QgsProject, force: bool = True) -> int:
             continue
 
         new_uri = _update_ssl(datasource, QgsDataSourceUri.SslPrefer, force=force)
-        layer.setDataSource(new_uri.uri(True), layer.name(), layer.dataProvider().name())
+        layer.setDataSource(
+            new_uri.uri(True),
+            layer.name(),
+            layer.dataProvider().name(),
+            layer.dataProvider().name().ProviderOptions())
         count += 1
 
     return count

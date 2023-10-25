@@ -120,6 +120,7 @@ from lizmap.project_checker_tools import (
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
     invalid_int8_primary_key,
+    project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
@@ -2775,9 +2776,12 @@ class Lizmap:
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
 
-    def write_project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True):
+    def write_project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True) -> bool:
         """ Write a Lizmap configuration to the file. """
         liz2json = self.project_config_file(lwc_version, with_gui)
+        if not liz2json:
+            return False
+
         json_file_content = json.dumps(
             liz2json,
             sort_keys=False,
@@ -2792,8 +2796,9 @@ class Lizmap:
 
         LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
         self.clean_project()
+        return True
 
-    def project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True) -> Dict:
+    def project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True) -> Optional[Dict]:
         """ Generate the CFG file with all options. """
         valid, _ = self.check_project_validity()
 
@@ -2805,23 +2810,35 @@ class Lizmap:
                 current_version = next_version
 
         warnings = []
+        log_index_panel = self.dlg.mOptionsListWidget.count() - 2
+        settings_panel_name = self.dlg.mOptionsListWidget.item(self.dlg.mOptionsListWidget.count() - 1).text()
+
+        # If the log panel must be shown to the user
+        # Either a warning or an error
+        show_log_panel = False
+        warning_suggest = tr('This issue not blocking the generation of the Lizmap configuration file.')
+        # If the user must fix some issues, the CFG will not be generated
+        # But with QGIS desktop < 3.22, it's not possible to do it automatically
+        error_cfg_saving = False
+        error_cfg_suggest = tr('Or use the automatic fixing button.')
+        error_cfg_message = tr(
+            "This issue must be fixed, the configuration is not going to be saved. You must visit the '{}' panel to "
+            "click the auto-fix button for layers currently loaded in this project."
+        ).format(settings_panel_name)
 
         # Layer ID as short name
         if lwc_version >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
             if to_bool(use_layer_id, False):
-                QMessageBox.warning(
-                    self.dlg,
-                    tr('Use layer IDs as name'),
-                    '{}\n\n{}'.format(
-                        tr(
-                            "Since Lizmap Web Client 3.6, it's not possible anymore to use the option 'Use layer IDs "
-                            "as name' in the project properties dialog, QGIS server tab, then WMS capabilities."
-                        ),
-                        tr("Please uncheck this checkbox and re-save the Lizmap configuration file.")
-                    ),
-                    QMessageBox.Ok
-                )
+                show_log_panel = True
+                self.dlg.log_panel.append(tr('Use layer IDs as name'), Html.H2)
+                self.dlg.log_panel.append(warning_suggest, Html.P)
+                self.dlg.log_panel.append(tr(
+                    "Since Lizmap Web Client 3.6, it's not possible anymore to use the option 'Use layer IDs "
+                    "as name' in the project properties dialog, QGIS server tab, then WMS capabilities."
+                ), Html.P)
+                self.dlg.log_panel.append(tr(
+                    "Please uncheck this checkbox and re-save the Lizmap configuration file."), Html.P)
                 warnings.append(Warnings.UseLayerIdAsName.value)
 
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
@@ -2831,33 +2848,37 @@ class Lizmap:
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
         if check_server and is_lizmap_cloud(server_metadata):
-            error, results, more = valid_lizmap_cloud(self.project, lwc_version)
-            if error:
+            results, more = valid_lizmap_cloud(self.project)
+            if len(results):
+                show_log_panel = True
                 warnings.append(Warnings.SaasLizmapCloud.value)
+                self.dlg.log_panel.append(tr(
+                    'Some configurations are not valid with {} hosting'
+                ).format(SAAS_NAME), Html.H2)
+                self.dlg.log_panel.append(warning_suggest, Html.P)
+                self.dlg.log_panel.append("<br>")
 
-                message = tr('Some configurations are not valid when used with a {} hosting :').format(SAAS_NAME)
+                self.dlg.log_panel.start_table()
+                for i, error in enumerate(results.values()):
+                    self.dlg.log_panel.add_row(i)
+                    self.dlg.log_panel.append(error, Html.Td)
+                    self.dlg.log_panel.end_row()
 
-                message += "<br><ul>"
-                for error in results.values():
-                    message += "<li>{}</li>".format(error)
-                message += "</ul><br>"
+                self.dlg.log_panel.end_table()
+                self.dlg.log_panel.append("<br>")
 
                 if more:
-                    message += more
-                    message += "<br>"
+                    self.dlg.log_panel.append(more)
+                    self.dlg.log_panel.append("<br>")
 
-                message += tr(
-                    "The process is continuing but expect these layers to not be visible in Lizmap Web Client.")
-                ScrollMessageBox(self.dlg, QMessageBox.Warning, SAAS_NAME, message)
+                self.dlg.log_panel.append(tr(
+                    "The process is continuing but expect these layers to not be visible in Lizmap Web Client."
+                ), Html.P)
 
-        log_index_panel = self.dlg.mOptionsListWidget.count() - 2
-        setting_index_panel = self.dlg.mOptionsListWidget.count() - 1
-        show_log = False
         if check_server:
 
             error, message = check_project_ssl_postgis(self.project)
             if error:
-                show_log = True
                 self.dlg.log_panel.append(tr('SSL connections to a PostgreSQL database'), Html.H2)
                 self.dlg.log_panel.append(tr(
                     "Connections to a PostgreSQL database hosted on {} must use a SSL secured connection."
@@ -2865,15 +2886,20 @@ class Lizmap:
                 self.dlg.log_panel.append(tr(
                     "In the plugin, then in the '{}' panel, there is a helper to change the datasource of layers in "
                     "the current project only. It works only with minimum QGIS 3.22."
-                ).format(self.dlg.mOptionsListWidget.item(setting_index_panel).text()), Html.P)
+                ).format(settings_panel_name), Html.P)
                 self.dlg.log_panel.append(tr(
                     "You must still edit your global PostgreSQL connection to allow SSL, it will take effect only "
                     "on newly added layer into a project."
                 ), Html.P)
                 self.dlg.log_panel.append(message, Html.P)
-                self.dlg.display_message_bar(
-                    "SSL", tr('You must fix SSL connections used in this project'), Qgis.Warning)
-                self.dlg.enabled_ssl_button(True)
+                show_log_panel = True
+                if Qgis.QGIS_VERSION_INT >= 32200:
+                    error_cfg_saving = True
+                    self.dlg.log_panel.append(error_cfg_suggest, Html.P)
+                    self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
+                    self.dlg.enabled_ssl_button(True)
+                else:
+                    self.dlg.log_panel.append(warning_suggest, Html.P)
 
             autogenerated_keys = {}
             int8 = []
@@ -2893,9 +2919,10 @@ class Lizmap:
                     int8.append(layer.name())
 
             if autogenerated_keys or int8:
-                show_log = True
+                show_log_panel = True
                 warnings.append(Warnings.InvalidFieldType.value)
                 self.dlg.log_panel.append(tr('Some fields are invalid for QGIS server'), Html.H2)
+                self.dlg.log_panel.append(warning_suggest, Html.P)
 
             for field, layers in autogenerated_keys.items():
                 # field can be "tid", "ctid" etc
@@ -2937,10 +2964,10 @@ class Lizmap:
             if lwc_version >= LwcVersions.Lizmap_3_7:
                 text = duplicated_layer_with_filter(self.project)
                 if text:
-                    text += tr(
-                        "The process is continuing but the project might be slow in Lizmap Web Client.")
+                    self.dlg.log_panel.append(tr('Optimisation about the legend'), Html.H2)
+                    self.dlg.log_panel.append(warning_suggest, Html.P)
+                    self.dlg.log_panel.append(text, style=Html.P)
                     warnings.append(Warnings.DuplicatedLayersWithFilters.value)
-                    ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Optimisation'), text)
 
         results = simplify_provider_side(self.project)
         if len(results):
@@ -2953,8 +2980,13 @@ class Lizmap:
                 self.dlg.log_panel.append(layer, Html.Td)
                 self.dlg.log_panel.end_row()
             self.dlg.log_panel.end_table()
-            self.dlg.log_panel.append(tr('Visit the layer properties, "Rendering" tab to enable it.'), Html.P)
-            show_log = True
+            self.dlg.log_panel.append(tr(
+                'Visit the layer properties, then in the "Rendering" tab to enable it.'), Html.P)
+            self.dlg.log_panel.append(error_cfg_suggest, Html.P)
+            self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
+            show_log_panel = True
+            error_cfg_saving = True
+            self.dlg.enabled_simplify_geom(True)
 
         results = use_estimated_metadata(self.project)
         if len(results):
@@ -2971,12 +3003,41 @@ class Lizmap:
                 'Edit your PostgreSQL connection to enable this option, then change the datasource by right clicking '
                 'on each layer above, then click "Change datasource" in the menu. Finally reselect your layer in the '
                 'new dialog.'), Html.P)
-            show_log = True
+            if Qgis.QGIS_VERSION_INT >= 32200:
+                self.dlg.log_panel.append(error_cfg_suggest, Html.P)
+                self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
+                show_log_panel = True
+                error_cfg_saving = True
+                self.dlg.enabled_estimated_md_button(True)
+            else:
+                self.dlg.log_panel.append(warning_suggest, Html.P)
 
-        if with_gui and show_log:
+        if not project_trust_layer_metadata(self.project):
+            self.dlg.log_panel.append(tr('Trust project metadata'), Html.H2)
+            self.dlg.log_panel.append(tr(
+                'The project does not have the "Trust project metadata" enabled at the project level'), Html.P)
+            self.dlg.log_panel.append(tr(
+                'In the project properties → Data sources → at the bottom, there is a checkbox to trust the project '
+                'when the layer has no metadata.'), Html.P)
+            self.dlg.log_panel.append(error_cfg_suggest, Html.P)
+            self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
+            show_log_panel = True
+            error_cfg_saving = True
+            self.dlg.enabled_trust_project(True)
+
+        if with_gui and show_log_panel:
             self.dlg.mOptionsListWidget.setCurrentRow(log_index_panel)
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
+
+        if with_gui and error_cfg_saving:
+            self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
+            self.dlg.log_panel.append(tr(
+                'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the'
+                'configuration file is stopping.'), Html.Strong)
+            self.dlg.display_message_bar(
+                "Error", tr('You must fix some issues about the project'), Qgis.Critical)
+            return None
 
         metadata = {
             'qgis_desktop_version': qgis_version(),
@@ -3496,7 +3557,7 @@ class Lizmap:
             )
             return False
 
-        stop_process = tr("The process is stopping.")
+        stop_process = tr("The CFG is not saved due to errors that must be fixed.")
 
         if not self.server_manager.check_admin_login_provided() and not self.is_dev_version:
             self.dlg.log_panel.append(tr('Missing login on a server'), style=Html.H2)
@@ -3521,7 +3582,7 @@ class Lizmap:
         for name, count in duplicated_in_cfg.items():
             if count >= 2:
                 display = True
-                message += '"{}" → count {}\n'.format(name, count)
+                message += '"{}" → "'.format(name) + tr("count {} layers").format(count) + '\n'
         message += '\n\n'
         message += stop_process
         if display:
@@ -3611,15 +3672,16 @@ class Lizmap:
                 self.project.writeEntry('WMSCrsList', '', crs_list[0])
 
         # write data in the lizmap json config file
-        self.write_project_config_file(lwc_version, with_gui)
+        if not self.write_project_config_file(lwc_version, with_gui):
+            return False
 
+        msg = tr('Lizmap configuration file has been updated')
         # self.dlg.log_panel.append(tr('All the map parameters are correctly set'), abort=False, time=True)
         self.dlg.log_panel.append("<p>")
-        self.dlg.log_panel.append(tr('Lizmap configuration file has been updated'), style=Html.Strong, abort=False)
+        self.dlg.log_panel.append(msg, style=Html.Strong, abort=False)
         self.dlg.log_panel.append("</p>")
 
         self.get_min_max_scales()
-        msg = tr('Lizmap configuration file has been updated')
 
         # Ask to save the project
         auto_save = self.dlg.checkbox_save_project.isChecked()

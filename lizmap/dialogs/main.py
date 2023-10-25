@@ -22,6 +22,11 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor, iface
 
 from lizmap.log_panel import LogPanel
+from lizmap.project_checker_tools import (
+    project_trust_layer_metadata,
+    simplify_provider_side,
+    use_estimated_metadata,
+)
 from lizmap.saas import fix_ssl
 
 try:
@@ -73,6 +78,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
         self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
+        # Make them hidden until we have the changelog URL
+        self.lwc_version_latest_changelog.setVisible(False)
+        self.lwc_version_oldest_changelog.setVisible(False)
+
         # IGN and google
         self.inIgnKey.textChanged.connect(self.check_ign_french_free_key)
         self.inIgnKey.textChanged.connect(self.check_api_key_address)
@@ -94,8 +103,27 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.check_project_thumbnail()
         self.setup_icons()
 
+        # Fixer tools
+        self.fixer_project_label.setText(tr(
+            'These tools can fix your current loaded layers in <b>this project only</b>. '
+            'You still need to update your connection or default settings in your QGIS global settings, to be be '
+            'applied automatically for new project or newly added layer.'))
+        self.enabled_ssl_button(False)
+        self.enabled_estimated_md_button(False)
+        self.enabled_trust_project(False)
+        self.enabled_simplify_geom(False)
+
         self.button_convert_ssl.clicked.connect(self.fix_project_ssl)
         self.button_convert_ssl.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
+
+        self.button_use_estimated_md.clicked.connect(self.fix_project_estimated_md)
+        self.button_use_estimated_md.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
+
+        self.button_trust_project.clicked.connect(self.fix_project_trust)
+        # self.button_trust_project.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
+
+        self.button_simplify_geom.clicked.connect(self.fix_simplify_geom_provider)
+        self.button_simplify_geom.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
 
         self.buttonBox.button(QDialogButtonBox.Help).setToolTip(tr(
             'Open the help in the web-browser'
@@ -200,6 +228,23 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return
 
         self.button_convert_ssl.setEnabled(status)
+
+    def enabled_estimated_md_button(self, status: bool):
+        """ Enable or not the button. """
+        if Qgis.QGIS_VERSION_INT <= 32200:
+            self.button_use_estimated_md.setToolTip(tr("QGIS 3.22 minimum is required"))
+            self.button_use_estimated_md.setEnabled(False)
+            return
+
+        self.button_use_estimated_md.setEnabled(status)
+
+    def enabled_trust_project(self, status: bool):
+        """ Enable or not the button. """
+        self.button_trust_project.setEnabled(status)
+
+    def enabled_simplify_geom(self, status: bool):
+        """ Enable or not the button. """
+        self.button_simplify_geom.setEnabled(status)
 
     def follow_map_theme_toggled(self):
         """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
@@ -676,7 +721,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
-        self.enabled_ssl_button(False)
         for i in range(1, self.mOptionsListWidget.count()):
             item = self.mOptionsListWidget.item(i)
             if allow_navigation:
@@ -701,6 +745,33 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             msg = tr('{} layer updated').format(count)
         self.display_message_bar("SSL", msg, Qgis.Success)
+
+    def fix_project_estimated_md(self):
+        """ Fix the current project about estimated metadata. """
+        with OverrideCursor(Qt.WaitCursor):
+            count = len(use_estimated_metadata(self.project, fix=True))
+
+        if count >= 2:
+            msg = tr('{} layers updated').format(count)
+        else:
+            msg = tr('{} layer updated').format(count)
+        self.display_message_bar(tr("Estimated metadata"), msg, Qgis.Success)
+
+    def fix_project_trust(self):
+        """ Fix the current project trust metadata. """
+        project_trust_layer_metadata(self.project, True)
+        self.display_message_bar(tr("Trust metadata"), tr('Trust metadata is enabled'), Qgis.Success)
+
+    def fix_simplify_geom_provider(self):
+        """ Fix the current layers simplify geom. """
+        with OverrideCursor(Qt.WaitCursor):
+            count = len(simplify_provider_side(self.project, fix=True))
+
+        if count >= 2:
+            msg = tr('{} layers updated').format(count)
+        else:
+            msg = tr('{} layer updated').format(count)
+        self.display_message_bar(tr("Simplify geometry on the provider side"), msg, Qgis.Success)
 
     def activateWindow(self):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """
