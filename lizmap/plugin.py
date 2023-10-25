@@ -2973,7 +2973,7 @@ class Lizmap:
 
         results = simplify_provider_side(self.project)
         if len(results):
-            self.dlg.log_panel.append(tr('Simplify on the provider side'), Html.H2)
+            self.dlg.log_panel.append(tr('Simplify geometry on the provider side'), Html.H2)
             self.dlg.log_panel.append(tr(
                 'These PostgreSQL vector layers can have the simplification on the provider side') + ':', Html.P)
             self.dlg.log_panel.start_table()

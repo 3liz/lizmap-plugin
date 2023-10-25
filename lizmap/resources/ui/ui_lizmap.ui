@@ -4654,7 +4654,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <item row="3" column="0">
                  <widget class="QPushButton" name="button_simplify_geom">
                   <property name="text">
-                   <string>Simplify on the provider side</string>
+                   <string>Simplify geometry on the provider side</string>
                   </property>
                  </widget>
                 </item>
