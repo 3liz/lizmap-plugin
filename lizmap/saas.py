@@ -15,7 +15,7 @@ from qgis.core import (
     QgsRasterLayer,
 )
 
-from lizmap.project_checker_tools import is_vector_pg
+from lizmap.project_checker_tools import is_vector_pg, update_uri
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 
 edit_connection_title = tr("You must edit the database connection.")
@@ -168,11 +168,7 @@ def fix_ssl(project: QgsProject, force: bool = True) -> int:
             continue
 
         new_uri = _update_ssl(datasource, QgsDataSourceUri.SslPrefer, force=force)
-        layer.setDataSource(
-            new_uri.uri(True),
-            layer.name(),
-            layer.dataProvider().name(),
-            layer.dataProvider().name().ProviderOptions())
+        update_uri(layer, new_uri)
         count += 1
 
     return count

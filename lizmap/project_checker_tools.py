@@ -196,12 +196,7 @@ def use_estimated_metadata(project: QgsProject, fix: bool = False) -> List[str]:
 
             if fix:
                 uri.setUseEstimatedMetadata(True)
-                layer.setDataSource(
-                    uri.uri(True),
-                    layer.name(),
-                    layer.dataProvider().name(),
-                    layer.dataProvider().ProviderOptions()
-                )
+                update_uri(layer, uri)
 
     return results
 
@@ -213,3 +208,13 @@ def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool
 
     project.setTrustLayerMetadata(True)
     return True
+
+
+def update_uri(layer: QgsMapLayer, uri: QgsDataSourceUri):
+    """ Set a new datasource URI on a layer. """
+    layer.setDataSource(
+        uri.uri(True),
+        layer.name(),
+        layer.dataProvider().name(),
+        layer.dataProvider().ProviderOptions()
+    )
