@@ -48,7 +48,7 @@ class LogPanel:
         if time:
             now = QDateTime.currentDateTime()
             now_str = now.toString(QLocale().timeFormat(QLocale.ShortFormat))
-            self.widget.append(now_str)
+            msg = now_str + ' : ' + msg
 
         if level == Qgis.Warning:
             # byte_array = QByteArray()

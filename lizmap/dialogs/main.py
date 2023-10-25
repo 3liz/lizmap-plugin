@@ -108,10 +108,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             'These tools can fix your current loaded layers in <b>this project only</b>. '
             'You still need to update your connection or default settings in your QGIS global settings, to be be '
             'applied automatically for new project or newly added layer.'))
-        self.enabled_ssl_button(False)
-        self.enabled_estimated_md_button(False)
-        self.enabled_trust_project(False)
-        self.enabled_simplify_geom(False)
+        self.enable_all_fixer_buttons(False)
 
         self.button_convert_ssl.clicked.connect(self.fix_project_ssl)
         self.button_convert_ssl.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
@@ -245,6 +242,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def enabled_simplify_geom(self, status: bool):
         """ Enable or not the button. """
         self.button_simplify_geom.setEnabled(status)
+
+    def enable_all_fixer_buttons(self, status: bool):
+        """ Enable or disable all buttons about fixing the project. """
+        self.enabled_ssl_button(status)
+        self.enabled_estimated_md_button(status)
+        self.enabled_trust_project(status)
+        self.enabled_simplify_geom(status)
 
     def follow_map_theme_toggled(self):
         """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
@@ -737,6 +741,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def fix_project_ssl(self):
         """ Fix the current project about SSL. """
+        self.enabled_ssl_button(False)
         with OverrideCursor(Qt.WaitCursor):
             count = fix_ssl(self.project, force=False)
 
@@ -748,6 +753,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def fix_project_estimated_md(self):
         """ Fix the current project about estimated metadata. """
+        self.enabled_estimated_md_button(False)
         with OverrideCursor(Qt.WaitCursor):
             count = len(use_estimated_metadata(self.project, fix=True))
 
@@ -759,11 +765,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def fix_project_trust(self):
         """ Fix the current project trust metadata. """
+        self.enabled_trust_project(False)
         project_trust_layer_metadata(self.project, True)
         self.display_message_bar(tr("Trust project"), tr('Trust project is enabled'), Qgis.Success)
 
     def fix_simplify_geom_provider(self):
         """ Fix the current layers simplify geom. """
+        self.enabled_simplify_geom(False)
         with OverrideCursor(Qt.WaitCursor):
             count = len(simplify_provider_side(self.project, fix=True))
 

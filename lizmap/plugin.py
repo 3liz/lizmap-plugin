@@ -2804,6 +2804,9 @@ class Lizmap:
         """ Generate the CFG file with all options. """
         valid, _ = self.check_project_validity()
 
+        if with_gui:
+            self.dlg.enable_all_fixer_buttons(False)
+
         LOGGER.info("Writing CFG file for LWC version {}".format(lwc_version.value))
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
         if self.is_dev_version:
@@ -3036,7 +3039,7 @@ class Lizmap:
             self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
             self.dlg.log_panel.append(tr(
                 'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the '
-                'configuration file is stopping.'), Html.Strong)
+                'configuration file is stopping.'), Html.Strong, time=True)
             self.dlg.display_message_bar(
                 "Error", tr('You must fix some issues about this project'), Qgis.Critical)
             return None
@@ -3680,7 +3683,7 @@ class Lizmap:
         msg = tr('Lizmap configuration file has been updated')
         # self.dlg.log_panel.append(tr('All the map parameters are correctly set'), abort=False, time=True)
         self.dlg.log_panel.append("<p>")
-        self.dlg.log_panel.append(msg, style=Html.Strong, abort=False)
+        self.dlg.log_panel.append(msg, style=Html.Strong, abort=False, time=True)
         self.dlg.log_panel.append("</p>")
 
         self.get_min_max_scales()
