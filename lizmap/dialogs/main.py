@@ -760,7 +760,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def fix_project_trust(self):
         """ Fix the current project trust metadata. """
         project_trust_layer_metadata(self.project, True)
-        self.display_message_bar(tr("Trust metadata"), tr('Trust metadata is enabled'), Qgis.Success)
+        self.display_message_bar(tr("Trust project"), tr('Trust project is enabled'), Qgis.Success)
 
     def fix_simplify_geom_provider(self):
         """ Fix the current layers simplify geom. """

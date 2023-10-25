@@ -3035,10 +3035,10 @@ class Lizmap:
         if with_gui and error_cfg_saving and not ignore_error:
             self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
             self.dlg.log_panel.append(tr(
-                'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the'
+                'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the '
                 'configuration file is stopping.'), Html.Strong)
             self.dlg.display_message_bar(
-                "Error", tr('You must fix some issues about the project'), Qgis.Critical)
+                "Error", tr('You must fix some issues about this project'), Qgis.Critical)
             return None
 
         metadata = {
