@@ -2798,7 +2798,9 @@ class Lizmap:
         self.clean_project()
         return True
 
-    def project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True) -> Optional[Dict]:
+    def project_config_file(
+            self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
+    ) -> Optional[Dict]:
         """ Generate the CFG file with all options. """
         valid, _ = self.check_project_validity()
 
@@ -3030,7 +3032,7 @@ class Lizmap:
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
 
-        if with_gui and error_cfg_saving:
+        if with_gui and error_cfg_saving and not ignore_error:
             self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
             self.dlg.log_panel.append(tr(
                 'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the'

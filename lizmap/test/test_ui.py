@@ -77,7 +77,7 @@ class TestUiLizmapDialog(unittest.TestCase):
             lizmap.myDic.get('legend_hidden_startup_layer_id').get('legend_image_option'))
 
         # For LWC 3.6
-        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False)
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False, ignore_error=True)
         self.assertEqual(output['layers']['legend_displayed_startup']['legend_image_option'], 'expand_at_startup')
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('noLegendImage'))
 
@@ -158,7 +158,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertTrue(lizmap.dlg.list_group_visibility.isEnabled())
 
         # Check new values in the output config
-        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         # Layers
         self.assertListEqual(output['layers']['lines']['group_visibility'], [acl_layer])
         self.assertEqual(output['layers']['lines']['abstract'], html_abstract)
@@ -200,7 +200,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(scales, lizmap.dlg.inMapScales.text())
 
         # Check new values in the output config
-        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
 
         # Check scales in the CFG
         self.assertEqual(1000, output['options']['minScale'])
@@ -210,24 +210,24 @@ class TestUiLizmapDialog(unittest.TestCase):
         # Check an empty list and a populated list then
         self.assertIsNone(output['options'].get('acl'))
         lizmap.dlg.inAcl.setText('cadastre,urbanism')
-        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         self.assertListEqual(['cadastre', 'urbanism'], output['options'].get('acl'))
 
     def test_general_properties_true_values(self):
         """ Test some UI settings about boolean values. """
         lizmap = self._setup_empty_project()
 
-        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         self.assertIsNone(output['options'].get('atlasAutoPlay'))
 
         lizmap.dlg.atlasAutoPlay.setChecked(True)
 
-        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         self.assertTrue(output['options'].get('atlasAutoPlay'))
 
         lizmap.dlg.atlasAutoPlay.setChecked(False)
 
-        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         self.assertIsNone(output['options'].get('atlasAutoPlay'))
 
         # Test some strings as well as default value
