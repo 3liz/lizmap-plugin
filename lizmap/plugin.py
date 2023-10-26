@@ -821,6 +821,22 @@ class Lizmap:
         for item in self.lizmap_cloud:
             item.setVisible(lizmap_cloud)
 
+        self.dlg.helper_list_group.setReadOnly(True)
+        if current_metadata:
+            acl = current_metadata.get('acl')
+            if not acl:
+                # Running a version < 3.6.1
+                tooltip = tr("Your server does not support this feature, please upgrade.")
+                self.dlg.helper_list_group.setText("")
+            else:
+                self.dlg.helper_list_group.setText(','.join(list(acl['groups'].keys())))
+                tooltip = (
+                    tr("It cannot be edited. Existing groups on the server : ") + self.dlg.server_combo.currentText()
+                )
+
+            self.dlg.helper_list_group.setToolTip(tooltip)
+            self.dlg.label_helper_list_group.setToolTip(tooltip)
+
         # For deprecated features in LWC 3.7 about base layers
         self.check_visibility_crs_3857()
 

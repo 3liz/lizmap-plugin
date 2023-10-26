@@ -24,7 +24,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Existing group found on the server</string>
+      <string>Existing groups found on the server</string>
      </property>
     </widget>
    </item>

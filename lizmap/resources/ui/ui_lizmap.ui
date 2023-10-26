@@ -3735,166 +3735,247 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
-                 <property name="title">
-                  <string>Attribute filtering</string>
+                <widget class="QTabWidget" name="tab_filtering">
+                 <property name="currentIndex">
+                  <number>0</number>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_17">
-                  <item>
-                   <widget class="QLabel" name="label_22">
-                    <property name="text">
-                     <string>You need to choose an attribute where Lizmap groups are stored for each feature to display or not. It's possible to filter for a specific login instead group by using the checkbox. </string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QTableWidget" name="table_login_filter"/>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
-                    <item>
-                     <widget class="QPushButton" name="add_filter_login_layer_button">
-                      <property name="text">
-                       <string notr="true">+</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="remove_filter_login_layer_button">
-                      <property name="text">
-                       <string notr="true">-</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="edit_filter_login_layer_button">
-                      <property name="text">
-                       <string notr="true">edit</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_3">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_8">
-                 <property name="title">
-                  <string>Spatial filtering</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_24">
-                  <item>
-                   <widget class="QLabel" name="label_filter_polygon">
-                    <property name="text">
-                     <string>First you need to choose a layer used for filtering, by specifying the field where Lizmap groups (or users) are stored. Then, you can define one or many layers to be filtered. For each of them, you can choose if you want a strict &quot;contains&quot; spatial relationship or a simple &quot;intersection&quot; with the filtering layer.</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QGroupBox" name="groupBox_6">
-                    <property name="title">
-                     <string>Options</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_49">
+                 <widget class="QWidget" name="attribute_filtering">
+                  <attribute name="title">
+                   <string>Attribute filtering</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_17">
+                   <item>
+                    <widget class="QLabel" name="label_22">
+                     <property name="text">
+                      <string>You need to choose an attribute where Lizmap groups are stored for each feature to display or not. It's possible to filter for a specific login instead group by using the checkbox. </string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QTableWidget" name="table_login_filter"/>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
                      <item>
-                      <layout class="QFormLayout" name="formLayout">
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="label_layer_filter_polygon">
-                         <property name="text">
-                          <string>Layer</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QgsMapLayerComboBox" name="layer_filter_polygon"/>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_field_filter_polygon">
-                         <property name="text">
-                          <string>Field</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QgsFieldComboBox" name="field_filter_polygon"/>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label_filter_polygon_by_user">
-                         <property name="text">
-                          <string>Filter by</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QComboBox" name="filter_polygon_by_user"/>
-                       </item>
-                      </layout>
+                      <widget class="QPushButton" name="add_filter_login_layer_button">
+                       <property name="text">
+                        <string notr="true">+</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="remove_filter_login_layer_button">
+                       <property name="text">
+                        <string notr="true">-</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="edit_filter_login_layer_button">
+                       <property name="text">
+                        <string notr="true">edit</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="preview_attribute_filtering">
+                       <property name="text">
+                        <string notr="true">preview</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_3">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
                      </item>
                     </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QTableWidget" name="table_filter_polygon"/>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_41">
-                    <item>
-                     <widget class="QPushButton" name="add_filter_polygon_button">
-                      <property name="text">
-                       <string notr="true">+</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="remove_filter_polygon_button">
-                      <property name="text">
-                       <string notr="true">-</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="edit_filter_polygon_button">
-                      <property name="text">
-                       <string notr="true">edit</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_40">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="spatial_filtering">
+                  <attribute name="title">
+                   <string>Spatial filtering</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_24">
+                   <item>
+                    <widget class="QLabel" name="label_filter_polygon">
+                     <property name="text">
+                      <string>First you need to choose a layer used for filtering, by specifying the field where Lizmap groups (or users) are stored. Then, you can define one or many layers to be filtered. For each of them, you can choose if you want a strict &quot;contains&quot; spatial relationship or a simple &quot;intersection&quot; with the filtering layer.</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_6">
+                     <property name="title">
+                      <string>Options</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_49">
+                      <item>
+                       <layout class="QFormLayout" name="formLayout">
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_layer_filter_polygon">
+                          <property name="text">
+                           <string>Layer</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="1">
+                         <widget class="QgsMapLayerComboBox" name="layer_filter_polygon"/>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_field_filter_polygon">
+                          <property name="text">
+                           <string>Field</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QgsFieldComboBox" name="field_filter_polygon"/>
+                        </item>
+                        <item row="2" column="0">
+                         <widget class="QLabel" name="label_filter_polygon_by_user">
+                          <property name="text">
+                           <string>Filter by</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="1">
+                         <widget class="QComboBox" name="filter_polygon_by_user"/>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QTableWidget" name="table_filter_polygon"/>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_41">
+                     <item>
+                      <widget class="QPushButton" name="add_filter_polygon_button">
+                       <property name="text">
+                        <string notr="true">+</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="remove_filter_polygon_button">
+                       <property name="text">
+                        <string notr="true">-</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="edit_filter_polygon_button">
+                       <property name="text">
+                        <string notr="true">edit</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_40">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="helper">
+                  <attribute name="title">
+                   <string>Helper</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_68">
+                   <item>
+                    <widget class="QLabel" name="label_83">
+                     <property name="text">
+                      <string>This helper can help to detect features having at least one group not matching one on the server. The field must contain group IDS. NULL or empty string are not checked.</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QFormLayout" name="formLayout_4">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_helper_layer_group">
+                       <property name="text">
+                        <string>Layer</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_helper_field_group">
+                       <property name="text">
+                        <string>Field</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_helper_list_group">
+                       <property name="text">
+                        <string>Groups</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="helper_list_group"/>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QgsMapLayerComboBox" name="helper_layer_group"/>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QgsFieldComboBox" name="helper_field_group"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="button_helper_group">
+                     <property name="text">
+                      <string>Select</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_5">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>558</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
                 </widget>
                </item>
               </layout>
