@@ -14,7 +14,14 @@ from os.path import abspath, join
 from pathlib import Path
 from typing import List, Tuple, Union
 
-from qgis.core import Qgis, QgsApplication, QgsProviderRegistry, QgsVectorLayer
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsMapLayer,
+    QgsProviderRegistry,
+    QgsVectorLayer,
+)
 from qgis.PyQt.QtCore import QDateTime, QDir, Qt
 
 from lizmap.definitions.definitions import LayerProperties
@@ -239,6 +246,39 @@ def merge_strings(string_1: str, string_2: str) -> str:
             k = i
 
     return string_1 + (string_2 if k is None else string_2[k:])
+
+
+def relative_path(max_parent: int) -> str:
+    """ Return the dot notation for a maximum parent folder. """
+    parent = ['..'] * max_parent
+    return '/'.join(parent)
+
+
+def update_uri(layer: QgsMapLayer, uri: QgsDataSourceUri):
+    """ Set a new datasource URI on a layer. """
+    layer.setDataSource(
+        uri.uri(True),
+        layer.name(),
+        layer.dataProvider().name(),
+        layer.dataProvider().ProviderOptions()
+    )
+
+
+def is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
+    """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
+    if layer.type() != QgsMapLayer.VectorLayer:
+        return False
+
+    if layer.dataProvider().name() != 'postgres':
+        return False
+
+    if not geometry_check:
+        return True
+
+    if not layer.isSpatial():
+        return False
+
+    return True
 
 
 def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List[str]]:

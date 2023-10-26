@@ -94,6 +94,7 @@ from lizmap.definitions.online_help import (
     online_cloud_help,
     online_lwc_help,
 )
+from lizmap.definitions.qgis_settings import Settings
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
@@ -102,7 +103,6 @@ from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.html_maptip import HtmlMapTipDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
 from lizmap.dialogs.main import LizmapDialog
-from lizmap.dialogs.scroll_message_box import ScrollMessageBox
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
@@ -119,19 +119,26 @@ from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.project_checker_tools import (
+    ALLOW_PARENT_FOLDER,
+    FORCE_PG_USER_PASS,
+    PREVENT_AUTH_DB,
+    PREVENT_ECW,
+    PREVENT_NETWORK_DRIVE,
+    PREVENT_SERVICE,
     auto_generated_primary_key_field,
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
     invalid_int8_primary_key,
+    project_safeguards_checks,
     project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
 from lizmap.saas import (
+    SAAS_MAX_PARENT_FOLDER,
     SAAS_NAME,
     check_project_ssl_postgis,
     is_lizmap_cloud,
-    valid_lizmap_cloud,
 )
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
@@ -170,6 +177,7 @@ from lizmap.tools import (
     lizmap_user_folder,
     next_git_tag,
     qgis_version,
+    relative_path,
     to_bool,
     unaccent,
 )
@@ -201,6 +209,39 @@ class Lizmap:
         QgsSettings().remove('lizmap/instance_target_repository')
         # 04/01/2022
         QgsSettings().remove('lizmap/instance_target_url_authid')
+
+        # Set some default settings when loading the plugin
+        beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), defaultValue=None)
+        if beginner_mode is None:
+            QgsSettings().setValue(Settings.key(Settings.BeginnerMode), True)
+
+        prevent_ecw = QgsSettings().value(Settings.key(Settings.PreventEcw), defaultValue=None)
+        if prevent_ecw is None:
+            QgsSettings().setValue(Settings.key(Settings.PreventEcw), True)
+
+        prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthId), defaultValue=None)
+        if prevent_auth_id is None:
+            QgsSettings().setValue(Settings.key(Settings.PreventPgAuthId), True)
+
+        prevent_service = QgsSettings().value(Settings.key(Settings.PreventPgService), defaultValue=None)
+        if prevent_service is None:
+            QgsSettings().setValue(Settings.key(Settings.PreventPgService), True)
+
+        force_pg_user_pass = QgsSettings().value(Settings.key(Settings.ForcePgUserPass), defaultValue=None)
+        if force_pg_user_pass is None:
+            QgsSettings().setValue(Settings.key(Settings.ForcePgUserPass), True)
+
+        prevent_network_drive = QgsSettings().value(Settings.key(Settings.PreventNetworkDrive), defaultValue=None)
+        if prevent_network_drive is None:
+            QgsSettings().setValue(Settings.key(Settings.PreventNetworkDrive), True)
+
+        allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), defaultValue=None)
+        if allow_parent_folder is None:
+            QgsSettings().setValue(Settings.key(Settings.AllowParentFolder), False)
+
+        parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), defaultValue=None)
+        if parent_folder is None:
+            QgsSettings().setValue(Settings.key(Settings.NumberParentFolder), 2)
 
         # Connect the current project filepath
         self.current_path = None
@@ -375,6 +416,7 @@ class Lizmap:
 
         self.lizmap_cloud = [
             self.dlg.label_lizmap_search_grant,
+            self.dlg.label_safe_lizmap_cloud,
         ]
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
@@ -2935,15 +2977,83 @@ class Lizmap:
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
-        if check_server and is_lizmap_cloud(server_metadata):
-            results, more = valid_lizmap_cloud(self.project)
+        if check_server:
+
+            # Global checks config
+            prevent_ecw = QgsSettings().value(Settings.key(Settings.PreventEcw), True, bool)
+            prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthId), True, bool)
+            prevent_service = QgsSettings().value(Settings.key(Settings.PreventPgService), True, bool)
+            force_pg_user_pass = QgsSettings().value(Settings.key(Settings.ForcePgUserPass), True, bool)
+            prevent_network_drive = QgsSettings().value(Settings.key(Settings.PreventNetworkDrive), True, bool)
+            allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), False, bool)
+            count_parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), 2, int)
+
+            beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
+
+            lizmap_cloud = is_lizmap_cloud(server_metadata)
+            if lizmap_cloud:
+                # But Lizmap Cloud override some user globals checks
+                prevent_ecw = True
+                prevent_auth_id = True
+                force_pg_user_pass = True
+                prevent_network_drive = True
+                if count_parent_folder > SAAS_MAX_PARENT_FOLDER:
+                    count_parent_folder = SAAS_MAX_PARENT_FOLDER
+                # prevent_service = False  We encourage service
+                # allow_parent_folder = False Of course we can
+
+            summary = []
+            if prevent_ecw:
+                summary.append(PREVENT_ECW)
+            if prevent_auth_id:
+                summary.append(PREVENT_AUTH_DB)
+            if prevent_service:
+                summary.append(PREVENT_SERVICE)
+            if force_pg_user_pass:
+                summary.append(FORCE_PG_USER_PASS)
+            if prevent_network_drive:
+                summary.append(PREVENT_NETWORK_DRIVE)
+            if allow_parent_folder:
+                summary.append(ALLOW_PARENT_FOLDER + " : " + tr("{} folder(s)").format(count_parent_folder))
+
+            parent_folder = relative_path(count_parent_folder)
+
+            results, more = project_safeguards_checks(
+                self.project,
+                prevent_ecw=prevent_ecw,
+                prevent_auth_id=prevent_auth_id,
+                prevent_service=prevent_service,
+                force_pg_user_pass=force_pg_user_pass,
+                prevent_network_drive=prevent_network_drive,
+                allow_parent_folder=allow_parent_folder,
+                parent_folder=parent_folder,
+                lizmap_cloud=lizmap_cloud,
+            )
             if len(results):
                 show_log_panel = True
                 warnings.append(Warnings.SaasLizmapCloud.value)
-                self.dlg.log_panel.append(tr(
-                    'Some configurations are not valid with {} hosting'
-                ).format(SAAS_NAME), Html.H2)
-                self.dlg.log_panel.append(warning_suggest, Html.P)
+                self.dlg.log_panel.append(tr('Some safeguards are not compatible'), Html.H2)
+                # Let's show a summary
+                if lizmap_cloud:
+                    self.dlg.log_panel.append(tr("According to global settings, overriden then by {} :").format(SAAS_NAME), Html.P)
+                else:
+                    self.dlg.log_panel.append(tr("According to global settings"), Html.P)
+
+                self.dlg.log_panel.start_table()
+                for i, rule in enumerate(summary):
+                    self.dlg.log_panel.add_row(i)
+                    self.dlg.log_panel.append(rule, Html.Td)
+                    self.dlg.log_panel.end_row()
+
+                self.dlg.log_panel.append("<br>")
+
+                if beginner_mode:
+                    self.dlg.log_panel.append(tr(
+                        "These issues below are blocking saving the Lizmap configuration file in the 'Beginner' mode."
+                    ), Html.P, level=Qgis.Critical)
+                else:
+                    self.dlg.log_panel.append(warning_suggest, Html.P)
+
                 self.dlg.log_panel.append("<br>")
 
                 self.dlg.log_panel.start_table()
@@ -2959,9 +3069,18 @@ class Lizmap:
                     self.dlg.log_panel.append(more)
                     self.dlg.log_panel.append("<br>")
 
-                self.dlg.log_panel.append(tr(
-                    "The process is continuing but expect these layers to not be visible in Lizmap Web Client."
-                ), Html.P)
+                if beginner_mode:
+                    error_cfg_saving = True
+                    self.dlg.log_panel.append(tr(
+                        "The process is stopping, the CFG file is not going to be generated because some safeguards "
+                        "are not compatible and you are using the 'Beginner' mode. Either fix these issues or switch "
+                        "to a 'Normal' mode if you know what you are doing."
+                    ), Html.P, level=Qgis.Critical)
+                else:
+                    self.dlg.log_panel.append(tr(
+                        "The process is continuing but these layers might be invisible if the server is not well "
+                        "configured or the project correctly upload to the server."
+                    ), Html.P)
 
         if check_server:
 
@@ -3670,22 +3789,25 @@ class Lizmap:
             return False
 
         duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
-        message = tr('Some layer(s) or group(s) have a duplicated name in the legend.')
-        message += '\n\n'
-        message += tr(
-            "It's not possible to store all the Lizmap configuration for these layer(s) or group(s), you should "
-            "change them to make them unique and reconfigure their settings in the 'Layers' tab of the plugin.")
-        message += '\n\n'
-        display = False
+
+        # message = tr('Some layer(s) or group(s) have a duplicated name in the legend.')
+        # message += '\n\n'
+        # message += tr(
+        #     "It's not possible to store all the Lizmap configuration for these layer(s) or group(s), you should "
+        #     "change them to make them unique and reconfigure their settings in the 'Layers' tab of the plugin.")
+        # message += '\n\n'
+        # display = False
         for name, count in duplicated_in_cfg.items():
             if count >= 2:
-                display = True
-                message += '"{}" → "'.format(name) + tr("count {} layers").format(count) + '\n'
-        message += '\n\n'
-        message += stop_process
-        if display:
-            ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Configuration error'), message)
-            return False
+                from lizmap.models.check_project import Checks, Error
+                identifier = '"{}" → "'.format(name) + tr("count {} layers").format(count) + '\n'
+                self.dlg.check_results.add_error(Error(identifier, Checks.DuplicatedLayerNameOrGroup))
+                # display = True
+        # message += '\n\n'
+        # message += stop_process
+        # if display:
+        #     ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Configuration error'), message)
+        #     return False
 
         if not self.is_dev_version:
             if not self.server_manager.check_lwc_version(lwc_version.value):

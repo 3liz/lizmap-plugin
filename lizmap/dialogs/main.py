@@ -28,13 +28,22 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
+from lizmap.definitions.qgis_settings import Settings
 from lizmap.log_panel import LogPanel
+from lizmap.models.check_project import TableCheck
 from lizmap.project_checker_tools import (
+    ALLOW_PARENT_FOLDER,
+    FORCE_LOCAL_FOLDER,
+    FORCE_PG_USER_PASS,
+    PREVENT_AUTH_DB,
+    PREVENT_ECW,
+    PREVENT_NETWORK_DRIVE,
+    PREVENT_SERVICE,
     project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.saas import fix_ssl
+from lizmap.saas import SAAS_MAX_PARENT_FOLDER, SAAS_NAME, fix_ssl
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -51,7 +60,12 @@ from lizmap.definitions.online_help import online_lwc_help
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
-from lizmap.tools import format_qgis_version, human_size, qgis_version
+from lizmap.tools import (
+    format_qgis_version,
+    human_size,
+    qgis_version,
+    relative_path,
+)
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
 LOGGER = logging.getLogger("Lizmap")
@@ -216,6 +230,109 @@ class LizmapDialog(QDialog, FORM_CLASS):
             + self.action_file().name + "</a>"
         )
         self.label_file_action.setOpenExternalLinks(True)
+
+        self.radio_beginner.setToolTip(
+            'If one safeguard is not OK, the Lizmap configuration file is not going to be generated.'
+        )
+        self.radio_normal.setToolTip(
+            'If one safeguard is not OK, only a warning will be displayed, not blocking the saving of the Lizmap '
+            'configuration file.'
+        )
+
+        self.radio_force_local_folder.setText(FORCE_LOCAL_FOLDER)
+        self.radio_force_local_folder.setToolTip(tr(
+            'Files must be located in {} or in a sub directory.'
+        ).format(self.project.absolutePath()))
+        self.radio_allow_parent_folder.setText(ALLOW_PARENT_FOLDER)
+        self.radio_allow_parent_folder.setToolTip(tr(
+            'Files can be located in a parent folder from {}, up to the setting below.'
+        ).format(self.project.absolutePath()))
+        self.safe_network_drive.setText(PREVENT_NETWORK_DRIVE)
+        self.safe_pg_service.setText(PREVENT_SERVICE)
+        self.safe_pg_auth_db.setText(PREVENT_AUTH_DB)
+        self.safe_pg_user_password.setText(FORCE_PG_USER_PASS)
+        self.safe_ecw.setText(PREVENT_ECW)
+
+        # Normal / beginner
+        self.radio_normal.setChecked(
+            not QgsSettings().value(Settings.key(Settings.BeginnerMode), type=bool))
+        self.radio_beginner.setChecked(
+            QgsSettings().value(Settings.key(Settings.BeginnerMode), type=bool))
+        self.radio_normal.toggled.connect(self.radio_mode_normal_toggled)
+        self.radio_normal.toggled.connect(self.save_settings)
+        self.radio_mode_normal_toggled()
+
+        # Parent or subdirectory
+        self.radio_force_local_folder.setChecked(
+            not QgsSettings().value(Settings.key(Settings.AllowParentFolder), type=bool))
+        self.radio_allow_parent_folder.setChecked(
+            QgsSettings().value(Settings.key(Settings.AllowParentFolder), type=bool))
+        self.radio_allow_parent_folder.toggled.connect(self.radio_parent_folder_toggled)
+        self.radio_allow_parent_folder.toggled.connect(self.save_settings)
+        self.radio_parent_folder_toggled()
+
+        # Number
+        self.safe_number_parent.setValue(QgsSettings().value(Settings.key(Settings.NumberParentFolder), type=int))
+        self.safe_number_parent.valueChanged.connect(self.save_settings)
+
+        # Network drive
+        self.safe_network_drive.setChecked(QgsSettings().value(Settings.key(Settings.PreventNetworkDrive), type=bool))
+        self.safe_network_drive.toggled.connect(self.save_settings)
+
+        # PG Service
+        self.safe_pg_service.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgService), type=bool))
+        self.safe_pg_service.toggled.connect(self.save_settings)
+
+        # PG Auth DB
+        self.safe_pg_auth_db.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgAuthId), type=bool))
+        self.safe_pg_auth_db.toggled.connect(self.save_settings)
+
+        # User password
+        self.safe_pg_user_password.setChecked(QgsSettings().value(Settings.key(Settings.ForcePgUserPass), type=bool))
+        self.safe_pg_user_password.toggled.connect(self.save_settings)
+
+        # ECW
+        self.safe_ecw.setChecked(QgsSettings().value(Settings.key(Settings.PreventEcw), type=bool))
+        self.safe_ecw.toggled.connect(self.save_settings)
+
+        self.label_safe_lizmap_cloud.setText(tr("Some safe guards are overridden by {}.").format(SAAS_NAME))
+        msg = (
+            '<ul>'
+            '<li>{max_parent}</li>'
+            '<li>{network}</li>'
+            '<li>{auth_db}</li>'
+            '<li>{user_pass}</li>'
+            '<li>{ecw}</li>'
+            '</ul>'.format(
+                max_parent=tr("Maximum of parent folder {} : {}").format(
+                    SAAS_MAX_PARENT_FOLDER, relative_path(SAAS_MAX_PARENT_FOLDER)),
+                network=PREVENT_NETWORK_DRIVE,
+                auth_db=PREVENT_AUTH_DB,
+                user_pass=FORCE_PG_USER_PASS,
+                ecw=PREVENT_ECW,
+            )
+        )
+        self.label_safe_lizmap_cloud.setToolTip(msg)
+
+        self.table_checks.setup()
+
+    # self.table_checks.setSelectionMode(QAbstractItemView.SingleSelection)
+        # self.table_checks.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # self.table_checks.setSelectionBehavior(QAbstractItemView.SelectRows)
+        # self.table_checks.setAlternatingRowColors(True)
+        # self.table_checks.horizontalHeader().setStretchLastSection(True)
+        # self.table_checks.horizontalHeader().setVisible(True)
+        # print("BOB")
+        #
+        # self.table_checks.setColumnCount(len(Headers))
+        # for i, header in enumerate(Headers):
+        #     column = QTableWidgetItem(header.label)
+        #     column.setToolTip(header.tooltip)
+        #     self.table_checks.setHorizontalHeaderItem(i, column)
+        #     print(i)
+    @property
+    def check_results(self) -> TableCheck:
+        return self.table_checks
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
@@ -774,6 +891,44 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.label_file_action_found.setText("<strong>" + tr('Not found') + "</strong>")
         return False
+
+    def radio_parent_folder_toggled(self):
+        """ When the parent allowed folder radio is toggled. """
+        parent_allowed = self.radio_allow_parent_folder.isChecked()
+        widgets = (
+            self.label_parent_folder,
+            self.safe_number_parent,
+        )
+        for widget in widgets:
+            widget.setEnabled(parent_allowed)
+
+    def radio_mode_normal_toggled(self):
+        """ When the beginner/normal radio are toggled. """
+        is_normal = self.radio_normal.isChecked()
+        widgets = (
+            self.group_file_layer,
+            self.safe_number_parent,
+            self.safe_network_drive,
+            self.safe_pg_service,
+            self.safe_pg_auth_db,
+            self.safe_pg_user_password,
+            self.safe_ecw,
+            self.label_parent_folder,
+        )
+        for widget in widgets:
+            widget.setEnabled(is_normal)
+            widget.setVisible(is_normal)
+
+    def save_settings(self):
+        """ Save settings checkboxes. """
+        QgsSettings().setValue(Settings.key(Settings.BeginnerMode), not self.radio_normal.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.AllowParentFolder), self.radio_allow_parent_folder.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.NumberParentFolder), self.safe_number_parent.value())
+        QgsSettings().setValue(Settings.key(Settings.PreventNetworkDrive), self.safe_network_drive.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.PreventPgService), self.safe_pg_service.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.PreventPgAuthId), self.safe_pg_auth_db.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.ForcePgUserPass), self.safe_pg_user_password.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.PreventEcw), self.safe_ecw.isChecked())
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """

@@ -245,7 +245,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>15</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -692,8 +692,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>815</width>
-                <height>1323</height>
+                <width>720</width>
+                <height>1325</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1491,8 +1491,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>375</width>
-                       <height>1130</height>
+                       <width>477</width>
+                       <height>1136</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2164,8 +2164,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>577</width>
-                <height>879</height>
+                <width>780</width>
+                <height>1143</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -3366,7 +3366,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>618</width>
-                <height>474</height>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3733,8 +3733,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
-                <height>991</height>
+                <width>386</width>
+                <height>867</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -4616,30 +4616,42 @@ This is different to the map maximum extent (defined in QGIS project properties,
          </widget>
          <widget class="QWidget" name="page_log">
           <layout class="QVBoxLayout" name="verticalLayout_40">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
            <item>
-            <widget class="QTextEdit" name="out_log">
-             <property name="readOnly">
-              <bool>true</bool>
+            <widget class="QTabWidget" name="tab_log">
+             <property name="currentIndex">
+              <number>1</number>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="button_clear_log">
-             <property name="text">
-              <string>Clear log</string>
-             </property>
+             <widget class="QWidget" name="html_log">
+              <attribute name="title">
+               <string>Raw log</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_69">
+               <item>
+                <widget class="QTextEdit" name="out_log">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="button_clear_log">
+                 <property name="text">
+                  <string>Clear log</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="table_log">
+              <attribute name="title">
+               <string>Table log</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_70">
+               <item>
+                <widget class="TableCheck" name="table_checks"/>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
@@ -4684,6 +4696,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <item>
                <layout class="QFormLayout" name="formLayout_5">
                 <item row="0" column="0">
+                 <widget class="QLabel" name="label_57">
+                  <property name="text">
+                   <string>Convert all PostgreSQL layers used in this project to use SSL</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
                  <widget class="QPushButton" name="button_convert_ssl">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -4696,17 +4718,17 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QLabel" name="label_57">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_66">
                   <property name="text">
-                   <string>Convert all PostgreSQL layers used in this project to use SSL</string>
+                   <string>Convert all PostgreSQL layers used in this project to 'estimated metadata'</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0">
+                <item row="1" column="1">
                  <widget class="QPushButton" name="button_use_estimated_md">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -4719,24 +4741,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="label_66">
-                  <property name="text">
-                   <string>Convert all PostgreSQL layers used in this project to 'estimated metadata'</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="0">
-                 <widget class="QPushButton" name="button_trust_project">
-                  <property name="text">
-                   <string>Trust project</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
                  <widget class="QLabel" name="label_79">
                   <property name="text">
                    <string>Enable the trust project option in the project properties dialog</string>
@@ -4746,14 +4751,14 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QPushButton" name="button_simplify_geom">
+                <item row="2" column="1">
+                 <widget class="QPushButton" name="button_trust_project">
                   <property name="text">
-                   <string>Simplify geometry on the provider side</string>
+                   <string>Trust project</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="3" column="0">
                  <widget class="QLabel" name="label_82">
                   <property name="text">
                    <string>Enable provider geometry simplification when possible in the layer properties dialog</string>
@@ -4763,7 +4768,152 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </property>
                  </widget>
                 </item>
+                <item row="3" column="1">
+                 <widget class="QPushButton" name="button_simplify_geom">
+                  <property name="text">
+                   <string>Simplify geometry on the provider side</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_13">
+             <property name="title">
+              <string>Safe guards</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_67">
+              <item>
+               <widget class="QLabel" name="label_83">
+                <property name="text">
+                 <string>Only if you are sure about your server and if you are more comfortable with Lizmap, you can disable some safe guards</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_safe_lizmap_cloud">
+                <property name="text">
+                 <string notr="true">SET IN PYTHON, HOSTING</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_50">
+                <item>
+                 <widget class="QRadioButton" name="radio_beginner">
+                  <property name="text">
+                   <string>Beginner</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radio_normal">
+                  <property name="text">
+                   <string>Normal</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="group_file_layer">
+                <property name="title">
+                 <string>File based layer</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_68">
+                 <item>
+                  <widget class="QRadioButton" name="radio_force_local_folder">
+                   <property name="text">
+                    <string notr="true">SET PYTHON PREVENT FILE IN PARENT FOLDER</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QFormLayout" name="formLayout_4">
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_parent_folder">
+                     <property name="text">
+                      <string>Levels of parent folder allowed</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QSpinBox" name="safe_number_parent">
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="value">
+                      <number>2</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QRadioButton" name="radio_allow_parent_folder">
+                     <property name="text">
+                      <string notr="true">SET PYTHON ALLOW PARENT FOLDER</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="safe_network_drive">
+                <property name="text">
+                 <string notr="true">SET PYTHON PREVENT ANOTHER NETWORK DRIVE</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="safe_pg_service">
+                <property name="text">
+                 <string notr="true">SET PYTHON PREVENT PG SERVICE FILE</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="safe_pg_auth_db">
+                <property name="text">
+                 <string notr="true">SET PYTHON PREVENT PG AUTH DB</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="safe_pg_user_password">
+                <property name="text">
+                 <string notr="true">SET PYTHON USER PASSWORD DATASOURCE</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="safe_ecw">
+                <property name="text">
+                 <string notr="true">SET PYTHON PREVENT ECW</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -4802,23 +4952,23 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
+   <header>qgspasswordlineedit.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -4838,6 +4988,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <extends>QWidget</extends>
    <header>lizmap.widgets.warning_widget</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TableCheck</class>
+   <extends>QTableWidget</extends>
+   <header location="global">lizmap.models.check_project</header>
   </customwidget>
  </customwidgets>
  <tabstops>
