@@ -7,7 +7,14 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from qgis.core import Qgis, QgsApplication, QgsProject, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsFieldProxyModel,
+    QgsMapLayerProxyModel,
+    QgsProject,
+    QgsSettings,
+)
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QIcon, QImageReader, QPixmap
 from qgis.PyQt.QtWidgets import (
@@ -82,6 +89,30 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.lwc_version_latest_changelog.setVisible(False)
         self.lwc_version_oldest_changelog.setVisible(False)
 
+        # Filtering features
+        self.tab_filtering.setCurrentIndex(0)
+        self.helper_list_group.setReadOnly(True)
+        self.button_helper_group.setToolTip(tr('Select features having at least one group not matching on the server'))
+        self.button_helper_group.clicked.connect(self.select_unknown_features_group)
+        self.button_helper_group.setIcon(QIcon(":images/themes/default/mActionToggleSelectedLayers.svg"))
+        self.helper_layer_group.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        tooltip = tr("The layer to check group IDs")
+        self.helper_layer_group.setToolTip(tooltip)
+        self.helper_field_group.setFilters(QgsFieldProxyModel.String)
+        self.helper_field_group.setLayer(self.helper_layer_group.currentLayer())
+        self.label_helper_layer_group.setToolTip(tooltip)
+        tooltip = tr("The field which must contains group IDs")
+        self.helper_field_group.setToolTip(tooltip)
+        self.helper_layer_group.layerChanged.connect(self.helper_field_group.setLayer)
+        self.label_helper_field_group.setToolTip(tooltip)
+
+        icon = QgsApplication.getThemeIcon("mActionToggleSelectedLayers.svg")
+        self.preview_attribute_filtering.setIcon(icon)
+        self.preview_attribute_filtering.setText("")
+        self.preview_attribute_filtering.setToolTip(tr("To have a preview of the attribute filtering tool"))
+        self.preview_attribute_filtering.setVisible(False)
+        # self.preview_attribute_filtering.clicked.connect(self.open_filter_preview)
+
         # IGN and google
         self.inIgnKey.textChanged.connect(self.check_ign_french_free_key)
         self.inIgnKey.textChanged.connect(self.check_api_key_address)
@@ -98,6 +129,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.inLayerLink.setToolTip(tooltip)
 
         self.log_panel = LogPanel(self.out_log)
+        self.button_clear_log.setIcon(QIcon(":images/themes/default/console/iconClearConsole.svg"))
         self.button_clear_log.clicked.connect(self.log_panel.clear)
 
         self.check_project_thumbnail()
@@ -644,21 +676,27 @@ class LizmapDialog(QDialog, FORM_CLASS):
         i += 1
 
         # Set stylesheet for QGroupBox
-        self.gb_tree.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_layerSettings.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_ftp.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_project_thumbnail.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_visibleTools.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_Scales.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_extent.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_externalLayers.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_lizmapExternalBaselayers.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_generalOptions.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_interface.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.gb_baselayersOptions.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.predefined_groups_legend.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.predefined_groups.setStyleSheet(COMPLETE_STYLE_SHEET)
-        self.predefined_baselayers.setStyleSheet(COMPLETE_STYLE_SHEET)
+        q_group_box = (
+            self.gb_tree,
+            self.gb_layerSettings,
+            self.gb_ftp,
+            self.gb_project_thumbnail,
+            self.gb_visibleTools,
+            self.gb_Scales,
+            self.gb_extent,
+            self.gb_externalLayers,
+            self.gb_lizmapExternalBaselayers,
+            self.gb_generalOptions,
+            self.gb_interface,
+            self.gb_baselayersOptions,
+            self.predefined_groups_legend,
+            self.predefined_groups,
+            self.predefined_baselayers,
+            self.attribute_filtering,
+            self.spatial_filtering,
+        )
+        for widget in q_group_box:
+            widget.setStyleSheet(COMPLETE_STYLE_SHEET)
 
     def check_project_thumbnail(self):
         """ Check the project thumbnail and display the metadata. """
@@ -738,6 +776,40 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.label_warning_project.setVisible(True)
             self.label_warning_project.set_text(message)
+
+    def select_unknown_features_group(self):
+        """ Select features where one group from the feature does not math one of the server. """
+        groups = self.helper_list_group.text()
+        if not groups:
+            return
+
+        layer = self.helper_layer_group.currentLayer()
+        if not layer:
+            return
+
+        field = self.helper_field_group.currentField()
+        if not field:
+            return
+
+        groups = ','.join(["'{}'".format(f) for f in groups.split(',')])
+        expression = (
+            "not("
+            "  array_all("
+            "    array({groups}),"
+            "    string_to_array(\"{field}\")"
+            "  )"
+            ")"
+        ).format(field=field, groups=groups)
+        layer.removeSelection()
+        LOGGER.debug("Expression used for checking groups not on the server :\n" + expression)
+        layer.selectByExpression(expression)
+        count = layer.selectedFeatureCount()
+        self.display_message_bar(
+            tr("Debug"),
+            tr("{count} feature(s) having at least one group not on the server").format(
+                count=count),
+            Qgis.Info if count >= 1 else Qgis.Success
+        )
 
     def fix_project_ssl(self):
         """ Fix the current project about SSL. """
