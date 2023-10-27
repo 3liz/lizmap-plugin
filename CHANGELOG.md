@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 3.18.1 - 2023-10-27
+
+* Warn the user if the field is coming from a join, or it is a virtual one when setting a filter form
+* Better warning for Stamen tiles
+
 ## 3.18.0 - 2023-10-19
 
 * Disabling Stamen base-maps checkbox, see https://stamen.com/faq
