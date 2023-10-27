@@ -419,6 +419,7 @@ class Lizmap:
         # https://stamen.com/faq
         # https://stadiamaps.com/pricing/
         self.dlg.cbOsmStamenToner.setEnabled(False)
+        self.dlg.cbOsmStamenToner.setChecked(False)
         self.dlg.cbOsmStamenToner.setToolTip(tr(
             'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate'))
         # Hiding the button, until we find another good layer without any key
