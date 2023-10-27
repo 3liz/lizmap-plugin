@@ -302,6 +302,7 @@ class BaseEditionDialog(QDialog):
         if message:
             self.error.setVisible(True)
             self.error.setText(message)
+            self.error.setWordWrap(True)
         else:
             super().accept()
 

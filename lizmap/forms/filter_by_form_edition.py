@@ -1,6 +1,6 @@
 """Dialog for filter by form."""
 
-from qgis.core import QgsMapLayerProxyModel, QgsProject
+from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
 
 from lizmap import LwcVersions
@@ -203,3 +203,25 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
                 return field_required
         else:
             raise Exception('Unknown option')
+
+        # Check for join, or virtual fields
+        field_origin = tr(
+            'The field "{}" is not provided by the underlying table. It can not come from a join or be a virtual '
+            'field. This tool is using plain SQL query on the underlying table.')
+        forbidden = (QgsFields.FieldOrigin.OriginJoin, QgsFields.FieldOrigin.OriginExpression)
+        widget_fields = (
+            self.field,
+            self.start_field,
+            self.end_field,
+        )
+        for widget in widget_fields:
+            if not widget.isVisible():
+                # Deeper bug, do we save this value ?
+                continue
+
+            if not widget.currentField():
+                continue
+
+            index = self.layer.currentLayer().fields().indexFromName(widget.currentField())
+            if self.layer.currentLayer().fields().fieldOrigin(index) in forbidden:
+                return field_origin.format(widget.currentField())
