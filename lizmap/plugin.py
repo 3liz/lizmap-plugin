@@ -418,9 +418,9 @@ class Lizmap:
         # https://stamen.com/faq
         # https://stadiamaps.com/pricing/
         self.dlg.cbOsmStamenToner.setEnabled(False)
-        self.dlg.cbOsmStamenToner.setChecked(False)
         self.dlg.cbOsmStamenToner.setToolTip(tr(
-            'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate'))
+            'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate. The base layer '
+            'will be deactivated automatically when saving the CFG file.'))
         # Hiding the button, until we find another good layer without any key
         self.dlg.button_stamen_toner_lite.setVisible(False)
 
@@ -3577,6 +3577,14 @@ class Lizmap:
                 level=Qgis.Warning,
             )
             return False
+
+        if self.dlg.cbOsmStamenToner.isChecked():
+            self.dlg.cbOsmStamenToner.setChecked(False)
+            self.dlg.log_panel.append(tr('Stamen tiles'), style=Html.H2)
+            self.dlg.log_panel.append(tr(
+                'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate. The layer '
+                'has been automatically deactivated in the dialog.'
+            ))
 
         stop_process = tr("The CFG is not saved due to errors that must be fixed.")
 
