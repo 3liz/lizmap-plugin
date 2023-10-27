@@ -115,12 +115,11 @@ from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
-from lizmap.project_checker_tools import (
+from lizmap.project_checker_tools import (  # project_trust_layer_metadata,
     auto_generated_primary_key_field,
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
     invalid_int8_primary_key,
-    project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
@@ -2915,7 +2914,7 @@ class Lizmap:
                 ), Html.P)
                 self.dlg.log_panel.append(message, Html.P)
                 show_log_panel = True
-                if Qgis.QGIS_VERSION_INT >= 32200:
+                if Qgis.QGIS_VERSION_INT >= 39900:
                     error_cfg_saving = True
                     self.dlg.log_panel.append(error_cfg_suggest, Html.P)
                     self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
@@ -3004,8 +3003,7 @@ class Lizmap:
             self.dlg.log_panel.end_table()
             self.dlg.log_panel.append(tr(
                 'Visit the layer properties, then in the "Rendering" tab to enable it.'), Html.P)
-            self.dlg.log_panel.append(error_cfg_suggest, Html.P)
-            self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
+            # self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
             show_log_panel = True
             error_cfg_saving = True
             self.dlg.enabled_simplify_geom(True)
@@ -3025,7 +3023,7 @@ class Lizmap:
                 'Edit your PostgreSQL connection to enable this option, then change the datasource by right clicking '
                 'on each layer above, then click "Change datasource" in the menu. Finally reselect your layer in the '
                 'new dialog.'), Html.P)
-            if Qgis.QGIS_VERSION_INT >= 32200:
+            if Qgis.QGIS_VERSION_INT >= 39900:
                 self.dlg.log_panel.append(error_cfg_suggest, Html.P)
                 self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
                 show_log_panel = True
@@ -3034,32 +3032,33 @@ class Lizmap:
             else:
                 self.dlg.log_panel.append(warning_suggest, Html.P)
 
-        if not project_trust_layer_metadata(self.project):
-            self.dlg.log_panel.append(tr('Trust project metadata'), Html.H2)
-            self.dlg.log_panel.append(tr(
-                'The project does not have the "Trust project metadata" enabled at the project level'), Html.P)
-            self.dlg.log_panel.append(tr(
-                'In the project properties → Data sources → at the bottom, there is a checkbox to trust the project '
-                'when the layer has no metadata.'), Html.P)
-            self.dlg.log_panel.append(error_cfg_suggest, Html.P)
-            self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
-            show_log_panel = True
-            error_cfg_saving = True
-            self.dlg.enabled_trust_project(True)
+        # if not project_trust_layer_metadata(self.project):
+        #     self.dlg.log_panel.append(tr('Trust project metadata'), Html.H2)
+        #     self.dlg.log_panel.append(tr(
+        #         'The project does not have the "Trust project metadata" enabled at the project level'), Html.P)
+        #     self.dlg.log_panel.append(tr(
+        #         'In the project properties → Data sources → at the bottom, there is a checkbox to trust the project '
+        #         'when the layer has no metadata.'), Html.P)
+        #     self.dlg.log_panel.append(error_cfg_suggest, Html.P)
+        #     self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
+        #     show_log_panel = True
+        #     error_cfg_saving = True
+        #     self.dlg.enabled_trust_project(True)
 
         if with_gui and show_log_panel:
             self.dlg.mOptionsListWidget.setCurrentRow(log_index_panel)
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
 
-        if with_gui and error_cfg_saving and not ignore_error:
-            self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
-            self.dlg.log_panel.append(tr(
-                'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the '
-                'configuration file is stopping.'), Html.Strong, time=True)
-            self.dlg.display_message_bar(
-                "Error", tr('You must fix some issues about this project'), Qgis.Critical)
-            return None
+        _ = error_cfg_saving
+        # if with_gui and error_cfg_saving and not ignore_error:
+        #     self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
+        #     self.dlg.log_panel.append(tr(
+        #         'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the '
+        #         'configuration file is stopping.'), Html.Strong, time=True)
+        #     self.dlg.display_message_bar(
+        #         "Error", tr('You must fix some issues about this project'), Qgis.Critical)
+        #     return None
 
         metadata = {
             'qgis_desktop_version': qgis_version(),
