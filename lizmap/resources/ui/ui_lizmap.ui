@@ -3913,7 +3913,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    <item>
                     <widget class="QLabel" name="label_83">
                      <property name="text">
-                      <string>This helper can help to detect features having at least one group not matching one on the server. The field must contain group IDS. NULL or empty string are not checked.</string>
+                      <string>This tool selects features having at least one group not matching one on the current server. The field must contain group IDS. NULL or empty string are not checked.</string>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
