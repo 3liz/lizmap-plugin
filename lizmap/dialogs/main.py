@@ -58,11 +58,13 @@ LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, is_dev_version=True):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
         self.project = QgsProject.instance()
+
+        self.is_dev_version = is_dev_version
 
         self.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
@@ -93,14 +95,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.tab_filtering.setCurrentIndex(0)
 
         # Temporary for the next release
-        self.tab_filtering.removeTab(2)
-        # Temporary fixer buttons
-        self.button_use_estimated_md.setVisible(False)
-        self.label_66.setVisible(False)
-        self.button_trust_project.setVisible(False)
-        self.label_79.setVisible(False)
-        self.button_simplify_geom.setVisible(False)
-        self.label_82.setVisible(False)
+        if not self.is_dev_version:
+            self.tab_filtering.removeTab(2)
+            # Temporary fixer buttons
+            self.button_use_estimated_md.setVisible(False)
+            self.label_66.setVisible(False)
+            self.button_trust_project.setVisible(False)
+            self.label_79.setVisible(False)
+            self.button_simplify_geom.setVisible(False)
+            self.label_82.setVisible(False)
 
         self.helper_list_group.setReadOnly(True)
         self.button_helper_group.setToolTip(tr('Select features having at least one group not matching on the server'))
