@@ -4,6 +4,7 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from collections import namedtuple
 from enum import Enum, unique
 from functools import total_ordering
 
@@ -119,3 +120,12 @@ class PredefinedGroup(Enum):
     Baselayers = Qt.UserRole + 2
     BackgroundColor = Qt.UserRole + 3
     Overview = Qt.UserRole + 4
+
+
+IgnLayer = namedtuple('IgnLayer', ['name', 'title', 'format'])
+
+
+class IgnLayers(IgnLayer, Enum):
+    """ IGN layers available. """
+    IgnPlan = IgnLayer('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'Plan IGN', 'image/png')
+    IgnOrthophoto = IgnLayer('ORTHOIMAGERY.ORTHOPHOTOS', 'Orthophoto IGN', 'image/jpeg')

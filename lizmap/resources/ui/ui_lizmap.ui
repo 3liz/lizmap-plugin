@@ -2691,9 +2691,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
                         </widget>
                        </item>
                        <item>
-                        <widget class="QPushButton" name="button_stamen_toner_lite">
+                        <widget class="QPushButton" name="button_ign_orthophoto">
                          <property name="text">
-                          <string>Stamen Toner Lite</string>
+                          <string notr="true">IGN Orthophoto</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="button_ign_plan">
+                         <property name="text">
+                          <string notr="true">IGN Plan</string>
                          </property>
                         </widget>
                        </item>
