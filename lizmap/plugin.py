@@ -74,6 +74,8 @@ from lizmap.definitions.definitions import (
     DURATION_WARNING_BAR,
     UNSTABLE_VERSION_PREFIX,
     Html,
+    IgnLayer,
+    IgnLayers,
     LayerProperties,
     LwcVersions,
     PredefinedGroup,
@@ -208,7 +210,8 @@ class Lizmap:
 
         setup_logger(plugin_name())
 
-        _, file_path = setup_translation('lizmap_qgis_plugin_{}.qm', plugin_path('i18n'))
+        locale, file_path = setup_translation('lizmap_qgis_plugin_{}.qm', plugin_path('i18n'))
+        LOGGER.info("Language in QGIS : {}".format(locale))
 
         if file_path:
             self.translator = QTranslator()
@@ -246,6 +249,16 @@ class Lizmap:
 
             self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
                 self.version, current_git_hash(), next_git_tag()))
+
+        # Make the IGN french orthophoto visible only for dev or for French language user
+        # locale can be "fr" or "fr_FR"
+        french_buttons = (
+            self.dlg.button_ign_orthophoto,
+            self.dlg.button_ign_plan,
+        )
+        for button in french_buttons:
+            button.setVisible(locale[0:2].lower() == 'fr' or self.is_dev_version)
+            button.setIcon(QIcon(':images/flags/fr.svg'))
 
         if Qgis.QGIS_VERSION_INT >= 32200:
             self.webdav = WebDav()
@@ -423,8 +436,6 @@ class Lizmap:
         self.dlg.cbOsmStamenToner.setToolTip(tr(
             'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate. The base layer '
             'will be deactivated automatically when saving the CFG file.'))
-        # Hiding the button, until we find another good layer without any key
-        self.dlg.button_stamen_toner_lite.setVisible(False)
 
         self.layer_options_list = lizmap_config.layerOptionDefinitions
         # Add widget information
@@ -522,7 +533,10 @@ class Lizmap:
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
 
         self.dlg.button_osm_mapnik.clicked.connect(self.add_osm_mapnik)
-        self.dlg.button_stamen_toner_lite.clicked.connect(self.add_stamen_toner_lite)
+        self.dlg.button_ign_orthophoto.clicked.connect(
+            partial(self.add_french_ign_layer, IgnLayers.IgnOrthophoto))
+        self.dlg.button_ign_plan.clicked.connect(
+            partial(self.add_french_ign_layer, IgnLayers.IgnPlan))
 
         self.dlg.label_lizmap_search_grant.setText(tr(
             "About \"lizmap_search\", for an instance hosted on lizmap.com cloud solution, you must do the \"GRANT\" "
@@ -2506,10 +2520,20 @@ class Lizmap:
         source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0'
         self._add_base_layer(source, 'OpenStreetMap')
 
-    def add_stamen_toner_lite(self):
-        """ Add the Stamen Toner lite base layer. """
-        source = 'type=xyz&zmin=0&zmax=20&url=https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
-        self._add_base_layer(source, 'Stamen Toner Lite')
+    def add_french_ign_layer(self, layer: IgnLayer):
+        """ Add some French IGN layers. """
+        params = {
+            'crs': 'EPSG:3857',
+            'dpiMode': 7,
+            'format': layer.format,
+            'layers': layer.name,
+            'styles': 'normal',
+            'tileMatrixSet': 'PM',
+            'url': 'https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities',
+        }
+        # Do not use urlencode
+        source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
+        self._add_base_layer(source, layer.title)
 
     def _add_base_layer(self, source: str, name: str):
         """ Add a base layer to the "baselayers" group. """
