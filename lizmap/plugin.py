@@ -2193,8 +2193,16 @@ class Lizmap:
                         self.myDic[child_id]['type']
                     ]
                 )
+                server_wms_excluded_list, server_exclude = self.project.readListEntry('WMSRestrictedLayers', '')
+
                 if predefined_group != PredefinedGroup.No.value:
                     text = tr('Special group for Lizmap Web Client')
+                    item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
+                elif server_exclude and self.myDic[child_id]['name'] in server_wms_excluded_list:
+                    text = tr(
+                        'The layer is excluded from WMS service, in the '
+                        '"Project Properties" → "QGIS Server" → "WMS" → "Excluded Layers"'
+                    )
                     item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
                 else:
                     item.setToolTip(0, self.myDic[child_id]['name'])
@@ -2415,6 +2423,13 @@ class Lizmap:
 
         if self.dlg.current_lwc_version() >= LwcVersions.Lizmap_3_7:
             if self._current_item_predefined_group() != PredefinedGroup.No.value:
+                self.dlg.gb_layerSettings.setEnabled(False)
+
+        layer = self._current_selected_layer()
+        if isinstance(layer, QgsMapLayer):
+            # Project properties → QGIS server → WMS → Exclude layers
+            server_wms_excluded_list, server_exclude = self.project.readListEntry('WMSRestrictedLayers', '')
+            if server_exclude and layer.name() in server_wms_excluded_list:
                 self.dlg.gb_layerSettings.setEnabled(False)
 
     # def enable_or_not_toggle_checkbox(self):
