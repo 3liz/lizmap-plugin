@@ -8,8 +8,10 @@ from typing import List, Tuple
 
 from qgis.core import QgsDataSourceUri, QgsProject
 
+from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import is_vector_pg, update_uri
+from lizmap.widgets.check_project import SourceLayer
 
 edit_connection_title = tr("You must edit the database connection.")
 edit_connection = tr(
@@ -22,10 +24,6 @@ right_click_step = tr(
     "legend and click 'Change datasource' to pick the layer again with the updated connection."
 )
 
-SAAS_DOMAIN = 'lizmap.com'
-SAAS_NAME = 'Lizmap Cloud'
-SAAS_MAX_PARENT_FOLDER = 2  # TODO Check COG, is-it 3 ?
-
 
 def is_lizmap_cloud(metadata: dict) -> bool:
     """ Return True if the metadata is coming from Lizmap Cloud. """
@@ -33,12 +31,12 @@ def is_lizmap_cloud(metadata: dict) -> bool:
         # Mainly in tests?
         return False
 
-    return metadata.get('hosting', '') == SAAS_DOMAIN
+    return metadata.get('hosting', '') == CLOUD_DOMAIN
 
 
-def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[str], str]:
+def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[SourceLayer], str]:
     """ Check if the project is not using SSL on some PostGIS layers which are on a Lizmap Cloud database. """
-    layer_error: List[str] = []
+    layer_error: List[SourceLayer] = []
     for layer in project.mapLayers().values():
         if not is_vector_pg(layer):
             continue
@@ -52,11 +50,11 @@ def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[str], str]:
             continue
 
         # Users might be hosted on Lizmap Cloud but using an external database
-        if not datasource.host().endswith(SAAS_DOMAIN):
+        if not datasource.host().endswith(CLOUD_DOMAIN):
             continue
 
         if datasource.sslMode() in (QgsDataSourceUri.SslMode.SslDisable, QgsDataSourceUri.SslMode.SslAllow):
-            layer_error.append(layer.name())
+            layer_error.append(SourceLayer(layer.name(), layer.id()))
 
     more = edit_connection_title + " "
     more += edit_connection + " "
@@ -77,7 +75,7 @@ def fix_ssl(project: QgsProject, force: bool = True) -> int:
         if datasource.service():
             continue
 
-        if not datasource.host().endswith(SAAS_DOMAIN):
+        if not datasource.host().endswith(CLOUD_DOMAIN):
             continue
 
         if datasource.sslMode() in (QgsDataSourceUri.SslPrefer, QgsDataSourceUri.SslMode.SslRequire):

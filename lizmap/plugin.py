@@ -88,6 +88,7 @@ from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.layouts import LayoutsDefinitions
+from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.online_help import (
     MAPPING_INDEX_DOC,
@@ -97,7 +98,6 @@ from lizmap.definitions.online_help import (
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
-from lizmap.definitions.warnings import Warnings
 from lizmap.dialogs.dock_html_preview import HtmlPreview
 from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.html_maptip import HtmlMapTipDialog
@@ -120,26 +120,21 @@ from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.project_checker_tools import (
     ALLOW_PARENT_FOLDER,
+    FORCE_LOCAL_FOLDER,
     FORCE_PG_USER_PASS,
     PREVENT_AUTH_DB,
     PREVENT_ECW,
-    PREVENT_NETWORK_DRIVE,
+    PREVENT_OTHER_DRIVE,
     PREVENT_SERVICE,
-    auto_generated_primary_key_field,
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
-    invalid_int8_primary_key,
+    project_invalid_pk,
     project_safeguards_checks,
     project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.saas import (
-    SAAS_MAX_PARENT_FOLDER,
-    SAAS_NAME,
-    check_project_ssl_postgis,
-    is_lizmap_cloud,
-)
+from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
@@ -183,6 +178,7 @@ from lizmap.tools import (
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
+from lizmap.widgets.check_project import Checks, Error, Severities, SourceLayer
 
 if qgis_version() >= 31400:
     from qgis.core import QgsProjectServerValidator
@@ -219,9 +215,9 @@ class Lizmap:
         if prevent_ecw is None:
             QgsSettings().setValue(Settings.key(Settings.PreventEcw), True)
 
-        prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthId), defaultValue=None)
+        prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthDb), defaultValue=None)
         if prevent_auth_id is None:
-            QgsSettings().setValue(Settings.key(Settings.PreventPgAuthId), True)
+            QgsSettings().setValue(Settings.key(Settings.PreventPgAuthDb), True)
 
         prevent_service = QgsSettings().value(Settings.key(Settings.PreventPgService), defaultValue=None)
         if prevent_service is None:
@@ -231,9 +227,9 @@ class Lizmap:
         if force_pg_user_pass is None:
             QgsSettings().setValue(Settings.key(Settings.ForcePgUserPass), True)
 
-        prevent_network_drive = QgsSettings().value(Settings.key(Settings.PreventNetworkDrive), defaultValue=None)
-        if prevent_network_drive is None:
-            QgsSettings().setValue(Settings.key(Settings.PreventNetworkDrive), True)
+        prevent_other_drive = QgsSettings().value(Settings.key(Settings.PreventDrive), defaultValue=None)
+        if prevent_other_drive is None:
+            QgsSettings().setValue(Settings.key(Settings.PreventDrive), True)
 
         allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), defaultValue=None)
         if allow_parent_folder is None:
@@ -1035,7 +1031,7 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.help_action.triggered.connect(self.show_help)
 
-        self.help_action_cloud = QAction(icon, SAAS_NAME, self.iface.mainWindow())
+        self.help_action_cloud = QAction(icon, CLOUD_NAME, self.iface.mainWindow())
         self.iface.pluginHelpMenu().addAction(self.help_action_cloud)
         # noinspection PyUnresolvedReferences
         self.help_action.triggered.connect(self.show_help_cloud)
@@ -2937,39 +2933,17 @@ class Lizmap:
             if next_version != 'next':
                 current_version = next_version
 
-        warnings = []
-        log_index_panel = self.dlg.mOptionsListWidget.count() - 2
-        settings_panel_name = self.dlg.mOptionsListWidget.item(self.dlg.mOptionsListWidget.count() - 1).text()
-
-        # If the log panel must be shown to the user
-        # Either a warning or an error
-        show_log_panel = False
-        warning_suggest = tr('This issue not blocking the generation of the Lizmap configuration file.')
-        # If the user must fix some issues, the CFG will not be generated
-        # But with QGIS desktop < 3.22, it's not possible to do it automatically
-        error_cfg_saving = False
-        error_cfg_suggest = tr('Or use the automatic fixing button.')
-        error_cfg_message = tr(
-            "This issue must be fixed, the configuration is not going to be saved. You must visit the '{}' panel to "
-            "click the auto-fix button for layers currently loaded in this project."
-        ).format(settings_panel_name)
-        # Temporary disabled when used in production
-        qgis_min_required_not_prod_ready = 32200 if self.is_dev_version else 39900
+        duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
+        for name, count in duplicated_in_cfg.items():
+            if count >= 2:
+                source = '"{}" → "'.format(name) + tr("count {} layers").format(count)
+                self.dlg.check_results.add_error(Error(source, Checks.DuplicatedLayerNameOrGroup))
 
         # Layer ID as short name
         if lwc_version >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
             if to_bool(use_layer_id, False):
-                show_log_panel = True
-                self.dlg.log_panel.append(tr('Use layer IDs as name'), Html.H2)
-                self.dlg.log_panel.append(warning_suggest, Html.P)
-                self.dlg.log_panel.append(tr(
-                    "Since Lizmap Web Client 3.6, it's not possible anymore to use the option 'Use layer IDs "
-                    "as name' in the project properties dialog, QGIS server tab, then WMS capabilities."
-                ), Html.P)
-                self.dlg.log_panel.append(tr(
-                    "Please uncheck this checkbox and re-save the Lizmap configuration file."), Html.P)
-                warnings.append(Warnings.UseLayerIdAsName.value)
+                self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, Checks.WmsUseLayerIds))
 
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
@@ -2981,10 +2955,10 @@ class Lizmap:
 
             # Global checks config
             prevent_ecw = QgsSettings().value(Settings.key(Settings.PreventEcw), True, bool)
-            prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthId), True, bool)
+            prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthDb), True, bool)
             prevent_service = QgsSettings().value(Settings.key(Settings.PreventPgService), True, bool)
             force_pg_user_pass = QgsSettings().value(Settings.key(Settings.ForcePgUserPass), True, bool)
-            prevent_network_drive = QgsSettings().value(Settings.key(Settings.PreventNetworkDrive), True, bool)
+            prevent_other_drive = QgsSettings().value(Settings.key(Settings.PreventDrive), True, bool)
             allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), False, bool)
             count_parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), 2, int)
 
@@ -2996,9 +2970,9 @@ class Lizmap:
                 prevent_ecw = True
                 prevent_auth_id = True
                 force_pg_user_pass = True
-                prevent_network_drive = True
-                if count_parent_folder > SAAS_MAX_PARENT_FOLDER:
-                    count_parent_folder = SAAS_MAX_PARENT_FOLDER
+                prevent_other_drive = True
+                if count_parent_folder > CLOUD_MAX_PARENT_FOLDER:
+                    count_parent_folder = CLOUD_MAX_PARENT_FOLDER
                 # prevent_service = False  We encourage service
                 # allow_parent_folder = False Of course we can
 
@@ -3011,66 +2985,65 @@ class Lizmap:
                 summary.append(PREVENT_SERVICE)
             if force_pg_user_pass:
                 summary.append(FORCE_PG_USER_PASS)
-            if prevent_network_drive:
-                summary.append(PREVENT_NETWORK_DRIVE)
+            if prevent_other_drive:
+                summary.append(PREVENT_OTHER_DRIVE)
             if allow_parent_folder:
                 summary.append(ALLOW_PARENT_FOLDER + " : " + tr("{} folder(s)").format(count_parent_folder))
+            else:
+                summary.append(FORCE_LOCAL_FOLDER)
 
             parent_folder = relative_path(count_parent_folder)
 
-            results, more = project_safeguards_checks(
+            results = project_safeguards_checks(
                 self.project,
                 prevent_ecw=prevent_ecw,
                 prevent_auth_id=prevent_auth_id,
                 prevent_service=prevent_service,
                 force_pg_user_pass=force_pg_user_pass,
-                prevent_network_drive=prevent_network_drive,
+                prevent_other_drive=prevent_other_drive,
                 allow_parent_folder=allow_parent_folder,
                 parent_folder=parent_folder,
                 lizmap_cloud=lizmap_cloud,
             )
-            if len(results):
-                show_log_panel = True
-                warnings.append(Warnings.SaasLizmapCloud.value)
-                self.dlg.log_panel.append(tr('Some safeguards are not compatible'), Html.H2)
-                # Let's show a summary
-                if lizmap_cloud:
-                    self.dlg.log_panel.append(tr("According to global settings, overriden then by {} :").format(SAAS_NAME), Html.P)
-                else:
-                    self.dlg.log_panel.append(tr("According to global settings"), Html.P)
+            # Let's show a summary
+            if lizmap_cloud:
+                self.dlg.log_panel.append(
+                    tr("According to global settings, overriden then by {} :").format(CLOUD_NAME), Html.P)
+            else:
+                self.dlg.log_panel.append(tr("According to global settings"), Html.P)
 
-                self.dlg.log_panel.start_table()
-                for i, rule in enumerate(summary):
-                    self.dlg.log_panel.add_row(i)
-                    self.dlg.log_panel.append(rule, Html.Td)
-                    self.dlg.log_panel.end_row()
+            self.dlg.log_panel.start_table()
+            for i, rule in enumerate(summary):
+                self.dlg.log_panel.add_row(i)
+                self.dlg.log_panel.append(rule, Html.Td)
+                self.dlg.log_panel.end_row()
+            self.dlg.log_panel.end_table()
 
-                self.dlg.log_panel.append("<br>")
+            self.dlg.log_panel.append("<br>")
 
+            for layer, error in results.items():
+
+                # Severity depends on beginner mode
+                severity = Severities.Blocking if beginner_mode else Severities.Important
+                # But override severities for Lizmap Cloud
+                # Because even with a 'normal' user, it won't work
+                override = (
+                    Checks.PreventEcw, Checks.PgForceUserPass, Checks.AuthenticationDb, Checks.PreventDrive)
+                if error in override:
+                    severity = Severities.Blocking
+
+                self.dlg.check_results.add_error(
+                    Error(
+                        layer.layer_name,
+                        error,
+                        source_type=SourceLayer(layer.layer_name, layer.layer_id),
+                    ),
+                    lizmap_cloud=lizmap_cloud,
+                    severity=severity,
+                )
+
+            if results:
                 if beginner_mode:
-                    self.dlg.log_panel.append(tr(
-                        "These issues below are blocking saving the Lizmap configuration file in the 'Beginner' mode."
-                    ), Html.P, level=Qgis.Critical)
-                else:
-                    self.dlg.log_panel.append(warning_suggest, Html.P)
-
-                self.dlg.log_panel.append("<br>")
-
-                self.dlg.log_panel.start_table()
-                for i, error in enumerate(results.values()):
-                    self.dlg.log_panel.add_row(i)
-                    self.dlg.log_panel.append(error, Html.Td)
-                    self.dlg.log_panel.end_row()
-
-                self.dlg.log_panel.end_table()
-                self.dlg.log_panel.append("<br>")
-
-                if more:
-                    self.dlg.log_panel.append(more)
-                    self.dlg.log_panel.append("<br>")
-
-                if beginner_mode:
-                    error_cfg_saving = True
                     self.dlg.log_panel.append(tr(
                         "The process is stopping, the CFG file is not going to be generated because some safeguards "
                         "are not compatible and you are using the 'Beginner' mode. Either fix these issues or switch "
@@ -3085,168 +3058,83 @@ class Lizmap:
         if check_server:
 
             error, message = check_project_ssl_postgis(self.project)
-            if error:
-                self.dlg.log_panel.append(tr('SSL connections to a PostgreSQL database'), Html.H2)
-                self.dlg.log_panel.append(tr(
-                    "Connections to a PostgreSQL database hosted on {} must use a SSL secured connection."
-                ).format(SAAS_NAME), Html.P)
-                self.dlg.log_panel.append(tr(
-                    "In the plugin, then in the '{}' panel, there is a helper to change the datasource of layers in "
-                    "the current project only. It works only with minimum QGIS 3.22."
-                ).format(settings_panel_name), Html.P)
-                self.dlg.log_panel.append(tr(
-                    "You must still edit your global PostgreSQL connection to allow SSL, it will take effect only "
-                    "on newly added layer into a project."
-                ), Html.P)
-                self.dlg.log_panel.append(message, Html.P)
-                show_log_panel = True
+            for layer in error:
+                self.dlg.check_results.add_error(
+                    Error(
+                        layer.layer_name,
+                        Checks.SSLConnection,
+                        source_type=SourceLayer(layer.layer_name, layer.layer_id),
+                    )
+                )
+                self.dlg.enabled_ssl_button(True)
 
-                if Qgis.QGIS_VERSION_INT >= qgis_min_required_not_prod_ready:
-                    error_cfg_saving = True
-                    self.dlg.log_panel.append(error_cfg_suggest, Html.P)
-                    self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
-                    self.dlg.enabled_ssl_button(True)
-                else:
-                    self.dlg.log_panel.append(warning_suggest, Html.P)
-
-            autogenerated_keys = {}
-            int8 = []
-            for layer in self.project.mapLayers().values():
-
-                if not isinstance(layer, QgsVectorLayer):
-                    continue
-
-                result, field = auto_generated_primary_key_field(layer)
-                if result:
-                    if field not in autogenerated_keys.keys():
-                        autogenerated_keys[field] = []
-
-                    autogenerated_keys[field].append(layer.name())
-
-                if invalid_int8_primary_key(layer):
-                    int8.append(layer.name())
-
-            if autogenerated_keys or int8:
-                show_log_panel = True
-                warnings.append(Warnings.InvalidFieldType.value)
-                self.dlg.log_panel.append(tr('Some fields are invalid for QGIS server'), Html.H2)
-                self.dlg.log_panel.append(warning_suggest, Html.P)
-
-            for field, layers in autogenerated_keys.items():
-                # field can be "tid", "ctid" etc
-                self.dlg.log_panel.append(tr(
-                    "These layers don't have a proper primary key in the database. So QGIS Desktop tried to set a "
-                    "temporary field called '{}' to be a unique identifier. On QGIS Server, this will bring issues."
-                ).format(field), Html.P)
-                self.dlg.log_panel.append("<br>")
-                layers.sort()
-                self.dlg.log_panel.start_table()
-                for i, layer_name in enumerate(layers):
-                    self.dlg.log_panel.add_row(i)
-                    self.dlg.log_panel.append(layer_name, Html.Td)
-                    self.dlg.log_panel.end_row()
-
-                self.dlg.log_panel.end_table()
-
-            if int8:
-                int8.sort()
-                self.dlg.log_panel.append(tr(
-                    "The primary key has been detected as a bigint (integer8) for your layer :"), Html.P)
-                self.dlg.log_panel.start_table()
-                for i, layer_name in enumerate(int8):
-                    self.dlg.log_panel.add_row(i)
-                    self.dlg.log_panel.append(layer_name, Html.Td)
-                    self.dlg.log_panel.end_row()
-                self.dlg.log_panel.end_table()
-                self.dlg.log_panel.append("<br>")
-
-            if autogenerated_keys or int8:
-                self.dlg.log_panel.append(tr(
-                    "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
-                    "an integer8."), Html.P)
-                self.dlg.log_panel.append(tr(
-                    "The process is continuing but expect these layers to have some issues with some tools in "
-                    "Lizmap Web Client: zoom to feature, filtering…"
-                ), style=Html.P)
+            autogenerated_keys, int8 = project_invalid_pk(self.project)
+            for layer in autogenerated_keys:
+                self.dlg.check_results.add_error(
+                    Error(
+                        layer.layer_name,
+                        Checks.MissingPk,
+                        source_type=SourceLayer(layer.layer_name, layer.layer_id),
+                    )
+                )
+            for layer in int8:
+                self.dlg.check_results.add_error(
+                    Error(
+                        layer.layer_name,
+                        Checks.PkInt8,
+                        source_type=SourceLayer(layer.layer_name, layer.layer_id),
+                    )
+                )
 
             if lwc_version >= LwcVersions.Lizmap_3_7:
                 text = duplicated_layer_with_filter(self.project)
                 if text:
                     self.dlg.log_panel.append(tr('Optimisation about the legend'), Html.H2)
-                    self.dlg.log_panel.append(warning_suggest, Html.P)
+                    (self.dlg.log_panel.append
+                     (tr('This issue not blocking the generation of the Lizmap configuration file.'), Html.P))
                     self.dlg.log_panel.append(text, style=Html.P)
-                    warnings.append(Warnings.DuplicatedLayersWithFilters.value)
 
         results = simplify_provider_side(self.project)
-        if len(results):
-            self.dlg.log_panel.append(tr('Simplify geometry on the provider side'), Html.H2)
-            self.dlg.log_panel.append(tr(
-                'These PostgreSQL vector layers can have the simplification on the provider side') + ':', Html.P)
-            self.dlg.log_panel.start_table()
-            for i, layer in enumerate(results):
-                self.dlg.log_panel.add_row(i)
-                self.dlg.log_panel.append(layer, Html.Td)
-                self.dlg.log_panel.end_row()
-            self.dlg.log_panel.end_table()
-            self.dlg.log_panel.append(tr(
-                'Visit the layer properties, then in the "Rendering" tab to enable it.'), Html.P)
-            if Qgis.QGIS_VERSION_INT >= qgis_min_required_not_prod_ready:
-                self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
-            show_log_panel = True
-            error_cfg_saving = True
+        for layer in results:
+            self.dlg.check_results.add_error(
+                Error(
+                    layer.layer_name,
+                    Checks.SimplifyGeometry,
+                    source_type=SourceLayer(layer.layer_name, layer.layer_id),
+                )
+            )
             self.dlg.enabled_simplify_geom(True)
 
         results = use_estimated_metadata(self.project)
-        if len(results):
-            self.dlg.log_panel.append(tr('Estimated metadata'), Html.H2)
-            self.dlg.log_panel.append(tr(
-                'These PostgreSQL layers can have the use estimated metadata option enabled') + ':', Html.P)
-            self.dlg.log_panel.start_table()
-            for i, layer in enumerate(results):
-                self.dlg.log_panel.add_row(i)
-                self.dlg.log_panel.append(layer, Html.Td)
-                self.dlg.log_panel.end_row()
-            self.dlg.log_panel.end_table()
-            self.dlg.log_panel.append(tr(
-                'Edit your PostgreSQL connection to enable this option, then change the datasource by right clicking '
-                'on each layer above, then click "Change datasource" in the menu. Finally reselect your layer in the '
-                'new dialog.'), Html.P)
-            if Qgis.QGIS_VERSION_INT >= qgis_min_required_not_prod_ready:
-                self.dlg.log_panel.append(error_cfg_suggest, Html.P)
-                self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
-                show_log_panel = True
-                error_cfg_saving = True
-                self.dlg.enabled_estimated_md_button(True)
-            else:
-                self.dlg.log_panel.append(warning_suggest, Html.P)
+        for layer in results:
+            self.dlg.check_results.add_error(
+                Error(
+                    layer.layer_name,
+                    Checks.EstimatedMetadata,
+                    source_type=SourceLayer(layer.layer_name, layer.layer_id),
+                )
+            )
+            self.dlg.enabled_estimated_md_button(True)
 
-        if not project_trust_layer_metadata(self.project) and Qgis.QGIS_VERSION_INT >= qgis_min_required_not_prod_ready:
-            self.dlg.log_panel.append(tr('Trust project metadata'), Html.H2)
-            self.dlg.log_panel.append(tr(
-                'The project does not have the "Trust project metadata" enabled at the project level'), Html.P)
-            self.dlg.log_panel.append(tr(
-                'In the project properties → Data sources → at the bottom, there is a checkbox to trust the project '
-                'when the layer has no metadata.'), Html.P)
-            self.dlg.log_panel.append(error_cfg_suggest, Html.P)
-            self.dlg.log_panel.append(error_cfg_message, Html.P, level=Qgis.Critical)
-            show_log_panel = True
-            error_cfg_saving = True
+        if not project_trust_layer_metadata(self.project):
+            self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, Checks.TrustProject))
             self.dlg.enabled_trust_project(True)
 
-        if with_gui and show_log_panel:
-            self.dlg.mOptionsListWidget.setCurrentRow(log_index_panel)
+        self.dlg.check_results.sort()
+
+        if with_gui and self.dlg.check_results.has_rows():
+            self.dlg.mOptionsListWidget.setCurrentRow(self.dlg.mOptionsListWidget.count() - 2)
+            self.dlg.tab_log.setCurrentIndex(0)
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
 
-        if Qgis.QGIS_VERSION_INT >= qgis_min_required_not_prod_ready:
-            if with_gui and error_cfg_saving and not ignore_error:
-                self.dlg.log_panel.append(tr('Issues which can be fixed automatically'), Html.H2)
-                self.dlg.log_panel.append(tr(
-                    'You have issue(s) listed above, and there is a wizard to auto fix your project. Saving the '
-                    'configuration file is stopping.'), Html.Strong, time=True)
-                self.dlg.display_message_bar(
-                    "Error", tr('You must fix some issues about this project'), Qgis.Critical)
-                return None
+        if self.dlg.check_results.has_blocking() and not ignore_error:
+            self.dlg.display_message_bar(
+                tr("Blocking issue"),
+                tr("The project has at least one blocking issue. The file is not saved."),
+                Qgis.Critical,
+            )
+            return None
 
         metadata = {
             'qgis_desktop_version': qgis_version(),
@@ -3260,14 +3148,9 @@ class Lizmap:
         if repository:
             metadata['instance_target_repository'] = repository
 
-        if valid is not None:
-            metadata['project_valid'] = valid
-            if not valid:
-                warnings.append(Warnings.OgcNotValid.value)
-
         liz2json = dict()
         liz2json['metadata'] = metadata
-        liz2json['warnings'] = warnings
+        liz2json['warnings'] = self.dlg.check_results.to_json_summarized()
         liz2json["options"] = dict()
         liz2json["layers"] = dict()
 
@@ -3606,26 +3489,14 @@ class Lizmap:
 
         validator = QgsProjectServerValidator()
         valid, results = validator.validate(self.project)
-        if not valid:
-            self.dlg.log_panel.append(tr("OGC validation"), style=Html.H2)
-            self.dlg.log_panel.append(
-                tr("According to OGC standard : {}").format(tr('Valid') if valid else tr('Not valid')), Html.P)
-            self.dlg.log_panel.append(
-                tr(
-                    "Open the 'Project properties', then 'QGIS Server' tab, at the bottom, you can check your project "
-                    "according to OGC standard. If you need to fix a layer shortname, go to the 'Layer properties' "
-                    "for the given layer, then 'QGIS Server' tab, edit the shortname."
-                ), Html.P)
-
         LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
-
         if not valid:
-            message = tr(
-                'The QGIS project is not valid according to OGC standards. You should check '
-                'messages in the "Project properties" → "QGIS Server" tab then "Test configuration" at the bottom. '
-                '{} error(s) have been found').format(len(results))
-            # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
+            self.dlg.check_results.add_error(
+                Error(
+                    Path(self.project.fileName()).name,
+                    Checks.OgcValid,
+                )
+            )
 
         self.dlg.check_api_key_address()
 
@@ -3734,6 +3605,16 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
+        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        self.dlg.check_results.truncate()
+        beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
+        self.dlg.html_help.setHtml(
+            Checks.html(
+                severity=Severities.Blocking if beginner_mode else Severities.Important,
+                lizmap_cloud=is_lizmap_cloud(server_metadata)
+            )
+        )
+
         self.dlg.log_panel.clear()
         self.dlg.log_panel.append(tr('Start saving the Lizmap configuration'), style=Html.P, time=True)
         variables = self.project.customVariables()
@@ -3787,27 +3668,6 @@ class Lizmap:
                     stop_process
             ))
             return False
-
-        duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
-
-        # message = tr('Some layer(s) or group(s) have a duplicated name in the legend.')
-        # message += '\n\n'
-        # message += tr(
-        #     "It's not possible to store all the Lizmap configuration for these layer(s) or group(s), you should "
-        #     "change them to make them unique and reconfigure their settings in the 'Layers' tab of the plugin.")
-        # message += '\n\n'
-        # display = False
-        for name, count in duplicated_in_cfg.items():
-            if count >= 2:
-                from lizmap.models.check_project import Checks, Error
-                identifier = '"{}" → "'.format(name) + tr("count {} layers").format(count) + '\n'
-                self.dlg.check_results.add_error(Error(identifier, Checks.DuplicatedLayerNameOrGroup))
-                # display = True
-        # message += '\n\n'
-        # message += stop_process
-        # if display:
-        #     ScrollMessageBox(self.dlg, QMessageBox.Warning, tr('Configuration error'), message)
-        #     return False
 
         if not self.is_dev_version:
             if not self.server_manager.check_lwc_version(lwc_version.value):

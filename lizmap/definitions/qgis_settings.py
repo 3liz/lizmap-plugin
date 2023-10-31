@@ -17,10 +17,10 @@ class Settings:
         return KEY + '/' + key
 
     PreventEcw = 'prevent_ecw'
-    PreventPgAuthId = 'prevent_pg_auth_id'
+    PreventPgAuthDb = 'prevent_pg_auth_db'
     PreventPgService = 'prevent_pg_service'
     ForcePgUserPass = 'force_pg_user_password'
-    PreventNetworkDrive = 'prevent_network_drive'
+    PreventDrive = 'prevent_drive'
     AllowParentFolder = 'allow_parent_folder'
     NumberParentFolder = 'number_parent_folder'
     BeginnerMode = 'beginner_mode'

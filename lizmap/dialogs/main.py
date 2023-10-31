@@ -28,22 +28,23 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
+from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.log_panel import LogPanel
-from lizmap.models.check_project import TableCheck
 from lizmap.project_checker_tools import (
     ALLOW_PARENT_FOLDER,
     FORCE_LOCAL_FOLDER,
     FORCE_PG_USER_PASS,
     PREVENT_AUTH_DB,
     PREVENT_ECW,
-    PREVENT_NETWORK_DRIVE,
+    PREVENT_OTHER_DRIVE,
     PREVENT_SERVICE,
     project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.saas import SAAS_MAX_PARENT_FOLDER, SAAS_NAME, fix_ssl
+from lizmap.saas import fix_ssl
+from lizmap.widgets.check_project import Checks, TableCheck
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -177,7 +178,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.button_use_estimated_md.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
 
         self.button_trust_project.clicked.connect(self.fix_project_trust)
-        # self.button_trust_project.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
+        self.button_trust_project.setIcon(QIcon(':/images/themes/default/mIconQgsProjectFile.svg'))
 
         self.button_simplify_geom.clicked.connect(self.fix_simplify_geom_provider)
         self.button_simplify_geom.setIcon(QIcon(":images/themes/default/mIconPostgis.svg"))
@@ -231,13 +232,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
         )
         self.label_file_action.setOpenExternalLinks(True)
 
-        self.radio_beginner.setToolTip(
+        self.radio_beginner.setToolTip(tr(
             'If one safeguard is not OK, the Lizmap configuration file is not going to be generated.'
-        )
-        self.radio_normal.setToolTip(
+        ))
+        self.radio_normal.setToolTip(tr(
             'If one safeguard is not OK, only a warning will be displayed, not blocking the saving of the Lizmap '
             'configuration file.'
-        )
+        ))
 
         self.radio_force_local_folder.setText(FORCE_LOCAL_FOLDER)
         self.radio_force_local_folder.setToolTip(tr(
@@ -247,7 +248,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.radio_allow_parent_folder.setToolTip(tr(
             'Files can be located in a parent folder from {}, up to the setting below.'
         ).format(self.project.absolutePath()))
-        self.safe_network_drive.setText(PREVENT_NETWORK_DRIVE)
+
+        self.safe_other_drive.setText(PREVENT_OTHER_DRIVE)
         self.safe_pg_service.setText(PREVENT_SERVICE)
         self.safe_pg_auth_db.setText(PREVENT_AUTH_DB)
         self.safe_pg_user_password.setText(FORCE_PG_USER_PASS)
@@ -275,27 +277,34 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.safe_number_parent.setValue(QgsSettings().value(Settings.key(Settings.NumberParentFolder), type=int))
         self.safe_number_parent.valueChanged.connect(self.save_settings)
 
-        # Network drive
-        self.safe_network_drive.setChecked(QgsSettings().value(Settings.key(Settings.PreventNetworkDrive), type=bool))
-        self.safe_network_drive.toggled.connect(self.save_settings)
+        # Other drive
+        self.safe_other_drive.setChecked(QgsSettings().value(Settings.key(Settings.PreventDrive), type=bool))
+        self.safe_other_drive.toggled.connect(self.save_settings)
+        self.safe_other_drive.setToolTip(Checks.PreventDrive.description)
 
         # PG Service
         self.safe_pg_service.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgService), type=bool))
         self.safe_pg_service.toggled.connect(self.save_settings)
+        self.safe_pg_service.setToolTip(Checks.PgService.description)
 
         # PG Auth DB
-        self.safe_pg_auth_db.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgAuthId), type=bool))
+        self.safe_pg_auth_db.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgAuthDb), type=bool))
         self.safe_pg_auth_db.toggled.connect(self.save_settings)
+        self.safe_pg_auth_db.setToolTip(Checks.AuthenticationDb.description)
 
         # User password
         self.safe_pg_user_password.setChecked(QgsSettings().value(Settings.key(Settings.ForcePgUserPass), type=bool))
         self.safe_pg_user_password.toggled.connect(self.save_settings)
+        self.safe_pg_user_password.setToolTip(Checks.PgForceUserPass.description)
 
         # ECW
         self.safe_ecw.setChecked(QgsSettings().value(Settings.key(Settings.PreventEcw), type=bool))
         self.safe_ecw.toggled.connect(self.save_settings)
+        self.safe_ecw.setToolTip(Checks.PreventEcw.description)
 
-        self.label_safe_lizmap_cloud.setText(tr("Some safe guards are overridden by {}.").format(SAAS_NAME))
+        self.label_safe_lizmap_cloud.setText(tr(
+            "Some safeguards are overridden by {host}. Even in 'normal' mode, some safeguards are becoming 'blocking' "
+            "with a {host} instance.").format(host=CLOUD_NAME))
         msg = (
             '<ul>'
             '<li>{max_parent}</li>'
@@ -305,8 +314,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
             '<li>{ecw}</li>'
             '</ul>'.format(
                 max_parent=tr("Maximum of parent folder {} : {}").format(
-                    SAAS_MAX_PARENT_FOLDER, relative_path(SAAS_MAX_PARENT_FOLDER)),
-                network=PREVENT_NETWORK_DRIVE,
+                    CLOUD_MAX_PARENT_FOLDER, relative_path(CLOUD_MAX_PARENT_FOLDER)),
+                network=PREVENT_OTHER_DRIVE,
                 auth_db=PREVENT_AUTH_DB,
                 user_pass=FORCE_PG_USER_PASS,
                 ecw=PREVENT_ECW,
@@ -315,21 +324,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_safe_lizmap_cloud.setToolTip(msg)
 
         self.table_checks.setup()
+        css_path = resources_path('css', 'log.css')
+        with open(css_path, encoding='utf8') as f:
+            css = f.read()
+        self.html_help.document().setDefaultStyleSheet(css)
 
-    # self.table_checks.setSelectionMode(QAbstractItemView.SingleSelection)
-        # self.table_checks.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # self.table_checks.setSelectionBehavior(QAbstractItemView.SelectRows)
-        # self.table_checks.setAlternatingRowColors(True)
-        # self.table_checks.horizontalHeader().setStretchLastSection(True)
-        # self.table_checks.horizontalHeader().setVisible(True)
-        # print("BOB")
-        #
-        # self.table_checks.setColumnCount(len(Headers))
-        # for i, header in enumerate(Headers):
-        #     column = QTableWidgetItem(header.label)
-        #     column.setToolTip(header.tooltip)
-        #     self.table_checks.setHorizontalHeaderItem(i, column)
-        #     print(i)
     @property
     def check_results(self) -> TableCheck:
         return self.table_checks
@@ -908,7 +907,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         widgets = (
             self.group_file_layer,
             self.safe_number_parent,
-            self.safe_network_drive,
+            self.safe_other_drive,
             self.safe_pg_service,
             self.safe_pg_auth_db,
             self.safe_pg_user_password,
@@ -919,14 +918,28 @@ class LizmapDialog(QDialog, FORM_CLASS):
             widget.setEnabled(is_normal)
             widget.setVisible(is_normal)
 
+    def safeguards_to_markdown(self) -> str:
+        """ Export the list of safeguards to markdown. """
+        text = 'List of safeguards :\n'
+        text += '* Mode : {}\n'.format('normal' if self.radio_normal.isChecked() else 'safe')
+        text += '* Allow parent folder : {}\n'.format('yes' if self.radio_allow_parent_folder.isChecked() else 'no')
+        if self.radio_allow_parent_folder.isChecked():
+            text += '* Number of parent : {} folder(s)\n'.format(self.safe_number_parent.value())
+        text += '* Prevent other drive : {}\n'.format('yes' if self.safe_other_drive.isChecked() else 'no')
+        text += '* Prevent PG service : {}\n'.format('yes' if self.safe_pg_service.isChecked() else 'no')
+        text += '* Prevent PG Auth DB : {}\n'.format('yes' if self.safe_pg_auth_db.isChecked() else 'no')
+        text += '* Force PG user&pass : {}\n'.format('yes' if self.safe_pg_user_password.isChecked() else 'no')
+        text += '* Prevent ECW : {}\n'.format('yes' if self.safe_ecw.isChecked() else 'no')
+        return text
+
     def save_settings(self):
         """ Save settings checkboxes. """
         QgsSettings().setValue(Settings.key(Settings.BeginnerMode), not self.radio_normal.isChecked())
         QgsSettings().setValue(Settings.key(Settings.AllowParentFolder), self.radio_allow_parent_folder.isChecked())
         QgsSettings().setValue(Settings.key(Settings.NumberParentFolder), self.safe_number_parent.value())
-        QgsSettings().setValue(Settings.key(Settings.PreventNetworkDrive), self.safe_network_drive.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.PreventDrive), self.safe_other_drive.isChecked())
         QgsSettings().setValue(Settings.key(Settings.PreventPgService), self.safe_pg_service.isChecked())
-        QgsSettings().setValue(Settings.key(Settings.PreventPgAuthId), self.safe_pg_auth_db.isChecked())
+        QgsSettings().setValue(Settings.key(Settings.PreventPgAuthDb), self.safe_pg_auth_db.isChecked())
         QgsSettings().setValue(Settings.key(Settings.ForcePgUserPass), self.safe_pg_user_password.isChecked())
         QgsSettings().setValue(Settings.key(Settings.PreventEcw), self.safe_ecw.isChecked())
 

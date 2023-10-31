@@ -7,12 +7,14 @@ __email__ = 'info@3liz.org'
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QLocale, QUrl
 
+from lizmap.definitions.lizmap_cloud import (
+    CLOUD_ONLINE_LANGUAGES,
+    CLOUD_ONLINE_URL,
+)
+
 DOMAIN = 'https://docs.lizmap.com'
 VERSION = 'current'
 ONLINE_HELP_LANGUAGES = ('en', 'es', 'it', 'ja', 'pt', 'fi', 'fr')
-
-CLOUD = 'https://docs.lizmap.cloud'
-CLOUD_HELP_LANGUAGES = ('en', 'fr')
 
 
 def current_locale() -> str:
@@ -25,9 +27,9 @@ def current_locale() -> str:
 def online_cloud_help(page: str = '') -> QUrl:
     """ Online help URL according to locale and version. """
     locale = current_locale()
-    if locale not in CLOUD_HELP_LANGUAGES:
+    if locale not in CLOUD_ONLINE_LANGUAGES:
         locale = 'en'
-    return QUrl(f"{CLOUD}/{locale}/{page}")
+    return QUrl(f"{CLOUD_ONLINE_URL}/{locale}/{page}")
 
 
 def online_lwc_help(page: str = '', version=VERSION) -> QUrl:

@@ -4270,8 +4270,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>499</height>
+                <width>601</width>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4299,6 +4299,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_87">
+                 <property name="text">
+                  <string>This feature is not linked to the QGIS native atlas feature. Both tools are independent.</string>
                  </property>
                 </widget>
                </item>
@@ -4619,11 +4626,48 @@ This is different to the map maximum extent (defined in QGIS project properties,
            <item>
             <widget class="QTabWidget" name="tab_log">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
+             <widget class="QWidget" name="table_log">
+              <attribute name="title">
+               <string>Checks</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_70">
+               <item>
+                <widget class="QLabel" name="label_85">
+                 <property name="text">
+                  <string>Some checks might be blocking the CFG file generation. To fix, either use the tooltip in the last column, or check the documentation in the next tab for all errors which can be reported.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="TableCheck" name="table_checks"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="table_help">
+              <attribute name="title">
+               <string>Help about checks</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_71">
+               <item>
+                <widget class="QLabel" name="label_84">
+                 <property name="text">
+                  <string>List of checks which have been executed</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTextEdit" name="html_help"/>
+               </item>
+              </layout>
+             </widget>
              <widget class="QWidget" name="html_log">
               <attribute name="title">
-               <string>Raw log</string>
+               <string>Raw logs</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_69">
                <item>
@@ -4639,16 +4683,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <string>Clear log</string>
                  </property>
                 </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="table_log">
-              <attribute name="title">
-               <string>Table log</string>
-              </attribute>
-              <layout class="QVBoxLayout" name="verticalLayout_70">
-               <item>
-                <widget class="TableCheck" name="table_checks"/>
                </item>
               </layout>
              </widget>
@@ -4783,13 +4817,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
            <item>
             <widget class="QGroupBox" name="groupBox_13">
              <property name="title">
-              <string>Safe guards</string>
+              <string>Safeguards</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_67">
               <item>
                <widget class="QLabel" name="label_83">
                 <property name="text">
-                 <string>Only if you are sure about your server and if you are more comfortable with Lizmap, you can disable some safe guards</string>
+                 <string>Only if you are sure about your server and if you are more comfortable with Lizmap, you can disable some safeguards. If a project is not working, please check these safeguards.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -4869,9 +4903,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="safe_network_drive">
+               <widget class="QCheckBox" name="safe_other_drive">
                 <property name="text">
-                 <string notr="true">SET PYTHON PREVENT ANOTHER NETWORK DRIVE</string>
+                 <string notr="true">SET PYTHON PREVENT ANOTHER DRIVE</string>
                 </property>
                 <property name="checked">
                  <bool>false</bool>
@@ -4952,23 +4986,23 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -4992,7 +5026,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>TableCheck</class>
    <extends>QTableWidget</extends>
-   <header location="global">lizmap.models.check_project</header>
+   <header>lizmap.widgets.check_project</header>
   </customwidget>
  </customwidgets>
  <tabstops>

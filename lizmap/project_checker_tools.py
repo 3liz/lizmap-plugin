@@ -17,25 +17,20 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
+from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.saas import (
-    SAAS_DOMAIN,
-    SAAS_NAME,
-    edit_connection,
-    edit_connection_title,
-    right_click_step,
-)
 from lizmap.tools import is_vector_pg, update_uri
+from lizmap.widgets.check_project import Checks, SourceLayer
 
 """ Some checks which can be done on a layer. """
 
 # https://github.com/3liz/lizmap-web-client/issues/3692
 
-FORCE_LOCAL_FOLDER = tr('Prevent file based layers to be in a parent folder')
+FORCE_LOCAL_FOLDER = tr('Prevent file based layers from being in a parent folder')
 ALLOW_PARENT_FOLDER = tr('Allow file based layers to be in a parent folder')
-PREVENT_NETWORK_DRIVE = tr('Prevent file based layers to be stored on another network drive')
-PREVENT_SERVICE = tr('Prevent PostgreSQL layers to use a service file')
-PREVENT_AUTH_DB = tr('Prevent PostgreSQL layers to use the authentication database')
+PREVENT_OTHER_DRIVE = tr('Prevent file based layers from being stored on another drive (network or local)')
+PREVENT_SERVICE = tr('Prevent PostgreSQL layers from using a service file')
+PREVENT_AUTH_DB = tr('Prevent PostgreSQL layers from using the QGIS authentication database')
 FORCE_PG_USER_PASS = tr(
     'PostgreSQL layers, if using a user and password, must have credentials saved in the datasource')
 PREVENT_ECW = tr('Prevent from using a ECW raster')
@@ -47,75 +42,40 @@ def project_safeguards_checks(
         prevent_auth_id: bool,
         prevent_service: bool,
         force_pg_user_pass: bool,
-        prevent_network_drive: bool,
+        prevent_other_drive: bool,
         allow_parent_folder: bool,
         parent_folder: str,
         lizmap_cloud: bool,
-) -> Tuple[Dict[str, str], str]:
+) -> Dict:
     """ Check the project about safeguards. """
     # Do not use homePath, it's not designed for this if the user has set a custom home path
     project_home = Path(project.absolutePath())
-    layer_error: Dict[str, str] = {}
+    results = {}
 
-    connection_error = False
     for layer in project.mapLayers().values():
 
         if isinstance(layer, QgsRasterLayer):
             if layer.source().lower().endswith('ecw') and prevent_ecw:
-                if lizmap_cloud:
-                    layer_error[layer.name()] = tr(
-                        'The layer "{}" is an ECW. Because of the ECW\'s licence, this format is not compatible with '
-                        'QGIS server. You should switch to a COG format.'
-                    ).format(layer.name())
-                else:
-                    layer_error[layer.name()] = tr(
-                        'The layer "{}" is an ECW. You have activated a safeguard about preventing you using an ECW '
-                        'layer. Either switch to a COG format or disable this safeguard.'
-                    ).format(layer.name())
+                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventEcw
 
         if is_vector_pg(layer):
             # Make a copy by using a string, so we are sure to have user or password
             datasource = QgsDataSourceUri(layer.source())
             if datasource.authConfigId() != '' and prevent_auth_id:
-                if lizmap_cloud:
-                    layer_error[layer.name()] = tr(
-                        'The layer "{}" is using the QGIS authentication database. You must either use a PostgreSQL '
-                        'service or store the login and password in the layer.'
-                    ).format(layer.name())
-                else:
-                    layer_error[layer.name()] = tr(
-                        'The layer "{}" is using the QGIS authentication database. You have activated a safeguard '
-                        'preventing you using the QGIS authentication database. Either switch to another '
-                        'authentication mechanism or disable this safeguard.'
-                    ).format(layer.name())
-                connection_error = True
+                results[SourceLayer(layer.name(), layer.id())] = Checks.AuthenticationDb
 
                 # We can continue
                 continue
 
             if datasource.service() != '' and prevent_service:
-                layer_error[layer.name()] = tr(
-                    'The layer "{}" is using the PostgreSQL service file. Using a service file can be recommended in '
-                    'many cases, but it requires a configuration step. If you have done the configuration (on the '
-                    'server side mainly), you can disable this safeguard.'
-                ).format(layer.name())
+                results[SourceLayer(layer.name(), layer.id())] = Checks.PgService
 
                 # We can continue
                 continue
 
-            if datasource.host().endswith(SAAS_DOMAIN) or force_pg_user_pass:
+            if datasource.host().endswith(CLOUD_DOMAIN) or force_pg_user_pass:
                 if not datasource.username() or not datasource.password():
-                    if lizmap_cloud:
-                        layer_error[layer.name()] = tr(
-                            'The layer "{}" is missing some credentials. Either the user and/or the password is not in '
-                            'the layer datasource.'
-                        ).format(layer.name())
-                    else:
-                        layer_error[layer.name()] = tr(
-                            'The layer "{}" is missing some credentials. Either the user and/or the password is not in '
-                            'the layer datasource, or disable the safeguard.'
-                        ).format(layer.name())
-                    connection_error = True
+                    results[SourceLayer(layer.name(), layer.id())] = Checks.PgForceUserPass
 
                 # We can continue
                 continue
@@ -138,47 +98,44 @@ def project_safeguards_checks(
             # https://docs.python.org/3/library/os.path.html#os.path.relpath
             # On Windows, ValueError is raised when path and start are on different drives.
             # For instance, H: and C:
-            # Lizmap Cloud message must be prioritized
-            if lizmap_cloud:
-                layer_error[layer.name()] = tr(
-                    'The layer "{}" can not be hosted on {} because the layer is hosted on a different drive.'
-                ).format(layer.name(), SAAS_NAME)
-                continue
-            elif prevent_network_drive:
-                layer_error[layer.name()] = tr(
-                    'The layer "{}" is on another drive. Either move this file based layer or disable this safeguard.'
-                ).format(layer.name())
+
+            if lizmap_cloud or prevent_other_drive:
+                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventDrive
                 continue
 
             # Not sure what to do for now...
             # We can't compute a relative path, but the user didn't enable the safety check, so we must still skip
             continue
 
-        if parent_folder in relative_path and allow_parent_folder:
-            if lizmap_cloud:
-                # The layer can only be hosted the in "/qgis" directory
-                layer_error[layer.name()] = tr(
-                    'The layer "{}" can not be hosted on {} because the layer is located in too many '
-                    'parent\'s folder. The current path from the project home path to the given layer is "{}".'
-                ).format(layer.name(), SAAS_NAME, relative_path)
-            else:
-                layer_error[layer.name()] = tr(
-                    'The layer "{}" is located in too many parent\'s folder. Either move this file based layer or '
-                    'disable this safeguard. The current path from the project home path to the given layer is "{}".'
-                ).format(layer.name(), relative_path)
+        if allow_parent_folder:
+            # The user allow parent folder, so we check against the string provided in the function call
+            if parent_folder in relative_path:
+                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventParentFolder
+        else:
+            # The user wants only local files, we only check for ".."
+            if '..' in relative_path:
+                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventParentFolder
 
-    more = ''
-    if connection_error:
-        more = edit_connection_title + " "
-        more += edit_connection + " "
-        more += '<br>'
-        more += right_click_step + " "
-        more += tr(
-            "When opening a QGIS project in your desktop, you mustn't have any "
-            "prompt for a user&password."
-        )
+    return results
 
-    return layer_error, more
+
+def project_invalid_pk(project: QgsProject) -> Tuple[List[SourceLayer], List[SourceLayer]]:
+    """ Check either non existing PK or bigint. """
+    autogenerated_keys = []
+    int8 = []
+    for layer in project.mapLayers().values():
+
+        if not isinstance(layer, QgsVectorLayer):
+            continue
+
+        result, field = auto_generated_primary_key_field(layer)
+        if result:
+            autogenerated_keys.append(SourceLayer(layer.name(), layer.id()))
+
+        if invalid_int8_primary_key(layer):
+            int8.append(SourceLayer(layer.name(), layer.id()))
+
+    return autogenerated_keys, int8
 
 
 def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optional[str]]:
@@ -309,7 +266,7 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
     return text
 
 
-def simplify_provider_side(project: QgsProject, fix=False) -> List[str]:
+def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
     """ Return the list of layer name which can be simplified on the server side. """
     results = []
     for layer in project.mapLayers().values():
@@ -322,7 +279,7 @@ def simplify_provider_side(project: QgsProject, fix=False) -> List[str]:
         if not layer.simplifyMethod().forceLocalOptimization():
             continue
 
-        results.append(layer.name())
+        results.append(SourceLayer(layer.name(), layer.id()))
 
         if fix:
             simplify = layer.simplifyMethod()
@@ -332,7 +289,7 @@ def simplify_provider_side(project: QgsProject, fix=False) -> List[str]:
     return results
 
 
-def use_estimated_metadata(project: QgsProject, fix: bool = False) -> List[str]:
+def use_estimated_metadata(project: QgsProject, fix: bool = False) -> List[SourceLayer]:
     """ Return the list of layer name which can use estimated metadata. """
     results = []
     for layer in project.mapLayers().values():
@@ -341,7 +298,7 @@ def use_estimated_metadata(project: QgsProject, fix: bool = False) -> List[str]:
 
         uri = layer.dataProvider().uri()
         if not uri.useEstimatedMetadata():
-            results.append(layer.name())
+            results.append(SourceLayer(layer.name(), layer.id()))
 
             if fix:
                 uri.setUseEstimatedMetadata(True)
