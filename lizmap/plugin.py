@@ -133,6 +133,7 @@ from lizmap.saas import (
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
+from lizmap.widgets.project_tools import is_layer_wms_excluded
 
 try:
     from lizmap.plugin_manager import QgisPluginManager
@@ -2196,6 +2197,12 @@ class Lizmap:
                 if predefined_group != PredefinedGroup.No.value:
                     text = tr('Special group for Lizmap Web Client')
                     item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
+                elif is_layer_wms_excluded(self.project, self.myDic[child_id]['name']):
+                    text = tr(
+                        'The layer is excluded from WMS service, in the '
+                        '"Project Properties" → "QGIS Server" → "WMS" → "Excluded Layers"'
+                    )
+                    item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
                 else:
                     item.setToolTip(0, self.myDic[child_id]['name'])
                 item.setIcon(0, child_icon)
@@ -2415,6 +2422,11 @@ class Lizmap:
 
         if self.dlg.current_lwc_version() >= LwcVersions.Lizmap_3_7:
             if self._current_item_predefined_group() != PredefinedGroup.No.value:
+                self.dlg.gb_layerSettings.setEnabled(False)
+
+        layer = self._current_selected_layer()
+        if isinstance(layer, QgsMapLayer):
+            if is_layer_wms_excluded(self.project, layer.name()):
                 self.dlg.gb_layerSettings.setEnabled(False)
 
     # def enable_or_not_toggle_checkbox(self):
