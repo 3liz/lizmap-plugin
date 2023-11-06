@@ -1185,17 +1185,16 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
-    def test_fake_layer_id_table_manager(self):
-        """Test we can skip a wrong layer id."""
+    def test_unavailable_layer_table_manager(self):
+        """ Test we can keep layer which is unavailable at the moment. """
         table = QTableWidget()
         definitions = AtlasDefinitions()
 
         table_manager = TableManager(
             None, definitions, AtlasEditionDialog, table, None, None, None, None)
 
-        self.assertEqual(table.columnCount(), len(definitions.layer_config.keys()))
+        self.assertEqual(table_manager.table.rowCount(), 0)
 
-        # JSON from LWC 3.4 and above
         layer_1 = {
             "layer": "ID_WHICH_DOES_NOT_EXIST",
             "primaryKey": "id",
@@ -1213,9 +1212,25 @@ class TestTableManager(unittest.TestCase):
                 layer_1
             ]
         }
-        self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
-        self.assertEqual(table_manager.table.rowCount(), 0)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json(version=LwcVersions.Lizmap_3_6)
+
+        expected = {
+            'atlasLayer': 'ID_WHICH_DOES_NOT_EXIST',
+            'atlasPrimaryKey': 'id',
+            'atlasDisplayLayerDescription': 'False',
+            'atlasFeatureLabel': 'name',
+            'atlasSortField': 'name',
+            'atlasHighlightGeometry': 'True',
+            'atlasZoom': 'center',
+            'atlasDisplayPopup': 'True',
+            'atlasTriggerFilter': 'True',
+            'atlasDuration': 5,
+            'atlasEnabled': 'True',
+            'atlasMaxWidth': 25
+        }
+        self.assertDictEqual(expected, data)
 
     def test_table_manager(self):
         """Test about the table manager.

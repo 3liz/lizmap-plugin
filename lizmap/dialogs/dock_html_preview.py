@@ -121,6 +121,9 @@ class HtmlPreview(QDockWidget):
 
     def set_server_url(self, url: str):
         """ Set the server URL according to the main dialog. """
+        if not url:
+            return
+
         if not url.endswith('/'):
             url += '/'
         self._server_url = url

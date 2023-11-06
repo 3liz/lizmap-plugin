@@ -623,9 +623,6 @@ class ServerManager:
         with open(self.cache_file_for_name(server_alias), 'w', encoding='utf8') as json_file:
             json_file.write(json_file_content)
 
-        # TODO, I think there something wrong here
-        # action_text_cell.setData(Qt.UserRole, content)
-
         # Add the JSON metadata in the server combobox
         index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
         self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
@@ -643,6 +640,7 @@ class ServerManager:
         markdown += '* Lizmap plugin : {}\n'.format(version())
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)
+        qgis_cell.setData(Qt.UserRole + 1, content)
 
         # Only adding Lizmap saas if set to true
         if is_lizmap_cloud(content):
@@ -1070,7 +1068,12 @@ class ServerManager:
         slot = partial(QDesktopServices.openUrl, QUrl(ServerWizard.url_server_info(url)))
         open_server_info_url.triggered.connect(slot)
 
-        if any(item in version() for item in UNSTABLE_VERSION_PREFIX) or to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+        is_dev = (
+                any(
+                    item in version() for item in UNSTABLE_VERSION_PREFIX
+                ) or to_bool(os.getenv("LIZMAP_ADVANCED_USER"))
+        )
+        if is_dev:
             open_url = menu.addAction(tr("Open raw JSON file URL") + "…")
             left_item = self.table.item(item.row(), TableCell.Url.value)
             url = left_item.data(Qt.UserRole)

@@ -223,6 +223,15 @@ class TableManager:
 
         row = selection[0].row()
 
+        # Invalid layer
+        cell = self.table.item(row, 0)
+        value = cell.data(Qt.UserRole + 1)
+        if isinstance(value, bool) and not value:
+            # value is a boolean = False
+            # We can't edit a layer which is invalid,
+            # Maybe just the layer wasn't loaded in QGIS desktop because the file was missing
+            return
+
         data = dict()
         for i, key in enumerate(self.keys):
             cell = self.table.item(row, i)
@@ -258,13 +267,29 @@ class TableManager:
                     value = value(self._layer)
 
             if input_type == InputType.Layer:
-                layer = self.project.mapLayer(value)
-                self._layer = layer
-                cell.setText(layer.name())
-                cell.setData(Qt.UserRole, layer.id())
-                cell.setData(Qt.ToolTipRole, '{} ({})'.format(layer.name(), layer.crs().authid()))
-                # noinspection PyArgumentList
-                cell.setIcon(QgsMapLayerModel.iconForLayer(layer))
+                self._layer = self.project.mapLayer(value)
+                cell.setData(Qt.UserRole, value)
+                if self._layer:
+                    cell.setText(self._layer.name())
+                    cell.setData(Qt.ToolTipRole, '{} ({})'.format(self._layer.name(), self._layer.crs().authid()))
+                    if self._layer.isValid():
+                        cell.setIcon(QgsMapLayerModel.iconForLayer(self._layer))
+                        cell.setData(Qt.UserRole + 1, True)
+
+                if not self._layer or not self._layer.isValid():
+                    # Layer is not correctly loading in QGIS
+                    cell.setData(Qt.UserRole + 1, False)
+                    cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
+                    if self._layer:
+                        tooltip_value = self._layer.name()
+                    else:
+                        tooltip_value = value
+                    cell.setData(
+                        Qt.ToolTipRole,
+                        tr(
+                            'Layer {} is unavailable in QGIS, it\'s not possible to edit its configuration.'
+                        ).format(tooltip_value)
+                    )
 
             elif input_type == InputType.Layers:
                 names = []
@@ -294,6 +319,13 @@ class TableManager:
                             'Field "{}" not found in the layer. You should check this configuration or fix your '
                             'fields.'
                         ).format(value))
+                else:
+                    # No layer
+                    cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
+                    cell.setData(
+                        Qt.ToolTipRole,
+                        tr("Not possible to check the field type if the layer is not loaded in QGIS").format(value)
+                    )
 
             elif input_type == InputType.Fields:
                 cell.setText(value)
@@ -962,11 +994,14 @@ class TableManager:
                     if definition['type'] == InputType.Layer:
                         vector_layer = self.project.mapLayer(value)
                         if not vector_layer or not vector_layer.isValid():
+                            # A layer temporary not available will be found in the project, but "not valid".
+                            # Some metadata like CRS was still imported from the QGS file, but not fields
                             LOGGER.warning(
-                                'In Lizmap configuration file, section "{}", the layer with ID "{}" is invalid or '
-                                'does not exist. Skipping that layer.'.format(
+                                'In Lizmap configuration file, section "{}", the layer with ID "{}" is invalid or does '
+                                'not exist. Trying to keep configuration.'.format(
                                     self.definitions.key(), value))
-                            valid_layer = False
+                            # Let's try to keep the configuration
+                            # valid_layer = False
                         layer_data[key] = value
                     elif definition['type'] == InputType.Layers:
                         layer_data[key] = value

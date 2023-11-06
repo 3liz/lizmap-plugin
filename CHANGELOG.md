@@ -6,7 +6,7 @@
 * Add a new tool for checking the project against some rules :
   * Possibility to set some safeguards, according to the user level and the server
   * Some rules might be blocking the CFG file
-* Following the previes featue about rules, add new buttons to auto fix the project :
+* Following the previous features about rules, add new buttons to auto fix the project :
   * Use estimated metadata
   * Use geometry simplification
   * Use project trust option
@@ -16,6 +16,9 @@
 * Avoid a Python error about missing primary key
 * Add a button for adding easily the French IGN orthophoto for French QGIS users
 * Add attributions on layers which are provided by the plugin
+* Possibility to open the plugin even if some layers are temporary unavailable and to no loose some Lizmap configuration
+  if the layer was used in a tool
+* Display some warnings icons if the layer or the field was not loaded correctly or not existing anymore
 
 ## 3.18.1 - 2023-10-27
 
