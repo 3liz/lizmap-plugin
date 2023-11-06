@@ -65,8 +65,14 @@ def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
     if not primary_key:
         return False
 
-    field_type = layer.fields().field(primary_key).typeName()
-    return field_type.lower() == 'int8'
+    field = layer.fields().field(primary_key)
+
+    if not field:
+        # The primary key used in the datasource doesn't exist in the proper layer fields
+        # We don't check, because this test is done in "auto_generated_primary_key_field"
+        return False
+
+    return field.typeName().lower() == 'int8'
 
 
 def duplicated_layer_name_or_group(project: QgsProject) -> dict:
