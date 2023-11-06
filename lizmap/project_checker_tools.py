@@ -65,13 +65,12 @@ def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
     if not primary_key:
         return False
 
-    field = layer.fields().field(primary_key)
-
-    if not field:
+    if primary_key not in layer.fields().names():
         # The primary key used in the datasource doesn't exist in the proper layer fields
         # We don't check, because this test is done in "auto_generated_primary_key_field"
         return False
 
+    field = layer.fields().field(primary_key)
     return field.typeName().lower() == 'int8'
 
 
