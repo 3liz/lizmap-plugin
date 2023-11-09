@@ -2518,7 +2518,11 @@ class Lizmap:
     def add_osm_mapnik(self):
         """ Add the OSM mapnik base layer. """
         source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0'
-        self._add_base_layer(source, 'OpenStreetMap')
+        self._add_base_layer(
+            source,
+            'OpenStreetMap',
+            'https://openstreetmap.org',
+            '© ' + tr('OpenStreetMap contributors'))
 
     def add_french_ign_layer(self, layer: IgnLayer):
         """ Add some French IGN layers. """
@@ -2533,12 +2537,16 @@ class Lizmap:
         }
         # Do not use urlencode
         source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
-        self._add_base_layer(source, layer.title)
+        self._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
 
-    def _add_base_layer(self, source: str, name: str):
+    def _add_base_layer(self, source: str, name: str, attribution_url: str = None, attribution_name: str = None):
         """ Add a base layer to the "baselayers" group. """
         self.add_group_baselayers()
         raster = QgsRasterLayer(source, name, 'wms')
+        if attribution_url:
+            raster.setAttributionUrl(attribution_url)
+        if attribution_name:
+            raster.setAttribution(attribution_name)
         root_group = self.project.layerTreeRoot()
 
         groups = root_group.findGroups()
