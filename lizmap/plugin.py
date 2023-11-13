@@ -97,6 +97,7 @@ from lizmap.definitions.online_help import (
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.definitions.warnings import Warnings
+from lizmap.dialogs.dock_html_preview import HtmlPreview
 from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.html_maptip import HtmlMapTipDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
@@ -223,6 +224,7 @@ class Lizmap:
         self.version = version()
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg = LizmapDialog(is_dev_version=self.is_dev_version)
+        self.dock_html_preview = None
         self.version_checker = None
         if self.is_dev_version:
 
@@ -833,6 +835,11 @@ class Lizmap:
         self.dlg.check_qgis_version(widget=True)
         self.check_webdav()
 
+        if self.dock_html_preview:
+            # Change the URL for the CSS
+            self.dock_html_preview: HtmlPreview
+            self.dock_html_preview.set_server_url(self.dlg.current_server_info(ServerComboData.ServerUrl.value))
+
         lizmap_cloud = is_lizmap_cloud(current_metadata)
         for item in self.lizmap_cloud:
             item.setVisible(lizmap_cloud)
@@ -961,6 +968,14 @@ class Lizmap:
         # connect the action to the run method
         # noinspection PyUnresolvedReferences
         self.action.triggered.connect(self.run)
+
+        self.dock_html_preview = HtmlPreview(None)
+        self.dock_html_preview.set_server_url(self.dlg.current_server_info(ServerComboData.ServerUrl.value))
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_html_preview)
+        self.dock_html_preview.setVisible(False)
+        self.dlg.button_maptip_preview.setText('')
+        self.dlg.button_maptip_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
+        self.dlg.button_maptip_preview.clicked.connect(self.open_dock_preview_maptip)
 
         if self.is_dev_version:
             label = 'Lizmap dev'
@@ -1360,6 +1375,10 @@ class Lizmap:
         self.iface.webMenu().removeAction(self.action)
         self.iface.removeWebToolBarIcon(self.action)
 
+        if self.dock_html_preview:
+            self.iface.removeDockWidget(self.dock_html_preview)
+            del self.dock_html_preview
+
         if self.help_action:
             self.iface.pluginHelpMenu().removeAction(self.help_action)
             del self.help_action
@@ -1378,6 +1397,7 @@ class Lizmap:
         data = self.layer_options_list['popupSource']['widget'].currentData()
         self.dlg.btConfigurePopup.setVisible(data in ('lizmap', 'qgis'))
         self.dlg.widget_qgis_maptip.setVisible(data == 'qgis')
+        self.dlg.button_maptip_preview.setVisible(data == 'qgis')
 
         if data == 'lizmap':
             layer = self._current_selected_layer()
@@ -4017,6 +4037,13 @@ class Lizmap:
         """
         self.reinit_default_properties()
         self.dlg.close()
+
+    def open_dock_preview_maptip(self):
+        if self.dock_html_preview.isVisible():
+            return
+
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_html_preview)
+        self.dock_html_preview.setVisible(True)
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""
