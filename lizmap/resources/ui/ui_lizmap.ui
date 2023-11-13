@@ -1736,6 +1736,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             </widget>
                            </item>
                            <item>
+                            <widget class="QPushButton" name="button_maptip_preview">
+                             <property name="text">
+                              <string notr="true">PREVIEW</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
                             <spacer name="horizontalSpacer_2">
                              <property name="orientation">
                               <enum>Qt::Horizontal</enum>
