@@ -129,6 +129,14 @@ class LizmapConfig:
             'draw': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'use_native_zoom_levels': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True,
+                'always_export': True, 'use_proper_boolean': True,
+            },
+            'hide_numeric_scale_value': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True,
+                'always_export': True, 'use_proper_boolean': True,
+            },
             # Deprecated since LWC 3.7.0
             # There is a new "print" panel
             'print': {

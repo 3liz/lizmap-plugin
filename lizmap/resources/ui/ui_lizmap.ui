@@ -1075,6 +1075,39 @@ QListWidget::item::selected {
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="gb_3857_project">
+                 <property name="title">
+                  <string>Project in EPSG:3857</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_67">
+                  <item>
+                   <widget class="QLabel" name="label_84">
+                    <property name="text">
+                     <string>Your project projection is currently EPSG:3857. You can choose to use native 3857 zoom levels instead of map scales defined above. It's recommended, for example, text on external tiles will have a better rendering.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="use_native_zoom">
+                    <property name="text">
+                     <string>Use native zoom levels for a better display.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="hide_numeric_scale_value">
+                    <property name="text">
+                     <string>Hide the numeric scale value, because it won't be rounded values.</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QGroupBox" name="gb_extent">
                  <property name="title">
                   <string>Initial map extent</string>

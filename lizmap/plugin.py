@@ -426,6 +426,8 @@ class Lizmap:
         self.global_options['mapScales']['widget'] = self.dlg.inMapScales
         self.global_options['minScale']['widget'] = self.dlg.inMinScale
         self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
+        self.global_options['use_native_zoom_levels']['widget'] = self.dlg.use_native_zoom
+        self.global_options['hide_numeric_scale_value']['widget'] = self.dlg.hide_numeric_scale_value
         self.global_options['acl']['widget'] = self.dlg.inAcl
         self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
         self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
@@ -954,6 +956,7 @@ class Lizmap:
 
         # For deprecated features in LWC 3.7 about base layers
         self.check_visibility_crs_3857()
+        self.dlg.project_crs_3857()
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
@@ -3990,12 +3993,24 @@ class Lizmap:
 
         self.dlg.scales_warning.setVisible(visible)
 
-        current_version = self.current_lwc_version()
+        current_version = self.dlg.current_lwc_version()
         if not current_version:
             # No server yet
             return
 
-        if current_version >= LwcVersions.Lizmap_3_7:
+        if current_version <= LwcVersions.Lizmap_3_6:
+            self.dlg.scales_warning.setVisible(visible)
+
+            # Start deprecated this panel
+            self.dlg.warning_base_layer_deprecated.setVisible(False)
+            self.dlg.gb_externalLayers.setEnabled(True)
+            self.dlg.cbAddEmptyBaselayer.setEnabled(True)
+            self.dlg.cbStartupBaselayer.setEnabled(True)
+
+        else:
+            # In LWC 3.7, we always use project projection
+            self.dlg.scales_warning.setVisible(False)
+
             # We start showing some deprecated warnings if needed
             self.dlg.warning_base_layer_deprecated.setVisible(True)
 
@@ -4018,15 +4033,6 @@ class Lizmap:
                 # When only one item in the combobox but it's the 'empty' base layer
                 if self.dlg.cbStartupBaselayer.itemText(0) == 'empty':
                     self.dlg.cbStartupBaselayer.setEnabled(False)
-
-        else:
-            # We do nothing ...
-            self.dlg.warning_base_layer_deprecated.setVisible(False)
-            self.dlg.gb_externalLayers.setEnabled(True)
-            self.dlg.cbAddEmptyBaselayer.setEnabled(True)
-            self.dlg.cbStartupBaselayer.setEnabled(True)
-
-        # TODO make string translatable in self.dlg.label_deprecated_base_layers
 
     def on_baselayer_checkbox_change(self):
         """
@@ -4125,6 +4131,7 @@ class Lizmap:
         """Plugin run method : launch the GUI."""
         self.dlg.check_action_file_exists()
         self.dlg.check_project_thumbnail()
+        self.dlg.project_crs_3857()
 
         if self.dlg.isVisible():
             # show dialog in front of QGIS

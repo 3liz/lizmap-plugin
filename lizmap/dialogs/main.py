@@ -10,6 +10,7 @@ from typing import Optional
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsCoordinateReferenceSystem,
     QgsFieldProxyModel,
     QgsMapLayerProxyModel,
     QgsProject,
@@ -229,10 +230,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
             'saved as well if necessary'
         ))
 
-        # TODO translate
         self.warning_base_layer_deprecated.set_text(
-            "You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel is now "
-            "deprecated."
+            tr(
+                "You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel is now "
+                "deprecated."
+            )
         )
 
         self.widget_deprecated_popup.set_text(tr(
@@ -892,6 +894,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.gb_layerSettings,
             self.gb_ftp,
             self.gb_project_thumbnail,
+            self.gb_3857_project,
             self.gb_visibleTools,
             self.gb_Scales,
             self.gb_extent,
@@ -908,6 +911,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)
+
+    def project_crs_3857(self):
+        """ When the project CRS is EPSG:3857 and LWC 3.7. """
+        lwc_version = self.current_lwc_version()
+        if not lwc_version or lwc_version <= LwcVersions.Lizmap_3_6:
+            self.gb_3857_project.setVisible(False)
+            return
+
+        self.gb_3857_project.setVisible(self.project.crs() == QgsCoordinateReferenceSystem('EPSG:3857'))
 
     def check_project_thumbnail(self):
         """ Check the project thumbnail and display the metadata. """
