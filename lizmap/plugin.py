@@ -974,6 +974,7 @@ class Lizmap:
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_html_preview)
         self.dock_html_preview.setVisible(False)
         self.dlg.button_maptip_preview.setText('')
+        self.dlg.button_maptip_preview.setToolTip(tr('Open the HTML Lizmap maptip popup preview dock'))
         self.dlg.button_maptip_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
         self.dlg.button_maptip_preview.clicked.connect(self.open_dock_preview_maptip)
 
@@ -2818,6 +2819,7 @@ class Lizmap:
             tr('The maptip has been set in the layer "{}".').format(layer.name()),
             QMessageBox.Ok
         )
+        self.dock_html_preview.update_html()
         return True
 
     def html_table_from_layer(self):
