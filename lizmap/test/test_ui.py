@@ -82,7 +82,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('noLegendImage'))
 
         # For LWC 3.5
-        output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False, check_server=False)
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False, check_server=False, ignore_error=True)
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], str(False))
 

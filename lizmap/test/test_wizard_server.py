@@ -2,7 +2,7 @@
 import os
 import unittest
 
-from qgis._core import Qgis
+from qgis.core import Qgis
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QWizard
 
