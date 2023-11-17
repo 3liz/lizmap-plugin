@@ -71,7 +71,7 @@ class Severity:
 
 class Severities(Severity, Enum):
     """ List of severities. """
-    Blocking = 0, tr('Blocking'), tr('This is blocking the CFG file'), 'red', 3
+    Blocking = 0, tr('Blocking'), tr('This is blocking the Lizmap configuration file'), 'red', 3
     Important = 1, tr('Important'), tr('This is important to fix, to improve performance'), 'orange', 2.5
     # Normal = 2, tr('Normal'), tr('This would be nice to have look'), 'blue', 2
     Low = 3, tr('Low'), tr('Nice to do'), 'yellow', 2
@@ -218,9 +218,9 @@ class Checks(Check, Enum):
 
     OgcValid = (
         'ogc_validity',
-        tr('OGC validity'),
+        tr('OGC validity (QGIS server)'),
         tr(
-            "According to OGC rules, the project is not valid."
+            "According to OGC standard, the project is not valid."
         ),
         (
             '<ul>'
@@ -395,7 +395,7 @@ class Checks(Check, Enum):
     )
     PreventEcw = (
         Settings.PreventEcw,
-        tr('Prevent ECW raster'),
+        tr('ECW raster'),
         tr(
             'The layer is using the ECW raster format. Because of the ECW\'s licence, this format is not compatible '
             'with most of QGIS server installations. You have activated a safeguard about preventing you using an '

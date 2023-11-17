@@ -907,8 +907,8 @@ class TableManager:
                     vector_layer = self.project.mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
                         LOGGER.warning(
-                            'In CFG file, section "{}" with key {}, the layer with ID "{}" is invalid or does not '
-                            'exist. Skipping that layer.'.format(
+                            'In Lizmap configuration file, section "{}" with key {}, the layer with ID "{}" is '
+                            'invalid or does not exist. Skipping that layer.'.format(
                                 self.definitions.key(), config_key, value))
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
@@ -957,8 +957,8 @@ class TableManager:
                         vector_layer = self.project.mapLayer(value)
                         if not vector_layer or not vector_layer.isValid():
                             LOGGER.warning(
-                                'In CFG file, section "{}", the layer with ID "{}" is invalid or does not exist.'
-                                ' Skipping that layer.'.format(
+                                'In Lizmap configuration file, section "{}", the layer with ID "{}" is invalid or '
+                                'does not exist. Skipping that layer.'.format(
                                     self.definitions.key(), value))
                             valid_layer = False
                         layer_data[key] = value
@@ -1028,8 +1028,8 @@ class TableManager:
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
-                            'In CFG file, section "{}", one layer is missing the key "{}" which is mandatory. '
-                            'Skipping that layer.'.format(
+                            'In Lizmap configuration file, section "{}", one layer is missing the key "{}" which is '
+                            'mandatory. Skipping that layer.'.format(
                                 self.definitions.key(), key))
                         valid_layer = False
                         continue

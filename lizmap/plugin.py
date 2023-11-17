@@ -475,7 +475,7 @@ class Lizmap:
         self.dlg.cbOsmStamenToner.setEnabled(False)
         self.dlg.cbOsmStamenToner.setToolTip(tr(
             'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate. The base layer '
-            'will be deactivated automatically when saving the CFG file.'))
+            'will be deactivated automatically when saving the Lizmap configuration file.'))
 
         self.layer_options_list = lizmap_config.layerOptionDefinitions
         # Add widget information
@@ -851,7 +851,7 @@ class Lizmap:
                     return
 
                 copyfile(str(old_cfg), str(new_path.with_suffix('.qgs.cfg')))
-                LOGGER.info("Project has been renamed and CFG file has been copied as well.")
+                LOGGER.info("Project has been renamed and Lizmap configuration file has been copied as well.")
 
         self.current_path = new_path
 
@@ -1640,7 +1640,7 @@ class Lizmap:
                 QMessageBox.critical(
                     self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
                 self.dlg.log_panel.append(message, abort=True, style=Html.P)
-                LOGGER.critical('Error while reading the CFG file')
+                LOGGER.critical('Error while reading the Lizmap configuration file')
 
         else:
             LOGGER.info('Lizmap CFG does not exist for this project.')
@@ -1734,7 +1734,7 @@ class Lizmap:
         self.dlg.check_ign_french_free_key()
         self.dlg.follow_map_theme_toggled()
         out = '' if json_file.exists() else 'out'
-        LOGGER.info(f'Dialog has been loaded successful, with{out} CFG file')
+        LOGGER.info(f'Dialog has been loaded successful, with{out} Lizmap configuration file')
 
         if self.project.fileName().lower().endswith('qgs'):
             # Manage lizmap_user project variable
@@ -1754,7 +1754,7 @@ class Lizmap:
                 message += '\n\n'
                 message += tr(
                     'Did you rename this QGIS project file ? If you want to keep your previous configuration, you '
-                    'should find your previous Lizmap CFG file and use the path above. Lizmap will load it.'
+                    'should find your previous Lizmap configuration file and use the path above. Lizmap will load it.'
                 )
                 QMessageBox.warning(
                     self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
@@ -2915,7 +2915,7 @@ class Lizmap:
         with open(json_file, 'w', encoding='utf8') as cfg_file:
             cfg_file.write(json_file_content)
 
-        LOGGER.info('The CFG file has been written to "{}"'.format(json_file))
+        LOGGER.info('The Lizmap configuration file has been written to "{}"'.format(json_file))
         self.clean_project()
         return True
 
@@ -2928,7 +2928,7 @@ class Lizmap:
         if with_gui:
             self.dlg.enable_all_fixer_buttons(False)
 
-        LOGGER.info("Writing CFG file for LWC version {}".format(lwc_version.value))
+        LOGGER.info("Writing Lizmap configuration file for LWC version {}".format(lwc_version.value))
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
         if self.is_dev_version:
             next_version = next_git_tag()
@@ -3047,14 +3047,14 @@ class Lizmap:
             if results:
                 if beginner_mode:
                     self.dlg.log_panel.append(tr(
-                        "The process is stopping, the CFG file is not going to be generated because some safeguards "
-                        "are not compatible and you are using the 'Beginner' mode. Either fix these issues or switch "
-                        "to a 'Normal' mode if you know what you are doing."
+                        "The process is stopping, the Lizmap configuration file is not going to be generated because "
+                        "some safeguards are not compatible and you are using the 'Beginner' mode. Either fix these "
+                        "issues or switch to a 'Normal' mode if you know what you are doing."
                     ), Html.P, level=Qgis.Critical)
                 else:
                     self.dlg.log_panel.append(tr(
                         "The process is continuing but these layers might be invisible if the server is not well "
-                        "configured or the project correctly upload to the server."
+                        "configured or if the project is not correctly uploaded to the server."
                     ), Html.P)
 
         if check_server:

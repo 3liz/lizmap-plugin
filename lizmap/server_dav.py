@@ -151,7 +151,7 @@ class WebDav:
 
         error = self.cfg.errorString()
         if error:
-            LOGGER.error("Error while sending the CFG file : " + error)
+            LOGGER.error("Error while sending the Lizmap configuration file : " + error)
             return False, error, ''
 
         url = self.project_url()

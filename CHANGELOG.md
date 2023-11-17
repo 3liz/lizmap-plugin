@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+* Add a new dock for the HTML popup preview with QGIS directly
+* Add a new tool for checking the project against some rules :
+  * Possibility to set some safeguards, according to the user level and the server
+  * Some rules might be blocking the CFG file
+* Following the previes featue about rules, add new buttons to auto fix the project :
+  * Use estimated metadata
+  * Use geometry simplification
+  * Use project trust option
+  * Use SSL
+* New helper for checking groups IDs in an attribute table, when doing an attribute filtering
+* Disable the "Layers" panel if the layer is excluded from WMS capabilities
+* Avoid a Python error about missing primary key
+* Add a button for adding easily the French IGN orthophoto for French QGIS users
+* Add attributions on layers which are provided by the plugin
+
 ## 3.18.1 - 2023-10-27
 
 * Warn the user if the field is coming from a join, or it is a virtual one when setting a filter form

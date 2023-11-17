@@ -242,12 +242,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.radio_force_local_folder.setText(FORCE_LOCAL_FOLDER)
         self.radio_force_local_folder.setToolTip(tr(
-            'Files must be located in {} or in a sub directory.'
-        ).format(self.project.absolutePath()))
+            'Files must be located in {folder} or in a sub directory.'
+        ).format(folder=self.project.homePath()))
         self.radio_allow_parent_folder.setText(ALLOW_PARENT_FOLDER)
         self.radio_allow_parent_folder.setToolTip(tr(
-            'Files can be located in a parent folder from {}, up to the setting below.'
-        ).format(self.project.absolutePath()))
+            'Files can be located in a parent folder from {folder}, up to the setting below.'
+        ).format(folder=self.project.homePath()))
 
         self.safe_other_drive.setText(PREVENT_OTHER_DRIVE)
         self.safe_pg_service.setText(PREVENT_SERVICE)
@@ -313,8 +313,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
             '<li>{user_pass}</li>'
             '<li>{ecw}</li>'
             '</ul>'.format(
-                max_parent=tr("Maximum of parent folder {} : {}").format(
-                    CLOUD_MAX_PARENT_FOLDER, relative_path(CLOUD_MAX_PARENT_FOLDER)),
+                max_parent=tr("Maximum of parent folder {max_number} : {example}").format(
+                    max_number=CLOUD_MAX_PARENT_FOLDER, example=relative_path(CLOUD_MAX_PARENT_FOLDER)),
                 network=PREVENT_OTHER_DRIVE,
                 auth_db=PREVENT_AUTH_DB,
                 user_pass=FORCE_PG_USER_PASS,

@@ -181,7 +181,7 @@ class FtpServer:
             LOGGER.critical(f"Unknown exception while using FTP : {str(e)}")
             return False, str(e)
 
-        LOGGER.info("Both QGS and CFG files have been send on {}".format(self.host))
+        LOGGER.info("Both QGS and Lizmap configuration files have been send on {}".format(self.host))
         return True, None
 
     def with_tls(self, send_files):
@@ -223,5 +223,5 @@ class FtpServer:
         except Exception as e:
             return False, str(e)
 
-        LOGGER.info("Both QGS and CFG files have been send on {}".format(self.host))
+        LOGGER.info("Both QGS and Lizmap configuration files have been send on {}".format(self.host))
         return True, None
