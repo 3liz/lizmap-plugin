@@ -205,8 +205,8 @@ safeguard = tr('Or disable this safeguard in your Lizmap plugin settings')
 global_connection = tr(
     'To fix layers loaded <b>later</b>, edit your global PostgreSQL connection to enable this option, then change the '
     'datasource by right clicking on each layer above, then click "Change datasource" in the menu. Finally reselect '
-    'your layer in the new dialog with the updated connection. When opening a QGIS project in your desktop, '
-    'you mustn\'t have any prompt for a user or password. '
+    'your layer in the new dialog with the updated connection. When opening a QGIS project in your computer, with a '
+    'fresh launched QGIS software, you mustn\'t have any prompt for a user or password. '
     'The edited connection will take effect only on newly added layer into a project that\'s why the right-click step '
     'is required.'
 )
@@ -325,7 +325,7 @@ class Checks(Check, Enum):
     SimplifyGeometry = (
         'simplify_geometry',
         tr('Simplify geometry on the provider side'),
-        tr("PostgreSQL layer can have the simplification on the provider side enabled"),
+        tr("PostgreSQL layer can have the geometry simplification on the server side enabled"),
         (
             '<ul>'
             '<li>{auto_fix}</li>'
@@ -424,7 +424,7 @@ class Checks(Check, Enum):
     )
     AuthenticationDb = (
         Settings.PreventPgAuthDb,
-        tr('Authentication database'),
+        tr('QGIS Authentication database'),
         tr(
             'The layer is using the QGIS authentication database. You have activated a safeguard preventing you using '
             'the QGIS authentication database.'
@@ -458,7 +458,7 @@ class Checks(Check, Enum):
         Settings.PreventPgService,
         tr('PostgreSQL service'),
         tr(
-            'Using a PostgreSQL service file can be recommended in many cases, but it requires a configuration step. '
+            'Using a PostgreSQL service file is recommended in many cases, but it requires a configuration step. '
             'If you have done the configuration (on the server side mainly), you can disable this safeguard.'
         ),
         (
