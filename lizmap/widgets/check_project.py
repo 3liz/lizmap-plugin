@@ -210,6 +210,8 @@ global_connection = tr(
     'The edited connection will take effect only on newly added layer into a project that\'s why the right-click step '
     'is required.'
 )
+either_move_file = tr('Either move the file used for the layer')
+move_file = tr('Move the file used for the layer')
 
 
 class Checks(Check, Enum):
@@ -508,7 +510,7 @@ class Checks(Check, Enum):
             '<li>{help}</li>'
             '<li>{other}</li>'
             '</ul>'.format(
-                help=tr('Either move this file based layer'),
+                help=either_move_file,
                 other=safeguard,
             )
         ),
@@ -521,7 +523,7 @@ class Checks(Check, Enum):
             '<li>{help}</li>'
             '</ul>'
         ).format(
-            help=tr('Move the layer'),
+            help=move_file,
         )
     )
     PreventParentFolder = (
@@ -533,7 +535,7 @@ class Checks(Check, Enum):
             '<li>{help}</li>'
             '<li>{other}</li>'
             '</ul>'.format(
-                help=tr('Either move this file based layer'),
+                help=either_move_file,
                 other=safeguard,
             )
         ),
@@ -548,7 +550,7 @@ class Checks(Check, Enum):
             '<li>{fyi}</li>'
             '</ul>'
         ).format(
-            help=tr('Either move the layer'),
+            help=either_move_file,
             other=safeguard,
             fyi=tr(
                 'For your information, the maximum of parents is {count} on {hosting_name}. This will be overriden '
