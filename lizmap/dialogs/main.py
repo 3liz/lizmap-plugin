@@ -913,6 +913,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.safe_pg_user_password,
             self.safe_ecw,
             self.label_parent_folder,
+            self.label_explanations_safest,
         )
         for widget in widgets:
             widget.setEnabled(is_normal)

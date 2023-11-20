@@ -2,10 +2,13 @@
 
 ## Unreleased
 
+## 4.0.0-beta.1 - 2023-10-27
+
 * Add a new dock for the HTML popup preview with QGIS directly
 * Add a new tool for checking the project against some rules :
-  * Possibility to set some safeguards, according to the user level and the server
-  * Some rules might be blocking the CFG file
+  * Possibility to set some safeguards, according to the user level and the current selected server
+  * These safeguards are for defined according to your level in QGIS to design the project
+  * Some rules might be blocking the CFG file (depending on the server, QGIS Desktop version etc.)
 * Following the previous features about rules, add new buttons to auto fix the project :
   * Use estimated metadata
   * Use geometry simplification
@@ -14,11 +17,12 @@
 * New helper for checking groups IDs in an attribute table, when doing an attribute filtering
 * Disable the "Layers" panel if the layer is excluded from WMS capabilities
 * Avoid a Python error about missing primary key
-* Add a button for adding easily the French IGN orthophoto for French QGIS users
-* Add attributions on layers which are provided by the plugin
-* Possibility to open the plugin even if some layers are temporary unavailable and to no loose some Lizmap configuration
-  if the layer was used in a tool
-* Display some warnings icons if the layer or the field was not loaded correctly or not existing anymore
+* Add two buttons for French QGIS users only :
+  * French IGN orthophoto and French IGN plan layers
+* Add attributions on layers which are provided by the plugin (layers above and OpenStreetMap)
+* Possibility to open the plugin even if some layers are temporary unavailable
+  and to no loose some Lizmap configuration if the layer was used in a tool
+* Display some warning icons if the layer or the field was not loaded correctly or not existing anymore
 
 ## 3.18.1 - 2023-10-27
 

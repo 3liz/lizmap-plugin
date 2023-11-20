@@ -4903,7 +4903,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_86">
+               <widget class="QLabel" name="label_explanations_safest">
                 <property name="text">
                  <string>Safest conditions are when all checkbox are checked</string>
                 </property>
