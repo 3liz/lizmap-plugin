@@ -2,12 +2,13 @@
 
 ## Unreleased
 
-## 4.0.0-beta.1 - 2023-10-27
+## 4.0.0-beta.1 - 2023-11-20
 
-* Add a new dock for the HTML popup preview with QGIS directly
+* Add a new dock for the HTML popup preview within QGIS desktop directly (with some CSS from Lizmap)
+  * Use the QGIS "Apply" button in the vector layer properties to update the HTML preview in the background
 * Add a new tool for checking the project against some rules :
   * Possibility to set some safeguards, according to the user level and the current selected server
-  * These safeguards are for defined according to your level in QGIS to design the project
+  * These safeguards are defined according to your level in QGIS to design the project
   * Some rules might be blocking the CFG file (depending on the server, QGIS Desktop version etc.)
 * Following the previous features about rules, add new buttons to auto fix the project :
   * Use estimated metadata
