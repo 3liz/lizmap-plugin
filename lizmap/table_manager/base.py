@@ -288,6 +288,12 @@ class TableManager:
                     index = self._layer.fields().indexFromName(value)
                     if index >= 0:
                         cell.setIcon(self._layer.fields().iconForField(index))
+                    else:
+                        cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
+                        cell.setData(Qt.ToolTipRole, tr(
+                            'Field "{}" not found in the layer. You should check this configuration or fix your '
+                            'fields.'
+                        ).format(value))
 
             elif input_type == InputType.Fields:
                 cell.setText(value)
