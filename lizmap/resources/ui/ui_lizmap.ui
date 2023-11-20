@@ -4903,6 +4903,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                </widget>
               </item>
               <item>
+               <widget class="QLabel" name="label_86">
+                <property name="text">
+                 <string>Safest conditions are when all checkbox are checked</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="safe_other_drive">
                 <property name="text">
                  <string notr="true">SET PYTHON PREVENT ANOTHER DRIVE</string>

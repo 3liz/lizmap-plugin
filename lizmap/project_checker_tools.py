@@ -73,12 +73,13 @@ def project_safeguards_checks(
                 # We can continue
                 continue
 
-            if datasource.host().endswith(CLOUD_DOMAIN) or force_pg_user_pass:
-                if not datasource.username() or not datasource.password():
-                    results[SourceLayer(layer.name(), layer.id())] = Checks.PgForceUserPass
+            if not datasource.service():
+                if datasource.host().endswith(CLOUD_DOMAIN) or force_pg_user_pass:
+                    if not datasource.username() or not datasource.password():
+                        results[SourceLayer(layer.name(), layer.id())] = Checks.PgForceUserPass
 
-                # We can continue
-                continue
+                    # We can continue
+                    continue
 
         # Only vector/raster file based
 

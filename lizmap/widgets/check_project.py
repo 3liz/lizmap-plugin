@@ -66,7 +66,7 @@ class Severity:
         return QIcon(pixmap)
 
     def __str__(self):
-        return f'Severity {self.data} : {self.label}'
+        return f'<Severity {self.data} : {self.label}>'
 
 
 class Severities(Severity, Enum):
@@ -89,7 +89,7 @@ class Level:
         self.tooltip = tooltip
 
     def __str__(self):
-        return f'{self.data} : {self.label}'
+        return f'<{self.data} : {self.label}>'
 
 
 class Levels:
@@ -192,7 +192,7 @@ class Check:
         return html_str
 
     def __str__(self):
-        return f'{self.title} : {self.description_text(False)} :{self.level} → {self.severity}'
+        return f'<{self.title} : {self.description_text(False)} :{self.level} → {self.severity}>'
 
 
 # Check QGIS_VERSION_INT
@@ -607,7 +607,7 @@ class Error:
         self.source_type = source_type
 
     def __str__(self):
-        return f'{self.source} : {self.check}'
+        return f'<{self.source} : {self.check}>'
 
 
 class TableCheck(QTableWidget):
