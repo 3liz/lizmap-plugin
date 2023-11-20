@@ -132,6 +132,9 @@ class VersionChecker:
         self.dialog.lwc_version_oldest_changelog.setVisible(False)
 
         i = 0
+        # During a few months, we can have two stable versions
+        # But, we might have as well now a single one
+        single_stable_version_release = True
         for json_version in released_versions:
             qdate = QDate.fromString(
                 json_version['latest_release_date'],
@@ -165,6 +168,7 @@ class VersionChecker:
                         self.dialog.lwc_version_latest_changelog.setText(link)
 
                 elif i == 1:
+                    single_stable_version_release = False
                     text = template.format(
                         tag=json_version['latest_release_version'],
                         date=date_string,
@@ -182,6 +186,11 @@ class VersionChecker:
                 lwc_version = LwcVersions.find(json_version['branch'])
                 if qdate.daysTo(QDate.currentDate()) > DAYS_BEING_OUTDATED:
                     self.outdated.append(lwc_version)
+
+        if single_stable_version_release:
+            # We have only one single branch maintained, hide the oldest one.
+            self.dialog.lwc_version_oldest_changelog.setVisible(False)
+            self.dialog.lwc_version_oldest.setVisible(False)
 
     def check_outdated_version(self, lwc_version: LwcVersions, with_gui: True):
         """ Display a warning about outdated LWC version. """

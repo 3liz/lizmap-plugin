@@ -185,8 +185,12 @@ def next_git_tag():
     if not tag:
         return 'next'
     versions = tag.split('.')
-    text = '{}.{}.{}-alpha'.format(versions[0], versions[1], int(versions[2]) + 1)
-    return text
+    try:
+        text = '{}.{}.{}-alpha'.format(versions[0], versions[1], int(versions[2]) + 1)
+        return text
+    except ValueError:
+        # 4.0.0-beta.1 can not be cast to int
+        return 'next'
 
 
 def plugin_date() -> QDateTime:
