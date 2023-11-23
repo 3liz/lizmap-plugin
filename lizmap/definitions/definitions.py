@@ -21,6 +21,7 @@ class LwcVersions(Enum):
     Lizmap_3_5 = '3.5'
     Lizmap_3_6 = '3.6'
     Lizmap_3_7 = '3.7'
+    Lizmap_3_8 = '3.8'
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:
