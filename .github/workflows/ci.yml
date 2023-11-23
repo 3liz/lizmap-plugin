@@ -95,6 +95,9 @@ jobs:
       - name: Install Python requirements
         run: pip install -r requirements/packaging.txt
 
+      - name: Move LICENCE file for plugins.qgis.org
+        run: cp LICENSE lizmap/
+
       - name : Fetch current changelog
         run: qgis-plugin-ci changelog ${{ env.RELEASE_VERSION }} >> release.md
 
