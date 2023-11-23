@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+## 4.0.0 - 2023-11-23
+
+* Add a new dock for the HTML popup preview within QGIS desktop directly (with some CSS from Lizmap)
+  * Use the QGIS "Apply" button in the vector layer properties to update the HTML preview in the background
+* Add a new tool for checking the project against some rules :
+  * Possibility to set some safeguards, according to the user level and the current selected server
+  * These safeguards are defined according to your level in QGIS to design the project
+  * Some rules might be blocking the CFG file (depending on the server, QGIS Desktop version etc.)
+* Following the previous features about rules, add new buttons to auto fix the project :
+  * Use estimated metadata
+  * Use geometry simplification
+  * Use project trust option
+  * Use SSL
+* New helper for checking groups IDs in an attribute table, when doing an attribute filtering
+* Disable the "Layers" panel if the layer is excluded from WMS capabilities
+* Avoid a Python error about missing primary key
+* Moving the Google API key as the base-layer panel is deprecated, it's still needed for the address search
+* Add new base layers for Lizmap Web Client 3.7
+  * OpenTopoMap
+  * French QGIS users only : IGN orthophoto, IGN plan, IGN Cadastre layers
+* Add attributions on layers which are provided by the plugin (layers above and OpenStreetMap)
+* Possibility to open the plugin even if some layers are temporary unavailable
+  and to no loose some Lizmap configuration if the layer was used in a tool
+* Display some warning icons if the layer or the field was not loaded correctly or not existing anymore
+* Better management if there is a single maintained branch of Lizmap Web Client
+* Follow up the new updates about the French IGN GeoPlateforme
+
 ## 4.0.0-beta.1 - 2023-11-20
 
 * Add a new dock for the HTML popup preview within QGIS desktop directly (with some CSS from Lizmap)
