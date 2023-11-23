@@ -3072,6 +3072,37 @@ class Lizmap:
             )
             return None
 
+        # No more blocking issues, we can continue
+
+        if is_lizmap_cloud(server_metadata):
+            if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
+                QMessageBox.information(
+                    self.dlg,
+                    CLOUD_NAME,
+                    tr(
+                        'You current server <a href="{server_url}">{server_url}</a> is running '
+                        'Lizmap Web Client version {lwc_version}.'
+                    ).format(
+                        server_url=self.dlg.current_server_info(ServerComboData.ServerUrl.value),
+                        lwc_version=lwc_version.value,
+                    )
+                    + "<br><br>"
+                    + tr(
+                        'This version of Lizmap Web Client has now reached its end of life and is not supported '
+                        'anymore. Please visit your administration panel in your web browser, in the dashboard, and '
+                        'ask for the update.'
+                    )
+                    + "<br><br>"
+                    + tr(
+                        'You might have some old project which need an update from you. The list is written on the '
+                        'dashboard. Projects are not deleted during the update of Lizmap Web Client, '
+                        'they will be only invisible on the main landing page until they are updated by you.'
+                    )
+                    + "<br><br>"
+                    + tr('This is not blocking your current usage of the plugin, only to advise you.'),
+                    QMessageBox.Ok
+                )
+
         metadata = {
             'qgis_desktop_version': qgis_version(),
             'lizmap_plugin_version_str': current_version,
