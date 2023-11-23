@@ -291,6 +291,7 @@ class Lizmap:
         french_buttons = (
             self.dlg.button_ign_orthophoto,
             self.dlg.button_ign_plan,
+            self.dlg.button_ign_cadastre,
         )
         for button in french_buttons:
             button.setVisible(locale[0:2].lower() == 'fr' or self.is_dev_version)
@@ -574,6 +575,8 @@ class Lizmap:
             partial(self.add_french_ign_layer, IgnLayers.IgnOrthophoto))
         self.dlg.button_ign_plan.clicked.connect(
             partial(self.add_french_ign_layer, IgnLayers.IgnPlan))
+        self.dlg.button_ign_cadastre.clicked.connect(
+            partial(self.add_french_ign_layer, IgnLayers.IgnCadastre))
 
         self.dlg.label_lizmap_search_grant.setText(tr(
             "About \"lizmap_search\", for an instance hosted on lizmap.com cloud solution, you must do the \"GRANT\" "

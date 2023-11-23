@@ -335,16 +335,14 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
+        # Before, IGN was requiring a key
+        # With the new Geoplateforme, it seems the key is not required anymore, the code below has been simplified.
         provider = self.liExternalSearch.currentData()
-        if provider not in ('google', 'ign'):
+        if provider not in ('google', ):
             return
 
-        if provider == 'google':
-            provider = 'Google'
-            key = self.inGoogleKey.text()
-        else:
-            provider = 'IGN'
-            key = self.inIgnKey.text()
+        provider = 'Google'
+        key = self.inGoogleKey.text()
 
         if key:
             return

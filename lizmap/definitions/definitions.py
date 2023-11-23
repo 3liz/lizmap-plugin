@@ -129,3 +129,4 @@ class IgnLayers(IgnLayer, Enum):
     """ IGN layers available. """
     IgnPlan = IgnLayer('GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', 'Plan IGN', 'image/png')
     IgnOrthophoto = IgnLayer('ORTHOIMAGERY.ORTHOPHOTOS', 'Orthophoto IGN', 'image/jpeg')
+    IgnCadastre = IgnLayer('CADASTRALPARCELS.PARCELLAIRE_EXPRESS', 'Parcellaire IGN', 'image/png')

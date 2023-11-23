@@ -2711,6 +2711,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                         </widget>
                        </item>
+                       <item>
+                        <widget class="QPushButton" name="button_ign_cadastre">
+                         <property name="text">
+                          <string>IGN Parcellaire</string>
+                         </property>
+                        </widget>
+                       </item>
                       </layout>
                      </item>
                     </layout>
