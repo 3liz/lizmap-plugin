@@ -792,16 +792,6 @@ QListWidget::item::selected {
                       </item>
                      </layout>
                     </item>
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="cbActivateGeolocation">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Automatic geolocation (Only available in HTTPS)</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="1">
                      <widget class="QCheckBox" name="cbActivatePrint">
                       <property name="enabled">
@@ -822,6 +812,16 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
+                    <item row="1" column="1">
+                     <widget class="QCheckBox" name="cbActivateGeolocation">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Automatic geolocation (Only available in HTTPS)</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="cbActivateZoomHistory">
                       <property name="enabled">
@@ -831,6 +831,20 @@ QListWidget::item::selected {
                        <string>Zoom history</string>
                       </property>
                      </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_52">
+                    <item>
+                     <widget class="QLabel" name="label_86">
+                      <property name="text">
+                       <string>Google key</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="inGoogleKey"/>
                     </item>
                    </layout>
                   </item>
@@ -2379,17 +2393,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     <item>
                      <widget class="QLabel" name="label_31">
                       <property name="text">
-                       <string>Key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inGoogleKey">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>16777215</height>
-                       </size>
+                       <string>Key is in the Map options panel</string>
                       </property>
                      </widget>
                     </item>
@@ -5054,6 +5058,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbActivateGeolocation</tabstop>
   <tabstop>activate_drawing_tools</tabstop>
   <tabstop>liExternalSearch</tabstop>
+  <tabstop>inGoogleKey</tabstop>
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>
@@ -5102,7 +5107,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbGoogleSatellite</tabstop>
   <tabstop>cbGoogleHybrid</tabstop>
   <tabstop>cbGoogleTerrain</tabstop>
-  <tabstop>inGoogleKey</tabstop>
   <tabstop>cbBingStreets</tabstop>
   <tabstop>cbBingSatellite</tabstop>
   <tabstop>cbBingHybrid</tabstop>
