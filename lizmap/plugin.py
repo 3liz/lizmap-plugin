@@ -570,7 +570,11 @@ class Lizmap:
         self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
 
+        osm_icon = QIcon(resources_path('icons', 'osm-32-32.png'))
         self.dlg.button_osm_mapnik.clicked.connect(self.add_osm_mapnik)
+        self.dlg.button_osm_mapnik.setIcon(osm_icon)
+        self.dlg.button_osm_opentopomap.clicked.connect(self.add_osm_opentopomap)
+        self.dlg.button_osm_opentopomap.setIcon(osm_icon)
         self.dlg.button_ign_orthophoto.clicked.connect(
             partial(self.add_french_ign_layer, IgnLayers.IgnOrthophoto))
         self.dlg.button_ign_plan.clicked.connect(
@@ -2519,6 +2523,15 @@ class Lizmap:
             'OpenStreetMap',
             'https://openstreetmap.org',
             '© ' + tr('OpenStreetMap contributors'))
+
+    def add_osm_opentopomap(self):
+        """ Add the OSM OpenTopoMap base layer. """
+        source = 'type=xyz&zmin=0&zmax=18&url=https://tile.opentopomap.org/{z}/{x}/{y}.png'
+        self._add_base_layer(
+            source,
+            'OpenTopoMap',
+            'https://openstreetmap.org',
+            '© ' + tr('OpenStreetMap contributors') + ', SRTM, © OpenTopoMap (CC-BY-SA)')
 
     def add_french_ign_layer(self, layer: IgnLayer):
         """ Add some French IGN layers. """

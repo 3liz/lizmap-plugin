@@ -2693,7 +2693,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </widget>
                      </item>
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_34">
+                      <layout class="QHBoxLayout" name="horizontalLayout_51">
                        <item>
                         <widget class="QPushButton" name="button_osm_mapnik">
                          <property name="text">
@@ -2701,6 +2701,17 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          </property>
                         </widget>
                        </item>
+                       <item>
+                        <widget class="QPushButton" name="button_osm_opentopomap">
+                         <property name="text">
+                          <string notr="true">OpenTopoMap</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_34">
                        <item>
                         <widget class="QPushButton" name="button_ign_orthophoto">
                          <property name="text">
@@ -2718,7 +2729,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        <item>
                         <widget class="QPushButton" name="button_ign_cadastre">
                          <property name="text">
-                          <string>IGN Parcellaire</string>
+                          <string notr="true">IGN Parcellaire</string>
                          </property>
                         </widget>
                        </item>
