@@ -17,7 +17,6 @@ from typing import Dict, List, Optional, Tuple
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsDataSourceUri,
     QgsEditFormConfig,
     QgsExpression,
     QgsLayerTree,
@@ -26,7 +25,6 @@ from qgis.core import (
     QgsMapLayer,
     QgsMapLayerModel,
     QgsMapLayerProxyModel,
-    QgsMapLayerType,
     QgsProject,
     QgsRasterLayer,
     QgsSettings,
@@ -54,7 +52,6 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtWidgets import (
     QAction,
     QDialogButtonBox,
-    QInputDialog,
     QLineEdit,
     QMessageBox,
     QPushButton,
@@ -808,8 +805,6 @@ class Lizmap:
         self.drag_drop_dataviz = None
         self.layerList = None
         self.action = None
-        self.action_debug_pg_qgis = None
-        self.action_debug_pg_psql = None
         self.embeddedGroups = None
         self.myDic = None
         self.help_action = None
@@ -1015,16 +1010,6 @@ class Lizmap:
         self.dlg.button_maptip_preview.setToolTip(tr('Open the HTML Lizmap maptip popup preview dock'))
         self.dlg.button_maptip_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
         self.dlg.button_maptip_preview.clicked.connect(self.open_dock_preview_maptip)
-
-        if self.is_dev_version:
-            label = 'Lizmap dev'
-            self.action_debug_pg_qgis = QAction(icon, "Add PostgreSQL connection from datasource")
-            self.action_debug_pg_qgis.triggered.connect(self.create_connection_from_datasource)
-            self.iface.addCustomActionForLayerType(self.action_debug_pg_qgis, label, QgsMapLayerType.VectorLayer, True)
-
-            self.action_debug_pg_psql = QAction(icon, "Get PSQL CLI from datasource")
-            self.action_debug_pg_psql.triggered.connect(self.psql_cli_line_from_datasource)
-            self.iface.addCustomActionForLayerType(self.action_debug_pg_psql, label, QgsMapLayerType.VectorLayer, True)
 
         # Open the online help
         self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
@@ -1301,52 +1286,6 @@ class Lizmap:
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(0)
 
-    def psql_cli_line_from_datasource(self):
-        """ For dev only, add a connection from a layer datasource. """
-        layer = self.iface.activeLayer()
-        if not isinstance(layer, QgsVectorLayer):
-            return
-
-        if layer.providerType() != 'postgres':
-            return
-
-        uri = QgsDataSourceUri(self.iface.activeLayer().source())
-        if uri.service():
-            text = f"psql service={uri.service()}"
-        else:
-            text = f" PGPASSWORD={uri.password()} psql -h {uri.host()} -p {uri.port()} -U {uri.username()} -d {uri.database()}"
-
-        QInputDialog.getText(
-            self.dlg,
-            "PSQL from layer source",
-            "PSQL CLI line",
-            text=text,
-        )
-
-    def create_connection_from_datasource(self):
-        """ For dev only, add a connection from a layer datasource. """
-        layer = self.iface.activeLayer()
-        if not isinstance(layer, QgsVectorLayer):
-            return
-
-        if layer.providerType() != 'postgres':
-            return
-
-        new_name, ok = QInputDialog.getText(
-            self.dlg,
-            "New connection from layer source",
-            "Set the new name",
-            text="Lizmap debug",
-        )
-        if not ok:
-            return
-
-        from lizmap.dialogs.server_wizard import ServerWizard
-
-        # noinspection PyProtectedMember
-        ServerWizard._save_pg(new_name, QgsDataSourceUri(self.iface.activeLayer().source()))
-        # self.iface.browserModel().reload()
-
     def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :
          * at least one server
@@ -1425,11 +1364,6 @@ class Lizmap:
         if self.help_action_cloud:
             self.iface.pluginHelpMenu().removeAction(self.help_action_cloud)
             del self.help_action_cloud
-
-        if self.action_debug_pg_qgis:
-            self.iface.removeCustomActionForLayerType(self.action_debug_pg_qgis)
-        if self.action_debug_pg_psql:
-            self.iface.removeCustomActionForLayerType(self.action_debug_pg_psql)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
