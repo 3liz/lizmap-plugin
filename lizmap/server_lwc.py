@@ -895,6 +895,19 @@ class ServerManager:
                 messages.append(tr('A dev version, warrior !') + ' 👍')
                 level = Qgis.Success
                 is_dev_version = True
+
+                # In LWC source code, we have branch X.Y.0 even if we are in dev mode
+                # But the online JSON public release might have nothing (because no public tag has been made)
+                latest_release_version = json_version.get('latest_release_version')
+                if latest_release_version:
+                    latest_bugfix = int(latest_release_version.split('.')[2])
+                else:
+                    # So let's assume it's 0
+                    latest_bugfix = 0
+            else:
+                # If we are not in dev or feature freeze, we have at least one public release
+                latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
+
             if status == ReleaseStatus.Retired:
                 # Upgrade because the branch is not maintained anymore
                 messages.append(tr('Version {version} not maintained anymore').format(version=branch))
@@ -904,7 +917,7 @@ class ServerManager:
             items_bugfix = split_version[2].split('-')
             is_pre_package = len(items_bugfix) > 1
             bugfix = int(items_bugfix[0])
-            latest_bugfix = int(json_version['latest_release_version'].split('.')[2])
+
             if json_version['latest_release_version'] != full_version or is_pre_package:
 
                 if is_dev_version and login:
