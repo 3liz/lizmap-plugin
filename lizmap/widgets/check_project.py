@@ -388,7 +388,7 @@ class Checks(Check, Enum):
                     'In the project properties → Data sources → at the bottom, there is a checkbox to trust the '
                     'project when the layer has no metadata.'
                 ),
-                auto_fix=qgis_32200,
+                auto_fix=tr('With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin'),
             )
         ),
         Levels.Project,

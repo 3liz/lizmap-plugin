@@ -109,17 +109,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # Filtering features
         self.tab_filtering.setCurrentIndex(0)
 
-        # Temporary for the next release
-        if not self.is_dev_version:
-            self.tab_filtering.removeTab(2)
-            # Temporary fixer buttons
-            self.button_use_estimated_md.setVisible(False)
-            self.label_66.setVisible(False)
-            self.button_trust_project.setVisible(False)
-            self.label_79.setVisible(False)
-            self.button_simplify_geom.setVisible(False)
-            self.label_82.setVisible(False)
-
         self.helper_list_group.setReadOnly(True)
         self.button_helper_group.setToolTip(tr('Select features having at least one group not matching on the server'))
         self.button_helper_group.clicked.connect(self.select_unknown_features_group)
