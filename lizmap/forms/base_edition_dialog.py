@@ -16,7 +16,6 @@ from qgis.PyQt.QtWidgets import (
     QPlainTextEdit,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
@@ -158,7 +157,7 @@ class BaseEditionDialog(QDialog):
         if self.parent:
             current_version = self.parent.current_lwc_version()
         else:
-            current_version = DEFAULT_LWC_VERSION
+            current_version = LwcVersions.latest()
 
         # For labels in the UI files, which are not part of the definitions.
         found = False

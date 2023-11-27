@@ -62,7 +62,6 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor
 from qgis.utils import plugins as all_plugins
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
@@ -869,7 +868,7 @@ class Lizmap:
 
         current_version = self.dlg.current_lwc_version()
         old_version = QgsSettings().value(
-            'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+            'lizmap/lizmap_web_client_version', LwcVersions.latest().value, str)
         if current_version != old_version:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)
@@ -913,10 +912,6 @@ class Lizmap:
     def lwc_version_changed(self):
         """ When the version has changed in the selector, we update features with the blue background. """
         current_version = self.dlg.current_lwc_version()
-
-        if current_version is None:
-            # We come from a higher version of Lizmap (from dev to master)
-            current_version = DEFAULT_LWC_VERSION
 
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
@@ -4034,7 +4029,7 @@ class Lizmap:
         self.dlg.label_atlasprint_plugin.setVisible(False)
         self.dlg.label_qgis_server_plugins.setVisible(False)
 
-        self.version_checker = VersionChecker(self.dlg, VERSION_URL)
+        self.version_checker = VersionChecker(self.dlg, VERSION_URL, self.is_dev_version)
         self.version_checker.fetch()
 
         if not self.check_dialog_validity():

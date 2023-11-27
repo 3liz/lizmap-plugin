@@ -26,7 +26,7 @@ DAYS_BEING_OUTDATED = 90
 
 class VersionChecker:
 
-    def __init__(self, dialog: LizmapDialog, url):
+    def __init__(self, dialog: LizmapDialog, url: str, is_dev: bool):
         """ Update the dialog when versions have been fetched. """
         self.dialog = dialog
         self.url = url
@@ -37,6 +37,7 @@ class VersionChecker:
         self.oldest_release_branche = None
         self.newest_release_branch = None
         self.outdated = []
+        self.is_dev = is_dev
 
     def fetch(self):
         """ Fetch the JSON file and call the function when it's finished. """
@@ -131,11 +132,18 @@ class VersionChecker:
         self.dialog.lwc_version_latest_changelog.setVisible(False)
         self.dialog.lwc_version_oldest_changelog.setVisible(False)
 
+        # The variable "i" is a counter of stable versions
         i = 0
+
         # During a few months, we can have two stable versions
         # But, we might have as well now a single one
         single_stable_version_release = True
         for json_version in released_versions:
+
+            # The is_dev flag is to raise an exception only for developers
+            # if the Python source code is missing a version
+            lwc_version = LwcVersions.find(json_version['branch'], self.is_dev)
+
             qdate = QDate.fromString(
                 json_version['latest_release_date'],
                 "yyyy-MM-dd")
@@ -183,7 +191,6 @@ class VersionChecker:
 
                 i += 1
             elif status == ReleaseStatus.Retired:
-                lwc_version = LwcVersions.find(json_version['branch'])
                 if qdate.daysTo(QDate.currentDate()) > DAYS_BEING_OUTDATED:
                     self.outdated.append(lwc_version)
 

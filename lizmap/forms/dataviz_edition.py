@@ -10,7 +10,6 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
@@ -277,7 +276,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 self.trace_combo.addItem(item.icon(), item.text(), i + 1)
 
         version = QgsSettings().value(
-            'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+            'lizmap/lizmap_web_client_version', LwcVersions.latest().value, str)
         version = LwcVersions(version)
 
         if version in [LwcVersions.Lizmap_3_1, LwcVersions.Lizmap_3_2, LwcVersions.Lizmap_3_3]:

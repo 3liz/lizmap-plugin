@@ -3,7 +3,7 @@
 from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
 
-from lizmap import LwcVersions
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr

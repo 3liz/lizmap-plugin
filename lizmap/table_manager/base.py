@@ -18,7 +18,6 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
@@ -535,7 +534,7 @@ class TableManager:
             if self.parent:
                 version = self.parent.current_lwc_version()
             else:
-                version = DEFAULT_LWC_VERSION
+                version = LwcVersions.latest()
 
         data = dict()
 
