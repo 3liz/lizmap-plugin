@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.0.1 - 2023-11-27
+
+* Fix some missing features from 4.0.0 release
+
 ## 4.0.0 - 2023-11-23
 
 * Add a new dock for the HTML popup preview within QGIS desktop directly (with some CSS from Lizmap)
