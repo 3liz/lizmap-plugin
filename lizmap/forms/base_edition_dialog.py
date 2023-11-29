@@ -34,7 +34,7 @@ class BaseEditionDialog(QDialog):
 
     """ Class managing the edition form, either creation or editing. """
 
-    def __init__(self, parent: QDialog = None, unicity=None):
+    def __init__(self, parent: QDialog = None, unicity=None, lwc_version: LwcVersions = None):
         """ Constructor. """
         # parent is the main UI of the plugin
         # noinspection PyArgumentList
@@ -42,6 +42,8 @@ class BaseEditionDialog(QDialog):
         self.parent = parent
         self.config = None
         self.unicity = unicity
+        # Should only be used in tests, otherwise, the version is coming from the parent.
+        self._version = lwc_version
 
         # Most edition dialogs are based on a layer as input. Only the layout dialog is not.
         self.layer = None
@@ -157,7 +159,7 @@ class BaseEditionDialog(QDialog):
         if self.parent:
             current_version = self.parent.current_lwc_version()
         else:
-            current_version = LwcVersions.latest()
+            current_version = self._version
 
         # For labels in the UI files, which are not part of the definitions.
         found = False

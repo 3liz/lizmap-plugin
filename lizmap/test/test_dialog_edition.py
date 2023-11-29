@@ -3,6 +3,7 @@
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
@@ -144,7 +145,7 @@ class TestEditionDialog(unittest.TestCase):
 
     def test_time_manager_dialog(self):
         """Test time manager dialog."""
-        dialog = TimeManagerEditionDialog()
+        dialog = TimeManagerEditionDialog(version=LwcVersions.latest())
         self.assertFalse(dialog.error.isVisible())
 
         self.assertEqual('', dialog.edit_min_value.text())

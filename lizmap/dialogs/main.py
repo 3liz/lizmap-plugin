@@ -80,6 +80,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.project = QgsProject.instance()
 
         self.is_dev_version = is_dev_version
+        self.navigation_menu_ok = None
 
         self.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
@@ -499,18 +500,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def current_lwc_version(self) -> Optional[LwcVersions]:
         """ Return the current LWC version from the server combobox. """
-        current = self.metadata_to_lwc_version(self.current_server_info(ServerComboData.JsonMetadata.value))
-        if not current:
-            current = LwcVersions.latest()
-        return current
-
-    @classmethod
-    def metadata_to_lwc_version(cls, metadata: dict) -> Optional[LwcVersions]:
-        """ Check in a metadata for the LWC version."""
-        if not metadata:
-            # When the server is not reachable
-            return None
-        return LwcVersions.find(metadata['info']['version'])
+        metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
+        # In tests, we might not have metadata in the combobox
+        if metadata:
+            return LwcVersions.find(metadata['info']['version'])
 
     def current_repository(self, role=RepositoryComboData.Id) -> str:
         """ Fetch the current directory on the server if available. """
@@ -524,7 +517,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # This method must use itemData() as we are not the current selected server in the combobox.
         url = self.server_combo.itemData(index, ServerComboData.ServerUrl.value)
         metadata = self.server_combo.itemData(index, ServerComboData.JsonMetadata.value)
-        target_version = self.metadata_to_lwc_version(metadata)
+        target_version = LwcVersions.find(metadata['info']['version'])
         if target_version:
             target_version = target_version.value
         else:
@@ -936,6 +929,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
+        self.navigation_menu_ok = allow_navigation
         for i in range(1, self.mOptionsListWidget.count()):
             item = self.mOptionsListWidget.item(i)
             if allow_navigation:

@@ -29,7 +29,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         """ Test opening the Lizmap dialog with some basic checks."""
         project = QgsProject.instance()
         project.clear()
-        lizmap = Lizmap(get_iface())
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
 
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         project.addMapLayer(layer)
@@ -57,7 +57,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         project.read(plugin_test_data_path('legend_image_option.qgs'))
         self.assertEqual(3, len(project.mapLayers()))
 
-        lizmap = Lizmap(get_iface())
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
         config = lizmap.layers_config_file()
 
         lizmap.myDic = {}
@@ -93,7 +93,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         project.addMapLayer(layer)
         project.setFileName(temporary_file_path())
 
-        lizmap = Lizmap(get_iface())
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
         baselayers = lizmap._add_group_legend('baselayers', parent=None, project=project)
         lizmap._add_group_legend('project-background-color', baselayers, project=project)
 
