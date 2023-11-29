@@ -884,8 +884,7 @@ class Lizmap:
         self.dlg.refresh_combo_repositories()
 
         current_version = self.current_lwc_version()
-        old_version = QgsSettings().value(
-            'lizmap/lizmap_web_client_version', LwcVersions.latest().value, str)
+        old_version = QgsSettings().value('lizmap/lizmap_web_client_version', type=str)
         if current_version != old_version:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)

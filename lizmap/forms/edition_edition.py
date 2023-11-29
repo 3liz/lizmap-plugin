@@ -25,8 +25,8 @@ CLASS = load_ui('ui_form_edition.ui')
 
 class EditionLayerDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = EditionDefinitions()
         self.config.add_layer_widget('layerId', self.layer)

@@ -2,6 +2,7 @@
 
 from qgis.core import QgsMapLayerProxyModel
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_polygon import (
     FilterByPolygonDefinitions,
     FilterMode,
@@ -20,8 +21,8 @@ CLASS = load_ui('ui_form_filter_by_polygon.ui')
 
 class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByPolygonDefinitions()
         self.config.add_layer_widget('layer', self.layer)
