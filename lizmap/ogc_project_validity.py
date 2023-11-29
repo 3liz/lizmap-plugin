@@ -15,6 +15,7 @@ from qgis.core import (
     QgsLayerTreeNode,
     QgsProject,
 )
+from qgis.PyQt import sip
 
 from lizmap.tools import random_string, unaccent
 
@@ -64,7 +65,7 @@ class OgcProjectValidity:
 
     def existing_shortnames(self) -> Tuple[List[str], List[str]]:
         """ Fetch all existing shortnames in the project. """
-        layer_tree = self.project.layerTreeRoot()
+        layer_tree: QgsLayerTree = self.project.layerTreeRoot()
         existing = self._read_all_shortnames(layer_tree, [])
         LOGGER.info('Existing shortnames detected before in project : ' + ', '.join(existing))
 
@@ -75,8 +76,15 @@ class OgcProjectValidity:
         """ Recursive function to fetch all shortnames. """
 
         for child in group.children():
+            child: QgsLayerTreeNode
             # noinspection PyArgumentList
             if QgsLayerTree.isLayer(child):
+                if not isinstance(child, QgsLayerTreeLayer):
+                    # Sip cast issue
+                    # https://github.com/3liz/lizmap-plugin/issues/299
+                    # https://github.com/3liz/lizmap-plugin/issues/528
+                    # noinspection PyTypeChecker
+                    child = sip.cast(child, QgsLayerTreeLayer)
                 child: QgsLayerTreeLayer
                 layer = self.project.mapLayer(child.layerId())
                 if layer.shortName():
