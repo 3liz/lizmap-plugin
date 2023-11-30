@@ -4957,14 +4957,38 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="safe_pg_service">
-                    <property name="text">
-                     <string notr="true">SET PYTHON PREVENT PG SERVICE FILE</string>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_53">
+                    <item>
+                     <widget class="QCheckBox" name="safe_pg_service">
+                      <property name="text">
+                       <string notr="true">SET PYTHON PREVENT PG SERVICE FILE</string>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_22">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="help_pg_service">
+                      <property name="text">
+                       <string notr="true">HELP</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="safe_pg_auth_db">

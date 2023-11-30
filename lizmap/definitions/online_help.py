@@ -65,3 +65,12 @@ MAPPING_INDEX_DOC = {
     14: 'publish/lizmap_plugin/tooltip.html',
     15: None,
 }
+
+
+def pg_service_help() -> QUrl:
+    """ Open the QGIS.org documentation about PG Service. """
+    # The QGIS documentation is better than the PostgreSQL doc :/
+    return QUrl(
+        f"https://docs.qgis.org/latest/{current_locale()}/docs/user_manual/managing_data_source/opening_data.html"
+        f"#postgresql-service-connection-file"
+    )

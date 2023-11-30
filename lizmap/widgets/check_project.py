@@ -19,6 +19,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
+from lizmap.definitions.online_help import pg_service_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import qgis_version
@@ -467,10 +468,12 @@ class Checks(Check, Enum):
             '<ul>'
             '<li>{help}</li>'
             '<li>{other}</li>'
+            '<li>{doc}</li>'
             '<li>{global_connection}</li>'
             '</ul>'.format(
                 help=other_auth,
                 other=safeguard,
+                doc=pg_service_help().toString(),  # Sorry, the link is not easily clickable in a QTextEdit
                 global_connection=global_connection,
             )
         ),

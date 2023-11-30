@@ -16,7 +16,7 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QIcon, QImageReader, QPixmap
+from qgis.PyQt.QtGui import QDesktopServices, QIcon, QImageReader, QPixmap
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -57,7 +57,7 @@ from lizmap.definitions.definitions import (
     RepositoryComboData,
     ServerComboData,
 )
-from lizmap.definitions.online_help import online_lwc_help
+from lizmap.definitions.online_help import online_lwc_help, pg_service_help
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
@@ -238,6 +238,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
             'Files can be located in a parent folder from {folder}, up to the setting below.'
         ).format(folder=self.project.homePath()))
 
+        self.help_pg_service.setText("")
+        self.help_pg_service.setIcon(QIcon(":/images/themes/default/mActionHelpContents.svg"))
+        self.help_pg_service.clicked.connect(self.open_pg_service_help)
         self.safe_other_drive.setText(PREVENT_OTHER_DRIVE)
         self.safe_pg_service.setText(PREVENT_SERVICE)
         self.safe_pg_auth_db.setText(PREVENT_AUTH_DB)
@@ -321,6 +324,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
     @property
     def check_results(self) -> TableCheck:
         return self.table_checks
+
+    @staticmethod
+    def open_pg_service_help():
+        """ Open the PG service documentation. """
+        QDesktopServices.openUrl(pg_service_help())
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
