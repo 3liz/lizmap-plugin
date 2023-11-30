@@ -129,9 +129,15 @@ class HtmlPreview(QDockWidget):
         self._server_url = url
 
     def css(self) -> str:
-        """ Link to CSS style sheet according to server. """
-        asset = 'assets/css/bootstrap.min.css'
-        return self._server_url + asset
+        """ Links to CSS style sheet according to the server. """
+        # Order is important
+        assets = (
+            'assets/css/bootstrap.min.css',
+            'themes/default/css/main.css',
+            'themes/default/css/map.css',
+        )
+        html = [f'<link type="text/css" href="{self._server_url + asset}" rel="stylesheet" />' for asset in assets]
+        return '\n'.join(html)
 
     def current_layer_changed(self):
         """ When the layer has changed. """
