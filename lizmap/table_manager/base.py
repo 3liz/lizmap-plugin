@@ -394,6 +394,12 @@ class TableManager:
                                 labels.append(item_enum.value['data'])
                         value = ','.join(labels)
                         cell.setText(value)
+                else:
+                    # Some settings are a list, but not using a Python enum yet
+                    # Form filter by instance commit d1bca9c5c1f626893001e5824196dec5fe9a6c9a
+                    # It's not possible for now to have the human display name
+                    # and the icon
+                    cell.setText(value)
 
             elif input_type == InputType.SpinBox:
                 unit = self.definitions.layer_config[key].get('unit')
