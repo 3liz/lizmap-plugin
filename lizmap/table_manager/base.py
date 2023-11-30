@@ -308,24 +308,27 @@ class TableManager:
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)
 
-                # Get the icon for the field
-                if self._layer:
-                    index = self._layer.fields().indexFromName(value)
-                    if index >= 0:
-                        cell.setIcon(self._layer.fields().iconForField(index))
+                # All field inputs are not required, so we might have an empty string
+                # Only check for icon if the field is defined
+                if value != '':
+                    # Get the icon for the field
+                    if self._layer:
+                        index = self._layer.fields().indexFromName(value)
+                        if index >= 0:
+                            cell.setIcon(self._layer.fields().iconForField(index))
+                        else:
+                            cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
+                            cell.setData(Qt.ToolTipRole, tr(
+                                'Field "{}" not found in the layer. You should check this configuration or fix your '
+                                'fields.'
+                            ).format(value))
                     else:
+                        # No layer
                         cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
-                        cell.setData(Qt.ToolTipRole, tr(
-                            'Field "{}" not found in the layer. You should check this configuration or fix your '
-                            'fields.'
-                        ).format(value))
-                else:
-                    # No layer
-                    cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
-                    cell.setData(
-                        Qt.ToolTipRole,
-                        tr("Not possible to check the field type if the layer is not loaded in QGIS").format(value)
-                    )
+                        cell.setData(
+                            Qt.ToolTipRole,
+                            tr("Not possible to check the field type if the layer is not loaded in QGIS").format(value)
+                        )
 
             elif input_type == InputType.Fields:
                 cell.setText(value)
