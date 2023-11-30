@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+* Fix some columns in the "Filter by form" panel
+* Add a notice if the layer is stored in PostgreSQL when setting up the "Locate by layer" tool
+* Add a link to PgService documentation on qgis.org website
+* Add more CSS files from the server in the HTML Maptip preview dock
+* Use a scroll widget for the settings panel
+
 ## 4.0.1 - 2023-11-27
 
 * Fix some missing features from 4.0.0 release
