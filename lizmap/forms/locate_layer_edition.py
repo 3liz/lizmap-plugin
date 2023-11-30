@@ -11,6 +11,7 @@ __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from lizmap.tools import is_vector_pg
 
 CLASS = load_ui('ui_form_locate_layer.ui')
 
@@ -55,6 +56,8 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         if not layer:
             self.show_error(tr('A layer is mandatory.'))
             return
+
+        self.label_layer_in_pg.setVisible(is_vector_pg(layer))
 
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)

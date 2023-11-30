@@ -15,6 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="label_layer_in_pg">
+     <property name="text">
+      <string>The current selected layer is stored in PostgreSQL, you can have better performance by not using the &quot;Locate by layer&quot; tool, but instead &quot;Lizmap search&quot;, link at the top of the table when you close this dialog.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label_layer">
