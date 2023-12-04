@@ -9,6 +9,7 @@ from typing import Dict, List, Optional, Tuple
 from qgis.core import (
     QgsDataSourceUri,
     QgsLayerTree,
+    QgsLayerTreeNode,
     QgsMapLayer,
     QgsProject,
     QgsProviderRegistry,
@@ -19,8 +20,13 @@ from qgis.core import (
 
 from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.tools import cast_to_group, is_vector_pg, update_uri
-from lizmap.widgets.check_project import Checks, SourceLayer
+from lizmap.tools import cast_to_group, cast_to_layer, is_vector_pg, update_uri
+from lizmap.widgets.check_project import (
+    Checks,
+    Error,
+    SourceGroup,
+    SourceLayer,
+)
 
 """ Some checks which can be done on a layer. """
 
@@ -316,3 +322,25 @@ def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool
 
     project.setTrustLayerMetadata(True)
     return True
+
+
+def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: List) -> List:
+    """ Check for a trailing space in layer or group name. """
+    for child in layer_tree.children():
+        # noinspection PyArgumentList
+        if QgsLayerTree.isLayer(child):
+            child = cast_to_layer(child)
+            layer = project.mapLayer(child.layerId())
+            if layer.name().strip() != layer.name():
+                results.append(
+                    Error(layer.name(), Checks.TrailingSpaceLayerGroupName, SourceLayer(layer.name(), layer.id())))
+        else:
+            child = cast_to_group(child)
+            if child.name().strip() != child.name():
+                results.append(
+                    Error(child.name(), Checks.TrailingSpaceLayerGroupName, SourceGroup))
+
+            # Recursive call
+            results = trailing_layer_group_name(child, project, results)
+
+    return results

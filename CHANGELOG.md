@@ -8,6 +8,9 @@
 * Add a link to PgService documentation on qgis.org website
 * Add more CSS files from the server in the HTML Maptip preview dock
 * Use a scroll widget for the settings panel
+* Fix translations about checks/rules/explanations
+* Add new blocker rule when the layer or group has a trailing space
+* Fix some casting issue with SIP about the legend
 
 ## 4.0.1 - 2023-11-27
 

@@ -396,6 +396,23 @@ class Checks(Check, Enum):
         Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
         QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
     )
+    TrailingSpaceLayerGroupName = (
+        'trailing_space_group_name',
+        tr('Trailing space in layer/group name'),
+        tr(
+            'The layer/group name has some trailing spaces. It must be removed and the configuration in the plugin '
+            'might be needed.'
+        ), (
+            '<ul>'
+            '<li>{edit_layer}</li>'
+            '</ul>'.format(
+                edit_layer=tr('Rename your layer/group to remove trailing spaces (left and right)'),
+            )
+        ),
+        Levels.Layer,
+        Severities.Blocking,
+        QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg'),
+    )
     PreventEcw = (
         Settings.PreventEcw,
         tr('ECW raster'),
@@ -586,12 +603,25 @@ class Checks(Check, Enum):
         return html_str
 
 
-class SourceLayer:
+class Source:
+
+    def __init__(self, name):
+        self.name = name
+
+
+class SourceLayer(Source):
 
     """ For identifying a layer in a project. """
-    def __init__(self, layer_name, layer_id):
+    def __init__(self, name, layer_id):
+        super().__init__(name)
         self.layer_id = layer_id
-        self.layer_name = layer_name
+
+
+class SourceGroup(Source):
+
+    """ For identifying a group in a project. """
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class SourceType:
@@ -599,6 +629,7 @@ class SourceType:
     """ List of sources in the project. """
 
     Layer = SourceLayer
+    Groupe = SourceGroup
 
 
 class Error:
@@ -743,8 +774,11 @@ class TableCheck(QTableWidget):
             layer = QgsProject.instance().mapLayer(error.source_type.layer_id)
             item.setIcon(QgsMapLayerModel.iconForLayer(layer))
             item.setData(self.JSON, error.source_type.layer_id)
+        elif isinstance(error.source_type, SourceType.Groupe):
+            item.setToolTip(error.source_type.name)
+            item.setIcon(QIcon(":images/themes/default/mActionFolder.svg"))
+            item.setData(self.JSON, error.source_type.name)
         else:
-            # Project only for now
             # TODO fix else
             item.setData(self.JSON, error.source)
         self.setItem(row, column, item)

@@ -4658,7 +4658,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_85">
                  <property name="text">
-                  <string>Some checks might be blocking the CFG file generation. To fix, either use the tooltip in the last column, or check the documentation in the next tab for all errors which can be reported.</string>
+                  <string>Some checks might be blocking the Lizmap configuration file generation. To fix, either use the tooltip (by overing your mouse pointer on the table row) in the last column, or check the documentation in the next tab for all errors which can be reported.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
