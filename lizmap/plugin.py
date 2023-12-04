@@ -3073,6 +3073,11 @@ class Lizmap:
             self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, Checks.TrustProject))
             self.dlg.enabled_trust_project(True)
 
+        # Not blocking, we change it in the background
+        if self.project.readNumEntry("WMSMaxAtlasFeatures", '')[0] <= 0:
+            LOGGER.info("The maximum atlas features was less than '1'. We set it to '1' to at least have a value.")
+            self.project.writeEntry("WMSMaxAtlasFeatures", "/", 1)
+
         self.dlg.check_results.sort()
 
         if with_gui and self.dlg.check_results.has_rows():
