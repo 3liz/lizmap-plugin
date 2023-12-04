@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.0.2 - 2023-12-04
+
 * Increase to 1 the maximum of atlas features in a `GetPrint` request automatically
 * Fix some columns in the "Filter by form" panel
 * Add a notice if the layer is stored in PostgreSQL when setting up the "Locate by layer" tool
