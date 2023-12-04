@@ -19,7 +19,7 @@ from qgis.core import (
 
 from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.tools import is_vector_pg, update_uri
+from lizmap.tools import cast_to_group, is_vector_pg, update_uri
 from lizmap.widgets.check_project import Checks, SourceLayer
 
 """ Some checks which can be done on a layer. """
@@ -208,6 +208,7 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
     # Groups
     for child in project.layerTreeRoot().children():
         if QgsLayerTree.isGroup(child):
+            child = cast_to_group(child)
             name = child.name()
             if name not in result.keys():
                 result[name] = 1

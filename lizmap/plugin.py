@@ -21,7 +21,6 @@ from qgis.core import (
     QgsExpression,
     QgsLayerTree,
     QgsLayerTreeGroup,
-    QgsLayerTreeLayer,
     QgsMapLayer,
     QgsMapLayerModel,
     QgsMapLayerProxyModel,
@@ -31,7 +30,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt import sip
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QRegExp,
@@ -135,6 +133,7 @@ from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
+from lizmap.tools import cast_to_group, cast_to_layer
 from lizmap.widgets.project_tools import is_layer_wms_excluded
 
 try:
@@ -2146,21 +2145,13 @@ class Lizmap:
         """
         for child in node.children():
             if QgsLayerTree.isGroup(child):
-                if not isinstance(child, QgsLayerTreeGroup):
-                    # Sip cast issue
-                    # https://github.com/3liz/lizmap-plugin/issues/299
-                    # noinspection PyTypeChecker
-                    child = sip.cast(child, QgsLayerTreeGroup)
+                child = cast_to_group(child)
                 child_id = child.name()
                 child_type = 'group'
                 # noinspection PyCallByClass,PyArgumentList
                 child_icon = QIcon(QgsApplication.iconPath('mActionFolder.svg'))
             elif QgsLayerTree.isLayer(child):
-                if not isinstance(child, QgsLayerTreeLayer):
-                    # Sip cast issue
-                    # https://github.com/3liz/lizmap-plugin/issues/299
-                    # noinspection PyTypeChecker
-                    child = sip.cast(child, QgsLayerTreeLayer)
+                child = cast_to_layer(child)
                 child_id = child.layerId()
                 child_type = 'layer'
                 # noinspection PyArgumentList

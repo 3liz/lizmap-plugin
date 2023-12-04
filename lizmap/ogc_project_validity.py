@@ -16,7 +16,7 @@ from qgis.core import (
     QgsProject,
 )
 
-from lizmap.tools import random_string, unaccent
+from lizmap.tools import cast_to_group, cast_to_layer, random_string, unaccent
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -42,7 +42,7 @@ class OgcProjectValidity:
         for child in layer_tree.children():
             # noinspection PyArgumentList
             if QgsLayerTree.isLayer(child):
-                child: QgsLayerTreeLayer
+                child = cast_to_layer(child)
                 layer = self.project.mapLayer(child.layerId())
                 short_name = layer.shortName()
                 if not short_name or short_name in duplicated:
@@ -53,7 +53,7 @@ class OgcProjectValidity:
                     LOGGER.info(f"New shortname added on layer '{layer.name()}' : {new_shortname}")
                     self.new_shortnames_added.append(new_shortname)
             else:
-                child: QgsLayerTreeGroup
+                child = cast_to_group(child)
                 if not child.customProperty("wmsShortName"):
                     new_shortname = self.short_name(child.name(), existing_shortnames)
                     existing_shortnames.append(new_shortname)
@@ -77,11 +77,13 @@ class OgcProjectValidity:
         for child in group.children():
             # noinspection PyArgumentList
             if QgsLayerTree.isLayer(child):
+                child = cast_to_layer(child)
                 child: QgsLayerTreeLayer
                 layer = self.project.mapLayer(child.layerId())
                 if layer.shortName():
                     existing_shortnames.append(layer.shortName())
             else:
+                child = cast_to_group(child)
                 child: QgsLayerTreeGroup
                 group_shortname = child.customProperty("wmsShortName")
                 if group_shortname:

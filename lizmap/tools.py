@@ -18,10 +18,14 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsDataSourceUri,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
+    QgsLayerTreeNode,
     QgsMapLayer,
     QgsProviderRegistry,
     QgsVectorLayer,
 )
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QDateTime, QDir, Qt
 
 from lizmap.definitions.definitions import LayerProperties
@@ -311,3 +315,27 @@ def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List
             errors.append(variable[1])
 
     return content, errors
+
+
+# SIP cast issues
+# Related to
+# https://github.com/3liz/lizmap-plugin/issues/299
+# https://github.com/3liz/lizmap-plugin/issues/528
+
+
+def cast_to_layer(node: QgsLayerTreeNode) -> QgsLayerTreeLayer:
+    """ Cast a legend node to a layer. """
+    if isinstance(node, QgsLayerTreeLayer):
+        return node
+
+    # noinspection PyTypeChecker
+    return sip.cast(node, QgsLayerTreeLayer)
+
+
+def cast_to_group(node: QgsLayerTreeNode) -> QgsLayerTreeGroup:
+    """Cast a legend node to a group. """
+    if isinstance(node, QgsLayerTreeGroup):
+        return node
+
+    # noinspection PyTypeChecker
+    return sip.cast(node, QgsLayerTreeGroup)
