@@ -106,6 +106,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.lwc_version_latest_changelog.setVisible(False)
         self.lwc_version_oldest_changelog.setVisible(False)
 
+        self.label_explanations.setText(tr(
+            "Some checks might be blocking the Lizmap configuration file generation. To fix, either use the tooltip "
+            "(by hovering your mouse pointer on the table row) in the last column, or check the documentation in "
+            "the next tab '{tab_name}' for all errors which can be reported."
+        ).format(tab_name=self.tab_log.tabText(1)))
+
         # Filtering features
         self.tab_filtering.setCurrentIndex(0)
 

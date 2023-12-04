@@ -4656,9 +4656,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_70">
                <item>
-                <widget class="QLabel" name="label_85">
+                <widget class="QLabel" name="label_explanations">
                  <property name="text">
-                  <string>Some checks might be blocking the Lizmap configuration file generation. To fix, either use the tooltip (by overing your mouse pointer on the table row) in the last column, or check the documentation in the next tab for all errors which can be reported.</string>
+                  <string notr="true">SET IN PYTHON</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
