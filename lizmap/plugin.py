@@ -1030,7 +1030,7 @@ class Lizmap:
 
         # connect Lizmap signals and functions
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
-        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_cfg_file)
+        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_cfg_file_cursor)
         self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
         self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help_question)
 
@@ -3584,11 +3584,16 @@ class Lizmap:
 
     def ok_button_clicked(self):
         """When the OK button is press, we 'apply' and close the dialog."""
-        if not self.save_cfg_file():
+        if not self.save_cfg_file_cursor():
             return
 
         # Only close the dialog if no error
         self.dlg.close()
+
+    def save_cfg_file_cursor(self) -> bool:
+        """ Save CFG file with a waiting cursor. """
+        with OverrideCursor(Qt.WaitCursor):
+            return self.save_cfg_file()
 
     def save_cfg_file(
             self,

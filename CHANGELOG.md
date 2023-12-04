@@ -11,6 +11,7 @@
 * Fix translations about checks/rules/explanations
 * Add new blocker rule when the layer or group has a trailing space
 * Fix some casting issue with SIP about the legend
+* Add a waiting cursor when saving the CFG file
 
 ## 4.0.1 - 2023-11-27
 
