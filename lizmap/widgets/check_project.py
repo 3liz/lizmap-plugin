@@ -396,17 +396,17 @@ class Checks(Check, Enum):
         Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
         QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
     )
-    TrailingSpaceLayerGroupName = (
-        'trailing_space_group_name',
-        tr('Trailing space in layer/group name'),
+    LeadingTrailingSpaceLayerGroupName = (
+        'leading_trailing_space',
+        tr('Leading/trailing space in layer/group name'),
         tr(
-            'The layer/group name has some trailing spaces. It must be removed and the configuration in the plugin '
-            'might be needed.'
+            'The layer/group name has some leading/trailing spaces. It must be removed and the configuration in the '
+            'plugin might be needed.'
         ), (
             '<ul>'
             '<li>{edit_layer}</li>'
             '</ul>'.format(
-                edit_layer=tr('Rename your layer/group to remove trailing spaces (left and right)'),
+                edit_layer=tr('Rename your layer/group to remove leading/trailing spaces (left and right)'),
             )
         ),
         Levels.Layer,

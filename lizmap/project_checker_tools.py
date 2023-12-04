@@ -333,12 +333,12 @@ def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: Li
             layer = project.mapLayer(child.layerId())
             if layer.name().strip() != layer.name():
                 results.append(
-                    Error(layer.name(), Checks.TrailingSpaceLayerGroupName, SourceLayer(layer.name(), layer.id())))
+                    Error(layer.name(), Checks.LeadingTrailingSpaceLayerGroupName, SourceLayer(layer.name(), layer.id())))
         else:
             child = cast_to_group(child)
             if child.name().strip() != child.name():
                 results.append(
-                    Error(child.name(), Checks.TrailingSpaceLayerGroupName, SourceGroup))
+                    Error(child.name(), Checks.LeadingTrailingSpaceLayerGroupName, SourceGroup))
 
             # Recursive call
             results = trailing_layer_group_name(child, project, results)
