@@ -121,6 +121,7 @@ from lizmap.project_checker_tools import (
     PREVENT_ECW,
     PREVENT_OTHER_DRIVE,
     PREVENT_SERVICE,
+    count_legend_items,
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
     project_invalid_pk,
@@ -239,6 +240,7 @@ class Lizmap:
         self.current_path = None
         # noinspection PyUnresolvedReferences
         self.project.fileNameChanged.connect(self.filename_changed)
+        self.project.projectSaved.connect(self.project_saved)
         self.filename_changed()
         self.update_plugin = None
 
@@ -815,6 +817,34 @@ class Lizmap:
         self.myDic = None
         self.help_action = None
         self.help_action_cloud = None
+
+    def project_saved(self):
+        """ When the project is saved. """
+        if not self.dlg.check_cfg_file_exists():
+            return
+
+        if self.layerList is None:
+            # The user didn't open the plugin since QGIS has started
+            # Sorry, we don't know if the user added/removed layers, maybe nothing
+            return
+
+        # Check the number of layers between the project and the Lizmap configuration file.
+        count_cfg = len(self.layerList.keys())
+        count_qgs = count_legend_items(self.project.layerTreeRoot(), self.project, 0)
+        if count_cfg != count_qgs:
+            self.iface.messageBar().pushMessage(
+                'Lizmap',
+                tr(
+                    'The project has {count_qgs} items in the legend, while the Lizmap configuration has {count_cfg} '
+                    'items. Please open the plugin to sync the "{layer_tab}" tab.'
+                ).format(
+                    count_qgs=count_qgs,
+                    count_cfg=count_cfg,
+                    layer_tab=self.dlg.mOptionsListWidget.item(2).text()
+                ),
+                Qgis.Warning,
+                duration=DURATION_WARNING_BAR,
+            )
 
     def filename_changed(self):
         """ When the current project has been renamed. """
@@ -2543,6 +2573,8 @@ class Lizmap:
         """ Add a base layer to the "baselayers" group. """
         self.add_group_baselayers()
         raster = QgsRasterLayer(source, name, 'wms')
+        self.project.addMapLayer(raster, False)  # False to not add it in the legend, only in the project
+
         if attribution_url:
             raster.setAttributionUrl(attribution_url)
         if attribution_name:
@@ -2553,9 +2585,16 @@ class Lizmap:
         for qgis_group in groups:
             qgis_group: QgsLayerTreeGroup
             if qgis_group.name() == 'baselayers':
-                self.project.addMapLayer(raster, False)  # False is the key
                 qgis_group.addLayer(raster)
-                return
+                break
+
+        self.dlg.display_message_bar(
+            tr('New layer'),
+            tr('Please close and reopen the dialog to display your layer in the tab "{tab_name}".').format(
+                tab_name=self.dlg.mOptionsListWidget.item(2).text()
+            ),
+            Qgis.Warning,
+        )
 
     @staticmethod
     def string_to_list(text):

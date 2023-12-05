@@ -670,6 +670,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.setIconSize(QSize(20, 20))
         i = 0
 
+        # If adding a new panel, all mOptionsListWidget.item(X) must be checked
+        # definitions/online_help.py about mapping as well
+
         # Information
         # It must be the first tab, with index 0.
         icon = QIcon()
