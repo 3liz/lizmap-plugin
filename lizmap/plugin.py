@@ -826,9 +826,13 @@ class Lizmap:
         if not self.dlg.check_cfg_file_exists():
             return
 
-        if not self.layerList:
-            # The user didn't open the plugin since QGIS has started
-            # Sorry, we don't know if the user added/removed layers, maybe nothing
+        try:
+            if not self.layerList:
+                # The user didn't open the plugin since QGIS has started
+                # Sorry, we don't know if the user added/removed layers, maybe nothing
+                return
+        except AttributeError:
+            # self.attributeError is defined in __init__ but not found
             return
 
         # Check the number of layers between the project and the Lizmap configuration file.
