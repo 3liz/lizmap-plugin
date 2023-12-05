@@ -717,7 +717,7 @@ class TableCheck(QTableWidget):
         return result
 
     def to_markdown_summarized(self) -> str:
-        """ Export a sum up of warnings to JSON. """
+        """ Export a sum up of warnings to Markdown. """
         result = {}
         for row in range(self.rowCount()):
             error_name = self.item(row, 3).data(Qt.DisplayRole)

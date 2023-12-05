@@ -826,7 +826,7 @@ class Lizmap:
         if not self.dlg.check_cfg_file_exists():
             return
 
-        if self.layerList is None:
+        if not self.layerList:
             # The user didn't open the plugin since QGIS has started
             # Sorry, we don't know if the user added/removed layers, maybe nothing
             return

@@ -4668,6 +4668,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="TableCheck" name="table_checks"/>
                </item>
+               <item>
+                <widget class="QPushButton" name="export_summary_table">
+                 <property name="text">
+                  <string>Copy in clipboard</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
              <widget class="QWidget" name="table_help">

@@ -16,7 +16,13 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QDesktopServices, QIcon, QImageReader, QPixmap
+from qgis.PyQt.QtGui import (
+    QDesktopServices,
+    QGuiApplication,
+    QIcon,
+    QImageReader,
+    QPixmap,
+)
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -102,6 +108,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
         self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+        self.warning_old_server.setVisible(False)
 
         # Make them hidden until we have the changelog URL
         self.lwc_version_latest_changelog.setVisible(False)
@@ -322,6 +330,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         )
         self.label_safe_lizmap_cloud.setToolTip(msg)
 
+        self.export_summary_table.clicked.connect(self.copy_clip_board_summary_table)
+        self.export_summary_table.setIcon(QIcon(":images/themes/default/mActionEditCopy.svg"))
+
         self.table_checks.setup()
         css_path = resources_path('css', 'log.css')
         with open(css_path, encoding='utf8') as f:
@@ -335,6 +346,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     @staticmethod
     def open_pg_service_help():
         """ Open the PG service documentation. """
+        # noinspection PyArgumentList
         QDesktopServices.openUrl(pg_service_help())
 
     def check_api_key_address(self):
@@ -413,6 +425,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.enabled_estimated_md_button(status)
         self.enabled_trust_project(status)
         self.enabled_simplify_geom(status)
+
+    def copy_clip_board_summary_table(self):
+        """ Export the table as Markdown in the clipboard. """
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(self.table_checks.to_markdown_summarized())
+        self.display_message_bar(
+            tr('Copied'), tr('Your results have been copied in your clipboard.'), level=Qgis.Success)
 
     def follow_map_theme_toggled(self):
         """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
@@ -516,7 +535,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Return the current LWC version from the server combobox. """
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
-        if metadata:
+        if metadata and metadata.get('info'):
             return LwcVersions.find(metadata['info']['version'])
 
     def current_repository(self, role=RepositoryComboData.Id) -> str:
@@ -531,6 +550,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # This method must use itemData() as we are not the current selected server in the combobox.
         url = self.server_combo.itemData(index, ServerComboData.ServerUrl.value)
         metadata = self.server_combo.itemData(index, ServerComboData.JsonMetadata.value)
+        if not metadata or not metadata.get('info'):
+            # Let's skip, the tooltip
+            return
         target_version = LwcVersions.find(metadata['info']['version'])
         if target_version:
             target_version = target_version.value

@@ -1117,6 +1117,8 @@ class ServerManager:
         data += '\n' + self.parent.safeguards_to_markdown()
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
+        self.parent.display_message_bar(
+            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.Success)
         if not action_required:
             return
 
