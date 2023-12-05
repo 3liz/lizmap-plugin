@@ -209,7 +209,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
 
         expected = {
             'lines': {
@@ -272,7 +272,7 @@ class TestTableManager(unittest.TestCase):
         table_manager.load_qgis_layouts(cfg)
         self.assertEqual(table_manager.table.rowCount(), 4)
 
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         expected = {
             "config": {},
             "list": [
@@ -739,7 +739,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
 
         expected = {
             '0': {
@@ -895,7 +895,7 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
 
-        output = table_manager.to_json()
+        output = table_manager.to_json(LwcVersions.latest())
         # Global widget are not defined in this test
         json['config'] = {}
         json['layers'][0]['use_centroid'] = False  # Default value
@@ -921,7 +921,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         json['lines'].pop('colorGeom')
         self.assertDictEqual(data, json)
 
@@ -947,7 +947,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
 
         # Automatically added, so we add it manually for the comparaison
         json['lines']['custom_config'] = 'False'
@@ -976,7 +976,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         expected = {
             'lines': {
                 'startAttribute': 'id',
@@ -1000,7 +1000,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, expected)
 
         table_manager.truncate()
@@ -1018,7 +1018,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, json)
 
     def test_edition_layer(self):
@@ -1074,7 +1074,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(copy.deepcopy(json))
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         json = {
             'lines': {
                 'layerId': self.layer.id(),
@@ -1162,7 +1162,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 2)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
 
         expected = {
             'lines_2': {
@@ -1270,7 +1270,7 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 0)
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, json)
 
         # QGIS notify layer has been deleted
@@ -1279,7 +1279,7 @@ class TestTableManager(unittest.TestCase):
         table_manager.layers_has_been_deleted([self.layer.id()])
         self.assertEqual(table_manager.table.rowCount(), 0)
 
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {'layers': []})
 
         # We add 2 layers
@@ -1301,7 +1301,7 @@ class TestTableManager(unittest.TestCase):
             table_manager._primary_keys()
         )
 
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {'layers': [layer_1, layer_2]})
 
         # We select second row and we move up
@@ -1309,24 +1309,24 @@ class TestTableManager(unittest.TestCase):
         table_manager.move_layer_up()
 
         # Export and check order
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {'layers': [layer_2, layer_1]})
 
         # We select first row and we move up
         table.setCurrentCell(0, 0)
         table_manager.move_layer_up()
         # Nothing happen, we are on top
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {'layers': [layer_2, layer_1]})
 
         table_manager.move_layer_down()
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {'layers': [layer_1, layer_2]})
 
         # We select first row and we remove it
         table.setCurrentCell(0, 0)
         table_manager.remove_selection()
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {'layers': [layer_2]})
 
         table_manager.truncate()
@@ -1406,7 +1406,7 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(json)
         self.assertEqual(table_manager.table.rowCount(), 1)
 
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
         expected = {
             'layers': [
                 {
@@ -1426,7 +1426,7 @@ class TestTableManager(unittest.TestCase):
         self.assertDictEqual(data, expected)
 
         definitions._use_single_row = True
-        data = table_manager.to_json()
+        data = table_manager.to_json(LwcVersions.latest())
 
         expected = {
             'atlasEnabled': 'True',  # Hard coded for Lizmap 3.3

@@ -3,6 +3,7 @@
 from qgis.core import QgsMapLayerProxyModel
 from qgis.PyQt.QtGui import QColor
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -18,8 +19,8 @@ CLASS = load_ui('ui_form_tooltip.ui')
 
 class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = ToolTipDefinitions()
         self.config.add_layer_widget('layerId', self.layer)

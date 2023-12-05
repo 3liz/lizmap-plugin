@@ -4,6 +4,7 @@ from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.layouts import Dpi, FormatType, LayoutsDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -19,8 +20,8 @@ CLASS = load_ui('ui_form_layout.ui')
 
 class LayoutEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.parent = parent
         self.config = LayoutsDefinitions()

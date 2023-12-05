@@ -8,6 +8,7 @@ from qgis.core import (
     QgsProject,
 )
 
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -24,8 +25,8 @@ CLASS = load_ui('ui_form_time_manager.ui')
 
 class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, version: LwcVersions = None):
+        super().__init__(parent, unicity, version)
         self.setupUi(self)
         self.config = TimeManagerDefinitions()
         self.config.add_layer_widget('layerId', self.layer)

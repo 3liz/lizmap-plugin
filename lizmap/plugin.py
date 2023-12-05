@@ -60,7 +60,6 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor
 from qgis.utils import plugins as all_plugins
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
@@ -190,12 +189,16 @@ VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions
 
 class Lizmap:
 
-    def __init__(self, iface):
+    def __init__(self, iface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
         LOGGER.info("Plugin starting")
         self.iface = iface
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
+
+        # Must only be used in tests
+        # In production, version is coming from the UI, according to the current server selected
+        self._version = lwc_version
 
         # Keep it for a few months
         # 2023/04/15
@@ -886,8 +889,21 @@ class Lizmap:
 
         self.current_path = new_path
 
+    def current_lwc_version(self) -> LwcVersions:
+        """ Return the current selected LWC version from the server. """
+        if self._version:
+            # For tests, return the version given in the constructor
+            return self._version
+
+        return self.dlg.current_lwc_version()
+
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
+        if not self.dlg.navigation_menu_ok:
+            # If the menu is not allowed, it means we don't need to know if the server has changed
+            # The user is still on the first information panel and it's not OK.
+            return
+
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
         current_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
@@ -896,9 +912,8 @@ class Lizmap:
         self.check_dialog_validity()
         self.dlg.refresh_combo_repositories()
 
-        current_version = self.dlg.current_lwc_version()
-        old_version = QgsSettings().value(
-            'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
+        current_version = self.current_lwc_version()
+        old_version = QgsSettings().value('lizmap/lizmap_web_client_version', type=str)
         if current_version != old_version:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)
@@ -941,11 +956,7 @@ class Lizmap:
 
     def lwc_version_changed(self):
         """ When the version has changed in the selector, we update features with the blue background. """
-        current_version = self.dlg.current_lwc_version()
-
-        if current_version is None:
-            # We come from a higher version of Lizmap (from dev to master)
-            current_version = DEFAULT_LWC_VERSION
+        current_version = self.current_lwc_version()
 
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
@@ -2455,7 +2466,7 @@ class Lizmap:
                 self.dlg.gb_layerSettings.setEnabled(False)
                 return
 
-        if self.dlg.current_lwc_version() >= LwcVersions.Lizmap_3_7:
+        if self.current_lwc_version() >= LwcVersions.Lizmap_3_7:
             if self._current_item_predefined_group() != PredefinedGroup.No.value:
                 self.dlg.gb_layerSettings.setEnabled(False)
 
@@ -2532,7 +2543,7 @@ class Lizmap:
     def add_group_overview(self):
         """ Add the overview group. """
         label = 'overview'
-        if self.dlg.current_lwc_version() < LwcVersions.Lizmap_3_7:
+        if self.current_lwc_version() < LwcVersions.Lizmap_3_7:
             label = 'Overview'
         self._add_group_legend(label)
 
@@ -3664,7 +3675,7 @@ class Lizmap:
 
         self.dlg.check_qgis_version(message_bar=True)
         if not lwc_version:
-            lwc_version = self.dlg.current_lwc_version()
+            lwc_version = self.current_lwc_version()
 
         defined_env_target = os.getenv('LIZMAP_TARGET_VERSION')
         if defined_env_target:
@@ -3937,7 +3948,7 @@ class Lizmap:
 
         self.dlg.scales_warning.setVisible(visible)
 
-        current_version = self.dlg.current_lwc_version()
+        current_version = self.current_lwc_version()
         if not current_version:
             # No server yet
             return
@@ -4091,7 +4102,7 @@ class Lizmap:
         self.dlg.label_atlasprint_plugin.setVisible(False)
         self.dlg.label_qgis_server_plugins.setVisible(False)
 
-        self.version_checker = VersionChecker(self.dlg, VERSION_URL)
+        self.version_checker = VersionChecker(self.dlg, VERSION_URL, self.is_dev_version)
         self.version_checker.fetch()
 
         if not self.check_dialog_validity():

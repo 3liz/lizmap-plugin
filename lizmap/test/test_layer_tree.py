@@ -4,7 +4,7 @@ from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
-from lizmap.definitions.definitions import LayerProperties
+from lizmap.definitions.definitions import LayerProperties, LwcVersions
 from lizmap.plugin import Lizmap
 from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.tools import layer_property
@@ -24,7 +24,7 @@ class TestLayerTree(unittest.TestCase):
 
     def test_string_to_list(self):
         """ Test about text to JSON list. """
-        lizmap = Lizmap(get_iface())
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
         self.assertListEqual(lizmap.string_to_list(''), [])
         self.assertListEqual(lizmap.string_to_list('a'), ['a'])
         self.assertListEqual(lizmap.string_to_list(' a '), ['a'])
@@ -41,7 +41,7 @@ class TestLayerTree(unittest.TestCase):
         lizmap_config_url = 'https://lizmap.url'
         qgis_config_url = 'https://qgis.url'
 
-        lizmap = Lizmap(get_iface())
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
 
         # New project so Lizmap is empty
         config = lizmap.layers_config_file()

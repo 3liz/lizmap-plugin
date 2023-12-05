@@ -8,7 +8,6 @@ import os
 
 from qgis.core import QgsMapLayer, QgsProject
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.version import (
@@ -44,7 +43,7 @@ class LizmapConfig:
         }
         metadata['lizmap_web_client_target_version'] = {
             'wType': 'spinbox', 'type': 'integer',
-            'default': format_version_integer('{}.0'.format(DEFAULT_LWC_VERSION.value)),
+            'default': format_version_integer('{}.0'.format(LwcVersions.latest().value)),
         }
 
         # We want to translate some items, do not make this variable static

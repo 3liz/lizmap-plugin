@@ -3,6 +3,7 @@
 from qgis.core import QgsMapLayerProxyModel
 
 from lizmap.definitions.atlas import AtlasDefinitions
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui
@@ -17,8 +18,8 @@ CLASS = load_ui('ui_form_atlas.ui')
 
 class AtlasEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = AtlasDefinitions()
         self.config.add_layer_widget('layer', self.layer)

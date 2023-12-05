@@ -34,15 +34,26 @@ class LwcVersions(Enum):
 
     @staticmethod
     def latest():
+        # Latest is used in test by default
+        # As the plugin is not fetching the online JSON file, we still need to choose one LWC version
         return LwcVersions.as_list()[-1]
 
     @classmethod
-    def find(cls, version_string: str):
+    def find(cls, version_string: str, raise_exception: bool = False):
         """Return the LWC version for the given string."""
         for lwc_version in cls.__members__.values():
             if version_string.startswith(lwc_version.value):
                 return lwc_version
-        return None
+
+        if raise_exception:
+            raise Exception(
+                f'The version string "{version_string}" was not found in Python files. Developers, please add it. No '
+                f'stress, nothing in production ;-)'
+            )
+        else:
+            # For non developers, we just return the latest...
+            # Better than nothing
+            return LwcVersions.latest()
 
 
 # Possible prefix before a stable release

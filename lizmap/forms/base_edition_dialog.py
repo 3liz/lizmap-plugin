@@ -16,7 +16,6 @@ from qgis.PyQt.QtWidgets import (
     QPlainTextEdit,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
@@ -35,7 +34,7 @@ class BaseEditionDialog(QDialog):
 
     """ Class managing the edition form, either creation or editing. """
 
-    def __init__(self, parent: QDialog = None, unicity=None):
+    def __init__(self, parent: QDialog = None, unicity=None, lwc_version: LwcVersions = None):
         """ Constructor. """
         # parent is the main UI of the plugin
         # noinspection PyArgumentList
@@ -43,6 +42,9 @@ class BaseEditionDialog(QDialog):
         self.parent = parent
         self.config = None
         self.unicity = unicity
+
+        # Should only be used in tests, otherwise, the version is coming from the parent.
+        self._version = lwc_version
 
         # Most edition dialogs are based on a layer as input. Only the layout dialog is not.
         self.layer = None
@@ -153,12 +155,15 @@ class BaseEditionDialog(QDialog):
         # noinspection PyArgumentList
         QDesktopServices.openUrl(online_lwc_help(self.config.help_path()))
 
+    def current_lwc_version(self) -> LwcVersions:
+        """ If a parent is defined, by default on production, return the version of the current selected server. """
+        if self.parent:
+            return self.parent.current_lwc_version()
+        return self._version
+
     def version_lwc(self):
         """ Make all colors about widgets if it is available or not. """
-        if self.parent:
-            current_version = self.parent.current_lwc_version()
-        else:
-            current_version = DEFAULT_LWC_VERSION
+        current_version = self.current_lwc_version()
 
         # For labels in the UI files, which are not part of the definitions.
         found = False

@@ -1,6 +1,6 @@
 """Dialog for dataviz edition."""
 
-from qgis.core import QgsApplication, QgsMapLayerProxyModel, QgsSettings
+from qgis.core import QgsApplication, QgsMapLayerProxyModel
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
@@ -10,7 +10,6 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
@@ -30,8 +29,8 @@ CLASS = load_ui('ui_form_dataviz.ui')
 
 class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.parent = parent
         self.config = DatavizDefinitions()
@@ -276,9 +275,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 item = self.traces.item(i, 0)
                 self.trace_combo.addItem(item.icon(), item.text(), i + 1)
 
-        version = QgsSettings().value(
-            'lizmap/lizmap_web_client_version', DEFAULT_LWC_VERSION.value, str)
-        version = LwcVersions(version)
+        version = self.current_lwc_version()
 
         if version in [LwcVersions.Lizmap_3_1, LwcVersions.Lizmap_3_2, LwcVersions.Lizmap_3_3]:
             if self.traces.rowCount() >= 2:

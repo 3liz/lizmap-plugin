@@ -18,7 +18,6 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap import DEFAULT_LWC_VERSION
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
@@ -535,16 +534,13 @@ class TableManager:
         """ The label in the CFG file prefixing the list. """
         return "layers"
 
-    def to_json(self, version=None) -> dict:
+    def to_json(self, version: LwcVersions = None) -> dict:
         """Write the configuration to JSON.
 
         Since Lizmap 3.4, the JSON is different.
         """
-        if not version:
-            if self.parent:
-                version = self.parent.current_lwc_version()
-            else:
-                version = DEFAULT_LWC_VERSION
+        if not version and self.parent:
+            version = self.parent.current_lwc_version()
 
         data = dict()
 

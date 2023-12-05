@@ -3,7 +3,7 @@
 from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
 
-from lizmap import LwcVersions
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -20,8 +20,8 @@ CLASS = load_ui('ui_form_filter_by_form.ui')
 
 class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None):
-        super().__init__(parent, unicity)
+    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+        super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByFormDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
