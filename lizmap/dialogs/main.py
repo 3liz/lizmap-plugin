@@ -922,7 +922,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def safeguards_to_markdown(self) -> str:
         """ Export the list of safeguards to markdown. """
-        text = 'List of safeguards :\n'
+        text = '<details>\n'
+        text += '<summary>List of safeguards :</summary>\n'
+        text += '<br/>\n\n'
         text += '* Mode : {}\n'.format('normal' if self.radio_normal.isChecked() else 'safe')
         text += '* Allow parent folder : {}\n'.format('yes' if self.radio_allow_parent_folder.isChecked() else 'no')
         if self.radio_allow_parent_folder.isChecked():
@@ -932,6 +934,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         text += '* Prevent PG Auth DB : {}\n'.format('yes' if self.safe_pg_auth_db.isChecked() else 'no')
         text += '* Force PG user&pass : {}\n'.format('yes' if self.safe_pg_user_password.isChecked() else 'no')
         text += '* Prevent ECW : {}\n'.format('yes' if self.safe_ecw.isChecked() else 'no')
+        text += '</details>'
         return text
 
     def save_settings(self):

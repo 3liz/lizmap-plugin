@@ -1114,6 +1114,7 @@ class ServerManager:
 
     def copy_as_markdown(self, data: str, action_data: str, action_required: bool):
         """ Copy the server information. """
+        data += '\n' + self.parent.safeguards_to_markdown()
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
         if not action_required:
