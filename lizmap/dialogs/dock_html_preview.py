@@ -5,7 +5,6 @@ __email__ = 'info@3liz.org'
 import logging
 
 from qgis.core import (
-    Qgis,
     QgsApplication,
     QgsExpression,
     QgsExpressionContext,
@@ -13,11 +12,7 @@ from qgis.core import (
     QgsMapLayerProxyModel,
     QgsProject,
 )
-
-if Qgis.QGIS_VERSION_INT >= 31400:
-    from qgis.gui import QgsFeaturePickerWidget
-
-from qgis.gui import QgsMapLayerComboBox
+from qgis.gui import QgsFeaturePickerWidget, QgsMapLayerComboBox
 from qgis.PyQt.QtCore import QDateTime, QLocale, QUrl
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (
@@ -55,12 +50,6 @@ class HtmlPreview(QDockWidget):
 
         self.dock = QWidget(parent)
         self.layout = QVBoxLayout(self.dock)
-
-        if Qgis.QGIS_VERSION_INT < 31400:
-            self.label = QLabel('You must install at least QGIS 3.14')
-            self.label.setWordWrap(True)
-            self.layout.addWidget(self.label)
-            return
 
         if not WEBKIT_AVAILABLE:
             self.label = QLabel(tr('You must install Qt Webkit to enable this feature.'))

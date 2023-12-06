@@ -144,6 +144,8 @@ except ModuleNotFoundError:
     # In a standalone application
     QGIS_PLUGIN_MANAGER = False
 
+from qgis.core import QgsProjectServerValidator
+
 from lizmap.qgis_plugin_tools.tools.custom_logging import (
     add_logging_handler_once,
     setup_logger,
@@ -176,8 +178,6 @@ from lizmap.tools import (
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
-if qgis_version() >= 31400:
-    from qgis.core import QgsProjectServerValidator
 if qgis_version() >= 32200:
     from lizmap.server_dav import WebDav
 
@@ -3530,9 +3530,6 @@ class Lizmap:
 
     def check_project_validity(self):
         """Project checker about issues that the user might hae when running in LWC."""
-        if qgis_version() < 31400:
-            return None, None
-
         # Import must be done after QTranslator
         from lizmap.widgets.check_project import Checks, Error
 

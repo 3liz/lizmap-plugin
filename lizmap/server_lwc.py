@@ -1184,7 +1184,7 @@ class ServerManager:
                 config.setConfig('password', password)
                 config.setConfig('realm', QUrl(url).host())
 
-                if qgis_version() < 320000:
+                if qgis_version() < 32000:
                     auth_manager.removeAuthenticationConfig(auth_id)
                     result = auth_manager.storeAuthenticationConfig(config)
                 else:
