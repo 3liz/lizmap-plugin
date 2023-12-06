@@ -62,7 +62,7 @@ class LizmapConfig:
                 'wType': 'text', 'type': 'list', 'default': []
             },
             'initialExtent': {
-                'wType': 'text', 'type': 'floatlist', 'default': []
+                'wType': 'extent', 'type': 'floatlist', 'default': []
             },
             'googleKey': {
                 'wType': 'text', 'type': 'string', 'default': ''

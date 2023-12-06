@@ -28,6 +28,7 @@ from qgis.utils import iface
 
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.tools import qgis_version
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -103,8 +104,9 @@ class HtmlPreview(QDockWidget):
         self.feature.featureChanged.connect(self.update_html)
         self.feature.setShowBrowserButtons(True)
 
-        # We don't have a better signal to listen to
-        QgsProject.instance().dirtySet.connect(self.update_html)
+        if qgis_version() >= 32000:
+            # We don't have a better signal to listen to
+            QgsProject.instance().dirtySet.connect(self.update_html)
 
         self.update_html()
 

@@ -101,7 +101,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         # as it will be called by read_cfg_file and also the UI is set in read_cfg_file
         config = lizmap.read_cfg_file(skip_tables=True)
 
-        lizmap.set_initial_extent_from_canvas()
+        lizmap.dlg.widget_initial_extent.setOutputExtentFromLayer(layer)
 
         # Config is empty in the CFG file because it's a new project
         self.assertDictEqual({}, config)

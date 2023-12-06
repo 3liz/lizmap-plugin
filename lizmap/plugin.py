@@ -26,6 +26,7 @@ from qgis.core import (
     QgsMapLayerProxyModel,
     QgsProject,
     QgsRasterLayer,
+    QgsRectangle,
     QgsSettings,
     QgsVectorLayer,
     QgsWkbTypes,
@@ -423,7 +424,7 @@ class Lizmap:
         self.global_options['minScale']['widget'] = self.dlg.inMinScale
         self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
         self.global_options['acl']['widget'] = self.dlg.inAcl
-        self.global_options['initialExtent']['widget'] = self.dlg.inInitialExtent
+        self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
         self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
         self.global_options['googleHybrid']['widget'] = self.dlg.cbGoogleHybrid
         self.global_options['googleSatellite']['widget'] = self.dlg.cbGoogleSatellite
@@ -1119,10 +1120,7 @@ class Lizmap:
 
         # initial extent
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
-        self.dlg.btSetExtentFromCanvas.clicked.connect(self.set_initial_extent_from_canvas)
-
         self.dlg.btSetExtentFromProject.setIcon(QIcon(":images/themes/default/propertyicons/overlay.svg"))
-        self.dlg.btSetExtentFromCanvas.setIcon(QIcon(":images/themes/default/mLayoutItemMap.svg"))
 
         # Dataviz options
         for item in Theme:
@@ -1656,6 +1654,17 @@ class Lizmap:
                         else:
                             item['widget'].setText(str(json_options[key]))
 
+                if item['wType'] == 'extent':
+                    if key in json_options:
+                        extent = QgsRectangle(
+                            json_options[key][0],
+                            json_options[key][1],
+                            json_options[key][2],
+                            json_options[key][3]
+                        )
+                        item['widget'].setOriginalExtent(extent, self.project.crs())
+                        item['widget'].setOutputExtentFromOriginal()
+
                 if item['wType'] == 'wysiwyg':
                     item['widget'].set_html_content(str(item['default']))
 
@@ -1867,39 +1876,17 @@ class Lizmap:
         return None
 
     def set_initial_extent_from_project(self):
-        """
-        Get the project WMS advertised extent
-        and set the initial x minimum, y minimum, x maximum, y maximum
-        in the map options tab
-        """
-        p_wms_extent = self.project.readListEntry('WMSExtent', '')[0]
-        if len(p_wms_extent) > 1:
-            extent = '{}, {}, {}, {}'.format(
-                p_wms_extent[0],
-                p_wms_extent[1],
-                p_wms_extent[2],
-                p_wms_extent[3]
-            )
-            self.dlg.inInitialExtent.setText(extent)
+        """ Set extent from QGIS server properties with the WMS advertised extent. """
+        # The default extent widget does not have an input : QGIS server WMS properties
+        wms_extent = self.project.readListEntry('WMSExtent', '')[0]
+        if len(wms_extent) < 1:
+            return
 
+        wms_extent = [float(i) for i in wms_extent]
+        extent = QgsRectangle(wms_extent[0], wms_extent[1], wms_extent[2], wms_extent[3])
+        self.dlg.widget_initial_extent.setOutputExtentFromUser(
+            extent, self.iface.mapCanvas().mapSettings().destinationCrs())
         LOGGER.info('Setting extent from the project')
-
-    def set_initial_extent_from_canvas(self):
-        """
-        Get the map canvas extent
-        and set the initial x minimum, y minimum, x maximum, y maximum
-        in the map options tab
-        """
-        # Get map canvas extent
-        extent = self.iface.mapCanvas().extent()
-        initial_extent = '{}, {}, {}, {}'.format(
-            extent.xMinimum(),
-            extent.yMinimum(),
-            extent.xMaximum(),
-            extent.yMaximum()
-        )
-        self.dlg.inInitialExtent.setText(initial_extent)
-        LOGGER.info('Setting extent from the canvas')
 
     def remove_selected_layer_from_table(self, key):
         """
@@ -3201,16 +3188,16 @@ class Lizmap:
         liz2json["layers"] = dict()
 
         # projection
-        projection = self.iface.mapCanvas().mapSettings().destinationCrs()
+        projection = self.dlg.widget_initial_extent.outputCrs()
         liz2json['options']['projection'] = dict()
         liz2json['options']['projection']['proj4'] = projection.toProj()
         liz2json['options']['projection']['ref'] = projection.authid()
 
-        # wms extent
+        # WMS extent from project properties, QGIS server tab
         liz2json['options']['bbox'] = self.project.readListEntry('WMSExtent', '')[0]
 
         # set initialExtent values if not defined
-        if not self.dlg.inInitialExtent.text():
+        if not self.dlg.widget_initial_extent.outputExtent().isNull():
             self.set_initial_extent_from_project()
 
         # gui user defined options
@@ -3243,6 +3230,9 @@ class Lizmap:
                 if item['wType'] == 'fields':
                     input_value = item['widget'].currentField()
 
+                if item['wType'] == 'extent':
+                    input_value = item['widget'].outputExtent()
+
                 # Cast value depending of data type
                 if item['type'] == 'string':
                     if item['wType'] in ('text', 'textarea'):
@@ -3254,7 +3244,15 @@ class Lizmap:
                     if item['type'] == 'intlist':
                         input_value = [int(a) for a in input_value.split(', ') if a.isdigit()]
                     elif item['type'] == 'floatlist':
-                        input_value = [float(a) for a in input_value.split(', ')]
+                        if item['wType'] != 'extent':
+                            input_value = [float(a) for a in input_value.split(', ')]
+                        else:
+                            input_value = [
+                                input_value.xMinimum(),
+                                input_value.yMinimum(),
+                                input_value.xMaximum(),
+                                input_value.yMaximum(),
+                            ]
                     else:
                         input_value = [a.strip() for a in input_value.split(',') if a.strip()]
 
