@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+* Raise QGIS minimum version to 3.16
+* The `baselayers` has now the legend collapsed by default and is mutually exclusive
+* The "Map options" panel uses a native extent selector with more buttons and following the project CRS by default
+* Add a button to export the results of validation as text
+* Export the list of safeguards and their settings
+* Better UX when using the clipboard
+
 ## 4.0.2 - 2023-12-04
 
 * Increase to 1 the maximum of atlas features in a `GetPrint` request automatically
