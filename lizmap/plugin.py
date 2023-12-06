@@ -2529,7 +2529,9 @@ class Lizmap:
             if qgis_group.name() == label:
                 return qgis_group
 
-        return root_group.addGroup(label)
+        new_group = root_group.addGroup(label)
+        new_group.setIsMutuallyExclusive(True, -1)
+        return new_group
 
     def add_group_hidden(self):
         """ Add the hidden group. """
@@ -2600,7 +2602,8 @@ class Lizmap:
         for qgis_group in groups:
             qgis_group: QgsLayerTreeGroup
             if qgis_group.name() == 'baselayers':
-                qgis_group.addLayer(raster)
+                node = qgis_group.addLayer(raster)
+                node.setExpanded(False)
                 break
 
         self.dlg.display_message_bar(
