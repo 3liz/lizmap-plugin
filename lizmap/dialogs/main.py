@@ -15,6 +15,7 @@ from qgis.core import (
     QgsProject,
     QgsSettings,
 )
+from qgis.gui import QgsFeaturePickerWidget
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -100,11 +101,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.dataviz_viewer = QLabel(tr('You must install Qt Webkit to enable this feature.'))
         self.html_content.layout().addWidget(self.dataviz_viewer)
 
-        if qgis_version() >= 31400:
-            from qgis.gui import QgsFeaturePickerWidget
-            self.dataviz_feature_picker = QgsFeaturePickerWidget()
-        else:
-            self.dataviz_feature_picker = QLabel(tr("You must install QGIS 3.16 to enable the dataviz preview."))
+        self.dataviz_feature_picker = QgsFeaturePickerWidget()
 
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
         self.feature_picker_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))

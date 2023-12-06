@@ -36,7 +36,7 @@ from lizmap.qgis_plugin_tools.tools.resources import (
     resources_path,
 )
 from lizmap.table_manager.base import TableManager
-from lizmap.tools import merge_strings, qgis_version, to_bool
+from lizmap.tools import merge_strings, to_bool
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -67,9 +67,8 @@ class TableManagerDataviz(TableManager):
 
         self.table.itemSelectionChanged.connect(self.preview_dataviz_dialog)
 
-        if qgis_version() >= 31400:
-            self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
-            self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
+        self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
+        self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
 
         self.parent.enable_dataviz_preview.setText('')
         self.parent.enable_dataviz_preview.setCheckable(True)
