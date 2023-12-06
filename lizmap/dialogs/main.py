@@ -95,6 +95,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
         self.label_lizmap_logo.setPixmap(pixmap)
 
+        # Initial extent widget
+        if qgis_version() >= 31800:
+            self.widget_initial_extent.setMapCanvas(iface.mapCanvas(), False)
+        else:
+            self.widget_initial_extent.setMapCanvas(iface.mapCanvas())
+        self.widget_initial_extent.setOutputCrs(self.project.crs())
+        self.widget_initial_extent.setOriginalExtent(iface.mapCanvas().extent(), self.project.crs())
+        self.project.crsChanged.connect(self.project_crs_changed)
+
         if WEBKIT_AVAILABLE:
             self.dataviz_viewer = QWebView()
         else:
@@ -339,6 +348,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
     @property
     def check_results(self) -> TableCheck:
         return self.table_checks
+
+    def project_crs_changed(self):
+        """ When the project CRS has changed.   """
+        self.widget_initial_extent.setOutputCrs(self.project.crs())
 
     @staticmethod
     def open_pg_service_help():
