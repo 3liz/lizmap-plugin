@@ -135,11 +135,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 "<strong>'{tab_name}'</strong> for all errors which can be reported."
             ).format(column_name=Headers.Error.label, tab_name=self.tab_log.tabText(1))
         )
-        settings_name = self.mOptionsListWidget.item(Panels.Settings).text()
+        auto_fix_panel = self.mOptionsListWidget.item(Panels.AutoFix).text()
         self.label_autofix.setText(tr(
             "An auto-fix is available in the '{tab_name}' panel"
-        ).format(tab_name=settings_name))
-        self.push_visit_settings.setText(tr("Visit the '{tab_name}' panel").format(tab_name=settings_name))
+        ).format(tab_name=auto_fix_panel))
+        self.push_visit_settings.setText(tr("Visit the '{tab_name}' panel").format(tab_name=auto_fix_panel))
         self.push_visit_settings.clicked.connect(self.visit_settings_panel)
         self.push_visit_settings.setIcon(QIcon(":/images/themes/default/console/iconSettingsConsole.svg"))
         self.label_check_resume.setVisible(False)
@@ -434,7 +434,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def visit_settings_panel(self):
         """ Go to settings panel. """
-        self.mOptionsListWidget.setCurrentRow(Panels.Settings)
+        self.mOptionsListWidget.setCurrentRow(Panels.AutoFix)
 
     def auto_fix_tooltip(self, lizmap_cloud):
         """ Set some tooltips on these auto-fix buttons, according to Lizmap Cloud status. """
