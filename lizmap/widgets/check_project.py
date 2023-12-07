@@ -726,7 +726,7 @@ class TableCheck(QTableWidget):
             else:
                 result[error_name] += 1
 
-        text = 'Validator summarized :\n\n'
+        text = 'Validation summarized :\n\n'
         for error_name, count in result.items():
             text += '* {} → {}\n'.format(error_name, count)
         text += '\n'

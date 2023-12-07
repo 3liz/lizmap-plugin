@@ -352,6 +352,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def project_crs_changed(self):
         """ When the project CRS has changed.   """
         self.widget_initial_extent.setOutputCrs(self.project.crs())
+        # TODO, check with the previous CRS in the Lizmap configuration
+        # if iface:
+        #     iface.messageBar().pushMessage(
+        #         'Lizmap',
+        #         tr(
+        #             'The project CRS has changed. Do not forget to regenerate the Lizmap configuration file about '
+        #             'your initial extent.'
+        #         ),
+        #         level=Qgis.Warning,
+        #     )
 
     @staticmethod
     def open_pg_service_help():
@@ -941,6 +951,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.safe_number_parent,
             self.safe_other_drive,
             self.safe_pg_service,
+            self.help_pg_service,
             self.safe_pg_auth_db,
             self.safe_pg_user_password,
             self.safe_ecw,

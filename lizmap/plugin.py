@@ -3288,7 +3288,27 @@ class Lizmap:
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
             if manager:
-                data = manager.to_json()
+                try:
+                    data = manager.to_json()
+                except (AttributeError, ) as e:
+                    import traceback
+                    QMessageBox.critical(
+                        self.dlg,
+                        'Lizmap',
+                        tr(
+                            'An error has been raised while saving table "{name}", maybe it was due to invalid layers ?'
+                        ).format(name=key) + '\n\n'
+                        + tr(
+                            'If yes, saving CFG file with invalid layers in the legend is not currently supported by '
+                            'the plugin.'
+                        ) + '\n\n'
+                        + tr(
+                            'If not, it was a bug, please report it. The process is stopping.'
+                        ) + '\n\n'
+                        + tr('Error') + ' : ' + str(e) + '\n\n'
+                        + traceback.format_exc()
+                    )
+                    return None
 
                 if key == 'layouts':
                     # The print combobox is removed
