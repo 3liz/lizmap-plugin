@@ -175,12 +175,17 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Log</string>
+           <string>Checks</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Settings/tools</string>
+           <string>Auto-fix tools</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Settings</string>
           </property>
          </item>
         </widget>
@@ -4614,7 +4619,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_log">
+         <widget class="QWidget" name="page_checks">
           <layout class="QVBoxLayout" name="verticalLayout_40">
            <item>
             <widget class="QTabWidget" name="tab_log">
@@ -4668,11 +4673,28 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </layout>
                </item>
                <item>
-                <widget class="QPushButton" name="export_summary_table">
-                 <property name="text">
-                  <string>Copy results in clipboard</string>
-                 </property>
-                </widget>
+                <layout class="QHBoxLayout" name="horizontalLayout_54">
+                 <item>
+                  <spacer name="horizontalSpacer_23">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="export_summary_table">
+                   <property name="text">
+                    <string>Copy results in clipboard</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <widget class="TableCheck" name="table_checks"/>
@@ -4721,42 +4743,23 @@ This is different to the map maximum extent (defined in QGIS project properties,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_settings">
-          <layout class="QVBoxLayout" name="verticalLayout_64">
+         <widget class="QWidget" name="page_auto_fix">
+          <layout class="QVBoxLayout" name="verticalLayout_74">
            <item>
-            <widget class="QScrollArea" name="scrollArea_14">
+            <widget class="QScrollArea" name="scrollArea_15">
              <property name="widgetResizable">
               <bool>true</bool>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_14">
+             <widget class="QWidget" name="scrollAreaWidgetContents_15">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>733</width>
-                <height>756</height>
+                <width>791</width>
+                <height>797</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_72">
-               <item>
-                <widget class="QGroupBox" name="groupBox_12">
-                 <property name="title">
-                  <string>Settings</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_66">
-                  <item>
-                   <widget class="QCheckBox" name="checkbox_save_project">
-                    <property name="toolTip">
-                     <string>Save the QGIS project too at the same time as the Lizmap config file.</string>
-                    </property>
-                    <property name="text">
-                     <string>Save QGIS project too</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
+              <layout class="QVBoxLayout" name="verticalLayout_73">
                <item>
                 <widget class="QGroupBox" name="groupBox_9">
                  <property name="title">
@@ -4856,6 +4859,61 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_settings">
+          <layout class="QVBoxLayout" name="verticalLayout_64">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_14">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_14">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>791</width>
+                <height>797</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_72">
+               <item>
+                <widget class="QGroupBox" name="groupBox_12">
+                 <property name="title">
+                  <string>Settings</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_66">
+                  <item>
+                   <widget class="QCheckBox" name="checkbox_save_project">
+                    <property name="toolTip">
+                     <string>Save the QGIS project too at the same time as the Lizmap config file.</string>
+                    </property>
+                    <property name="text">
+                     <string>Save QGIS project too</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -5028,6 +5086,19 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </item>
                  </layout>
                 </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>

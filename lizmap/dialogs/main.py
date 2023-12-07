@@ -64,7 +64,11 @@ from lizmap.definitions.definitions import (
     RepositoryComboData,
     ServerComboData,
 )
-from lizmap.definitions.online_help import online_lwc_help, pg_service_help
+from lizmap.definitions.online_help import (
+    Panels,
+    online_lwc_help,
+    pg_service_help,
+)
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
@@ -131,13 +135,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 "<strong>'{tab_name}'</strong> for all errors which can be reported."
             ).format(column_name=Headers.Error.label, tab_name=self.tab_log.tabText(1))
         )
-        settings_name = self.mOptionsListWidget.item(16).text()
+        settings_name = self.mOptionsListWidget.item(Panels.Settings).text()
         self.label_autofix.setText(tr(
             "An auto-fix is available in the '{tab_name}' panel"
         ).format(tab_name=settings_name))
         self.push_visit_settings.setText(tr("Visit the '{tab_name}' panel").format(tab_name=settings_name))
         self.push_visit_settings.clicked.connect(self.visit_settings_panel)
         self.push_visit_settings.setIcon(QIcon(":/images/themes/default/console/iconSettingsConsole.svg"))
+        self.label_check_resume.setVisible(False)
+        self.label_autofix.setVisible(False)
+        self.push_visit_settings.setVisible(False)
 
         # Filtering features
         self.tab_filtering.setCurrentIndex(0)
@@ -427,7 +434,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def visit_settings_panel(self):
         """ Go to settings panel. """
-        self.mOptionsListWidget.setCurrentRow(self.mOptionsListWidget.count() - 1)
+        self.mOptionsListWidget.setCurrentRow(Panels.Settings)
 
     def auto_fix_tooltip(self, lizmap_cloud):
         """ Set some tooltips on these auto-fix buttons, according to Lizmap Cloud status. """
@@ -745,7 +752,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def setup_icons(self):
         """ Setup icons in the left menu. """
         self.mOptionsListWidget.setIconSize(QSize(20, 20))
-        i = 0
 
         # If adding a new panel, all mOptionsListWidget.item(X) must be checked
         # definitions/online_help.py about mapping as well
@@ -755,136 +761,124 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon = QIcon()
         icon.addFile(resources_path('icons', '03-metadata-white'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '03-metadata-dark'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'info')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Information).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Information).setData(Qt.UserRole, 'info')
 
         # Map options
         icon = QIcon()
         icon.addFile(resources_path('icons', '15-baselayer-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '15-baselayer-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'map-options')
-        i += 1
+        self.mOptionsListWidget.item(Panels.MapOptions).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.MapOptions).setData(Qt.UserRole, 'map-options')
 
         # Layers
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'layers')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Layers).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Layers).setData(Qt.UserRole, 'layers')
 
         # Base layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '02-switcher-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '02-switcher-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'base-layers')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Basemap).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Basemap).setData(Qt.UserRole, 'base-layers')
 
         # Attribute table
         icon = QIcon()
         icon.addFile(resources_path('icons', '11-attribute-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '11-attribute-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'attribute-table')
-        i += 1
+        self.mOptionsListWidget.item(Panels.AttributeTable).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.AttributeTable).setData(Qt.UserRole, 'attribute-table')
 
         # Layer editing
         icon = QIcon()
         icon.addFile(resources_path('icons', '10-edition-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '10-edition-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'layer-editing')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Editing).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Editing).setData(Qt.UserRole, 'layer-editing')
 
         # Layouts
         icon = QIcon()
         icon.addFile(resources_path('icons', '08-print-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '08-print-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'layouts')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Layouts).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Layouts).setData(Qt.UserRole, 'layouts')
 
         # Filter data with form
         icon = QIcon()
         icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'filter-icon-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'filter-data-form')
-        i += 1
+        self.mOptionsListWidget.item(Panels.FormFiltering).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.FormFiltering).setData(Qt.UserRole, 'filter-data-form')
 
         # Dataviz
         icon = QIcon()
         icon.addFile(resources_path('icons', 'dataviz-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'dataviz-icon-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'dataviz')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Dataviz).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Dataviz).setData(Qt.UserRole, 'dataviz')
 
         # Filter layer by user
         icon = QIcon()
         icon.addFile(resources_path('icons', '12-user-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '12-user-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'filter-data-user')
-        i += 1
+        self.mOptionsListWidget.item(Panels.FilteredLayers).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.FilteredLayers).setData(Qt.UserRole, 'filter-data-user')
 
         # Actions
         icon = QIcon()
         icon.addFile(resources_path('icons', 'actions-white.svg'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'actions-dark.svg'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'actions')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Actions).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Actions).setData(Qt.UserRole, 'actions')
 
         # Time manager
         icon = QIcon()
         icon.addFile(resources_path('icons', '13-timemanager-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '13-timemanager-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'time-manager')
-        i += 1
+        self.mOptionsListWidget.item(Panels.TimeManager).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.TimeManager).setData(Qt.UserRole, 'time-manager')
 
         # Atlas
         icon = QIcon()
         icon.addFile(resources_path('icons', 'atlas-icon-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', 'atlas-icon-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'atlas')
-        i += 1
+        self.mOptionsListWidget.item(Panels.Atlas).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Atlas).setData(Qt.UserRole, 'atlas')
 
         # Locate by layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '04-locate-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'locate-by-layer')
-        i += 1
+        self.mOptionsListWidget.item(Panels.LocateByLayer).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.LocateByLayer).setData(Qt.UserRole, 'locate-by-layer')
 
         # Tooltip layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '16-tooltip-white.png'), mode=QIcon.Normal)
         icon.addFile(resources_path('icons', '16-tooltip-dark.png'), mode=QIcon.Selected)
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'tooltip-layer')
-        i += 1
+        self.mOptionsListWidget.item(Panels.ToolTip).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.ToolTip).setData(Qt.UserRole, 'tooltip-layer')
 
-        # Log
-        # It must be the before last tab
+        # Checks
         # noinspection PyCallByClass,PyArgumentList
-        icon = QIcon(QgsApplication.iconPath('mMessageLog.svg'))
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'log')
-        i += 1
+        icon = QIcon(QIcon(':/geometrychecker/icons/geometrychecker.svg'))
+        self.mOptionsListWidget.item(Panels.Checks).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Checks).setData(Qt.UserRole, 'log')
+
+        # Auto-fix
+        # noinspection PyCallByClass,PyArgumentList
+        icon = QIcon(":images/themes/default/console/iconSettingsConsole.svg")
+        self.mOptionsListWidget.item(Panels.AutoFix).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.AutoFix).setData(Qt.UserRole, 'auto-fix')
 
         # Settings
         # noinspection PyCallByClass,PyArgumentList
-        icon = QIcon(":images/themes/default/console/iconSettingsConsole.svg")
-        self.mOptionsListWidget.item(i).setIcon(icon)
-        self.mOptionsListWidget.item(i).setData(Qt.UserRole, 'settings')
-        i += 1
+        icon = QIcon(":/images/themes/default/propertyicons/settings.svg")
+        self.mOptionsListWidget.item(Panels.Settings).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Settings).setData(Qt.UserRole, 'settings')
 
         # Set stylesheet for QGroupBox
         q_group_box = (
@@ -989,18 +983,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
             metadata = self.server_combo.itemData(row, ServerComboData.JsonMetadata.value)
             if not is_lizmap_cloud(metadata):
                 only_cloud = False
-
-        self.label_pg_ssl.setToolTip(Checks.SSLConnection.html_tooltip(False))
-        self.button_convert_ssl.setToolTip(Checks.SSLConnection.html_tooltip(False))
-
-        self.label_pg_estimated.setToolTip(Checks.EstimatedMetadata.html_tooltip(False))
-        self.button_use_estimated_md.setToolTip(Checks.EstimatedMetadata.html_tooltip(False))
-
-        self.label_trust_project.setToolTip(Checks.TrustProject.html_tooltip(False))
-        self.button_trust_project.setToolTip(Checks.TrustProject.html_tooltip(False))
-
-        self.label_simplify.setToolTip(Checks.SimplifyGeometry.html_tooltip(False))
-        self.button_simplify_geom.setToolTip(Checks.SimplifyGeometry.html_tooltip(False))
 
         # These rules are hard coded
         # Other rules depends on the user.

@@ -47,23 +47,46 @@ def online_lwc_help(page: str = '', version=VERSION) -> QUrl:
 
 # When editing this mapping, it must be done in the definition/corresponding.py file
 
+class Panels:
+    Information = 0
+    MapOptions = 1
+    Layers = 2
+    Basemap = 3
+    AttributeTable = 4
+    Editing = 5
+    Layouts = 6
+    FormFiltering = 7
+    Dataviz = 8
+    FilteredLayers = 9
+    Actions = 10
+    TimeManager = 11
+    Atlas = 12
+    LocateByLayer = 13
+    ToolTip = 14
+    Checks = 15
+    AutoFix = 16
+    Settings = 17
+
+
 MAPPING_INDEX_DOC = {
-    0: 'publish/lizmap_plugin/information.html',
-    1: 'publish/lizmap_plugin/map_options.html',
-    2: 'publish/lizmap_plugin/layers.html',
-    3: 'publish/lizmap_plugin/basemap.html',
-    4: 'publish/lizmap_plugin/attribute_table.html',
-    5: 'publish/lizmap_plugin/editing.html',
-    6: None,  # Layouts
-    7: 'publish/lizmap_plugin/form_filtering.html',
-    8: 'publish/lizmap_plugin/dataviz.html',
-    9: 'publish/lizmap_plugin/filtered_layers_login.html',
-    10: 'publish/configuration/action_popup.html',  # TODO move into the plugin section
-    11: 'publish/lizmap_plugin/time_manager.html',
-    12: 'publish/lizmap_plugin/atlas.html',
-    13: 'publish/lizmap_plugin/locate_by_layer.html',
-    14: 'publish/lizmap_plugin/tooltip.html',
-    15: None,
+    Panels.Information: 'publish/lizmap_plugin/information.html',
+    Panels.MapOptions: 'publish/lizmap_plugin/map_options.html',
+    Panels.Layers: 'publish/lizmap_plugin/layers.html',
+    Panels.Basemap: 'publish/lizmap_plugin/basemap.html',
+    Panels.AttributeTable: 'publish/lizmap_plugin/attribute_table.html',
+    Panels.Editing: 'publish/lizmap_plugin/editing.html',
+    Panels.Layouts: None,  # Layouts
+    Panels.FormFiltering: 'publish/lizmap_plugin/form_filtering.html',
+    Panels.Dataviz: 'publish/lizmap_plugin/dataviz.html',
+    Panels.FilteredLayers: 'publish/lizmap_plugin/filtered_layers_login.html',
+    Panels.Actions: 'publish/configuration/action_popup.html',  # TODO move into the plugin section
+    Panels.TimeManager: 'publish/lizmap_plugin/time_manager.html',
+    Panels.Atlas: 'publish/lizmap_plugin/atlas.html',
+    Panels.LocateByLayer: 'publish/lizmap_plugin/locate_by_layer.html',
+    Panels.ToolTip: 'publish/lizmap_plugin/tooltip.html',
+    Panels.Checks: None,  # Log/checks
+    Panels.AutoFix: None,  # Auto-fix
+    Panels.Settings: None,  # Settings
 }
 
 

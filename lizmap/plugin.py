@@ -87,6 +87,7 @@ from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.online_help import (
     MAPPING_INDEX_DOC,
+    Panels,
     online_cloud_help,
     online_lwc_help,
 )
@@ -848,7 +849,7 @@ class Lizmap:
                 ).format(
                     count_qgs=count_qgs,
                     count_cfg=count_cfg,
-                    layer_tab=self.dlg.mOptionsListWidget.item(2).text()
+                    layer_tab=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
                 ),
                 Qgis.Warning,
                 duration=DURATION_WARNING_BAR,
@@ -1333,7 +1334,7 @@ class Lizmap:
             QgsExpression.addVariableHelpText("lizmap_repository", tr("The current repository ID on the server."))
 
         # Let's fix the dialog to the first panel
-        self.dlg.mOptionsListWidget.setCurrentRow(0)
+        self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
 
     def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :
@@ -2596,7 +2597,7 @@ class Lizmap:
         self.dlg.display_message_bar(
             tr('New layer'),
             tr('Please close and reopen the dialog to display your layer in the tab "{tab_name}".').format(
-                tab_name=self.dlg.mOptionsListWidget.item(2).text()
+                tab_name=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
             ),
             Qgis.Warning,
         )
@@ -3128,7 +3129,7 @@ class Lizmap:
         self.dlg.check_results.sort()
 
         if with_gui and self.dlg.check_results.has_rows():
-            self.dlg.mOptionsListWidget.setCurrentRow(self.dlg.mOptionsListWidget.count() - 2)
+            self.dlg.mOptionsListWidget.setCurrentRow(Panels.Checks)
             self.dlg.tab_log.setCurrentIndex(0)
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
@@ -4144,7 +4145,7 @@ class Lizmap:
         if not self.check_dialog_validity():
             # Go back to the first panel because no project loaded.
             # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
-            self.dlg.mOptionsListWidget.setCurrentRow(0)
+            self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
 
         self.dlg.show()
 
