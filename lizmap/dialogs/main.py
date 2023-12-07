@@ -50,7 +50,7 @@ from lizmap.project_checker_tools import (
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.saas import fix_ssl
+from lizmap.saas import fix_ssl, is_lizmap_cloud
 from lizmap.widgets.check_project import Checks, TableCheck
 
 try:
@@ -85,6 +85,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         super().__init__(parent)
         self.setupUi(self)
         self.project = QgsProject.instance()
+
+        self.mOptionsStackedWidget.currentChanged.connect(self.panel_changed)
 
         self.is_dev_version = is_dev_version
         self.navigation_menu_ok = None
@@ -315,10 +317,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.safe_ecw.toggled.connect(self.save_settings)
         self.safe_ecw.setToolTip(Checks.PreventEcw.description)
 
-        self.label_safe_lizmap_cloud.setText(tr(
+        msg = tr(
             "Some safeguards are overridden by {host}. Even in 'normal' mode, some safeguards are becoming 'blocking' "
-            "with a {host} instance.").format(host=CLOUD_NAME))
-        msg = (
+            "with a {host} instance.").format(host=CLOUD_NAME)
+        msg += (
             '<ul>'
             '<li>{max_parent}</li>'
             '<li>{network}</li>'
@@ -334,7 +336,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 ecw=PREVENT_ECW,
             )
         )
-        self.label_safe_lizmap_cloud.setToolTip(msg)
+        self.label_safe_lizmap_cloud.setText(msg)
 
         self.export_summary_table.clicked.connect(self.copy_clip_board_summary_table)
         self.export_summary_table.setIcon(QIcon(":images/themes/default/mActionEditCopy.svg"))
@@ -943,6 +945,31 @@ class LizmapDialog(QDialog, FORM_CLASS):
         for widget in widgets:
             widget.setEnabled(parent_allowed)
 
+    def only_lizmap_cloud(self):
+        """ Check if all servers loaded are Lizmap Cloud only. """
+        only_cloud = True
+        for row in range(self.server_combo.count()):
+            metadata = self.server_combo.itemData(row, ServerComboData.JsonMetadata.value)
+            if not is_lizmap_cloud(metadata):
+                only_cloud = False
+
+        # These rules are hard coded
+        # Other rules depends on the user.
+        widgets = (
+            self.safe_ecw,
+            self.safe_other_drive,
+            self.safe_pg_auth_db,
+            self.safe_pg_user_password,
+        )
+        for widget in widgets:
+            widget.setVisible(not only_cloud)
+        if only_cloud:
+            if self.safe_number_parent.value() > CLOUD_MAX_PARENT_FOLDER:
+                self.safe_number_parent.setValue(CLOUD_MAX_PARENT_FOLDER)
+            self.safe_number_parent.setMaximum(CLOUD_MAX_PARENT_FOLDER)
+        else:
+            self.safe_number_parent.setMaximum(1000)
+
     def radio_mode_normal_toggled(self):
         """ When the beginner/normal radio are toggled. """
         is_normal = self.radio_normal.isChecked()
@@ -1006,6 +1033,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.label_warning_project.setVisible(True)
             self.label_warning_project.set_text(message)
+
+    def panel_changed(self):
+        """ When the panel on the right has changed. """
+        if self.mOptionsStackedWidget.currentWidget() == self.page_settings:
+            self.only_lizmap_cloud()
 
     def select_unknown_features_group(self):
         """ Select features where one group from the feature does not math one of the server. """
