@@ -34,9 +34,15 @@ class LwcVersions(Enum):
 
     @staticmethod
     def latest():
+        """ Latest version definition in the Python files, like LWC 3.X """
         # Latest is used in test by default
         # As the plugin is not fetching the online JSON file, we still need to choose one LWC version
         return LwcVersions.as_list()[-1]
+
+    @staticmethod
+    def oldest():
+        """ Oldest version definition in the Python file, like LWC 3.1 """
+        return LwcVersions.as_list()[0]
 
     @classmethod
     def find(cls, version_string: str, raise_exception: bool = False):
@@ -51,9 +57,10 @@ class LwcVersions(Enum):
                 f'stress, nothing in production ;-)'
             )
         else:
-            # For non developers, we just return the latest...
-            # Better than nothing
-            return LwcVersions.latest()
+            # For non developers, we return the oldest if the string was not found ...
+            # Not the best of course ! They will have a lot of blue.
+            # It should be fixed ASAP.
+            return LwcVersions.oldest()
 
 
 # Possible prefix before a stable release
