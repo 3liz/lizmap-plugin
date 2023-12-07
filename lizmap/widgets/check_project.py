@@ -215,11 +215,11 @@ either_move_file = tr('Either move the file used for the layer')
 move_file = tr('Move the file used for the layer')
 
 
-class Checks(Check, Enum):
+class Checks:
 
     """ List of checks defined. """
 
-    OgcValid = (
+    OgcValid = Check(
         'ogc_validity',
         tr('OGC validity (QGIS server)'),
         tr(
@@ -249,7 +249,7 @@ class Checks(Check, Enum):
         Severities.Low,
         QIcon(':/images/themes/default/mIconWms.svg'),
     )
-    PkInt8 = (
+    PkInt8 = Check(
         'primary_key_bigint',
         tr('Invalid bigint (integer8) field for QGIS Server as primary key'),
         tr(
@@ -270,7 +270,7 @@ class Checks(Check, Enum):
         Severities.Important,
         QIcon(':/images/themes/default/mIconFieldInteger.svg'),
     )
-    MissingPk = (
+    MissingPk = Check(
         'missing_primary_key',
         tr('Missing a proper primary key in the database.'),
         tr(
@@ -291,7 +291,7 @@ class Checks(Check, Enum):
         Severities.Important,
         QIcon(':/images/themes/default/mSourceFields.svg'),
     )
-    SSLConnection = (
+    SSLConnection = Check(
         'ssl_connection',
         tr('SSL connections to a PostgreSQL database'),
         tr("Connections to a PostgreSQL database hosted on {} must use a SSL secured connection.").format(CLOUD_NAME),
@@ -308,7 +308,7 @@ class Checks(Check, Enum):
         Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
         QIcon(':/images/themes/default/mIconPostgis.svg'),
     )
-    EstimatedMetadata = (
+    EstimatedMetadata = Check(
         'estimated_metadata',
         tr('Estimated metadata'),
         tr("PostgreSQL layer can have the use estimated metadata option enabled"),
@@ -325,7 +325,7 @@ class Checks(Check, Enum):
         Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
         QIcon(':/images/themes/default/mIconPostgis.svg'),
     )
-    SimplifyGeometry = (
+    SimplifyGeometry = Check(
         'simplify_geometry',
         tr('Simplify geometry on the provider side'),
         tr("PostgreSQL layer can have the geometry simplification on the server side enabled"),
@@ -345,7 +345,7 @@ class Checks(Check, Enum):
         Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
         QIcon(':/images/themes/default/mIconGeometryCollectionLayer.svg'),
     )
-    DuplicatedLayerNameOrGroup = (
+    DuplicatedLayerNameOrGroup = Check(
         'duplicated_layer_name_or_group',
         tr('Duplicated layer name or group'),
         tr("It's not possible to store all the Lizmap configuration for these layer(s) or group(s)."),
@@ -362,7 +362,7 @@ class Checks(Check, Enum):
         Severities.Important,
         QIcon(':/images/themes/default/propertyicons/editmetadata.svg'),
     )
-    WmsUseLayerIds = (
+    WmsUseLayerIds = Check(
         'wms_use_layer_id',
         tr('Do not use layer IDs as name'),
         tr(
@@ -376,7 +376,7 @@ class Checks(Check, Enum):
         Severities.Blocking,
         QIcon(':/images/themes/default/mIconWms.svg'),
     )
-    TrustProject = (
+    TrustProject = Check(
         'trust_project_metadata',
         tr('Trust project metadata'),
         tr('The project does not have the "Trust project metadata" enabled at the project level'),
@@ -396,7 +396,7 @@ class Checks(Check, Enum):
         Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
         QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
     )
-    LeadingTrailingSpaceLayerGroupName = (
+    LeadingTrailingSpaceLayerGroupName = Check(
         'leading_trailing_space',
         tr('Leading/trailing space in layer/group name'),
         tr(
@@ -413,7 +413,7 @@ class Checks(Check, Enum):
         Severities.Blocking,
         QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg'),
     )
-    PreventEcw = (
+    PreventEcw = Check(
         Settings.PreventEcw,
         tr('ECW raster'),
         tr(
@@ -442,7 +442,7 @@ class Checks(Check, Enum):
             '</ul>'
         ).format(help=tr('Switch to a COG format'))
     )
-    AuthenticationDb = (
+    AuthenticationDb = Check(
         Settings.PreventPgAuthDb,
         tr('QGIS Authentication database'),
         tr(
@@ -474,7 +474,7 @@ class Checks(Check, Enum):
             login_pass=tr('Or store the login and password in the layer.')
         )
     )
-    PgService = (
+    PgService = Check(
         Settings.PreventPgService,
         tr('PostgreSQL service'),
         tr(
@@ -498,7 +498,7 @@ class Checks(Check, Enum):
         Severities.Unknown,
         QIcon(':/images/themes/default/mIconPostgis.svg'),
     )
-    PgForceUserPass = (
+    PgForceUserPass = Check(
         Settings.ForcePgUserPass,
         tr('PostgreSQL user and/or password'),
         tr(
@@ -521,7 +521,7 @@ class Checks(Check, Enum):
         Severities.Unknown,
         QIcon(':/images/themes/default/mIconPostgis.svg'),
     )
-    PreventDrive = (
+    PreventDrive = Check(
         Settings.PreventDrive,
         tr('Other drive (network or local)'),
         tr('The layer is stored on another drive.'),
@@ -546,7 +546,7 @@ class Checks(Check, Enum):
             help=move_file,
         )
     )
-    PreventParentFolder = (
+    PreventParentFolder = Check(
         Settings.AllowParentFolder,
         tr('Parent folder'),
         tr('The layer is stored in too many parent\'s folder, compare to the QGS file.'),
@@ -595,7 +595,8 @@ class Checks(Check, Enum):
             level=tr('Level'),
             severity=tr('Severity'),
         )
-        copy_sort = list(cls.__members__.values())
+        copy_sort = list(cls.__dict__.values())
+        copy_sort = [c for c in copy_sort if isinstance(c, Check)]
         copy_sort.sort(key=lambda x: severity.data if x.severity == Severities.Unknown else x.severity.data)
         for i, check in enumerate(copy_sort):
             html_str += check.html_help(i, severity, lizmap_cloud)
