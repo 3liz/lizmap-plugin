@@ -3133,12 +3133,26 @@ class Lizmap:
             self.dlg.out_log.moveCursor(QTextCursor.Start)
             self.dlg.out_log.ensureCursorVisible()
 
+        beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
+        mode = tr('beginner') if beginner_mode else tr('normal')
+        if self.dlg.check_results.has_blocking():
+            msg = tr(
+                'You are using "{mode}" mode and you have some <strong>blocking</strong> checks.').format(mode=mode)
+        else:
+            msg = tr('You are using "{mode}"').format(mode=mode)
+        self.dlg.label_check_resume.setText(msg)
+
+        self.dlg.auto_fix_tooltip(is_lizmap_cloud(server_metadata))
+        self.dlg.label_autofix.setVisible(self.dlg.has_auto_fix())
+        self.dlg.push_visit_settings.setVisible(self.dlg.has_auto_fix())
+
         if self.dlg.check_results.has_blocking() and not ignore_error:
             self.dlg.display_message_bar(
                 tr("Blocking issue"),
                 tr("The project has at least one blocking issue. The file is not saved."),
                 Qgis.Critical,
             )
+
             return None
 
         # No more blocking issues, we can continue

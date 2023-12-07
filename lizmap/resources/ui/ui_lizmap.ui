@@ -4627,9 +4627,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_70">
                <item>
-                <widget class="QLabel" name="label_explanations">
+                <widget class="QLabel" name="label_general_help">
                  <property name="text">
-                  <string notr="true">SET IN PYTHON</string>
+                  <string notr="true">SET IN PYTHON, GENERAL HELP</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -4637,14 +4637,45 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="TableCheck" name="table_checks"/>
+                <widget class="QLabel" name="label_check_resume">
+                 <property name="text">
+                  <string notr="true">PYTHON, RESUME</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_20">
+                 <item>
+                  <widget class="QLabel" name="label_autofix">
+                   <property name="text">
+                    <string notr="true">SET IN PYTHON ABOUT AUTO FIX</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="push_visit_settings">
+                   <property name="text">
+                    <string notr="true">SET IN PYTHON</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <widget class="QPushButton" name="export_summary_table">
                  <property name="text">
-                  <string>Copy in clipboard</string>
+                  <string>Copy results in clipboard</string>
                  </property>
                 </widget>
+               </item>
+               <item>
+                <widget class="TableCheck" name="table_checks"/>
                </item>
               </layout>
              </widget>
@@ -4745,7 +4776,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <item>
                    <layout class="QFormLayout" name="formLayout_5">
                     <item row="0" column="0">
-                     <widget class="QLabel" name="label_57">
+                     <widget class="QLabel" name="label_pg_ssl">
                       <property name="text">
                        <string>Convert all PostgreSQL layers used in this project to use SSL</string>
                       </property>
@@ -4768,7 +4799,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </widget>
                     </item>
                     <item row="1" column="0">
-                     <widget class="QLabel" name="label_66">
+                     <widget class="QLabel" name="label_pg_estimated">
                       <property name="text">
                        <string>Convert all PostgreSQL layers used in this project to 'estimated metadata'</string>
                       </property>
@@ -4791,7 +4822,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </widget>
                     </item>
                     <item row="2" column="0">
-                     <widget class="QLabel" name="label_79">
+                     <widget class="QLabel" name="label_trust_project">
                       <property name="text">
                        <string>Enable the trust project option in the project properties dialog</string>
                       </property>
@@ -4808,7 +4839,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </widget>
                     </item>
                     <item row="3" column="0">
-                     <widget class="QLabel" name="label_82">
+                     <widget class="QLabel" name="label_simplify">
                       <property name="text">
                        <string>Enable provider geometry simplification when possible in the layer properties dialog</string>
                       </property>

@@ -50,7 +50,7 @@ class TestProjectTable(unittest.TestCase):
         self.assertDictEqual(expected, table.to_json_summarized())
 
         expected = (
-            'Validator summarized :\n\n'
+            'Validation summarized :\n\n'
             '* Duplicated layer name or group → 2\n'
             '* Missing a proper primary key in the database. → 1\n'
             '\n')

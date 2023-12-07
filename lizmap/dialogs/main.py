@@ -51,7 +51,7 @@ from lizmap.project_checker_tools import (
     use_estimated_metadata,
 )
 from lizmap.saas import fix_ssl, is_lizmap_cloud
-from lizmap.widgets.check_project import Checks, TableCheck
+from lizmap.widgets.check_project import Checks, Headers, TableCheck
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView
@@ -123,11 +123,21 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.lwc_version_latest_changelog.setVisible(False)
         self.lwc_version_oldest_changelog.setVisible(False)
 
-        self.label_explanations.setText(tr(
-            "Some checks might be blocking the Lizmap configuration file generation. To fix, either use the tooltip "
-            "(by hovering your mouse pointer on the table row) in the last column, or check the documentation in "
-            "the next tab '{tab_name}' for all errors which can be reported."
-        ).format(tab_name=self.tab_log.tabText(1)))
+        self.label_general_help.setText(
+            tr("The plugin is doing some checks on your project.") + " "
+            + tr(
+                "To know how to fix these checks, either use the tooltip (by hovering your mouse pointer on the table "
+                "row) in the last column <strong>'{column_name}'</strong>, or check the documentation in the next tab "
+                "<strong>'{tab_name}'</strong> for all errors which can be reported."
+            ).format(column_name=Headers.Error.label, tab_name=self.tab_log.tabText(1))
+        )
+        settings_name = self.mOptionsListWidget.item(16).text()
+        self.label_autofix.setText(tr(
+            "An auto-fix is available in the '{tab_name}' panel"
+        ).format(tab_name=settings_name))
+        self.push_visit_settings.setText(tr("Visit the '{tab_name}' panel").format(tab_name=settings_name))
+        self.push_visit_settings.clicked.connect(self.visit_settings_panel)
+        self.push_visit_settings.setIcon(QIcon(":/images/themes/default/console/iconSettingsConsole.svg"))
 
         # Filtering features
         self.tab_filtering.setCurrentIndex(0)
@@ -414,6 +424,33 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.cbIgnTerrain.setChecked(False)
         else:
             self.cbIgnTerrain.setEnabled(True)
+
+    def visit_settings_panel(self):
+        """ Go to settings panel. """
+        self.mOptionsListWidget.setCurrentRow(self.mOptionsListWidget.count() - 1)
+
+    def auto_fix_tooltip(self, lizmap_cloud):
+        """ Set some tooltips on these auto-fix buttons, according to Lizmap Cloud status. """
+        self.label_pg_ssl.setToolTip(Checks.SSLConnection.html_tooltip(lizmap_cloud))
+        self.button_convert_ssl.setToolTip(Checks.SSLConnection.html_tooltip(lizmap_cloud))
+
+        self.label_pg_estimated.setToolTip(Checks.EstimatedMetadata.html_tooltip(lizmap_cloud))
+        self.button_use_estimated_md.setToolTip(Checks.EstimatedMetadata.html_tooltip(lizmap_cloud))
+
+        self.label_trust_project.setToolTip(Checks.TrustProject.html_tooltip(lizmap_cloud))
+        self.button_trust_project.setToolTip(Checks.TrustProject.html_tooltip(lizmap_cloud))
+
+        self.label_simplify.setToolTip(Checks.SimplifyGeometry.html_tooltip(lizmap_cloud))
+        self.button_simplify_geom.setToolTip(Checks.SimplifyGeometry.html_tooltip(lizmap_cloud))
+
+    def has_auto_fix(self) -> bool:
+        """ Return if an auto-fix is enabled. """
+        return any([
+            self.button_convert_ssl.isEnabled(),
+            self.button_use_estimated_md.isEnabled(),
+            self.button_trust_project.isEnabled(),
+            self.button_simplify_geom.isEnabled(),
+        ])
 
     def enabled_ssl_button(self, status: bool):
         """ Enable or not the button. """
@@ -952,6 +989,18 @@ class LizmapDialog(QDialog, FORM_CLASS):
             metadata = self.server_combo.itemData(row, ServerComboData.JsonMetadata.value)
             if not is_lizmap_cloud(metadata):
                 only_cloud = False
+
+        self.label_pg_ssl.setToolTip(Checks.SSLConnection.html_tooltip(False))
+        self.button_convert_ssl.setToolTip(Checks.SSLConnection.html_tooltip(False))
+
+        self.label_pg_estimated.setToolTip(Checks.EstimatedMetadata.html_tooltip(False))
+        self.button_use_estimated_md.setToolTip(Checks.EstimatedMetadata.html_tooltip(False))
+
+        self.label_trust_project.setToolTip(Checks.TrustProject.html_tooltip(False))
+        self.button_trust_project.setToolTip(Checks.TrustProject.html_tooltip(False))
+
+        self.label_simplify.setToolTip(Checks.SimplifyGeometry.html_tooltip(False))
+        self.button_simplify_geom.setToolTip(Checks.SimplifyGeometry.html_tooltip(False))
 
         # These rules are hard coded
         # Other rules depends on the user.
