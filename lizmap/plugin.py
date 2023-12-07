@@ -3138,9 +3138,9 @@ class Lizmap:
         mode = tr('beginner') if beginner_mode else tr('normal')
         if self.dlg.check_results.has_blocking():
             msg = tr(
-                'You are using "{mode}" mode and you have some <strong>blocking</strong> checks.').format(mode=mode)
+                'You are using the "{mode}" mode and you have some <strong>blocking</strong> checks.').format(mode=mode)
         else:
-            msg = tr('You are using "{mode}"').format(mode=mode)
+            msg = tr('You are using the "{mode}" mode.').format(mode=mode)
         self.dlg.label_check_resume.setText(msg)
 
         self.dlg.auto_fix_tooltip(is_lizmap_cloud(server_metadata))
@@ -3314,8 +3314,8 @@ class Lizmap:
                             'An error has been raised while saving table "{name}", maybe it was due to invalid layers ?'
                         ).format(name=key) + '\n\n'
                         + tr(
-                            'If yes, saving CFG file with invalid layers in the legend is not currently supported by '
-                            'the plugin.'
+                            'If yes, saving the Lizmap configuration file with invalid layers in the legend is not '
+                            'currently supported by the plugin.'
                         ) + '\n\n'
                         + tr(
                             'If not, it was a bug, please report it. The process is stopping.'
