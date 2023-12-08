@@ -34,12 +34,19 @@ class Header:
         self.tooltip = tooltip
 
 
-class Headers(Header, Enum):
+class Headers:
     """ List of headers in the table. """
-    Severity = 'severity', tr('Severity'), tr("Severity of the error")
-    Level = 'level', tr('Level'), tr("Level of the error")
-    Object = 'source', tr('Source'), tr("Source of the error")
-    Error = 'error', tr('Error'), tr('Description of the error')
+
+    def __init__(self):
+        self.members = []
+        self.severity = Header('severity', tr('Severity'), tr("Severity of the error"))
+        self.level = Header('level', tr('Level'), tr("Level of the error"))
+        self.source = Header('source', tr('Source'), tr("Source of the error"))
+        self.error = Header('error', tr('Error'), tr('Description of the error'))
+        self.members.append(self.severity)
+        self.members.append(self.level)
+        self.members.append(self.source)
+        self.members.append(self.error)
 
 
 class Severity:
@@ -666,8 +673,9 @@ class TableCheck(QTableWidget):
         # Bug, same as self.sort()
         # self.setSortingEnabled(True)
 
-        self.setColumnCount(len(Headers))
-        for i, header in enumerate(Headers):
+        headers = Headers()
+        self.setColumnCount(len(headers.members))
+        for i, header in enumerate(headers.members):
             column = QTableWidgetItem(header.label)
             column.setToolTip(header.tooltip)
             self.setHorizontalHeaderItem(i, column)
@@ -698,9 +706,10 @@ class TableCheck(QTableWidget):
         """ Export data to JSON. """
         result = []
 
+        headers = Headers()
         for row in range(self.rowCount()):
             data = dict()
-            for i, header in enumerate(Headers):
+            for i, header in enumerate(headers.members):
                 data[header.data] = self.item(row, i).data(self.JSON)
             result.append(data)
 

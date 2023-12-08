@@ -133,7 +133,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 "To know how to fix these checks, either use the tooltip (by hovering your mouse pointer on the table "
                 "row) in the last column <strong>'{column_name}'</strong>, or check the documentation in the next tab "
                 "<strong>'{tab_name}'</strong> for all errors which can be reported."
-            ).format(column_name=Headers.Error.label, tab_name=self.tab_log.tabText(1))
+            ).format(column_name=Headers().error.label, tab_name=self.tab_log.tabText(1))
         )
         auto_fix_panel = self.mOptionsListWidget.item(Panels.AutoFix).text()
         self.label_autofix.setText(tr(
