@@ -272,13 +272,15 @@ class Lizmap:
             temp_dir = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
             if not temp_dir.exists():
                 temp_dir.mkdir()
-            file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
-            file_handler.setLevel(logging.DEBUG)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            file_handler.setFormatter(formatter)
-            add_logging_handler_once(LOGGER, file_handler)
-            LOGGER.debug(
-                "The directory <a href='file://{0}'>{0}</a> is currently used for file logging.".format(temp_dir))
+
+            if not to_bool(os.getenv("CI"), default_value=False):
+                file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
+                file_handler.setLevel(logging.DEBUG)
+                formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                file_handler.setFormatter(formatter)
+                add_logging_handler_once(LOGGER, file_handler)
+                LOGGER.debug(
+                    "The directory <a href='file://{0}'>{0}</a> is currently used for file logging.".format(temp_dir))
 
             # All logs
             def write_log_message(message, tag, level):
@@ -2916,7 +2918,7 @@ class Lizmap:
             Severities,
             SourceLayer,
         )
-
+        checks = Checks()
         valid, _ = self.check_project_validity()
 
         if with_gui:
@@ -2933,13 +2935,13 @@ class Lizmap:
         for name, count in duplicated_in_cfg.items():
             if count >= 2:
                 source = '"{}" → "'.format(name) + tr("count {} layers").format(count)
-                self.dlg.check_results.add_error(Error(source, Checks.DuplicatedLayerNameOrGroup))
+                self.dlg.check_results.add_error(Error(source, checks.DuplicatedLayerNameOrGroup))
 
         # Layer ID as short name
         if lwc_version >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
             if to_bool(use_layer_id, False):
-                self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, Checks.WmsUseLayerIds))
+                self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.WmsUseLayerIds))
 
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
@@ -3017,16 +3019,18 @@ class Lizmap:
 
             self.dlg.log_panel.append("<br>")
 
+            severities = Severities()
+
             for layer, error in results.items():
 
                 # Severity depends on beginner mode
-                severity = Severities.Blocking if beginner_mode else Severities.Important
+                severity = severities.blocking if beginner_mode else severities.important
                 # But override severities for Lizmap Cloud
                 # Because even with a 'normal' user, it won't work
                 override = (
-                    Checks.PreventEcw, Checks.PgForceUserPass, Checks.AuthenticationDb, Checks.PreventDrive)
+                    checks.PreventEcw, checks.PgForceUserPass, checks.AuthenticationDb, checks.PreventDrive)
                 if error in override:
-                    severity = Severities.Blocking
+                    severity = severities.bocking
 
                 self.dlg.check_results.add_error(
                     Error(
@@ -3059,7 +3063,7 @@ class Lizmap:
                     self.dlg.check_results.add_error(
                         Error(
                             layer.name,
-                            Checks.SSLConnection,
+                            checks.SSLConnection,
                             source_type=SourceLayer(layer.name, layer.layer_id),
                         )
                     )
@@ -3070,7 +3074,7 @@ class Lizmap:
                 self.dlg.check_results.add_error(
                     Error(
                         layer.name,
-                        Checks.MissingPk,
+                        checks.MissingPk,
                         source_type=SourceLayer(layer.name, layer.layer_id),
                     )
                 )
@@ -3078,7 +3082,7 @@ class Lizmap:
                 self.dlg.check_results.add_error(
                     Error(
                         layer.name,
-                        Checks.PkInt8,
+                        checks.PkInt8,
                         source_type=SourceLayer(layer.name, layer.layer_id),
                     )
                 )
@@ -3100,7 +3104,7 @@ class Lizmap:
             self.dlg.check_results.add_error(
                 Error(
                     layer.name,
-                    Checks.SimplifyGeometry,
+                    checks.SimplifyGeometry,
                     source_type=SourceLayer(layer.name, layer.layer_id),
                 )
             )
@@ -3111,14 +3115,14 @@ class Lizmap:
             self.dlg.check_results.add_error(
                 Error(
                     layer.name,
-                    Checks.EstimatedMetadata,
+                    checks.EstimatedMetadata,
                     source_type=SourceLayer(layer.name, layer.layer_id),
                 )
             )
             self.dlg.enabled_estimated_md_button(True)
 
         if not project_trust_layer_metadata(self.project):
-            self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, Checks.TrustProject))
+            self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.TrustProject))
             self.dlg.enabled_trust_project(True)
 
         # Not blocking, we change it in the background
@@ -3576,7 +3580,7 @@ class Lizmap:
             self.dlg.check_results.add_error(
                 Error(
                     Path(self.project.fileName()).name,
-                    Checks.OgcValid,
+                    Checks().OgcValid,
                 )
             )
 
@@ -3697,9 +3701,10 @@ class Lizmap:
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         self.dlg.check_results.truncate()
         beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
+        severities = Severities()
         self.dlg.html_help.setHtml(
-            Checks.html(
-                severity=Severities.Blocking if beginner_mode else Severities.Important,
+            Checks().html(
+                severity=severities.blocking if beginner_mode else severities.important,
                 lizmap_cloud=is_lizmap_cloud(server_metadata)
             )
         )

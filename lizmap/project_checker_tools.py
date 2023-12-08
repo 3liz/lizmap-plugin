@@ -57,24 +57,25 @@ def project_safeguards_checks(
     # Do not use homePath, it's not designed for this if the user has set a custom home path
     project_home = Path(project.absolutePath())
     results = {}
+    checks = Checks()
 
     for layer in project.mapLayers().values():
 
         if isinstance(layer, QgsRasterLayer):
             if layer.source().lower().endswith('ecw') and prevent_ecw:
-                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventEcw
+                results[SourceLayer(layer.name(), layer.id())] = checks.PreventEcw
 
         if is_vector_pg(layer):
             # Make a copy by using a string, so we are sure to have user or password
             datasource = QgsDataSourceUri(layer.source())
             if datasource.authConfigId() != '' and prevent_auth_id:
-                results[SourceLayer(layer.name(), layer.id())] = Checks.AuthenticationDb
+                results[SourceLayer(layer.name(), layer.id())] = checks.AuthenticationDb
 
                 # We can continue
                 continue
 
             if datasource.service() != '' and prevent_service:
-                results[SourceLayer(layer.name(), layer.id())] = Checks.PgService
+                results[SourceLayer(layer.name(), layer.id())] = checks.PgService
 
                 # We can continue
                 continue
@@ -82,7 +83,7 @@ def project_safeguards_checks(
             if not datasource.service():
                 if datasource.host().endswith(CLOUD_DOMAIN) or force_pg_user_pass:
                     if not datasource.username() or not datasource.password():
-                        results[SourceLayer(layer.name(), layer.id())] = Checks.PgForceUserPass
+                        results[SourceLayer(layer.name(), layer.id())] = checks.PgForceUserPass
 
                     # We can continue
                     continue
@@ -107,7 +108,7 @@ def project_safeguards_checks(
             # For instance, H: and C:
 
             if lizmap_cloud or prevent_other_drive:
-                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventDrive
+                results[SourceLayer(layer.name(), layer.id())] = checks.PreventDrive
                 continue
 
             # Not sure what to do for now...
@@ -117,11 +118,11 @@ def project_safeguards_checks(
         if allow_parent_folder:
             # The user allow parent folder, so we check against the string provided in the function call
             if parent_folder in relative_path:
-                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventParentFolder
+                results[SourceLayer(layer.name(), layer.id())] = checks.PreventParentFolder
         else:
             # The user wants only local files, we only check for ".."
             if '..' in relative_path:
-                results[SourceLayer(layer.name(), layer.id())] = Checks.PreventParentFolder
+                results[SourceLayer(layer.name(), layer.id())] = checks.PreventParentFolder
 
     return results
 
@@ -348,12 +349,12 @@ def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: Li
             layer = project.mapLayer(child.layerId())
             if layer.name().strip() != layer.name():
                 results.append(
-                    Error(layer.name(), Checks.LeadingTrailingSpaceLayerGroupName, SourceLayer(layer.name(), layer.id())))
+                    Error(layer.name(), Checks().LeadingTrailingSpaceLayerGroupName, SourceLayer(layer.name(), layer.id())))
         else:
             child = cast_to_group(child)
             if child.name().strip() != child.name():
                 results.append(
-                    Error(child.name(), Checks.LeadingTrailingSpaceLayerGroupName, SourceGroup))
+                    Error(child.name(), Checks().LeadingTrailingSpaceLayerGroupName, SourceGroup))
 
             # Recursive call
             results = trailing_layer_group_name(child, project, results)

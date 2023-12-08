@@ -2,7 +2,6 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from enum import Enum
 
 from qgis.core import (
     QgsMapLayerModel,
@@ -77,14 +76,26 @@ class Severity:
         return f'<Severity {self.data} : {self.label}>'
 
 
-class Severities(Severity, Enum):
+class Severities:
     """ List of severities. """
-    Blocking = 0, tr('Blocking'), tr('This is blocking the Lizmap configuration file'), 'red', 3
-    Important = 1, tr('Important'), tr('This is important to fix, to improve performance'), 'orange', 2.5
-    # Normal = 2, tr('Normal'), tr('This would be nice to have look'), 'blue', 2
-    Low = 3, tr('Low'), tr('Nice to do'), 'yellow', 2
-    # Some severities can only done on runtime, QGIS version and/or Lizmap Cloud
-    Unknown = 99, 'Unknown', 'Severity will be determined on runtime', 'green', 1
+    def __init__(self):
+        self.members = []
+        self.blocking = Severity(
+            0, tr('Blocking'), tr('This is blocking the Lizmap configuration file'), 'red', 3)
+        self.important = Severity(
+            1, tr('Important'), tr('This is important to fix, to improve performance'), 'orange', 2.5)
+        self.normal = Severity(
+            2, tr('Normal'), tr('This would be nice to have look'), 'blue', 2)
+        self.low = Severity(
+            3, tr('Low'), tr('Nice to do'), 'yellow', 2)
+        # Some severities can only done on runtime, QGIS version and/or Lizmap Cloud
+        self.unknown = Severity(
+            99, 'Unknown', 'Severity will be determined on runtime', 'green', 1)
+        self.members.append(self.blocking)
+        self.members.append(self.important)
+        self.members.append(self.normal)
+        self.members.append(self.low)
+        self.members.append(self.unknown)
 
 
 class Level:
@@ -169,6 +180,7 @@ class Check:
         if index % 2:
             row_class = "class=\"odd-row\""
 
+        severities = Severities()
         html_str = (
             "<tr {row_class}>"
             "<td>{title}</td>"
@@ -183,7 +195,7 @@ class Check:
             description=self.description_text(lizmap_cloud),
             how_to_fix=self.help_text(lizmap_cloud),
             level=self.level.label,
-            severity=severity.label if self.severity == Severities.Unknown else self.severity.label,
+            severity=severity.label if self.severity == severities.unknown else self.severity.label,
         )
         return html_str
 
@@ -203,394 +215,393 @@ class Check:
         return f'<{self.title} : {self.description_text(False)} :{self.level} → {self.severity}>'
 
 
-# Check QGIS_VERSION_INT
-qgis_32200 = tr(
-    'With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin to fix currently loaded '
-    'layers'
-)
-other_auth = tr('Either switch to another authentication mechanism')
-safeguard = tr('Or disable this safeguard in your Lizmap plugin settings')
-global_connection = tr(
-    'To fix layers loaded <b>later</b>, edit your global PostgreSQL connection to enable this option, then change the '
-    'datasource by right clicking on each layer above, then click "Change datasource" in the menu. Finally reselect '
-    'your layer in the new dialog with the updated connection. When opening a QGIS project in your computer, with a '
-    'fresh launched QGIS software, you mustn\'t have any prompt for a user or password. '
-    'The edited connection will take effect only on newly added layer into a project that\'s why the right-click step '
-    'is required.'
-)
-either_move_file = tr('Either move the file used for the layer')
-move_file = tr('Move the file used for the layer')
-
-
 class Checks:
 
     """ List of checks defined. """
 
-    OgcValid = Check(
-        'ogc_validity',
-        tr('OGC validity (QGIS server)'),
-        tr(
-            "According to OGC standard, the project is not valid."
-        ),
-        (
-            '<ul>'
-            '<li>{project_properties}</li>'
-            '<li>{project_shortname}</li>'
-            '<li>{layer_shortname}</li>'
-            '</ul>'
-        ).format(
-            project_properties=tr(
-                "Open the 'Project properties', then 'QGIS Server' tab, at the bottom, you can check your project "
-                "according to OGC standard"
-            ),
-            layer_shortname=tr(
-                "If you need to fix a layer shortname, go to the 'Layer properties' "
-                "for the given layer, then 'QGIS Server' tab, edit the shortname."
-            ),
-            project_shortname=tr(
-                "If you need to fix the project shortname, go to the 'Project properties', "
-                "then 'QGIS Server' tab, first tab, and change the shortname."
-            ),
-        ),
-        Levels.Project,
-        Severities.Low,
-        QIcon(':/images/themes/default/mIconWms.svg'),
-    )
-    PkInt8 = Check(
-        'primary_key_bigint',
-        tr('Invalid bigint (integer8) field for QGIS Server as primary key'),
-        tr(
-            "Primary key should be an integer. If not fixed, expect layer to have some issues with some tools in "
-            "Lizmap Web Client: zoom to feature, filtering…"
-        ),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(
-            help=tr(
-                "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
-                "an integer8."
-            ),
-        ),
-        Levels.Layer,
-        Severities.Important,
-        QIcon(':/images/themes/default/mIconFieldInteger.svg'),
-    )
-    MissingPk = Check(
-        'missing_primary_key',
-        tr('Missing a proper primary key in the database.'),
-        tr(
-            "The layer must have a proper primary key defined. When it's missing, QGIS Desktop tried to set a "
-            "temporary field called 'tid/ctid/…' to be a unique identifier. On QGIS Server, this will bring issues."
-        ),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(
-            help=tr(
-                "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
-                "an integer8."
-            ),
-        ),
-        Levels.Layer,
-        Severities.Important,
-        QIcon(':/images/themes/default/mSourceFields.svg'),
-    )
-    SSLConnection = Check(
-        'ssl_connection',
-        tr('SSL connections to a PostgreSQL database'),
-        tr("Connections to a PostgreSQL database hosted on {} must use a SSL secured connection.").format(CLOUD_NAME),
-        (
-            '<ul>'
-            '<li>{auto_fix}</li>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(
-            auto_fix=qgis_32200,
-            help=global_connection,
-        ),
-        Levels.Layer,
-        Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
-        QIcon(':/images/themes/default/mIconPostgis.svg'),
-    )
-    EstimatedMetadata = Check(
-        'estimated_metadata',
-        tr('Estimated metadata'),
-        tr("PostgreSQL layer can have the use estimated metadata option enabled"),
-        (
-            '<ul>'
-            '<li>{auto_fix}</li>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(
-            auto_fix=qgis_32200,
-            help=global_connection,
-        ),
-        Levels.Layer,
-        Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
-        QIcon(':/images/themes/default/mIconPostgis.svg'),
-    )
-    SimplifyGeometry = Check(
-        'simplify_geometry',
-        tr('Simplify geometry on the provider side'),
-        tr("PostgreSQL layer can have the geometry simplification on the server side enabled"),
-        (
-            '<ul>'
-            '<li>{auto_fix}</li>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(
-            auto_fix=qgis_32200,
-            help=tr(
-                'Visit the layer properties, then in the "Rendering" tab to enable it simplification on the provider '
-                'side on the given layer.'
-            ),
-        ),
-        Levels.Layer,
-        Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
-        QIcon(':/images/themes/default/mIconGeometryCollectionLayer.svg'),
-    )
-    DuplicatedLayerNameOrGroup = Check(
-        'duplicated_layer_name_or_group',
-        tr('Duplicated layer name or group'),
-        tr("It's not possible to store all the Lizmap configuration for these layer(s) or group(s)."),
-        (
-            '<ul>'
-            '<li>{}</li>'
-            '<li>{}</li>'
-            '</ul>'
-        ).format(
-            tr('You must change them to make them unique'),
-            tr('Reconfigure their settings in the "Layers" tab of the plugin')
-        ),
-        Levels.Project,
-        Severities.Important,
-        QIcon(':/images/themes/default/propertyicons/editmetadata.svg'),
-    )
-    WmsUseLayerIds = Check(
-        'wms_use_layer_id',
-        tr('Do not use layer IDs as name'),
-        tr(
-            "It's not possible anymore to use the option 'Use layer IDs as name' in the project properties dialog, "
-            "QGIS server tab, then WMS capabilities."
-        ),
-        '<ul><li>{help}</li></ul>'.format(
-            help=tr("Uncheck this checkbox and re-save the Lizmap configuration file")
-        ),
-        Levels.Project,
-        Severities.Blocking,
-        QIcon(':/images/themes/default/mIconWms.svg'),
-    )
-    TrustProject = Check(
-        'trust_project_metadata',
-        tr('Trust project metadata'),
-        tr('The project does not have the "Trust project metadata" enabled at the project level'),
-        (
-            '<ul>'
-            '<li>{auto_fix}</li>'
-            '<li>{help}</li>'
-            '</ul>'.format(
-                help=tr(
-                    'In the project properties → Data sources → at the bottom, there is a checkbox to trust the '
-                    'project when the layer has no metadata.'
-                ),
-                auto_fix=tr('With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin'),
-            )
-        ),
-        Levels.Project,
-        Severities.Blocking if qgis_version() >= 32200 else Severities.Important,
-        QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
-    )
-    LeadingTrailingSpaceLayerGroupName = Check(
-        'leading_trailing_space',
-        tr('Leading/trailing space in layer/group name'),
-        tr(
-            'The layer/group name has some leading/trailing spaces. It must be removed and the configuration in the '
-            'plugin might be needed.'
-        ), (
-            '<ul>'
-            '<li>{edit_layer}</li>'
-            '</ul>'.format(
-                edit_layer=tr('Rename your layer/group to remove leading/trailing spaces (left and right)'),
-            )
-        ),
-        Levels.Layer,
-        Severities.Blocking,
-        QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg'),
-    )
-    PreventEcw = Check(
-        Settings.PreventEcw,
-        tr('ECW raster'),
-        tr(
-            'The layer is using the ECW raster format. Because of the ECW\'s licence, this format is not compatible '
-            'with most of QGIS server installations. You have activated a safeguard about preventing you using an '
-            'ECW layer.'),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '</ul>'.format(
-                help=tr('Either switch to a COG format'),
-                other=safeguard,
-            )
-        ),
-        Levels.Layer,
-        Severities.Unknown,
-        QIcon(':/images/themes/default/mIconRasterLayer.svg'),
-        tr(
-            'The layer is using an ECW raster format. Because of the ECW\'s licence, this format is not compatible '
-            'with QGIS server.'
-        ),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(help=tr('Switch to a COG format'))
-    )
-    AuthenticationDb = Check(
-        Settings.PreventPgAuthDb,
-        tr('QGIS Authentication database'),
-        tr(
-            'The layer is using the QGIS authentication database. You have activated a safeguard preventing you using '
-            'the QGIS authentication database.'
-        ),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '<li>{global_connection}</li>'
-            '</ul>'.format(
-                help=other_auth,
-                other=safeguard,
-                global_connection=global_connection,
-            )
-        ),
-        Levels.Layer,
-        Severities.Unknown,
-        QIcon(':/images/themes/default/mIconPostgis.svg'),
-        tr('The layer is using the QGIS authentication database. This is not compatible with {}').format(CLOUD_NAME),
-        (
-            '<ul>'
-            '<li>{service}</li>'
-            '<li>{login_pass}</li>'
-            '</ul>'
-        ).format(
-            service=tr('Either use a PostgreSQL service'),
-            login_pass=tr('Or store the login and password in the layer.')
+    def __init__(self):
+        # Check QGIS_VERSION_INT
+        qgis_32200 = tr(
+            'With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin to fix currently '
+            'loaded layers'
         )
-    )
-    PgService = Check(
-        Settings.PreventPgService,
-        tr('PostgreSQL service'),
-        tr(
-            'Using a PostgreSQL service file is recommended in many cases, but it requires a configuration step. '
-            'If you have done the configuration (on the server side mainly), you can disable this safeguard.'
-        ),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '<li>{doc}</li>'
-            '<li>{global_connection}</li>'
-            '</ul>'.format(
-                help=other_auth,
-                other=safeguard,
-                doc=pg_service_help().toString(),  # Sorry, the link is not easily clickable in a QTextEdit
-                global_connection=global_connection,
-            )
-        ),
-        Levels.Layer,
-        Severities.Unknown,
-        QIcon(':/images/themes/default/mIconPostgis.svg'),
-    )
-    PgForceUserPass = Check(
-        Settings.ForcePgUserPass,
-        tr('PostgreSQL user and/or password'),
-        tr(
-            'The layer is missing some credentials, either user and/or password.'
-        ),
-        (
-            '<ul>'
-            '<li>{edit_layer}</li>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '<li>{global_connection}</li>'
-            '</ul>'.format(
-                edit_layer=tr('Edit your layer configuration by force saving user&password'),
-                help=other_auth,
-                other=safeguard,
-                global_connection=global_connection,
-            )
-        ),
-        Levels.Layer,
-        Severities.Unknown,
-        QIcon(':/images/themes/default/mIconPostgis.svg'),
-    )
-    PreventDrive = Check(
-        Settings.PreventDrive,
-        tr('Other drive (network or local)'),
-        tr('The layer is stored on another drive.'),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '</ul>'.format(
-                help=either_move_file,
-                other=safeguard,
-            )
-        ),
-        Levels.Layer,
-        Severities.Unknown,
-        QIcon(':/qt-project.org/styles/commonstyle/images/networkdrive-16.png'),
-        tr('The layer is stored on another drive, which is not possible using {}.').format(CLOUD_NAME),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '</ul>'
-        ).format(
-            help=move_file,
+        other_auth = tr('Either switch to another authentication mechanism')
+        safeguard = tr('Or disable this safeguard in your Lizmap plugin settings')
+        global_connection = tr(
+            'To fix layers loaded <b>later</b>, edit your global PostgreSQL connection to enable this option, then '
+            'change the datasource by right clicking on each layer above, then click "Change datasource" in the menu. '
+            'Finally reselect your layer in the new dialog with the updated connection. When opening a QGIS project in '
+            'your computer, with a fresh launched QGIS software, you mustn\'t have any prompt for a user or password. '
+            'The edited connection will take effect only on newly added layer into a project that\'s why the '
+            'right-click step is required.'
         )
-    )
-    PreventParentFolder = Check(
-        Settings.AllowParentFolder,
-        tr('Parent folder'),
-        tr('The layer is stored in too many parent\'s folder, compare to the QGS file.'),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '</ul>'.format(
-                help=either_move_file,
-                other=safeguard,
-            )
-        ),
-        Levels.Layer,
-        Severities.Unknown,
-        QIcon(':/images/themes/default/mIconFolderOpen.svg'),
-        tr('The layer is stored in too many parent\'s folder, compare to the QGS file.'),
-        (
-            '<ul>'
-            '<li>{help}</li>'
-            '<li>{other}</li>'
-            '<li>{fyi}</li>'
-            '</ul>'
-        ).format(
-            help=either_move_file,
-            other=safeguard,
-            fyi=tr(
-                'For your information, the maximum of parents is {count} on {hosting_name}. This will be overriden '
-                'on runtime if you use a higher value according to the server selected in the first panel.'
-            ).format(
-                count=CLOUD_MAX_PARENT_FOLDER,
-                hosting_name=CLOUD_NAME
-            ),
-        )
-    )
+        either_move_file = tr('Either move the file used for the layer')
+        move_file = tr('Move the file used for the layer')
 
-    @classmethod
-    def html(cls, severity: Severity, lizmap_cloud: bool) -> str:
+        self.OgcValid = Check(
+            'ogc_validity',
+            tr('OGC validity (QGIS server)'),
+            tr(
+                "According to OGC standard, the project is not valid."
+            ),
+            (
+                '<ul>'
+                '<li>{project_properties}</li>'
+                '<li>{project_shortname}</li>'
+                '<li>{layer_shortname}</li>'
+                '</ul>'
+            ).format(
+                project_properties=tr(
+                    "Open the 'Project properties', then 'QGIS Server' tab, at the bottom, you can check your project "
+                    "according to OGC standard"
+                ),
+                layer_shortname=tr(
+                    "If you need to fix a layer shortname, go to the 'Layer properties' "
+                    "for the given layer, then 'QGIS Server' tab, edit the shortname."
+                ),
+                project_shortname=tr(
+                    "If you need to fix the project shortname, go to the 'Project properties', "
+                    "then 'QGIS Server' tab, first tab, and change the shortname."
+                ),
+            ),
+            Levels.Project,
+            Severities().low,
+            QIcon(':/images/themes/default/mIconWms.svg'),
+        )
+        self.PkInt8 = Check(
+            'primary_key_bigint',
+            tr('Invalid bigint (integer8) field for QGIS Server as primary key'),
+            tr(
+                "Primary key should be an integer. If not fixed, expect layer to have some issues with some tools in "
+                "Lizmap Web Client: zoom to feature, filtering…"
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                help=tr(
+                    "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
+                    "an integer8."
+                ),
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/mIconFieldInteger.svg'),
+        )
+        self.MissingPk = Check(
+            'missing_primary_key',
+            tr('Missing a proper primary key in the database.'),
+            tr(
+                "The layer must have a proper primary key defined. When it's missing, QGIS Desktop tried to set a "
+                "temporary field called 'tid/ctid/…' to be a unique identifier. On QGIS Server, this will bring issues."
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                help=tr(
+                    "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
+                    "an integer8."
+                ),
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/mSourceFields.svg'),
+        )
+        self.SSLConnection = Check(
+            'ssl_connection',
+            tr('SSL connections to a PostgreSQL database'),
+            tr("Connections to a PostgreSQL database hosted on {} must use a SSL secured connection.").format(CLOUD_NAME),
+            (
+                '<ul>'
+                '<li>{auto_fix}</li>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                auto_fix=qgis_32200,
+                help=global_connection,
+            ),
+            Levels.Layer,
+            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+        )
+        self.EstimatedMetadata = Check(
+            'estimated_metadata',
+            tr('Estimated metadata'),
+            tr("PostgreSQL layer can have the use estimated metadata option enabled"),
+            (
+                '<ul>'
+                '<li>{auto_fix}</li>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                auto_fix=qgis_32200,
+                help=global_connection,
+            ),
+            Levels.Layer,
+            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+        )
+        self.SimplifyGeometry = Check(
+            'simplify_geometry',
+            tr('Simplify geometry on the provider side'),
+            tr("PostgreSQL layer can have the geometry simplification on the server side enabled"),
+            (
+                '<ul>'
+                '<li>{auto_fix}</li>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                auto_fix=qgis_32200,
+                help=tr(
+                    'Visit the layer properties, then in the "Rendering" tab to enable it simplification on the provider '
+                    'side on the given layer.'
+                ),
+            ),
+            Levels.Layer,
+            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            QIcon(':/images/themes/default/mIconGeometryCollectionLayer.svg'),
+        )
+        self.DuplicatedLayerNameOrGroup = Check(
+            'duplicated_layer_name_or_group',
+            tr('Duplicated layer name or group'),
+            tr("It's not possible to store all the Lizmap configuration for these layer(s) or group(s)."),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'
+            ).format(
+                tr('You must change them to make them unique'),
+                tr('Reconfigure their settings in the "Layers" tab of the plugin')
+            ),
+            Levels.Project,
+            Severities().important,
+            QIcon(':/images/themes/default/propertyicons/editmetadata.svg'),
+        )
+        self.WmsUseLayerIds = Check(
+            'wms_use_layer_id',
+            tr('Do not use layer IDs as name'),
+            tr(
+                "It's not possible anymore to use the option 'Use layer IDs as name' in the project properties dialog, "
+                "QGIS server tab, then WMS capabilities."
+            ),
+            '<ul><li>{help}</li></ul>'.format(
+                help=tr("Uncheck this checkbox and re-save the Lizmap configuration file")
+            ),
+            Levels.Project,
+            Severities().blocking,
+            QIcon(':/images/themes/default/mIconWms.svg'),
+        )
+        self.TrustProject = Check(
+            'trust_project_metadata',
+            tr('Trust project metadata'),
+            tr('The project does not have the "Trust project metadata" enabled at the project level'),
+            (
+                '<ul>'
+                '<li>{auto_fix}</li>'
+                '<li>{help}</li>'
+                '</ul>'.format(
+                    help=tr(
+                        'In the project properties → Data sources → at the bottom, there is a checkbox to trust the '
+                        'project when the layer has no metadata.'
+                    ),
+                    auto_fix=tr('With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin'),
+                )
+            ),
+            Levels.Project,
+            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
+        )
+        self.LeadingTrailingSpaceLayerGroupName = Check(
+            'leading_trailing_space',
+            tr('Leading/trailing space in layer/group name'),
+            tr(
+                'The layer/group name has some leading/trailing spaces. It must be removed and the configuration in the '
+                'plugin might be needed.'
+            ), (
+                '<ul>'
+                '<li>{edit_layer}</li>'
+                '</ul>'.format(
+                    edit_layer=tr('Rename your layer/group to remove leading/trailing spaces (left and right)'),
+                )
+            ),
+            Levels.Layer,
+            Severities().blocking,
+            QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg'),
+        )
+        self.PreventEcw = Check(
+            Settings.PreventEcw,
+            tr('ECW raster'),
+            tr(
+                'The layer is using the ECW raster format. Because of the ECW\'s licence, this format is not compatible '
+                'with most of QGIS server installations. You have activated a safeguard about preventing you using an '
+                'ECW layer.'),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '</ul>'.format(
+                    help=tr('Either switch to a COG format'),
+                    other=safeguard,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/images/themes/default/mIconRasterLayer.svg'),
+            tr(
+                'The layer is using an ECW raster format. Because of the ECW\'s licence, this format is not compatible '
+                'with QGIS server.'
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(help=tr('Switch to a COG format'))
+        )
+        self.AuthenticationDb = Check(
+            Settings.PreventPgAuthDb,
+            tr('QGIS Authentication database'),
+            tr(
+                'The layer is using the QGIS authentication database. You have activated a safeguard preventing you using '
+                'the QGIS authentication database.'
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '<li>{global_connection}</li>'
+                '</ul>'.format(
+                    help=other_auth,
+                    other=safeguard,
+                    global_connection=global_connection,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+            tr('The layer is using the QGIS authentication database. This is not compatible with {}').format(CLOUD_NAME),
+            (
+                '<ul>'
+                '<li>{service}</li>'
+                '<li>{login_pass}</li>'
+                '</ul>'
+            ).format(
+                service=tr('Either use a PostgreSQL service'),
+                login_pass=tr('Or store the login and password in the layer.')
+            )
+        )
+        self.PgService = Check(
+            Settings.PreventPgService,
+            tr('PostgreSQL service'),
+            tr(
+                'Using a PostgreSQL service file is recommended in many cases, but it requires a configuration step. '
+                'If you have done the configuration (on the server side mainly), you can disable this safeguard.'
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '<li>{doc}</li>'
+                '<li>{global_connection}</li>'
+                '</ul>'.format(
+                    help=other_auth,
+                    other=safeguard,
+                    doc=pg_service_help().toString(),  # Sorry, the link is not easily clickable in a QTextEdit
+                    global_connection=global_connection,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+        )
+        self.PgForceUserPass = Check(
+            Settings.ForcePgUserPass,
+            tr('PostgreSQL user and/or password'),
+            tr(
+                'The layer is missing some credentials, either user and/or password.'
+            ),
+            (
+                '<ul>'
+                '<li>{edit_layer}</li>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '<li>{global_connection}</li>'
+                '</ul>'.format(
+                    edit_layer=tr('Edit your layer configuration by force saving user&password'),
+                    help=other_auth,
+                    other=safeguard,
+                    global_connection=global_connection,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+        )
+        self.PreventDrive = Check(
+            Settings.PreventDrive,
+            tr('Other drive (network or local)'),
+            tr('The layer is stored on another drive.'),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '</ul>'.format(
+                    help=either_move_file,
+                    other=safeguard,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/qt-project.org/styles/commonstyle/images/networkdrive-16.png'),
+            tr('The layer is stored on another drive, which is not possible using {}.').format(CLOUD_NAME),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                help=move_file,
+            )
+        )
+        self.PreventParentFolder = Check(
+            Settings.AllowParentFolder,
+            tr('Parent folder'),
+            tr('The layer is stored in too many parent\'s folder, compare to the QGS file.'),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '</ul>'.format(
+                    help=either_move_file,
+                    other=safeguard,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/images/themes/default/mIconFolderOpen.svg'),
+            tr('The layer is stored in too many parent\'s folder, compare to the QGS file.'),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '<li>{fyi}</li>'
+                '</ul>'
+            ).format(
+                help=either_move_file,
+                other=safeguard,
+                fyi=tr(
+                    'For your information, the maximum of parents is {count} on {hosting_name}. This will be overriden '
+                    'on runtime if you use a higher value according to the server selected in the first panel.'
+                ).format(
+                    count=CLOUD_MAX_PARENT_FOLDER,
+                    hosting_name=CLOUD_NAME
+                ),
+            )
+        )
+
+    def html(self, severity: Severity, lizmap_cloud: bool) -> str:
         """ Generate an HTML table, according to the instance. """
         html_str = '<table class=\"tabular-view\" width=\"100%\">'
         html_str += (
@@ -602,9 +613,9 @@ class Checks:
             level=tr('Level'),
             severity=tr('Severity'),
         )
-        copy_sort = list(cls.__dict__.values())
+        copy_sort = list(self.__dict__.values())
         copy_sort = [c for c in copy_sort if isinstance(c, Check)]
-        copy_sort.sort(key=lambda x: severity.data if x.severity == Severities.Unknown else x.severity.data)
+        copy_sort.sort(key=lambda x: severity.data if x.severity == Severities().unknown else x.severity.data)
         for i, check in enumerate(copy_sort):
             html_str += check.html_help(i, severity, lizmap_cloud)
         html_str += '</table>'
@@ -746,7 +757,7 @@ class TableCheck(QTableWidget):
         """ Add an error in the table. """
         # By default, let's take the one in the error
         used_severity = error.check.severity
-        if used_severity == Severities.Unknown:
+        if used_severity == Severities().unknown:
             if severity:
                 # The given severity is overriden the one in the error
                 used_severity = severity
