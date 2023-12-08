@@ -17,10 +17,11 @@ class TestProjectTable(unittest.TestCase):
         self.assertEqual(table.verticalHeader().count(), 0)
 
         self.assertEqual(table.rowCount(), 0)
+        checks = Checks()
 
-        table.add_error(Error('my-tailor-is-rich', Checks.DuplicatedLayerNameOrGroup))
-        table.add_error(Error('home-sweet-home', Checks.DuplicatedLayerNameOrGroup))
-        table.add_error(Error('home-sweet-home', Checks.MissingPk))
+        table.add_error(Error('my-tailor-is-rich', checks.DuplicatedLayerNameOrGroup))
+        table.add_error(Error('home-sweet-home', checks.DuplicatedLayerNameOrGroup))
+        table.add_error(Error('home-sweet-home', checks.MissingPk))
         self.assertEqual(table.rowCount(), 3)
 
         expected = [

@@ -133,7 +133,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 "To know how to fix these checks, either use the tooltip (by hovering your mouse pointer on the table "
                 "row) in the last column <strong>'{column_name}'</strong>, or check the documentation in the next tab "
                 "<strong>'{tab_name}'</strong> for all errors which can be reported."
-            ).format(column_name=Headers.Error.label, tab_name=self.tab_log.tabText(1))
+            ).format(column_name=Headers().error.label, tab_name=self.tab_log.tabText(1))
         )
         auto_fix_panel = self.mOptionsListWidget.item(Panels.AutoFix).text()
         self.label_autofix.setText(tr(
@@ -309,30 +309,32 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.safe_number_parent.setValue(QgsSettings().value(Settings.key(Settings.NumberParentFolder), type=int))
         self.safe_number_parent.valueChanged.connect(self.save_settings)
 
+        self.checks = Checks()
+
         # Other drive
         self.safe_other_drive.setChecked(QgsSettings().value(Settings.key(Settings.PreventDrive), type=bool))
         self.safe_other_drive.toggled.connect(self.save_settings)
-        self.safe_other_drive.setToolTip(Checks.PreventDrive.description)
+        self.safe_other_drive.setToolTip(self.checks.PreventDrive.description)
 
         # PG Service
         self.safe_pg_service.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgService), type=bool))
         self.safe_pg_service.toggled.connect(self.save_settings)
-        self.safe_pg_service.setToolTip(Checks.PgService.description)
+        self.safe_pg_service.setToolTip(self.checks.PgService.description)
 
         # PG Auth DB
         self.safe_pg_auth_db.setChecked(QgsSettings().value(Settings.key(Settings.PreventPgAuthDb), type=bool))
         self.safe_pg_auth_db.toggled.connect(self.save_settings)
-        self.safe_pg_auth_db.setToolTip(Checks.AuthenticationDb.description)
+        self.safe_pg_auth_db.setToolTip(self.checks.AuthenticationDb.description)
 
         # User password
         self.safe_pg_user_password.setChecked(QgsSettings().value(Settings.key(Settings.ForcePgUserPass), type=bool))
         self.safe_pg_user_password.toggled.connect(self.save_settings)
-        self.safe_pg_user_password.setToolTip(Checks.PgForceUserPass.description)
+        self.safe_pg_user_password.setToolTip(self.checks.PgForceUserPass.description)
 
         # ECW
         self.safe_ecw.setChecked(QgsSettings().value(Settings.key(Settings.PreventEcw), type=bool))
         self.safe_ecw.toggled.connect(self.save_settings)
-        self.safe_ecw.setToolTip(Checks.PreventEcw.description)
+        self.safe_ecw.setToolTip(self.checks.PreventEcw.description)
 
         msg = tr(
             "Some safeguards are overridden by {host}. Even in 'normal' mode, some safeguards are becoming 'blocking' "
@@ -438,17 +440,21 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def auto_fix_tooltip(self, lizmap_cloud):
         """ Set some tooltips on these auto-fix buttons, according to Lizmap Cloud status. """
-        self.label_pg_ssl.setToolTip(Checks.SSLConnection.html_tooltip(lizmap_cloud))
-        self.button_convert_ssl.setToolTip(Checks.SSLConnection.html_tooltip(lizmap_cloud))
+        tooltip = self.checks.SSLConnection.html_tooltip(lizmap_cloud)
+        self.label_pg_ssl.setToolTip(tooltip)
+        self.button_convert_ssl.setToolTip(tooltip)
 
-        self.label_pg_estimated.setToolTip(Checks.EstimatedMetadata.html_tooltip(lizmap_cloud))
-        self.button_use_estimated_md.setToolTip(Checks.EstimatedMetadata.html_tooltip(lizmap_cloud))
+        tooltip = self.checks.EstimatedMetadata.html_tooltip(lizmap_cloud)
+        self.label_pg_estimated.setToolTip(tooltip)
+        self.button_use_estimated_md.setToolTip(tooltip)
 
-        self.label_trust_project.setToolTip(Checks.TrustProject.html_tooltip(lizmap_cloud))
-        self.button_trust_project.setToolTip(Checks.TrustProject.html_tooltip(lizmap_cloud))
+        tooltip = self.checks.TrustProject.html_tooltip(lizmap_cloud)
+        self.label_trust_project.setToolTip(tooltip)
+        self.button_trust_project.setToolTip(tooltip)
 
-        self.label_simplify.setToolTip(Checks.SimplifyGeometry.html_tooltip(lizmap_cloud))
-        self.button_simplify_geom.setToolTip(Checks.SimplifyGeometry.html_tooltip(lizmap_cloud))
+        tooltip = self.checks.SimplifyGeometry.html_tooltip(lizmap_cloud)
+        self.label_simplify.setToolTip(tooltip)
+        self.button_simplify_geom.setToolTip(tooltip)
 
     def has_auto_fix(self) -> bool:
         """ Return if an auto-fix is enabled. """
