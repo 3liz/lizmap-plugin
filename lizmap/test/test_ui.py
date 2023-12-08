@@ -184,7 +184,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual('1000000000', lizmap.dlg.inMaxScale.text())
 
         # Trigger the signal
-        lizmap.get_min_max_scales()
+        lizmap.dlg.get_min_max_scales()
 
         # Values from the UI
         self.assertEqual('10000', lizmap.dlg.inMinScale.text())
@@ -194,7 +194,7 @@ class TestUiLizmapDialog(unittest.TestCase):
 
         # Fill scales
         lizmap.dlg.inMapScales.setText(scales)
-        lizmap.get_min_max_scales()
+        lizmap.dlg.get_min_max_scales()
         self.assertEqual('1000', lizmap.dlg.inMinScale.text())
         self.assertEqual('15000', lizmap.dlg.inMaxScale.text())
         self.assertEqual(scales, lizmap.dlg.inMapScales.text())

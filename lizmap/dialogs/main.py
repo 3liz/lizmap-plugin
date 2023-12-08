@@ -117,6 +117,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.dataviz_viewer = QLabel(tr('You must install Qt Webkit to enable this feature.'))
         self.html_content.layout().addWidget(self.dataviz_viewer)
 
+        # Scales
+        self.use_native_zoom.toggled.connect(self.native_scales_toggled)
+        self.inMapScales.editingFinished.connect(self.get_min_max_scales)
+        self.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
+        self.min_scale_pic.setText('')
+        self.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
+        self.max_scale_pic.setText('')
+        self.native_scales_toggled()
+
         self.dataviz_feature_picker = QgsFeaturePickerWidget()
 
         self.feature_picker_layout.addWidget(self.dataviz_feature_picker)
@@ -911,6 +920,59 @@ class LizmapDialog(QDialog, FORM_CLASS):
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)
+
+    def native_scales_toggled(self):
+        """ When the checkbox native scales is toggled. """
+        if self.current_lwc_version() <= LwcVersions.Lizmap_3_6:
+            self.inMinScale.setReadOnly(True)
+            self.inMaxScale.setReadOnly(True)
+            # self.inMapScales connect
+            return
+
+        use_native = self.use_native_zoom.isChecked()
+        self.inMinScale.setReadOnly(not use_native)
+        self.inMaxScale.setReadOnly(not use_native)
+        self.inMapScales.setVisible(not use_native)
+        self.label_scales.setVisible(not use_native)
+
+        if use_native:
+            msg = tr("When using native scales, you can set minimum and maximum scales.")
+        else:
+            msg = tr("The minimum and maximum scales are defined by your minimum and maximum values above.")
+        ui_items = (
+            self.label_min_scale,
+            self.label_max_scale,
+            self.min_scale_pic,
+            self.max_scale_pic,
+            self.inMinScale,
+            self.inMaxScale,
+        )
+        for item in ui_items:
+            item.setToolTip(msg)
+
+    def get_min_max_scales(self):
+        """Get Min Max Scales from scales input field."""
+        min_scale = 1
+        max_scale = 1000000000
+        in_map_scales = self.inMapScales.text()
+        map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
+        # Remove scales which are lower or equal to 0
+        map_scales = [i for i in map_scales if int(i) > 0]
+        map_scales.sort()
+        if len(map_scales) < 2:
+            QMessageBox.critical(
+                self,
+                'Lizmap',
+                tr(
+                    'Map scales: Write down integer scales separated by comma. '
+                    'You must enter at least 2 min and max values.'),
+                QMessageBox.Ok)
+        else:
+            min_scale = min(map_scales)
+            max_scale = max(map_scales)
+        self.inMinScale.setText(str(min_scale))
+        self.inMaxScale.setText(str(max_scale))
+        self.inMapScales.setText(', '.join(map(str, map_scales)))
 
     def project_crs_3857(self):
         """ When the project CRS is EPSG:3857 and LWC 3.7. """

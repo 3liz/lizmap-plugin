@@ -697,8 +697,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>1325</height>
+                <width>797</width>
+                <height>1483</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -953,23 +953,6 @@ QListWidget::item::selected {
                   <string>Scales</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_17">
-                    <property name="text">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br/&gt;Ex: 1000, 250000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_13">
-                    <property name="text">
-                     <string>These scales are used for printing too, regardless of the projection of the main map.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="WarningWidget" name="scales_warning" native="true"/>
-                  </item>
                   <item row="6" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_11">
                     <item>
@@ -1047,10 +1030,20 @@ QListWidget::item::selected {
                     </item>
                    </layout>
                   </item>
+                  <item row="2" column="0">
+                   <widget class="WarningWidget" name="scales_warning" native="true"/>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_17">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Write down integer scales separated by comma. You must enter at least 2 min and max values.&lt;br/&gt;Ex: 1000, 250000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="5" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
                     <item>
-                     <widget class="QLabel" name="label_15">
+                     <widget class="QLabel" name="label_scales">
                       <property name="text">
                        <string>Map Scales</string>
                       </property>
@@ -1071,6 +1064,27 @@ QListWidget::item::selected {
                     </item>
                    </layout>
                   </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>These scales are used for printing too, regardless of the projection of the main map.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QCheckBox" name="use_native_zoom">
+                    <property name="text">
+                     <string>Use proper scales according to the projection for a better display</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QCheckBox" name="hide_numeric_scale_value">
+                    <property name="text">
+                     <string>Hide the numeric scale value</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1087,20 +1101,6 @@ QListWidget::item::selected {
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="use_native_zoom">
-                    <property name="text">
-                     <string>Use native zoom levels for a better display.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="hide_numeric_scale_value">
-                    <property name="text">
-                     <string>Hide the numeric scale value, because it won't be rounded values.</string>
                     </property>
                    </widget>
                   </item>
@@ -2188,7 +2188,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <x>0</x>
                 <y>0</y>
                 <width>780</width>
-                <height>1143</height>
+                <height>1174</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -4788,8 +4788,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>791</width>
-                <height>797</height>
+                <width>415</width>
+                <height>882</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -4927,8 +4927,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>791</width>
-                <height>797</height>
+                <width>434</width>
+                <height>611</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_72">
@@ -5158,23 +5158,23 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
+   <header>qgspasswordlineedit.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

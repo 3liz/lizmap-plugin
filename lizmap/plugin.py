@@ -44,7 +44,6 @@ from qgis.PyQt.QtGui import (
     QColor,
     QDesktopServices,
     QIcon,
-    QPixmap,
     QStandardItem,
     QTextCursor,
 )
@@ -414,6 +413,8 @@ class Lizmap:
             self.dlg.predefined_baselayers,
             # New scopes in actions
             self.dlg.label_action_scope_layer_project,
+            # Scales
+            self.dlg.use_native_zoom,
         ]
 
         self.lizmap_cloud = [
@@ -538,26 +539,10 @@ class Lizmap:
         # Catch user interaction on layer tree and inputs
         self.dlg.layer_tree.itemSelectionChanged.connect(self.from_data_to_ui_for_layer_group)
 
-        # Catch user interaction on Map Scales input
-        self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
-
         self.dlg.scales_warning.set_text(tr(
             "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
         ))
         self.dlg.scales_warning.setVisible(False)
-
-        # Scales
-        self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
-        self.dlg.min_scale_pic.setText('')
-        self.dlg.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
-        self.dlg.max_scale_pic.setText('')
-        ui_items = (
-            self.dlg.label_min_scale, self.dlg.label_max_scale,
-            self.dlg.min_scale_pic, self.dlg.max_scale_pic,
-            self.dlg.inMinScale, self.dlg.inMaxScale,
-        )
-        for item in ui_items:
-            item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
 
         # Group helper
         self.dlg.add_group_hidden.setToolTip(tr(
@@ -1543,31 +1528,6 @@ class Lizmap:
         self.dlg.btConfigurePopup.setEnabled(value)
         self.dlg.btQgisPopupFromForm.setEnabled(value)
         self.dlg.button_generate_html_table.setEnabled(value)
-
-    def get_min_max_scales(self):
-        """Get Min Max Scales from scales input field."""
-        LOGGER.info('Getting min/max scales')
-        min_scale = 1
-        max_scale = 1000000000
-        in_map_scales = self.dlg.inMapScales.text()
-        map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
-        # Remove scales which are lower or equal to 0
-        map_scales = [i for i in map_scales if int(i) > 0]
-        map_scales.sort()
-        if len(map_scales) < 2:
-            QMessageBox.critical(
-                self.dlg,
-                tr('Lizmap Error'),
-                tr(
-                    'Map scales: Write down integer scales separated by comma. '
-                    'You must enter at least 2 min and max values.'),
-                QMessageBox.Ok)
-        else:
-            min_scale = min(map_scales)
-            max_scale = max(map_scales)
-        self.dlg.inMinScale.setText(str(min_scale))
-        self.dlg.inMaxScale.setText(str(max_scale))
-        self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
 
     def read_cfg_file(self, skip_tables=False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
@@ -3858,7 +3818,7 @@ class Lizmap:
         self.dlg.log_panel.append(msg, style=Html.Strong, abort=False, time=True)
         self.dlg.log_panel.append("</p>")
 
-        self.get_min_max_scales()
+        self.dlg.get_min_max_scales()
 
         # Ask to save the project
         auto_save = self.dlg.checkbox_save_project.isChecked()
