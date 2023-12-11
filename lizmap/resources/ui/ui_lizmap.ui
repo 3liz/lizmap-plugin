@@ -1052,7 +1052,7 @@ QListWidget::item::selected {
                   <item row="2" column="0">
                    <widget class="QCheckBox" name="use_native_scales">
                     <property name="text">
-                     <string>Use native according to the project CRS (better display)</string>
+                     <string>Use native scales according to the project CRS (better display)</string>
                     </property>
                    </widget>
                   </item>
@@ -2210,7 +2210,10 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <item>
                       <widget class="QLabel" name="label_4">
                        <property name="text">
-                        <string>These layers will be added in the predefined group described above. The first layer will be the default one.</string>
+                        <string>These layers will be added in the predefined group described above. The first layer at the top of the group will be the default one.</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
                        </property>
                       </widget>
                      </item>
