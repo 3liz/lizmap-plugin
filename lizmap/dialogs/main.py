@@ -232,11 +232,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
             'saved as well if necessary'
         ))
 
-        # TODO translate
-        self.warning_base_layer_deprecated.set_text(
+        self.warning_base_layer_deprecated.set_text(tr(
             "You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel is now "
             "deprecated."
-        )
+        ))
 
         self.widget_deprecated_popup.set_text(tr(
             "This source of popup is deprecated for vector layer. You should switch to another one, such as the QGIS "

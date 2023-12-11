@@ -58,11 +58,16 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(3, len(project.mapLayers()))
 
         lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
-        config = lizmap.layers_config_file()
+        # read_cfg_file will call "layers_config_file"
+        config = lizmap.read_cfg_file(skip_tables=True)
 
         lizmap.myDic = {}
         lizmap.process_node(project.layerTreeRoot(), None, config)
         lizmap.layerList = lizmap.myDic
+
+        self.assertEqual('5000', lizmap.dlg.minimum_scale.text())
+        self.assertEqual('500000', lizmap.dlg.maximum_scale.text())
+        self.assertEqual('5000, 250000, 500000', lizmap.dlg.list_map_scales.text())
 
         self.assertEqual(
             'disabled',
