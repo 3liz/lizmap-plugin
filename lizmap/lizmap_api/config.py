@@ -58,6 +58,14 @@ class LizmapConfig:
             'maxScale': {
                 'wType': 'text', 'type': 'integer', 'default': 1000000000
             },
+            'use_native_zoom_levels': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True,
+                'always_export': True, 'use_proper_boolean': True,
+            },
+            'hide_numeric_scale_value': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': True,
+                'always_export': True, 'use_proper_boolean': True,
+            },
             'acl': {
                 'wType': 'text', 'type': 'list', 'default': []
             },

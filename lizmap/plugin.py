@@ -17,6 +17,7 @@ from typing import Dict, List, Optional, Tuple
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsCoordinateReferenceSystem,
     QgsEditFormConfig,
     QgsExpression,
     QgsLayerTree,
@@ -414,6 +415,9 @@ class Lizmap:
             self.dlg.predefined_baselayers,
             # New scopes in actions
             self.dlg.label_action_scope_layer_project,
+            # Scales
+            self.dlg.use_native_scales,
+            self.dlg.hide_scale_value,
         ]
 
         self.lizmap_cloud = [
@@ -427,6 +431,7 @@ class Lizmap:
         # self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
         # self.global_options['minScale']['widget'] = self.dlg.minimum_scale
         # self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
+        self.global_options['hide_numeric_scale_value']['widget'] = self.dlg.hide_scale_value
         self.global_options['acl']['widget'] = self.dlg.inAcl
         self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
         self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
@@ -536,9 +541,6 @@ class Lizmap:
 
         # Catch user interaction on layer tree and inputs
         self.dlg.layer_tree.itemSelectionChanged.connect(self.from_data_to_ui_for_layer_group)
-
-        # Catch user interaction on Map Scales input
-        self.dlg.list_map_scales.editingFinished.connect(self.get_min_max_scales)
 
         self.dlg.scales_warning.set_text(tr(
             "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
@@ -1543,11 +1545,10 @@ class Lizmap:
         self.dlg.button_generate_html_table.setEnabled(value)
 
     def get_min_max_scales(self):
-        """Get Min Max Scales from scales input field."""
+        """ Get minimum/maximum scales from scales input field. """
         LOGGER.info('Getting min/max scales')
-        min_scale = 1
-        max_scale = 1000000000
         in_map_scales = self.dlg.list_map_scales.text()
+
         map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
         # Remove scales which are lower or equal to 0
         map_scales = [i for i in map_scales if int(i) > 0]
@@ -1560,12 +1561,17 @@ class Lizmap:
                     'Map scales: Write down integer scales separated by comma. '
                     'You must enter at least 2 min and max values.'),
                 QMessageBox.Ok)
+            min_scale = 1
+            max_scale = 1000000000
         else:
             min_scale = min(map_scales)
             max_scale = max(map_scales)
-        self.dlg.minimum_scale.setText(str(min_scale))
-        self.dlg.maximum_scale.setText(str(max_scale))
-        self.dlg.list_map_scales.setText(', '.join(map(str, map_scales)))
+
+        cleaned = ', '.join([str(i) for i in map_scales])
+
+        self.dlg.minimum_scale.setValue(min_scale)
+        self.dlg.maximum_scale.setValue(max_scale)
+        self.dlg.list_map_scales.setText(cleaned)
 
     def read_cfg_file(self, skip_tables=False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
@@ -1707,12 +1713,13 @@ class Lizmap:
                             item['widget'].setCurrentIndex(index)
 
             map_scales = json_options.get('mapScales', self.global_options['mapScales']['default'])
-            map_scales = [str(i) for i in map_scales]
             min_scale = json_options.get('minScale', self.global_options['minScale']['default'])
             max_scale = json_options.get('maxScale', self.global_options['maxScale']['default'])
-            self.dlg.list_map_scales.setText(', '.join(map_scales))
-            self.dlg.minimum_scale.setText(str(min_scale))
-            self.dlg.maximum_scale.setText(str(max_scale))
+            use_native = json_options.get('use_native_zoom_levels')
+            project_crs = json_options.get('projection')
+            if project_crs:
+                project_crs = project_crs.get('ref')
+            self.set_map_scales_in_ui(map_scales, min_scale, max_scale, use_native, project_crs)
 
         # Set layer combobox
         for key, item in self.global_options.items():
@@ -3315,11 +3322,13 @@ class Lizmap:
 
             # Since LWC 3.7, we are managing manually these values
             if key == 'mapScales':
-                liz2json["options"]['mapScales'] = [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
+                liz2json["options"]['mapScales'] = self.map_scales()
             if key == 'minScale':
                 liz2json["options"]['minScale'] = int(self.dlg.minimum_scale.text())
             if key == 'maxScale':
                 liz2json["options"]['maxScale'] = int(self.dlg.maximum_scale.text())
+            if key == 'use_native_zoom_levels':
+                liz2json["options"]['use_native_zoom_levels'] = self.dlg.use_native_scales.isChecked()
 
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
@@ -3571,6 +3580,105 @@ class Lizmap:
             liz2json["layers"][v['name']] = layer_options
 
         return liz2json
+
+    def map_scales(self) -> list:
+        """ Whe writing CFG file, return the list of map scales. """
+        use_native = self.dlg.use_native_scales.isChecked()
+        if use_native:
+            return [self.dlg.minimum_scale.value(), self.dlg.maximum_scale.value()]
+        else:
+            return [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
+
+    def set_map_scales_in_ui(
+            self, map_scales: list, min_scale: int, max_scale: int, use_native: bool, project_crs: str):
+        """ From CFG or default values into the user interface. """
+        scales_widget = (
+            self.dlg.minimum_scale,
+            self.dlg.maximum_scale,
+        )
+        for widget in scales_widget:
+            widget.setMinimum(1)
+            widget.setMaximum(2000000000)
+            widget.setSingleStep(5000)
+
+        map_scales = [str(i) for i in map_scales]
+
+        self.dlg.use_native_scales.toggled.connect(self.native_scales_toggled)
+
+        if self.current_lwc_version() <= LwcVersions.Lizmap_3_6:
+            # From CFG and default, scales are int, we need text
+            self.dlg.list_map_scales.setText(', '.join(map_scales))
+            self.dlg.minimum_scale.setValue(min_scale)
+            self.dlg.maximum_scale.setValue(max_scale)
+            self.connect_map_scales_min_max()
+            self.dlg.use_native_scales.setChecked(False)
+            return
+
+        # We are now in LWC 3.7
+        if use_native is None:
+            # but coming from a 3.6 CFG file
+            crs = QgsCoordinateReferenceSystem(project_crs)
+            if crs in (QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('ESPG:900913')):
+                use_native = True
+            else:
+                use_native = False
+
+            # We set the scale bar only if it wasn't set
+            self.dlg.hide_scale_value.setChecked(use_native)
+
+        # CFG file from 3.7
+        self.dlg.use_native_scales.setChecked(use_native)
+        self.dlg.list_map_scales.setText(', '.join(map_scales))
+        self.dlg.minimum_scale.setValue(min_scale)
+        self.dlg.maximum_scale.setValue(max_scale)
+        self.disconnect_map_scales_min_max()
+
+    def connect_map_scales_min_max(self):
+        """ Connect the list of scales to min/max fields. """
+        self.dlg.list_map_scales.editingFinished.connect(self.get_min_max_scales)
+
+    def disconnect_map_scales_min_max(self):
+        """ Disconnect the list of scales to min/max fields. """
+        try:
+            self.dlg.list_map_scales.editingFinished.disconnect(self.get_min_max_scales)
+        except TypeError:
+            # It wasn't connected
+            pass
+
+    def native_scales_toggled(self):
+        """ When the checkbox native scales is toggled. """
+        use_native = self.dlg.use_native_scales.isChecked()
+
+        if self.current_lwc_version() <= LwcVersions.Lizmap_3_6:
+            use_native = False
+            self.dlg.use_native_scales.setChecked(use_native)
+
+        self.dlg.minimum_scale.setReadOnly(not use_native)
+        self.dlg.maximum_scale.setReadOnly(not use_native)
+        self.dlg.list_map_scales.setVisible(not use_native)
+        self.dlg.label_15.setVisible(not use_native)
+
+        if use_native:
+            msg = tr("When using native scales, you can set minimum and maximum scales.")
+        else:
+            msg = tr("The minimum and maximum scales are defined by your minimum and maximum values in the list.")
+        ui_items = (
+            self.dlg.list_map_scales,
+            self.dlg.label_min_scale,
+            self.dlg.label_max_scale,
+            self.dlg.min_scale_pic,
+            self.dlg.max_scale_pic,
+            self.dlg.minimum_scale,
+            self.dlg.maximum_scale,
+            self.dlg.label_15,
+        )
+        for item in ui_items:
+            item.setToolTip(msg)
+
+        if use_native:
+            self.disconnect_map_scales_min_max()
+        else:
+            self.connect_map_scales_min_max()
 
     def clean_project(self):
         """Clean a little the QGIS project.
@@ -4005,8 +4113,6 @@ class Lizmap:
             if item.isChecked():
                 visible = True
 
-        self.dlg.scales_warning.setVisible(visible)
-
         current_version = self.current_lwc_version()
         if not current_version:
             # No server yet
@@ -4042,6 +4148,7 @@ class Lizmap:
             self.dlg.gb_externalLayers.setEnabled(True)
             self.dlg.cbAddEmptyBaselayer.setEnabled(True)
             self.dlg.cbStartupBaselayer.setEnabled(True)
+            self.dlg.scales_warning.setVisible(visible)
 
         # TODO make string translatable in self.dlg.label_deprecated_base_layers
 

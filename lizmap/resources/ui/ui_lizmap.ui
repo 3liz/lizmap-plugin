@@ -953,6 +953,88 @@ QListWidget::item::selected {
                   <string>Scales</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="7" column="0">
+                   <layout class="QFormLayout" name="formLayout_6">
+                    <item row="2" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_55">
+                      <item>
+                       <widget class="QLabel" name="label_min_scale">
+                        <property name="enabled">
+                         <bool>true</bool>
+                        </property>
+                        <property name="text">
+                         <string>Min Scale</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="min_scale_pic">
+                        <property name="text">
+                         <string notr="true">PICTURE</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QSpinBox" name="minimum_scale"/>
+                    </item>
+                    <item row="3" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_57">
+                      <item>
+                       <widget class="QLabel" name="label_max_scale">
+                        <property name="enabled">
+                         <bool>true</bool>
+                        </property>
+                        <property name="text">
+                         <string>Max Scale</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="max_scale_pic">
+                        <property name="text">
+                         <string notr="true">PICTURE</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QSpinBox" name="maximum_scale"/>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_15">
+                      <property name="text">
+                       <string>Map Scales</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QLineEdit" name="list_map_scales">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="inputMethodHints">
+                       <set>Qt::ImhDigitsOnly</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="WarningWidget" name="scales_warning" native="true"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QCheckBox" name="hide_scale_value">
+                    <property name="text">
+                     <string>Hide numeric scale value</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_17">
                     <property name="text">
@@ -968,108 +1050,11 @@ QListWidget::item::selected {
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="WarningWidget" name="scales_warning" native="true"/>
-                  </item>
-                  <item row="6" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_11">
-                    <item>
-                     <widget class="QLabel" name="label_min_scale">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Min Scale</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="min_scale_pic">
-                      <property name="text">
-                       <string notr="true">PICTURE</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="minimum_scale">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="inputMethodHints">
-                       <set>Qt::ImhDigitsOnly</set>
-                      </property>
-                      <property name="maxLength">
-                       <number>10</number>
-                      </property>
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_max_scale">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Max Scale</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="max_scale_pic">
-                      <property name="text">
-                       <string notr="true">PICTURE</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="maximum_scale">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_8">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="5" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
-                    <item>
-                     <widget class="QLabel" name="label_15">
-                      <property name="text">
-                       <string>Map Scales</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="list_map_scales">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="inputMethodHints">
-                       <set>Qt::ImhDigitsOnly</set>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                   <widget class="QCheckBox" name="use_native_scales">
+                    <property name="text">
+                     <string>Use native according to the project CRS (better display)</string>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -2160,59 +2145,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
                <item>
-                <widget class="WarningWidget" name="warning_base_layer_deprecated" native="true"/>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="gb_baselayersOptions">
-                 <property name="title">
-                  <string>Baselayers options</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_21">
-                  <item>
-                   <widget class="QCheckBox" name="cbAddEmptyBaselayer">
-                    <property name="text">
-                     <string>Add an empty base layer (with project background color)</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_31">
-                    <item>
-                     <widget class="QLabel" name="label_73">
-                      <property name="styleSheet">
-                       <string notr="true"/>
-                      </property>
-                      <property name="text">
-                       <string>Active baselayer at startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="cbStartupBaselayer">
-                      <property name="styleSheet">
-                       <string notr="true"/>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_33">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <widget class="QGroupBox" name="predefined_groups_legend">
                  <property name="title">
                   <string>Add some predefined groups/layers in the legend</string>
@@ -2278,7 +2210,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <item>
                       <widget class="QLabel" name="label_4">
                        <property name="text">
-                        <string>These layers will be added in the predefined group described above.</string>
+                        <string>These layers will be added in the predefined group described above. The first layer will be the default one.</string>
                        </property>
                       </widget>
                      </item>
@@ -2327,6 +2259,59 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </item>
                     </layout>
                    </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="WarningWidget" name="warning_base_layer_deprecated" native="true"/>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="gb_baselayersOptions">
+                 <property name="title">
+                  <string>Baselayers options</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_21">
+                  <item>
+                   <widget class="QCheckBox" name="cbAddEmptyBaselayer">
+                    <property name="text">
+                     <string>Add an empty base layer (with project background color)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_31">
+                    <item>
+                     <widget class="QLabel" name="label_73">
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <property name="text">
+                       <string>Active baselayer at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cbStartupBaselayer">
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_33">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -5189,9 +5174,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>
-  <tabstop>list_map_scales</tabstop>
-  <tabstop>minimum_scale</tabstop>
-  <tabstop>maximum_scale</tabstop>
   <tabstop>btSetExtentFromProject</tabstop>
   <tabstop>cbHideHeader</tabstop>
   <tabstop>cbHideMenu</tabstop>
