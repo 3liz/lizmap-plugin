@@ -1,4 +1,5 @@
 """Test Lizmap dialog UI."""
+import json
 
 from pathlib import Path
 
@@ -212,11 +213,64 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(15000, output['options']['maxScale'])
         self.assertListEqual([1000, 5000, 15000], output['options']['mapScales'])
 
+        # Project is in EPSG:2154, must be False
+        self.assertFalse(output['options']['use_native_zoom_levels'])
+
         # Check an empty list and a populated list then
         self.assertIsNone(output['options'].get('acl'))
         lizmap.dlg.inAcl.setText('cadastre,urbanism')
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         self.assertListEqual(['cadastre', 'urbanism'], output['options'].get('acl'))
+
+    def test_read_existing_lwc_3_6_to_3_7(self):
+        """ Test to read a CFG 3.6 and to export it to 3.7 about scales. """
+        # Checking CFG before opening the QGS file
+        with open(plugin_test_data_path('3857_project_lwc_3_6.qgs.cfg')) as f:
+            json_data = json.load(f)
+        self.assertListEqual([1000, 5000, 10000, 500000], json_data['options']['mapScales'])
+
+        project = QgsProject.instance()
+        project.read(plugin_test_data_path('3857_project_lwc_3_6.qgs'))
+        self.assertEqual(1, len(project.mapLayers()))
+
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.Lizmap_3_7)
+        # read_cfg_file will call "layers_config_file"
+        lizmap.read_cfg_file(skip_tables=True)
+
+        self.assertEqual('1000', lizmap.dlg.minimum_scale.text())
+        self.assertEqual('500000', lizmap.dlg.maximum_scale.text())
+        self.assertEqual('1000, 5000, 10000, 500000', lizmap.dlg.list_map_scales.text())
+
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_7, check_server=False, ignore_error=True)
+        # Project is in EPSG:3857, must be True
+        self.assertTrue(output['options']['use_native_zoom_levels'])
+        # only two when we save
+        self.assertListEqual([1000, 500000], output['options']['mapScales'])
+        self.assertEqual(1000, output['options']['minScale'])
+        self.assertEqual(500000, output['options']['maxScale'])
+
+    def test_read_existing_lwc_3_6_to_3_6(self):
+        """ Test to read a CFG 3.6 and to export it to 3.6 about scales. """
+        # Checking CFG before opening the QGS file
+        project = QgsProject.instance()
+        project.read(plugin_test_data_path('3857_project_lwc_3_6.qgs'))
+        self.assertEqual(1, len(project.mapLayers()))
+
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.Lizmap_3_6)
+        # read_cfg_file will call "layers_config_file"
+        lizmap.read_cfg_file(skip_tables=True)
+
+        self.assertEqual('1000', lizmap.dlg.minimum_scale.text())
+        self.assertEqual('500000', lizmap.dlg.maximum_scale.text())
+        self.assertEqual('1000, 5000, 10000, 500000', lizmap.dlg.list_map_scales.text())
+
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False, ignore_error=True)
+        # Project is in EPSG:3857, must be False because of LWC 3.6
+        self.assertFalse(output['options']['use_native_zoom_levels'])
+
+        self.assertListEqual([1000, 5000, 10000, 500000], output['options']['mapScales'])
+        self.assertEqual(1000, output['options']['minScale'])
+        self.assertEqual(500000, output['options']['maxScale'])
 
     def test_general_properties_true_values(self):
         """ Test some UI settings about boolean values. """

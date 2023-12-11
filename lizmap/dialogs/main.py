@@ -189,6 +189,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_link.setToolTip(tooltip)
         self.inLayerLink.setToolTip(tooltip)
 
+        self.use_native_scales.setToolTip(tr(
+            "It's recommended, for instance on EPSG:3857, text on an external tile will have a better rendering."
+        ))
+
         self.log_panel = LogPanel(self.out_log)
         self.button_clear_log.setIcon(QIcon(":images/themes/default/console/iconClearConsole.svg"))
         self.button_clear_log.clicked.connect(self.log_panel.clear)
