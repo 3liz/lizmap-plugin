@@ -423,9 +423,10 @@ class Lizmap:
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
-        self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
-        self.global_options['minScale']['widget'] = self.dlg.minimum_scale
-        self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
+        # Because of the logic with LWC 3.7, we are managing manually these widgets
+        # self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
+        # self.global_options['minScale']['widget'] = self.dlg.minimum_scale
+        # self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
         self.global_options['acl']['widget'] = self.dlg.inAcl
         self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
         self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
@@ -1704,6 +1705,14 @@ class Lizmap:
                         index = item['widget'].findData(json_options[key])
                         if index:
                             item['widget'].setCurrentIndex(index)
+
+            map_scales = json_options.get('mapScales', self.global_options['mapScales']['default'])
+            map_scales = [str(i) for i in map_scales]
+            min_scale = json_options.get('minScale', self.global_options['minScale']['default'])
+            max_scale = json_options.get('maxScale', self.global_options['maxScale']['default'])
+            self.dlg.list_map_scales.setText(', '.join(map_scales))
+            self.dlg.minimum_scale.setText(str(min_scale))
+            self.dlg.maximum_scale.setText(str(max_scale))
 
         # Set layer combobox
         for key, item in self.global_options.items():
@@ -3303,6 +3312,14 @@ class Lizmap:
                             continue
 
                 liz2json["options"][key] = input_value
+
+            # Since LWC 3.7, we are managing manually these values
+            if key == 'mapScales':
+                liz2json["options"]['mapScales'] = [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
+            if key == 'minScale':
+                liz2json["options"]['minScale'] = int(self.dlg.minimum_scale.text())
+            if key == 'maxScale':
+                liz2json["options"]['maxScale'] = int(self.dlg.maximum_scale.text())
 
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
