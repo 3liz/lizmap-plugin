@@ -84,11 +84,14 @@ LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
-    def __init__(self, parent=None, is_dev_version=True):
+    def __init__(self, parent=None, is_dev_version=True, lwc_version: LwcVersions = None):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
         self.project = QgsProject.instance()
+
+        # Should only be used in tests
+        self._lwc_version = lwc_version
 
         self.mOptionsStackedWidget.currentChanged.connect(self.panel_changed)
 
@@ -609,6 +612,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # In tests, we might not have metadata in the combobox
         if metadata and metadata.get('info'):
             return LwcVersions.find(metadata['info']['version'])
+
+        if self._lwc_version:
+            return self._lwc_version
+
+        return None
 
     def current_repository(self, role=RepositoryComboData.Id) -> str:
         """ Fetch the current directory on the server if available. """

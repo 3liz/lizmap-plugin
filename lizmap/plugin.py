@@ -263,7 +263,7 @@ class Lizmap:
 
         self.version = version()
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
-        self.dlg = LizmapDialog(is_dev_version=self.is_dev_version)
+        self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=self._version)
         self.dock_html_preview = None
         self.version_checker = None
         if self.is_dev_version:
@@ -423,9 +423,9 @@ class Lizmap:
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
-        self.global_options['mapScales']['widget'] = self.dlg.inMapScales
-        self.global_options['minScale']['widget'] = self.dlg.inMinScale
-        self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
+        self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
+        self.global_options['minScale']['widget'] = self.dlg.minimum_scale
+        self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
         self.global_options['acl']['widget'] = self.dlg.inAcl
         self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
         self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
@@ -537,7 +537,7 @@ class Lizmap:
         self.dlg.layer_tree.itemSelectionChanged.connect(self.from_data_to_ui_for_layer_group)
 
         # Catch user interaction on Map Scales input
-        self.dlg.inMapScales.editingFinished.connect(self.get_min_max_scales)
+        self.dlg.list_map_scales.editingFinished.connect(self.get_min_max_scales)
 
         self.dlg.scales_warning.set_text(tr(
             "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
@@ -552,7 +552,7 @@ class Lizmap:
         ui_items = (
             self.dlg.label_min_scale, self.dlg.label_max_scale,
             self.dlg.min_scale_pic, self.dlg.max_scale_pic,
-            self.dlg.inMinScale, self.dlg.inMaxScale,
+            self.dlg.minimum_scale, self.dlg.maximum_scale,
         )
         for item in ui_items:
             item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
@@ -1546,7 +1546,7 @@ class Lizmap:
         LOGGER.info('Getting min/max scales')
         min_scale = 1
         max_scale = 1000000000
-        in_map_scales = self.dlg.inMapScales.text()
+        in_map_scales = self.dlg.list_map_scales.text()
         map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
         # Remove scales which are lower or equal to 0
         map_scales = [i for i in map_scales if int(i) > 0]
@@ -1562,9 +1562,9 @@ class Lizmap:
         else:
             min_scale = min(map_scales)
             max_scale = max(map_scales)
-        self.dlg.inMinScale.setText(str(min_scale))
-        self.dlg.inMaxScale.setText(str(max_scale))
-        self.dlg.inMapScales.setText(', '.join(map(str, map_scales)))
+        self.dlg.minimum_scale.setText(str(min_scale))
+        self.dlg.maximum_scale.setText(str(max_scale))
+        self.dlg.list_map_scales.setText(', '.join(map(str, map_scales)))
 
     def read_cfg_file(self, skip_tables=False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
@@ -4151,18 +4151,21 @@ class Lizmap:
             # Go back to the first panel because no project loaded.
             # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
             self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
+        else:
+            # Starting from LWC 3.7, we need to know the server BEFORE reading the CFG file
+            # So we do not read CFG file if the navigation is not OK
+
+            # Reading the CFG will trigger signals with input text and the plugin will check the validity
+            # We do not want that.
+            # https://github.com/3liz/lizmap-plugin/issues/513
+            self.dlg.block_signals_address(True)
+
+            # Get config file data
+            self.read_cfg_file()
+
+            self.dlg.block_signals_address(False)
 
         self.dlg.show()
-
-        # Reading the CFG will trigger signals with input text and the plugin will check the validity
-        # We do not that.
-        # https://github.com/3liz/lizmap-plugin/issues/513
-        self.dlg.block_signals_address(True)
-
-        # Get config file data
-        self.read_cfg_file()
-
-        self.dlg.block_signals_address(False)
 
         auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
         self.dlg.checkbox_save_project.setChecked(auto_save)
