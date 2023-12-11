@@ -3235,7 +3235,7 @@ class Lizmap:
         liz2json['options']['bbox'] = self.project.readListEntry('WMSExtent', '')[0]
 
         # set initialExtent values if not defined
-        if not self.dlg.widget_initial_extent.outputExtent().isNull():
+        if self.dlg.widget_initial_extent.outputExtent().isNull():
             self.set_initial_extent_from_project()
 
         # gui user defined options
