@@ -973,7 +973,7 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="inMinScale">
+                     <widget class="QLineEdit" name="minimum_scale">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
@@ -1006,7 +1006,7 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="inMaxScale">
+                     <widget class="QLineEdit" name="maximum_scale">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
@@ -1050,7 +1050,7 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="inMapScales">
+                     <widget class="QLineEdit" name="list_map_scales">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -5222,9 +5222,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>
-  <tabstop>inMapScales</tabstop>
-  <tabstop>inMinScale</tabstop>
-  <tabstop>inMaxScale</tabstop>
+  <tabstop>list_map_scales</tabstop>
+  <tabstop>minimum_scale</tabstop>
+  <tabstop>maximum_scale</tabstop>
   <tabstop>btSetExtentFromProject</tabstop>
   <tabstop>cbHideHeader</tabstop>
   <tabstop>cbHideMenu</tabstop>

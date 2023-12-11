@@ -86,14 +86,14 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], str(False))
 
-    def _setup_empty_project(self):
+    def _setup_empty_project(self, lwc_version=LwcVersions.latest()):
         """ Internal function to add a layer and a basic check. """
         project = QgsProject.instance()
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         project.addMapLayer(layer)
         project.setFileName(temporary_file_path())
 
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
+        lizmap = Lizmap(get_iface(), lwc_version=lwc_version)
         baselayers = lizmap._add_group_legend('baselayers', parent=None, project=project)
         lizmap._add_group_legend('project-background-color', baselayers, project=project)
 
@@ -172,32 +172,25 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertIsNone(output['layers']['lines'].get('externalWmsToggle'))
         self.assertIsNone(output['layers']['lines'].get('metatileSize'))
 
-    def test_general_scales_properties(self):
-        """ Test some UI settings about general properties. """
-        lizmap = self._setup_empty_project()
+    def test_general_scales_properties_lwc_3_6(self):
+        """ Test some UI settings about general properties before LWC 3.7. """
+        lizmap = self._setup_empty_project(LwcVersions.Lizmap_3_6)
 
         # Check default values
-        self.assertEqual('10000, 25000, 50000, 100000, 250000, 500000', lizmap.dlg.inMapScales.text())
-
-        # Default values from config.py at the beginning only
-        self.assertEqual('1', lizmap.dlg.inMinScale.text())
-        self.assertEqual('1000000000', lizmap.dlg.inMaxScale.text())
-
-        # Trigger the signal
-        lizmap.dlg.get_min_max_scales()
+        self.assertEqual('10000, 25000, 50000, 100000, 250000, 500000', lizmap.dlg.list_map_scales.text())
 
         # Values from the UI
-        self.assertEqual('10000', lizmap.dlg.inMinScale.text())
-        self.assertEqual('500000', lizmap.dlg.inMaxScale.text())
+        self.assertEqual('10000', lizmap.dlg.minimum_scale.text())
+        self.assertEqual('500000', lizmap.dlg.maximum_scale.text())
 
         scales = '1000, 5000, 15000'
 
         # Fill scales
-        lizmap.dlg.inMapScales.setText(scales)
+        lizmap.dlg.list_map_scales.setText(scales)
         lizmap.dlg.get_min_max_scales()
-        self.assertEqual('1000', lizmap.dlg.inMinScale.text())
-        self.assertEqual('15000', lizmap.dlg.inMaxScale.text())
-        self.assertEqual(scales, lizmap.dlg.inMapScales.text())
+        self.assertEqual('1000', lizmap.dlg.minimum_scale.text())
+        self.assertEqual('15000', lizmap.dlg.maximum_scale.text())
+        self.assertEqual(scales, lizmap.dlg.list_map_scales.text())
 
         # Check new values in the output config
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)

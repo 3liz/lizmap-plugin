@@ -85,11 +85,14 @@ LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
-    def __init__(self, parent=None, is_dev_version=True):
+    def __init__(self, parent=None, is_dev_version=True, lwc_version: LwcVersions = None):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
         self.project = QgsProject.instance()
+
+        # Should only be used in tests
+        self._lwc_version = lwc_version
 
         self.mOptionsStackedWidget.currentChanged.connect(self.panel_changed)
 
@@ -119,12 +122,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Scales
         self.use_native_zoom.toggled.connect(self.native_scales_toggled)
-        self.inMapScales.editingFinished.connect(self.get_min_max_scales)
         self.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
         self.min_scale_pic.setText('')
         self.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
         self.max_scale_pic.setText('')
-        self.native_scales_toggled()
 
         self.dataviz_feature_picker = QgsFeaturePickerWidget()
 
@@ -621,6 +622,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if metadata and metadata.get('info'):
             return LwcVersions.find(metadata['info']['version'])
 
+        if self._lwc_version:
+            return self._lwc_version
+
+        return None
+
     def current_repository(self, role=RepositoryComboData.Id) -> str:
         """ Fetch the current directory on the server if available. """
         if not self.repository_combo.isVisible():
@@ -924,15 +930,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def native_scales_toggled(self):
         """ When the checkbox native scales is toggled. """
         if self.current_lwc_version() <= LwcVersions.Lizmap_3_6:
-            self.inMinScale.setReadOnly(True)
-            self.inMaxScale.setReadOnly(True)
-            # self.inMapScales connect
+            self.minimum_scale.setReadOnly(True)
+            self.maximum_scale.setReadOnly(True)
+            # self.list_map_scales connect
             return
 
         use_native = self.use_native_zoom.isChecked()
-        self.inMinScale.setReadOnly(not use_native)
-        self.inMaxScale.setReadOnly(not use_native)
-        self.inMapScales.setVisible(not use_native)
+        self.minimum_scale.setReadOnly(not use_native)
+        self.maximum_scale.setReadOnly(not use_native)
+        self.list_map_scales.setVisible(not use_native)
         self.label_scales.setVisible(not use_native)
 
         if use_native:
@@ -944,8 +950,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.label_max_scale,
             self.min_scale_pic,
             self.max_scale_pic,
-            self.inMinScale,
-            self.inMaxScale,
+            self.minimum_scale,
+            self.maximum_scale,
         )
         for item in ui_items:
             item.setToolTip(msg)
@@ -954,7 +960,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """Get Min Max Scales from scales input field."""
         min_scale = 1
         max_scale = 1000000000
-        in_map_scales = self.inMapScales.text()
+        in_map_scales = self.list_map_scales.text()
         map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
         # Remove scales which are lower or equal to 0
         map_scales = [i for i in map_scales if int(i) > 0]
@@ -970,9 +976,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             min_scale = min(map_scales)
             max_scale = max(map_scales)
-        self.inMinScale.setText(str(min_scale))
-        self.inMaxScale.setText(str(max_scale))
-        self.inMapScales.setText(', '.join(map(str, map_scales)))
+        self.minimum_scale.setText(str(min_scale))
+        self.maximum_scale.setText(str(max_scale))
+        self.list_map_scales.setText(', '.join(map(str, map_scales)))
 
     def project_crs_3857(self):
         """ When the project CRS is EPSG:3857 and LWC 3.7. """

@@ -14,6 +14,7 @@ from pathlib import Path
 from shutil import copyfile
 from typing import Dict, List, Optional, Tuple
 
+from qgis._core import QgsCoordinateReferenceSystem
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -262,7 +263,7 @@ class Lizmap:
 
         self.version = version()
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
-        self.dlg = LizmapDialog(is_dev_version=self.is_dev_version)
+        self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=self._version)
         self.dock_html_preview = None
         self.version_checker = None
         if self.is_dev_version:
@@ -424,9 +425,10 @@ class Lizmap:
 
         # Add widgets (not done in lizmap_var to avoid dependencies on ui)
         self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
-        self.global_options['mapScales']['widget'] = self.dlg.inMapScales
-        self.global_options['minScale']['widget'] = self.dlg.inMinScale
-        self.global_options['maxScale']['widget'] = self.dlg.inMaxScale
+        # Because of the logic with LWC 3.7, we are mananging manually these widgets
+        # self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
+        # self.global_options['minScale']['widget'] = self.dlg.minimum_scale
+        # self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
         self.global_options['use_native_zoom_levels']['widget'] = self.dlg.use_native_zoom
         self.global_options['hide_numeric_scale_value']['widget'] = self.dlg.hide_numeric_scale_value
         self.global_options['acl']['widget'] = self.dlg.inAcl
@@ -1667,6 +1669,15 @@ class Lizmap:
                         index = item['widget'].findData(json_options[key])
                         if index:
                             item['widget'].setCurrentIndex(index)
+
+        map_scales = json_options.get('mapScales')
+        min_scale = json_options.get('minScale')
+        max_scale = json_options.get('maxScale')
+        use_native = json_options.get('use_native_zoom_levels')
+        project_crs = json_options.get('projection')
+        if project_crs:
+            project_crs = project_crs.get('ref')
+        self.set_map_scales_in_ui(project_crs, use_native, map_scales, min_scale, max_scale)
 
         # Set layer combobox
         for key, item in self.global_options.items():
@@ -3265,7 +3276,13 @@ class Lizmap:
                         if not item.get('always_export'):
                             continue
 
-                liz2json["options"][key] = input_value
+            # Because of LWC 3.7, we are managing manually these values
+            if key == 'mapScales':
+                liz2json["options"][key] = self.map_scales_list()
+            if key == 'minScale':
+                liz2json["options"][key] = self.minimum_scale()
+            if key == 'maxScale':
+                liz2json["options"][key] = self.maximum_scale()
 
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
@@ -3530,6 +3547,55 @@ class Lizmap:
                 'They have been removed. You must save your project.').format(', '.join(layers))
             # noinspection PyUnresolvedReferences
             self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
+
+    def set_map_scales_in_ui(
+            self, project_crs: str, use_native: bool, map_scales: list, min_scale: int, max_scale: int):
+        """ Set map scales in the UI according to CFG content and context. """
+        # Function introduced with Lizmap Web Client 3.7 because of the map projection behavior
+        if map_scales is None or len(map_scales) <= 1:
+            map_scales = self.global_options['mapScales']['default']
+            map_scales = [str(i) for i in map_scales]
+
+        if self.current_lwc_version() <= LwcVersions.Lizmap_3_6:
+            self.dlg.list_map_scales.setText(', '.join(map_scales))
+            self.dlg.minimum_scale.setText(min_scale)
+            self.dlg.maximum_scale.setText(max_scale)
+            self.dlg.use_native_zoom.setChecked(False)
+            self.dlg.get_min_max_scales()
+            self.connect_scale_list_to_min_max()
+            return
+
+        # We are now on LWC 3.7, but maybe an old CFG file without the checkbox
+        if use_native is None:
+            crs = QgsCoordinateReferenceSystem(project_crs)
+            if crs in (QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('ESPG:900913')):
+                self.dlg.use_native_zoom.setChecked(True)
+
+        crs = QgsCoordinateReferenceSystem(project_crs)
+        if crs in (QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('ESPG:900913')):
+            self.dlg.use_native_zoom.setChecked(True)
+        # Starting with LWC 3.7, we must have the checkbox
+
+        # self.dlg.native_scales_toggled()
+
+    def connect_scale_list_to_min_max(self):
+        print("connect")
+        self.dlg.list_map_scales.editingFinished.connect(self.dlg.get_min_max_scales)
+
+    def disconnect_scale_list_to_min_max(self):
+        print("disconnect")
+        self.dlg.list_map_scales.editingFinished.disconnect(self.dlg.get_min_max_scales)
+
+    def map_scales_list(self) -> List[int]:
+        return self.dlg.list_map_scales.text().split(",")
+
+    def minimum_scale(self) -> int:
+        print("DEBUG")
+        print(self.dlg.minimum_scale.text())
+        return int(self.dlg.minimum_scale.text())
+
+    def maximum_scale(self) -> int:
+        return int(self.dlg.maximum_scale.text())
 
     def check_project_validity(self):
         """Project checker about issues that the user might hae when running in LWC."""
@@ -4118,18 +4184,21 @@ class Lizmap:
             # Go back to the first panel because no project loaded.
             # Otherwise, the plugin opens the latest valid panel before the previous project has been closed.
             self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
+        else:
+            # Starting from LWC 3.7, we need to know the server BEFORE reading the CFG file
+            # So we do not read CFG file if the navigation is not OK
+
+            # Reading the CFG will trigger signals with input text and the plugin will check the validity
+            # We do not that.
+            # https://github.com/3liz/lizmap-plugin/issues/513
+            self.dlg.block_signals_address(True)
+
+            # Get config file data
+            self.read_cfg_file()
+
+            self.dlg.block_signals_address(False)
 
         self.dlg.show()
-
-        # Reading the CFG will trigger signals with input text and the plugin will check the validity
-        # We do not that.
-        # https://github.com/3liz/lizmap-plugin/issues/513
-        self.dlg.block_signals_address(True)
-
-        # Get config file data
-        self.read_cfg_file()
-
-        self.dlg.block_signals_address(False)
 
         auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
         self.dlg.checkbox_save_project.setChecked(auto_save)
