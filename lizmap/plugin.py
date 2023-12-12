@@ -3642,7 +3642,7 @@ class Lizmap:
         if use_native is None:
             # but coming from a 3.6 CFG file
             crs = QgsCoordinateReferenceSystem(project_crs)
-            if crs in (QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('ESPG:900913')):
+            if crs in (QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateReferenceSystem('EPSG:900913')):
                 use_native = True
             else:
                 use_native = False
