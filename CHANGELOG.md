@@ -2,12 +2,20 @@
 
 ## Unreleased
 
+## 4.1.0 - 2023-12-12
+
 * Raise QGIS minimum version to 3.16
-* The "Map options" panel uses a native extent selector with more buttons and following the project CRS by default
-* The `baselayers` has now the legend collapsed by default and is mutually exclusive
+* Better UX when using the clipboard
+* Improve the user experience about the new auto-fix buttons, add a dedicated panel for them
+* Fix translations about checks/rules in the project
 * Add a button to export the results of validation as text
 * Export the list of safeguards and their settings
-* Better UX when using the clipboard
+* Add two new checkboxes for LWC 3.7 :
+  * "Use native scales" according to project CRS
+  * "Hide numeric scale", because the scale might be computed from the "native scale" and not be a rounded value
+* The "Map options" panel uses a native extent selector with more buttons and following the project CRS by default
+* The `baselayers` group has now the legend collapsed by default and is mutually exclusive
+* Catch a Python error if the CFG file has some invalid layer in the Lizmap configuration file when saving
 
 ## 4.0.2 - 2023-12-04
 
