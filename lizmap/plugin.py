@@ -1312,6 +1312,9 @@ class Lizmap:
         self.iface.addPluginToWebMenu(None, self.action)
         self.iface.addWebToolBarIcon(self.action)
 
+        self.dlg.button_reset_scales.clicked.connect(self.reset_scales)
+        self.dlg.button_reset_scales.setIcon(QIcon(':/images/themes/default/console/iconClearConsole.svg'))
+
         server_side = tr(
             "This value will be replaced on the server side when evaluating the expression thanks to "
             "the QGIS server Lizmap plugin.")
@@ -1543,6 +1546,27 @@ class Lizmap:
         self.dlg.btConfigurePopup.setEnabled(value)
         self.dlg.btQgisPopupFromForm.setEnabled(value)
         self.dlg.button_generate_html_table.setEnabled(value)
+
+    def reset_scales(self):
+        """ Reset scales in the line edit. """
+        scales = ', '.join([str(i) for i in self.global_options['mapScales']['default']])
+        if self.dlg.list_map_scales.text() != '':
+            box = QMessageBox(self.dlg)
+            box.setIcon(QMessageBox.Question)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            box.setDefaultButton(QMessageBox.No)
+            box.setWindowTitle(tr('Reset the scales'))
+            box.setText(tr(
+                'You have some scales predefined. Are you sure you want to reset with "{}" ?'
+            ).format(scales))
+
+            result = box.exec_()
+            if result == QMessageBox.No:
+                return
+
+        self.dlg.list_map_scales.setText(scales)
+        self.get_min_max_scales()
 
     def get_min_max_scales(self):
         """ Get minimum/maximum scales from scales input field. """
