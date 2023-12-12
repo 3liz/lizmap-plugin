@@ -3680,7 +3680,8 @@ class Lizmap:
         self.dlg.minimum_scale.setReadOnly(not use_native)
         self.dlg.maximum_scale.setReadOnly(not use_native)
         self.dlg.list_map_scales.setVisible(not use_native)
-        self.dlg.label_15.setVisible(not use_native)
+        self.dlg.button_reset_scales.setVisible(not use_native)
+        self.dlg.label_scales.setVisible(not use_native)
 
         if use_native:
             msg = tr("When using native scales, you can set minimum and maximum scales.")
@@ -3694,7 +3695,7 @@ class Lizmap:
             self.dlg.max_scale_pic,
             self.dlg.minimum_scale,
             self.dlg.maximum_scale,
-            self.dlg.label_15,
+            self.dlg.label_scales,
         )
         for item in ui_items:
             item.setToolTip(msg)

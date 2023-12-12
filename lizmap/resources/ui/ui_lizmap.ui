@@ -994,7 +994,7 @@ QListWidget::item::selected {
                      </layout>
                     </item>
                     <item row="0" column="0">
-                     <widget class="QLabel" name="label_15">
+                     <widget class="QLabel" name="label_scales">
                       <property name="text">
                        <string>Map Scales</string>
                       </property>
