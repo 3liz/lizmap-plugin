@@ -1001,13 +1001,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
             if not is_lizmap_cloud(metadata):
                 only_cloud = False
 
-        # These rules are hard coded
-        # Other rules depends on the user.
         widgets = (
+            # These rules are hard coded
+            # Other rules depends on the user.
             self.safe_ecw,
             self.safe_other_drive,
             self.safe_pg_auth_db,
             self.safe_pg_user_password,
+            # SSL is not checked
+            self.label_pg_ssl,
+            self.button_convert_ssl,
         )
         for widget in widgets:
             widget.setVisible(not only_cloud)
