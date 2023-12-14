@@ -1001,6 +1001,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             if not is_lizmap_cloud(metadata):
                 only_cloud = False
 
+        # Widgets disabled on Lizmap Cloud
         widgets = (
             # These rules are hard coded
             # Other rules depends on the user.
@@ -1008,12 +1009,18 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.safe_other_drive,
             self.safe_pg_auth_db,
             self.safe_pg_user_password,
-            # SSL is not checked
+        )
+        for widget in widgets:
+            widget.setVisible(not only_cloud)
+
+        # Widgets enable only Lizmap Cloud
+        widgets = (
             self.label_pg_ssl,
             self.button_convert_ssl,
         )
         for widget in widgets:
-            widget.setVisible(not only_cloud)
+            widget.setVisible(only_cloud)
+
         if only_cloud:
             if self.safe_number_parent.value() > CLOUD_MAX_PARENT_FOLDER:
                 self.safe_number_parent.setValue(CLOUD_MAX_PARENT_FOLDER)

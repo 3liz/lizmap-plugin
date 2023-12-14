@@ -3348,9 +3348,9 @@ class Lizmap:
             if key == 'mapScales':
                 liz2json["options"]['mapScales'] = self.map_scales()
             if key == 'minScale':
-                liz2json["options"]['minScale'] = int(self.dlg.minimum_scale.text())
+                liz2json["options"]['minScale'] = self.minimum_scale_value()
             if key == 'maxScale':
-                liz2json["options"]['maxScale'] = int(self.dlg.maximum_scale.text())
+                liz2json["options"]['maxScale'] = self.maximum_scale_value()
             if key == 'use_native_zoom_levels':
                 liz2json["options"]['use_native_zoom_levels'] = self.dlg.use_native_scales.isChecked()
 
@@ -3612,6 +3612,20 @@ class Lizmap:
             return [self.dlg.minimum_scale.value(), self.dlg.maximum_scale.value()]
         else:
             return [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
+
+    def minimum_scale_value(self) -> int:
+        """ Return the minimum scale value. """
+        value = self.dlg.minimum_scale.text()
+        if not value:
+            value = self.global_options['minScale']['default']
+        return int(value)
+
+    def maximum_scale_value(self) -> int:
+        """ Return the maximum scale value. """
+        value = self.dlg.maximum_scale.text()
+        if not value:
+            value = self.global_options['maxScale']['default']
+        return int(value)
 
     def set_map_scales_in_ui(
             self, map_scales: list, min_scale: int, max_scale: int, use_native: bool, project_crs: str):
