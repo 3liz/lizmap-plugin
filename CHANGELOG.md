@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.1.1 - 2023-12-14
+
+* Fix some auto-fix buttons
+* Fix some Python exceptions
+
 ## 4.1.0 - 2023-12-12
 
 * Raise QGIS minimum version to 3.16
