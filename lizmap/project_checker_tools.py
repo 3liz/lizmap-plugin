@@ -325,19 +325,19 @@ def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool
     return True
 
 
-def count_legend_items(layer_tree: QgsLayerTreeNode, project, count: int) -> int:
+def count_legend_items(layer_tree: QgsLayerTreeNode, project, list_qgs: list) -> list:
     """ Count all items in the project legend. """
     for child in layer_tree.children():
         # noinspection PyArgumentList
         if QgsLayerTree.isLayer(child):
-            count += 1
+            list_qgs.append(child.name())
         else:
             child = cast_to_group(child)
-            count += 1
+            list_qgs.append(child.name())
             # Recursive call
-            count = count_legend_items(child, project, count)
+            list_qgs = count_legend_items(child, project, list_qgs)
 
-    return count
+    return list_qgs
 
 
 def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: List) -> List:

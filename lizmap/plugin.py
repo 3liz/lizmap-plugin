@@ -843,22 +843,25 @@ class Lizmap:
             return
 
         # Check the number of layers between the project and the Lizmap configuration file.
-        count_cfg = len(self.layerList.keys())
-        count_qgs = count_legend_items(self.project.layerTreeRoot(), self.project, 0)
-        if count_cfg != count_qgs:
+        list_cfg = list(self.layerList.keys())
+        list_qgs = count_legend_items(self.project.layerTreeRoot(), self.project, [])
+        if len(list_cfg) != len(list_qgs):
             self.iface.messageBar().pushMessage(
                 'Lizmap',
                 tr(
                     'The project has {count_qgs} items in the legend, while the Lizmap configuration has {count_cfg} '
                     'items. Please open the plugin to sync the "{layer_tab}" tab.'
                 ).format(
-                    count_qgs=count_qgs,
-                    count_cfg=count_cfg,
+                    count_qgs=len(list_qgs),
+                    count_cfg=len(list_cfg),
                     layer_tab=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
                 ),
                 Qgis.Warning,
                 duration=DURATION_WARNING_BAR,
             )
+            LOGGER.debug(
+                "Difference in counts between CFG and QGS\n\nList in CFG : {}\nList in QGS : {}".format(
+                    ','.join(list_cfg), ','.join(list_qgs)))
 
     def filename_changed(self):
         """ When the current project has been renamed. """
