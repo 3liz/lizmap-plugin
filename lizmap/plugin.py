@@ -138,7 +138,10 @@ from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.tools import cast_to_group, cast_to_layer
-from lizmap.widgets.project_tools import is_layer_wms_excluded
+from lizmap.widgets.project_tools import (
+    empty_baselayers,
+    is_layer_wms_excluded,
+)
 
 try:
     from lizmap.plugin_manager import QgisPluginManager
@@ -3167,6 +3170,11 @@ class Lizmap:
         if not project_trust_layer_metadata(self.project):
             self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.TrustProject))
             self.dlg.enabled_trust_project(True)
+
+        if empty_baselayers(self.project):
+            self.dlg.check_results.add_error(
+                Error(Path(self.project.fileName()).name, checks.EmptyBaseLayersGroup)
+            )
 
         # Not blocking, we change it in the background
         if self.project.readNumEntry("WMSMaxAtlasFeatures", '')[0] <= 0:

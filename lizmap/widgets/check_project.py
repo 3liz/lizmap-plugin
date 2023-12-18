@@ -415,6 +415,23 @@ class Checks:
             Severities().blocking if qgis_version() >= 32200 else Severities().important,
             QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
         )
+        self.EmptyBaseLayersGroup = Check(
+            'empty_baselayers_group',
+            tr('Empty "baselayers" group'),
+            tr('The group "baselayers" cannot be empty.'),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'.format(
+                    tr("Either add some layers in it"),
+                    tr('Or remove it.'),
+                )
+            ),
+            Levels.Project,
+            Severities().blocking,
+            QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
+        )
         self.LeadingTrailingSpaceLayerGroupName = Check(
             'leading_trailing_space',
             tr('Leading/trailing space in layer/group name'),
