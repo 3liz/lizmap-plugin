@@ -151,7 +151,13 @@ def current_git_hash() -> str:
         universal_newlines=True,
         encoding='utf8'
     )
-    hash_number = git_show.communicate()[0].partition('\n')[0]
+    try:
+        hash_number = git_show.communicate()[0].partition('\n')[0]
+    except IndexError:
+        # Reported on redmine
+        # IndexError: list index out of range
+        hash_number = ''
+
     if hash_number == '':
         hash_number = 'unknown'
     return hash_number
@@ -169,7 +175,13 @@ def has_git() -> bool:
         universal_newlines=True,
         encoding='utf8'
     )
-    output = git_show.communicate()[0].partition('\n')[0]
+    try:
+        output = git_show.communicate()[0].partition('\n')[0]
+    except IndexError:
+        # Reported on redmine
+        # IndexError: list index out of range
+        output = ''
+
     return output != ''
 
 
@@ -185,7 +197,13 @@ def next_git_tag():
         universal_newlines=True,
         encoding='utf8'
     )
-    tag = git_show.communicate()[0].partition('\n')[0]
+    try:
+        tag = git_show.communicate()[0].partition('\n')[0]
+    except IndexError:
+        # Reported on redmine
+        # IndexError: list index out of range
+        tag = ''
+
     if not tag:
         return 'next'
     versions = tag.split('.')
