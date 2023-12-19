@@ -96,8 +96,16 @@ def project_safeguards_checks(
             continue
 
         layer_path = Path(components['path'])
-        if not layer_path.exists():
-            # Let's skip, QGIS is already warning this layer
+        try:
+            if not layer_path.exists():
+                # Let's skip, QGIS is already warning this layer
+                # Or the file might be a COG on Linux :
+                # /vsicurl/https://demo.snap.lizmap.com/lizmap_3_6/cog/...
+                continue
+        except OSError:
+            # Ticket https://github.com/3liz/lizmap-plugin/issues/541
+            # OSError: [WinError 123] La syntaxe du nom de fichier, de répertoire ou de volume est incorrecte:
+            # '\\vsicurl\\https:\\XXX.lizmap.com\\YYY\\cog\\ZZZ.tif'
             continue
 
         try:
