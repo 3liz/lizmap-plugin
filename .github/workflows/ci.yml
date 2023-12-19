@@ -107,7 +107,7 @@ jobs:
       - name: Package and deploy the zip
         run: >-
           qgis-plugin-ci
-          -v
+          -vv
           release ${{ env.RELEASE_VERSION }}
           --github-token ${{ secrets.BOT_HUB_TOKEN }}
           --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}

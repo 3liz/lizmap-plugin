@@ -34,6 +34,7 @@ package-zip:
   script:
     - >
       qgis-plugin-ci
+      -vv
       package ${VERSION}
       --plugin-repo-url https://packages.3liz.org/pub/lizmap-qgis-plugin/${STATUS}/
       --transifex-token ${TX_TOKEN}
