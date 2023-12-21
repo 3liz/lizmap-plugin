@@ -3176,6 +3176,9 @@ class Lizmap:
                 Error(Path(self.project.fileName()).name, checks.EmptyBaseLayersGroup)
             )
 
+        if self.dlg.check_qgis_version(message_bar=True):
+            self.dlg.check_results.add_error(Error(tr('Global'), checks.ServerVersion))
+
         # Not blocking, we change it in the background
         if self.project.readNumEntry("WMSMaxAtlasFeatures", '')[0] <= 0:
             LOGGER.info("The maximum atlas features was less than '1'. We set it to '1' to at least have a value.")
@@ -3890,7 +3893,6 @@ class Lizmap:
         variables['lizmap_repository'] = self.dlg.current_repository()
         self.project.setCustomVariables(variables)
 
-        self.dlg.check_qgis_version(message_bar=True)
         if not lwc_version:
             lwc_version = self.current_lwc_version()
 

@@ -155,6 +155,7 @@ def current_git_hash() -> str:
         hash_number = git_show.communicate()[0].partition('\n')[0]
     except IndexError:
         # Reported on redmine
+        # Was-it due to Python 3.7.0 ?
         # IndexError: list index out of range
         hash_number = ''
 
@@ -179,6 +180,7 @@ def has_git() -> bool:
         output = git_show.communicate()[0].partition('\n')[0]
     except IndexError:
         # Reported on redmine
+        # Was-it due to Python 3.7.0 ?
         # IndexError: list index out of range
         output = ''
 
@@ -201,6 +203,7 @@ def next_git_tag():
         tag = git_show.communicate()[0].partition('\n')[0]
     except IndexError:
         # Reported on redmine
+        # Was-it due to Python 3.7.0 ?
         # IndexError: list index out of range
         tag = ''
 

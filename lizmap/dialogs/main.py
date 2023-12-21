@@ -554,7 +554,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 if current_text.endswith(text):
                     self.combo_legend_option.setCurrentText(current_text.replace(text, ''))
 
-    def check_qgis_version(self, message_bar=False, widget=False):
+    def check_qgis_version(self, message_bar=False, widget=False) -> bool:
         """ Compare QGIS desktop and server versions and display results if necessary. """
         self.warning_old_server.setVisible(False)
 
@@ -567,11 +567,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
             qgis_server = (int(qgis_server[0]), int(qgis_server[1]))
         except AttributeError:
             # Maybe returning LWC 3.4 or LWC 3.5 without the server plugin
-            return
+            return False
 
         if qgis_server >= qgis_desktop:
             # Alright
-            return
+            return False
 
         title = tr('QGIS server version is lower than QGIS desktop version')
         LOGGER.error(title)
@@ -604,6 +604,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 "Either upgrade your QGIS Server {} or downgrade your QGIS Desktop {}, to have the same version."
             ).format(qgis_server, qgis_desktop)
             self.warning_old_server.set_text(message)
+
+        return True
 
     def current_server_info(self, info: ServerComboData):
         """ Return the current LWC server information from the server combobox. """

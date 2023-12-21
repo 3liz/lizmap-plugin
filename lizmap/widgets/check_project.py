@@ -268,6 +268,39 @@ class Checks:
             Severities().low,
             QIcon(':/images/themes/default/mIconWms.svg'),
         )
+        self.ServerVersion = Check(
+            'old_qgis_server_version',
+            tr('QGIS server version is lower than QGIS desktop version'),
+            tr(
+                "QGIS desktop is writing QGS project file in the future compare to QGIS server. QGIS server might not "
+                "be able to read the file correctly. Versions between desktop and server must be equal, or QGIS server "
+                "can have a newer version."
+            ),
+            (
+                '<ul>'
+                '<li>{upgrade}</li>'
+                '<li>{downgrade}</li>'
+                '</ul>'
+            ).format(
+                upgrade=tr("Either upgrade your QGIS Server"),
+                downgrade=tr("Or downgrade your QGIS Desktop"),
+            ),
+            Levels.GlobalConfig,
+            Severities().important,
+            QIcon(':/images/icons/qgis_icon.svg'),
+            (
+                '<ul>'
+                '<li>{upgrade}</li>'
+                '<li>{downgrade}</li>'
+                '</ul>'
+            ).format(
+                upgrade=tr(
+                    "Either check if an upgrade of QGIS server is available in Lizmap Web Client, in the "
+                    "administration panel. Current LTR versions should be available."
+                ),
+                downgrade=tr("Or downgrade your QGIS Desktop"),
+            ),
+        )
         self.PkInt8 = Check(
             'primary_key_bigint',
             tr('Invalid bigint (integer8) field for QGIS Server as primary key'),
