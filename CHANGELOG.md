@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.1.2 - 2023-12-22
+
+* Fix a Python exception about path using `\\vsicurl` protocol on Windows
+* Add two new checks :
+  * Empty group `baselayers`
+  * QGIS server version versus QGIS desktop version
+
 ## 4.1.1 - 2023-12-14
 
 * Fix some auto-fix buttons
