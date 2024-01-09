@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix opening the wizard for setting the visibility on a group in the legend
+
 ## 4.1.2 - 2023-12-22
 
 * Fix a Python exception about path using `\\vsicurl` protocol on Windows

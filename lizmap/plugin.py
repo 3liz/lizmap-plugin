@@ -1443,21 +1443,21 @@ class Lizmap:
             self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
 
     def open_wizard_group_layer(self):
-        """ Open the group wizard for the layer visibility. """
-        line_edit = self.dlg.list_group_visibility
-        layer = self._current_selected_layer()
-        if not layer:
+        """ Open the group wizard for the group/layer visibility. """
+        current_item = self._current_selected_item_in_config()
+        # The current selected item in the tree can be a layer or a group
+        # https://github.com/3liz/lizmap-plugin/issues/437#issuecomment-1883485185
+        if not current_item:
             return
-        helper = tr("Setting groups for the layer visibility '{}'").format(layer.name())
-        self._open_wizard_group(line_edit, helper)
+        helper = tr("Setting ACL groups for the group/layer visibility '{}'").format(current_item)
+        self._open_wizard_group(self.dlg.list_group_visibility, helper)
         # Trigger saving of the new value
         self.save_value_layer_group_data('group_visibility')
 
     def open_wizard_group_project(self):
         """ Open the group wizard for the project visibility. """
-        line_edit = self.dlg.inAcl
         helper = tr("Setting groups for the project visibility.")
-        self._open_wizard_group(line_edit, helper)
+        self._open_wizard_group(self.dlg.inAcl, helper)
 
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """ Open the group wizard and set the output in the line edit. """
