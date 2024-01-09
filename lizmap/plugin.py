@@ -1449,7 +1449,7 @@ class Lizmap:
         # https://github.com/3liz/lizmap-plugin/issues/437#issuecomment-1883485185
         if not current_item:
             return
-        helper = tr("Setting ACL groups for the group/layer visibility '{}'").format(current_item)
+        helper = tr("Setting groups visibility for the legend item '{}'").format(current_item)
         self._open_wizard_group(self.dlg.list_group_visibility, helper)
         # Trigger saving of the new value
         self.save_value_layer_group_data('group_visibility')
