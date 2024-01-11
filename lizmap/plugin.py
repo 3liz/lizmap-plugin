@@ -3386,6 +3386,9 @@ class Lizmap:
                             'currently supported by the plugin.'
                         ) + '\n\n'
                         + tr(
+                            'Please visit the corresponding tab and check if you have a warning in one of the column.'
+                        ) + '\n\n'
+                        + tr(
                             'If not, it was a bug, please report it. The process is stopping.'
                         ) + '\n\n'
                         + tr('Error') + ' : ' + str(e) + '\n\n'
