@@ -23,6 +23,9 @@ from lizmap.definitions.qgis_settings import Settings
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import qgis_version
 
+# 10 000 * 10 000
+RASTER_COUNT_CELL = 100000000
+
 
 class Header:
 
@@ -396,6 +399,26 @@ class Checks:
             Levels.Layer,
             Severities().blocking if qgis_version() >= 32200 else Severities().important,
             QIcon(':/images/themes/default/mIconGeometryCollectionLayer.svg'),
+        )
+        self.RasterWithoutPyramid = Check(
+            'raster_without_pyramid',
+            tr('Raster is missing a pyramid'),
+            tr(
+                "The raster has more than {count} cells and is missing a pyramid. A pyramid is important for "
+                "performances for this raster."
+            ).format(count=RASTER_COUNT_CELL),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                help=tr(
+                    "In the raster properties, pyramids panel, it's possible to create it."
+                ),
+            ),
+            Levels.Layer,
+            Severities().blocking,
+            QIcon(':/images/themes/default/mIconNoPyramid.svg'),
         )
         self.DuplicatedLayerNameOrGroup = Check(
             'duplicated_layer_name_or_group',

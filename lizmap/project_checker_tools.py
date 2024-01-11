@@ -22,6 +22,7 @@ from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import cast_to_group, cast_to_layer, is_vector_pg, update_uri
 from lizmap.widgets.check_project import (
+    RASTER_COUNT_CELL,
     Checks,
     Error,
     SourceGroup,
@@ -131,6 +132,12 @@ def project_safeguards_checks(
             # The user wants only local files, we only check for ".."
             if '..' in relative_path:
                 results[SourceLayer(layer.name(), layer.id())] = checks.PreventParentFolder
+
+        if isinstance(layer, QgsRasterLayer):
+            # Only file based raster
+            if not layer.dataProvider().hasPyramids():
+                if layer.width() * layer.height() >= RASTER_COUNT_CELL:
+                    results[SourceLayer(layer.name(), layer.id())] = checks.RasterWithoutPyramid
 
     return results
 
