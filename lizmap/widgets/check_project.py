@@ -78,6 +78,13 @@ class Severity:
     def __str__(self):
         return f'<Severity {self.data} : {self.label}>'
 
+    def __eq__(self, other):
+        """ Overrides the default implementation. """
+        if not isinstance(other, Severity):
+            return False
+
+        return self.data == other.data
+
 
 class Severities:
     """ List of severities. """
@@ -216,6 +223,13 @@ class Check:
 
     def __str__(self):
         return f'<{self.title} : {self.description_text(False)} :{self.level} → {self.severity}>'
+
+    def __eq__(self, other):
+        """ Overrides the default implementation. """
+        if not isinstance(other, Check):
+            return False
+
+        return self.data == other.data
 
 
 class Checks:

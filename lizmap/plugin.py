@@ -138,6 +138,7 @@ from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.tools import cast_to_group, cast_to_layer
+from lizmap.widgets.check_project import Check
 from lizmap.widgets.project_tools import (
     empty_baselayers,
     is_layer_wms_excluded,
@@ -3066,17 +3067,22 @@ class Lizmap:
             self.dlg.log_panel.append("<br>")
 
             severities = Severities()
+            # Severity depends on beginner mode
+            severity = severities.blocking if beginner_mode else severities.important
+            # But override severities for Lizmap Cloud
+            # Because even with a 'normal' user, it won't work
+            override = (
+                checks.PreventEcw.data,
+                checks.PgForceUserPass.data,
+                checks.AuthenticationDb.data,
+                checks.PreventDrive.data,
+            )
 
             for layer, error in results.items():
+                error: Check
 
-                # Severity depends on beginner mode
-                severity = severities.blocking if beginner_mode else severities.important
-                # But override severities for Lizmap Cloud
-                # Because even with a 'normal' user, it won't work
-                override = (
-                    checks.PreventEcw, checks.PgForceUserPass, checks.AuthenticationDb, checks.PreventDrive)
-                if error in override:
-                    severity = severities.bocking
+                if error.data in override:
+                    severity = severities.blocking
 
                 self.dlg.check_results.add_error(
                     Error(
