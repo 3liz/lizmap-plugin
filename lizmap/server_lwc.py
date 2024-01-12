@@ -1,4 +1,4 @@
-__copyright__ = 'Copyright 2023, 3Liz'
+__copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -33,9 +33,11 @@ from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QDialog,
     QHeaderView,
+    QListWidget,
     QMenu,
     QMessageBox,
     QTableWidgetItem,
+    QVBoxLayout,
 )
 
 from lizmap.definitions.definitions import (
@@ -1084,9 +1086,9 @@ class ServerManager:
         open_server_info_url.triggered.connect(slot)
 
         is_dev = (
-                any(
-                    item in version() for item in UNSTABLE_VERSION_PREFIX
-                ) or to_bool(os.getenv("LIZMAP_ADVANCED_USER"))
+            any(
+                item in version() for item in UNSTABLE_VERSION_PREFIX
+            ) or to_bool(os.getenv("LIZMAP_ADVANCED_USER"))
         )
         if is_dev:
             open_url = menu.addAction(tr("Open raw JSON file URL") + "…")
@@ -1110,6 +1112,14 @@ class ServerManager:
         data = qgis_server_item.data(Qt.UserRole)
         slot = partial(self.copy_as_markdown, data, action_data, action_required)
         server_as_markdown.triggered.connect(slot)
+
+        show_fonts = menu.addAction(tr("Show fonts available on QGIS Server"))
+        data = qgis_server_item.data(Qt.UserRole + 1).get('qgis_server_info')
+        fonts = data.get('fonts')
+        if fonts is None:
+            fonts = [tr('Upgrade your Lizmap server plugin to have the list of fonts.')]
+        slot = partial(self.show_fonts, fonts)
+        show_fonts.triggered.connect(slot)
 
         # noinspection PyArgumentList
         menu.exec_(QCursor.pos())
@@ -1136,6 +1146,17 @@ class ServerManager:
         new_data += "\n\n"
         new_data += action_data
         self.display_all_versions(new_data)
+
+    def show_fonts(self, data: list):
+        """ Show fonts available on QGIS server. """
+        dialog = QDialog()
+        layout = QVBoxLayout(self.parent)
+        widget = QListWidget()
+        widget.addItems(data)
+        # noinspection PyArgumentList
+        layout.addWidget(widget)
+        dialog.setLayout(layout)
+        dialog.exec_()
 
     def display_all_versions(self, data: str):
         """ Display the markdown in a message box. """
