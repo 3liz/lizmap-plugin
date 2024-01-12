@@ -1118,7 +1118,8 @@ class ServerManager:
         fonts = data.get('fonts')
         if fonts is None:
             fonts = [tr('Upgrade your Lizmap server plugin to have the list of fonts.')]
-        slot = partial(self.show_fonts, fonts)
+        name_item = self.table.item(item.row(), TableCell.Name.value)
+        slot = partial(self.show_fonts, fonts, name_item.data(Qt.DisplayRole))
         show_fonts.triggered.connect(slot)
 
         # noinspection PyArgumentList
@@ -1147,9 +1148,10 @@ class ServerManager:
         new_data += action_data
         self.display_all_versions(new_data)
 
-    def show_fonts(self, data: list):
+    def show_fonts(self, data: list, alias: str):
         """ Show fonts available on QGIS server. """
         dialog = QDialog()
+        dialog.setWindowTitle(tr('Fonts on QGIS Server on {server}').format(server=alias))
         layout = QVBoxLayout(self.parent)
         widget = QListWidget()
         widget.addItems(data)
