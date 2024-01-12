@@ -109,8 +109,6 @@ class ServerManager:
         self.fetchers = {}
 
         # First new server
-        self.add_first_server.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.add_first_server.setToolTip(tr('Add a new server in the list'))
         self.add_first_server.clicked.connect(self.add_button.click)
 
         # Icons and tooltips

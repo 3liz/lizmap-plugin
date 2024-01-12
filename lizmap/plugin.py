@@ -965,6 +965,16 @@ class Lizmap:
         # For deprecated features in LWC 3.7 about base layers
         self.check_visibility_crs_3857()
 
+        repositories = current_metadata.get('repositories')
+        if not repositories:
+            return
+
+        # How-to is for server with less than 3 projects in total :)
+        qgis_projects = 0
+        for repo in repositories.values():
+            qgis_projects += len(repo['projects'])
+        self.dlg.publish_first_map.setVisible(qgis_projects < 3)
+
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
         # The new repository is only set when we save the CFG file

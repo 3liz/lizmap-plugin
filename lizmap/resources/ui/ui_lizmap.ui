@@ -250,7 +250,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -294,6 +294,13 @@ QListWidget::item::selected {
               <widget class="QPushButton" name="add_first_server">
                <property name="text">
                 <string>Add the first server</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="publish_first_map">
+               <property name="text">
+                <string>Publish your first map</string>
                </property>
               </widget>
              </item>

@@ -130,6 +130,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.lwc_version_latest_changelog.setVisible(False)
         self.lwc_version_oldest_changelog.setVisible(False)
 
+        welcome = (self.add_first_server, self.publish_first_map)
+        for button in welcome:
+            button.setMinimumSize(QSize(1, 40))
+        self.publish_first_map.setIcon(QIcon(":/images/themes/default/mActionSharingExport.svg"))
+        self.publish_first_map.setToolTip(tr('Open the online how-to for publishing a project'))
+        self.publish_first_map.clicked.connect(self.open_lizmap_how_to)
+        self.add_first_server.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
+        self.add_first_server.setToolTip(tr('Add a new server in the list'))
+
         self.label_general_help.setText(
             tr("The plugin is doing some checks on your project.") + " "
             + tr(
@@ -395,6 +404,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Open the PG service documentation. """
         # noinspection PyArgumentList
         QDesktopServices.openUrl(pg_service_help())
+
+    @staticmethod
+    def open_lizmap_how_to():
+        """ Open the how-to on Lizmap. """
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(online_lwc_help("publish/quick_start/index.html"))
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
