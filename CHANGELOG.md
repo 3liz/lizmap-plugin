@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+* Improve welcoming new users on Lizmap
+* Add a missing pyramid check on raster layer
+* Display the list of fonts installed on QGIS Server
 * Fix opening the wizard for setting the visibility on a group in the legend
+* Rephrase error messages
 
 ## 4.1.2 - 2023-12-22
 
