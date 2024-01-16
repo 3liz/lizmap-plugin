@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.1.3 - 2024-01-16
+
 * Improve welcoming new users on Lizmap
 * Add a missing pyramid check on raster layer
 * Display the list of fonts installed on QGIS Server
