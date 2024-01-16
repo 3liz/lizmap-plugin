@@ -206,10 +206,7 @@ class ServerManager:
 
     def visible_new_server_button(self):
         """ Make the new server button visible only when we do not have a server yet. """
-        if self.table.rowCount() == 0:
-            self.add_first_server.setVisible(True)
-        else:
-            self.add_first_server.setVisible(False)
+        self.add_first_server.setVisible(self.table.rowCount() == 0)
 
     @staticmethod
     def config_for_id(auth_id: str) -> Optional[QgsAuthMethodConfig]:

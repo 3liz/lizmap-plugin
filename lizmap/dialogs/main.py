@@ -1010,15 +1010,14 @@ class LizmapDialog(QDialog, FORM_CLASS):
         for widget in widgets:
             widget.setEnabled(parent_allowed)
 
-    def only_lizmap_cloud(self):
-        """ Check if all servers loaded are Lizmap Cloud only. """
-        only_cloud = True
+    def lizmap_cloud_instance(self):
+        """ Check if the user has at least one Lizmap Cloud instance. """
+        instances = []
         for row in range(self.server_combo.count()):
             metadata = self.server_combo.itemData(row, ServerComboData.JsonMetadata.value)
-            if not is_lizmap_cloud(metadata):
-                only_cloud = False
+            instances.append(is_lizmap_cloud(metadata))
 
-        # Widgets disabled on Lizmap Cloud
+        # Widgets disabled if the user doesn't have at least one Lizmap Cloud instance
         widgets = (
             # These rules are hard coded
             # Other rules depends on the user.
@@ -1028,17 +1027,18 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.safe_pg_user_password,
         )
         for widget in widgets:
-            widget.setVisible(not only_cloud)
+            widget.setVisible(not all(instances))
 
-        # Widgets enable only Lizmap Cloud
+        # Widgets enabled if at least one Lizmap Cloud instance
         widgets = (
             self.label_pg_ssl,
             self.button_convert_ssl,
         )
         for widget in widgets:
-            widget.setVisible(only_cloud)
+            widget.setVisible(any(instances))
 
-        if only_cloud:
+        # We hard code only if ALL instances are Lizmap Cloud
+        if all(instances):
             if self.safe_number_parent.value() > CLOUD_MAX_PARENT_FOLDER:
                 self.safe_number_parent.setValue(CLOUD_MAX_PARENT_FOLDER)
             self.safe_number_parent.setMaximum(CLOUD_MAX_PARENT_FOLDER)
@@ -1112,7 +1112,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def panel_changed(self):
         """ When the panel on the right has changed. """
         if self.mOptionsStackedWidget.currentWidget() == self.page_settings:
-            self.only_lizmap_cloud()
+            self.lizmap_cloud_instance()
 
     def select_unknown_features_group(self):
         """ Select features where one group from the feature does not math one of the server. """
