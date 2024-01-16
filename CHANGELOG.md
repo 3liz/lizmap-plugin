@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.1.4 - 2024-01-16
+
+* Fix display of buttons to fix the project
+
 ## 4.1.3 - 2024-01-16
 
 * Improve welcoming new users on Lizmap
