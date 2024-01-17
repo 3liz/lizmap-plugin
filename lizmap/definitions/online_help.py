@@ -79,7 +79,7 @@ MAPPING_INDEX_DOC = {
     Panels.FormFiltering: 'publish/lizmap_plugin/form_filtering.html',
     Panels.Dataviz: 'publish/lizmap_plugin/dataviz.html',
     Panels.FilteredLayers: 'publish/lizmap_plugin/filtered_layers_login.html',
-    Panels.Actions: 'publish/configuration/action_popup.html',  # TODO move into the plugin section
+    Panels.Actions: 'publish/lizmap_plugin/actions.html',
     Panels.TimeManager: 'publish/lizmap_plugin/time_manager.html',
     Panels.Atlas: 'publish/lizmap_plugin/atlas.html',
     Panels.LocateByLayer: 'publish/lizmap_plugin/locate_by_layer.html',
