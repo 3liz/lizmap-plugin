@@ -990,10 +990,13 @@ class Lizmap:
         current_version = self.current_lwc_version()
         if not current_version:
             LOGGER.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
+            self.dlg.label_current_lwc.setText('<strong>' + tr('Unknown') + '</strong>')
             return
 
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+
+        self.dlg.label_current_lwc.setText('<strong>' + str(current_version.value) + '</strong>')
 
         # New print panel
         # The checkbox is deprecated since LWC 3.7.0

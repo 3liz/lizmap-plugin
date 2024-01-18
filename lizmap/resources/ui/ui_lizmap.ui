@@ -580,6 +580,24 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QLabel" name="label_current_lwc_label">
+               <property name="text">
+                <string>Current Lizmap Web Client branch selected</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_current_lwc">
+               <property name="text">
+                <string notr="true">SET IN PYTHON CODE</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_12">
              <item>
               <widget class="QLabel" name="label_48">

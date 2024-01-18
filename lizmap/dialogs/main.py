@@ -138,6 +138,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.add_first_server.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
         self.add_first_server.setToolTip(tr('Add a new server in the list'))
 
+        for widget in (self.label_current_lwc_label, self.label_current_lwc):
+            widget.setToolTip(tr(
+                'The plugin is using this version for the User Interface (blue background) and when saving the Lizmap '
+                'configuration file.'
+            ))
+
         self.label_general_help.setText(
             tr("The plugin is doing some checks on your project.") + " "
             + tr(
@@ -1106,6 +1112,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             self.label_warning_project.setVisible(True)
             self.label_warning_project.set_text(message)
+
+        if not allow_navigation:
+            self.label_current_lwc.setText(tr('Unknown'))
 
     def panel_changed(self):
         """ When the panel on the right has changed. """
