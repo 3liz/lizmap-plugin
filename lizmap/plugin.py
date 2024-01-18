@@ -917,11 +917,6 @@ class Lizmap:
 
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
-        if not self.dlg.navigation_menu_ok:
-            # If the menu is not allowed, it means we don't need to know if the server has changed
-            # The user is still on the first information panel and it's not OK.
-            return
-
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
         current_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
@@ -985,6 +980,9 @@ class Lizmap:
     def lwc_version_changed(self):
         """ When the version has changed in the selector, we update features with the blue background. """
         current_version = self.current_lwc_version()
+        if not current_version:
+            LOGGER.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
+            return
 
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))

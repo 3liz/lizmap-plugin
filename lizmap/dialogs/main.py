@@ -96,7 +96,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsStackedWidget.currentChanged.connect(self.panel_changed)
 
         self.is_dev_version = is_dev_version
-        self.navigation_menu_ok = None
 
         self.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
@@ -1094,7 +1093,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
-        self.navigation_menu_ok = allow_navigation
         for i in range(1, self.mOptionsListWidget.count()):
             item = self.mOptionsListWidget.item(i)
             if allow_navigation:
