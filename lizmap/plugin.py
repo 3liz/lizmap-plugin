@@ -964,6 +964,10 @@ class Lizmap:
         # For deprecated features in LWC 3.7 about base layers
         self.check_visibility_crs_3857()
 
+        if not current_metadata:
+            # In CI, to make tests happy
+            return
+
         repositories = current_metadata.get('repositories')
         if not repositories:
             return
