@@ -3269,7 +3269,8 @@ class Lizmap:
 
             qgis_server_info = server_metadata.get('qgis_server_info')
             md = qgis_server_info.get('metadata')
-            if md.get('version_int') < CLOUD_QGIS_MIN_RECOMMENDED:
+            qgis_server_version = tuple([int(i) for i in md.get('version').split('.')])
+            if qgis_server_version < CLOUD_QGIS_MIN_RECOMMENDED:
                 QMessageBox.warning(
                     self.dlg,
                     CLOUD_NAME,

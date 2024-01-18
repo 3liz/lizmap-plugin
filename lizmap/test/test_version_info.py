@@ -237,7 +237,7 @@ class TestVersionInfo(unittest.TestCase):
         # QGIS server version = QGIS desktop version
         data = {
             'lizmap_version': '3.5.11',
-            'server_version': "3.28",
+            'server_version': "3.28.0",
             'login': 'simple_lambda',
             'json_path': json_path,
             'qgis_desktop': qgis_desktop,
@@ -246,7 +246,7 @@ class TestVersionInfo(unittest.TestCase):
 
         # 3.5.11 with simple login
         self.assertEqual(
-            ServerManager._messages_for_version(**data),
+            ServerManager._messages_for_version(**data, lizmap_cloud=True),
             (
                 Qgis.Critical,
                 [
@@ -273,17 +273,19 @@ class TestVersionInfo(unittest.TestCase):
         # QGIS server < QGIS desktop
         data = {
             'lizmap_version': '3.5.11',
-            'server_version': "3.22",
+            'server_version': "3.22.0",
             'login': 'simple_lambda',
             'json_path': json_path,
             'qgis_desktop': qgis_desktop,
             'error': "NO_ACCESS",
         }
         self.assertEqual(
-            ServerManager._messages_for_version(**data),
+            ServerManager._messages_for_version(**data, lizmap_cloud=True),
             (
                 Qgis.Critical,
                 [
+                    'QGIS Server version 3.22 is not maintained anymore by QGIS.org since February 2023. Please visit '
+                    'your administration panel in the web browser to ask for the update.',
                     'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server 3.22 or downgrade '
                     'your QGIS Desktop 3.28',
                     'The login is not a publisher/administrator',

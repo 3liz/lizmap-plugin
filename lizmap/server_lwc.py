@@ -46,6 +46,7 @@ from lizmap.definitions.definitions import (
     ReleaseStatus,
     ServerComboData,
 )
+from lizmap.definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import NamePage, ServerWizard
 from lizmap.qgis_plugin_tools.tools.i18n import tr
@@ -681,7 +682,8 @@ class ServerManager:
 
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
             qgis_cell.setData(Qt.UserRole, markdown)
-            self.update_action_version(lizmap_version, qgis_server_version, row, login)
+            self.update_action_version(
+                lizmap_version, qgis_server_version, row, login, lizmap_cloud=is_lizmap_cloud(content))
             return
 
         if branch < (3, 5):
@@ -836,6 +838,7 @@ class ServerManager:
     def update_action_version(
             self, lizmap_version: str, qgis_server_version, row: int, login: str = None,
             error: str = None,
+            lizmap_cloud: bool = False,
     ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
         version_file = lizmap_user_folder().joinpath('released_versions.json')
@@ -843,7 +846,8 @@ class ServerManager:
             return
 
         level, messages, qgis_valid = self._messages_for_version(
-            lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error)
+            lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error,
+            lizmap_cloud=lizmap_cloud)
         if isinstance(qgis_valid, bool) and not qgis_valid:
             self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.UserRole + 1)
             self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
@@ -855,6 +859,7 @@ class ServerManager:
             lizmap_version: str, server_version: str, login: str, json_path: Path,
             qgis_desktop: Tuple[int, int],
             error: str = '',
+            lizmap_cloud: bool = False,
     ) -> Tuple[Qgis.MessageLevel, List[str], bool]:
         """Returns the list of messages and the color to use.
 
@@ -994,6 +999,14 @@ class ServerManager:
                             'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server {}.{} or '
                             'downgrade your QGIS Desktop {}.{}'
                         ).format(qgis_server[0], qgis_server[1], qgis_desktop[0], qgis_desktop[1]))
+                        level = Qgis.Critical
+
+                    qgis_server = (int(split[0]), int(split[1]), int(split[2]))
+                    if lizmap_cloud and qgis_server < CLOUD_QGIS_MIN_RECOMMENDED:
+                        messages.insert(0, tr(
+                            'QGIS Server version {}.{} is not maintained anymore by QGIS.org since February 2023. '
+                            'Please visit your administration panel in the web browser to ask for the update.'
+                        ).format(qgis_server[0], qgis_server[1]))
                         level = Qgis.Critical
 
             if len(messages) == 0:
