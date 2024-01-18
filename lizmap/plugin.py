@@ -84,7 +84,11 @@ from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
 from lizmap.definitions.filter_by_polygon import FilterByPolygonDefinitions
 from lizmap.definitions.layouts import LayoutsDefinitions
-from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
+from lizmap.definitions.lizmap_cloud import (
+    CLOUD_MAX_PARENT_FOLDER,
+    CLOUD_NAME,
+    CLOUD_QGIS_MIN_RECOMMENDED,
+)
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.online_help import (
     MAPPING_INDEX_DOC,
@@ -3232,7 +3236,7 @@ class Lizmap:
 
         if is_lizmap_cloud(server_metadata):
             if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
-                QMessageBox.information(
+                QMessageBox.warning(
                     self.dlg,
                     CLOUD_NAME,
                     tr(
@@ -3253,6 +3257,37 @@ class Lizmap:
                         'You might have some old project which need an update from you. The list is written on the '
                         'dashboard. Projects are not deleted during the update of Lizmap Web Client, '
                         'they will be only invisible on the main landing page until they are updated by you.'
+                    )
+                    + "<br><br>"
+                    + tr('This is not blocking your current usage of the plugin, only to advise you.'),
+                    QMessageBox.Ok
+                )
+
+            qgis_server_info = server_metadata.get('qgis_server_info')
+            md = qgis_server_info.get('metadata')
+            if md.get('version_int') < CLOUD_QGIS_MIN_RECOMMENDED:
+                QMessageBox.warning(
+                    self.dlg,
+                    CLOUD_NAME,
+                    tr(
+                        'You current server <a href="{server_url}">{server_url}</a> is running '
+                        'QGIS Server {version}.'
+                    ).format(
+                        server_url=self.dlg.current_server_info(ServerComboData.ServerUrl.value),
+                        version=md.get('version'),
+                    )
+                    + "<br><br>"
+                    + tr(
+                        'This version of QGIS Server has now reached its end of life and is not supported '
+                        'anymore by QGIS.org since February 2023, see the '
+                        '<a href="https://www.qgis.org/en/site/getinvolved/development/roadmap.html#release-schedule">'
+                        'QGIS roadmap'
+                        '</a>.'
+                    )
+                    + "<br><br>"
+                    + tr(
+                        'Please visit your administration panel in your web browser, in the dashboard, and '
+                        'ask for the update.'
                     )
                     + "<br><br>"
                     + tr('This is not blocking your current usage of the plugin, only to advise you.'),

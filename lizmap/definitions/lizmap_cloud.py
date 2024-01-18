@@ -8,3 +8,5 @@ CLOUD_MAX_PARENT_FOLDER = 2  # TODO Check COG, is-it 3 ?
 
 CLOUD_ONLINE_URL = 'https://docs.lizmap.cloud'
 CLOUD_ONLINE_LANGUAGES = ('en', 'fr')
+
+CLOUD_QGIS_MIN_RECOMMENDED = 32800
