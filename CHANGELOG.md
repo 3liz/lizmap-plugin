@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.1.5 - 2024-01-18
+
+* Fix the graphical user interface of the plugin according to the Lizmap Web Client server version
+* Fix the dropdown manu when changing the server
+* Fix link about the help on "Actions"
+* Add a new check about QGIS Server version for some customers
+
 ## 4.1.4 - 2024-01-16
 
 * Fix display of buttons to fix the project
