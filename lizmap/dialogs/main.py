@@ -212,6 +212,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.button_clear_log.clicked.connect(self.log_panel.clear)
 
         self.check_project_thumbnail()
+        self.check_action_file_exists()
         self.setup_icons()
 
         # Fixer tools
