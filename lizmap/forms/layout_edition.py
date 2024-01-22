@@ -43,6 +43,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('default_format', self.label_default_format)
         self.config.add_layer_label('default_dpi', self.label_default_dpi)
 
+        # noinspection PyUnresolvedReferences
         self.layout.setReadOnly(True)
 
         # Wizard ACL group
@@ -66,6 +67,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         manager = QgsProject.instance().layoutManager()
         layout = manager.layoutByName(self.layout.text())
 
+        atlas_layout = None
         if layout.layoutType() == QgsMasterLayoutInterface.PrintLayout:
             for _print_layout in manager.printLayouts():
                 if _print_layout.name() == self.layout.text():
