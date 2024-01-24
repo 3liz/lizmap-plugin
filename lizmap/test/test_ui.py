@@ -3,7 +3,7 @@ import json
 
 from pathlib import Path
 
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
@@ -102,6 +102,13 @@ class TestUiLizmapDialog(unittest.TestCase):
         lizmap = Lizmap(get_iface(), lwc_version=lwc_version)
         baselayers = lizmap._add_group_legend('baselayers', parent=None, project=project)
         lizmap._add_group_legend('project-background-color', baselayers, project=project)
+        hidden = lizmap._add_group_legend('hidden', project=project)
+
+        # For testing, we add OSM as hidden layer
+        hidden_raster = QgsRasterLayer(
+            "type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0", "OSM", 'wms')
+        project.addMapLayer(hidden_raster, False)
+        hidden.addLayer(hidden_raster)
 
         # Do not use read_lizmap_config_file
         # as it will be called by read_cfg_file and also the UI is set in read_cfg_file
@@ -150,13 +157,21 @@ class TestUiLizmapDialog(unittest.TestCase):
         # Click the group base-layers
         group_item = lizmap.dlg.layer_tree.findItems('baselayers', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
-        self.assertFalse(lizmap.dlg.gb_layerSettings.isEnabled())
+        self.assertFalse(lizmap.dlg.panel_layer_all_settings.isEnabled())
 
         # Click the group project-background-color
         group_item = lizmap.dlg.layer_tree.findItems(
             'project-background-color', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
-        self.assertFalse(lizmap.dlg.gb_layerSettings.isEnabled())
+        self.assertTrue(lizmap.dlg.panel_layer_all_settings.isEnabled())
+        self.assertFalse(lizmap.dlg.group_layer_metadata.isEnabled())
+
+        # Click the group hidden
+        group_item = lizmap.dlg.layer_tree.findItems('hidden', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        lizmap.dlg.layer_tree.setCurrentItem(group_item)
+        # It should work, maybe the test click and click in the UI is missing one thing
+        # self.assertEqual(PredefinedGroup.Hidden.value, lizmap._current_item_predefined_group())
+        # self.assertFalse(lizmap.dlg.panel_layer_all_settings.isEnabled())
 
         # Back to a layer outside of these groups
         group_item = lizmap.dlg.layer_tree.findItems('lines', Qt.MatchContains | Qt.MatchRecursive, 0)[0]

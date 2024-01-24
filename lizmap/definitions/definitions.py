@@ -134,11 +134,12 @@ class RepositoryComboData(Enum):
 @unique
 class PredefinedGroup(Enum):
     """ The list of predefined group in LWC. """
-    No = Qt.UserRole
-    Hidden = Qt.UserRole + 1
-    Baselayers = Qt.UserRole + 2
-    BackgroundColor = Qt.UserRole + 3
-    Overview = Qt.UserRole + 4
+    No = Qt.UserRole                    # 256
+    Hidden = Qt.UserRole + 1            # 257
+    Baselayers = Qt.UserRole + 2        # 258 The group `baselayers`
+    BackgroundColor = Qt.UserRole + 3   # 259
+    Overview = Qt.UserRole + 4          # 260
+    BaselayerItem = Qt.UserRole + 5     # 261 Layer or group in the `baselayers`, which will be an item in the combobox
 
 
 IgnLayer = namedtuple('IgnLayer', ['name', 'title', 'format'])
