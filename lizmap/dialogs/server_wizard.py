@@ -171,9 +171,14 @@ class LoginPasswordPage(QWizardPage):
         self.setLayout(layout)
 
         label = QLabel(tr(
-            'Login and password are the ones you are using in your web browser, to connect to the administration '
-            'interface.'
+            'Login and password are the ones you are using in <strong>your web browser</strong>, to connect to the '
+            'Lizmap Web Client administration interface.'
         ))
+        label.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(label)
+
+        label = QLabel(tr("It is not a login or a password related to PostgreSQL or a file transfer system."))
         label.setWordWrap(True)
         # noinspection PyArgumentList
         layout.addWidget(label)

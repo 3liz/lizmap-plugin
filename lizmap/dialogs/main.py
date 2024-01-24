@@ -1115,7 +1115,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.label_warning_project.set_text(message)
 
         if not allow_navigation:
-            self.label_current_lwc.setText(tr('Unknown'))
+            self.refresh_helper_target_version(None)
+
+    def refresh_helper_target_version(self, version=Optional[LwcVersions]):
+        """ Refresh the helper about target version. """
+        if not version:
+            msg = tr('Unknown')
+        else:
+            msg = str(version.value)
+
+        self.label_current_lwc.setText(f'<strong>{msg}</strong>')
 
     def panel_changed(self):
         """ When the panel on the right has changed. """

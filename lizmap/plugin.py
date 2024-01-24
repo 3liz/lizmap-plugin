@@ -306,7 +306,9 @@ class Lizmap:
         # Make the IGN french orthophoto visible only for dev or for French language user
         # locale can be "fr" or "fr_FR"
         french_buttons = (
-            self.dlg.button_ign_orthophoto,
+            # Exception for "orthophoto" to be always displayed.
+            # Useful for workshop in English or also low-scale map worldwide
+            # self.dlg.button_ign_orthophoto,
             self.dlg.button_ign_plan,
             self.dlg.button_ign_cadastre,
         )
@@ -991,13 +993,13 @@ class Lizmap:
         current_version = self.current_lwc_version()
         if not current_version:
             LOGGER.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
-            self.dlg.label_current_lwc.setText('<strong>' + tr('Unknown') + '</strong>')
+            self.dlg.refresh_helper_target_version(None)
             return
 
         LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
         QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
 
-        self.dlg.label_current_lwc.setText('<strong>' + str(current_version.value) + '</strong>')
+        self.dlg.refresh_helper_target_version(current_version)
 
         # New print panel
         # The checkbox is deprecated since LWC 3.7.0
@@ -3518,6 +3520,23 @@ class Lizmap:
                     "layerImageFormat": l_image_format,
                     "order": row,
                 }
+
+        if not isinstance(self.layerList, dict):
+            # Wierd bug when the dialog was not having a server at the beginning
+            # The navigation in the menu was not allowed
+            # The user added a server → navigation allowed
+            # But the project has not been loaded in the plugin
+            # The layer tree is empty
+            QMessageBox.warning(
+                self.dlg,
+                'Lizmap',
+                tr(
+                    '"Apply" or "OK" are not supported right now. Please close the dialog et reopen the plugin.'
+                    'You will be able to save the Lizmap configuration file after.'
+                ) + '\n\n'
+                + tr('Sorry for the inconvenience.')
+            )
+            return None
 
         # gui user defined layers options
         for k, v in self.layerList.items():
