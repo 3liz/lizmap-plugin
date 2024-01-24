@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+* Enable more widgets when the layer or the group is located in `baselayers`
+* Fix issue about the action file
+* Some UX issues fixed
+
 ## 4.1.5 - 2024-01-18
 
 * Fix the graphical user interface of the plugin according to the Lizmap Web Client server version
