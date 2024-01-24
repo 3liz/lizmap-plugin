@@ -1487,7 +1487,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="gb_layerSettings">
+                <widget class="QGroupBox" name="panel_layer_all_settings">
                  <property name="title">
                   <string>Selected item settings</string>
                  </property>
@@ -1508,7 +1508,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+                       <widget class="QgsCollapsibleGroupBox" name="group_layer_metadata">
                         <property name="title">
                          <string>Metadata</string>
                         </property>
@@ -1592,7 +1592,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
+                       <widget class="QgsCollapsibleGroupBox" name="group_layer_tree_options">
                         <property name="title">
                          <string>Layer tree options</string>
                         </property>
@@ -1709,7 +1709,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item>
-                       <widget class="QFrame" name="popup_frame">
+                       <widget class="QFrame" name="frame_layer_popup">
                         <property name="frameShape">
                          <enum>QFrame::Box</enum>
                         </property>
@@ -1914,7 +1914,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mGroupBox_4">
+                       <widget class="QgsCollapsibleGroupBox" name="group_layer_map_options">
                         <property name="title">
                          <string>Map options</string>
                         </property>
@@ -2093,7 +2093,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                        </widget>
                       </item>
                       <item>
-                       <widget class="QGroupBox" name="groupBox_3">
+                       <widget class="QGroupBox" name="group_layer_embedded">
                         <property name="title">
                          <string>Embedded layers and groups</string>
                         </property>
@@ -2239,7 +2239,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <item>
                       <widget class="QLabel" name="label_3">
                        <property name="text">
-                        <string>This is just some predefined base layers. You can have more using the &quot;QuickMapServices&quot; plugin.</string>
+                        <string>This is just some predefined base layers.</string>
                        </property>
                       </widget>
                      </item>
@@ -3612,7 +3612,17 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   <attribute name="title">
                    <string>Drag and Drop Layout</string>
                   </attribute>
-                  <layout class="QHBoxLayout" name="horizontalLayout_45">
+                  <layout class="QVBoxLayout" name="verticalLayout_75">
+                   <item>
+                    <widget class="QLabel" name="label_dnd_dataviz_help">
+                     <property name="text">
+                      <string>Similar to the native QGIS feature about Drag&amp;Drop form layout, it's possible to organize plots in tabs and containers</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <layout class="QVBoxLayout" name="verticalLayout_59">
                      <item>
@@ -5299,8 +5309,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>remove_filter_form_button</tabstop>
   <tabstop>out_log</tabstop>
   <tabstop>button_clear_log</tabstop>
-  <tabstop>mGroupBox_2</tabstop>
-  <tabstop>mGroupBox_4</tabstop>
+  <tabstop>group_layer_tree_options</tabstop>
+  <tabstop>group_layer_map_options</tabstop>
   <tabstop>checkbox_popup</tabstop>
   <tabstop>btConfigurePopup</tabstop>
   <tabstop>checkbox_server_cache</tabstop>

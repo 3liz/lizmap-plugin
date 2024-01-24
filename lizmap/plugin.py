@@ -412,6 +412,7 @@ class Lizmap:
             self.dlg.up_layout_form_button,
             self.dlg.down_layout_form_button,
             # Drag drop dataviz designer
+            self.dlg.label_dnd_dataviz_help,
             self.dlg.button_add_dd_dataviz,
             self.dlg.button_remove_dd_dataviz,
             self.dlg.button_edit_dd_dataviz,
@@ -507,7 +508,7 @@ class Lizmap:
         self.layer_options_list['toggled']['widget'] = self.dlg.cbToggled
         self.layer_options_list['group_visibility']['widget'] = self.dlg.list_group_visibility
         self.layer_options_list['popup']['widget'] = self.dlg.checkbox_popup
-        self.layer_options_list['popupFrame']['widget'] = self.dlg.popup_frame
+        self.layer_options_list['popupFrame']['widget'] = self.dlg.frame_layer_popup
         self.layer_options_list['popupTemplate']['widget'] = None
         self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
         self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
@@ -2289,7 +2290,11 @@ class Lizmap:
                     if self.myDic[child_id]['name'].lower() == 'overview':
                         predefined_group = PredefinedGroup.Overview.value
 
+                elif parent_node.data(0, Qt.UserRole + 1) == PredefinedGroup.Baselayers.value:
+                    # Parent is "baselayers", children will be an item in the dropdown menu
+                    predefined_group = PredefinedGroup.BaselayerItem.value
                 elif parent_node.data(0, Qt.UserRole + 1) != PredefinedGroup.No.value:
+                    # Others will be in "hidden" or "overview".
                     # TODO fixme maybe ?
                     predefined_group = PredefinedGroup.Hidden.value
 
@@ -2302,6 +2307,9 @@ class Lizmap:
                 )
                 if predefined_group != PredefinedGroup.No.value:
                     text = tr('Special group for Lizmap Web Client')
+                    if self.is_dev_version:
+                        # For debug purpose only about groups
+                        text += f'. Data group ID {Qt.UserRole} : {predefined_group}'
                     item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
                 elif is_layer_wms_excluded(self.project, self.myDic[child_id]['name']):
                     text = tr(
@@ -2373,7 +2381,12 @@ class Lizmap:
     def from_data_to_ui_for_layer_group(self):
         """ Restore layer/group values into each field when selecting a layer in the tree. """
         # At the beginning, enable all widgets.
-        self.dlg.gb_layerSettings.setEnabled(True)
+        self.dlg.panel_layer_all_settings.setEnabled(True)
+        self.dlg.group_layer_metadata.setEnabled(True)
+        self.dlg.group_layer_tree_options.setEnabled(True)
+        self.dlg.checkbox_popup.setEnabled(True)
+        self.dlg.frame_layer_popup.setEnabled(True)
+        self.dlg.group_layer_embedded.setEnabled(True)
         # for key, val in self.layer_options_list.items():
         #     if val.get('widget'):
         #         val.get('widget').setEnabled(True)
@@ -2521,19 +2534,26 @@ class Lizmap:
         self.enable_popup_source_button()
         self.dlg.follow_map_theme_toggled()
 
-        if to_bool(os.getenv("CI"), default_value=False):
-            if self._current_item_predefined_group() != PredefinedGroup.No.value:
-                self.dlg.gb_layerSettings.setEnabled(False)
-                return
-
         if self.current_lwc_version() >= LwcVersions.Lizmap_3_7:
-            if self._current_item_predefined_group() != PredefinedGroup.No.value:
-                self.dlg.gb_layerSettings.setEnabled(False)
+            if self._current_item_predefined_group() == PredefinedGroup.BaselayerItem.value:
+                self.dlg.group_layer_metadata.setEnabled(False)
+                self.dlg.group_layer_tree_options.setEnabled(False)
+                self.dlg.checkbox_popup.setEnabled(False)
+                self.dlg.frame_layer_popup.setEnabled(False)
+                self.dlg.group_layer_embedded.setEnabled(False)
+
+            elif self._current_item_predefined_group() in (
+                    PredefinedGroup.Overview.value,
+                    PredefinedGroup.Baselayers.value,
+                    PredefinedGroup.BackgroundColor.value,
+                    PredefinedGroup.Hidden.value,
+            ):
+                self.dlg.panel_layer_all_settings.setEnabled(False)
 
         layer = self._current_selected_layer()
         if isinstance(layer, QgsMapLayer):
             if is_layer_wms_excluded(self.project, layer.name()):
-                self.dlg.gb_layerSettings.setEnabled(False)
+                self.dlg.panel_layer_all_settings.setEnabled(False)
 
     # def enable_or_not_toggle_checkbox(self):
     #     """ Only for groups, to determine the state of the "toggled" option. """
