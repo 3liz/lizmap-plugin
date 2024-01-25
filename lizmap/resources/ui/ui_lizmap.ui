@@ -865,20 +865,6 @@ QListWidget::item::selected {
                    </layout>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_52">
-                    <item>
-                     <widget class="QLabel" name="label_86">
-                      <property name="text">
-                       <string>Google key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inGoogleKey"/>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_30">
                     <item>
                      <widget class="QLabel" name="label_68">
@@ -963,6 +949,66 @@ QListWidget::item::selected {
                        </size>
                       </property>
                      </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="group_api_keys">
+                 <property name="title">
+                  <string>API keys</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_76">
+                  <item>
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>API keys needed for geocoding services or some base layers</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout_7">
+                    <item row="1" column="1">
+                     <widget class="QLineEdit" name="inBingKey"/>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_11">
+                      <property name="text">
+                       <string>IGN</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QLineEdit" name="inIgnKey"/>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_86">
+                      <property name="text">
+                       <string>Google</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_15">
+                      <property name="text">
+                       <string>Bing</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QLineEdit" name="inGoogleKey"/>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_24">
+                      <property name="text">
+                       <string>Thunderforest</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QLineEdit" name="inOCMKey"/>
                     </item>
                    </layout>
                   </item>
@@ -2372,8 +2418,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </widget>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_9">
-                    <item>
+                   <layout class="QFormLayout" name="formLayout_8">
+                    <item row="0" column="0">
                      <widget class="QLabel" name="label_32">
                       <property name="font">
                        <font>
@@ -2386,126 +2432,35 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbOsmMapnik">
-                      <property name="text">
-                       <string>OSM Mapnik</string>
-                      </property>
-                     </widget>
+                    <item row="0" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_9">
+                      <item>
+                       <widget class="QCheckBox" name="cbOsmMapnik">
+                        <property name="text">
+                         <string>OSM Mapnik</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbOsmStamenToner">
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="text">
+                         <string>OSM Stamen Toner</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cb_open_topo_map">
+                        <property name="text">
+                         <string>OpenTopoMap</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbOsmStamenToner">
-                      <property name="styleSheet">
-                       <string notr="true"/>
-                      </property>
-                      <property name="text">
-                       <string>OSM Stamen Toner</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cb_open_topo_map">
-                      <property name="text">
-                       <string>OpenTopoMap</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_5">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_21">
-                    <property name="spacing">
-                     <number>5</number>
-                    </property>
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetDefaultConstraint</enum>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_33">
-                      <property name="font">
-                       <font>
-                        <weight>75</weight>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>ThunderForest</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbOCM">
-                      <property name="text">
-                       <string>Open Cycle Map</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_18">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_31">
-                      <property name="text">
-                       <string>Key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inOCMKey">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_21">
-                    <property name="spacing">
-                     <number>5</number>
-                    </property>
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetDefaultConstraint</enum>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
+                    <item row="1" column="0">
                      <widget class="QLabel" name="label_33">
                       <property name="font">
                        <font>
@@ -2518,151 +2473,51 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbGoogleStreets">
-                      <property name="text">
-                       <string>Streets</string>
+                    <item row="1" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_21">
+                      <property name="spacing">
+                       <number>5</number>
                       </property>
-                     </widget>
+                      <property name="sizeConstraint">
+                       <enum>QLayout::SetDefaultConstraint</enum>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QCheckBox" name="cbGoogleStreets">
+                        <property name="text">
+                         <string>Streets</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbGoogleSatellite">
+                        <property name="text">
+                         <string>Satellite</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbGoogleHybrid">
+                        <property name="text">
+                         <string>Hybrid</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbGoogleTerrain">
+                        <property name="text">
+                         <string>Terrain</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbGoogleSatellite">
-                      <property name="text">
-                       <string>Satellite</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbGoogleHybrid">
-                      <property name="text">
-                       <string>Hybrid</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbGoogleTerrain">
-                      <property name="text">
-                       <string>Terrain</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_18">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_31">
-                      <property name="text">
-                       <string>Key is in the Map options panel</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_18">
-                    <property name="spacing">
-                     <number>5</number>
-                    </property>
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetDefaultConstraint</enum>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_34">
-                      <property name="font">
-                       <font>
-                        <weight>75</weight>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>Bing Map</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbBingStreets">
-                      <property name="text">
-                       <string>Streets</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbBingSatellite">
-                      <property name="text">
-                       <string>Satellite</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbBingHybrid">
-                      <property name="text">
-                       <string>Hybrid</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_20">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_30">
-                      <property name="text">
-                       <string>Key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inBingKey">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <property name="spacing">
-                     <number>5</number>
-                    </property>
-                    <property name="sizeConstraint">
-                     <enum>QLayout::SetDefaultConstraint</enum>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
+                    <item row="2" column="0">
                      <widget class="QLabel" name="label_35">
                       <property name="font">
                        <font>
@@ -2675,64 +2530,120 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbIgnStreets">
+                    <item row="2" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_13">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <property name="sizeConstraint">
+                       <enum>QLayout::SetDefaultConstraint</enum>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QCheckBox" name="cbIgnStreets">
+                        <property name="text">
+                         <string>Plan</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbIgnSatellite">
+                        <property name="text">
+                         <string>Orthophoto</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbIgnTerrain">
+                        <property name="text">
+                         <string>Scans</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbIgnCadastral">
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="text">
+                         <string>Cadastre</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_34">
+                      <property name="font">
+                       <font>
+                        <weight>75</weight>
+                        <bold>true</bold>
+                       </font>
+                      </property>
                       <property name="text">
-                       <string>Plan</string>
+                       <string>Bing Map</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbIgnSatellite">
+                    <item row="3" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_18">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <property name="sizeConstraint">
+                       <enum>QLayout::SetDefaultConstraint</enum>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QCheckBox" name="cbBingStreets">
+                        <property name="text">
+                         <string>Streets</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbBingSatellite">
+                        <property name="text">
+                         <string>Satellite</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="cbBingHybrid">
+                        <property name="text">
+                         <string>Hybrid</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="4" column="0">
+                     <widget class="QLabel" name="label_33">
+                      <property name="font">
+                       <font>
+                        <weight>75</weight>
+                        <bold>true</bold>
+                       </font>
+                      </property>
                       <property name="text">
-                       <string>Orthophoto</string>
+                       <string>ThunderForest</string>
                       </property>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbIgnTerrain">
+                    <item row="4" column="1">
+                     <widget class="QCheckBox" name="cbOCM">
                       <property name="text">
-                       <string>Scans</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="cbIgnCadastral">
-                      <property name="styleSheet">
-                       <string notr="true"/>
-                      </property>
-                      <property name="text">
-                       <string>Cadastre</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_19">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_11">
-                      <property name="text">
-                       <string>Key</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="inIgnKey">
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>16777215</height>
-                       </size>
+                       <string>Open Cycle Map</string>
                       </property>
                      </widget>
                     </item>
@@ -5219,7 +5130,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbActivateGeolocation</tabstop>
   <tabstop>activate_drawing_tools</tabstop>
   <tabstop>liExternalSearch</tabstop>
-  <tabstop>inGoogleKey</tabstop>
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>
@@ -5257,8 +5167,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>scrollArea_3</tabstop>
   <tabstop>cbOsmMapnik</tabstop>
   <tabstop>cbOsmStamenToner</tabstop>
-  <tabstop>cbOCM</tabstop>
-  <tabstop>inOCMKey</tabstop>
   <tabstop>cbGoogleStreets</tabstop>
   <tabstop>cbGoogleSatellite</tabstop>
   <tabstop>cbGoogleHybrid</tabstop>
@@ -5266,12 +5174,10 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbBingStreets</tabstop>
   <tabstop>cbBingSatellite</tabstop>
   <tabstop>cbBingHybrid</tabstop>
-  <tabstop>inBingKey</tabstop>
   <tabstop>cbIgnStreets</tabstop>
   <tabstop>cbIgnSatellite</tabstop>
   <tabstop>cbIgnTerrain</tabstop>
   <tabstop>cbIgnCadastral</tabstop>
-  <tabstop>inIgnKey</tabstop>
   <tabstop>cbAddEmptyBaselayer</tabstop>
   <tabstop>cbStartupBaselayer</tabstop>
   <tabstop>twLizmapBaselayers</tabstop>
