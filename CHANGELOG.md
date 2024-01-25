@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+## 4.1.6 - 2024-01-25
+
 * Enable more widgets when the layer or the group is located in `baselayers`
 * Fix issue about the action file
-* Some UX issues fixed
+* Some UX issues and Python error fixed
 
 ## 4.1.5 - 2024-01-18
 
