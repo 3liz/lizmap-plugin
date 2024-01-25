@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.1.7 - 2024-01-25
+
+* Move API keys outside the deprecated panel
+
 ## 4.1.6 - 2024-01-25
 
 * Enable more widgets when the layer or the group is located in `baselayers`
