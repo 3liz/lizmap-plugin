@@ -927,6 +927,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.gb_ftp,
             self.gb_project_thumbnail,
             self.gb_visibleTools,
+            self.group_api_keys,
             self.gb_Scales,
             self.gb_extent,
             self.gb_externalLayers,
