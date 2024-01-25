@@ -137,6 +137,12 @@ class TableManagerDataviz(TableManager):
 
         data = self.to_json()
         row = str(selection[0].row())
+        if row not in data:
+            self.display_error(tr(
+                'The selected plot was not fully loaded in the Lizmap plugin. '
+                'It\'s not possible to have a preview for this plot.'))
+            return
+
         plot_config = data[row]
 
         if plot_config['type'] == GraphType.HtmlTemplate.value['data']:

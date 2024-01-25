@@ -763,6 +763,11 @@ class TableManager:
             for i, layer in enumerate(data['layers']):
                 layer_id = layer.get('layerId')
                 vector_layer = self.project.mapLayer(layer_id)
+                if not vector_layer:
+                    # Since commit dc03cedf992c46b1f1b996b1692a5c9013ab4b0f
+                    # the plugin can load incomplete configuration
+                    # https://github.com/3liz/lizmap-plugin/issues/527
+                    continue
                 layer_name = vector_layer.name()
                 if self.definitions.key() in ['formFilterLayers', 'datavizLayers']:
                     key = str(i)
