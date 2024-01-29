@@ -3483,10 +3483,10 @@ class Lizmap:
                             del liz2json['options']['print']
                         except KeyError:
                             pass
-                    else:
-                        # We do not want to save this table if it's less than LWC 3.7
-                        LOGGER.info("Skipping the 'layout' table because version is less than LWC 3.7")
-                        continue
+                    # else:
+                    #     # We do not want to save this table if it's less than LWC 3.7
+                    #     LOGGER.info("Skipping the 'layout' table because version is less than LWC 3.7")
+                    #     continue
 
                 if manager.use_single_row() and manager.table.rowCount() == 1:
                     liz2json['options'].update(data)
