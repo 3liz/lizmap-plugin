@@ -4004,6 +4004,9 @@ class Lizmap:
 
         lwc_version: LwcVersions
 
+        if with_gui:
+            self.dlg.refresh_helper_target_version(lwc_version)
+
         if self.version_checker:
             # Maybe running from CLI tools about the version_checker object
             self.version_checker.check_outdated_version(lwc_version, with_gui=with_gui)
