@@ -1096,8 +1096,12 @@ class TableManager:
                 )
                 continue
 
-            # For editing, keep only postgresql, follow up about #364, #361
+            # For editing, keep only PostgreSQL, follow up about #364, #361
             if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI"), default_value=False):
+                if not vector_layer:
+                    # Lizmap plugin can now read incomplete configuration
+                    continue
+
                 # In CI, we still want to test this layer, sorry.
                 if vector_layer.dataProvider().name() != 'postgres':
                     LOGGER.warning(

@@ -697,6 +697,7 @@ class Lizmap:
         # Todo Lizmap 3.4, remove dict init here
         self.layers_table = {
             'atlas': {
+                'panel': Panels.Atlas,
                 'tableWidget': self.dlg.table_atlas,
                 'removeButton': self.dlg.button_atlas_remove,
                 'addButton': self.dlg.button_atlas_add,
@@ -706,6 +707,7 @@ class Lizmap:
                 'manager': None,
             },
             'locateByLayer': {
+                'panel': Panels.LocateByLayer,
                 'tableWidget': self.dlg.table_locate_by_layer,
                 'removeButton': self.dlg.remove_locate_layer_button,
                 'addButton': self.dlg.add_locate_layer_button,
@@ -715,6 +717,7 @@ class Lizmap:
                 'manager': None,
             },
             'attributeLayers': {
+                'panel': Panels.AttributeTable,
                 'tableWidget': self.dlg.table_attribute_table,
                 'removeButton': self.dlg.remove_attribute_table_button,
                 'addButton': self.dlg.add_attribute_table_button,
@@ -724,6 +727,7 @@ class Lizmap:
                 'manager': None,
             },
             'tooltipLayers': {
+                'panel': Panels.ToolTip,
                 'tableWidget': self.dlg.table_tooltip,
                 'removeButton': self.dlg.remove_tooltip_button,
                 'addButton': self.dlg.add_tooltip_button,
@@ -733,6 +737,7 @@ class Lizmap:
                 'manager': None,
             },
             'editionLayers': {
+                'panel': Panels.Editing,
                 'tableWidget': self.dlg.edition_table,
                 'removeButton': self.dlg.remove_edition_layer,
                 'addButton': self.dlg.add_edition_layer,
@@ -742,6 +747,7 @@ class Lizmap:
                 'manager': None,
             },
             'layouts': {
+                'panel': Panels.Layouts,
                 'tableWidget': self.dlg.table_layout,
                 'editButton': self.dlg.edit_layout_form_button,
                 'upButton': self.dlg.up_layout_form_button,
@@ -749,6 +755,7 @@ class Lizmap:
                 'manager': None,
             },
             'loginFilteredLayers': {
+                'panel': Panels.FilteredLayers,
                 'tableWidget': self.dlg.table_login_filter,
                 'removeButton': self.dlg.remove_filter_login_layer_button,
                 'addButton': self.dlg.add_filter_login_layer_button,
@@ -756,6 +763,7 @@ class Lizmap:
                 'manager': None,
             },
             'lizmapExternalBaselayers': {
+                'panel': Panels.Basemap,
                 'tableWidget': self.dlg.twLizmapBaselayers,
                 'removeButton': self.dlg.btLizmapBaselayerDel,
                 'addButton': self.dlg.btLizmapBaselayerAdd,
@@ -763,6 +771,7 @@ class Lizmap:
                 'jsonConfig': {}
             },
             'timemanagerLayers': {
+                'panel': Panels.TimeManager,
                 'tableWidget': self.dlg.time_manager_table,
                 'removeButton': self.dlg.remove_time_manager_layer,
                 'addButton': self.dlg.add_time_manager_layer,
@@ -772,6 +781,7 @@ class Lizmap:
                 'manager': None,
             },
             'datavizLayers': {
+                'panel': Panels.Dataviz,
                 'tableWidget': self.dlg.table_dataviz,
                 'removeButton': self.dlg.remove_dataviz_layer,
                 'addButton': self.dlg.add_dataviz_layer,
@@ -781,6 +791,7 @@ class Lizmap:
                 'manager': None,
             },
             'filter_by_polygon': {
+                'panel': Panels.FilteredLayers,
                 'tableWidget': self.dlg.table_filter_polygon,
                 'removeButton': self.dlg.remove_filter_polygon_button,
                 'addButton': self.dlg.add_filter_polygon_button,
@@ -788,6 +799,7 @@ class Lizmap:
                 'manager': None,
             },
             'formFilterLayers': {
+                'panel': Panels.FormFiltering,
                 'tableWidget': self.dlg.table_form_filter,
                 'removeButton': self.dlg.remove_filter_form_button,
                 'addButton': self.dlg.add_filter_form_button,
@@ -3454,19 +3466,22 @@ class Lizmap:
                     data = manager.to_json()
                 except (AttributeError, ) as e:
                     import traceback
+                    panel_name = self.dlg.mOptionsListWidget.item(self.layers_table[key].get('panel', key)).text()
                     QMessageBox.critical(
                         self.dlg,
                         'Lizmap',
                         tr(
-                            'An error has been raised while saving table "{name}", maybe it was due to invalid layers ?'
-                        ).format(name=key) + '\n\n'
+                            'An error has been raised while saving table "<strong>{name}</strong>", maybe it was due '
+                            'to invalid layers ?'
+                        ).format(name=panel_name) + '\n\n'
                         + tr(
                             'If yes, saving the Lizmap configuration file with invalid layers in the legend is not '
                             'currently supported by the plugin.'
                         ) + '\n\n'
                         + tr(
-                            'Please visit the corresponding tab and check if you have a warning in one of the column.'
-                        ) + '\n\n'
+                            'Please visit the corresponding tab "<strong>{name}</strong>" and check if you have a '
+                            'warning in one of the column.'
+                        ).format(name=panel_name) + '\n\n'
                         + tr(
                             'If not, it was a bug, please report it. The process is stopping.'
                         ) + '\n\n'
