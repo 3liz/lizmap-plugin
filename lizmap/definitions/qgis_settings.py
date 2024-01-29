@@ -16,6 +16,7 @@ class Settings:
     def key(cls, key):
         return KEY + '/' + key
 
+    # Safeguards
     PreventEcw = 'prevent_ecw'
     PreventPgAuthDb = 'prevent_pg_auth_db'
     PreventPgService = 'prevent_pg_service'
@@ -24,3 +25,6 @@ class Settings:
     AllowParentFolder = 'allow_parent_folder'
     NumberParentFolder = 'number_parent_folder'
     BeginnerMode = 'beginner_mode'
+
+    # Changelogs
+    SeenChangelog = 'seen_changelogs'

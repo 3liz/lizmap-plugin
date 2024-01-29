@@ -17,6 +17,7 @@ from lizmap.definitions.definitions import (
 )
 from lizmap.definitions.online_help import current_locale
 from lizmap.dialogs.main import LizmapDialog
+from lizmap.dialogs.new_version import NewVersionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.tools import lizmap_user_folder
 
@@ -153,13 +154,15 @@ class VersionChecker:
             changelog = json_version.get('changelog')
             if changelog:
                 changelog = json_version.get('changelog')
-                link = changelog.get(current_locale())
-                if not link:
-                    link = changelog.get('en')
+                changelog_url = changelog.get(current_locale())
+                if not changelog_url:
+                    changelog_url = changelog.get('en')
 
-                link = '<a href="{}">{}</a>'.format(link, tr("What's new in {} ?").format(json_version['branch']))
+                link = '<a href="{}">{}</a>'.format(
+                    changelog_url, tr("What's new in {} ?").format(json_version['branch']))
             else:
                 link = None
+                changelog_url = None
 
             if status == ReleaseStatus.Stable:
                 if i == 0:
@@ -174,6 +177,14 @@ class VersionChecker:
                     if link:
                         self.dialog.lwc_version_latest_changelog.setVisible(True)
                         self.dialog.lwc_version_latest_changelog.setText(link)
+
+                        # Only call the new version dialog for i == 0, the newest branch
+                        # If the changelog link has been published
+                        if NewVersionDialog.check_version(lwc_version, self.dialog.table_server.rowCount):
+                            new_version = NewVersionDialog(lwc_version, changelog_url)
+                            new_version.exec_()
+                        else:
+                            NewVersionDialog.append_version(lwc_version)
 
                 elif i == 1:
                     single_stable_version_release = False
