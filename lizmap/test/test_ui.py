@@ -164,7 +164,8 @@ class TestUiLizmapDialog(unittest.TestCase):
             'project-background-color', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
         self.assertTrue(lizmap.dlg.panel_layer_all_settings.isEnabled())
-        self.assertFalse(lizmap.dlg.group_layer_metadata.isEnabled())
+        self.assertTrue(lizmap.dlg.group_layer_metadata.isEnabled())
+        self.assertFalse(lizmap.dlg.group_layer_tree_options.isEnabled())
 
         # Click the group hidden
         group_item = lizmap.dlg.layer_tree.findItems('hidden', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
