@@ -509,7 +509,7 @@ class TableManager:
 
     def layers_has_been_deleted(self, layer_ids):
         """When some layers have been deleted from QGIS."""
-        for layer in layer_ids:
+        for layer_id in layer_ids:
             row = self.table.rowCount()
             for i in range(row):
                 cell = self.table.item(i, 0)
@@ -517,9 +517,9 @@ class TableManager:
                     continue
 
                 value = cell.data(Qt.UserRole)
-                if value == layer:
+                if value == layer_id:
                     self.table.removeRow(i)
-                    LOGGER.info("Removing '{}' from table {}".format(layer, self.definitions.key()))
+                    LOGGER.info("Removing '{}' from table {}".format(layer_id, self.definitions.key()))
                     continue
 
     def truncate(self):

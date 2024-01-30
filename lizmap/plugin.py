@@ -2026,7 +2026,7 @@ class Lizmap:
         ).format(name)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
 
-    def remove_layer_from_table_by_layer_ids(self, layer_ids):
+    def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
         Remove layers from tables when deleted from layer registry
         """
