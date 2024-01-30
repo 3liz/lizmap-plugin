@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.1.8 - 2024-01-30
+
+* Improve the workflow when a new version is published
+* Some fixes about the detected version of Lizmap Web Client
+* Improve the error message when incomplete CFG is being saved
+* Enable more widgets when the layer or the group is located in `baselayers`
+
 ## 4.1.7 - 2024-01-25
 
 * Move API keys outside the deprecated panel
