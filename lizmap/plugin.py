@@ -2491,6 +2491,10 @@ class Lizmap:
             self.dlg.button_generate_html_table.setEnabled(is_vector)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
+            if self.current_lwc_version() >= LwcVersions.Lizmap_3_7 and not self.dlg.cbLayerIsBaseLayer.isChecked():
+                # Starting from LWC 3.7, this checkbox is deprecated
+                self.dlg.cbLayerIsBaseLayer.setEnabled(False)
+
             # For a group, there isn't the toggle option, #298, TEMPORARY DISABLED
             tooltip = tr(
                 "If the layer is displayed by default. On a layer, if the map theme is used, this checkbox does not "
@@ -2550,7 +2554,6 @@ class Lizmap:
 
         if self.current_lwc_version() >= LwcVersions.Lizmap_3_7:
             if self._current_item_predefined_group() == PredefinedGroup.BaselayerItem.value:
-                self.dlg.group_layer_metadata.setEnabled(False)
                 self.dlg.group_layer_tree_options.setEnabled(False)
                 self.dlg.checkbox_popup.setEnabled(False)
                 self.dlg.frame_layer_popup.setEnabled(False)
@@ -4318,8 +4321,6 @@ class Lizmap:
             self.dlg.cbAddEmptyBaselayer.setEnabled(True)
             self.dlg.cbStartupBaselayer.setEnabled(True)
             self.dlg.scales_warning.setVisible(visible)
-
-        # TODO make string translatable in self.dlg.label_deprecated_base_layers
 
     def on_baselayer_checkbox_change(self):
         """

@@ -252,8 +252,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         ))
 
         self.warning_base_layer_deprecated.set_text(tr(
-            "You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel is now "
-            "deprecated."
+            "You are using a version equal or higher than Lizmap Web Client 3.7 on this server, this panel "
+            "<strong>below</strong> is now deprecated."
         ))
 
         self.widget_deprecated_popup.set_text(tr(
