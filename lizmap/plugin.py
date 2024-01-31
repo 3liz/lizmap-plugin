@@ -452,7 +452,6 @@ class Lizmap:
         self.global_options['googleTerrain']['widget'] = self.dlg.cbGoogleTerrain
         self.global_options['googleStreets']['widget'] = self.dlg.cbGoogleStreets
         self.global_options['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
-        self.global_options['osmStamenToner']['widget'] = self.dlg.cbOsmStamenToner
         self.global_options['openTopoMap']['widget'] = self.dlg.cb_open_topo_map
         self.global_options['bingKey']['widget'] = self.dlg.inBingKey
         self.global_options['bingStreets']['widget'] = self.dlg.cbBingStreets
@@ -492,14 +491,6 @@ class Lizmap:
         self.global_options['theme']['widget'] = self.dlg.combo_theme
         self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
         self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
-
-        # Deprecated, it will be removed on October 31, 2023.
-        # https://stamen.com/faq
-        # https://stadiamaps.com/pricing/
-        self.dlg.cbOsmStamenToner.setEnabled(False)
-        self.dlg.cbOsmStamenToner.setToolTip(tr(
-            'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate. The base layer '
-            'will be deactivated automatically when saving the Lizmap configuration file.'))
 
         self.layer_options_list = lizmap_config.layerOptionDefinitions
         # Add widget information
@@ -641,7 +632,6 @@ class Lizmap:
 
         self.crs_3857_base_layers_list = {
             'osm-mapnik': self.dlg.cbOsmMapnik,
-            'osm-stamen-toner': self.dlg.cbOsmStamenToner,
             'opentopomap': self.dlg.cb_open_topo_map,
             'google-street': self.dlg.cbGoogleStreets,
             'google-satellite': self.dlg.cbGoogleSatellite,
@@ -4059,14 +4049,6 @@ class Lizmap:
             )
             return False
 
-        if self.dlg.cbOsmStamenToner.isChecked():
-            self.dlg.cbOsmStamenToner.setChecked(False)
-            self.dlg.log_panel.append(tr('Stamen tiles'), style=Html.H2)
-            self.dlg.log_panel.append(tr(
-                'This base-layer is now deprecated by Stamen, see https://stamen.com/faq how to migrate. The layer '
-                'has been automatically deactivated in the dialog.'
-            ))
-
         stop_process = tr("The CFG is not saved due to errors that must be fixed.")
 
         if not self.server_manager.check_admin_login_provided() and not self.is_dev_version:
@@ -4129,7 +4111,6 @@ class Lizmap:
         # Need to get these values to check for Pseudo Mercator projection
         mercator_layers = [
             self.dlg.cbOsmMapnik.isChecked(),
-            self.dlg.cbOsmStamenToner.isChecked(),
             self.dlg.cb_open_topo_map.isChecked(),
             self.dlg.cbGoogleStreets.isChecked(),
             self.dlg.cbGoogleSatellite.isChecked(),

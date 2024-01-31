@@ -90,9 +90,6 @@ class LizmapConfig:
             'osmMapnik': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
-            'osmStamenToner': {
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
-            },
             'openTopoMap': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False,
                 'use_proper_boolean': False,

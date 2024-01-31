@@ -180,7 +180,6 @@ if lv:
     my_global_options = {
         'mapScales': [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000], # set the map scales
         'osmMapnik': True, # add the OSM mapnik baselayer
-        'osmStamenToner': True, # add the OSM Stamen Toner baselayer
         'print': True # activate the print tool
     }
     my_layer_options = {
