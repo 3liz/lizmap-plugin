@@ -676,10 +676,6 @@ class ServerManager:
 
             markdown += '* Py-QGIS-Server : {}\n'.format(py_qgis_version)
             for plugin, info in plugins.items():
-                if branch >= (3, 7) and plugin == 'atlasprint' and info['version'] == 'not found':
-                    # The Lizmap server plugin still have this plugin, because it's new in LWC 3.7
-                    continue
-
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
             qgis_cell.setData(Qt.UserRole, markdown)
             self.update_action_version(
