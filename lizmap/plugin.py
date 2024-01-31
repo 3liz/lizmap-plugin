@@ -69,6 +69,7 @@ from lizmap.definitions.definitions import (
     DURATION_MESSAGE_BAR,
     DURATION_WARNING_BAR,
     UNSTABLE_VERSION_PREFIX,
+    GroupNames,
     Html,
     IgnLayer,
     IgnLayers,
@@ -2605,6 +2606,17 @@ class Lizmap:
                     wms_enabled = True
         return wms_enabled
 
+    @staticmethod
+    def existing_group(root_group: QgsLayerTree, label: str) -> Optional[QgsLayerTreeGroup]:
+        """ Return the existing group in the legend if existing. """
+        groups = root_group.findGroups()
+        for qgis_group in groups:
+            qgis_group: QgsLayerTreeGroup
+            if qgis_group.name() == label:
+                return qgis_group
+
+        return None
+
     def _add_group_legend(
             self, label: str, parent: QgsLayerTreeGroup = None, project: QgsProject = None) -> QgsLayerTreeGroup:
         """ Add a group in the legend. """
@@ -2616,28 +2628,34 @@ class Lizmap:
         else:
             root_group = project.layerTreeRoot()
 
-        groups = root_group.findGroups()
-        for qgis_group in groups:
-            qgis_group: QgsLayerTreeGroup
-            if qgis_group.name() == label:
-                return qgis_group
+        qgis_group = self.existing_group(root_group, label)
+        if qgis_group:
+            return qgis_group
 
         new_group = root_group.addGroup(label)
         new_group.setIsMutuallyExclusive(True, -1)
         return new_group
 
+    def disable_legacy_empty_base_layer(self):
+        """ Legacy checkbox until it's removed. """
+        # We suppose we are in LWC >= 3.7 otherwise the button is blue
+        if self.current_lwc_version() >= LwcVersions.Lizmap_3_7:
+            self.dlg.cbAddEmptyBaselayer.setChecked(False)
+
     def add_group_hidden(self):
         """ Add the hidden group. """
-        self._add_group_legend('hidden')
+        self._add_group_legend(GroupNames.Hidden)
 
     def add_group_baselayers(self):
         """ Add the baselayers group. """
-        self._add_group_legend('baselayers')
+        self._add_group_legend(GroupNames.BaseLayers)
+        self.disable_legacy_empty_base_layer()
 
     def add_group_empty(self):
         """ Add the default background color. """
-        baselayers = self._add_group_legend('baselayers')
-        self._add_group_legend('project-background-color', baselayers)
+        baselayers = self._add_group_legend(GroupNames.BaseLayers)
+        self._add_group_legend(GroupNames.BackgroundColor, baselayers)
+        self.disable_legacy_empty_base_layer()
 
     def add_group_overview(self):
         """ Add the overview group. """
@@ -4024,6 +4042,9 @@ class Lizmap:
 
         if with_gui:
             self.dlg.refresh_helper_target_version(lwc_version)
+            qgis_group = self.existing_group(self.project.layerTreeRoot(), GroupNames.BaseLayers)
+            if qgis_group and self.current_lwc_version() >= LwcVersions.Lizmap_3_7:
+                self.disable_legacy_empty_base_layer()
 
         if self.version_checker:
             # Maybe running from CLI tools about the version_checker object

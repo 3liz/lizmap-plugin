@@ -142,6 +142,12 @@ class PredefinedGroup(Enum):
     BaselayerItem = Qt.UserRole + 5     # 261 Layer or group in the `baselayers`, which will be an item in the combobox
 
 
+class GroupNames:
+    BaseLayers = 'baselayers'
+    BackgroundColor = 'project-background-color'
+    Hidden = 'hidden'
+
+
 IgnLayer = namedtuple('IgnLayer', ['name', 'title', 'format'])
 
 
