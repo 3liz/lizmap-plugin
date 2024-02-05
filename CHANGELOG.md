@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+* Add two new checks :
+  * layers missing from the WFS
+  * fields missing from the WFS
+* Remove all mentions to Stamen tiles which was removed in October 2023
+* Remove the external Lizmap layer feature which was deprecated since 2019
+* If LWC 3.7, disable the legacy checkbox "Add empty base layer"
+* Minor UX improvements
+
 ## 4.1.8 - 2024-01-30
 
 * Improve the workflow when a new version is published
