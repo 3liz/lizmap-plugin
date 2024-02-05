@@ -55,7 +55,6 @@ from qgis.PyQt.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
-    QTableWidgetItem,
     QTreeWidgetItem,
     QWidget,
 )
@@ -539,9 +538,6 @@ class Lizmap:
         # Disable checkboxes on the layer tab
         self.enable_check_box_in_layer_tab(False)
 
-        # Disable deprecated lizmap functions #121
-        self.dlg.gb_lizmapExternalBaselayers.setVisible(False)
-
         # Catch user interaction on layer tree and inputs
         self.dlg.layer_tree.itemSelectionChanged.connect(self.from_data_to_ui_for_layer_group)
 
@@ -752,14 +748,6 @@ class Lizmap:
                 'addButton': self.dlg.add_filter_login_layer_button,
                 'editButton': self.dlg.edit_filter_login_layer_button,
                 'manager': None,
-            },
-            'lizmapExternalBaselayers': {
-                'panel': Panels.Basemap,
-                'tableWidget': self.dlg.twLizmapBaselayers,
-                'removeButton': self.dlg.btLizmapBaselayerDel,
-                'addButton': self.dlg.btLizmapBaselayerAdd,
-                'cols': ['repository', 'project', 'layerName', 'layerTitle', 'layerImageFormat', 'order'],
-                'jsonConfig': {}
             },
             'timemanagerLayers': {
                 'panel': Panels.TimeManager,
@@ -1334,10 +1322,6 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.project.layoutManager().layoutRemoved.connect(self.layout_removed)
 
-        # Lizmap external layers as baselayers
-        # add a layer to the lizmap external baselayers
-        self.dlg.btLizmapBaselayerAdd.clicked.connect(self.addLayerToLizmapBaselayers)
-
         # Atlas
         self.dlg.label_atlas_34.setVisible(self.is_dev_version)
 
@@ -1794,12 +1778,6 @@ class Lizmap:
                     if key in json_options:
                         item['widget'].setField(str(json_options[key]))
 
-        # Fill the table widgets
-        for key, item in self.layers_table.items():
-            if skip_tables:
-                continue
-            self.load_config_into_table_widget(key)
-
         self.dlg.check_ign_french_free_key()
         self.dlg.follow_map_theme_toggled()
         out = '' if json_file.exists() else 'out'
@@ -1849,99 +1827,6 @@ class Lizmap:
 
         # The return is used in tests
         return data
-
-    def load_config_into_table_widget(self, key):
-        """Load data from lizmap config file into the widget.
-
-        :param key: The key section to load according to the table.
-        :type key: basestring
-        """
-        # Get parameters for the widget
-        lt = self.layers_table[key]
-
-        if lt.get('manager'):
-            # Note, new generation form/manager do not use this function
-            return
-
-        widget = lt['tableWidget']
-        attributes = lt['cols']
-        json_config = lt['jsonConfig']
-
-        # Get index of layerId column
-        store_layer_id = 'layerId' in lt['cols']
-
-        # Fill edition layers capabilities
-        if key == 'editionLayers' and json_config:
-            for k, v in json_config.items():
-                if 'capabilities' in v:
-                    for x, y in v['capabilities'].items():
-                        json_config[k][x] = y
-
-        # empty previous content
-        for row in range(widget.rowCount()):
-            widget.removeRow(row)
-        widget.setRowCount(0)
-
-        # fill from the json if exists
-        col_count = len(attributes)
-
-        # +1 for layer name column (1st column)
-        if store_layer_id:
-            col_count += 1
-
-        if json_config:
-            # reorder data if needed
-            if 'order' in list(json_config.items())[0][1]:
-                # FIXME shadow error with key
-                data = [(k, json_config[k]) for k in sorted(json_config, key=lambda key: json_config[key]['order'])]
-            else:
-                data = list(json_config.items())
-
-            # load content from json file
-            project_layers_ids = list(self.project.mapLayers().keys())
-            for k, v in data:
-                # check if the layer still exists in the QGIS project
-                if 'layerId' in list(v.keys()):
-                    if v['layerId'] not in project_layers_ids:
-                        continue
-                tw_row_count = widget.rowCount()
-                # add a new line
-                widget.setRowCount(tw_row_count + 1)
-                widget.setColumnCount(col_count)
-                i = 0
-                if store_layer_id:
-                    # add layer name column - get name from layer if possible (if the user has renamed the layer)
-                    icon = None
-                    if 'layerId' in list(v.keys()):
-                        layer = self.project.mapLayer(v['layerId'])
-                        if layer:
-                            k = layer.name()
-                            # noinspection PyArgumentList
-                            icon = QgsMapLayerModel.iconForLayer(layer)
-
-                    new_item = QTableWidgetItem(k)
-                    if icon:
-                        new_item.setIcon(icon)
-                    widget.setItem(tw_row_count, 0, new_item)
-                    i += 1
-                # other information
-                for key in attributes:
-                    if key in v:
-                        value = v[key]
-                    else:
-                        value = ''
-                    new_item = QTableWidgetItem(str(value))
-                    widget.setItem(tw_row_count, i, new_item)
-                    i += 1
-
-        if key == 'lizmapExternalBaselayers':
-            # We enable this widget only if there is at least one existing entry in the CFG. #121
-            rows = widget.rowCount()
-            if rows >= 1:
-                self.dlg.gb_lizmapExternalBaselayers.setVisible(True)
-                LOGGER.warning('Table "lizmapExternalBaselayers" has been loaded, which is deprecated')
-        else:
-            LOGGER.info('Table "{}" has been loaded'.format(key))
 
     def get_qgis_layer_by_id(self, my_id) -> Optional[QgsMapLayer]:
         """Get a QgsLayer by its ID"""
@@ -2085,51 +1970,6 @@ class Lizmap:
             tr('Lizmap Error'),
             message,
             QMessageBox.Ok)
-
-    # noinspection PyPep8Naming
-    def addLayerToLizmapBaselayers(self):
-        """Add a layer in the list of Lizmap external baselayers.
-
-        This is a deprecated feature in lizmap.
-        Users should use embedded layer instead.
-
-        THIS WILL BE REMOVED IN LIZMAP 4.
-        """
-        layerRepository = str(self.dlg.inLizmapBaselayerRepository.text()).strip(' \t')
-        layerProject = str(self.dlg.inLizmapBaselayerProject.text()).strip(' \t')
-        layerName = str(self.dlg.inLizmapBaselayerLayer.text()).strip(' \t')
-        layerTitle = str(self.dlg.inLizmapBaselayerTitle.text()).strip(' \t')
-        layerImageFormat = str(self.dlg.inLizmapBaselayerImageFormat.text()).strip(' \t')
-        content = [layerRepository, layerProject, layerName, layerTitle, layerImageFormat]
-        # Check that every option is set
-        for val in content:
-            if not val:
-                QMessageBox.critical(
-                    self.dlg,
-                    tr("Lizmap Error"),
-                    tr(
-                        "Please check that all input fields have been filled: repository, project, "
-                        "layer name and title"),
-                    QMessageBox.Ok
-                )
-                return
-
-        lblTableWidget = self.dlg.twLizmapBaselayers
-        twRowCount = lblTableWidget.rowCount()
-        content.append(twRowCount)  # store order
-        colCount = len(content)
-        if twRowCount < 6:
-            # set new rowCount
-            lblTableWidget.setRowCount(twRowCount + 1)
-            lblTableWidget.setColumnCount(colCount)
-            # Add content in the widget line
-            i = 0
-            for val in content:
-                item = QTableWidgetItem(val)
-                lblTableWidget.setItem(twRowCount, i, item)
-                i += 1
-
-            LOGGER.info('Layer has been added to the base layer list')
 
     def set_tree_item_data(self, item_type, item_key, json_layers):
         """Define default data or data from previous configuration for one item (layer or group)
@@ -3523,29 +3363,6 @@ class Lizmap:
         if self.drag_drop_dataviz:
             # In tests, we don't have the variable set
             liz2json['options']['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
-
-        # list of Lizmap external baselayers
-        table_widget_base_layer = self.dlg.twLizmapBaselayers
-        tw_row_count = table_widget_base_layer.rowCount()
-        if tw_row_count > 0:
-            liz2json["lizmapExternalBaselayers"] = dict()
-            for row in range(tw_row_count):
-                # check that the layer is checked in the WFS capabilities
-                l_repository = table_widget_base_layer.item(row, 0).text()
-                l_project = table_widget_base_layer.item(row, 1).text()
-                l_name = table_widget_base_layer.item(row, 2).text()
-                l_title = table_widget_base_layer.item(row, 3).text()
-                l_image_format = table_widget_base_layer.item(row, 4).text()
-                if l_image_format not in ('png', 'png; mode=16bit', 'png; mode=8bit', 'jpg', 'jpeg'):
-                    l_image_format = 'png'
-                liz2json["lizmapExternalBaselayers"][l_name] = {
-                    "repository": l_repository,
-                    "project": l_project,
-                    "layerName": l_name,
-                    "layerTitle": l_title,
-                    "layerImageFormat": l_image_format,
-                    "order": row,
-                }
 
         if not isinstance(self.layerList, dict):
             # Wierd bug when the dialog was not having a server at the beginning

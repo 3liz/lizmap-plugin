@@ -931,7 +931,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.gb_Scales,
             self.gb_extent,
             self.gb_externalLayers,
-            self.gb_lizmapExternalBaselayers,
             self.gb_generalOptions,
             self.gb_interface,
             self.gb_baselayersOptions,
