@@ -14,18 +14,21 @@ class LocateByLayerDefinitions(BaseDefinitions):
         super().__init__()
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('The vector layer for the locate by layer.')
         }
         self._layer_config['fieldName'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Display field'),
             'default': None,
             'tooltip': tr('The field to display.')
         }
         self._layer_config['filterFieldName'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Optional group by field'),
             'default': '',
             'tooltip': tr(

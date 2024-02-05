@@ -142,9 +142,10 @@ from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.tools import cast_to_group, cast_to_layer
-from lizmap.widgets.check_project import Check
+from lizmap.widgets.check_project import Check, SourceField
 from lizmap.widgets.project_tools import (
     empty_baselayers,
+    is_layer_published_wfs,
     is_layer_wms_excluded,
 )
 
@@ -1951,13 +1952,9 @@ class Lizmap:
 
         self.layers_table['layouts']['manager'].layout_removed(name)
 
-    def check_wfs_is_checked(self, layer):
-        wfs_layers_list = self.project.readListEntry('WFSLayers', '')[0]
-        has_wfs_option = False
-        for wfs_layer in wfs_layers_list:
-            if layer.id() == wfs_layer:
-                has_wfs_option = True
-        if not has_wfs_option:
+    def check_wfs_is_checked(self, layer: QgsVectorLayer):
+        """ Check if the layer is published as WFS. """
+        if not is_layer_published_wfs(self.project, layer.id()):
             self.display_error(tr(
                 'The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
                 'QGIS Server tab in the "Project Properties" dialog.'))
@@ -3065,6 +3062,38 @@ class Lizmap:
                 )
             )
             self.dlg.enabled_simplify_geom(True)
+
+        data = {}
+        for key in self.layers_table.keys():
+            manager: TableManager = self.layers_table[key].get('manager')
+            if manager:
+                for layer_id, fields in manager.wfs_fields_used().items():
+                    if layer_id not in data.keys():
+                        data[layer_id] = []
+                    for f in fields:
+                        if f not in data[layer_id]:
+                            data[layer_id].append(f)
+
+        for layer_id, fields in data.items():
+            layer = self.project.mapLayer(layer_id)
+            if not is_layer_published_wfs(self.project, layer.id()):
+                self.dlg.check_results.add_error(
+                    Error(
+                        layer.name(),
+                        checks.MissingWfsLayer,
+                        source_type=SourceLayer(layer.name(), layer.id()),
+                    )
+                )
+
+            for field in fields:
+                if field in layer.excludeAttributesWfs():
+                    self.dlg.check_results.add_error(
+                        Error(
+                            field,
+                            checks.MissingWfsField,
+                            source_type=SourceField(field, layer.id()),
+                        )
+                    )
 
         results = use_estimated_metadata(self.project)
         for layer in results:

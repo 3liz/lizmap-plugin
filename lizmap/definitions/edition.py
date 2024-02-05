@@ -22,6 +22,7 @@ class EditionDefinitions(BaseDefinitions):
         super().__init__()
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('The vector layer for the edition.')
@@ -67,6 +68,7 @@ class EditionDefinitions(BaseDefinitions):
         }
         self._layer_config['snap_layers'] = {
             'type': InputType.Layers,
+            'wfs_required': True,
             'header': tr('Layers'),
             'default': '',
             'tooltip': tr('List of layers to snap on.'),

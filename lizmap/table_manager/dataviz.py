@@ -210,15 +210,22 @@ class TableManagerDataviz(TableManager):
                 # Customized error from the server about the request
                 # We should have a JSON
                 response = request.reply().content()
-                json_response = json.loads(response.data().decode('utf-8'))
-                errors = json_response.get('errors')
-                if errors:
-                    # Message from the server
-                    message = '<b>{}</b><br><br>{}'.format(errors.get('title'), errors.get('detail'))
-                elif json_response.get('errorMessage'):
-                    # Error from nginx or apache?
-                    message = '<b>{}</b><br><br>{}'.format(
-                        json_response.get('errorMessage'), json_response.get('errorCode'))
+                try:
+                    json_response = json.loads(response.data().decode('utf-8'))
+                except json.JSONDecodeError:
+                    message = tr(
+                        'Not possible to decode the response from the server, please check the content of the '
+                        'response.'
+                    )
+                else:
+                    errors = json_response.get('errors')
+                    if errors:
+                        # Message from the server
+                        message = '<b>{}</b><br><br>{}'.format(errors.get('title'), errors.get('detail'))
+                    elif json_response.get('errorMessage'):
+                        # Error from nginx or apache?
+                        message = '<b>{}</b><br><br>{}'.format(
+                            json_response.get('errorMessage'), json_response.get('errorCode'))
 
                 # Let's add some more context to help
                 message += '<br><br>' + tr("Given context for the request") + ' : <br>'

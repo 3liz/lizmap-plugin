@@ -33,12 +33,14 @@ class AtlasDefinitions(BaseDefinitions):
         self._use_single_row = True
         self._layer_config['layer'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('The vector layer for the atlas.')
         }
         self._layer_config['primaryKey'] = {
             'type': InputType.PrimaryKeyField,
+            'wfs_required': True,
             'header': tr('Primary key'),
             'default': None,
             'tooltip': tr('Layer primary key (must be integer for PostgreSQL).')
@@ -51,6 +53,7 @@ class AtlasDefinitions(BaseDefinitions):
         }
         self._layer_config['featureLabel'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Feature label'),
             'default': None,
             'tooltip': tr(
@@ -59,6 +62,7 @@ class AtlasDefinitions(BaseDefinitions):
         }
         self._layer_config['sortField'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Sort field'),
             'default': None,
             'tooltip': tr('Your atlas will be sorted according to this field.')

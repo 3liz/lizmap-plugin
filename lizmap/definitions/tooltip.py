@@ -14,12 +14,14 @@ class ToolTipDefinitions(BaseDefinitions):
         super().__init__()
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('The vector layer for the tooltip.')
         }
         self._layer_config['fields'] = {
             'type': InputType.Fields,
+            'wfs_required': True,
             'header': tr('Fields'),
             'default': None,
             'tooltip': tr('Fields to display in the tooltip.')

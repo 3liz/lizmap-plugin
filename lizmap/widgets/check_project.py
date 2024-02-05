@@ -143,6 +143,12 @@ class Levels:
         tr('Issue at the layer level'),
         QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg'),
     )
+    Field = Level(
+        'field',
+        tr('Field'),
+        tr('Issue at the field level'),
+        QIcon(':/images/themes/default/mSourceFields.svg'),
+    )
 
 
 class Check:
@@ -434,6 +440,42 @@ class Checks:
             Severities().blocking,
             QIcon(':/images/themes/default/mIconNoPyramid.svg'),
         )
+        self.MissingWfsLayer = Check(
+            'layer_not_in_wfs',
+            tr('Layer not published in the WFS'),
+            tr("The layer is used in one of the Lizmap tool, the layer needs to be in the WFS for Lizmap"),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'
+            ).format(
+                tr('Either enable WFS on this layer (Project properties, then "QGIS server" tab)'),
+                tr('Or remove this layer from a tool in Lizmap')
+            ),
+            Levels.Layer,
+            Severities().blocking,
+            QIcon(':/images/themes/default/mIconWfs.svg'),
+        )
+        self.MissingWfsField = Check(
+            'field_not_in_wfs',
+            tr('Field not published in the WFS'),
+            tr(
+                "The field is used in one the Lizmap tool (attribute table, dataviz, etc. This field must be published "
+                "in the WFS."),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'
+            ).format(
+                tr('Either enable this field in the WFS (layer properties, then in the "Field" tab'),
+                tr('Or remove this field from a tool in Lizmap')
+            ),
+            Levels.Field,
+            Severities().blocking,
+            QIcon(':/images/themes/default/mIconWfs.svg'),
+        )
         self.DuplicatedLayerNameOrGroup = Check(
             'duplicated_layer_name_or_group',
             tr('Duplicated layer name or group'),
@@ -723,6 +765,14 @@ class SourceLayer(Source):
         self.layer_id = layer_id
 
 
+class SourceField(Source):
+
+    """ For identifying a field in a layer in a project. """
+    def __init__(self, name, layer_id: str):
+        super().__init__(name)
+        self.layer_id = layer_id
+
+
 class SourceGroup(Source):
 
     """ For identifying a group in a project. """
@@ -734,6 +784,7 @@ class SourceType:
 
     """ List of sources in the project. """
 
+    Field = SourceField
     Layer = SourceLayer
     Groupe = SourceGroup
 
@@ -885,6 +936,16 @@ class TableCheck(QTableWidget):
         elif isinstance(error.source_type, SourceType.Groupe):
             item.setToolTip(error.source_type.name)
             item.setIcon(QIcon(":images/themes/default/mActionFolder.svg"))
+            item.setData(self.JSON, error.source_type.name)
+        elif isinstance(error.source_type, SourceType.Field):
+            layer = QgsProject.instance().mapLayer(error.source_type.layer_id)
+            item.setToolTip(tr(
+                'Field "{}" in layer name "{}"'
+            ).format(error.source_type.name, layer.name()))
+            # Override the text
+            item.setText('{} ({})'.format(error.source, layer.name()))
+            index = layer.fields().indexFromName(error.source_type.name)
+            item.setIcon(layer.fields().iconForField(index))
             item.setData(self.JSON, error.source_type.name)
         else:
             # TODO fix else

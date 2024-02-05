@@ -14,6 +14,7 @@ from lizmap.definitions.edition import EditionDefinitions, layer_provider
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.widgets.project_tools import is_layer_published_wfs
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -168,11 +169,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
 
         missing_layers = []
         for layer in layers:
-            wfs_layers_list = QgsProject.instance().readListEntry('WFSLayers', '')[0]
-            for wfs_layer in wfs_layers_list:
-                if layer == wfs_layer:
-                    break
-            else:
+            if not is_layer_published_wfs(QgsProject.instance(), layer):
                 missing_layers.append(layer)
         if missing_layers:
             missing_layers = [QgsProject.instance().mapLayer(layer_id).name() for layer_id in missing_layers]
