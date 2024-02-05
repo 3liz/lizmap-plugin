@@ -22,18 +22,21 @@ class AttributeTableDefinitions(BaseDefinitions):
         super().__init__()
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('The vector layer for the attribute table.')
         }
         self._layer_config['primaryKey'] = {
             'type': InputType.PrimaryKeyField,
+            'wfs_required': True,
             'header': tr('Primary key'),
             'default': None,
             'tooltip': tr('Primary key of the layer.')
         }
         self._layer_config['hiddenFields'] = {
             'type': InputType.Fields,
+            'wfs_required': False,
             'header': tr('Fields to hide'),
             'default': '',
             'tooltip': tr('List of fields to hide in the attribute table.')

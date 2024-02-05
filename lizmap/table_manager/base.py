@@ -6,7 +6,7 @@ import logging
 import os
 
 from collections import namedtuple
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -59,6 +59,7 @@ class TableManager:
         self.lwc_versions.append(LwcVersions.Lizmap_3_5)
         self.lwc_versions.append(LwcVersions.Lizmap_3_6)
         self.lwc_versions.append(LwcVersions.Lizmap_3_7)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_8)
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))
@@ -1114,3 +1115,71 @@ class TableManager:
                 row = self.table.rowCount()
                 self.table.setRowCount(row + 1)
                 self._edit_row(row, layer_data)
+
+    def wfs_fields_used(self) -> Dict[str, List[str]]:
+        """ List of layers and fields used in the table, needed in WFS. """
+        # Loop over the table definitions to fetch layers and fields columns
+        index_layer = None
+        index_fields = []
+        index_list_fields = []
+        index_traces = None
+        for i, key in enumerate(self.keys):
+            widget_type = self.definitions.layer_config[key]['type']
+
+            if not self.definitions.layer_config[key].get('wfs_required', False):
+                continue
+
+            if widget_type == InputType.Layer:
+                index_layer = i
+            elif widget_type in (InputType.Field, InputType.PrimaryKeyField):
+                index_fields.append(i)
+            elif widget_type == InputType.Fields:
+                index_list_fields.append(i)
+            elif widget_type == InputType.Collection:
+                index_traces = i
+
+        if index_layer is None:
+            return {}
+
+        # Loop over the data to fetch all cell contents
+        layers = {}
+        for row in range(self.table.rowCount()):
+            cell = self.table.item(row, index_layer)
+            layer_id = cell.data(Qt.UserRole)
+
+            if layer_id not in layers.keys():
+                layers[layer_id] = []
+
+            for i in index_fields:
+                cell = self.table.item(row, i)
+                field_text = cell.data(Qt.UserRole)
+                if not field_text:
+                    # Some field input are not required
+                    continue
+                if field_text in layers[layer_id]:
+                    continue
+
+                layers[layer_id].append(field_text)
+
+            for i in index_list_fields:
+                cell = self.table.item(row, i)
+                field_text = cell.data(Qt.UserRole)
+                if not field_text:
+                    # Some field input are not required
+                    continue
+                for f in field_text.split(','):
+                    if f in layers[layer_id]:
+                        continue
+                    layers[layer_id].append(f)
+
+            if index_traces is not None:
+                cell = self.table.item(row, index_traces)
+                field_json = cell.data(Qt.UserRole)
+                for trace in field_json:
+                    fields = ('y_field', 'z_field', 'colorfield')
+                    for f in fields:
+                        field_content = trace.get(f)
+                        if field_content:
+                            layers[layer_id].append(field_content)
+
+        return layers

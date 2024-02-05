@@ -49,18 +49,21 @@ class TimeManagerDefinitions(BaseDefinitions):
         super().__init__()
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('Layer with the date/time.')
         }
         self._layer_config['startAttribute'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Start'),
             'default': None,
             'tooltip': tr('Column with the date/time.')
         }
         self._layer_config['endAttribute'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('End'),
             'default': '',
             'tooltip': tr('Field with the end date/time.'),

@@ -133,6 +133,8 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
+
     def test_form_filter_3_7(self):
         """ Test to write to 3.6 format. """
         table_manager = TableManager(
@@ -190,6 +192,8 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
+
     def test_filter_by_login(self):
         """Test table manager with filter by login."""
         table = QTableWidget()
@@ -221,6 +225,8 @@ class TestTableManager(unittest.TestCase):
             }
         }
         self.assertDictEqual(data, expected)
+
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
 
     def test_layout_definitions(self):
         """ Test layout definitions. """
@@ -341,6 +347,8 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
+
     def test_dataviz_definitions(self):
         """Test dataviz collections keys."""
         table_manager = TableManager(
@@ -404,6 +412,8 @@ class TestTableManager(unittest.TestCase):
             ]
         }
         self.assertDictEqual(expected, data)
+
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
 
     def test_dataviz_legacy_3_3_with_1_trace(self):
         """Test table manager with dataviz format 3.3 with only 1 trace"""
@@ -555,6 +565,8 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(data, expected)
 
+        self.assertDictEqual({self.layer.id(): ['id', 'name']}, table_manager.wfs_fields_used())
+
     def test_dataviz_legacy_3_3_with_2_traces(self):
         """Test table manager with dataviz format 3.3."""
         table = QTableWidget()
@@ -704,6 +716,12 @@ class TestTableManager(unittest.TestCase):
         del data['0']['uuid']
         self.assertDictEqual(data, expected)
 
+        self.assertDictEqual(
+            {
+                self.layer.id(): ['id', 'name', 'name'],
+            },
+            table_manager.wfs_fields_used())
+
     def test_dataviz_box(self):
         """Box chart has an empty key."""
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
@@ -722,13 +740,13 @@ class TestTableManager(unittest.TestCase):
                 'type': 'box',
                 'x_field': 'id',
                 'aggregation': '',
-                'y_field': 'name',
+                'y_field': 'first name',
                 'color': '#00aaff',
-                'colorfield': '',
+                'colorfield': 'first color field',
                 'has_y2_field': 'True',
-                'y2_field': 'name',
+                'y2_field': 'second name',
                 'color2': '#ffaa00',
-                'colorfield2': '',
+                'colorfield2': 'second color field',
                 'popup_display_child_plot': 'False',
                 'only_show_child': 'True',
                 'layerId': layer.id(),
@@ -750,12 +768,12 @@ class TestTableManager(unittest.TestCase):
                 'traces': [
                     {
                         'color': '#00aaff',
-                        'colorfield': '',
-                        'y_field': 'name'
+                        'colorfield': 'first color field',
+                        'y_field': 'first name'
                     }, {
                         'color': '#ffaa00',
-                        'colorfield': '',
-                        'y_field': 'name'
+                        'colorfield': 'second color field',
+                        'y_field': 'second name'
                     }
                 ],
                 'trigger_filter': True,
@@ -772,6 +790,19 @@ class TestTableManager(unittest.TestCase):
         self.assertTrue('_plot_' in data['0']['uuid'])
         del data['0']['uuid']
         self.assertDictEqual(data, expected)
+
+        self.assertDictEqual(
+            {
+                layer.id(): [
+                    'id',
+                    'first name',
+                    'first color field',
+                    'second name',
+                    'second color field',
+                ]
+            },
+            table_manager.wfs_fields_used()
+        )
 
     def test_dataviz(self):
         """Test we can read dataviz 3.4 format."""
@@ -871,6 +902,8 @@ class TestTableManager(unittest.TestCase):
         dd_manager.add_current_plot_from_combo()
         self.assertEqual(1, dd_manager.count_lines())
 
+        self.assertDictEqual({self.layer.id(): ['id', 'name']}, table_manager.wfs_fields_used())
+
     def test_filter_by_polygon(self):
         """ Test table manager with filter by polygon. """
         table_manager = TableManager(
@@ -901,6 +934,8 @@ class TestTableManager(unittest.TestCase):
         json['layers'][0]['use_centroid'] = False  # Default value
         self.assertEqual(output, json)
 
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
+
     def test_tool_tip(self):
         """Test table manager with tooltip layer."""
         table = QTableWidget()
@@ -925,6 +960,8 @@ class TestTableManager(unittest.TestCase):
         json['lines'].pop('colorGeom')
         self.assertDictEqual(data, json)
 
+        self.assertDictEqual({self.layer.id(): ['id', 'name']}, table_manager.wfs_fields_used())
+
     def test_attribute_table(self):
         """Test table manager with attribute table."""
         table = QTableWidget()
@@ -936,7 +973,7 @@ class TestTableManager(unittest.TestCase):
         json = {
             'lines': {
                 'primaryKey': 'id',
-                'hiddenFields': 'id,name',
+                'hiddenFields': 'id,name,value',
                 'pivot': 'False',
                 'hideAsChild': 'False',
                 'hideLayer': 'False',
@@ -953,6 +990,8 @@ class TestTableManager(unittest.TestCase):
         json['lines']['custom_config'] = 'False'
 
         self.assertDictEqual(data, json)
+
+        self.assertDictEqual({self.layer.id(): ['id']}, table_manager.wfs_fields_used())
 
     def test_time_manager_table(self):
         """Test table manager with time manager."""
@@ -1020,6 +1059,8 @@ class TestTableManager(unittest.TestCase):
         self.assertEqual(table_manager.table.rowCount(), 1)
         data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, json)
+
+        self.assertDictEqual({self.layer.id(): ['id']}, table_manager.wfs_fields_used())
 
     def test_edition_layer(self):
         """Test table manager with edition layer."""
@@ -1099,6 +1140,8 @@ class TestTableManager(unittest.TestCase):
             }
         }
         self.assertDictEqual(json, data)
+
+        self.assertDictEqual({self.layer.id(): []}, table_manager.wfs_fields_used())
 
     def test_locate_by_layer(self):
         """Test table manager with locate by layer."""
@@ -1184,6 +1227,12 @@ class TestTableManager(unittest.TestCase):
             },
         }
         self.assertDictEqual(data, expected)
+
+        self.assertDictEqual(
+            {
+                layer_2.id(): ['name'],
+                self.layer.id(): ['name', 'id']
+            }, table_manager.wfs_fields_used())
 
     def test_unavailable_layer_table_manager(self):
         """ Test we can keep layer which is unavailable at the moment. """
@@ -1378,6 +1427,8 @@ class TestTableManager(unittest.TestCase):
         table_manager.from_json(new_json)
         self.assertEqual(table_manager.table.rowCount(), 1)
         table_manager.truncate()
+
+        self.assertDictEqual({}, table_manager.wfs_fields_used())
 
     def test_table_manager_3_3(self):
         """Test we can read/write to LWC 3.3 format."""

@@ -185,12 +185,14 @@ class DatavizDefinitions(BaseDefinitions):
         }
         self._layer_config['layerId'] = {
             'type': InputType.Layer,
+            'wfs_required': True,
             'header': tr('Layer'),
             'default': None,
             'tooltip': tr('The vector layer for the graph.')
         }
         self._layer_config['x_field'] = {
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('X field'),
             'default': '',
             'tooltip': tr('X field of your graph, it might be empty according to the kind of graph (box).')
@@ -206,6 +208,7 @@ class DatavizDefinitions(BaseDefinitions):
         }
         self._layer_config['traces'] = {
             'type': InputType.Collection,
+            'wfs_required': True,
             'header': tr('Traces'),
             'tooltip': tr('Textual representations of traces'),
             'items': [
@@ -219,6 +222,7 @@ class DatavizDefinitions(BaseDefinitions):
         self._layer_config['y_field'] = {
             'plural': 'y{}_field',
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Y field'),
             'default': '',
             'tooltip': tr('The Y field of your graph.')
@@ -233,6 +237,7 @@ class DatavizDefinitions(BaseDefinitions):
         self._layer_config['colorfield'] = {
             'plural': 'colorfield{}',
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Color field'),
             'default': '',
             'tooltip': tr(
@@ -243,6 +248,7 @@ class DatavizDefinitions(BaseDefinitions):
         self._layer_config['z_field'] = {
             'plural': 'z_field_{}',
             'type': InputType.Field,
+            'wfs_required': True,
             'header': tr('Z field'),
             'default': '',
             'tooltip': tr('The Z field of your graph.'),

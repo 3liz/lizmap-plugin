@@ -28,6 +28,7 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 from lizmap.tools import is_database_layer
+from lizmap.widgets.project_tools import is_layer_published_wfs
 
 
 class BaseEditionDialog(QDialog):
@@ -248,10 +249,8 @@ class BaseEditionDialog(QDialog):
     @staticmethod
     def is_layer_in_wfs(layer: QgsVectorLayer) -> Union[None, str]:
         """ Check if the layer in the WFS capabilities. """
-        # noinspection PyArgumentList
-        for wfs_layer in QgsProject.instance().readListEntry('WFSLayers', '')[0]:
-            if layer.id() == wfs_layer:
-                return None
+        if is_layer_published_wfs(QgsProject.instance(), layer.id()):
+            return None
 
         msg = tr(
             'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'

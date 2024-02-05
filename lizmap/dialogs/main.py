@@ -238,7 +238,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
             'Open the help in the web-browser'
         ))
         self.buttonBox.button(QDialogButtonBox.Ok).setToolTip(tr(
-            'The Lizmap configuration file is generated and the dialog is closed.'
+            'The Lizmap configuration file is generated and the dialog is closed, except if there is at least one '
+            'blocking check.'
         ))
         self.buttonBox.button(QDialogButtonBox.Cancel).setToolTip(tr(
             'The Lizmap configuration file is not generated and the dialog is closed.'
