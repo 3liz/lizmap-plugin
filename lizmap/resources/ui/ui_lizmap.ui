@@ -1721,25 +1721,39 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_3">
-                           <item>
-                            <widget class="QLabel" name="label_group_visibility">
-                             <property name="text">
-                              <string>Group visibility</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="list_group_visibility"/>
-                           </item>
-                           <item>
-                            <widget class="QPushButton" name="button_wizard_group_visibility_layer">
-                             <property name="text">
-                              <string notr="true">WIZARD</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                          <widget class="QWidget" name="widget_group_visibility" native="true">
+                           <layout class="QHBoxLayout" name="horizontalLayout_9">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QLabel" name="label_group_visibility">
+                              <property name="text">
+                               <string>Group visibility</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLineEdit" name="list_group_visibility"/>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="button_wizard_group_visibility_layer">
+                              <property name="text">
+                               <string notr="true">WIZARD</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
                          </item>
                         </layout>
                        </widget>
