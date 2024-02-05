@@ -1150,6 +1150,13 @@ class TableManager:
             if layer_id not in layers.keys():
                 layers[layer_id] = []
 
+            if self.definitions.key() == 'editionLayers':
+                # For editing capabilities, the PK is not asked in the UI
+                # We add it on the fly to check if the PK is published in the WFS
+                # At this step, there must be a primary key set, because the layer must be stored in PostgreSQL
+                # In tests, on a GeoJSON, this will be an empty string
+                layers[layer_id].append(self.project.mapLayer(layer_id).dataProvider().uri().keyColumn())
+
             for i in index_fields:
                 cell = self.table.item(row, i)
                 field_text = cell.data(Qt.UserRole)

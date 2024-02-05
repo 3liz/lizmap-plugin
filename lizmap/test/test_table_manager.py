@@ -1141,7 +1141,13 @@ class TestTableManager(unittest.TestCase):
         }
         self.assertDictEqual(json, data)
 
-        self.assertDictEqual({self.layer.id(): []}, table_manager.wfs_fields_used())
+        self.assertDictEqual(
+            {
+                self.layer.id(): [
+                    ''  # In a GeoJSON, the primary key is empty. But in production, a PostgreSQL layer will have a PK
+                ]
+            },
+            table_manager.wfs_fields_used())
 
     def test_locate_by_layer(self):
         """Test table manager with locate by layer."""
