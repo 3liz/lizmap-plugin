@@ -106,6 +106,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             self.edit_geometry.setEnabled(True)
             self.label_edit_geometry.setEnabled(True)
             self.label_without_geom.setEnabled(True)
+            self.group_box_snapping.setEnabled(True)
         else:
             self.without_geom.setEnabled(False)
             self.edit_geometry.setEnabled(False)
@@ -113,6 +114,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             self.label_without_geom.setEnabled(False)
             self.without_geom.setChecked(False)
             self.edit_geometry.setChecked(False)
+            self.group_box_snapping.setEnabled(False)
 
     def open_wizard_group(self):
         """ When the user clicks on the group wizard. """
