@@ -508,47 +508,6 @@ QListWidget::item::selected {
                </item>
               </layout>
              </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <item>
-                <widget class="QLabel" name="label_qgis_server_plugins">
-                 <property name="text">
-                  <string>QGIS Server plugins</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_lizmap_plugin">
-                 <property name="text">
-                  <string>TextLabel</string>
-                 </property>
-                 <property name="openExternalLinks">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_wfsoutputextension_plugin">
-                 <property name="text">
-                  <string>TextLabel</string>
-                 </property>
-                 <property name="openExternalLinks">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_atlasprint_plugin">
-                 <property name="text">
-                  <string>TextLabel</string>
-                 </property>
-                 <property name="openExternalLinks">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
             </layout>
            </item>
            <item>

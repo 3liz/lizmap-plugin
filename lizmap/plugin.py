@@ -4278,13 +4278,6 @@ class Lizmap:
         if QGIS_PLUGIN_MANAGER:
             plugin_manager = QgisPluginManager()
             self.update_plugin = plugin_manager.current_plugin_needs_update()
-            # self.dlg.label_lizmap_plugin.setText(plugin_manager.lizmap_version())
-            # self.dlg.label_wfsoutputextension_plugin.setText(plugin_manager.wfs_output_extension_version())
-            # self.dlg.label_atlasprint_plugin.setText(plugin_manager.atlas_print_version())
-        self.dlg.label_lizmap_plugin.setVisible(False)
-        self.dlg.label_wfsoutputextension_plugin.setVisible(False)
-        self.dlg.label_atlasprint_plugin.setVisible(False)
-        self.dlg.label_qgis_server_plugins.setVisible(False)
 
         self.version_checker = VersionChecker(self.dlg, VERSION_URL, self.is_dev_version)
         self.version_checker.fetch()
