@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.2.0 - 2024-02-06
+
 * Add two new checks :
   * layers missing from the WFS
   * fields missing from the WFS
