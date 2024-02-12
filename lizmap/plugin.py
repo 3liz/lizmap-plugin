@@ -3621,9 +3621,15 @@ class Lizmap:
             self.dlg.minimum_scale,
             self.dlg.maximum_scale,
         )
+        max_value = 2000000000
+
+        if max_scale > max_value:
+            # Avoid an OverflowError Python error
+            max_scale = max_value
+
         for widget in scales_widget:
             widget.setMinimum(1)
-            widget.setMaximum(2000000000)
+            widget.setMaximum(max_value)
             widget.setSingleStep(5000)
 
         map_scales = [str(i) for i in map_scales]
