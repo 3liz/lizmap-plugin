@@ -100,8 +100,8 @@ class TestUiLizmapDialog(unittest.TestCase):
         project.setFileName(temporary_file_path())
 
         lizmap = Lizmap(get_iface(), lwc_version=lwc_version)
-        baselayers = lizmap._add_group_legend('baselayers', parent=None, project=project)
-        lizmap._add_group_legend('project-background-color', baselayers, project=project)
+        baselayers = lizmap._add_group_legend('baselayers', exclusive=True, parent=None, project=project)
+        lizmap._add_group_legend('project-background-color', exclusive=False, parent=baselayers, project=project)
         hidden = lizmap._add_group_legend('hidden', project=project)
 
         # For testing, we add OSM as hidden layer

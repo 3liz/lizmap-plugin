@@ -2445,7 +2445,8 @@ class Lizmap:
         return None
 
     def _add_group_legend(
-            self, label: str, parent: QgsLayerTreeGroup = None, project: QgsProject = None) -> QgsLayerTreeGroup:
+            self, label: str, exclusive: bool = False, parent: QgsLayerTreeGroup = None,
+            project: QgsProject = None) -> QgsLayerTreeGroup:
         """ Add a group in the legend. """
         if project is None:
             project = self.project
@@ -2460,7 +2461,8 @@ class Lizmap:
             return qgis_group
 
         new_group = root_group.addGroup(label)
-        new_group.setIsMutuallyExclusive(True, -1)
+        if exclusive:
+            new_group.setIsMutuallyExclusive(True, -1)
         return new_group
 
     def disable_legacy_empty_base_layer(self):
@@ -2489,7 +2491,7 @@ class Lizmap:
         label = 'overview'
         if self.current_lwc_version() < LwcVersions.Lizmap_3_7:
             label = 'Overview'
-        self._add_group_legend(label)
+        self._add_group_legend(label, exclusive=False)
 
     def add_osm_mapnik(self):
         """ Add the OSM mapnik base layer. """
