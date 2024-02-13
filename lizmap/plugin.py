@@ -1718,17 +1718,8 @@ class Lizmap:
 
                 if item['wType'] == 'wysiwyg':
                     item['widget'].set_html_content(str(item['default']))
-
-                # if item['wType'] in ('html'):
-                # if isinstance(item['default'], (list, tuple)):
-                # item['widget'].setHtml(", ".join(map(str, item['default'])))
-                # else:
-                # item['widget'].setHtml(str(item['default']))
-                # if jsonOptions.has_key(key):
-                # if isinstance(jsonOptions[key], (list, tuple)):
-                # item['widget'].setHtml(", ".join(map(str, jsonOptions[key])))
-                # else:
-                # item['widget'].setHtml(str(jsonOptions[key]))
+                    if key in json_options:
+                        item['widget'].set_html_content(json_options[key])
 
                 if item['wType'] == 'spinbox':
                     item['widget'].setValue(int(item['default']))
