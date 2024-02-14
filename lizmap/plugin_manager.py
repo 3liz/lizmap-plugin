@@ -98,7 +98,11 @@ class QgisPluginManager:
         if current_version >= latest_version:
             # Need to check this one if the previous check
             # The current version is equal to the version in QGIS plugin manager
-            LOGGER.critical("Version checker : running a higher version than on plugins.qgis.org")
+            LOGGER.warning(
+                "Version checker : running a higher version than on plugins.qgis.org : "
+                "current {current} >= latest {latest}".format(
+                    current='.'.join(current_version), latest='.'.join(latest_version))
+            )
             return False
 
         # Not the latest version at this stage
