@@ -2885,6 +2885,11 @@ class Lizmap:
             if to_bool(use_layer_id, False):
                 self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.WmsUseLayerIds))
 
+        if lwc_version >= LwcVersions.Lizmap_3_7:
+            if self.project.crs().hasAxisInverted():
+                # https://github.com/3liz/lizmap-web-client/issues/4191
+                self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.CrsInvertedAxis))
+
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
             target_status = ReleaseStatus.Unknown
