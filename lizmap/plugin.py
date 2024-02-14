@@ -819,6 +819,7 @@ class Lizmap:
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
         self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
+        self.lwc_version_changed()
         self.dlg.refresh_combo_repositories()
 
         self.dlg.tab_dataviz.setCurrentIndex(0)
@@ -3865,6 +3866,8 @@ class Lizmap:
 
         if not lwc_version:
             lwc_version = self.current_lwc_version()
+            # Let's trigger UI refresh according to latest releases, if it wasn't available on startup
+            self.lwc_version_changed()
 
         defined_env_target = os.getenv('LIZMAP_TARGET_VERSION')
         if defined_env_target:
