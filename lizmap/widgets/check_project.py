@@ -440,6 +440,24 @@ class Checks:
             Severities().blocking,
             QIcon(':/images/themes/default/mIconNoPyramid.svg'),
         )
+        self.CrsInvertedAxis = Check(
+            'crs_has_inverted_axis',
+            tr('The project CRS has inverted axis'),
+            tr(
+                "The current project CRS has inverted axis. Due to a bug in the stack between QGIS Server, Proj4js, "
+                "OpenLayers 8 and Lizmap Web Client ≥ 3.7, using a CRS with inverted axis is discouraged. Tiles might "
+                "be transparent."),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '</ul>'
+            ).format(
+                tr('Switch to a CRS having not inverted axis.'),
+            ),
+            Levels.Project,
+            Severities().important,
+            QIcon(':/images/themes/default/propertyicons/CRS.svg'),
+        )
         self.MissingWfsLayer = Check(
             'layer_not_in_wfs',
             tr('Layer not published in the WFS'),
