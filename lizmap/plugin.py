@@ -433,7 +433,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_8] = [
             # Single WMS
-            self.dlg.cbWmsSingleRequestForAllLayers,
+            self.dlg.checkbox_wms_single_request_all_layers,
         ]
 
         self.lizmap_cloud = [
@@ -484,7 +484,7 @@ class Lizmap:
         self.global_options['hideOverview']['widget'] = self.dlg.cbHideOverview
         self.global_options['hideNavbar']['widget'] = self.dlg.cbHideNavbar
         self.global_options['hideProject']['widget'] = self.dlg.cbHideProject
-        self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.cbWmsSingleRequestForAllLayers
+        self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.checkbox_wms_single_request_all_layers
         self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
         self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
         self.global_options['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength

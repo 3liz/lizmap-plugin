@@ -17,7 +17,7 @@ class TestCodeLayout(unittest.TestCase):
     @staticmethod
     def ui_files():
         """ List of UI files in the plugin. """
-        return [x for x in Path(resources_path('ui')).iterdir() if x.suffix == 'ui']
+        return [x for x in Path(resources_path('ui')).iterdir() if x.suffix == '.ui']
 
     def test_qgis_widgets(self):
         """Test imports are correct in UI file."""

@@ -700,7 +700,7 @@ QListWidget::item::selected {
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="cbWmsSingleRequestForAllLayers">
+                   <widget class="QCheckBox" name="checkbox_wms_single_request_all_layers">
                     <property name="toolTip">
                      <string>All the map layers will be loaded as a single WMS image</string>
                     </property>
@@ -4843,7 +4843,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>server_combo</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbHideProject</tabstop>
-  <tabstop>cbWmsSingleRequestForAllLayers</tabstop>
+  <tabstop>checkbox_wms_single_request_all_layers</tabstop>
   <tabstop>inAcl</tabstop>
   <tabstop>button_wizard_group_visibility_project</tabstop>
   <tabstop>cbActivateMeasure</tabstop>
