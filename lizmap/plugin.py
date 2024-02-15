@@ -430,6 +430,8 @@ class Lizmap:
             # Scales
             self.dlg.use_native_scales,
             self.dlg.hide_scale_value,
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_8] = [
             # Single WMS
             self.dlg.cbWmsSingleRequestForAllLayers,
         ]
