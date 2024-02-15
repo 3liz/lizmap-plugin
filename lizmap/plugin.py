@@ -430,6 +430,8 @@ class Lizmap:
             # Scales
             self.dlg.use_native_scales,
             self.dlg.hide_scale_value,
+            # Single WMS
+            self.dlg.cbWmsSingleRequestForAllLayers,
         ]
 
         self.lizmap_cloud = [
