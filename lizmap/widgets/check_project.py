@@ -445,14 +445,16 @@ class Checks:
             tr('The project CRS has inverted axis'),
             tr(
                 "The current project CRS has inverted axis. Due to a bug in the stack between QGIS Server, Proj4js, "
-                "OpenLayers 8 and Lizmap Web Client ≥ 3.7, using a CRS with inverted axis is discouraged. Tiles might "
-                "be transparent."),
+                "OpenLayers 8 and Lizmap Web Client ≥ 3.7.0 and Lizmap Web Client < 3.7.4, using a CRS with inverted "
+                "axis is discouraged. Tiles might be transparent."),
             (
                 '<ul>'
+                '<li>{}</li>'
                 '<li>{}</li>'
                 '</ul>'
             ).format(
                 tr('Switch to a CRS having not inverted axis.'),
+                tr('Upgrade your Lizmap Web Client to 3.7.4.'),
             ),
             Levels.Project,
             Severities().important,
