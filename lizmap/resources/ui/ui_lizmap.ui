@@ -681,8 +681,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>808</width>
-                <height>1968</height>
+                <width>720</width>
+                <height>1325</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -696,16 +696,6 @@ QListWidget::item::selected {
                    <widget class="QCheckBox" name="cbHideProject">
                     <property name="text">
                      <string>Hide project in Lizmap Web Client</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbWmsSingleRequestForAllLayers">
-                    <property name="toolTip">
-                     <string>All the map layers will be loaded as a single WMS image</string>
-                    </property>
-                    <property name="text">
-                     <string>Load layers as single WMS layer</string>
                     </property>
                    </widget>
                   </item>
@@ -1431,8 +1421,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>200</height>
+                <width>497</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1517,8 +1507,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>490</width>
-                       <height>1349</height>
+                       <width>477</width>
+                       <height>1136</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2204,8 +2194,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>841</width>
-                <height>847</height>
+                <width>780</width>
+                <height>1143</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2619,8 +2609,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>529</width>
-                <height>404</height>
+                <width>497</width>
+                <height>373</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2744,8 +2734,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>302</height>
+                <width>450</width>
+                <height>283</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2908,8 +2898,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>324</height>
+                <width>450</width>
+                <height>300</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -3009,8 +2999,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>667</width>
-                <height>608</height>
+                <width>618</width>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3387,8 +3377,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>394</width>
-                <height>943</height>
+                <width>386</width>
+                <height>867</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3741,8 +3731,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>500</height>
+                <width>450</width>
+                <height>439</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3924,8 +3914,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>546</height>
+                <width>601</width>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4080,8 +4070,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>375</height>
+                <width>450</width>
+                <height>340</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -4196,8 +4186,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>368</height>
+                <width>450</width>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -4411,8 +4401,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>445</width>
-                <height>1104</height>
+                <width>791</width>
+                <height>797</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -4550,8 +4540,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
-                <height>704</height>
+                <width>791</width>
+                <height>797</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_72">
@@ -4781,23 +4771,23 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -4831,9 +4821,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbHideProject</tabstop>
-  <tabstop>cbWmsSingleRequestForAllLayers</tabstop>
   <tabstop>inAcl</tabstop>
   <tabstop>cbActivateMeasure</tabstop>
   <tabstop>cbActivatePrint</tabstop>
@@ -4947,6 +4937,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>up_dataviz_layer</tabstop>
   <tabstop>down_dataviz_layer</tabstop>
   <tabstop>liDatavizContainer</tabstop>
+  <tabstop>dataviz_html_template</tabstop>
   <tabstop>time_manager_table</tabstop>
   <tabstop>edit_time_manager_layer</tabstop>
   <tabstop>up_time_manager_layer</tabstop>
@@ -4965,108 +4956,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>edit_filter_form_button</tabstop>
   <tabstop>up_filter_form_button</tabstop>
   <tabstop>down_filter_form_button</tabstop>
-  <tabstop>repository_combo</tabstop>
-  <tabstop>send_webdav</tabstop>
-  <tabstop>add_first_server</tabstop>
-  <tabstop>publish_first_map</tabstop>
-  <tabstop>server_combo</tabstop>
-  <tabstop>table_server</tabstop>
-  <tabstop>add_server_button</tabstop>
-  <tabstop>remove_server_button</tabstop>
-  <tabstop>edit_server_button</tabstop>
-  <tabstop>move_up_server_button</tabstop>
-  <tabstop>move_down_server_button</tabstop>
-  <tabstop>refresh_versions_button</tabstop>
-  <tabstop>button_wizard_group_visibility_project</tabstop>
-  <tabstop>inBingKey</tabstop>
-  <tabstop>inIgnKey</tabstop>
-  <tabstop>inGoogleKey</tabstop>
-  <tabstop>inOCMKey</tabstop>
-  <tabstop>use_native_scales</tabstop>
-  <tabstop>list_map_scales</tabstop>
-  <tabstop>button_reset_scales</tabstop>
-  <tabstop>minimum_scale</tabstop>
-  <tabstop>maximum_scale</tabstop>
-  <tabstop>hide_scale_value</tabstop>
-  <tabstop>checkbox_scale_overview_map</tabstop>
-  <tabstop>input_ftp_host</tabstop>
-  <tabstop>input_ftp_user</tabstop>
-  <tabstop>input_ftp_password</tabstop>
-  <tabstop>input_ftp_directory</tabstop>
-  <tabstop>checkbox_ftp_transfer</tabstop>
-  <tabstop>button_ftp_reset</tabstop>
-  <tabstop>button_ftp_check</tabstop>
-  <tabstop>button_abstract_html</tabstop>
-  <tabstop>button_refresh_link</tabstop>
-  <tabstop>list_group_visibility</tabstop>
-  <tabstop>button_wizard_group_visibility_layer</tabstop>
-  <tabstop>button_maptip_preview</tabstop>
-  <tabstop>convert_html_maptip</tabstop>
-  <tabstop>btQgisPopupFromForm</tabstop>
-  <tabstop>button_generate_html_table</tabstop>
-  <tabstop>checkbox_popup_allow_download</tabstop>
-  <tabstop>add_group_hidden</tabstop>
-  <tabstop>add_group_baselayers</tabstop>
-  <tabstop>add_group_empty</tabstop>
-  <tabstop>add_group_overview</tabstop>
-  <tabstop>button_osm_mapnik</tabstop>
-  <tabstop>button_osm_opentopomap</tabstop>
-  <tabstop>button_ign_orthophoto</tabstop>
-  <tabstop>button_ign_plan</tabstop>
-  <tabstop>button_ign_cadastre</tabstop>
-  <tabstop>cbOCM</tabstop>
-  <tabstop>cb_open_topo_map</tabstop>
-  <tabstop>table_layout</tabstop>
-  <tabstop>edit_layout_form_button</tabstop>
-  <tabstop>up_layout_form_button</tabstop>
-  <tabstop>down_layout_form_button</tabstop>
-  <tabstop>checkbox_default_print</tabstop>
-  <tabstop>enable_dataviz_preview</tabstop>
-  <tabstop>combo_theme</tabstop>
-  <tabstop>button_add_dd_dataviz</tabstop>
-  <tabstop>button_remove_dd_dataviz</tabstop>
-  <tabstop>button_edit_dd_dataviz</tabstop>
-  <tabstop>combo_plots</tabstop>
-  <tabstop>button_add_plot</tabstop>
-  <tabstop>tree_dd_plots</tabstop>
-  <tabstop>tab_filtering</tabstop>
-  <tabstop>table_login_filter</tabstop>
-  <tabstop>preview_attribute_filtering</tabstop>
-  <tabstop>layer_filter_polygon</tabstop>
-  <tabstop>field_filter_polygon</tabstop>
-  <tabstop>filter_polygon_by_user</tabstop>
-  <tabstop>table_filter_polygon</tabstop>
-  <tabstop>add_filter_polygon_button</tabstop>
-  <tabstop>remove_filter_polygon_button</tabstop>
-  <tabstop>edit_filter_polygon_button</tabstop>
-  <tabstop>helper_list_group</tabstop>
-  <tabstop>helper_layer_group</tabstop>
-  <tabstop>helper_field_group</tabstop>
-  <tabstop>button_helper_group</tabstop>
-  <tabstop>tab_log</tabstop>
-  <tabstop>push_visit_settings</tabstop>
-  <tabstop>export_summary_table</tabstop>
-  <tabstop>table_checks</tabstop>
-  <tabstop>html_help</tabstop>
-  <tabstop>scrollArea_15</tabstop>
-  <tabstop>button_convert_ssl</tabstop>
-  <tabstop>button_use_estimated_md</tabstop>
-  <tabstop>button_trust_project</tabstop>
-  <tabstop>button_simplify_geom</tabstop>
-  <tabstop>scrollArea_14</tabstop>
-  <tabstop>checkbox_save_project</tabstop>
-  <tabstop>radio_beginner</tabstop>
-  <tabstop>radio_normal</tabstop>
-  <tabstop>radio_force_local_folder</tabstop>
-  <tabstop>safe_number_parent</tabstop>
-  <tabstop>radio_allow_parent_folder</tabstop>
-  <tabstop>safe_other_drive</tabstop>
-  <tabstop>safe_pg_service</tabstop>
-  <tabstop>help_pg_service</tabstop>
-  <tabstop>safe_pg_auth_db</tabstop>
-  <tabstop>safe_pg_user_password</tabstop>
-  <tabstop>safe_ecw</tabstop>
-  <tabstop>mOptionsListWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>
