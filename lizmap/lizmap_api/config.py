@@ -205,6 +205,9 @@ class LizmapConfig:
             'hideProject': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'wms_single_request_for_all_layers': {
+                'wType': 'checkbox', 'type': 'boolean', 'default': False
+            },
             'tmTimeFrameSize': {
                 'wType': 'spinbox', 'type': 'integer', 'default': 10
             },
