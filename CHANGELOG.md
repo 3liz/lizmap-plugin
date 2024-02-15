@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 4.2.1 - 2024-02-15
+
+* New option to Add checkbox to choose single WMS layer loading, contribution from @ghtmtt
+* Fix loading the Dataviz HTML template from a configuration file
+* Do not make the "Overview" group mutually exclusive
+* Avoid a Python error if the maximum scale is too big
+* Fixing some signals about the Lizmap Web Client version
+* Check project CRS if the projection has inverted axes and 3.7.0 <= LWC <= 3.7.3
+
 ## 4.2.0 - 2024-02-06
 
 * Add two new checks :
