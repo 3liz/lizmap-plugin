@@ -480,7 +480,7 @@ class Lizmap:
         self.global_options['hideOverview']['widget'] = self.dlg.cbHideOverview
         self.global_options['hideNavbar']['widget'] = self.dlg.cbHideNavbar
         self.global_options['hideProject']['widget'] = self.dlg.cbHideProject
-        self.global_options['wmsSingleRequestForAllLayers']['widget'] = self.dlg.cbWmsSingleRequestForAllLayers
+        self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.cbWmsSingleRequestForAllLayers
         self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
         self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
         self.global_options['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
