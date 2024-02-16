@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.2.2 - 2024-02-16
+
+* Fix a Python error when logging
+
 ## 4.2.1 - 2024-02-15
 
 * New option to Add checkbox to choose single WMS layer loading, contribution from @ghtmtt

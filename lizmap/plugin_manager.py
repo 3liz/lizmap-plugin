@@ -101,7 +101,9 @@ class QgisPluginManager:
             LOGGER.warning(
                 "Version checker : running a higher version than on plugins.qgis.org : "
                 "current {current} >= latest {latest}".format(
-                    current='.'.join(current_version), latest='.'.join(latest_version))
+                    current='.'.join([str(i) for i in current_version]),
+                    latest='.'.join([str(i) for i in latest_version])
+                )
             )
             return False
 
