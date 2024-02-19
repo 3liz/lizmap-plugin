@@ -6,8 +6,8 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.definitions.base import InputType
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

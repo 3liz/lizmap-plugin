@@ -5,16 +5,12 @@ import unittest
 from qgis.core import QgsField, QgsVectorLayer
 from qgis.PyQt.QtCore import QVariant
 
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
-from lizmap.tools import (
-    convert_lizmap_popup,
-    format_qgis_version,
-    format_version_integer,
-    is_database_layer,
-    merge_strings,
-    to_bool,
-    unaccent,
-)
+from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.layer import is_database_layer
+from lizmap.toolbelt.lizmap import convert_lizmap_popup
+from lizmap.toolbelt.resources import plugin_test_data_path
+from lizmap.toolbelt.strings import merge_strings, unaccent
+from lizmap.toolbelt.version import format_qgis_version, format_version_integer
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'

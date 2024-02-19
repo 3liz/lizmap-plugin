@@ -8,7 +8,7 @@ from qgis.core import QgsProject
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.toolbelt.resources import resources_path
 
 try:
     from ftplib import FTP, FTP_TLS, error_perm, socket

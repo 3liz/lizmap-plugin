@@ -22,7 +22,7 @@ from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from lizmap.definitions.definitions import RepositoryComboData, ServerComboData
 from lizmap.dialogs.main import LizmapDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.toolbelt.i18n import tr
 
 LOGGER = logging.getLogger("Lizmap")
 

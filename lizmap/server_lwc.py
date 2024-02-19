@@ -49,16 +49,11 @@ from lizmap.definitions.definitions import (
 from lizmap.definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import NamePage, ServerWizard
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.saas import is_lizmap_cloud
-from lizmap.tools import (
-    format_qgis_version,
-    lizmap_user_folder,
-    qgis_version,
-    to_bool,
-    user_settings,
-)
+from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
+from lizmap.toolbelt.version import format_qgis_version, qgis_version, version
 
 LOGGER = logging.getLogger('Lizmap')
 

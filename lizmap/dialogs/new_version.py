@@ -11,8 +11,8 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.qgis_settings import Settings
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui, resources_path
 
 LOGGER = logging.getLogger('Lizmap')
 FORM_CLASS = load_ui('ui_new_version.ui')

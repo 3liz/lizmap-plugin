@@ -13,7 +13,6 @@ from functools import partial
 from typing import Optional, Tuple
 
 from qgis.core import (
-    Qgis,
     QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsAuthMethodConfig,
@@ -47,13 +46,13 @@ from qgis.utils import OverrideCursor, iface
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.logger import log_function
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.version import version
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.version import qgis_version, version
 
-if Qgis.QGIS_VERSION_INT >= 32200:
+if qgis_version() >= 32200:
     from lizmap.server_dav import WebDav
 
-from lizmap.tools import lizmap_user_folder, qgis_version, user_settings
+from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
 
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
@@ -1091,7 +1090,7 @@ class ServerWizard(QWizard):
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs
             self.has_repository = False
-        if Qgis.QGIS_VERSION_INT < 32200:
+        if qgis_version() < 32200:
             # Missing PyQGIS class for managing webdav
             self.dav_url = None
         else:

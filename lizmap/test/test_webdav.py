@@ -6,12 +6,12 @@ import unittest
 
 from pathlib import Path
 
-from qgis.core import Qgis
+from lizmap.toolbelt.version import qgis_version
 
-if Qgis.QGIS_VERSION_INT >= 32200:
+if qgis_version() >= 32200:
     from lizmap.server_dav import WebDav
 
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.toolbelt.resources import plugin_test_data_path
 
 try:
     from lizmap.test.credentials import (
@@ -45,7 +45,7 @@ __email__ = 'info@3liz.org'
 def skip_test():
     if not CREDENTIALS:
         return True
-    if Qgis.QGIS_VERSION_INT < 32200:
+    if qgis_version() < 32200:
         return True
     if not LIZMAP_HOST_DAV:
         return True

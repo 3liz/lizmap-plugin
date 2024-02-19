@@ -9,8 +9,8 @@ from typing import List, Tuple
 from qgis.core import QgsDataSourceUri, QgsProject
 
 from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.tools import is_vector_pg, update_uri
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.layer import is_vector_pg, update_uri
 from lizmap.widgets.check_project import SourceLayer
 
 edit_connection_title = tr("You must edit the database connection.")

@@ -246,7 +246,7 @@
   <customwidget>
    <class>ListLayersSelection</class>
    <extends>QListWidget</extends>
-   <header>lizmap.qgis_plugin_tools.widgets.list_layers_selection</header>
+   <header>lizmap.widgets.list_layers_selection</header>
   </customwidget>
  </customwidgets>
  <resources/>

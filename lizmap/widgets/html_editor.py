@@ -13,7 +13,7 @@ from qgis.gui import QgsCodeEditorHTML, QgsExpressionBuilderDialog
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon
 
-from lizmap.tools import to_bool
+from lizmap.toolbelt.convert import to_bool
 
 try:
     from qgis.PyQt.QtWebKit import QWebSettings
@@ -28,8 +28,8 @@ if to_bool(os.getenv("CI"), default_value=False):
 
 from qgis.PyQt.QtWidgets import QWidget
 
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui, resources_path
 
 FORM_CLASS = load_ui('ui_html_editor.ui')
 

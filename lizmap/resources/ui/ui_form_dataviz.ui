@@ -315,7 +315,7 @@
   <customwidget>
    <class>JsonEditor</class>
    <extends>QTextEdit</extends>
-   <header>lizmap.qgis_plugin_tools.widgets.json_editor</header>
+   <header>lizmap.widgets.json_editor</header>
   </customwidget>
  </customwidgets>
  <resources/>

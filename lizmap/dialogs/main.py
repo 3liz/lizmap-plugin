@@ -69,15 +69,12 @@ from lizmap.definitions.online_help import (
     online_lwc_help,
     pg_service_help,
 )
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
-from lizmap.tools import (
-    format_qgis_version,
-    human_size,
-    qgis_version,
-    relative_path,
-)
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.layer import relative_path
+from lizmap.toolbelt.resources import load_ui, resources_path
+from lizmap.toolbelt.strings import human_size
+from lizmap.toolbelt.version import format_qgis_version, qgis_version
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
 LOGGER = logging.getLogger("Lizmap")

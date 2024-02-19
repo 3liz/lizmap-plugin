@@ -10,8 +10,8 @@ from qgis.testing.mocked import get_iface
 
 from lizmap.definitions.definitions import LwcVersions, PredefinedGroup
 from lizmap.plugin import Lizmap
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.test.utils import temporary_file_path
+from lizmap.toolbelt.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'

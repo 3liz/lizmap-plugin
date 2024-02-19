@@ -8,8 +8,8 @@ from qgis.PyQt.QtWidgets import (
     QListWidgetItem,
 )
 
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui
 
 FORM_CLASS = load_ui('ui_wizard_group.ui')
 

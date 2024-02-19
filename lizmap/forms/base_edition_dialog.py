@@ -20,14 +20,14 @@ from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.dialogs.wizard_group import WizardGroupDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
+from lizmap.toolbelt.i18n import tr
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from lizmap.tools import is_database_layer
+from lizmap.toolbelt.layer import is_database_layer
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
 

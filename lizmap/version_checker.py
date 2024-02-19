@@ -18,8 +18,8 @@ from lizmap.definitions.definitions import (
 from lizmap.definitions.online_help import current_locale
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.new_version import NewVersionDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.tools import lizmap_user_folder
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.plugin import lizmap_user_folder
 
 LOGGER = logging.getLogger('Lizmap')
 DAYS_BEING_OUTDATED = 90

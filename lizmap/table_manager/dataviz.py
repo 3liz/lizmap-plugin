@@ -30,13 +30,11 @@ from lizmap.definitions.dataviz import GraphType
 from lizmap.definitions.definitions import ServerComboData
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import ServerWizard
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import (
-    plugin_name,
-    resources_path,
-)
 from lizmap.table_manager.base import TableManager
-from lizmap.tools import merge_strings, to_bool
+from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import plugin_name, resources_path
+from lizmap.toolbelt.strings import merge_strings
 
 LOGGER = logging.getLogger(plugin_name())
 

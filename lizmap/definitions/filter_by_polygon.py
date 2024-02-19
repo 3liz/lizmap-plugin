@@ -11,13 +11,13 @@ from qgis.core import (
 )
 
 from lizmap.definitions.base import BaseDefinitions, InputType
-from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.toolbelt.i18n import tr
 
 __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.toolbelt.resources import resources_path
 
 
 @unique

@@ -7,8 +7,8 @@ from qgis.PyQt.QtGui import QIcon
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.layouts import Dpi, FormatType, LayoutsDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui, resources_path
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'

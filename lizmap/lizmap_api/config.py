@@ -9,11 +9,8 @@ import os
 from qgis.core import QgsMapLayer, QgsProject
 
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.version import (
-    format_version_integer,
-    version,
-)
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.version import format_version_integer, version
 
 
 class LizmapConfigError(Exception):

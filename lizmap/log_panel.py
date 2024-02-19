@@ -9,7 +9,7 @@ from qgis.PyQt.QtCore import QDateTime, QLocale
 from qgis.PyQt.QtWidgets import QTextEdit
 
 from lizmap.definitions.definitions import Html
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.toolbelt.resources import resources_path
 
 
 class LogPanel:

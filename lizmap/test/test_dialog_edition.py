@@ -15,8 +15,8 @@ from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
-from lizmap.tools import qgis_version
+from lizmap.toolbelt.resources import plugin_test_data_path
+from lizmap.toolbelt.version import qgis_version
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
