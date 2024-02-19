@@ -245,7 +245,7 @@ class Checks:
     def __init__(self):
         # Check QGIS_VERSION_INT
         qgis_32200 = tr(
-            'With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin to fix currently '
+            'With QGIS ≥ 3.22, you can use the auto-fix button in the dedicated panel of the plugin to fix currently '
             'loaded layers'
         )
         other_auth = tr('Either switch to another authentication mechanism')
@@ -540,7 +540,7 @@ class Checks:
                         'In the project properties → Data sources → at the bottom, there is a checkbox to trust the '
                         'project when the layer has no metadata.'
                     ),
-                    auto_fix=tr('With QGIS ≥ 3.22, you can use the auto-fix button in the "Settings" panel of the plugin'),
+                    auto_fix=tr('With QGIS ≥ 3.22, you can use the auto-fix button in the dedicated panel of the plugin'),
                 )
             ),
             Levels.Project,
