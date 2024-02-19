@@ -5,8 +5,8 @@ from qgis.testing import unittest
 
 from lizmap.definitions.dataviz import DatavizDefinitions
 from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.table_manager.base import TableManager
+from lizmap.toolbelt.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'

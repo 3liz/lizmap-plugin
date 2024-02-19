@@ -16,10 +16,10 @@ class InputType(Enum):
     CheckBoxAsDropdown = 'CheckBoxAsDropdown'  # QComboBox with only two options
     Field = 'Field'  # QgsFieldComboBox
     PrimaryKeyField = 'PrimaryKeyField'  # QgsFieldComboBox, enabled if not coming from a database (SQlite, GPKG, PG)
-    Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget in qgis_plugin_tools
+    Fields = 'Fields'  # QListWidget then ListFieldsSelection, a custom widget
     File = 'File'  # QgsFileWidget
-    HtmlWysiwyg = 'HtmlWysiwyg'  # Own Lizmap Wysiwyg widget
-    Json = 'Json'  # QTextEdit then JsonEditor, a custom widget in qgis_plugin_tools
+    HtmlWysiwyg = 'HtmlWysiwyg'  # Own Lizmap WYSIWYG widget
+    Json = 'Json'  # QTextEdit then JsonEditor
     Layer = 'Layer'  # QgsMapLayerComboBox
     Layers = 'Layers'  # ListLayersSelection
     List = 'List'  # QComboBox with multiple_selection=False (by default), otherwise a QgsCheckableComboBox

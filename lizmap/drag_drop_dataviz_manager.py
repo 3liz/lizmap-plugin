@@ -22,8 +22,8 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.dataviz import DatavizDefinitions
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import resources_path
 
 LOGGER = logging.getLogger('Lizmap')
 

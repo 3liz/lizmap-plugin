@@ -19,8 +19,9 @@ from qgis.core import (
 )
 
 from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.tools import cast_to_group, cast_to_layer, is_vector_pg, update_uri
+from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.layer import is_vector_pg, update_uri
 from lizmap.widgets.check_project import (
     RASTER_COUNT_CELL,
     Checks,

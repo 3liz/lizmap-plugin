@@ -6,8 +6,8 @@ from pathlib import Path
 
 from qgis.core import Qgis
 
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.server_lwc import ServerManager
+from lizmap.toolbelt.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'

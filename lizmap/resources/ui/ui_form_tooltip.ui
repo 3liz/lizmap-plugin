@@ -111,7 +111,7 @@
   <customwidget>
    <class>ListFieldsSelection</class>
    <extends>QListWidget</extends>
-   <header>lizmap.qgis_plugin_tools.widgets.list_fields_selection</header>
+   <header>lizmap.widgets.list_fields_selection</header>
   </customwidget>
  </customwidgets>
  <resources/>

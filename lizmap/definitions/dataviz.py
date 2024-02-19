@@ -6,9 +6,9 @@ from qgis.core import QgsVectorLayer
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
-from lizmap.tools import random_string
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import resources_path
+from lizmap.toolbelt.strings import random_string
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'

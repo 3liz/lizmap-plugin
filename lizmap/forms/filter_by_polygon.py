@@ -8,8 +8,8 @@ from lizmap.definitions.filter_by_polygon import (
     FilterMode,
 )
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui
 
 __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'

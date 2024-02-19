@@ -21,10 +21,10 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import plugin_name
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
-from lizmap.tools import to_bool
+from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import plugin_name
 
 LOGGER = logging.getLogger(plugin_name())
 

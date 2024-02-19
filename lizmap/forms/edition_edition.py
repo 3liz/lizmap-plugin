@@ -12,8 +12,8 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.edition import EditionDefinitions, layer_provider
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui, resources_path
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui, resources_path
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
 __copyright__ = 'Copyright 2020, 3Liz'

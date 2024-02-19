@@ -26,9 +26,9 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
-from lizmap.tools import qgis_version
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import resources_path
+from lizmap.toolbelt.version import qgis_version
 
 try:
     from qgis.PyQt.QtWebKitWidgets import QWebView

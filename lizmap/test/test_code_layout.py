@@ -5,7 +5,7 @@ import unittest
 
 from pathlib import Path
 
-from lizmap.qgis_plugin_tools.tools.resources import resources_path
+from lizmap.toolbelt.resources import resources_path
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'

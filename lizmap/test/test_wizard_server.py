@@ -2,7 +2,6 @@
 import os
 import unittest
 
-from qgis.core import Qgis
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QWizard
 
@@ -12,6 +11,7 @@ from lizmap.dialogs.server_wizard import (
     UrlPage,
     WizardPages,
 )
+from lizmap.toolbelt.version import qgis_version
 
 try:
     from lizmap.test.credentials import (
@@ -60,7 +60,7 @@ class TestWizardServer(unittest.TestCase):
 
         self.assertTrue(UrlPage.url_valid(QUrl("http://lizmap.local:8130/")))
 
-    @unittest.skipIf(Qgis.QGIS_VERSION_INT < 34000, "Always failing, do not use unexpectedSuccess as well")
+    @unittest.skipIf(qgis_version() < 34000, "Always failing, do not use unexpectedSuccess as well")
     def test_server_creation_wrong_data(self):
         """ Test to create a new server with wrong data only. """
         dialog = ServerWizard(None, [])

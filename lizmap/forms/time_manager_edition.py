@@ -11,9 +11,9 @@ from qgis.core import (
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
-from lizmap.tools import is_database_layer
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.layer import is_database_layer
+from lizmap.toolbelt.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

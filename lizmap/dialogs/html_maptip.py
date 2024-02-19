@@ -6,8 +6,8 @@ __email__ = 'info@3liz.org'
 from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui
 
 FORM_CLASS = load_ui('ui_html_maptip.ui')
 

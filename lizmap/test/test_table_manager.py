@@ -20,9 +20,9 @@ from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
 from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.layouts import TableManagerLayouts
+from lizmap.toolbelt.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

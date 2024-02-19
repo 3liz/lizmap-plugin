@@ -15,9 +15,9 @@ from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'

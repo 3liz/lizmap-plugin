@@ -16,7 +16,8 @@ from qgis.core import (
     QgsProject,
 )
 
-from lizmap.tools import cast_to_group, cast_to_layer, random_string, unaccent
+from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
+from lizmap.toolbelt.strings import random_string, unaccent
 
 LOGGER = logging.getLogger('Lizmap')
 

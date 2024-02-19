@@ -12,9 +12,9 @@ from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, Qt
 from qgis.utils import iface
 
 from lizmap.definitions.definitions import DEV_VERSION_PREFIX
-from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.server_lwc import ServerManager
-from lizmap.tools import plugin_date
+from lizmap.toolbelt.plugin import plugin_date
+from lizmap.toolbelt.version import version
 
 Plugin = namedtuple('Plugin', ['name', 'version', 'date', 'template'])
 

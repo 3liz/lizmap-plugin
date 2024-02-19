@@ -4,8 +4,8 @@ __email__ = 'info@3liz.org'
 
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
-from lizmap.qgis_plugin_tools.tools.resources import load_ui
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
+from lizmap.toolbelt.resources import load_ui
 
 FORM_CLASS = load_ui('ui_lizmap_popup.ui')
 

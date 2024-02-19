@@ -20,8 +20,8 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.online_help import pg_service_help
 from lizmap.definitions.qgis_settings import Settings
-from lizmap.qgis_plugin_tools.tools.i18n import tr
-from lizmap.tools import qgis_version
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.version import qgis_version
 
 # 10 000 * 10 000
 RASTER_COUNT_CELL = 100000000

@@ -7,7 +7,7 @@ import unittest
 from qgis.core import QgsProject
 
 from lizmap.ogc_project_validity import OgcProjectValidity
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.toolbelt.resources import plugin_test_data_path
 
 
 class TestShortNames(unittest.TestCase):

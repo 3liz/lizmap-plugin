@@ -141,7 +141,7 @@ from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
-from lizmap.tools import cast_to_group, cast_to_layer
+from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.widgets.check_project import Check, SourceField
 from lizmap.widgets.project_tools import (
     empty_baselayers,
@@ -158,34 +158,31 @@ except ModuleNotFoundError:
 
 from qgis.core import QgsProjectServerValidator
 
-from lizmap.qgis_plugin_tools.tools.custom_logging import (
-    add_logging_handler_once,
-    setup_logger,
-)
-from lizmap.qgis_plugin_tools.tools.ghost_layers import remove_all_ghost_layers
-from lizmap.qgis_plugin_tools.tools.i18n import setup_translation, tr
-from lizmap.qgis_plugin_tools.tools.resources import (
-    plugin_name,
-    plugin_path,
-    resources_path,
-)
-from lizmap.qgis_plugin_tools.tools.version import version
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.server_ftp import FtpServer
 from lizmap.server_lwc import MAX_DAYS, ServerManager
-from lizmap.tools import (
-    convert_lizmap_popup,
-    current_git_hash,
-    format_qgis_version,
-    format_version_integer,
+from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.custom_logging import (
+    add_logging_handler_once,
+    setup_logger,
+)
+from lizmap.toolbelt.git import current_git_hash, next_git_tag
+from lizmap.toolbelt.i18n import setup_translation, tr
+from lizmap.toolbelt.layer import (
     get_layer_wms_parameters,
     layer_property,
-    lizmap_user_folder,
-    next_git_tag,
-    qgis_version,
     relative_path,
-    to_bool,
-    unaccent,
+    remove_all_ghost_layers,
+)
+from lizmap.toolbelt.lizmap import convert_lizmap_popup
+from lizmap.toolbelt.plugin import lizmap_user_folder
+from lizmap.toolbelt.resources import plugin_name, plugin_path, resources_path
+from lizmap.toolbelt.strings import unaccent
+from lizmap.toolbelt.version import (
+    format_qgis_version,
+    format_version_integer,
+    qgis_version,
+    version,
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker

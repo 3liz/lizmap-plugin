@@ -7,7 +7,7 @@ import logging
 from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 
-from lizmap.qgis_plugin_tools.tools.i18n import tr
+from lizmap.toolbelt.i18n import tr
 from lizmap.widgets.html_editor import HtmlEditorWidget
 
 LOGGER = logging.getLogger('Lizmap')

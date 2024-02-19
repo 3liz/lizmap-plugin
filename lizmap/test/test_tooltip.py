@@ -16,7 +16,7 @@ from qgis.gui import QgsExternalResourceWidget
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
+from lizmap.toolbelt.resources import plugin_test_data_path
 from lizmap.tooltip import Tooltip
 
 __copyright__ = 'Copyright 2020, 3Liz'

@@ -6,8 +6,8 @@ from qgis.testing import unittest
 
 from lizmap.definitions.dataviz import GraphType
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
-from lizmap.qgis_plugin_tools.tools.resources import plugin_test_data_path
-from lizmap.tools import qgis_version
+from lizmap.toolbelt.resources import plugin_test_data_path
+from lizmap.toolbelt.version import qgis_version
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
