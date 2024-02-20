@@ -3445,7 +3445,15 @@ class Lizmap:
                 )
 
             for field in fields:
-                if field in layer.excludeAttributesWfs():
+                if qgis_version() >= 34000:
+                    # TODO fixme 3.34, check flags
+                    # https://github.com/qgis/QGIS/pull/54753
+                    excluded_field = (
+                        layer.fields().field(field).readableConfigurationFlag() & Qgis.FieldConfigurationFlag.HideFromWfs)
+                else:
+                    excluded_field = field in layer.excludeAttributesWfs()
+
+                if excluded_field:
                     self.dlg.check_results.add_error(
                         Error(
                             field,
