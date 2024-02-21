@@ -419,6 +419,7 @@ class TableManager:
                 if separator and isinstance(value, list):
                     value = separator.join(value)
 
+                # TODO check why value is type 'function'
                 cell.setText(value)
                 cell.setData(Qt.UserRole, value)
                 cell.setData(Qt.ToolTipRole, value)

@@ -130,6 +130,7 @@ from lizmap.project_checker_tools import (
     count_legend_items,
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter,
+    duplicated_rule_key_legend,
     project_invalid_pk,
     project_safeguards_checks,
     project_trust_layer_metadata,
@@ -2896,6 +2897,19 @@ class Lizmap:
             if json_meta and crs_inverted and is_not_4326 and json_meta['info']['version'] in impacted_versions:
                 # https://github.com/3liz/lizmap-web-client/issues/4191
                 self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.CrsInvertedAxis))
+
+            results = duplicated_rule_key_legend(self.project)
+            for layer_id, rules in results.items():
+                layer = self.project.mapLayer(layer_id)
+                for rule, count in rules.items():
+                    if count >= 2:
+                        self.dlg.check_results.add_error(
+                            Error(
+                                layer.name(),
+                                checks.DuplicatedRuleKeyLegend,
+                                source_type=SourceLayer(layer.name(), layer.id()),
+                            )
+                        )
 
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
