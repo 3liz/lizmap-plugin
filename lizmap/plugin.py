@@ -3232,9 +3232,20 @@ class Lizmap:
         if repository:
             metadata['instance_target_repository'] = repository
 
+        profiler = QgsApplication.profiler()
+        # We need to compute ourselves the total, QgsRuntimeProfiler::totalTime always returns 0
+        time_total = 0
+        group = 'projectload'
+        for child in profiler.childGroups('', group):
+            value = profiler.profileTime(child, group)
+            time_total += value
+
         liz2json = dict()
         liz2json['metadata'] = metadata
         liz2json['warnings'] = self.dlg.check_results.to_json_summarized()
+        liz2json['debug'] = {
+            'total_time': time_total,
+        }
         liz2json["options"] = dict()
         liz2json["layers"] = dict()
 
