@@ -460,6 +460,26 @@ class Checks:
             Severities().important,
             QIcon(':/images/themes/default/propertyicons/CRS.svg'),
         )
+        self.DuplicatedRuleKeyLegend = Check(
+            'duplicated_rule_key_legend',
+            tr('The layer has some duplicated "key" in the legend'),
+            tr(
+                "Due to a previous bug in QGIS, the project has some duplicated rule key in the legend."
+            ), (
+                '<ol>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ol>'
+            ).format(
+                tr('Close your project in QGIS Desktop'),
+                tr('Open a file editor for editing the QGS file manually'),
+                tr('Look for all occurrences of "key=\"{" and make sure all these keys are unique.'),
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/rendererRuleBasedSymbol.svg'),
+        )
         self.MissingWfsLayer = Check(
             'layer_not_in_wfs',
             tr('Layer not published in the WFS'),

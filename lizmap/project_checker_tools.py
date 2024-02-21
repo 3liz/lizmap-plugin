@@ -390,3 +390,24 @@ def authcfg_url_parameters(datasource: str) -> bool:
         if param[0].lower() == 'authcfg' and param[1] != '':
             return True
     return False
+
+
+def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]:
+    """ Check for all duplicated rule keys in the legend. """
+    results = {}
+    for layer in project.mapLayers().values():
+        renderer = layer.renderer()
+
+        results[layer.id()] = {}
+
+        # From QGIS source code :
+        # https://github.com/qgis/QGIS/blob/71499aacf431d3ac244c9b75c3d345bdc53572fb/src/core/symbology/qgsrendererregistry.cpp#L33
+        if renderer.type() in ("categorizedSymbol", "RuleRenderer", "graduatedSymbol"):
+
+            for item in renderer.legendSymbolItems():
+                if item.ruleKey() not in results[layer.id()].keys():
+                    results[layer.id()][item.ruleKey()] = 1
+                else:
+                    results[layer.id()][item.ruleKey()] += 1
+
+    return results
