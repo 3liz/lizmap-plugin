@@ -267,17 +267,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
         ).format(
             "https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html#"
             "actions-properties",
-            online_lwc_help('publish/configuration/action_popup.html').url()
+            online_lwc_help('publish/lizmap_plugin/actions.html').url()
         )
         self.label_help_action.setText(text)
         self.label_demo_action.setText(tr(
             "See the <a href=\"{}\">online demo</a> for an example, using actions in the 'Feature' scope."
         ).format(
             "https://demo.lizmap.com/lizmap/index.php/view/map?repository=features&project=fire_hydrant_actions"))
-        self.label_file_action.setText(
-            tr("Configuration file") + " : <a href=\"file://{}\">".format(self.action_file().parent)
-            + self.action_file().name + "</a>"
-        )
         self.label_file_action.setOpenExternalLinks(True)
 
         self.radio_beginner.setToolTip(tr(
@@ -996,7 +992,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         return Path(self.project.fileName() + '.action')
 
     def check_action_file_exists(self) -> bool:
-        """ Return boolean if an action file exists for the given project. """
+        """ Return boolean if an action file exists for the given project and update UI. """
+        self.label_file_action.setText(
+            tr("Configuration file") + " : <a href=\"file://{}\">".format(self.action_file().parent)
+            + self.action_file().name + "</a>"
+        )
+
         if self.action_file().is_file():
             self.label_file_action_found.setText('✔')
             return True
