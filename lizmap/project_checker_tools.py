@@ -17,6 +17,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QUrlQuery
 
 from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
@@ -376,3 +377,16 @@ def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: Li
             results = trailing_layer_group_name(child, project, results)
 
     return results
+
+
+def authcfg_url_parameters(datasource: str) -> bool:
+    """ Check for authcfg in a datasource, using a plain string.
+
+    This function is not using QgsDataSourceUri::authConfigId()
+    """
+    url_param = QUrlQuery(datasource)
+    params = url_param.queryItems()
+    for param in params:
+        if param[0].lower() == 'authcfg' and param[1] != '':
+            return True
+    return False
