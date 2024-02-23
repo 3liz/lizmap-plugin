@@ -2478,7 +2478,7 @@ class Lizmap:
     def add_group_empty(self):
         """ Add the default background color. """
         baselayers = self._add_group_legend(GroupNames.BaseLayers)
-        self._add_group_legend(GroupNames.BackgroundColor, baselayers)
+        self._add_group_legend(GroupNames.BackgroundColor, parent=baselayers)
         self.disable_legacy_empty_base_layer()
 
     def add_group_overview(self):
