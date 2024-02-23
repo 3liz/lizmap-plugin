@@ -2891,7 +2891,9 @@ class Lizmap:
             # To remove soon, after a few versions of LWC 3.7
             json_meta = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
             impacted_versions = ('3.7.0', '3.7.1', '3.7.2', '3.7.3')
-            if json_meta and self.project.crs().hasAxisInverted() and json_meta['info']['version'] in impacted_versions:
+            crs_inverted = self.project.crs().hasAxisInverted()
+            is_not_4326 = self.project.crs() != QgsCoordinateReferenceSystem('4326')
+            if json_meta and crs_inverted and is_not_4326 and json_meta['info']['version'] in impacted_versions:
                 # https://github.com/3liz/lizmap-web-client/issues/4191
                 self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.CrsInvertedAxis))
 
