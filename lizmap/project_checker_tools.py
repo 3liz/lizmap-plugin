@@ -396,6 +396,9 @@ def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]
     """ Check for all duplicated rule keys in the legend. """
     results = {}
     for layer in project.mapLayers().values():
+        if not layer.isSpatial():
+            continue
+
         renderer = layer.renderer()
 
         results[layer.id()] = {}
