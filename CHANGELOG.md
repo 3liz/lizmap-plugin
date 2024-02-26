@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 4.2.3 - 2024-02-26
+
+* New checks about :
+  * duplicated keys in the legend
+  * French IGN map provider
+* Fix loading the "default-background-color" in the legend
+* Fix link to online documentation about "Actions"
+* Add project loading time in the CFG file for testing purpose only
+* Some UX issues
+* Remove some code in backend
+
 ## 4.2.2 - 2024-02-16
 
 * Fix a Python error when logging
