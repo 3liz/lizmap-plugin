@@ -141,6 +141,9 @@ def project_safeguards_checks(
                 if layer.width() * layer.height() >= RASTER_COUNT_CELL:
                     results[SourceLayer(layer.name(), layer.id())] = checks.RasterWithoutPyramid
 
+            if french_geopf_authcfg_url_parameters(layer.source()) and prevent_auth_id:
+                results[SourceLayer(layer.name(), layer.id())] = checks.FrenchGeoPlateformeUrl
+
     return results
 
 
@@ -379,11 +382,14 @@ def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: Li
     return results
 
 
-def authcfg_url_parameters(datasource: str) -> bool:
+def french_geopf_authcfg_url_parameters(datasource: str) -> bool:
     """ Check for authcfg in a datasource, using a plain string.
 
     This function is not using QgsDataSourceUri::authConfigId()
     """
+    if 'data.geopf.fr' not in datasource.lower():
+        return False
+
     url_param = QUrlQuery(datasource)
     params = url_param.queryItems()
     for param in params:
