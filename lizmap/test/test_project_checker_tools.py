@@ -3,8 +3,8 @@ import unittest
 from qgis.core import QgsProject, QgsVectorLayer
 
 from lizmap.project_checker_tools import (
-    authcfg_url_parameters,
     duplicated_rule_key_legend,
+    french_geopf_authcfg_url_parameters,
     trailing_layer_group_name,
 )
 from lizmap.toolbelt.resources import plugin_test_data_path
@@ -43,17 +43,24 @@ class TestProjectTable(unittest.TestCase):
             },
             duplicated_rule_key_legend(project))
 
-    def raster_datasource_authcfg(self):
+    def french_raster_datasource_authcfg(self):
         """ Check for authcfg in raster datasource. """
         raster = (
             "contextualWMSLegend=0&amp;crs=EPSG:2154&amp;dpiMode=7&amp;featureCount=10&amp;format=image/jpeg&amp;"
-            "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://data.geopf.fr/private/wms-r?VERSION%3D1.3.0"
+            "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://other.url.fr/private/wms-r?VERSION%3D1.3.0"
             "&amp;authCFG=x3rzac9"
         )
-        self.assertTrue(authcfg_url_parameters(raster))
+        self.assertFalse(french_geopf_authcfg_url_parameters(raster))
+
+        raster = (
+            "contextualWMSLegend=0&amp;crs=EPSG:2154&amp;dpiMode=7&amp;featureCount=10&amp;format=image/jpeg&amp;"
+            "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://data.GEOPF.fr/private/wms-r?VERSION%3D1.3.0"
+            "&amp;authCFG=x3rzac9"
+        )
+        self.assertTrue(french_geopf_authcfg_url_parameters(raster))
 
         raster = (
             "contextualWMSLegend=0&amp;crs=EPSG:2154&amp;dpiMode=7&amp;featureCount=10&amp;format=image/jpeg&amp;"
             "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://data.geopf.fr/private/wms-r?VERSION%3D1.3.0"
         )
-        self.assertFalse(authcfg_url_parameters(raster))
+        self.assertFalse(french_geopf_authcfg_url_parameters(raster))

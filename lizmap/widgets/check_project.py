@@ -440,6 +440,31 @@ class Checks:
             Severities().blocking,
             QIcon(':/images/themes/default/mIconNoPyramid.svg'),
         )
+        self.FrenchGeoPlateformeUrl = Check(
+            'french_geopf_url',
+            tr('French Géoplateforme URL contains an authentification token'),
+            (
+                "Le raster utilise le système d'authentification de QGIS. Ce système n'est pas compatible avec QGIS "
+                "Server. Quelque soit votre version de QGIS, vous devez utiliser la méthode pour une version "
+                "antérieure à QGIS 3.28 sur le lien ci-dessous."
+            ),
+            (
+                '<ul>'
+                '<li>'
+                'Visiter la documentation sur <a href="{french_url}">le site de l\'IGN</a> en suivant la '
+                'documentation pour la version antérieur à 3.28.'
+                '</li>'
+                '</ul>'
+            ).format(
+                french_url=(
+                    "https://geoservices.ign.fr/documentation/services/utilisation-sig/tutoriel-qgis/"
+                    "gpf-wms-wmts-donneesnonlibres"
+                ),
+            ),
+            Levels.Layer,
+            Severities().blocking,
+            QIcon(':images/flags/fr.svg'),
+        )
         self.CrsInvertedAxis = Check(
             'crs_has_inverted_axis',
             tr('The project CRS has inverted axis'),
