@@ -16,6 +16,7 @@ from pathlib import Path
 from shutil import copyfile
 from typing import Dict, List, Optional, Tuple, Union
 
+from pyplugin_installer.version_compare import compareVersions
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -78,6 +79,7 @@ from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
+    DEV_VERSION_PREFIX,
     DURATION_MESSAGE_BAR,
     DURATION_SUCCESS_BAR,
     DURATION_WARNING_BAR,
@@ -3476,6 +3478,17 @@ class Lizmap:
 
         if self.dlg.check_qgis_version(message_bar=True):
             self.dlg.check_results.add_error(Error(tr('Global'), checks.ServerVersion))
+
+        if server_metadata:
+            min_required_version = server_metadata.get('lizmap_desktop_plugin_version')
+            if min_required_version:
+                current_version = version()
+                if current_version in DEV_VERSION_PREFIX:
+                    current_version = next_git_tag()
+                min_required_version = format_qgis_version(min_required_version)
+                min_required_version = '.'.join([str(i) for i in min_required_version])
+                if compareVersions(current_version, min_required_version) == 2:
+                    self.dlg.check_results.add_error(Error(tr('Global'), checks.PluginDesktopVersion))
 
         # Not blocking, we change it in the background
         if self.project.readNumEntry("WMSMaxAtlasFeatures", '')[0] <= 0:

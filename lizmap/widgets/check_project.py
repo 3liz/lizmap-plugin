@@ -291,6 +291,24 @@ class Checks:
             Severities().important,
             QIcon(':/images/themes/default/mIconWms.svg'),
         )
+        self.PluginDesktopVersion = Check(
+            'outdated_plugin_version',
+            tr('QGIS desktop Lizmap plugin outdated'),
+            tr(
+                "The QGIS desktop Lizmap plugin is not up to date. A new plugin version is available. You should "
+                "check from time to time your QGIS plugin manager."
+            ),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '</ul>'
+            ).format(
+                tr("Upgrade your plugin in QGIS Desktop"),
+            ),
+            Levels.GlobalConfig,
+            Severities().important,
+            QIcon(':/images/icons/qgis_icon.svg'),
+        )
         self.ServerVersion = Check(
             'old_qgis_server_version',
             tr('QGIS server version is lower than QGIS desktop version'),
