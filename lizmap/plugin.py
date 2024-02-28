@@ -18,6 +18,7 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
+    QgsDataSourceUri,
     QgsEditFormConfig,
     QgsExpression,
     QgsLayerTree,
@@ -2899,17 +2900,36 @@ class Lizmap:
                 self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.CrsInvertedAxis))
 
             results = duplicated_rule_key_legend(self.project)
-            for layer_id, rules in results.items():
-                layer = self.project.mapLayer(layer_id)
-                for rule, count in rules.items():
-                    if count >= 2:
-                        self.dlg.check_results.add_error(
-                            Error(
-                                layer.name(),
-                                checks.DuplicatedRuleKeyLegend,
-                                source_type=SourceLayer(layer.name(), layer.id()),
-                            )
+            if results:
+                self.dlg.log_panel.append(tr("Duplicated rule key in the legend"), Html.H2)
+                self.dlg.log_panel.append("<br>")
+                self.dlg.log_panel.start_table()
+                self.dlg.log_panel.append(
+                    "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(tr('Layer'), tr('Key'), tr('Count'))
+                )
+
+                i = 0
+                for layer_id, rules in results.items():
+                    layer = self.project.mapLayer(layer_id)
+                    # Add one error per layer is enough
+                    self.dlg.check_results.add_error(
+                        Error(
+                            layer.name(),
+                            checks.DuplicatedRuleKeyLegend,
+                            source_type=SourceLayer(layer.name(), layer.id()),
                         )
+                    )
+
+                    # But explain inside each layer which keys are duplicated
+                    for rule, count in rules.items():
+                        self.dlg.log_panel.add_row(i)
+                        self.dlg.log_panel.append(layer.name(), Html.Td)
+                        self.dlg.log_panel.append(rule, Html.Td)
+                        self.dlg.log_panel.append(count, Html.Td)
+                        self.dlg.log_panel.end_row()
+                        i += 1
+
+                self.dlg.log_panel.end_table()
 
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
@@ -2972,9 +2992,10 @@ class Lizmap:
                 lizmap_cloud=lizmap_cloud,
             )
             # Let's show a summary
+            self.dlg.log_panel.append(tr("Safeguards"), Html.H2)
             if lizmap_cloud:
                 self.dlg.log_panel.append(
-                    tr("According to global settings, overriden then by {} :").format(CLOUD_NAME), Html.P)
+                    tr("According to global settings, overridden then by {} :").format(CLOUD_NAME), Html.P)
             else:
                 self.dlg.log_panel.append(tr("According to global settings"), Html.P)
 
@@ -3065,12 +3086,33 @@ class Lizmap:
                 self.dlg.check_results.add_error(result)
 
             if lwc_version >= LwcVersions.Lizmap_3_7:
-                text = duplicated_layer_with_filter(self.project)
-                if text:
+                results = duplicated_layer_with_filter(self.project)
+                if results:
                     self.dlg.log_panel.append(tr('Optimisation about the legend'), Html.H2)
-                    (self.dlg.log_panel.append
-                     (tr('This issue not blocking the generation of the Lizmap configuration file.'), Html.P))
-                    self.dlg.log_panel.append(text, style=Html.P)
+                    self.dlg.log_panel.start_table()
+                    self.dlg.log_panel.append(
+                        "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(tr('Datasource'), tr('Filters'), tr('Layers'))
+                    )
+
+                    for i, (datasource, filters) in enumerate(results.items()):
+                        self.dlg.log_panel.add_row(i)
+                        datasource = QgsDataSourceUri.removePassword(QgsDataSourceUri(datasource).uri(False))
+                        self.dlg.log_panel.append(datasource, Html.Td)
+
+                        uri_filter = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.keys()]) + '</ul>'
+                        self.dlg.log_panel.append(uri_filter, Html.Td)
+
+                        layer_names = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.values()]) + '</ul>'
+                        self.dlg.log_panel.append(layer_names, Html.Td)
+
+                        self.dlg.log_panel.end_row()
+
+                    self.dlg.log_panel.end_table()
+
+                    self.dlg.log_panel.append(tr(
+                        'Checkbox are supported natively in the legend. Using filters for the same '
+                        'datasource are highly discouraged.'
+                    ), style=Html.P)
 
         results = simplify_provider_side(self.project)
         for layer in results:
@@ -3097,8 +3139,7 @@ class Lizmap:
         for layer_id, fields in data.items():
             layer = self.project.mapLayer(layer_id)
             if not layer:
-                # The layer is a ghost layer ?
-                # It will be cleaned later in the saving process
+                # Fixme, the layer has been removed from QGIS Desktop, but was still in the CFG file.
                 # :func:clean_project()
                 continue
 

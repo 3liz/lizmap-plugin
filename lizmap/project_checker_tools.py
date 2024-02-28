@@ -245,7 +245,7 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
     return result
 
 
-def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
+def duplicated_layer_with_filter(project: QgsProject) -> Optional[Dict[str, Dict[str, str]]]:
     """ Check for duplicated layers with the same datasource but different filters. """
     unique_datasource = {}
     for layer in project.mapLayers().values():
@@ -269,30 +269,8 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[str]:
     if len(unique_datasource.keys()) == 0:
         return None
 
-    text = ''
-    for datasource, filters in unique_datasource.items():
-        if len(filters.values()) <= 1:
-            continue
-
-        layer_names = ','.join([f"'{k}'" for k in filters.values()])
-        uri_filter = ','.join([f"'{k}'" for k in filters.keys()])
-        text += tr(
-            "Review layers <strong>{layers}</strong> having the same datasource '{datasource}' with these "
-            "filters {uri_filter}."
-        ).format(
-            layers=layer_names,
-            datasource=QgsDataSourceUri.removePassword(QgsDataSourceUri(datasource).uri(False)),
-            uri_filter=uri_filter
-        )
-        text += '<br>'
-
-    text += '<br>'
-    text += tr(
-        'Checkbox are supported natively in the legend. Using filters for the same '
-        'datasource are highly discouraged.'
-    )
-    text += '<br>'
-    return text
+    data = {k: v for k, v in unique_datasource.items() if len(v.values()) >= 2}
+    return data
 
 
 def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
@@ -419,4 +397,15 @@ def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]
                 else:
                     results[layer.id()][item.ruleKey()] += 1
 
-    return results
+    # Keep only duplicated keys
+    data = {}
+    for layer_id, keys in results.items():
+        data[layer_id] = {}
+        for key, count in keys.items():
+            if count >= 2:
+                data[layer_id][key] = count
+
+        if not data[layer_id]:
+            del data[layer_id]
+
+    return data

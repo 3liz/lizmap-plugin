@@ -495,11 +495,22 @@ class Checks:
                 '<li>{}</li>'
                 '<li>{}</li>'
                 '<li>{}</li>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '<li>{}</li>'
                 '</ol>'
             ).format(
+                tr(
+                    'Open the last tab in this panel, to have raw HTML logs, '
+                    'you have a table showing all duplicated keys'),
                 tr('Close your project in QGIS Desktop'),
-                tr('Open a file editor for editing the QGS file manually'),
-                tr('Look for all occurrences of "key=\"{" and make sure all these keys are unique.'),
+                tr('Open a file editor for editing the QGS XML file manually'),
+                tr(
+                    'Look for all occurrences of \'key="{KEY SHOWN IN THE TABLE}"\' '
+                    'and make sure all these keys are unique.'
+                ),
+                tr('After saving your file in the text editor, open it again in QGIS Desktop'),
+                tr('Validation should be OK'),
             ),
             Levels.Layer,
             Severities().important,

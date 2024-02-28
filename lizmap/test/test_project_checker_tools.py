@@ -37,7 +37,7 @@ class TestProjectTable(unittest.TestCase):
         self.assertDictEqual(
             {
                 'points_b7228e3a_5092_4ee2_b9e7_e1da96f8a395': {
-                    '{007c67f1-3e25-479d-b33b-fac4a0a705b0}': 1,
+                    # '{007c67f1-3e25-479d-b33b-fac4a0a705b0}': 1,
                     '{cdee1fdb-874c-4265-aa26-5e915d69563f}': 2,
                 }
             },
