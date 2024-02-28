@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.2.4 - 2024-02-28
+
+* Fix a Python error when saving the file if a layer was removed from the project and used in the configuration before
+* Improve error messages about these two checks :
+  * "Duplicated keys in the legend"
+  * "Duplicated layers with different filters", only in the HTML output
+
 ## 4.2.3 - 2024-02-26
 
 * New checks about :
