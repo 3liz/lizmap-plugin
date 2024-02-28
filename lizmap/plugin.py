@@ -3096,6 +3096,12 @@ class Lizmap:
 
         for layer_id, fields in data.items():
             layer = self.project.mapLayer(layer_id)
+            if not layer:
+                # The layer is a ghost layer ?
+                # It will be cleaned later in the saving process
+                # :func:clean_project()
+                continue
+
             if not is_layer_published_wfs(self.project, layer.id()):
                 self.dlg.check_results.add_error(
                     Error(
