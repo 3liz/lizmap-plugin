@@ -2457,6 +2457,7 @@ class Lizmap:
             return qgis_group
 
         new_group = root_group.addGroup(label)
+        new_group.setCustomProperty("server-always-export", True)
         if exclusive:
             new_group.setIsMutuallyExclusive(True, -1)
         return new_group
@@ -3221,6 +3222,10 @@ class Lizmap:
             return None
 
         # No more blocking issues, we can continue
+
+        empty_group = self.project.layerTreeRoot().findGroup(GroupNames.BackgroundColor)
+        if empty_group:
+            empty_group.setCustomProperty("server-always-export", True)
 
         if is_lizmap_cloud(server_metadata):
             if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
