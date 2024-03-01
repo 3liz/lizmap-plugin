@@ -15,3 +15,4 @@ pylint
 # PyQt5-stubs
 pre-commit
 webdavclient3
+psycopg[binary]
