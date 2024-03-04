@@ -8,8 +8,9 @@ import unittest
 # noinspection PyPackageRequirements
 import psycopg
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer
+from qgis.core import QgsDataSourceUri, QgsProviderRegistry, QgsVectorLayer
 
+from lizmap.dialogs.server_wizard import ServerWizard
 from lizmap.project_checker_tools import (
     auto_generated_primary_key_field,
     invalid_int8_primary_key,
@@ -118,11 +119,16 @@ class TestSql(unittest.TestCase):
         self.cursor.execute(sql)
         self.connection.commit()
 
+        self.assertTrue(ServerWizard._save_pg("test", self.uri()))
+
+        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+        connection = metadata.findConnection("test")
+
         uri = QgsDataSourceUri(self.uri())
         uri.setSchema(self.schema)
         uri.setTable(table_name)
         uri.setKeyColumn(field_name)
-        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        layer = QgsVectorLayer(connection.tableUri(self.schema, table_name), 'test', 'postgres')
 
         # Only testing QGIS
         new_uri = QgsDataSourceUri(layer.source())

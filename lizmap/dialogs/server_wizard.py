@@ -1153,9 +1153,9 @@ class ServerWizard(QWizard):
         self.currentPage().result_pg.setText(THUMBS)
         return True
 
-    @classmethod
+    @staticmethod
     @log_function
-    def _save_pg(cls, name: str, uri: QgsDataSourceUri) -> bool:
+    def _save_pg(name: str, uri: QgsDataSourceUri) -> bool:
         """ Save a PG connection from a URI. """
         LOGGER.info(
             "Create PG connection '{}' : host {}, database {}, user {}, pass XXXXX, port {}".format(
