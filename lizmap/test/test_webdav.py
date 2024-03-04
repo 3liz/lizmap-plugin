@@ -39,7 +39,7 @@ __email__ = 'info@3liz.org'
 
 # To run these tests:
 # * copy credentials.py.example to credentials.py
-# * edit info credentials.py
+# * edit info credentials.py about WebDav
 
 
 def skip_test():
