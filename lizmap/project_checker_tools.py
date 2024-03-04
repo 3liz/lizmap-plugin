@@ -168,12 +168,6 @@ def project_invalid_pk(project: QgsProject) -> Tuple[List[SourceLayer], List[Sou
 
 def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optional[str]]:
     """ If the primary key has been detected as tid/ctid but the field does not exist. """
-    # Example
-    # CREATE TABLE IF NOT EXISTS public.test_tid
-    # (
-    #     id bigint,
-    #     label text
-    # )
     # In QGIS source code, look for "Primary key is ctid"
 
     if layer.dataProvider().uri().keyColumn() == '':
@@ -194,12 +188,6 @@ def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optio
 
 def invalid_int8_primary_key(layer: QgsVectorLayer, check_field: str = 'int8') -> bool:
     """ If the layer has a primary key as int8, alias bigint. """
-    # Example
-    # CREATE TABLE IF NOT EXISTS france.test_bigint
-    # (
-    #     id bigint PRIMARY KEY,
-    #     label text
-    # )
     # QgsVectorLayer.primaryKeyAttributes is returning a list.
     if len(layer.primaryKeyAttributes()) != 1:
         # We might have either no primary key,
