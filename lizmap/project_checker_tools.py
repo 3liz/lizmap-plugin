@@ -192,7 +192,7 @@ def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optio
     return True, layer.dataProvider().uri().keyColumn()
 
 
-def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
+def invalid_int8_primary_key(layer: QgsVectorLayer, check_field: str = 'int8') -> bool:
     """ If the layer has a primary key as int8, alias bigint. """
     # Example
     # CREATE TABLE IF NOT EXISTS france.test_bigint
@@ -217,7 +217,7 @@ def invalid_int8_primary_key(layer: QgsVectorLayer) -> bool:
         return False
 
     field = layer.fields().field(primary_key)
-    return field.typeName().lower() == 'int8'
+    return field.typeName().lower() == check_field
 
 
 def duplicated_layer_name_or_group(project: QgsProject) -> dict:
