@@ -93,6 +93,26 @@ class TestSql(unittest.TestCase):
         )
         return uri
 
+    def _create_views(self, table_name: str):
+        """ Helper to create views. """
+        sql = (
+            f"CREATE VIEW {self.schema}.view_{table_name} AS SELECT * FROM {self.schema}.{table_name};"
+            f"CREATE MATERIALIZED VIEW {self.schema}.view_m_{table_name} AS SELECT * FROM {self.schema}.{table_name};"
+        )
+        self.cursor.execute(sql)
+        self.connection.commit()
+
+    def _vector_layer(self, table_name: str, prefix: str = '', pk: str = None) -> QgsVectorLayer:
+        """ Helper to have the QgsVectorLayer. """
+        uri = QgsDataSourceUri(self.uri())
+        uri.setSchema(self.schema)
+        uri.setTable(prefix + '_' + table_name if prefix else table_name)
+
+        if pk:
+            uri.setKeyColumn(pk)
+        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        return layer
+
     def tearDown(self) -> None:
         self.cursor.execute(f"DROP SCHEMA {self.schema} CASCADE;")
         self.connection.commit()
@@ -113,11 +133,9 @@ class TestSql(unittest.TestCase):
         self.cursor.execute(sql)
         self.connection.commit()
 
-        uri = QgsDataSourceUri(self.uri())
-        uri.setSchema(self.schema)
-        uri.setTable(table_name)
-        # uri.setKeyColumn(field_name)  # Whatever the value, QGIS will reject this field and will set "tid"
-        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        self._create_views(table_name)
+
+        layer = self._vector_layer(table_name)
 
         # Only testing QGIS
         self.assertListEqual([], layer.primaryKeyAttributes())
@@ -143,11 +161,9 @@ class TestSql(unittest.TestCase):
         self.cursor.execute(sql)
         self.connection.commit()
 
-        uri = QgsDataSourceUri(self.uri())
-        uri.setSchema(self.schema)
-        uri.setTable(table_name)
-        # uri.setKeyColumn(field_name)  # Let QGIS detecting the key
-        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        self._create_views(table_name)
+
+        layer = self._vector_layer(table_name)
 
         # Only testing QGIS
         self.assertListEqual([0], layer.primaryKeyAttributes())
@@ -159,8 +175,8 @@ class TestSql(unittest.TestCase):
         self.assertFalse(invalid_int8_primary_key(layer))
         self.assertTrue(invalid_int8_primary_key(layer, check_field="varchar"))
 
-    def test_invalid_int4_pk(self):
-        """ Test invalid int4 (bigint) primary key. """
+    def test_invalid_int8_pk(self):
+        """ Test invalid int8 (bigint) primary key. """
         table_name = "test_bigint"
         field_name = "id"
         sql = (
@@ -173,11 +189,9 @@ class TestSql(unittest.TestCase):
         self.cursor.execute(sql)
         self.connection.commit()
 
-        uri = QgsDataSourceUri(self.uri())
-        uri.setSchema(self.schema)
-        uri.setTable(table_name)
-        # uri.setKeyColumn(field_name)  # Let QGIS detecting the key
-        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        self._create_views(table_name)
+
+        layer = self._vector_layer(table_name)
 
         # Only testing QGIS
         self.assertListEqual([0], layer.primaryKeyAttributes())
@@ -207,11 +221,9 @@ class TestSql(unittest.TestCase):
         self.cursor.execute(sql)
         self.connection.commit()
 
-        uri = QgsDataSourceUri(self.uri())
-        uri.setSchema(self.schema)
-        uri.setTable(table_name)
-        # uri.setKeyColumn(field_name)  # Let QGIS detecting the key
-        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        self._create_views(table_name)
+
+        layer = self._vector_layer(table_name)
 
         # Only testing QGIS
         self.assertListEqual([0, 1], layer.primaryKeyAttributes())
@@ -243,11 +255,9 @@ class TestSql(unittest.TestCase):
         self.cursor.execute(sql)
         self.connection.commit()
 
-        uri = QgsDataSourceUri(self.uri())
-        uri.setSchema(self.schema)
-        uri.setTable(table_name)
-        # uri.setKeyColumn(field_name)  # Let QGIS detecting the key
-        layer = QgsVectorLayer(uri.uri(False), 'test', 'postgres')
+        self._create_views(table_name)
+
+        layer = self._vector_layer(table_name)
 
         # Only testing QGIS
         self.assertListEqual([0], layer.primaryKeyAttributes())
@@ -258,6 +268,64 @@ class TestSql(unittest.TestCase):
         # Lizmap check
         self.assertFalse(invalid_int8_primary_key(layer))
         self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
+
+        # View
+        # We need to give the PK
+        layer = self._vector_layer(table_name, "view", pk=field_name)
+
+        # Only testing QGIS
+        self.assertListEqual([0], layer.primaryKeyAttributes())
+        self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer.source())
+        self.assertEqual(field_name, new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_int8_primary_key(layer))
+        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
+        result, field = auto_generated_primary_key_field(layer)
+        self.assertFalse(result)
+        self.assertIsNone(field)
+
+        # Materialized view
+        # We need to give the PK
+        layer = self._vector_layer(table_name, "view_m", pk=field_name)
+
+        # Only testing QGIS
+        self.assertListEqual([0], layer.primaryKeyAttributes())
+        self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer.source())
+        self.assertEqual(field_name, new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_int8_primary_key(layer))
+        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
+        result, field = auto_generated_primary_key_field(layer)
+        self.assertFalse(result)
+        self.assertIsNone(field)
+
+    def test_valid_smallint_pk(self):
+        """ Test valid small int (int2) primary key. """
+        table_name = "test_int"
+        field_name = "id"
+        sql = (
+            f"CREATE TABLE IF NOT EXISTS {self.schema}.{table_name}"
+            f"("
+            f"  {field_name} SMALLINT PRIMARY KEY,"
+            f"  label TEXT"
+            f");"
+        )
+        self.cursor.execute(sql)
+        self.connection.commit()
+
+        self._create_views(table_name)
+
+        layer = self._vector_layer(table_name)
+
+        # Only testing QGIS
+        self.assertListEqual([0], layer.primaryKeyAttributes())
+        self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer.source())
+        self.assertEqual(field_name, new_uri.keyColumn())
 
 
 if __name__ == "__main__":

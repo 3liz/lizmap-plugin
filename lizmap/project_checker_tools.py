@@ -170,7 +170,7 @@ def auto_generated_primary_key_field(layer: QgsVectorLayer) -> Tuple[bool, Optio
     """ If the primary key has been detected as tid/ctid but the field does not exist. """
     # In QGIS source code, look for "Primary key is ctid"
 
-    if layer.dataProvider().uri().keyColumn() == '':
+    if layer.dataProvider().name() != 'postgres':
         # GeoJSON etc
         return False, None
 
