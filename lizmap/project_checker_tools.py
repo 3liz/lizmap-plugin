@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from qgis.core import (
+    QgsAbstractDatabaseProviderConnection,
     QgsDataSourceUri,
     QgsLayerTree,
     QgsLayerTreeNode,
@@ -412,3 +413,32 @@ def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]
             del data[layer_id]
 
     return data
+
+
+def table_type(layer: QgsVectorLayer) -> Optional[QgsAbstractDatabaseProviderConnection.TableFlag]:
+    """ Check the vector layer if it's a view. """
+    uri = layer.dataProvider().uri()
+
+    metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+    connection = metadata.createConnection(uri.uri(), {})
+
+    sql = (
+        f"SELECT relkind "
+        f"FROM pg_catalog.pg_class "
+        f"WHERE oid = '\"{uri.schema()}\".\"{uri.table()}\"'::regclass;"
+    )
+
+    result = connection.executeSql(sql)
+    if not result:
+        return None
+
+    if result[0][0] == 'r':
+        return QgsAbstractDatabaseProviderConnection.TableFlag.Vector
+
+    if result[0][0] == 'v':
+        return QgsAbstractDatabaseProviderConnection.TableFlag.View
+
+    if result[0][0] == 'm':
+        return QgsAbstractDatabaseProviderConnection.TableFlag.MaterializedView
+
+    return None

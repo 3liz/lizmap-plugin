@@ -8,12 +8,17 @@ import unittest
 # noinspection PyPackageRequirements
 import psycopg
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer
+from qgis.core import (
+    QgsAbstractDatabaseProviderConnection,
+    QgsDataSourceUri,
+    QgsVectorLayer,
+)
 
 from lizmap.project_checker_tools import (
     InvalidType,
     auto_generated_primary_key_field,
     invalid_type_primary_key,
+    table_type,
 )
 
 # To run these tests:
@@ -487,6 +492,34 @@ class TestSql(unittest.TestCase):
         result, field = auto_generated_primary_key_field(layer_materialized_view)
         self.assertFalse(result)
         self.assertIsNone(field)
+
+    def test_detect_view(self):
+        """ Test to check we can detect views. """
+        table_name = "test"
+        sql = (
+            f"CREATE TABLE IF NOT EXISTS {self.schema}.{table_name}"
+            f"("
+            f"  id SERIAL PRIMARY KEY,"
+            f"  label TEXT"
+            f");"
+        )
+        self.cursor.execute(sql)
+        self.connection.commit()
+
+        self._create_views(table_name)
+
+        self.assertEqual(
+            QgsAbstractDatabaseProviderConnection.TableFlag.Vector,
+            table_type(self._vector_layer(table_name))
+        )
+        self.assertEqual(
+            QgsAbstractDatabaseProviderConnection.TableFlag.View,
+            table_type(self._vector_layer(table_name, 'view'))
+        )
+        self.assertEqual(
+            QgsAbstractDatabaseProviderConnection.TableFlag.MaterializedView,
+            table_type(self._vector_layer(table_name, 'view_m'))
+        )
 
 
 if __name__ == "__main__":
