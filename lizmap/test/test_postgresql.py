@@ -11,8 +11,9 @@ import psycopg
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 
 from lizmap.project_checker_tools import (
+    InvalidType,
     auto_generated_primary_key_field,
-    invalid_int8_primary_key,
+    invalid_type_primary_key,
 )
 
 # To run these tests:
@@ -147,6 +148,34 @@ class TestSql(unittest.TestCase):
         self.assertTrue(result)
         self.assertEqual("tid", field)
 
+        # View
+        del layer
+        layer_view = self._vector_layer(table_name, 'view')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        result, field = auto_generated_primary_key_field(layer_view)
+        self.assertTrue(result)
+        self.assertEqual("", field)
+
+        # Materialized view
+        del layer_view
+        layer_materialized_view = self._vector_layer(table_name, 'view_m')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_materialized_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_materialized_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        result, field = auto_generated_primary_key_field(layer_materialized_view)
+        self.assertTrue(result)
+        self.assertEqual("", field)
+
     def test_invalid_varchar_pk(self):
         """ Test invalid varchar primary key. """
         table_name = "test_varchar"
@@ -172,8 +201,34 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_int8_primary_key(layer))
-        self.assertTrue(invalid_int8_primary_key(layer, check_field="varchar"))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
+        self.assertTrue(invalid_type_primary_key(layer, InvalidType.Varchar))
+
+        # View
+        del layer
+        layer_view = self._vector_layer(table_name, 'view')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+
+        # Materialized view
+        del layer_view
+        layer_materialized_view = self._vector_layer(table_name, 'view_m')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_materialized_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_materialized_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
 
     def test_invalid_int8_pk(self):
         """ Test invalid int8 (bigint) primary key. """
@@ -200,8 +255,34 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertTrue(invalid_int8_primary_key(layer))
-        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
+        self.assertTrue(invalid_type_primary_key(layer, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
+
+        # View
+        del layer
+        layer_view = self._vector_layer(table_name, 'view')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+
+        # Materialized view
+        del layer_view
+        layer_materialized_view = self._vector_layer(table_name, 'view_m')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_materialized_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_materialized_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
 
     def test_invalid_composite_pk(self):
         """ Test invalid composite primary keys. """
@@ -234,12 +315,44 @@ class TestSql(unittest.TestCase):
 
         # Lizmap check
         # TODO check what we expect
-        self.assertFalse(invalid_int8_primary_key(layer))
-        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
 
         result, field = auto_generated_primary_key_field(layer)
         self.assertFalse(result)
         self.assertIsNone(field)
+
+        # View
+        del layer
+        layer_view = self._vector_layer(table_name, 'view')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer_view)
+        self.assertTrue(result)
+        self.assertEqual('', field)
+
+        # Materialized view
+        del layer_view
+        layer_materialized_view = self._vector_layer(table_name, 'view_m')
+
+        # Only testing QGIS
+        self.assertListEqual([], layer_materialized_view.primaryKeyAttributes())
+        new_uri = QgsDataSourceUri(layer_materialized_view.source())
+        self.assertEqual("", new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer_materialized_view)
+        self.assertTrue(result)
+        self.assertEqual('', field)
 
     def test_valid_serial_pk(self):
         """ Test valid serial/integer primary key. """
@@ -266,40 +379,42 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_int8_primary_key(layer))
-        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
 
         # View
         # We need to give the PK
-        layer = self._vector_layer(table_name, "view", pk=field_name)
+        del layer
+        layer_view = self._vector_layer(table_name, "view", pk=field_name)
 
         # Only testing QGIS
-        self.assertListEqual([0], layer.primaryKeyAttributes())
-        self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
-        new_uri = QgsDataSourceUri(layer.source())
+        self.assertListEqual([0], layer_view.primaryKeyAttributes())
+        self.assertEqual(field_name, layer_view.fields().at(layer_view.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer_view.source())
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_int8_primary_key(layer))
-        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
-        result, field = auto_generated_primary_key_field(layer)
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer_view)
         self.assertFalse(result)
         self.assertIsNone(field)
 
         # Materialized view
+        del layer_view
         # We need to give the PK
-        layer = self._vector_layer(table_name, "view_m", pk=field_name)
+        layer_materialized_view = self._vector_layer(table_name, "view_m", pk=field_name)
 
         # Only testing QGIS
-        self.assertListEqual([0], layer.primaryKeyAttributes())
-        self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
-        new_uri = QgsDataSourceUri(layer.source())
+        self.assertListEqual([0], layer_materialized_view.primaryKeyAttributes())
+        self.assertEqual(field_name, layer_materialized_view.fields().at(layer_materialized_view.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer_materialized_view.source())
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_int8_primary_key(layer))
-        self.assertFalse(invalid_int8_primary_key(layer, check_field="varchar"))
-        result, field = auto_generated_primary_key_field(layer)
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer_materialized_view)
         self.assertFalse(result)
         self.assertIsNone(field)
 
@@ -326,6 +441,50 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
         new_uri = QgsDataSourceUri(layer.source())
         self.assertEqual(field_name, new_uri.keyColumn())
+
+        # Lizmap check
+        # TODO check
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer)
+        self.assertFalse(result)
+        self.assertIsNone(field)
+
+        # View
+        # We need to give the PK
+        del layer
+        layer_view = self._vector_layer(table_name, "view", pk=field_name)
+
+        # Only testing QGIS
+        self.assertListEqual([0], layer_view.primaryKeyAttributes())
+        self.assertEqual(field_name, layer_view.fields().at(layer_view.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer_view.source())
+        self.assertEqual(field_name, new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer_view)
+        self.assertFalse(result)
+        self.assertIsNone(field)
+
+        # Materialized view
+        del layer_view
+        # We need to give the PK
+        layer_materialized_view = self._vector_layer(table_name, "view_m", pk=field_name)
+
+        # Only testing QGIS
+        self.assertListEqual([0], layer_materialized_view.primaryKeyAttributes())
+        self.assertEqual(field_name, layer_materialized_view.fields().at(layer_materialized_view.primaryKeyAttributes()[0]).name())
+        new_uri = QgsDataSourceUri(layer_materialized_view.source())
+        self.assertEqual(field_name, new_uri.keyColumn())
+
+        # Lizmap check
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
+        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        result, field = auto_generated_primary_key_field(layer_materialized_view)
+        self.assertFalse(result)
+        self.assertIsNone(field)
 
 
 if __name__ == "__main__":

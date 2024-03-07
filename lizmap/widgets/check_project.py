@@ -345,6 +345,27 @@ class Checks:
             Severities().important,
             QIcon(':/images/themes/default/mIconFieldInteger.svg'),
         )
+        self.PkVarchar = Check(
+            'primary_key_varchar',
+            tr('Invalid varchar field for QGIS Server as primary key'),
+            tr(
+                "Primary key should be an integer. If not fixed, expect layer to have some issues with some tools in "
+                "Lizmap Web Client: zoom to feature, filtering…"
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'
+            ).format(
+                help=tr(
+                    "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
+                    "an integer8."
+                ),
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/mIconFieldInteger.svg'),
+        )
         self.MissingPk = Check(
             'missing_primary_key',
             tr('Missing a proper primary key in the database.'),
