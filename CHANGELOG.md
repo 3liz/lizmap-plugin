@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.2.6 - 2024-03-07
+
+* Fix detection of simplification on the provider side
+
 ## 4.2.5 - 2024-03-07
 
 * Improve checks for PostgreSQL layers
