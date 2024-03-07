@@ -15,6 +15,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsRasterLayer,
     QgsVectorLayer,
+    QgsVectorSimplifyMethod,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QUrlQuery
@@ -271,13 +272,16 @@ def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
         if layer.geometryType() == QgsWkbTypes.PointGeometry:
             continue
 
-        if not layer.simplifyMethod().forceLocalOptimization():
+        no_simplification = layer.simplifyMethod().simplifyHints() == QgsVectorSimplifyMethod.NoSimplification
+        force_local = layer.simplifyMethod().forceLocalOptimization()
+        if not force_local or no_simplification:
             continue
 
         results.append(SourceLayer(layer.name(), layer.id()))
 
         if fix:
             simplify = layer.simplifyMethod()
+            simplify.setSimplifyHints(QgsVectorSimplifyMethod.GeometrySimplification)
             simplify.setForceLocalOptimization(False)
             layer.setSimplifyMethod(simplify)
 
