@@ -29,9 +29,6 @@ try:
         PG_USER,
     )
     CREDENTIALS = True
-    # Because on Desktop
-    from qgis.testing import start_app
-    start_app()
 except ImportError:
     CREDENTIALS = False
     PG_HOST = ''
@@ -39,6 +36,11 @@ except ImportError:
     PG_PASSWORD = ''
     PG_USER = ''
     PG_DATABASE = ''
+
+if CREDENTIALS:
+    # Because on Desktop
+    from qgis.testing import start_app
+    start_app()
 
 
 def skip_test():

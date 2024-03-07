@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.2.5 - 2024-03-07
+
+* Improve checks for PostgreSQL layers
+
 ## 4.2.4 - 2024-02-28
 
 * Fix a Python error when saving the file if a layer was removed from the project and used in the configuration before
