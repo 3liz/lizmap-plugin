@@ -45,6 +45,7 @@ from qgis.PyQt.QtGui import (
     QBrush,
     QColor,
     QDesktopServices,
+    QGuiApplication,
     QIcon,
     QPixmap,
     QStandardItem,
@@ -596,6 +597,10 @@ class Lizmap:
             partial(self.add_french_ign_layer, IgnLayers.IgnPlan))
         self.dlg.button_ign_cadastre.clicked.connect(
             partial(self.add_french_ign_layer, IgnLayers.IgnCadastre))
+
+        self.dlg.button_run_checks.clicked.connect(self.check_project_clicked)
+        self.dlg.button_copy.clicked.connect(self.copy_versions_clicked)
+        self.dlg.button_copy.setVisible(False)
 
         self.dlg.label_lizmap_search_grant.setText(tr(
             "About \"lizmap_search\", for an instance hosted on lizmap.com cloud solution, you must do the \"GRANT\" "
@@ -2856,10 +2861,28 @@ class Lizmap:
         self.clean_project()
         return True
 
-    def project_config_file(
+    def copy_versions_clicked(self):
+        """ Copy all data in clipboard. """
+        data = self.dlg.current_server_info(ServerComboData.MarkDown.value)
+        data += '\n' + self.dlg.safeguards_to_markdown()
+        data += '\n' + self.dlg.check_results.to_markdown_summarized()
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(data)
+        self.dlg.display_message_bar(
+            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.Success)
+
+    def check_project_clicked(self):
+        """ Launch the check on the current project. """
+        lwc_version = self.current_lwc_version()
+        # Let's trigger UI refresh according to latest releases, if it wasn't available on startup
+        self.lwc_version_changed()
+        with OverrideCursor(Qt.WaitCursor):
+            self.check_project(lwc_version)
+
+    def check_project(
             self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
-    ) -> Optional[Dict]:
-        """ Generate the CFG file with all options. """
+    ) -> bool:
+        """ Check the project against all rules defined. """
         # Import must be done after QTranslator
         from lizmap.widgets.check_project import (
             Checks,
@@ -2867,18 +2890,24 @@ class Lizmap:
             Severities,
             SourceLayer,
         )
+        self.dlg.check_results.truncate()
         checks = Checks()
-        valid, _ = self.check_project_validity()
+
+        validator = QgsProjectServerValidator()
+        valid, results = validator.validate(self.project)
+        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
+        if not valid:
+            self.dlg.check_results.add_error(
+                Error(
+                    Path(self.project.fileName()).name,
+                    Checks().OgcValid,
+                )
+            )
+
+        self.dlg.check_api_key_address()
 
         if with_gui:
             self.dlg.enable_all_fixer_buttons(False)
-
-        LOGGER.info("Writing Lizmap configuration file for LWC version {}".format(lwc_version.value))
-        current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
-        if self.is_dev_version:
-            next_version = next_git_tag()
-            if next_version != 'next':
-                current_version = next_version
 
         duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
         for name, count in duplicated_in_cfg.items():
@@ -2933,10 +2962,6 @@ class Lizmap:
                         i += 1
 
                 self.dlg.log_panel.end_table()
-
-        target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
-        if not target_status:
-            target_status = ReleaseStatus.Unknown
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
@@ -3229,9 +3254,30 @@ class Lizmap:
                 Qgis.Critical,
             )
 
+            return False
+
+        return True
+
+    def project_config_file(
+            self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
+    ) -> Optional[Dict]:
+        """ Get the JSON CFG content. """
+        if not self.check_project(lwc_version, with_gui, check_server, ignore_error):
+            # Some blocking issues, we can not continue
             return None
 
-        # No more blocking issues, we can continue
+        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+
+        LOGGER.info("Writing Lizmap configuration file for LWC version {}".format(lwc_version.value))
+        current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
+        if self.is_dev_version:
+            next_version = next_git_tag()
+            if next_version != 'next':
+                current_version = next_version
+
+        target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
+        if not target_status:
+            target_status = ReleaseStatus.Unknown
 
         if is_lizmap_cloud(server_metadata):
             if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
@@ -3817,26 +3863,6 @@ class Lizmap:
             # noinspection PyUnresolvedReferences
             self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
 
-    def check_project_validity(self):
-        """Project checker about issues that the user might hae when running in LWC."""
-        # Import must be done after QTranslator
-        from lizmap.widgets.check_project import Checks, Error
-
-        validator = QgsProjectServerValidator()
-        valid, results = validator.validate(self.project)
-        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
-        if not valid:
-            self.dlg.check_results.add_error(
-                Error(
-                    Path(self.project.fileName()).name,
-                    Checks().OgcValid,
-                )
-            )
-
-        self.dlg.check_api_key_address()
-
-        return valid, results
-
     def check_global_project_options(self) -> Tuple[bool, str]:
         """Checks that the needed options are correctly set : relative path, project saved, etc.
 
@@ -3948,7 +3974,6 @@ class Lizmap:
         from lizmap.widgets.check_project import Checks, Severities
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        self.dlg.check_results.truncate()
         beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
         severities = Severities()
         self.dlg.html_help.setHtml(

@@ -122,6 +122,7 @@ class ServerComboData(Enum):
     JsonMetadata = Qt.UserRole + 2  # JSON from the server, raw
     # LwcVersion = Qt.UserRole + 3  # Enum item with the LWC version
     LwcBranchStatus = Qt.UserRole + 4  # Enum item about the release status at that time.
+    MarkDown = Qt.UserRole + 5  # Markdown for the server
 
 
 @unique

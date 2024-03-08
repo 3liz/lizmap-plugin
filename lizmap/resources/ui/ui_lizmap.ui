@@ -525,47 +525,46 @@ QListWidget::item::selected {
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_47">
-             <item>
-              <widget class="QLabel" name="label_81">
-               <property name="text">
-                <string>Current server</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="server_combo"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_11">
-             <item>
+            <layout class="QGridLayout" name="gridLayout_10">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_current_lwc_label">
                <property name="text">
                 <string>Current Lizmap Web Client branch selected</string>
                </property>
               </widget>
              </item>
-             <item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_81">
+               <property name="text">
+                <string>Current server</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QPushButton" name="button_copy">
+               <property name="text">
+                <string>Copy versions</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="server_combo"/>
+             </item>
+             <item row="2" column="1">
               <widget class="QLabel" name="label_current_lwc">
                <property name="text">
                 <string notr="true">SET IN PYTHON CODE</string>
                </property>
               </widget>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_12">
-             <item>
+             <item row="3" column="0">
               <widget class="QLabel" name="label_48">
                <property name="text">
                 <string>Current QGIS Desktop version</string>
                </property>
               </widget>
              </item>
-             <item>
+             <item row="3" column="1">
               <widget class="QLabel" name="label_current_qgis">
                <property name="text">
                 <string notr="true">SET IN PYTHON CODE</string>
@@ -4330,6 +4329,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_54">
+                 <item>
+                  <widget class="QPushButton" name="button_run_checks">
+                   <property name="text">
+                    <string>Check</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item>
                   <spacer name="horizontalSpacer_23">
                    <property name="orientation">

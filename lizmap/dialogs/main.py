@@ -373,7 +373,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_safe_lizmap_cloud.setText(msg)
 
         self.export_summary_table.clicked.connect(self.copy_clip_board_summary_table)
-        self.export_summary_table.setIcon(QIcon(":images/themes/default/mActionEditCopy.svg"))
+
+        self.button_run_checks.setIcon(QIcon(":/images/themes/default/mActionStart.svg"))
+        buttons = (
+            self.export_summary_table,
+            self.button_copy,
+        )
+        copy_icon = QIcon(":images/themes/default/mActionEditCopy.svg")
+        for button in buttons:
+            button.setIcon(copy_icon)
 
         self.table_checks.setup()
         css_path = resources_path('css', 'log.css')

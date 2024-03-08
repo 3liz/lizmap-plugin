@@ -729,6 +729,7 @@ class ServerManager:
         # Unknown
         markdown += '* QGIS Server and plugins unknown status\n'
         qgis_cell.setData(Qt.UserRole, markdown)
+        self.server_combo.setItemData(index, markdown, ServerComboData.MarkDown.value)
         self.update_action_version(lizmap_version, None, row)
 
     @classmethod
