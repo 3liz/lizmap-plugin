@@ -75,6 +75,9 @@ def project_safeguards_checks(
             if layer.source().lower().endswith('ecw') and prevent_ecw:
                 results[SourceLayer(layer.name(), layer.id())] = checks.PreventEcw
 
+            if french_geopf_authcfg_url_parameters(layer.source()) and prevent_auth_id:
+                results[SourceLayer(layer.name(), layer.id())] = checks.FrenchGeoPlateformeUrl
+
         if is_vector_pg(layer):
             # Make a copy by using a string, so we are sure to have user or password
             datasource = QgsDataSourceUri(layer.source())
@@ -147,9 +150,6 @@ def project_safeguards_checks(
             if not layer.dataProvider().hasPyramids():
                 if layer.width() * layer.height() >= RASTER_COUNT_CELL:
                     results[SourceLayer(layer.name(), layer.id())] = checks.RasterWithoutPyramid
-
-            if french_geopf_authcfg_url_parameters(layer.source()) and prevent_auth_id:
-                results[SourceLayer(layer.name(), layer.id())] = checks.FrenchGeoPlateformeUrl
 
     return results
 
