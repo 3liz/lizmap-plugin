@@ -42,7 +42,7 @@ except ImportError:
     PG_USER = ''
     PG_DATABASE = ''
 
-if CREDENTIALS:
+if CREDENTIALS and not os.getenv("CI"):
     # Because on Desktop
     from qgis.testing import start_app
     start_app()

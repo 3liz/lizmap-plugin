@@ -2432,6 +2432,9 @@ class Lizmap:
     @staticmethod
     def existing_group(root_group: QgsLayerTree, label: str) -> Optional[QgsLayerTreeGroup]:
         """ Return the existing group in the legend if existing. """
+        if not root_group:
+            return None
+
         groups = root_group.findGroups()
         for qgis_group in groups:
             qgis_group: QgsLayerTreeGroup
@@ -3478,6 +3481,11 @@ class Lizmap:
         if self.drag_drop_dataviz:
             # In tests, we don't have the variable set
             liz2json['options']['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
+
+        if self.existing_group(
+                self.existing_group(
+                    self.project.layerTreeRoot(), GroupNames.BaseLayers), GroupNames.BackgroundColor):
+            liz2json["options"]["default_background_color"] = True
 
         if not isinstance(self.layerList, dict):
             # Wierd bug when the dialog was not having a server at the beginning
