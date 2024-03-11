@@ -3,6 +3,9 @@ import unittest
 from qgis.core import QgsProject, QgsVectorLayer
 
 from lizmap.project_checker_tools import (
+    _split_layer_uri,
+    duplicated_layer_with_filter,
+    duplicated_layer_with_filter_legend,
     duplicated_rule_key_legend,
     french_geopf_authcfg_url_parameters,
     trailing_layer_group_name,
@@ -14,8 +17,13 @@ __copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+# from qgis.testing import start_app
+# start_app()
+
 
 class TestProjectTable(unittest.TestCase):
+
+    maxDiff = None
 
     def test_trailing_spaces(self):
         """ Test about trailing spaces in the table. """
@@ -27,6 +35,108 @@ class TestProjectTable(unittest.TestCase):
         self.assertEqual(1, len(results))
         self.assertIsInstance(results[0], Error)
         self.assertEqual(' table', results[0].source)
+
+    def test_split_uri(self):
+        """ Test to split a vector layer URI with its filter if needed. """
+        self.assertTupleEqual(
+            ('/home/path/lines.geojson', '"name" = \'2 Name\''),
+            _split_layer_uri('ogr', '/home/path/lines.geojson|subset="name" = \'2 Name\'')
+        )
+
+        self.assertTupleEqual(
+            ('/home/path/lines.geojson', None),
+            _split_layer_uri('ogr', '/home/path/lines.geojson')
+        )
+
+        self.assertTupleEqual(
+            (
+                "service='lizmapdb' key='gid' estimatedmetadata=true srid=2154 type=Point "
+                "checkPrimaryKeyUnicity='1' table=\"tests_projects\".\"filter_layer_by_user\" (geom)",
+                "\"user\" = 'admin'"),
+            _split_layer_uri(
+                'postgres',
+                "service='lizmapdb' key='gid' estimatedmetadata=true srid=2154 type=Point "
+                "checkPrimaryKeyUnicity='1' table=\"tests_projects\".\"filter_layer_by_user\" (geom) "
+                "sql=\"user\" = 'admin'"
+            )
+        )
+
+        self.assertTupleEqual(
+            (
+                "service='lizmapdb' key='gid' estimatedmetadata=true srid=2154 type=Point "
+                "checkPrimaryKeyUnicity='1' table=\"tests_projects\".\"filter_layer_by_user\" (geom)",
+                None
+            ),
+            _split_layer_uri(
+                'postgres',
+                "service='lizmapdb' key='gid' estimatedmetadata=true srid=2154 type=Point "
+                "checkPrimaryKeyUnicity='1' table=\"tests_projects\".\"filter_layer_by_user\" (geom)"
+            )
+        )
+
+    def test_legend_filter_duplicated_layers(self):
+        """ Test duplicated layers with different filters. """
+        project_file = plugin_test_data_path('duplicated_filter.qgs')
+        project = QgsProject.instance()
+        project.read(project_file)
+        data = duplicated_layer_with_filter(project)
+        self.assertIsInstance(data, dict)
+        # We have a single datasource
+        self.assertEqual(1, len(list(data.keys())))
+        layer = list(data.keys())[0]
+        self.assertDictEqual(
+            {
+                '"name" = \'5 Name\'': 'half lines filter 5',
+                '"name" = \'4 Name\'': 'half lines filter 4',
+                '"name" = \'3 Name\'': 'half lines filter 3',
+                '"name" = \'2 Name\'': 'half lines filter 2',
+                '"name" = \'1 Name\'': 'half lines filter 1',
+            },
+            data[layer],
+            data[layer]
+        )
+
+    def test_legend_filter_duplicated_layers_legend(self):
+        """ Test duplicated layers with different filters using the legend. """
+        project_file = plugin_test_data_path('duplicated_filter.qgs')
+        project = QgsProject.instance()
+        project.read(project_file)
+        data = duplicated_layer_with_filter_legend(project)
+        self.assertIsInstance(data, list)
+        # We have 3 groups of duplicated layers, even if it is the same datasource
+        # +3 icons
+        self.assertEqual(3, len(data), data)
+
+        layer = list(data[0].keys())[0]
+        self.assertDictEqual(
+            {
+                '"name" = \'1 Name\'': 'detected lines filter 1',
+                '"name" = \'2 Name\'': 'detected lines filter 2',
+                '_wkb_type': 2,
+            },
+            data[0][layer],
+            data[0][layer]
+        )
+        layer = list(data[1].keys())[0]
+        self.assertDictEqual(
+            {
+                '"name" = \'1 Name\'': 'half lines filter 1',
+                '"name" = \'2 Name\'': 'half lines filter 2',
+                '_wkb_type': 2,
+            },
+            data[1][layer],
+            data[1][layer]
+        )
+        layer = list(data[2].keys())[0]
+        self.assertDictEqual(
+            {
+                '"name" = \'4 Name\'': 'half lines filter 4',
+                '"name" = \'5 Name\'': 'half lines filter 5',
+                '_wkb_type': 2,
+            },
+            data[2][layer],
+            data[2][layer]
+        )
 
     def test_rule_key_legend(self):
         """ Test duplicated rule key in the legend. """

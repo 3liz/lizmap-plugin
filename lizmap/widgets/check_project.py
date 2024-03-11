@@ -537,6 +537,29 @@ class Checks:
             Severities().important,
             QIcon(':/images/themes/default/rendererRuleBasedSymbol.svg'),
         )
+        self.DuplicatedLayerFilterLegend = Check(
+            'duplicated_layers_with_different_filters',
+            tr('Many layers next to each other having different filters.'),
+            tr(
+                "Many layers have been detected being next to each other in the legend, but having different filters "
+                "(the funnel icon). This is discouraged because checkboxes are supported within the same layer."
+            ), (
+                '<ol>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ol>'
+            ).format(
+                tr(
+                    'Open the last tab in this panel, to have raw HTML logs, '
+                    'you have a table showing all duplicated layers'),
+                tr(
+                    'Remove one of the duplicated layer and remove the filter on the other one.'
+                ),
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/mActionFilter2.svg'),
+        )
         self.MissingWfsLayer = Check(
             'layer_not_in_wfs',
             tr('Layer not published in the WFS'),
@@ -988,7 +1011,7 @@ class TableCheck(QTableWidget):
         text += '\n'
         return text
 
-    def add_error(self, error: Error, lizmap_cloud: bool = False, severity=None):
+    def add_error(self, error: Error, lizmap_cloud: bool = False, severity=None, icon=None):
         """ Add an error in the table. """
         # By default, let's take the one in the error
         used_severity = error.check.severity
@@ -1024,6 +1047,7 @@ class TableCheck(QTableWidget):
 
         # Source
         item = QTableWidgetItem(error.source)
+        item.setToolTip(error.source)
         item.setData(self.DATA, error.source)
         if isinstance(error.source_type, SourceType.Layer):
             item.setToolTip(error.source_type.layer_id)
@@ -1047,6 +1071,10 @@ class TableCheck(QTableWidget):
         else:
             # TODO fix else
             item.setData(self.JSON, error.source)
+
+            if icon:
+                item.setIcon(icon)
+
         self.setItem(row, column, item)
         column += 1
 

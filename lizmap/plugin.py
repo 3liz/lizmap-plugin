@@ -18,7 +18,6 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
-    QgsDataSourceUri,
     QgsEditFormConfig,
     QgsExpression,
     QgsLayerTree,
@@ -33,6 +32,10 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+
+if Qgis.QGIS_VERSION_INT >= 32200:
+    from qgis.core import QgsIconUtils
+
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QRegExp,
@@ -131,7 +134,7 @@ from lizmap.project_checker_tools import (
     PREVENT_SERVICE,
     count_legend_items,
     duplicated_layer_name_or_group,
-    duplicated_layer_with_filter,
+    duplicated_layer_with_filter_legend,
     duplicated_rule_key_legend,
     project_invalid_pk,
     project_safeguards_checks,
@@ -3122,31 +3125,49 @@ class Lizmap:
                 self.dlg.check_results.add_error(result)
 
             if lwc_version >= LwcVersions.Lizmap_3_7:
-                results = duplicated_layer_with_filter(self.project)
+                results = duplicated_layer_with_filter_legend(self.project)
                 if results:
-                    self.dlg.log_panel.append(tr('Optimisation about the legend'), Html.H2)
+                    self.dlg.log_panel.append(checks.DuplicatedLayerFilterLegend.title, Html.H2)
                     self.dlg.log_panel.start_table()
                     self.dlg.log_panel.append(
-                        "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(tr('Datasource'), tr('Filters'), tr('Layers'))
+                        "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(
+                            tr('Datasource'), tr('Filters'), tr('Layers'))
                     )
+                    for i, result in enumerate(results):
+                        for uri, filters in result.items():
+                            self.dlg.log_panel.add_row(i)
+                            self.dlg.log_panel.append(uri, Html.Td)
 
-                    for i, (datasource, filters) in enumerate(results.items()):
-                        self.dlg.log_panel.add_row(i)
-                        datasource = QgsDataSourceUri.removePassword(QgsDataSourceUri(datasource).uri(False))
-                        self.dlg.log_panel.append(datasource, Html.Td)
+                            # Icon
+                            for k, v in filters.items():
+                                if k == "_wkb_type" and Qgis.QGIS_VERSION_INT >= 32000:
+                                    icon = QgsIconUtils.iconForWkbType(v)
+                                    break
+                            else:
+                                icon = QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg')
 
-                        uri_filter = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.keys()]) + '</ul>'
-                        self.dlg.log_panel.append(uri_filter, Html.Td)
+                            del filters["_wkb_type"]
 
-                        layer_names = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.values()]) + '</ul>'
-                        self.dlg.log_panel.append(layer_names, Html.Td)
+                            uri_filter = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.keys()]) + '</ul>'
+                            self.dlg.log_panel.append(uri_filter, Html.Td)
 
-                        self.dlg.log_panel.end_row()
+                            layer_names = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.values()]) + '</ul>'
+                            self.dlg.log_panel.append(layer_names, Html.Td)
+
+                            self.dlg.log_panel.end_row()
+
+                            self.dlg.check_results.add_error(
+                                Error(
+                                    uri,
+                                    checks.DuplicatedLayerFilterLegend,
+                                ),
+                                icon=icon,
+                            )
 
                     self.dlg.log_panel.end_table()
 
                     self.dlg.log_panel.append(tr(
-                        'Checkbox are supported natively in the legend. Using filters for the same '
+                        'Checkboxes are supported natively in the legend. Using filters for the same '
                         'datasource are highly discouraged.'
                     ), style=Html.P)
 
