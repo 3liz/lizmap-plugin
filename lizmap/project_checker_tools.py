@@ -246,32 +246,119 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
     return result
 
 
+def _split_layer_uri(provider: str, source: str) -> Tuple[str, Optional[str]]:
+    """ Split the base URI from the filter part. """
+    uri = QgsDataSourceUri(source)
+    uri_filter = uri.sql()
+    uri.setSql('')
+    base_uri_string = uri.uri(True)
+
+    if not uri_filter:
+        # The layer is not based on a RDBMS, try on a file
+        components = QgsProviderRegistry.instance().decodeUri(provider, source)
+        if components.get('path'):
+            # Layers based on files
+            base_uri_string = components.get('path')
+
+        if components.get('subset'):
+            uri_filter = components.get('subset')
+        else:
+            return base_uri_string, None
+
+    return base_uri_string, uri_filter
+
+
 def duplicated_layer_with_filter(project: QgsProject) -> Optional[Dict[str, Dict[str, str]]]:
-    """ Check for duplicated layers with the same datasource but different filters. """
+    """ Check for duplicated layers with the same datasource but with filters. """
+    # Function not used anymore, temporary replaced by the function below
     unique_datasource = {}
     for layer in project.mapLayers().values():
-        uri = QgsDataSourceUri(layer.source())
-        uri_filter = uri.sql()
-        if uri_filter == '':
+        base_uri, uri_filter = _split_layer_uri(layer.dataProvider().name(), layer.source())
+        if not uri_filter:
             continue
 
-        uri.setSql('')
-
-        uri_string = uri.uri(True)
-
-        if uri_string not in unique_datasource.keys():
+        if base_uri not in unique_datasource.keys():
             # First time we meet this datasource, we append
-            unique_datasource[uri_string] = {}
+            unique_datasource[base_uri] = {}
 
-        if uri_filter not in unique_datasource[uri_string]:
+        if uri_filter not in unique_datasource[base_uri]:
             # We add the filter with the layer name
-            unique_datasource[uri_string][uri_filter] = layer.name()
+            unique_datasource[base_uri][uri_filter] = layer.name()
 
     if len(unique_datasource.keys()) == 0:
         return None
 
     data = {k: v for k, v in unique_datasource.items() if len(v.values()) >= 2}
     return data
+
+
+def duplicated_layer_with_filter_legend(project: QgsProject) -> List:
+    """ Check for duplicated layers with the same datasource but with filters when layers are next to each other. """
+    root = project.layerTreeRoot()
+    return _recursive_duplicated_layer_with_filter_legend(root, project)
+
+
+def _recursive_duplicated_layer_with_filter_legend(
+        layer_tree: QgsLayerTreeNode, project: QgsProject) -> List:
+    """ Recursive function for the function above. """
+    output = []
+    tmp_list = {}
+    previous_uri = None
+    for child in layer_tree.children():
+        # noinspection PyArgumentList
+        if QgsLayerTree.isLayer(child):
+            child = cast_to_layer(child)
+            layer = project.mapLayer(child.layerId())
+
+            # Split base uri and filter
+            base_uri, uri_filter = _split_layer_uri(layer.dataProvider().name(), layer.source())
+
+            if previous_uri and previous_uri != base_uri:
+                # New layer, we reinit the temporary data
+                # Need to save the current after checking values >= 2 (+1 for the symbol)
+                tmp_list = {k: v for k, v in tmp_list.items() if len(v.values()) >= 3}
+                if tmp_list:
+                    output.append(tmp_list)
+                tmp_list = {}
+                previous_uri = None
+
+            if not uri_filter:
+                # Not filter, we can skip
+                continue
+
+            if not previous_uri:
+                # Saving the current URI
+                previous_uri = base_uri
+
+            if base_uri not in tmp_list.keys():
+                # First time we meet this datasource, we append
+                tmp_list[base_uri] = {
+                    '_wkb_type': layer.wkbType(),
+                }
+
+            if uri_filter not in tmp_list[base_uri]:
+                # We add the filter with the layer name
+                tmp_list[base_uri][uri_filter] = layer.name()
+
+        else:
+            # New group, we reinit the temporary data
+            # Need to save the current after checking values >= 2 (+1 for the symbol)
+            tmp_list = {k: v for k, v in tmp_list.items() if len(v.values()) >= 3}
+            if tmp_list:
+                output.append(tmp_list)
+
+            tmp_list = {}
+            previous_uri = None
+
+            tmp_output = _recursive_duplicated_layer_with_filter_legend(cast_to_group(child), project)
+            if tmp_output:
+                output.extend(tmp_output)
+
+    # Need to save the current after checking values >= 2 (+1 for the symbol)
+    tmp_list = {k: v for k, v in tmp_list.items() if len(v.values()) >= 3}
+    if tmp_list:
+        output.append(tmp_list)
+    return output
 
 
 def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
