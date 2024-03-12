@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 4.2.7 - 2024-03-12
+
+* New check about duplicated layer with different filters which are next to each other
+* Fix checking for some French IGN URLs
+* Add a new key in the CFG to prepare to QGIS 3.34 about base layers
+
 ## 4.2.6 - 2024-03-07
 
 * Fix detection of simplification on the provider side
