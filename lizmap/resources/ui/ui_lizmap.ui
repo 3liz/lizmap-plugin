@@ -209,10 +209,63 @@ QListWidget::item::selected {
         <widget class="QComboBox" name="repository_combo"/>
        </item>
        <item>
-        <widget class="QCheckBox" name="send_webdav">
-         <property name="text">
-          <string>Send with webdav if possible</string>
+        <widget class="QGroupBox" name="webdav_groupbox">
+         <property name="title">
+          <string>Synchronization</string>
          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QCheckBox" name="send_webdav">
+            <property name="text">
+             <string>Send automatically when saving</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="label_36">
+              <property name="text">
+               <string>Last update</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="webdav_last_update">
+              <property name="text">
+               <string notr="true">Unknown</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="button_refresh_date_webdav">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string notr="true">REFRESH</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="button_upload_webdav">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>UPLOAD</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -752,6 +805,32 @@ QListWidget::item::selected {
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="button_refresh_thumbnail">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string notr="true">REFRESH</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="button_upload_thumbnail">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string notr="true">UPLOAD</string>
                     </property>
                    </widget>
                   </item>
@@ -3699,6 +3778,37 @@ This is different to the map maximum extent (defined in QGIS project properties,
             </layout>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QPushButton" name="button_refresh_action">
+               <property name="text">
+                <string notr="true">REFRESH</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_upload_action">
+               <property name="text">
+                <string notr="true">UPLOAD</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -4562,7 +4672,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_72">
                <item>
-                <widget class="QGroupBox" name="groupBox_12">
+                <widget class="QGroupBox" name="group_settings">
                  <property name="title">
                   <string>Settings</string>
                  </property>
@@ -4581,7 +4691,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBox_13">
+                <widget class="QGroupBox" name="group_safeguards">
                  <property name="title">
                   <string>Safeguards</string>
                  </property>

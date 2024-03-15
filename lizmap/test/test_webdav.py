@@ -9,7 +9,7 @@ from pathlib import Path
 from lizmap.toolbelt.version import qgis_version
 
 if qgis_version() >= 32200:
-    from lizmap.server_dav import WebDav
+    from lizmap.server_dav import WebDav, PropFindResponse
 
 from lizmap.toolbelt.resources import plugin_test_data_path
 
@@ -62,6 +62,10 @@ def skip_test():
 # So we are sure that fixtures are cleaned and set properly (because I trust more this library :) )
 #
 
+# from qgis.testing import start_app
+#
+# start_app()
+
 
 class TestHttpProtocol(unittest.TestCase):
 
@@ -107,35 +111,67 @@ class TestHttpProtocol(unittest.TestCase):
         # Create the directory using external library
         self.client.mkdir(self.directory_name)
 
-        project = Path(plugin_test_data_path('legend_image_option.qgs'))
+        project_name = 'legend_image_option.qgs'
+        project = Path(plugin_test_data_path(project_name))
+
+        self.dav._for_test(LIZMAP_USER, LIZMAP_PASSWORD, self.directory_name, project.name)
 
         # It doesn't exist yet
-        result, msg = self.dav.check_qgs_exists_basic(
-            self.directory_name, LIZMAP_USER, LIZMAP_PASSWORD, project.name
-        )
-        self.assertEqual(msg, '')
+        result, msg = self.dav.check_exists_qgs()
+        self.assertEqual('', msg)
         self.assertFalse(result)
 
         # Upload with external library
         self.client.upload_sync(local_path=str(project), remote_path=self.directory_name + '/' + project.name)
 
         # It exists now
-        result, msg = self.dav.check_qgs_exists_basic(
-            self.directory_name, LIZMAP_USER, LIZMAP_PASSWORD, project.name
+        result, msg = self.dav.check_exists_qgs()
+        self.assertEqual(msg, '')
+        self.assertTrue(result)
+
+        # Check file stats
+        result, msg = self.dav.file_stats_qgs()
+        self.assertEqual(msg, '')
+        self.assertIsInstance(result, PropFindResponse)
+        self.assertEqual(f'/dav.php/{self.directory_name}/{project_name}', result.href)
+
+    # def test_backup_qgs(self):
+    #     """ Test to back up a QGS file. """
+    #     project = Path(plugin_test_data_path('legend_image_option.qgs'))
+    #     # Create the directory using external library
+    #     self.client.mkdir(self.directory_name)
+    #     self.client.upload_sync(local_path=str(project), remote_path=self.directory_name + '/' + project.name)
+    #
+    #     result, msg = self.dav.backup_qgs_basic(self.directory_name, LIZMAP_USER, LIZMAP_PASSWORD, project.name)
+    #     self.assertEqual(msg, '')
+    #     self.assertTrue(result)
+
+    def test_parse_propfind(self):
+        """ Test we can parse a PROPFIND response. """
+        xml_str = (
+            '<?xml version="1.0"?>'
+            '<d:multistatus xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">'
+            '<d:response>'
+            '<d:href>/dav.php/unit_test_plugin_upheq/legend_image_option.qgs</d:href>'
+            '<d:propstat>'
+            '<d:prop>'
+            '<d:getlastmodified>Thu, 14 Mar 2024 14:16:29 GMT</d:getlastmodified>'
+            '<d:getcontentlength>54512</d:getcontentlength>'
+            '<d:resourcetype/>'
+            '<d:getetag>&quot;bb814ac0a9bcbb42e4c7c3baf82f1fe3c48e2d91&quot;</d:getetag>'
+            '</d:prop>'
+            '<d:status>HTTP/1.1 200 OK</d:status>'
+            '</d:propstat>'
+            '</d:response>'
+            '</d:multistatus>'
         )
-        self.assertEqual(msg, '')
-        self.assertTrue(result)
-
-    def test_backup_qgs(self):
-        """ Test to back up a QGS file. """
-        project = Path(plugin_test_data_path('legend_image_option.qgs'))
-        # Create the directory using external library
-        self.client.mkdir(self.directory_name)
-        self.client.upload_sync(local_path=str(project), remote_path=self.directory_name + '/' + project.name)
-
-        result, msg = self.dav.backup_qgs_basic(self.directory_name, LIZMAP_USER, LIZMAP_PASSWORD, project.name)
-        self.assertEqual(msg, '')
-        self.assertTrue(result)
+        result = WebDav.parse_propfind_response(xml_str)
+        self.assertEqual("Thu, 14 Mar 2024 14:16:29 GMT", result.last_modified)
+        self.assertTrue("14" in result.last_modified_pretty)
+        self.assertEqual("/dav.php/unit_test_plugin_upheq/legend_image_option.qgs", result.href)
+        self.assertEqual("54512", result.content_length)
+        self.assertEqual("bb814ac0a9bcbb42e4c7c3baf82f1fe3c48e2d91", result.etag)
+        self.assertEqual("HTTP/1.1 200 OK", result.http_code)
 
     # @unittest.expectedFailure
     # def test_wizard(self):

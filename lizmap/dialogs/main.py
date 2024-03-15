@@ -208,6 +208,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.button_clear_log.setIcon(QIcon(":images/themes/default/console/iconClearConsole.svg"))
         self.button_clear_log.clicked.connect(self.log_panel.clear)
 
+        self.button_refresh_action.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.button_refresh_action.setText('')
+        self.button_refresh_action.setToolTip(tr('Refresh action detection'))
+        self.button_refresh_action.clicked.connect(self.check_action_file_exists)
+
+        self.button_refresh_thumbnail.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.button_refresh_thumbnail.setText('')
+        self.button_refresh_thumbnail.setToolTip(tr('Refresh thumbnail detection'))
+        self.button_refresh_thumbnail.clicked.connect(self.check_project_thumbnail)
         self.check_project_thumbnail()
         self.check_action_file_exists()
         self.setup_icons()
@@ -418,6 +427,14 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Open the how-to on Lizmap. """
         # noinspection PyArgumentList
         QDesktopServices.openUrl(online_lwc_help("publish/quick_start/index.html"))
+
+    @staticmethod
+    def set_tooltip_webdav(button: QPushButton, date: str = None):
+        """ Set tooltip about the upload on the WebDAV server. """
+        msg = tr('Upload on the WebDAV server')
+        if date:
+            msg += '\n' + tr('Last update is {date}').format(date=date)
+        button.setToolTip(msg)
 
     def check_api_key_address(self):
         """ Check the API key is provided for the address search bar. """
@@ -789,7 +806,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if duration is None:
             duration = int(QgsSettings().value("qgis/messageTimeout", 5))
 
-        self.message_bar.pushWidget(widget, level, duration)
+        if self.isVisible():
+            self.message_bar.pushWidget(widget, level, duration)
+        else:
+            self.iface.messageBar().pushWidget(widget, level, duration)
 
     def setup_icons(self):
         """ Setup icons in the left menu. """
@@ -931,6 +951,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.gb_visibleTools,
             self.group_api_keys,
             self.gb_Scales,
+            self.frame_layer_popup,
             self.gb_extent,
             self.gb_externalLayers,
             self.gb_generalOptions,
@@ -941,17 +962,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.predefined_baselayers,
             self.attribute_filtering,
             self.spatial_filtering,
+            self.webdav_groupbox,
+            self.group_settings,
+            self.group_safeguards,
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)
 
     def check_project_thumbnail(self):
         """ Check the project thumbnail and display the metadata. """
-        # Check the project image
-        # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
-        # Line 251
-        images_types = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']
-        images_types.extend([f.upper() for f in images_types])
         tooltip = tr(
             "You can add a file named {}.qgs.EXTENSION with one of the following extension : jpg, jpeg, png, gif."
         ).format(self.project.baseName())
@@ -974,18 +993,29 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_project_thumbnail.setText(text)
 
         if self.check_cfg_file_exists():
-            for test_file in images_types:
-                thumbnail = Path(f'{self.project.fileName()}.{test_file}')
-                if thumbnail.exists():
-                    image_size = QImageReader(str(thumbnail)).size()
-                    self.label_project_thumbnail.setText(
-                        tr("Thumbnail <a href=\"file://{}\">detected</a>, {}x{}px, {}").format(
-                            thumbnail.parent,
-                            image_size.width(),
-                            image_size.height(),
-                            human_size(thumbnail.stat().st_size))
-                    )
-                    break
+            thumbnail = self.thumbnail_file()
+            if thumbnail:
+                image_size = QImageReader(str(thumbnail)).size()
+                self.label_project_thumbnail.setText(
+                    tr("Thumbnail <a href=\"file://{}\">detected</a>, {}x{}px, {}").format(
+                        thumbnail.parent,
+                        image_size.width(),
+                        image_size.height(),
+                        human_size(thumbnail.stat().st_size))
+                )
+
+    def thumbnail_file(self) -> Optional[Path]:
+        """ Get filepath to the thumbnail if found. """
+        # Check the project image
+        # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
+        # Line 251
+        images_types = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']
+        images_types.extend([f.upper() for f in images_types])
+        for test_file in images_types:
+            thumbnail = Path(f'{self.project.fileName()}.{test_file}')
+            if thumbnail.exists():
+                return thumbnail
+        return None
 
     def cfg_file(self) -> Path:
         """ Return the path to the current CFG file. """
