@@ -342,7 +342,8 @@ class TestToolTip(unittest.TestCase):
         expression = QgsExpression(result)
         self.assertFalse(expression.hasParserError())
 
-        widget_config['FilterExpression'] = ''
+        # https://github.com/3liz/lizmap-web-client/issues/4307
+        del widget_config['FilterExpression']
         result = Tooltip._generate_value_relation(widget_config, 'foo')
         expected = '''
                     aggregate(

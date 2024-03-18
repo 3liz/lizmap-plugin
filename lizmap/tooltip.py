@@ -370,7 +370,7 @@ class Tooltip:
             name
         )
 
-        filter_exp = widget_config['FilterExpression'].strip()
+        filter_exp = widget_config.get('FilterExpression', '').strip()
         if filter_exp:
             # replace @current_geometry only available in form by geometry(@parent) for aggregate
             filter_exp = filter_exp.replace('@current_geometry', 'geometry(@parent)')
