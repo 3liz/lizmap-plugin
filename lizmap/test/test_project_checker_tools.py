@@ -153,8 +153,9 @@ class TestProjectTable(unittest.TestCase):
             },
             duplicated_rule_key_legend(project))
 
-    def french_raster_datasource_authcfg(self):
+    def test_french_raster_datasource_authcfg(self):
         """ Check for authcfg in raster datasource. """
+        # other.url.fr
         raster = (
             "contextualWMSLegend=0&amp;crs=EPSG:2154&amp;dpiMode=7&amp;featureCount=10&amp;format=image/jpeg&amp;"
             "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://other.url.fr/private/wms-r?VERSION%3D1.3.0"
@@ -162,6 +163,7 @@ class TestProjectTable(unittest.TestCase):
         )
         self.assertFalse(french_geopf_authcfg_url_parameters(raster))
 
+        # data.GEOPF.fr
         raster = (
             "contextualWMSLegend=0&amp;crs=EPSG:2154&amp;dpiMode=7&amp;featureCount=10&amp;format=image/jpeg&amp;"
             "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://data.GEOPF.fr/private/wms-r?VERSION%3D1.3.0"
@@ -169,8 +171,17 @@ class TestProjectTable(unittest.TestCase):
         )
         self.assertTrue(french_geopf_authcfg_url_parameters(raster))
 
+        # Correct
         raster = (
             "contextualWMSLegend=0&amp;crs=EPSG:2154&amp;dpiMode=7&amp;featureCount=10&amp;format=image/jpeg&amp;"
             "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://data.geopf.fr/private/wms-r?VERSION%3D1.3.0"
         )
         self.assertFalse(french_geopf_authcfg_url_parameters(raster))
+
+        # http-header
+        # raster = (
+        #     "IgnoreGetMapUrl=1&amp;crs=CRS:84&amp;dpiMode=7&amp;format=image/png&amp;"
+        #     "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;"
+        #     "url=https://data.geopf.fr/private/wms-r?VERSION%3D1.3.0&amp;http-header:custom-header"
+        # )
+        # self.assertTrue(french_geopf_authcfg_url_parameters(raster))

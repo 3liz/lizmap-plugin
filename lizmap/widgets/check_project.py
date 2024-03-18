@@ -475,6 +475,7 @@ class Checks:
                 'Visiter la documentation sur <a href="{french_url}">le site de l\'IGN</a> en suivant la '
                 'documentation pour la version antérieur à 3.28.'
                 '</li>'
+                '<li>{french_url}</li>'
                 '</ul>'
             ).format(
                 french_url=(

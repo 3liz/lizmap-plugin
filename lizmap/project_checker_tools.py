@@ -2,6 +2,8 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+import html
+
 from os.path import relpath
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -459,11 +461,12 @@ def french_geopf_authcfg_url_parameters(datasource: str) -> bool:
     if 'data.geopf.fr' not in datasource.lower():
         return False
 
-    url_param = QUrlQuery(datasource)
-    params = url_param.queryItems()
-    for param in params:
+    url_param = QUrlQuery(html.unescape(datasource))
+    for param in url_param.queryItems():
         if param[0].lower() == 'authcfg' and param[1] != '':
             return True
+        # if param[0].lower().startswith("http-header:"):
+        #     return True
     return False
 
 
