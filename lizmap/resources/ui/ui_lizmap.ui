@@ -259,7 +259,7 @@ QListWidget::item::selected {
                </sizepolicy>
               </property>
               <property name="text">
-               <string>UPLOAD</string>
+               <string notr="true">UPLOAD</string>
               </property>
              </widget>
             </item>

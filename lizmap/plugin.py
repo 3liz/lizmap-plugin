@@ -4346,10 +4346,11 @@ class Lizmap:
             box.setText(tr(
                 'The upload of the thumbnail is successful. You can open it in your <a href="{}">web-browser</a>.'
                 ).format(message) + '<br><br>'
-                + 'However, you might have some cache in your web-brower, for the next 24 hours. You should do a '
-                'CTRL + F5 (CTRL + MAJ + R) or similar to force the refresh of the page without using the web-browser '
-                'cache.'
-            )
+                + tr(
+                'However, you might have some cache in your web-browser, for the next {number} hours. You should do a '
+                'CTRL + F5 (or CTRL + MAJ + R or similar) to force the refresh of the page without using the '
+                'web-browser cache.'
+            ).format(number=24))
             box.setStandardButtons(QMessageBox.Ok)
             box.setDefaultButton(QMessageBox.Ok)
             box.exec_()

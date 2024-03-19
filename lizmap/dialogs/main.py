@@ -431,7 +431,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     @staticmethod
     def set_tooltip_webdav(button: QPushButton, date: str = None):
         """ Set tooltip about the upload on the WebDAV server. """
-        msg = tr('Upload on the WebDAV server')
+        msg = tr('Upload on the server')
         if date:
             msg += '\n' + tr('Last update is {date}').format(date=date)
         button.setToolTip(msg)
