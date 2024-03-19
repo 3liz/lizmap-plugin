@@ -40,6 +40,12 @@ class Tooltip:
 </div>\n'''
         return template.format(html)
 
+    @classmethod
+    def remove_none(cls, data: dict) -> dict:
+        """ Remove None values in the dictionary. """
+        # Might be linked to QGIS 3.36 https://github.com/3liz/lizmap-web-client/issues/4307
+        return {k: v for k, v in data.items() if v is not None}
+
     @staticmethod
     def create_popup_node_item_from_form(
             layer: QgsVectorLayer,
@@ -82,6 +88,7 @@ class Tooltip:
             field_widget_setup = field.editorWidgetSetup()
             widget_type = field_widget_setup.type()
             widget_config = field_widget_setup.config()
+            widget_config = Tooltip.remove_none(widget_config)
 
             field_view = Tooltip._generate_field_view(name)
 

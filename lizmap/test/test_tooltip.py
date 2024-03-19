@@ -343,7 +343,8 @@ class TestToolTip(unittest.TestCase):
         self.assertFalse(expression.hasParserError())
 
         # https://github.com/3liz/lizmap-web-client/issues/4307
-        del widget_config['FilterExpression']
+        widget_config['FilterExpression'] = None
+        widget_config = Tooltip.remove_none(widget_config)
         result = Tooltip._generate_value_relation(widget_config, 'foo')
         expected = '''
                     aggregate(
