@@ -89,7 +89,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(output['layers']['legend_displayed_startup']['legend_image_option'], 'expand_at_startup')
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('noLegendImage'))
 
-        self.assertIsNone(output['options'].get('default_background_color'))
+        self.assertIsNone(output['options'].get('default_background_color_index'))
 
         # For LWC 3.5
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_5, with_gui=False, check_server=False, ignore_error=True)
@@ -193,7 +193,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(output['layers']['baselayers']['abstract'], '')
         self.assertListEqual(output['layers']['project-background-color']['group_visibility'], [])
         self.assertEqual(output['layers']['project-background-color']['abstract'], '')
-        self.assertTrue(output['options'].get('default_background_color'))
+        self.assertEqual(0, output['options'].get('default_background_color_index'))
 
         # Test a false value as a string which shouldn't be there by default
         self.assertIsNone(output['layers']['lines'].get('externalWmsToggle'))

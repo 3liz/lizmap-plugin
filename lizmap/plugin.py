@@ -12,7 +12,7 @@ from collections import OrderedDict
 from functools import partial
 from pathlib import Path
 from shutil import copyfile
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -2438,16 +2438,24 @@ class Lizmap:
         return wms_enabled
 
     @staticmethod
-    def existing_group(root_group: QgsLayerTree, label: str) -> Optional[QgsLayerTreeGroup]:
-        """ Return the existing group in the legend if existing. """
+    def existing_group(
+            root_group: QgsLayerTree, label: str, index: bool = False) -> Optional[Union[QgsLayerTreeGroup, int]]:
+        """ Return the existing group in the legend if existing.
+
+        It will either return the group itself if found, or its index.
+        """
         if not root_group:
             return None
 
-        groups = root_group.findGroups()
-        for qgis_group in groups:
+        # Iterate over all child (layers and groups)
+        children = root_group.children()
+        for i, child in enumerate(children):
+            if not QgsLayerTree.isGroup(child):
+                continue
+            qgis_group = cast_to_group(child)
             qgis_group: QgsLayerTreeGroup
             if qgis_group.name() == label:
-                return qgis_group
+                return i if index else qgis_group
 
         return None
 
@@ -3549,10 +3557,11 @@ class Lizmap:
             # In tests, we don't have the variable set
             liz2json['options']['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
 
-        if self.existing_group(
-                self.existing_group(
-                    self.project.layerTreeRoot(), GroupNames.BaseLayers), GroupNames.BackgroundColor):
-            liz2json["options"]["default_background_color"] = True
+        default_background_color_index = self.existing_group(
+            self.existing_group(
+                self.project.layerTreeRoot(), GroupNames.BaseLayers), GroupNames.BackgroundColor, index=True)
+        if default_background_color_index is not None and default_background_color_index >= 0:
+            liz2json["options"]["default_background_color_index"] = default_background_color_index
 
         if not isinstance(self.layerList, dict):
             # Wierd bug when the dialog was not having a server at the beginning
