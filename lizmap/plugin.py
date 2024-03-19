@@ -572,8 +572,12 @@ class Lizmap:
         self.dlg.button_refresh_date_webdav.setText('')
         self.dlg.button_refresh_date_webdav.setToolTip('The date time of the file on the server.')
         self.dlg.button_refresh_date_webdav.clicked.connect(self.check_latest_update_webdav)
+        self.dlg.button_check_capabilities.clicked.connect(self.check_webdav)
 
-        buttons = (self.dlg.button_upload_thumbnail, self.dlg.button_upload_action, self.dlg.button_upload_webdav)
+        buttons = (
+            self.dlg.button_upload_thumbnail, self.dlg.button_upload_action, self.dlg.button_upload_webdav,
+            self.dlg.button_upload_media,
+        )
         for button in buttons:
             button.setIcon(QIcon(resources_path('icons', 'upload.png')))
             button.setText('')
@@ -581,6 +585,8 @@ class Lizmap:
         self.dlg.button_upload_thumbnail.clicked.connect(self.upload_thumbnail)
         self.dlg.button_upload_action.clicked.connect(self.upload_action)
         self.dlg.button_upload_webdav.clicked.connect(self.send_files)
+        self.dlg.button_upload_media.clicked.connect(self.upload_media)
+        self.dlg.button_create_media.clicked.connect(self.create_media_dir)
 
         # Group helper
         self.dlg.add_group_hidden.setToolTip(tr(
@@ -1086,24 +1092,33 @@ class Lizmap:
             # QGIS <= 3.22
             self.dlg.send_webdav.setChecked(False)
             self.dlg.send_webdav.setEnabled(False)
-            self.dlg.webdav_groupbox.setVisible(False)
+            self.dlg.send_webdav.setVisible(False)
+            self.dlg.webdav_frame.setVisible(False)
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
+            self.dlg.button_upload_media.setVisible(False)
+            self.dlg.button_create_media.setVisible(False)
             return
 
         # The dialog is already given.
         # We can check if WebDAV is supported.
         if self.webdav.setup_webdav_dialog():
             self.dlg.send_webdav.setEnabled(True)
-            self.dlg.webdav_groupbox.setVisible(True)
+            self.dlg.send_webdav.setVisible(True)
+            self.dlg.webdav_frame.setVisible(True)
             self.dlg.button_upload_thumbnail.setVisible(True)
             self.dlg.button_upload_action.setVisible(True)
+            self.dlg.button_upload_media.setVisible(True)
+            self.dlg.button_create_media.setVisible(True)
         else:
             self.dlg.send_webdav.setChecked(False)
             self.dlg.send_webdav.setEnabled(False)
-            self.dlg.webdav_groupbox.setVisible(False)
+            self.dlg.send_webdav.setVisible(False)
+            self.dlg.webdav_frame.setVisible(False)
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
+            self.dlg.button_upload_media.setVisible(False)
+            self.dlg.button_create_media.setVisible(False)
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -4331,6 +4346,65 @@ class Lizmap:
         QDesktopServices.openUrl(QUrl(url))
         return True, '', url
 
+    def create_media_dir(self):
+        """ Create the remote "media" directory. """
+        result, msg = self.webdav.file_stats_media()
+        if result is not None:
+            return
+
+        directory = self.dlg.current_repository(RepositoryComboData.Path) + 'media/'
+        result, msg = self.webdav.make_dir(directory)
+        if not result and msg:
+            self.dlg.display_message_bar('Lizmap', msg, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            return
+
+        self.dlg.display_message_bar('Lizmap', tr("Media directory created"), level=Qgis.Success, duration=DURATION_WARNING_BAR)
+
+    def upload_media(self):
+        """ Upload the current media path on the server. """
+        current_path = self.dlg.inLayerLink.text()
+        if not current_path.startswith('media/'):
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr('Path not starting by "media/"'),
+                level=Qgis.Critical,
+                duration=DURATION_WARNING_BAR
+            )
+            return
+
+        current_file = Path(self.project.absolutePath()).joinpath(current_path)
+        if not current_file.exists():
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr('Path does not exist'),
+                level=Qgis.Critical,
+                duration=DURATION_WARNING_BAR
+            )
+            return
+
+        if not current_file.is_file():
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr('Path is not a file'),
+                level=Qgis.Critical,
+                duration=DURATION_WARNING_BAR
+            )
+            return
+
+        result, message = self.webdav.send_media(current_file)
+        if not result and message:
+            self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            return
+
+        msg = tr("File send")
+        self.dlg.display_message_bar(
+            'Lizmap',
+            f'<a href="{self.webdav.media_url(current_path)}">{msg}</a>',
+            level=Qgis.Success,
+            duration=DURATION_WARNING_BAR,
+        )
+        return
+
     def upload_thumbnail(self):
         """ Upload the thumbnail on the server. """
         result, message = self.webdav.send_thumbnail()
@@ -4386,7 +4460,9 @@ class Lizmap:
         with OverrideCursor(Qt.WaitCursor):
             result, error = self.webdav.file_stats_qgs()
             if result:
-                self.dlg.webdav_last_update.setText(result.last_modified_pretty)
+                url = self.webdav.project_url()
+                self.dlg.webdav_last_update.setText(f'<a href="{url}">{result.last_modified_pretty}</a>')
+                self.dlg.webdav_last_update.setOpenExternalLinks(True)
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_webdav, result.last_modified_pretty)
             else:
                 self.dlg.webdav_last_update.setText(tr("Error"))

@@ -962,7 +962,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.predefined_baselayers,
             self.attribute_filtering,
             self.spatial_filtering,
-            self.webdav_groupbox,
+            self.webdav_frame,
             self.group_settings,
             self.group_safeguards,
         )

@@ -9,7 +9,7 @@ from pathlib import Path
 from lizmap.toolbelt.version import qgis_version
 
 if qgis_version() >= 32200:
-    from lizmap.server_dav import WebDav, PropFindResponse
+    from lizmap.server_dav import WebDav, PropFindFileResponse, PropFindDirResponse
 
 from lizmap.toolbelt.resources import plugin_test_data_path
 
@@ -106,6 +106,36 @@ class TestHttpProtocol(unittest.TestCase):
         self.assertEqual(msg, 'The resource you tried to create already exists')
         self.assertFalse(result)
 
+    def test_stats_directory(self):
+        """ Test statistics on a directory. """
+        self.dav._for_test(LIZMAP_USER, LIZMAP_PASSWORD, self.directory_name, "")
+
+        result, msg = self.dav.file_stats_media()
+        self.assertEqual('', msg)
+        self.assertIsNone(result)
+
+        result, msg = self.dav.make_dir_basic(
+            self.directory_name + '/media', LIZMAP_USER, LIZMAP_PASSWORD
+        )
+        self.assertEqual('Parent node does not exist', msg)
+        self.assertFalse(result)
+
+        result, msg = self.dav.make_dir_basic(
+            self.directory_name, LIZMAP_USER, LIZMAP_PASSWORD
+        )
+        self.assertEqual(msg, '')
+        self.assertTrue(result)
+
+        result, msg = self.dav.make_dir_basic(
+            self.directory_name + '/media', LIZMAP_USER, LIZMAP_PASSWORD
+        )
+        self.assertEqual('', msg)
+        self.assertTrue(result)
+
+        result, msg = self.dav.file_stats_media()
+        self.assertEqual('', msg)
+        self.assertIsInstance(result, PropFindDirResponse)
+
     def test_qgs_exists(self):
         """ Test to check if a file exists. """
         # Create the directory using external library
@@ -132,7 +162,7 @@ class TestHttpProtocol(unittest.TestCase):
         # Check file stats
         result, msg = self.dav.file_stats_qgs()
         self.assertEqual(msg, '')
-        self.assertIsInstance(result, PropFindResponse)
+        self.assertIsInstance(result, PropFindFileResponse)
         self.assertEqual(f'/dav.php/{self.directory_name}/{project_name}', result.href)
 
     # def test_backup_qgs(self):
@@ -146,8 +176,8 @@ class TestHttpProtocol(unittest.TestCase):
     #     self.assertEqual(msg, '')
     #     self.assertTrue(result)
 
-    def test_parse_propfind(self):
-        """ Test we can parse a PROPFIND response. """
+    def test_parse_propfind_file(self):
+        """ Test we can parse a PROPFIND file response. """
         xml_str = (
             '<?xml version="1.0"?>'
             '<d:multistatus xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">'
@@ -171,6 +201,33 @@ class TestHttpProtocol(unittest.TestCase):
         self.assertEqual("/dav.php/unit_test_plugin_upheq/legend_image_option.qgs", result.href)
         self.assertEqual("54512", result.content_length)
         self.assertEqual("bb814ac0a9bcbb42e4c7c3baf82f1fe3c48e2d91", result.etag)
+        self.assertEqual("HTTP/1.1 200 OK", result.http_code)
+
+    def test_parse_propfind_dir(self):
+        """ Test we can parse a PROPFIND dir response. """
+        xml_str = (
+            '<?xml version="1.0"?>'
+            '<d:multistatus xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">'
+            '<d:response>'
+            '<d:href>/dav.php/unit_test_plugin_tobml/media/</d:href>'
+            '<d:propstat>'
+            '<d:prop>'
+            '<d:getlastmodified>Thu, 14 Mar 2024 14:16:29 GMT</d:getlastmodified>'
+            '<d:resourcetype><d:collection/></d:resourcetype>'
+            '<d:quota-used-bytes>483604643840</d:quota-used-bytes>'
+            '<d:quota-available-bytes>522049449984</d:quota-available-bytes>'
+            '</d:prop>'
+            '<d:status>HTTP/1.1 200 OK</d:status>'
+            '</d:propstat>'
+            '</d:response>'
+            '</d:multistatus>'
+        )
+        result = WebDav.parse_propfind_response(xml_str)
+        self.assertEqual("Thu, 14 Mar 2024 14:16:29 GMT", result.last_modified)
+        self.assertEqual("483604643840", result.quota_used_bytes)
+        self.assertEqual("522049449984", result.quota_available_bytes)
+        self.assertTrue("14" in result.last_modified_pretty)
+        self.assertEqual("/dav.php/unit_test_plugin_tobml/media/", result.href)
         self.assertEqual("HTTP/1.1 200 OK", result.http_code)
 
     # @unittest.expectedFailure

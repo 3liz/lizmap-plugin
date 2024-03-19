@@ -7,7 +7,7 @@ import logging
 from base64 import b64encode
 from collections import namedtuple
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 from xml.dom.minidom import parseString
 
 from qgis.core import (
@@ -27,10 +27,16 @@ from lizmap.toolbelt.i18n import tr
 
 LOGGER = logging.getLogger("Lizmap")
 
-PropFindResponse = namedtuple(
-    'PropFind',
+PropFindFileResponse = namedtuple(
+    'PropFindFile',
     [
         'http_code', 'etag', 'content_length', 'last_modified', 'last_modified_pretty', 'href'
+    ])
+
+PropFindDirResponse = namedtuple(
+    'PropFindDir',
+    [
+        'http_code', 'quota_used_bytes', 'quota_available_bytes', 'last_modified', 'last_modified_pretty', 'href'
     ])
 
 
@@ -71,6 +77,10 @@ class WebDav:
         self.action_path = None
         self.action_status = None
         self.action = None
+
+        self.media_path = None
+        self.media_status = None
+        self.media = None
 
     @property
     def auth_id(self) -> Optional[str]:
@@ -125,6 +135,16 @@ class WebDav:
         server += 'index.php/view/media/illustration?repository={repository}&project={project}'.format(
             repository=self.parent.current_repository(RepositoryComboData.Id),
             project=Path(self.qgs_path).stem
+        )
+        return server
+
+    def media_url(self, media: str) -> str:
+        """ Returns the URL to the media in the web browser. """
+        server = self.url_slash(self.parent.server_combo.currentData(ServerComboData.ServerUrl.value))
+        server += 'index.php/view/media/getMedia?repository={repository}&project={project}&path={media}'.format(
+            repository=self.parent.current_repository(RepositoryComboData.Id),
+            project=Path(self.qgs_path).stem,
+            media=media
         )
         return server
 
@@ -240,6 +260,31 @@ class WebDav:
 
         return True, ''
 
+    def send_media(self, file_path: Path) -> tuple[bool, str]:
+        """ Send the media to the WebDAV server. """
+        if not self.parent:
+            return False, ''
+
+        url = self.dav_repository_url()
+        if not url:
+            return False, tr('No repository URL')
+
+        url += 'media/'
+
+        loop = QEventLoop()
+        LOGGER.debug(f"Local path {file_path} to {url} with token {self.auth_id}")
+        self.media = self.webdav.store(str(file_path), url, self.auth_id, Qgis.ActionStart.Deferred)
+        self.media.stored.connect(loop.quit)
+        self.media.store()
+        loop.exec_()
+
+        error = self.media.errorString()
+        if error:
+            LOGGER.error("Error while sending the media : " + error)
+            return False, error
+
+        return True, ''
+
     # def backup_qgs(self) -> Tuple[bool, str]:
     #     """ Make a backup of the QGS file with an auth ID. """
     #     if not self.auth_id:
@@ -282,7 +327,7 @@ class WebDav:
 
         return False, error_msg
 
-    def file_stats_qgs(self) -> Tuple[Optional[PropFindResponse], str]:
+    def file_stats_qgs(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about QGS file. """
         if self.qgs_path:
             file_name = Path(self.qgs_path).name
@@ -291,22 +336,26 @@ class WebDav:
             file_name = self._file
         return self._file_stats(file_name)
 
-    def file_stats_cfg(self) -> Tuple[Optional[PropFindResponse], str]:
+    def file_stats_cfg(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about CFG file. """
         return self._file_stats(Path(self.cfg_path).name)
 
-    def file_stats_thumbnail(self) -> Tuple[Optional[PropFindResponse], str]:
+    def file_stats_thumbnail(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about thumbnail. """
         self.thumbnail_path = self.parent.thumbnail_file()
         if not self.thumbnail_path:
             return None, 'No thumbnail was set'
         return self._file_stats(self.thumbnail_path.name)
 
-    def file_stats_action(self) -> Tuple[Optional[PropFindResponse], str]:
+    def file_stats_action(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about action. """
         return self._file_stats(self.action_path.name)
 
-    def _file_stats(self, filename: str) -> Tuple[Optional[PropFindResponse], Optional[str]]:
+    def file_stats_media(self) -> Tuple[Optional[PropFindFileResponse], str]:
+        """ Fetch file stats on the server about media folder. """
+        return self._file_stats("media")
+
+    def _file_stats(self, filename: str) -> Tuple[Optional[PropFindFileResponse], Optional[str]]:
         """ Get file stats on a file. """
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
@@ -420,10 +469,14 @@ class WebDav:
             return f'{content} - {reply.errorString()}'
 
     @classmethod
-    def parse_propfind_response(cls, xml_data: str) -> PropFindResponse:
+    def parse_propfind_response(cls, xml_data: str) -> Union[PropFindFileResponse, PropFindDirResponse]:
         """ Parse a response from a PROPFIND request. """
         xml_dom = parseString(xml_data)
         root = xml_dom.firstChild
+
+        # HTTP
+        node = root.getElementsByTagName("d:status")[0]
+        http = node.childNodes[0].data
 
         # Href
         node = root.getElementsByTagName("d:href")[0]
@@ -438,19 +491,33 @@ class WebDav:
         date_string += " "
         date_string += qdate.toString("hh:mm:ss")
 
-        # Length
-        node = root.getElementsByTagName("d:getcontentlength")[0]
-        length = node.childNodes[0].data
+        # Collections
+        node = root.getElementsByTagName("d:resourcetype")
+        if node[0].getElementsByTagName("d:collection"):
+            is_dir = True
+        else:
+            is_dir = False
 
-        # Etag
-        node = root.getElementsByTagName("d:getetag")[0]
-        etag = node.childNodes[0].data.strip('"')
+        if is_dir:
+            # Quota used
+            node = root.getElementsByTagName("d:quota-used-bytes")[0]
+            quota_used = node.childNodes[0].data
 
-        # HTTP
-        node = root.getElementsByTagName("d:status")[0]
-        http = node.childNodes[0].data
+            # Quota available
+            node = root.getElementsByTagName("d:quota-available-bytes")[0]
+            quota_available = node.childNodes[0].data
 
-        return PropFindResponse(http, etag, length, last_modified, date_string, href)
+            return PropFindDirResponse(http, quota_used, quota_available, last_modified, date_string, href)
+        else:
+            # Length
+            node = root.getElementsByTagName("d:getcontentlength")[0]
+            length = node.childNodes[0].data
+
+            # Etag
+            node = root.getElementsByTagName("d:getetag")[0]
+            etag = node.childNodes[0].data.strip('"')
+
+            return PropFindFileResponse(http, etag, length, last_modified, date_string, href)
 
     def _for_test(self, user: str, password: str, repository: str, file_name: str):
         """ Only for testing purpose. """

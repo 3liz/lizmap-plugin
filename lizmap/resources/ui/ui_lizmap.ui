@@ -209,18 +209,26 @@ QListWidget::item::selected {
         <widget class="QComboBox" name="repository_combo"/>
        </item>
        <item>
-        <widget class="QGroupBox" name="webdav_groupbox">
-         <property name="title">
-          <string>Synchronization</string>
+        <widget class="QFrame" name="webdav_frame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
-           <widget class="QCheckBox" name="send_webdav">
-            <property name="text">
-             <string>Send automatically when saving</string>
-            </property>
-           </widget>
-          </item>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
@@ -237,6 +245,10 @@ QListWidget::item::selected {
               </property>
              </widget>
             </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_18">
             <item>
              <widget class="QPushButton" name="button_refresh_date_webdav">
               <property name="sizePolicy">
@@ -262,6 +274,19 @@ QListWidget::item::selected {
                <string notr="true">UPLOAD</string>
               </property>
              </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -1674,6 +1699,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <widget class="QPushButton" name="button_refresh_link">
                                <property name="text">
                                 <string notr="true">REFRESH</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="button_upload_media">
+                               <property name="text">
+                                <string notr="true">UPLOAD</string>
                                </property>
                               </widget>
                              </item>
@@ -4687,6 +4719,44 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="send_webdav">
+                    <property name="text">
+                     <string>Send automatically when saving</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QPushButton" name="button_check_capabilities">
+                      <property name="text">
+                       <string>Check current server capabilities</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="button_create_media">
+                      <property name="text">
+                       <string>Create remote &quot;media&quot; directory</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_6">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -4997,7 +5067,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>button_ftp_reset</tabstop>
   <tabstop>button_ftp_check</tabstop>
   <tabstop>repository_combo</tabstop>
-  <tabstop>send_webdav</tabstop>
   <tabstop>scrollArea_7</tabstop>
   <tabstop>layer_tree</tabstop>
   <tabstop>scrollArea_10</tabstop>
