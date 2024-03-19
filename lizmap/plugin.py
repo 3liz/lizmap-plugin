@@ -4358,7 +4358,7 @@ class Lizmap:
             self.dlg.display_message_bar('Lizmap', msg, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return
 
-        self.dlg.display_message_bar('Lizmap', tr("Media directory created"), level=Qgis.Success, duration=DURATION_WARNING_BAR)
+        self.dlg.display_message_bar('Lizmap', tr('The "media" directory has been created'), level=Qgis.Success, duration=DURATION_WARNING_BAR)
 
     def upload_media(self):
         """ Upload the current media path on the server. """
