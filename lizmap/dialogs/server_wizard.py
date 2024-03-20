@@ -682,6 +682,10 @@ class CreateNewFolderDavPage(QWizardPage):
                 server_dav._for_test(parent_wizard._user, parent_wizard._password, "", "")
             result, msg = server_dav.make_dir(self.custom_name.text())
 
+            # Create the media directory as well
+            if result:
+                result, msg = server_dav.make_dir(self.custom_name.text() + '/media')
+
         if result:
             self.result.setText(tr("Folder created") + " " + THUMBS)
             return
@@ -700,13 +704,9 @@ class LizmapNewRepositoryPage(QWizardPage):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        step_1 = QLabel(
-            "1. " + tr("Set-up your folder \"{}\" to be recognised as a Lizmap repository in your web browser.").format(
-                self.field("folder_name")
-            )
-        )
-        step_1.setWordWrap(True)
-        layout.addWidget(step_1)
+        self.step_1 = QLabel("")
+        self.step_1.setWordWrap(True)
+        layout.addWidget(self.step_1)
 
         self.open_web_browser = QPushButton(tr("Open your web browser to finalise the repository creation"))
         self.open_web_browser.clicked.connect(self.open_browser)
@@ -725,6 +725,14 @@ class LizmapNewRepositoryPage(QWizardPage):
         self.result = QLabel()
         self.result.setWordWrap(True)
         layout.addWidget(self.result)
+
+    def initializePage(self):
+        # Do not make it constructor, the previous folder name is not known yet otherwise
+        self.step_1.setText(
+            "1. " + tr("Set-up your folder \"{}\" to be recognised as a Lizmap repository in your web browser.").format(
+                self.field("folder_name")
+            )
+        )
 
     def open_browser(self):
         """ Open the web browser. """

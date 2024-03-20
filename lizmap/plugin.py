@@ -33,6 +33,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
+from lizmap.dialogs.server_wizard import CreateFolderWizard
+
 if Qgis.QGIS_VERSION_INT >= 32200:
     from qgis.core import QgsIconUtils
 
@@ -578,7 +580,10 @@ class Lizmap:
         self.dlg.button_refresh_date_webdav.clicked.connect(self.check_latest_update_webdav)
         self.dlg.button_check_capabilities.clicked.connect(self.check_webdav)
         self.dlg.button_open_project.clicked.connect(self.open_web_browser_project)
-
+        self.dlg.button_create_repository.clicked.connect(self.create_new_repository)
+        self.dlg.button_create_repository.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
+        self.dlg.button_create_media_remote.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
+        self.dlg.button_create_media_local.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
         buttons = (
             self.dlg.button_upload_thumbnail, self.dlg.button_upload_action, self.dlg.button_upload_webdav,
             self.dlg.button_upload_media,
@@ -591,7 +596,8 @@ class Lizmap:
         self.dlg.button_upload_action.clicked.connect(self.upload_action)
         self.dlg.button_upload_webdav.clicked.connect(self.send_files)
         self.dlg.button_upload_media.clicked.connect(self.upload_media)
-        self.dlg.button_create_media.clicked.connect(self.create_media_dir)
+        self.dlg.button_create_media_remote.clicked.connect(self.create_media_dir_remote)
+        self.dlg.button_create_media_local.clicked.connect(self.create_media_dir_local)
 
         # Group helper
         self.dlg.add_group_hidden.setToolTip(tr(
@@ -1106,7 +1112,7 @@ class Lizmap:
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
             self.dlg.button_upload_media.setVisible(False)
-            self.dlg.button_create_media.setVisible(False)
+            self.dlg.button_create_media_remote.setVisible(False)
             return
 
         # The dialog is already given.
@@ -1119,7 +1125,7 @@ class Lizmap:
             self.dlg.button_upload_thumbnail.setVisible(True)
             self.dlg.button_upload_action.setVisible(True)
             self.dlg.button_upload_media.setVisible(True)
-            self.dlg.button_create_media.setVisible(True)
+            self.dlg.button_create_media_remote.setVisible(True)
         else:
             self.dlg.group_upload.setVisible(False)
             # self.dlg.send_webdav.setChecked(False)
@@ -1129,7 +1135,7 @@ class Lizmap:
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
             self.dlg.button_upload_media.setVisible(False)
-            self.dlg.button_create_media.setVisible(False)
+            self.dlg.button_create_media_remote.setVisible(False)
 
     # noinspection PyPep8Naming
     def initGui(self):
@@ -4308,6 +4314,16 @@ class Lizmap:
             )
         return True
 
+    def create_new_repository(self):
+        """ Open wizard to create a new remote repository. """
+        dialog = CreateFolderWizard(
+            self.dlg,
+            webdav_server=self.webdav.dav_server,
+            auth_id=self.webdav.auth_id,
+            url=self.webdav.server_url(),
+        )
+        dialog.exec_()
+
     def open_web_browser_project(self):
         """ Open the project in the web browser. """
         url = self.webdav.project_url()
@@ -4367,7 +4383,7 @@ class Lizmap:
         QDesktopServices.openUrl(QUrl(url))
         return True, '', url
 
-    def create_media_dir(self):
+    def create_media_dir_remote(self):
         """ Create the remote "media" directory. """
         with OverrideCursor(Qt.WaitCursor):
             result, msg = self.webdav.file_stats_media()
@@ -4388,6 +4404,17 @@ class Lizmap:
             return
 
         self.dlg.display_message_bar('Lizmap', tr('The "media" directory has been created'), level=Qgis.Success, duration=DURATION_WARNING_BAR)
+
+    def create_media_dir_local(self):
+        """ Create the local "media" directory. """
+        media = Path(self.project.fileName()).parent.joinpath('media')
+        media.mkdir(exist_ok=True)
+        self.dlg.display_message_bar(
+            'Lizmap',
+            tr('The local <a href="file://{}">"media"</a> directory has been created').format(media),
+            level=Qgis.Success,
+            duration=DURATION_WARNING_BAR,
+        )
 
     def upload_media(self):
         """ Upload the current media path on the server. """

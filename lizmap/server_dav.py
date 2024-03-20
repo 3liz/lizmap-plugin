@@ -120,10 +120,13 @@ class WebDav:
 
         return self.url_slash(url)
 
+    def server_url(self) -> Optional[str]:
+        """ URL from the server. """
+        return self.url_slash(self.parent.server_combo.currentData(ServerComboData.ServerUrl.value))
+
     def project_url(self) -> str:
         """ Returns the URL to the project in the web browser. """
-        server = self.url_slash(self.parent.server_combo.currentData(ServerComboData.ServerUrl.value))
-        server += 'index.php/view/map?repository={repository}&project={project}'.format(
+        server = self.server_url() + 'index.php/view/map?repository={repository}&project={project}'.format(
             repository=self.parent.current_repository(RepositoryComboData.Id),
             project=Path(self.qgs_path).stem
         )
@@ -131,20 +134,24 @@ class WebDav:
 
     def thumbnail_url(self) -> str:
         """ Returns the URL to the thumbnail in the web browser. """
-        server = self.url_slash(self.parent.server_combo.currentData(ServerComboData.ServerUrl.value))
-        server += 'index.php/view/media/illustration?repository={repository}&project={project}'.format(
-            repository=self.parent.current_repository(RepositoryComboData.Id),
-            project=Path(self.qgs_path).stem
+        server = (
+                self.server_url()
+                + 'index.php/view/media/illustration?repository={repository}&project={project}'.format(
+                    repository=self.parent.current_repository(RepositoryComboData.Id),
+                    project=Path(self.qgs_path).stem
+                )
         )
         return server
 
     def media_url(self, media: str) -> str:
         """ Returns the URL to the media in the web browser. """
-        server = self.url_slash(self.parent.server_combo.currentData(ServerComboData.ServerUrl.value))
-        server += 'index.php/view/media/getMedia?repository={repository}&project={project}&path={media}'.format(
-            repository=self.parent.current_repository(RepositoryComboData.Id),
-            project=Path(self.qgs_path).stem,
-            media=media
+        server = (
+            self.server_url()
+            + 'index.php/view/media/getMedia?repository={repository}&project={project}&path={media}'.format(
+                repository=self.parent.current_repository(RepositoryComboData.Id),
+                project=Path(self.qgs_path).stem,
+                media=media
+            )
         )
         return server
 
