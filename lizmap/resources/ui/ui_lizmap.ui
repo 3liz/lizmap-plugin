@@ -211,7 +211,7 @@ QListWidget::item::selected {
        <item>
         <widget class="QFrame" name="webdav_frame">
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -4720,25 +4720,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="send_webdav">
-                    <property name="text">
-                     <string>Send automatically when saving</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                     <item>
                      <widget class="QPushButton" name="button_check_capabilities">
                       <property name="text">
                        <string>Check current server capabilities</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="button_create_media">
-                      <property name="text">
-                       <string>Create remote &quot;media&quot; directory</string>
                       </property>
                      </widget>
                     </item>
@@ -4925,6 +4911,151 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <string notr="true">SET PYTHON PREVENT ECW</string>
                     </property>
                    </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="group_upload">
+                 <property name="title">
+                  <string>Upload</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <widget class="QCheckBox" name="send_webdav">
+                    <property name="text">
+                     <string>Send automatically when saving</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_21">
+                    <item>
+                     <widget class="QPushButton" name="button_create_media">
+                      <property name="text">
+                       <string>Create remote &quot;media&quot; directory</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_18">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_22">
+                    <item>
+                     <widget class="QPushButton" name="button_refresh_all">
+                      <property name="text">
+                       <string notr="true">REFRESH</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="button_open_project">
+                      <property name="text">
+                       <string>Open project in web-browser</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_19">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QFormLayout" name="formLayout_7">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_31">
+                      <property name="text">
+                       <string>QGS file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QLineEdit" name="line_qgs_date">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_37">
+                      <property name="text">
+                       <string>CFG file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QLineEdit" name="line_cfg_date">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_38">
+                      <property name="text">
+                       <string>Thumbnail file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QLineEdit" name="line_thumbnail_date">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_39">
+                      <property name="text">
+                       <string>Action file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QLineEdit" name="line_action_date">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="0">
+                     <widget class="QLabel" name="label_40">
+                      <property name="text">
+                       <string>Media directory</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="1">
+                     <widget class="QLineEdit" name="line_media_date">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>

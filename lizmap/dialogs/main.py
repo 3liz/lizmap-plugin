@@ -965,6 +965,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.webdav_frame,
             self.group_settings,
             self.group_safeguards,
+            self.group_upload,
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)

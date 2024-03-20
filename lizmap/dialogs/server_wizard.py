@@ -44,9 +44,9 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor, iface
 
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
-from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.logger import log_function
+from lizmap.saas import is_lizmap_cloud
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.version import qgis_version, version
 
@@ -1101,7 +1101,7 @@ class ServerWizard(BaseWizard):
                 return False, message, True
 
         self.server_info = content
-        self.is_lizmap_cloud = content.get('hosting', '') == CLOUD_DOMAIN
+        self.is_lizmap_cloud = is_lizmap_cloud(content)
         self.has_repository = True if len(content.get('repositories', [])) >= 1 else False
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs

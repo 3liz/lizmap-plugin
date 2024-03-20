@@ -344,11 +344,14 @@ class WebDav:
         """ Fetch file stats on the server about thumbnail. """
         self.thumbnail_path = self.parent.thumbnail_file()
         if not self.thumbnail_path:
-            return None, 'No thumbnail was set'
+            return None, tr('No thumbnail found')
         return self._file_stats(self.thumbnail_path.name)
 
     def file_stats_action(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about action. """
+        self.action_path = self.parent.action_file()
+        if not self.action_path or not self.action_path.exists():
+            return None, tr('No action found')
         return self._file_stats(self.action_path.name)
 
     def file_stats_media(self) -> Tuple[Optional[PropFindFileResponse], str]:

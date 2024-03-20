@@ -183,7 +183,7 @@ from lizmap.toolbelt.layer import (
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.plugin import lizmap_user_folder
 from lizmap.toolbelt.resources import plugin_name, plugin_path, resources_path
-from lizmap.toolbelt.strings import unaccent
+from lizmap.toolbelt.strings import human_size, unaccent
 from lizmap.toolbelt.version import (
     format_qgis_version,
     format_version_integer,
@@ -568,11 +568,16 @@ class Lizmap:
         for item in ui_items:
             item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
 
+        self.dlg.button_refresh_all.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.dlg.button_refresh_all.setText('')
+        self.dlg.button_refresh_all.setToolTip('Refresh all dates from the server.')
+        self.dlg.button_refresh_all.clicked.connect(self.check_all_dates_dav)
         self.dlg.button_refresh_date_webdav.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.dlg.button_refresh_date_webdav.setText('')
         self.dlg.button_refresh_date_webdav.setToolTip('The date time of the file on the server.')
         self.dlg.button_refresh_date_webdav.clicked.connect(self.check_latest_update_webdav)
         self.dlg.button_check_capabilities.clicked.connect(self.check_webdav)
+        self.dlg.button_open_project.clicked.connect(self.open_web_browser_project)
 
         buttons = (
             self.dlg.button_upload_thumbnail, self.dlg.button_upload_action, self.dlg.button_upload_webdav,
@@ -1088,11 +1093,15 @@ class Lizmap:
 
     def check_webdav(self):
         """ Check if we can enable or the webdav, according to the current selected server. """
+        # I hope temporary, to force the version displayed
+        self.dlg.refresh_helper_target_version(self.current_lwc_version())
+
         if not self.webdav:
             # QGIS <= 3.22
-            self.dlg.send_webdav.setChecked(False)
-            self.dlg.send_webdav.setEnabled(False)
-            self.dlg.send_webdav.setVisible(False)
+            self.dlg.group_upload.setVisible(False)
+            # self.dlg.send_webdav.setChecked(False)
+            # self.dlg.send_webdav.setEnabled(False)
+            # self.dlg.send_webdav.setVisible(False)
             self.dlg.webdav_frame.setVisible(False)
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
@@ -1103,17 +1112,19 @@ class Lizmap:
         # The dialog is already given.
         # We can check if WebDAV is supported.
         if self.webdav.setup_webdav_dialog():
-            self.dlg.send_webdav.setEnabled(True)
-            self.dlg.send_webdav.setVisible(True)
+            self.dlg.group_upload.setVisible(True)
+            # self.dlg.send_webdav.setEnabled(True)
+            # self.dlg.send_webdav.setVisible(True)
             self.dlg.webdav_frame.setVisible(True)
             self.dlg.button_upload_thumbnail.setVisible(True)
             self.dlg.button_upload_action.setVisible(True)
             self.dlg.button_upload_media.setVisible(True)
             self.dlg.button_create_media.setVisible(True)
         else:
-            self.dlg.send_webdav.setChecked(False)
-            self.dlg.send_webdav.setEnabled(False)
-            self.dlg.send_webdav.setVisible(False)
+            self.dlg.group_upload.setVisible(False)
+            # self.dlg.send_webdav.setChecked(False)
+            # self.dlg.send_webdav.setEnabled(False)
+            # self.dlg.send_webdav.setVisible(False)
             self.dlg.webdav_frame.setVisible(False)
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
@@ -4219,9 +4230,11 @@ class Lizmap:
 
         # Ask to save the project
         auto_save = self.dlg.checkbox_save_project.isChecked()
+        auto_send = self.dlg.send_webdav.isChecked()
         if save_project is None:
             # Only save when we are in GUI
             QgsSettings().setValue('lizmap/auto_save_project', auto_save)
+            QgsSettings().setValue('lizmap/auto_send_project', auto_send)
 
         if self.project.isDirty():
             if save_project or auto_save:
@@ -4248,11 +4261,11 @@ class Lizmap:
             # No automatic saving, the process is finished
             return True
 
-        if not self.dlg.send_webdav.isChecked() and not self.dlg.checkbox_ftp_transfer.isChecked():
+        if not self.dlg.group_upload.isEnabled() and not self.dlg.checkbox_ftp_transfer.isChecked():
             # No FTP and no webdav
             return True
 
-        if self.dlg.send_webdav.isChecked():
+        if self.dlg.send_webdav.isChecked() and self.dlg.group_upload.isEnabled():
             return self.send_files()
 
         # Only deprecated FTP now
@@ -4295,6 +4308,12 @@ class Lizmap:
             )
         return True
 
+    def open_web_browser_project(self):
+        """ Open the project in the web browser. """
+        url = self.webdav.project_url()
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(QUrl(url))
+
     def send_webdav(self) -> Tuple[bool, str, str]:
         """ Sync the QGS and CFG file over the webdav. """
         folder = self.dlg.current_repository(RepositoryComboData.Path)
@@ -4302,7 +4321,8 @@ class Lizmap:
             # Maybe we are on a new server ?
             return False, '', ''
 
-        qgis_exists, error = self.webdav.check_exists_qgs()
+        with OverrideCursor(Qt.WaitCursor):
+            qgis_exists, error = self.webdav.check_exists_qgs()
         if error:
             self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return False, '', ''
@@ -4327,7 +4347,8 @@ class Lizmap:
             if result == QMessageBox.No:
                 return False, '', ''
 
-        flag, error, url = self.webdav.send_all_project_files()
+        with OverrideCursor(Qt.WaitCursor):
+            flag, error, url = self.webdav.send_all_project_files()
         if not flag:
             # Error while sending files
             LOGGER.error(error)
@@ -4348,8 +4369,16 @@ class Lizmap:
 
     def create_media_dir(self):
         """ Create the remote "media" directory. """
-        result, msg = self.webdav.file_stats_media()
+        with OverrideCursor(Qt.WaitCursor):
+            result, msg = self.webdav.file_stats_media()
         if result is not None:
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr('The "media" directory was already existing. Please check with a file browser.'),
+                level=Qgis.Critical,
+                duration=DURATION_WARNING_BAR,
+                more_details=msg,
+            )
             return
 
         directory = self.dlg.current_repository(RepositoryComboData.Path) + 'media/'
@@ -4391,7 +4420,8 @@ class Lizmap:
             )
             return
 
-        result, message = self.webdav.send_media(current_file)
+        with OverrideCursor(Qt.WaitCursor):
+            result, message = self.webdav.send_media(current_file)
         if not result and message:
             self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return
@@ -4407,7 +4437,8 @@ class Lizmap:
 
     def upload_thumbnail(self):
         """ Upload the thumbnail on the server. """
-        result, message = self.webdav.send_thumbnail()
+        with OverrideCursor(Qt.WaitCursor):
+            result, message = self.webdav.send_thumbnail()
         if not result and message:
             self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return
@@ -4434,10 +4465,12 @@ class Lizmap:
                 LOGGER.error(error)
                 return
             self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, file_stats.last_modified_pretty)
+            self.dlg.line_thumbnail_date.setText(file_stats.last_modified_pretty)
 
     def upload_action(self):
         """ Upload the action file on the server. """
-        result, error = self.webdav.send_action()
+        with OverrideCursor(Qt.WaitCursor):
+            result, error = self.webdav.send_action()
         if not result and error:
             self.dlg.display_message_bar('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return
@@ -4454,6 +4487,50 @@ class Lizmap:
                 LOGGER.error(error)
                 return
             self.dlg.set_tooltip_webdav(self.dlg.button_upload_action, file_stats.last_modified_pretty)
+            self.dlg.line_action_date.setText(file_stats.last_modified_pretty)
+
+    def check_all_dates_dav(self):
+        """ Check all dates on the Web DAV server. """
+        self.dlg.line_qgs_date.setText("")
+        self.dlg.line_cfg_date.setText("")
+        self.dlg.line_action_date.setText("")
+        self.dlg.line_thumbnail_date.setText("")
+        self.dlg.line_media_date.setText("")
+
+        # QGS file
+        self.check_latest_update_webdav()
+
+        with OverrideCursor(Qt.WaitCursor):
+
+            # CFG
+            result, error = self.webdav.file_stats_cfg()
+            if result:
+                self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+            else:
+                self.dlg.line_cfg_date.setText(error)
+
+            # Action
+            result, error = self.webdav.file_stats_action()
+            if result:
+                self.dlg.line_action_date.setText(result.last_modified_pretty)
+                self.dlg.set_tooltip_webdav(self.dlg.button_upload_action, result.last_modified_pretty)
+            else:
+                self.dlg.line_action_date.setText(error)
+
+            # Thumbnail
+            result, error = self.webdav.file_stats_thumbnail()
+            if result:
+                self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+                self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, result.last_modified_pretty)
+            else:
+                self.dlg.line_thumbnail_date.setText(error)
+
+            # Media
+            result, error = self.webdav.file_stats_media()
+            if result:
+                self.dlg.line_media_date.setText(result.last_modified_pretty)
+            else:
+                self.dlg.line_media_date.setText(error)
 
     def check_latest_update_webdav(self):
         """ Check the latest date about QGS file on the server. """
@@ -4464,9 +4541,11 @@ class Lizmap:
                 self.dlg.webdav_last_update.setText(f'<a href="{url}">{result.last_modified_pretty}</a>')
                 self.dlg.webdav_last_update.setOpenExternalLinks(True)
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_webdav, result.last_modified_pretty)
+                self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
             else:
                 self.dlg.webdav_last_update.setText(tr("Error"))
                 self.dlg.webdav_last_update.setToolTip(error)
+                self.dlg.line_qgs_date.setText(error)
                 LOGGER.error(error)
 
     def check_visibility_crs_3857(self):
@@ -4651,6 +4730,9 @@ class Lizmap:
 
         auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
         self.dlg.checkbox_save_project.setChecked(auto_save)
+
+        auto_send = QgsSettings().value('lizmap/auto_send_project', False, bool)
+        self.dlg.send_webdav.setChecked(auto_send)
 
         self.dlg.exec_()
         return True
