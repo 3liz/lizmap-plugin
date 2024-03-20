@@ -279,6 +279,15 @@ class Lizmap:
         self.version = version()
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=self._version)
+
+        if Qgis.QGIS_VERSION_INT >= 32200:
+            self.webdav = WebDav()
+            # Give the dialog only the first time
+            self.webdav.setup_webdav_dialog(self.dlg)
+        else:
+            self.webdav = None
+        # self.check_webdav()
+
         self.dock_html_preview = None
         self.version_checker = None
         if self.is_dev_version:
@@ -321,14 +330,6 @@ class Lizmap:
         for button in french_buttons:
             button.setVisible(locale[0:2].lower() == 'fr' or self.is_dev_version)
             button.setIcon(QIcon(':images/flags/fr.svg'))
-
-        if Qgis.QGIS_VERSION_INT >= 32200:
-            self.webdav = WebDav()
-            # Give the dialog only the first time
-            self.webdav.setup_webdav_dialog(self.dlg)
-        else:
-            self.webdav = None
-        self.check_webdav()
 
         self.layers_table = dict()
 
@@ -859,6 +860,7 @@ class Lizmap:
             index = self.dlg.server_combo.findData(server, ServerComboData.ServerUrl.value)
             if index:
                 self.dlg.server_combo.setCurrentIndex(index)
+                # self.check_webdav()
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
         self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
@@ -973,7 +975,7 @@ class Lizmap:
         if current_version != old_version:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)
-        self.check_webdav()
+        # self.check_webdav()
 
         if self.dock_html_preview:
             # Change the URL for the CSS
@@ -1019,7 +1021,7 @@ class Lizmap:
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
-        self.check_webdav()
+        # self.check_webdav()
         # The new repository is only set when we save the CFG file
         # Otherwise, it will make a mess with the signals about the last repository used and the server refreshed list
         if self.dlg.page_dataviz.isVisible():
@@ -1027,6 +1029,7 @@ class Lizmap:
 
     def lwc_version_changed(self):
         """ When the version has changed in the selector, we update features with the blue background. """
+        # self.check_webdav()
         current_version = self.current_lwc_version()
         if not current_version:
             LOGGER.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
@@ -1101,6 +1104,7 @@ class Lizmap:
         """ Check if we can enable or the webdav, according to the current selected server. """
         # I hope temporary, to force the version displayed
         self.dlg.refresh_helper_target_version(self.current_lwc_version())
+        # LOGGER.critical(type(self.webdav))
 
         if not self.webdav:
             # QGIS <= 3.22
@@ -1113,10 +1117,12 @@ class Lizmap:
             self.dlg.button_upload_action.setVisible(False)
             self.dlg.button_upload_media.setVisible(False)
             self.dlg.button_create_media_remote.setVisible(False)
+            # LOGGER.critical("RETURN 1")
             return
 
         # The dialog is already given.
         # We can check if WebDAV is supported.
+        # LOGGER.critical("Second check : {}".format(self.webdav.setup_webdav_dialog()))
         if self.webdav.setup_webdav_dialog():
             self.dlg.group_upload.setVisible(True)
             # self.dlg.send_webdav.setEnabled(True)
@@ -1427,6 +1433,7 @@ class Lizmap:
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
+        # self.check_webdav()
 
     def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :
@@ -1441,6 +1448,7 @@ class Lizmap:
 
         Returns True if all tabs are available.
         """
+        # self.check_webdav()
         # Check the current selected server in the combobox
         if not self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value):
             msg = tr('Please add your Lizmap server in the table below.')
@@ -1475,7 +1483,7 @@ class Lizmap:
             self.dlg.allow_navigation(False, msg)
             return False
 
-        self.check_webdav()
+        # self.check_webdav()
         self.dlg.allow_navigation(True)
         return True
 
@@ -4719,7 +4727,7 @@ class Lizmap:
         """Plugin run method : launch the GUI."""
         self.dlg.check_action_file_exists()
         self.dlg.check_project_thumbnail()
-        self.check_webdav()
+        # self.check_webdav()
 
         if self.dlg.isVisible():
             # show dialog in front of QGIS
@@ -4762,5 +4770,5 @@ class Lizmap:
         self.dlg.send_webdav.setChecked(auto_send)
 
         self.dlg.exec_()
-        self.check_webdav()
+        # self.check_webdav()
         return True

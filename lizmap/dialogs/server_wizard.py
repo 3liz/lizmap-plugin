@@ -46,7 +46,7 @@ from qgis.utils import OverrideCursor, iface
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.logger import log_function
-from lizmap.saas import is_lizmap_cloud
+from lizmap.saas import is_lizmap_cloud, webdav_properties
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.version import qgis_version, version
 
@@ -1118,7 +1118,7 @@ class ServerWizard(BaseWizard):
             # Missing PyQGIS class for managing webdav
             self.dav_url = None
         else:
-            dav_metadata = content.get('webdav')
+            dav_metadata = webdav_properties(content)
             if not dav_metadata:
                 self.dav_url = None
             else:

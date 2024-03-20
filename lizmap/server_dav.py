@@ -23,6 +23,7 @@ from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from lizmap.definitions.definitions import RepositoryComboData, ServerComboData
 from lizmap.dialogs.main import LizmapDialog
+from lizmap.saas import webdav_properties
 from lizmap.toolbelt.i18n import tr
 
 LOGGER = logging.getLogger("Lizmap")
@@ -93,7 +94,7 @@ class WebDav:
     def dav_server(self) -> Optional[str]:
         """ Return the URL to the DAV server, either from the dialog first, or the one in the constructor. """
         if self.parent:
-            metadata = self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value).get('webdav')
+            metadata = webdav_properties(self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value))
             if not metadata:
                 # Module not enabled
                 return None
@@ -167,6 +168,9 @@ class WebDav:
         self.cfg_path = self.qgs_path + '.cfg'
 
         if not self.parent.current_repository():
+            # TODO check why do we have this check
+            # The webdav can exist without any current repository !
+            # It's tricky because the list repository is filled later
             return False
 
         if not self.dav_server:

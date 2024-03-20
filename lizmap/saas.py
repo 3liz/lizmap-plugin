@@ -34,6 +34,13 @@ def is_lizmap_cloud(metadata: dict) -> bool:
     return metadata.get('hosting', '') == CLOUD_DOMAIN
 
 
+def webdav_properties(metadata: dict) -> dict:
+    """ Check if the server has some WebDAV capabilities. """
+    if not metadata:
+        return {}
+    return metadata.get('webdav', {})
+
+
 def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[SourceLayer], str]:
     """ Check if the project is not using SSL on some PostGIS layers which are on a Lizmap Cloud database. """
     layer_error: List[SourceLayer] = []

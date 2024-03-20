@@ -747,6 +747,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 Qt.ToolTipRole)
             self.repository_combo.setItemData(index, repository_data['path'], RepositoryComboData.Path.value)
 
+        # Dirty hack to trigger webdav check in plugin.py
+        # Because all folders have been set in the combobox and the webdav is checking for repositories...
+        self.button_check_capabilities.click()
+
         # Restore the previous value if possible
         previous = self.project.customVariables().get('lizmap_repository')
         if not previous:

@@ -53,7 +53,7 @@ from lizmap.dialogs.server_wizard import (
     NamePage,
     ServerWizard,
 )
-from lizmap.saas import is_lizmap_cloud
+from lizmap.saas import is_lizmap_cloud, webdav_properties
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
@@ -1119,7 +1119,7 @@ class ServerManager:
         slot = partial(self.copy_as_markdown, data, action_data, action_required)
         server_as_markdown.triggered.connect(slot)
 
-        webdav = qgis_server_item.data(Qt.UserRole + 1).get('webdav')
+        webdav = webdav_properties(qgis_server_item.data(Qt.UserRole + 1))
         if webdav:
             login_item = self.table.item(item.row(), TableCell.Login.value)
             auth_id = login_item.data(Qt.UserRole)
