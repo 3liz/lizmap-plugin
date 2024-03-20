@@ -4374,7 +4374,7 @@ class Lizmap:
         if result is not None:
             self.dlg.display_message_bar(
                 'Lizmap',
-                tr('The "media" directory was already existing. Please check with a file browser.'),
+                tr('The "media" directory was already existing on the server. Please check with a file browser.'),
                 level=Qgis.Critical,
                 duration=DURATION_WARNING_BAR,
                 more_details=msg,
