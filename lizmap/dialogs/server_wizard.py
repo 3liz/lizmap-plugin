@@ -44,6 +44,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor, iface
 
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
+from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.logger import log_function
 from lizmap.toolbelt.i18n import tr
@@ -613,7 +614,7 @@ class CreateNewFolderDavPage(QWizardPage):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setTitle(tr("First folder"))
+        self.setTitle(tr("New folder"))
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -626,7 +627,7 @@ class CreateNewFolderDavPage(QWizardPage):
         layout.addWidget(helper)
         layout.addWidget(QLabel(tr("This is only some suggestions, feel free to edit the name you would like.")))
 
-        helper_2 = QLabel(tr("This will create a proper folder on the file system."))
+        helper_2 = QLabel(tr("This will create a proper folder on the file system on the server."))
         helper_2.setWordWrap(True)
         layout.addWidget(helper_2)
 
@@ -634,15 +635,15 @@ class CreateNewFolderDavPage(QWizardPage):
 
         self.test_button = QPushButton(tr("test"))
         self.cadastre_button = QPushButton(tr("cadastre"))
-        self.urbanisme_button = QPushButton(tr("urbanisme"))
+        self.urban_planning = QPushButton(tr("urban_planning"))
 
         self.test_button.clicked.connect(partial(self.add_suggestion, self.test_button.text()))
         self.cadastre_button.clicked.connect(partial(self.add_suggestion, self.cadastre_button.text()))
-        self.urbanisme_button.clicked.connect(partial(self.add_suggestion, self.urbanisme_button.text()))
+        self.urban_planning.clicked.connect(partial(self.add_suggestion, self.urban_planning.text()))
 
         horizontal.addWidget(self.test_button)
         horizontal.addWidget(self.cadastre_button)
-        horizontal.addWidget(self.urbanisme_button)
+        horizontal.addWidget(self.urban_planning)
         layout.addLayout(horizontal)
 
         self.custom_name = QLineEdit()
@@ -676,13 +677,16 @@ class CreateNewFolderDavPage(QWizardPage):
         LOGGER.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
         with OverrideCursor(Qt.WaitCursor):
             server_dav = WebDav(dav_url, auth_id)
+            if parent_wizard._user:
+                # Only for tests, because authid is not available
+                server_dav._for_test(parent_wizard._user, parent_wizard._password, "", "")
             result, msg = server_dav.make_dir(self.custom_name.text())
 
         if result:
             self.result.setText(tr("Folder created") + " " + THUMBS)
             return
 
-        self.label_result_folder.setText(msg)
+        self.result.setText(msg)
 
 
 class LizmapNewRepositoryPage(QWizardPage):
@@ -741,23 +745,26 @@ class LizmapNewRepositoryPage(QWizardPage):
             network_request.get(request)
 
         response = network_request.reply().content()
-        repositories = json.loads(response.data().decode('utf-8')).get('repositories')
+        repositories = json.loads(response.data().decode('utf-8')).get('repositories', {})
+        error = tr(
+            "The folder <b>{}</b> has not been found as a valid Lizmap repository.").format(self.field("folder_name"))
+        if isinstance(repositories, list):
+            self.result.setText(error)
+            return
+
         for repo_id, data in repositories.items():
             if data['path'] == self.field("folder_name") + '/':
                 self.result.setText(tr("Found it") + " " + THUMBS)
                 break
         else:
-            self.result.setText(
-                tr("The folder <b>{}</b> has not been found as a valid Lizmap repository.".format(
-                    self.field("folder_name")))
-            )
+            self.result.setText(error)
 
 
-class ServerWizard(QWizard):
+class BaseWizard(QWizard):
 
-    """ Main wizard class. """
+    """ Base wizard class. """
 
-    def __init__(self, parent=None, existing: list = None, url: str = '', auth_id: str = None, name: str = ''):
+    def __init__(self, parent=None):
         # noinspection PyArgumentList
         super().__init__(parent)
         self.setWindowTitle(tr("Lizmap Web Client instance"))
@@ -766,6 +773,42 @@ class ServerWizard(QWizard):
         self.setOption(QWizard.HaveHelpButton)
 
         self.setMinimumSize(800, 550)
+
+        # noinspection PyUnresolvedReferences
+        self.helpRequested.connect(self.open_online_help)
+
+    @staticmethod
+    def open_online_help() -> None:
+        """ Open the online help about this form. """
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(online_lwc_help('publish/lizmap_plugin/information.html'))
+
+    @classmethod
+    def trailing_slash(cls, url: str) -> str:
+        """ Add the trailing slash before URL concatenation. """
+        if not url.endswith('/'):
+            url += '/'
+        return url
+
+    @staticmethod
+    def url_metadata(base_url: str) -> str:
+        """ Return the URL to fetch metadata from LWC server. """
+        override = ServerWizard.override_url(base_url)
+        if override:
+            return override
+
+        base_url = ServerWizard.trailing_slash(base_url)
+        url = '{}index.php/view/app/metadata'.format(base_url)
+        return url
+
+
+class ServerWizard(BaseWizard):
+
+    """ Main wizard class. """
+
+    def __init__(self, parent=None, existing: list = None, url: str = '', auth_id: str = None, name: str = ''):
+        # noinspection PyArgumentList
+        super().__init__(parent)
 
         self.auth_id = auth_id
         self.server_info = None
@@ -782,9 +825,6 @@ class ServerWizard(QWizard):
         # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
 
-        # noinspection PyUnresolvedReferences
-        self.helpRequested.connect(self.open_online_help)
-
         self.setPage(WizardPages.UrlPage, UrlPage(url))
         self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id))
         self.setPage(WizardPages.NamePage, NamePage(name))
@@ -794,12 +834,6 @@ class ServerWizard(QWizard):
         self.setPage(WizardPages.SuggestionNewFolder, SuggestionNewFolderPage())
         self.setPage(WizardPages.CreateNewFolderDav, CreateNewFolderDavPage())
         self.setPage(WizardPages.LizmapNewRepository, LizmapNewRepositoryPage())
-
-    @staticmethod
-    def open_online_help() -> None:
-        """ Open the online help about this form. """
-        # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_lwc_help('publish/lizmap_plugin/information.html'))
 
     @log_function
     def validateCurrentPage(self):
@@ -978,24 +1012,6 @@ class ServerWizard(QWizard):
         except configparser.NoSectionError:
             return config.get(base_url[0:-1], key)
 
-    @classmethod
-    def trailing_slash(cls, url: str) -> str:
-        """ Add the trailing slash before URL concatenation. """
-        if not url.endswith('/'):
-            url += '/'
-        return url
-
-    @staticmethod
-    def url_metadata(base_url: str) -> str:
-        """ Return the URL to fetch metadata from LWC server. """
-        override = ServerWizard.override_url(base_url)
-        if override:
-            return override
-
-        base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}index.php/view/app/metadata'.format(base_url)
-        return url
-
     @staticmethod
     def url_dataviz(base_url: str) -> str:
         """ Return the URL to fetch metadata from LWC server. """
@@ -1085,7 +1101,7 @@ class ServerWizard(QWizard):
                 return False, message, True
 
         self.server_info = content
-        self.is_lizmap_cloud = content.get('hosting', '') == 'lizmap.com'
+        self.is_lizmap_cloud = content.get('hosting', '') == CLOUD_DOMAIN
         self.has_repository = True if len(content.get('repositories', [])) >= 1 else False
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs
@@ -1177,6 +1193,31 @@ class ServerWizard(QWizard):
         connection: QgsAbstractDatabaseProviderConnection
         connection.store(name)
         return True
+
+
+class CreateFolderWizard(BaseWizard):
+
+    """ Special wizard to create a remote folder. """
+
+    def __init__(
+            self, parent=None, webdav_server: str = None, auth_id: str = None, url: str = None,
+            user: str = None, password: str = None):
+        # noinspection PyArgumentList
+        super().__init__(parent)
+
+        self.dav_url = webdav_server
+        self.auth_id = auth_id
+        self.server = url
+
+        # For tests only
+        self._user = user
+        self._password = password
+
+        self.addPage(CreateNewFolderDavPage())
+        self.addPage(LizmapNewRepositoryPage())
+
+    def current_url(self):
+        return self.server
 
 
 if __name__ == '__main__':

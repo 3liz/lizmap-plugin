@@ -6,6 +6,9 @@ import unittest
 
 from pathlib import Path
 
+from qgis.PyQt.QtWidgets import QWizard
+
+from lizmap.dialogs.server_wizard import THUMBS, CreateFolderWizard
 from lizmap.toolbelt.version import qgis_version
 
 if qgis_version() >= 32200:
@@ -33,7 +36,7 @@ except ImportError:
     LIZMAP_PASSWORD = ''
 
 
-__copyright__ = 'Copyright 2023, 3Liz'
+__copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -230,11 +233,35 @@ class TestHttpProtocol(unittest.TestCase):
         self.assertEqual("/dav.php/unit_test_plugin_tobml/media/", result.href)
         self.assertEqual("HTTP/1.1 200 OK", result.http_code)
 
-    # @unittest.expectedFailure
-    # def test_wizard(self):
-    #     """ Test the wizard, because linked to webdav capabilities. """
-    #     dialog = WizardNewComer(None, LIZMAP_HOST_WEB, LIZMAP_HOST_DAV, LIZMAP_USER, LIZMAP_PASSWORD)
-    #     # dialog.exec_()
+    def test_wizard(self):
+        """ Test the wizard for folder creation. """
+        dialog = CreateFolderWizard(
+            None, webdav_server=LIZMAP_HOST_DAV, auth_id="", url=LIZMAP_HOST_WEB,
+            user=LIZMAP_USER, password=LIZMAP_PASSWORD)
+        dialog.show()
+        dialog.currentPage().custom_name.setText(self.directory_name)
+
+        self.assertFalse(self.client.check(self.directory_name))
+        dialog.currentPage().create_button.click()
+        self.assertTrue(self.client.check(self.directory_name))
+
+        self.assertTrue(THUMBS in dialog.currentPage().result.text())
+
+        dialog.currentPage().create_button.click()
+        # Message are always in English, hardcoded in source code
+        self.assertEqual("The resource you tried to create already exists", dialog.currentPage().result.text())
+
+        self.assertFalse(dialog.button(QWizard.FinishButton).isVisible())
+
+        dialog.button(QWizard.NextButton).click()
+
+        self.assertEqual(self.directory_name, dialog.field("folder_name"))
+
+        dialog.currentPage().check_repository.click()
+
+        self.assertFalse(THUMBS in dialog.currentPage().result.text())
+        self.assertTrue(self.directory_name in dialog.currentPage().result.text())
+        self.assertTrue(dialog.button(QWizard.FinishButton).isVisible())
 
 
 if __name__ == "__main__":

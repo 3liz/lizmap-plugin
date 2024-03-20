@@ -48,7 +48,11 @@ from lizmap.definitions.definitions import (
 )
 from lizmap.definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
 from lizmap.dialogs.main import LizmapDialog
-from lizmap.dialogs.server_wizard import NamePage, ServerWizard
+from lizmap.dialogs.server_wizard import (
+    CreateFolderWizard,
+    NamePage,
+    ServerWizard,
+)
 from lizmap.saas import is_lizmap_cloud
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.i18n import tr
@@ -1115,7 +1119,20 @@ class ServerManager:
         slot = partial(self.copy_as_markdown, data, action_data, action_required)
         server_as_markdown.triggered.connect(slot)
 
-        show_fonts = menu.addAction(tr("Show fonts available on QGIS Server"))
+        webdav = qgis_server_item.data(Qt.UserRole + 1).get('webdav')
+        if webdav:
+            login_item = self.table.item(item.row(), TableCell.Login.value)
+            auth_id = login_item.data(Qt.UserRole)
+            action_remote_repository = menu.addAction(tr("Create a remote Lizmap repository") + "…")
+            qgis_dav = ServerWizard.trailing_slash(
+                ServerWizard.trailing_slash(webdav.get('url'))
+                + webdav.get('projects_path'))
+            left_item = self.table.item(item.row(), TableCell.Url.value)
+            url = left_item.data(Qt.UserRole)
+            slot = partial(self.create_remote_repository, auth_id, qgis_dav, url)
+            action_remote_repository.triggered.connect(slot)
+
+        show_fonts = menu.addAction(tr("Show fonts available on QGIS Server") + "…")
         data = qgis_server_item.data(Qt.UserRole + 1).get('qgis_server_info')
         fonts = data.get('fonts')
         if fonts is None:
@@ -1126,6 +1143,10 @@ class ServerManager:
 
         # noinspection PyArgumentList
         menu.exec_(QCursor.pos())
+
+    def create_remote_repository(self, authid: str, webdav_server: str, server: str):
+        dialog = CreateFolderWizard(self.parent, webdav_server=webdav_server, auth_id=authid, url=server)
+        dialog.exec_()
 
     def copy_as_markdown(self, data: str, action_data: str, action_required: bool):
         """ Copy the server information. """

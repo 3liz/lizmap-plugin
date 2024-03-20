@@ -400,9 +400,13 @@ class WebDav:
 
     def make_dir(self, directory: str) -> Tuple[bool, Optional[str]]:
         """ Make a remote directory with an auth ID. """
-        if not self.auth_id:
+        if self.auth_id:
+            user, password = self.extract_auth_id(self.auth_id)
+        elif self._user:
+            # Only for tests
+            user, password = self._user, self._password
+        else:
             return False, 'Missing auth ID'
-        user, password = self.extract_auth_id(self.auth_id)
         return self.make_dir_basic(directory, user, password)
 
     def make_dir_basic(self, directory: str, user: str, password: str) -> Tuple[bool, Optional[str]]:
