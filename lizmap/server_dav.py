@@ -493,10 +493,13 @@ class WebDav:
         node = root.getElementsByTagName("d:getlastmodified")[0]
         last_modified = node.childNodes[0].data
 
+        # Transform from UTC to local timezone
         qdate = QDateTime.fromString(last_modified, Qt.DateFormat.RFC2822Date)
-        date_string = qdate.toString(QLocale().dateFormat(QLocale.ShortFormat))
+        qdate.setTimeSpec(Qt.UTC)
+        qdate_locale = qdate.toLocalTime()
+        date_string = qdate_locale.toString(QLocale().dateFormat(QLocale.ShortFormat))
         date_string += " "
-        date_string += qdate.toString("hh:mm:ss")
+        date_string += qdate_locale.toString("hh:mm:ss")
 
         # Collections
         node = root.getElementsByTagName("d:resourcetype")

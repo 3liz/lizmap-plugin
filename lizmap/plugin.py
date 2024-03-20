@@ -4692,12 +4692,12 @@ class Lizmap:
         """Plugin run method : launch the GUI."""
         self.dlg.check_action_file_exists()
         self.dlg.check_project_thumbnail()
+        self.check_webdav()
 
         if self.dlg.isVisible():
             # show dialog in front of QGIS
             self.dlg.raise_()
             self.dlg.activateWindow()
-            self.check_webdav()
             return False
 
         # QGIS Plugin manager
@@ -4735,4 +4735,5 @@ class Lizmap:
         self.dlg.send_webdav.setChecked(auto_send)
 
         self.dlg.exec_()
+        self.check_webdav()
         return True

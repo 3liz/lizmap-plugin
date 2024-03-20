@@ -18,7 +18,7 @@ def human_size(byte_size, units=None):
     byte_size = int(byte_size)
     if not units:
         units = [' bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']
-    return str(byte_size) + units[0] if byte_size < 1024 else human_size(byte_size >> 10, units[1:])
+    return str(byte_size) + " " + units[0] if byte_size < 1024 else human_size(byte_size >> 10, units[1:])
 
 
 def random_string(length: int = 5) -> str:
