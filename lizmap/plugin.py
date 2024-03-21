@@ -4292,6 +4292,8 @@ class Lizmap:
             return self.send_files()
 
         # Only deprecated FTP now
+        if not self.dlg.checkbox_ftp_transfer.isChecked():
+            return True
         valid, message = self.server_ftp.connect(send_files=True)
         if not valid:
             # noinspection PyUnresolvedReferences
