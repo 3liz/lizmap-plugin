@@ -2512,11 +2512,20 @@ class Lizmap:
 
         # Iterate over all child (layers and groups)
         children = root_group.children()
-        for i, child in enumerate(children):
+        i = -1
+        for child in children:
             if not QgsLayerTree.isGroup(child):
+                i += 1
                 continue
+
             qgis_group = cast_to_group(child)
             qgis_group: QgsLayerTreeGroup
+            count_children = len(qgis_group.children())
+            if count_children >= 1 or qgis_group.name() == label:
+                # We do not want to count empty groups
+                # Except for the one we are looking for
+                i += 1
+
             if qgis_group.name() == label:
                 return i if index else qgis_group
 
