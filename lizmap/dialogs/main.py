@@ -752,6 +752,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # Because all folders have been set in the combobox and the webdav is checking for repositories...
         self.button_check_capabilities.click()
 
+        if self.repository_combo.count() >= 1:
+            # At least, make one selected
+            self.repository_combo.setCurrentIndex(0)
+
         # Restore the previous value if possible
         previous = self.project.customVariables().get('lizmap_repository')
         if not previous:

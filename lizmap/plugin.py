@@ -3714,7 +3714,7 @@ class Lizmap:
                             'Then in the "Source" tab, you can recompute the extent or check your logs in QGIS.'
                         )
                     )
-                    return None
+                    # return None
                 layer_options['crs'] = layer.crs().authid()
 
             # styles
@@ -4609,7 +4609,7 @@ class Lizmap:
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, result.last_modified_pretty)
             elif result is None and not error:
                 self.dlg.line_thumbnail_date.setText(tr(
-                    "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
+                    "Project thumbnail {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
             else:
                 self.dlg.line_thumbnail_date.setText(error)
 

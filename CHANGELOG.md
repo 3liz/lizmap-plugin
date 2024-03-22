@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 4.3.0 - 2024-03-22
+
+* Warn about a possible regression with QGIS 3.36 when saving the layer extent
+* Improve support of QGIS 3.34 when generating the popup HTML in the QGIS HTML maptip
+* Better support of QGIS Server 3.34 about the default background color support.
+  * CFG must be regenerated with an up-to-date version of Lizmap Web Client as well
+* Fix URL check about the French IGN provider with the new GeoPlateforme
+* Better support of remote server management
+
 ## 4.2.7 - 2024-03-12
 
 * New check about duplicated layer with different filters which are next to each other
