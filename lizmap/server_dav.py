@@ -57,6 +57,7 @@ class WebDav:
         self._user = None
         self._password = None
         self._repository = None
+        self._file = None
 
         # noinspection PyArgumentList
         registry = QgsApplication.externalStorageRegistry()
@@ -163,15 +164,13 @@ class WebDav:
 
         assert self.parent
 
-        # noinspection PyArgumentList
-        self.qgs_path = QgsProject.instance().fileName()
-        self.cfg_path = self.qgs_path + '.cfg'
+        self.config_project()
 
-        if not self.parent.current_repository():
-            # TODO check why do we have this check
-            # The webdav can exist without any current repository !
-            # It's tricky because the list repository is filled later
-            return False
+        # if not self.parent.current_repository():
+        #     # TODO check why do we have this check
+        #     # The webdav can exist without any current repository !
+        #     # It's tricky because the list repository is filled later
+        #     return False
 
         if not self.dav_server:
             LOGGER.debug("Webdav is not installed")
@@ -181,8 +180,15 @@ class WebDav:
         LOGGER.debug("WebDAV is ready : {}".format(self.dav_server))
         return True
 
+    def config_project(self):
+        """ Set the current project. """
+        # noinspection PyArgumentList
+        self.qgs_path = QgsProject.instance().fileName()
+        self.cfg_path = self.qgs_path + '.cfg'
+
     def send_all_project_files(self) -> Tuple[bool, str, str]:
         """ Send all files related to the project : qgs, cfg and thumbnail. """
+        self.config_project()
         url = self.dav_repository_url()
         if not url:
             return False, '', ''
@@ -340,6 +346,7 @@ class WebDav:
 
     def file_stats_qgs(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about QGS file. """
+        self.config_project()
         if self.qgs_path:
             file_name = Path(self.qgs_path).name
         else:
@@ -349,6 +356,7 @@ class WebDav:
 
     def file_stats_cfg(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about CFG file. """
+        self.config_project()
         return self._file_stats(Path(self.cfg_path).name)
 
     def file_stats_thumbnail(self) -> Tuple[Optional[PropFindFileResponse], str]:

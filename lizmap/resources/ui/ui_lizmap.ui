@@ -604,34 +604,16 @@ QListWidget::item::selected {
            </item>
            <item>
             <layout class="QGridLayout" name="gridLayout_10">
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_current_lwc_label">
-               <property name="text">
-                <string>Current Lizmap Web Client branch selected</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_81">
-               <property name="text">
-                <string>Current server</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
+             <item row="0" column="3">
               <widget class="QPushButton" name="button_copy">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Copy versions</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QComboBox" name="server_combo"/>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="label_current_lwc">
-               <property name="text">
-                <string notr="true">SET IN PYTHON CODE</string>
                </property>
               </widget>
              </item>
@@ -646,6 +628,43 @@ QListWidget::item::selected {
               <widget class="QLabel" name="label_current_qgis">
                <property name="text">
                 <string notr="true">SET IN PYTHON CODE</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_81">
+               <property name="text">
+                <string>Current server</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_current_lwc_label">
+               <property name="text">
+                <string>Current Lizmap Web Client branch selected</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="server_combo"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="label_current_lwc">
+               <property name="text">
+                <string notr="true">SET IN PYTHON CODE</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QPushButton" name="button_check_capabilities">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string notr="true">REFRESH</string>
                </property>
               </widget>
              </item>
@@ -4718,30 +4737,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      <string>Save QGIS project too</string>
                     </property>
                    </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QPushButton" name="button_check_capabilities">
-                      <property name="text">
-                       <string>Check current server capabilities</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_6">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
                   </item>
                  </layout>
                 </widget>

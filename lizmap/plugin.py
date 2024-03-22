@@ -579,7 +579,13 @@ class Lizmap:
         self.dlg.button_refresh_date_webdav.setText('')
         self.dlg.button_refresh_date_webdav.setToolTip('The date time of the file on the server.')
         self.dlg.button_refresh_date_webdav.clicked.connect(self.check_latest_update_webdav)
-        self.dlg.button_check_capabilities.clicked.connect(self.check_webdav)
+        self.dlg.button_check_capabilities.setToolTip(
+            'If the server selected in this dropdown menu has not the correct version displayed under, or if some '
+            'server capabilities is missing.'
+        )
+        self.dlg.button_check_capabilities.setText('')
+        self.dlg.button_check_capabilities.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.dlg.button_check_capabilities.clicked.connect(self.check_server_capabilities)
         self.dlg.button_open_project.clicked.connect(self.open_web_browser_project)
         self.dlg.button_create_repository.clicked.connect(self.create_new_repository)
         self.dlg.button_create_repository.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
@@ -969,6 +975,10 @@ class Lizmap:
         QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
         self.check_dialog_validity()
         self.dlg.refresh_combo_repositories()
+
+        if current_metadata:
+            current_version = LwcVersions.find_from_metadata(current_metadata)
+            self.dlg.refresh_helper_target_version(current_version)
 
         current_version = self.current_lwc_version()
         old_version = QgsSettings().value('lizmap/lizmap_web_client_version', type=str)
@@ -4342,6 +4352,7 @@ class Lizmap:
             url=self.webdav.server_url(),
         )
         dialog.exec_()
+        self.dlg.refresh_versions_button.click()
 
     def open_web_browser_project(self):
         """ Open the project in the web browser. """
@@ -4404,25 +4415,48 @@ class Lizmap:
 
     def create_media_dir_remote(self):
         """ Create the remote "media" directory. """
+        directory = self.dlg.current_repository(RepositoryComboData.Path)
+        if not directory:
+            return
+
         with OverrideCursor(Qt.WaitCursor):
             result, msg = self.webdav.file_stats_media()
         if result is not None:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('The "media" directory was already existing on the server. Please check with a file browser.'),
-                level=Qgis.Critical,
+                level=Qgis.Info,
                 duration=DURATION_WARNING_BAR,
                 more_details=msg,
             )
             return
 
-        directory = self.dlg.current_repository(RepositoryComboData.Path) + 'media/'
+        box = QMessageBox(self.dlg)
+        box.setIcon(QMessageBox.Question)
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setWindowTitle(tr('Create "media" directory on the server'))
+        box.setText(tr(
+            'Are you sure you want to create the "media" directory on the server <strong>{server}</strong> in the '
+            'Lizmap repository <strong>{name}</strong> ?'
+        ).format(
+            server=self.dlg.server_combo.currentText(),
+            name=self.dlg.repository_combo.currentText()
+        ))
+        box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        box.setDefaultButton(QMessageBox.No)
+        result = box.exec_()
+        if result == QMessageBox.No:
+            return
+
+        directory += 'media/'
         result, msg = self.webdav.make_dir(directory)
         if not result and msg:
             self.dlg.display_message_bar('Lizmap', msg, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
             return
 
-        self.dlg.display_message_bar('Lizmap', tr('The "media" directory has been created'), level=Qgis.Success, duration=DURATION_WARNING_BAR)
+        self.dlg.display_message_bar(
+            'Lizmap',
+            tr('The "media" directory has been created'), level=Qgis.Success, duration=DURATION_WARNING_BAR)
 
     def create_media_dir_local(self):
         """ Create the local "media" directory. """
@@ -4548,10 +4582,15 @@ class Lizmap:
 
         with OverrideCursor(Qt.WaitCursor):
 
+            directory = self.dlg.current_repository()
+
             # CFG
             result, error = self.webdav.file_stats_cfg()
             if result:
                 self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+            elif result is None and not error:
+                self.dlg.line_cfg_date.setText(tr(
+                    "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
             else:
                 self.dlg.line_cfg_date.setText(error)
 
@@ -4568,6 +4607,9 @@ class Lizmap:
             if result:
                 self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, result.last_modified_pretty)
+            elif result is None and not error:
+                self.dlg.line_thumbnail_date.setText(tr(
+                    "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
             else:
                 self.dlg.line_thumbnail_date.setText(error)
 
@@ -4588,11 +4630,22 @@ class Lizmap:
                 self.dlg.webdav_last_update.setOpenExternalLinks(True)
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_webdav, result.last_modified_pretty)
                 self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+            elif result is None and not error:
+                directory = self.dlg.current_repository()
+                self.dlg.line_qgs_date.setText(tr(
+                    "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
             else:
                 self.dlg.webdav_last_update.setText(tr("Error"))
                 self.dlg.webdav_last_update.setToolTip(error)
                 self.dlg.line_qgs_date.setText(error)
                 LOGGER.error(error)
+
+    def check_server_capabilities(self):
+        """ If we are stuck on the dialog, let's try manually ..."""
+        self.check_webdav()
+        current_version = self.current_lwc_version()
+        self.dlg.refresh_helper_target_version(current_version)
+        self.lwc_version_changed()
 
     def check_visibility_crs_3857(self):
         """ Check if we display the warning about scales.

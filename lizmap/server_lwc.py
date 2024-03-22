@@ -623,6 +623,7 @@ class ServerManager:
         # Add the JSON metadata in the server combobox
         index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
         self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
+        LOGGER.info("Saving server metadata from network : {} - {}".format(index, server_alias))
         self.parent.tooltip_server_combo(index)
         # Server combo is refreshed, maybe we can allow the menu bar
         self.check_dialog_validity()
@@ -746,7 +747,15 @@ class ServerManager:
         with open(user_file) as json_file:
             json_content = json.loads(json_file.read())
 
-        return json_content
+        # AuthID must be unique, it is used as data for the QComboBox for find
+        unique_authid = []
+        output = []
+        for server in json_content:
+            if server.get('auth_id') in unique_authid:
+                continue
+            output.append(dict(server))
+
+        return output
 
     def refresh_server_combo(self):
         """ Refresh the server combobox. """
@@ -772,7 +781,8 @@ class ServerManager:
                     LOGGER.info("Loading server <a href='{}'>{}</a> using cache in the drop down list".format(url, name))
             else:
                 self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
-                LOGGER.info("Loading server <a href='{}'>{}</a> without metadata in the drop down list".format(url, name))
+                LOGGER.info(
+                    "Loading server <a href='{}'>{}</a> without metadata in the drop down list".format(url, name))
 
             self.parent.tooltip_server_combo(index)
 
@@ -991,6 +1001,9 @@ class ServerManager:
                     split = server_version.split('.')
                     qgis_server = (int(split[0]), int(split[1]))
                     if qgis_server < qgis_desktop:
+                        if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+                            # TODO if we can bypass this check for dev
+                            pass
                         messages.insert(0, tr(
                             'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server {}.{} or '
                             'downgrade your QGIS Desktop {}.{}'
@@ -1145,6 +1158,7 @@ class ServerManager:
         menu.exec_(QCursor.pos())
 
     def create_remote_repository(self, authid: str, webdav_server: str, server: str):
+        """ Open the wizard for repository creation. """
         dialog = CreateFolderWizard(self.parent, webdav_server=webdav_server, auth_id=authid, url=server)
         dialog.exec_()
 

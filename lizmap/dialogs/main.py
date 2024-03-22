@@ -656,7 +656,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
         if metadata and metadata.get('info'):
-            return LwcVersions.find(metadata['info']['version'])
+            return LwcVersions.find_from_metadata(metadata)
 
         if self._lwc_version:
             return self._lwc_version
@@ -676,9 +676,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         url = self.server_combo.itemData(index, ServerComboData.ServerUrl.value)
         metadata = self.server_combo.itemData(index, ServerComboData.JsonMetadata.value)
         if not metadata or not metadata.get('info'):
-            # Let's skip, the tooltip
+            self.server_combo.setItemData(index, tr('No metadata about this server'), Qt.ToolTipRole)
             return
-        target_version = LwcVersions.find(metadata['info']['version'])
+
+        target_version = LwcVersions.find_from_metadata(metadata)
         if target_version:
             target_version = target_version.value
         else:

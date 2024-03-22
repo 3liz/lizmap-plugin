@@ -62,6 +62,12 @@ class LwcVersions(Enum):
             # It should be fixed ASAP.
             return LwcVersions.oldest()
 
+    @classmethod
+    def find_from_metadata(cls, metadata: dict):
+        """ Return the release status from metadata. """
+        version = metadata.get("info").get("version")
+        return LwcVersions.find(version)
+
 
 # Possible prefix before a stable release
 # Note that 'pre' is not supported by the QGIS Desktop plugin manager

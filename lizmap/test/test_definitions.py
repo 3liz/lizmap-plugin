@@ -23,6 +23,11 @@ class TestDefinitions(unittest.TestCase):
             LwcVersions.find('1.0.0', True)
         self.assertIsInstance(LwcVersions.find('1.0.0'), LwcVersions)
 
+    def test_lwc_version_from_metadata(self):
+        """ Test to retrieve LWC version from metadata. """
+        data = {"info": {"version": "3.7.0-alpha.2", "date": "2024-02-27"}}
+        self.assertEqual(LwcVersions.Lizmap_3_7, LwcVersions.find_from_metadata(data))
+
     def test_version_comparaison(self):
         """ Test we can test the version comparaison. """
         self.assertTrue(LwcVersions.Lizmap_3_6 == LwcVersions.Lizmap_3_6)
