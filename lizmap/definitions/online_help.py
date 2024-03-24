@@ -66,6 +66,7 @@ class Panels:
     Checks = 15
     AutoFix = 16
     Settings = 17
+    Upload = 18
 
 
 MAPPING_INDEX_DOC = {
@@ -87,6 +88,7 @@ MAPPING_INDEX_DOC = {
     Panels.Checks: None,  # Log/checks
     Panels.AutoFix: None,  # Auto-fix
     Panels.Settings: None,  # Settings
+    Panels.Upload: None,
 }
 
 

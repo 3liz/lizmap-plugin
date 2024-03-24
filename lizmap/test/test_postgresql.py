@@ -49,21 +49,8 @@ if CREDENTIALS and not os.getenv("CI"):
 
 
 def skip_test():
-    if os.getenv("CI"):
-        return True
-    if not CREDENTIALS:
-        return True
-    if not PG_HOST:
-        return True
-    if not PG_PORT:
-        return True
-    if not PG_PASSWORD:
-        return True
-    if not PG_USER:
-        return True
-    if not PG_DATABASE:
-        return True
-    return False
+    """ Check conditions for running tests. """
+    return not all((os.getenv("CI"), CREDENTIALS, PG_HOST, PG_PORT, PG_PASSWORD, PG_USER, PG_DATABASE))
 
 
 class TestSql(unittest.TestCase):

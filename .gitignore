@@ -41,6 +41,7 @@ lizmap/i18n/lizmap_qgis_plugin_*.ts
 lizmap/i18n/lizmap_qgis_plugin_*.qm
 
 unittest.qgs
+lizmap/test/data/unit_test_plugin_*
 lizmap/test/data/*.gpkg-shm
 lizmap/test/data/*.gpkg-wal
 test/server/data/*.gpkg-shm

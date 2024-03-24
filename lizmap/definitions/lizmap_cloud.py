@@ -10,3 +10,6 @@ CLOUD_ONLINE_URL = 'https://docs.lizmap.cloud'
 CLOUD_ONLINE_LANGUAGES = ('en', 'fr')
 
 CLOUD_QGIS_MIN_RECOMMENDED = (3, 28, 0)
+
+UPLOAD_EXTENSIONS = ('gpkg', 'xlsx', 'fgb')
+UPLOAD_MAX_SIZE = 10000000  # 10 Mb

@@ -19,7 +19,7 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.PyQt.QtCore import QDateTime, QEventLoop, QLocale, Qt, QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtNetwork import QHttpMultiPart, QNetworkReply, QNetworkRequest
 
 from lizmap.definitions.definitions import RepositoryComboData, ServerComboData
 from lizmap.dialogs.main import LizmapDialog
@@ -57,7 +57,7 @@ class WebDav:
         self._user = None
         self._password = None
         self._repository = None
-        self._file = None
+        self._local_file = None
 
         # noinspection PyArgumentList
         registry = QgsApplication.externalStorageRegistry()
@@ -80,9 +80,11 @@ class WebDav:
         self.action_status = None
         self.action = None
 
-        self.media_path = None
         self.media_status = None
         self.media = None
+
+        self.generic_status = None
+        self.generic = None
 
     @property
     def auth_id(self) -> Optional[str]:
@@ -302,6 +304,168 @@ class WebDav:
 
         return True, ''
 
+    def remove_qgs(self) -> Tuple[Optional[PropFindFileResponse], str]:
+        """ Remove QGS file. """
+        self.config_project()
+        if self.qgs_path:
+            file_name = Path(self.qgs_path).name
+        else:
+            # Only used for tests
+            file_name = self._local_file
+        return self.remove_file(file_name)
+
+    def remove_cfg(self) -> Tuple[Optional[PropFindFileResponse], str]:
+        """ Remove CFG file. """
+        self.config_project()
+        return self.remove_file(Path(self.cfg_path).name)
+
+    def remove_thumbnail(self) -> Tuple[Optional[PropFindFileResponse], str]:
+        """ Remove thumbnail file. """
+        self.thumbnail_path = self.parent.thumbnail_file()
+        if not self.thumbnail_path:
+            return None, tr('No thumbnail found on the local file system, not checking on the server.')
+        return self.remove_file(self.thumbnail_path.name)
+
+    def remove_action(self) -> Tuple[Optional[PropFindFileResponse], str]:
+        """ Remove action file. """
+        self.action_path = self.parent.action_file()
+        if not self.action_path or not self.action_path.exists():
+            return None, tr('No action found on the local file system, not checking on the server.')
+        return self.remove_file(self.action_path.name)
+
+    def remove_file(self, remote_path: str):
+        """ Remove a remote file path. """
+        if self.auth_id:
+            user, password = self.extract_auth_id(self.auth_id)
+        elif self._user:
+            # Only for tests
+            user, password = self._user, self._password
+        else:
+            return None, 'Missing auth ID'
+
+        if self.parent and self.parent.current_repository(RepositoryComboData.Path):
+            directory = self.parent.current_repository(RepositoryComboData.Path)
+        elif self._repository:
+            # Only for tests
+            directory = self._repository
+        else:
+            return None, 'Missing repository'
+
+        network_request = QNetworkRequest()
+        network_request.setRawHeader(b"Authorization", self._token(user, password))
+
+        directory = self.url_slash(directory)
+
+        # noinspection PyArgumentList
+        network_request.setUrl(QUrl(self.dav_server + directory + remote_path))
+
+        reply = self._custom_blocking_request(network_request, 'DELETE')
+        data = reply.readAll()
+        content = data.data().decode('utf8')
+
+        return True, content
+
+    def put_file(self, file_path: Path, remote_path: str):
+        """ Send a generic file.
+
+        :param file_path: Local file path to send.
+        :param local_root_path: The root path on the local, where it matchs the server URL and repository folder.
+        :param remote_path: The path on the WebDAV.
+        """
+        if self.parent and self.parent.current_repository(RepositoryComboData.Path):
+            directory = self.parent.current_repository(RepositoryComboData.Path)
+        elif self._repository:
+            # Only for tests
+            directory = self._repository
+        else:
+            return None, 'Missing repository'
+
+        # directory = self.url_slash(directory)
+
+        # self.make_dirs_recursive(Path(remote_path).parent, True)
+
+        # print("Settings")
+        # print(f"LOCAL PATH : {file_path}")
+        # print(f"LOCAL ROOT : {local_root_path}")
+        # print(f"REMOTE : {remote_path}")
+        # print(f"DAV : {self.dav_server}")
+        # print(f"REMOTE FULL : {self.dav_server + remote_path}")
+        # print(f"DIRECTORY : {directory}")
+        # print("End settings")
+
+        remote_server = self.dav_server + directory + str(remote_path)
+
+        loop = QEventLoop()
+        LOGGER.debug(f"Local path {file_path} to {remote_server} with token {self.auth_id}")
+        self.generic = self.webdav.store(str(file_path), remote_server, self.auth_id, Qgis.ActionStart.Deferred)
+        self.generic.stored.connect(loop.quit)
+        self.generic.store()
+        loop.exec_()
+
+        error = self.generic.errorString()
+        if error:
+            LOGGER.error("Error while sending the media : " + error)
+            return False, error
+
+        return True, ''
+        #
+        # loop = QEventLoop()
+        #
+        # self.qgs = self.webdav.store(str(file_path), self.dav_server + remote_path, self.auth_id, Qgis.ActionStart.Deferred)
+        # self.qgs.stored.connect(loop.quit)
+        # self.qgs.store()
+        # loop.exec_()
+        #
+        # error = self.qgs.errorString()
+        # return error
+        #
+        # network_request = QNetworkRequest()
+        # network_request.setRawHeader(b"Authorization", self._token(user, password))
+        # # noinspection PyArgumentList
+        # network_request.setUrl(QUrl(self.dav_server + remote_path))
+        # # print(network_request.url())
+        #
+        # qt_file = QFile(str(file_path))
+        # if qt_file.open(QFile.ReadOnly):
+        #     data = qt_file.readAll()
+        #     file_size = qt_file.size()
+        #     qt_file.close()
+        # else:
+        #     return False, 'File is not open, error in the code'
+        #
+        # # print(data)
+        # multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
+        # # network_request.set
+        # file_part = QHttpPart()
+        # # file_part.setHeader(QNetworkRequest.ContentDispositionHeader, "form-data")
+        # file_part.setHeader(QNetworkRequest.ContentTypeHeader, "text/plain")
+        # # file_part.setHeader(QNetworkRequest.ContentDispositionHeader, "form-data; name=\"file\"; filename=\"file.txt\"")
+        # file_part.setHeader(QNetworkRequest.ContentLengthHeader, file_size)
+        # file_part.setBody(data)
+        # multi_part.append(file_part)
+        #
+        # reply = self._custom_blocking_request(network_request, 'POST', multi_part)
+        #
+        # data = reply.readAll()
+        # content = data.data().decode('utf8')
+        #
+        # return True, content
+        #
+        # if reply.error() == QNetworkReply.NoError:
+        #     # No error occurred, return the parsed response without any error message
+        #     return self.parse_propfind_response(content), ''
+        #
+        # # noinspection PyArgumentList
+        # network_request.setUrl(QUrl(self.dav_server + directory + filename))
+        #
+        # url += remote_path
+        #
+        # # print("BOB")
+        # # print(file_path)
+        # # print(remote_path)
+        #
+        # return True, ''
+
     # def backup_qgs(self) -> Tuple[bool, str]:
     #     """ Make a backup of the QGS file with an auth ID. """
     #     if not self.auth_id:
@@ -351,33 +515,33 @@ class WebDav:
             file_name = Path(self.qgs_path).name
         else:
             # Only used for tests
-            file_name = self._file
-        return self._file_stats(file_name)
+            file_name = self._local_file
+        return self.file_stats(file_name)
 
     def file_stats_cfg(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about CFG file. """
         self.config_project()
-        return self._file_stats(Path(self.cfg_path).name)
+        return self.file_stats(Path(self.cfg_path).name)
 
     def file_stats_thumbnail(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about thumbnail. """
         self.thumbnail_path = self.parent.thumbnail_file()
         if not self.thumbnail_path:
             return None, tr('No thumbnail found on the local file system, not checking on the server.')
-        return self._file_stats(self.thumbnail_path.name)
+        return self.file_stats(self.thumbnail_path.name)
 
     def file_stats_action(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about action. """
         self.action_path = self.parent.action_file()
         if not self.action_path or not self.action_path.exists():
             return None, tr('No action found on the local file system, not checking on the server.')
-        return self._file_stats(self.action_path.name)
+        return self.file_stats(self.action_path.name)
 
     def file_stats_media(self) -> Tuple[Optional[PropFindFileResponse], str]:
         """ Fetch file stats on the server about media folder. """
-        return self._file_stats("media")
+        return self.file_stats("media")
 
-    def _file_stats(self, filename: str) -> Tuple[Optional[PropFindFileResponse], Optional[str]]:
+    def file_stats(self, filename: str) -> Tuple[Optional[PropFindFileResponse], Optional[str]]:
         """ Get file stats on a file. """
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
@@ -402,7 +566,7 @@ class WebDav:
 
         # noinspection PyArgumentList
         network_request.setUrl(QUrl(self.dav_server + directory + filename))
-
+        # print(network_request.url())
         reply = self._custom_blocking_request(network_request, 'PROPFIND')
 
         data = reply.readAll()
@@ -420,7 +584,47 @@ class WebDav:
         # Return None but try to parse the error message
         return None, self.xml_reply_from_dav(reply)
 
-    def make_dir(self, directory: str) -> Tuple[bool, Optional[str]]:
+    def make_dirs_recursive(self, directory: Path, exists_ok: bool = True) -> Tuple[bool, Optional[str]]:
+        """ Make a remote directory with an auth ID. """
+        # print(directory)
+        if self.auth_id:
+            user, password = self.extract_auth_id(self.auth_id)
+        elif self._user:
+            # Only for tests
+            user, password = self._user, self._password
+        else:
+            return False, 'Missing auth ID'
+        return self.make_dirs_recursive_basic(directory, exists_ok, user, password)
+
+    def make_dirs_recursive_basic(self, file_path: Path, exists_ok: bool, user: str, password: str):
+        """ Make all dirs if necessary. """
+        if self.parent and self.parent.current_repository(RepositoryComboData.Path):
+            directory = self.parent.current_repository(RepositoryComboData.Path)
+        elif self._repository:
+            # Only for tests
+            directory = self._repository
+        else:
+            return None, 'Missing repository'
+
+        directory = self.url_slash(directory)
+
+        # result, msg = self.make_dir_basic(directory, exists_ok, user, password)
+        # if not result:
+        #     return False, msg
+
+        # First create recursively all needed directories
+        parents = list(file_path.parents)
+        parents.reverse()
+        for folder in parents:
+            result, msg = self.make_dir_basic(directory + str(folder), exists_ok, user, password)
+            if not result:
+                return False, msg
+
+        if file_path.suffix:
+            return True, ''
+        return self.make_dir_basic(directory + str(file_path), exists_ok, user, password)
+
+    def make_dir(self, directory: str, exists_ok: bool = False) -> Tuple[bool, Optional[str]]:
         """ Make a remote directory with an auth ID. """
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
@@ -429,9 +633,9 @@ class WebDav:
             user, password = self._user, self._password
         else:
             return False, 'Missing auth ID'
-        return self.make_dir_basic(directory, user, password)
+        return self.make_dir_basic(directory, exists_ok, user, password)
 
-    def make_dir_basic(self, directory: str, user: str, password: str) -> Tuple[bool, Optional[str]]:
+    def make_dir_basic(self, directory: str, exists_ok: bool, user: str, password: str) -> Tuple[bool, Optional[str]]:
         """ Make a remote directory with a login and password. """
         network_request = QNetworkRequest()
         network_request.setRawHeader(b"Authorization", self._token(user, password))
@@ -442,7 +646,12 @@ class WebDav:
         if reply.error() == QNetworkReply.NoError:
             return True, ''
 
-        return False, self.xml_reply_from_dav(reply)
+        error = self.xml_reply_from_dav(reply)
+
+        if error == 'The resource you tried to create already exists':
+            return exists_ok, error
+
+        return False, error
 
     @classmethod
     def extract_auth_id(cls, auth_id: str) -> Tuple[str, str]:
@@ -455,12 +664,12 @@ class WebDav:
         return user, password
 
     @classmethod
-    def _custom_blocking_request(cls, request: QNetworkRequest, http: str) -> QNetworkReply:
+    def _custom_blocking_request(cls, request: QNetworkRequest, http: str, multi_part: QHttpMultiPart = None) -> QNetworkReply:
         """ Make a custom blocking HTTP request. """
         # noinspection PyArgumentList
         network_manager = QgsNetworkAccessManager.instance()
         loop = QEventLoop()
-        reply = network_manager.sendCustomRequest(request, http.encode('utf-8'))
+        reply = network_manager.sendCustomRequest(request, http.encode('utf-8'), multi_part)
         reply: QNetworkReply
         # noinspection PyUnresolvedReferences
         reply.finished.connect(loop.quit)
@@ -553,4 +762,4 @@ class WebDav:
         self._user = user
         self._password = password
         self._repository = repository
-        self._file = file_name
+        self._local_file = file_name

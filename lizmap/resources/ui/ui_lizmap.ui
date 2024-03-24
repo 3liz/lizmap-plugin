@@ -188,6 +188,11 @@ QListWidget::item::selected {
            <string>Settings</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Upload</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -232,24 +237,6 @@ QListWidget::item::selected {
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QLabel" name="label_36">
-              <property name="text">
-               <string>Last update</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="webdav_last_update">
-              <property name="text">
-               <string notr="true">Unknown</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_18">
-            <item>
              <widget class="QPushButton" name="button_refresh_date_webdav">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -276,17 +263,18 @@ QListWidget::item::selected {
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_8">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+             <widget class="QLabel" name="label_36">
+              <property name="text">
+               <string>Last update</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="webdav_last_update">
+              <property name="text">
+               <string notr="true">Unknown</string>
               </property>
-             </spacer>
+             </widget>
             </item>
            </layout>
           </item>
@@ -328,7 +316,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>18</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -777,8 +765,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>808</width>
-                <height>1968</height>
+                <width>720</width>
+                <height>1629</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1553,8 +1541,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>200</height>
+                <width>497</width>
+                <height>172</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1639,8 +1627,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>490</width>
-                       <height>1349</height>
+                       <width>477</width>
+                       <height>1134</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2333,8 +2321,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>841</width>
-                <height>847</height>
+                <width>780</width>
+                <height>726</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2748,8 +2736,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>529</width>
-                <height>404</height>
+                <width>497</width>
+                <height>373</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2873,8 +2861,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>302</height>
+                <width>450</width>
+                <height>283</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3037,8 +3025,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>324</height>
+                <width>450</width>
+                <height>300</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -3138,8 +3126,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>667</width>
-                <height>608</height>
+                <width>618</width>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3516,8 +3504,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>394</width>
-                <height>943</height>
+                <width>386</width>
+                <height>867</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -3901,8 +3889,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>500</height>
+                <width>450</width>
+                <height>439</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4084,8 +4072,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>546</height>
+                <width>601</width>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4240,8 +4228,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>375</height>
+                <width>450</width>
+                <height>340</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -4356,8 +4344,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>464</width>
-                <height>368</height>
+                <width>450</width>
+                <height>317</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -4578,8 +4566,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>445</width>
-                <height>1104</height>
+                <width>415</width>
+                <height>882</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -4717,8 +4705,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
-                <height>704</height>
+                <width>434</width>
+                <height>611</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_72">
@@ -4911,192 +4899,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="group_upload">
-                 <property name="title">
-                  <string>Upload</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_8">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_45">
-                    <item>
-                     <widget class="QCheckBox" name="send_webdav">
-                      <property name="text">
-                       <string>Send automatically when saving</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_18">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="button_open_project">
-                      <property name="text">
-                       <string>Open project in web-browser</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_21">
-                    <item>
-                     <widget class="QGroupBox" name="groupBox_7">
-                      <property name="title">
-                       <string>Local</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_78">
-                       <item>
-                        <widget class="QPushButton" name="button_create_media_local">
-                         <property name="text">
-                          <string>Create &quot;media&quot; directory</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_7">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QGroupBox" name="groupBox_3">
-                      <property name="title">
-                       <string>Remote server</string>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_77">
-                       <item>
-                        <widget class="QPushButton" name="button_create_repository">
-                         <property name="text">
-                          <string>Create a new Lizmap repository</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="button_create_media_remote">
-                         <property name="text">
-                          <string>Create &quot;media&quot; directory</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <widget class="QGroupBox" name="groupBox_8">
-                    <property name="title">
-                     <string>Status</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_79">
-                     <item>
-                      <layout class="QFormLayout" name="formLayout_7">
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_31">
-                         <property name="text">
-                          <string>QGS file</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QLineEdit" name="line_qgs_date">
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="label_37">
-                         <property name="text">
-                          <string>CFG file</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QLineEdit" name="line_cfg_date">
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="0">
-                        <widget class="QLabel" name="label_38">
-                         <property name="text">
-                          <string>Thumbnail file</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1">
-                        <widget class="QLineEdit" name="line_thumbnail_date">
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="4" column="0">
-                        <widget class="QLabel" name="label_39">
-                         <property name="text">
-                          <string>Action file</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="4" column="1">
-                        <widget class="QLineEdit" name="line_action_date">
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="0">
-                        <widget class="QLabel" name="label_40">
-                         <property name="text">
-                          <string>Media directory</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="1">
-                        <widget class="QLineEdit" name="line_media_date">
-                         <property name="readOnly">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QPushButton" name="button_refresh_all">
-                         <property name="text">
-                          <string notr="true">REFRESH</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <spacer name="verticalSpacer_6">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -5108,6 +4910,310 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </size>
                  </property>
                 </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_upload">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_16">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_16">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>791</width>
+                <height>797</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_80">
+               <item>
+                <widget class="QCheckBox" name="send_webdav">
+                 <property name="text">
+                  <string>Send automatically when saving</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_21">
+                 <item>
+                  <widget class="QGroupBox" name="group_local">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="title">
+                    <string>Local computer</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_78">
+                    <item>
+                     <widget class="QPushButton" name="button_create_media_local">
+                      <property name="text">
+                       <string>Create &quot;media&quot; directory</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_7">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="group_remote">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="title">
+                    <string>Remote server</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_77">
+                    <item>
+                     <widget class="QPushButton" name="button_create_repository">
+                      <property name="text">
+                       <string>Create a new Lizmap repository</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="button_create_media_remote">
+                      <property name="text">
+                       <string>Create &quot;media&quot; directory</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="group_local_layers">
+                 <property name="title">
+                  <string>File based layers status</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_81">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QPushButton" name="button_refresh_local_files">
+                      <property name="text">
+                       <string>1. Refresh local files used</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="button_send_all_layers">
+                      <property name="text">
+                       <string>2. Send these files on the server</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="button_check_all_layers">
+                      <property name="text">
+                       <string>3. Refresh status</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_upload_path">
+                    <property name="text">
+                     <string notr="true">SET IN PYTHON, conditions</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_current_folder">
+                    <property name="text">
+                     <string notr="true">SET IN PYTHON, current folder</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="TableFiles" name="table_files"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="group_project_status">
+                 <property name="title">
+                  <string>Project file status</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_79">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_22">
+                    <item>
+                     <widget class="QPushButton" name="button_refresh_all">
+                      <property name="text">
+                       <string notr="true">REFRESH</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_6">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QFormLayout" name="formLayout_7">
+                    <item row="0" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_18">
+                      <item>
+                       <widget class="QLineEdit" name="line_qgs_date">
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="button_remove_qgs">
+                        <property name="text">
+                         <string notr="true">REMOVE</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_31">
+                      <property name="text">
+                       <string>QGS file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_45">
+                      <item>
+                       <widget class="QLineEdit" name="line_cfg_date">
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="button_remove_cfg">
+                        <property name="text">
+                         <string notr="true">REMOVE</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="2" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_52">
+                      <item>
+                       <widget class="QLineEdit" name="line_thumbnail_date">
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="button_remove_thumbnail">
+                        <property name="text">
+                         <string notr="true">REMOVE</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="3" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_56">
+                      <item>
+                       <widget class="QLineEdit" name="line_media_date">
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_37">
+                      <property name="text">
+                       <string>CFG file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_38">
+                      <property name="text">
+                       <string>Thumbnail file</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_40">
+                      <property name="text">
+                       <string>Media directory</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_58">
+                      <item>
+                       <widget class="QLineEdit" name="line_action_date">
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="button_remove_action">
+                        <property name="text">
+                         <string notr="true">REMOVE</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="4" column="0">
+                     <widget class="QLabel" name="label_39">
+                      <property name="text">
+                       <string>Action file</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -5181,6 +5287,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <extends>QWidget</extends>
    <header>qgis.gui</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TableFiles</class>
+   <extends>QTableWidget</extends>
+   <header>lizmap.widgets.table_files</header>
   </customwidget>
  </customwidgets>
  <tabstops>

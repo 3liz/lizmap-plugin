@@ -36,18 +36,9 @@ __email__ = 'info@3liz.org'
 
 
 def skip_test():
-    if not CREDENTIALS:
-        return False
-    if not LIZMAP_USER:
-        return False
-    if not LIZMAP_HOST_WEB:
-        return False
-    if not LIZMAP_PASSWORD:
-        return False
-    if os.getenv('CI') and 'lizmap.local' in LIZMAP_HOST_WEB:
-        return False
-
-    return True
+    """ Check conditions for running tests. """
+    return not all((
+        CREDENTIALS, LIZMAP_USER, LIZMAP_HOST_WEB, LIZMAP_PASSWORD, os.getenv('CI'), 'lizmap.local' in LIZMAP_HOST_WEB))
 
 
 class TestWizardServer(unittest.TestCase):

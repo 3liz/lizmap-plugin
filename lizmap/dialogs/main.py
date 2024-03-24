@@ -35,7 +35,12 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
-from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
+from lizmap.definitions.lizmap_cloud import (
+    CLOUD_MAX_PARENT_FOLDER,
+    CLOUD_NAME,
+    UPLOAD_EXTENSIONS,
+    UPLOAD_MAX_SIZE,
+)
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.log_panel import LogPanel
 from lizmap.project_checker_tools import (
@@ -51,6 +56,7 @@ from lizmap.project_checker_tools import (
     use_estimated_metadata,
 )
 from lizmap.saas import fix_ssl, is_lizmap_cloud
+from lizmap.table_manager.upload_files import TableFilesManager
 from lizmap.widgets.check_project import Checks, Headers, TableCheck
 
 try:
@@ -392,7 +398,20 @@ class LizmapDialog(QDialog, FORM_CLASS):
         for button in buttons:
             button.setIcon(copy_icon)
 
+        self.mOptionsListWidget.item(Panels.Upload).setHidden(True)
+        self.label_upload_path.setText(tr(
+            "Only files located in the <strong>current QGS file directory (or in a sub-directory)</strong>, "
+            "having a file weight less than <strong>{}</strong> and having extensions <strong>{}</strong> are "
+            "supported.").format(
+                human_size(UPLOAD_MAX_SIZE), ', '.join(UPLOAD_EXTENSIONS)
+            )
+        )
+        self.label_upload_path.setWordWrap(True)
+        self.label_current_folder.setText("")
         self.table_checks.setup()
+        self.table_files.setup()
+        self.table_files_manager = TableFilesManager(self, self.table_files, self.button_refresh_local_files)
+
         css_path = resources_path('css', 'log.css')
         with open(css_path, encoding='utf8') as f:
             css = f.read()
@@ -951,6 +970,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(Panels.Settings).setIcon(icon)
         self.mOptionsListWidget.item(Panels.Settings).setData(Qt.UserRole, 'settings')
 
+        # Upload
+        # noinspection PyCallByClass,PyArgumentList
+        icon = QIcon(resources_path('icons', 'upload.svg'))
+        self.mOptionsListWidget.item(Panels.Upload).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Upload).setData(Qt.UserRole, 'upload')
+
         # Set stylesheet for QGroupBox
         q_group_box = (
             self.gb_tree,
@@ -974,7 +999,11 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.webdav_frame,
             self.group_settings,
             self.group_safeguards,
-            self.group_upload,
+            # self.group_upload,
+            self.group_local,
+            self.group_remote,
+            self.group_local_layers,
+            self.group_project_status,
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)
