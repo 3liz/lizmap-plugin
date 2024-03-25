@@ -3722,23 +3722,25 @@ class Lizmap:
                 layer_options['extent'] = [
                     extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum()]
                 if any(x != x for x in layer_options['extent']):
-                    # https://github.com/3liz/lizmap-plugin/issues/571
-                    QMessageBox.warning(
-                        self.dlg,
-                        'Lizmap',
-                        tr(
-                            'Please check your layer extent for "{}" with the ID "{}".'
-                            'The extent does not seem valid.'
-                        ).format(layer.name(), layer.id()) + '\n\n'
-                        + tr(
-                            'You can visit vector layer properties → Information tab → Information from provider → '
-                            'Extent.'
-                        ) + '\n\n'
-                        + tr(
-                            'Then in the "Source" tab, you can recompute the extent or check your logs in QGIS.'
+                    if layer.isSpatial():
+                        # https://github.com/3liz/lizmap-plugin/issues/571
+                        QMessageBox.warning(
+                            self.dlg,
+                            'Lizmap',
+                            tr(
+                                'Please check your layer extent for "{}" with the ID "{}".'
+                                'The extent does not seem valid.'
+                            ).format(layer.name(), layer.id()) + '\n\n'
+                            + tr(
+                                'You can visit vector layer properties → Information tab → Information from provider → '
+                                'Extent.'
+                            ) + '\n\n'
+                            + tr(
+                                'Then in the "Source" tab, you can recompute the extent or check your logs in QGIS.'
+                            )
                         )
-                    )
-                    # return None
+                    else:
+                        layer_options['extent'] = [0, 0, 0, 0]
                 layer_options['crs'] = layer.crs().authid()
 
             # styles
