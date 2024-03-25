@@ -4761,7 +4761,8 @@ class Lizmap:
     def check_server_capabilities(self):
         """ If we are stuck on the dialog, let's try manually ..."""
         self.check_webdav()
-        self.target_server_changed()
+        # Do NOT CALL target_server_changed
+        # self.target_server_changed()
         current_version = self.current_lwc_version()
         self.dlg.refresh_helper_target_version(current_version)
         self.lwc_version_changed()
