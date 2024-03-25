@@ -6,6 +6,8 @@ import random
 import string
 import unicodedata
 
+from pathlib import Path
+
 
 def unaccent(a_string: str) -> str:
     """ Return the unaccentuated string. """
@@ -24,6 +26,13 @@ def human_size(byte_size, units=None):
 def random_string(length: int = 5) -> str:
     """ Generate a random string with the given length. """
     return ''.join(random.choice(string.ascii_lowercase) for _ in range(length))
+
+
+def path_to_url(file_path: Path) -> str:
+    """ Transform a file path to a URL. """
+    # TODO Use urllib.request.pathname2url
+    # Quick hack
+    return str(file_path).replace('\\', '/')
 
 
 def format_version_integer(version_string: str) -> str:

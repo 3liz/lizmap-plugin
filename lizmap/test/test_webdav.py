@@ -1,7 +1,5 @@
 """Test webdav protocol and custom HTTP requests."""
 
-import random
-import string
 import unittest
 
 from pathlib import Path
@@ -10,6 +8,7 @@ from shutil import rmtree
 from qgis.PyQt.QtWidgets import QWizard
 
 from lizmap.dialogs.server_wizard import THUMBS, CreateFolderWizard
+from lizmap.toolbelt.strings import random_string
 from lizmap.toolbelt.version import qgis_version
 
 if qgis_version() >= 32200:
@@ -48,7 +47,7 @@ __email__ = 'info@3liz.org'
 
 def skip_test():
     """ Check conditions for running tests. """
-    return not all((CREDENTIALS, qgis_version() < 32200, LIZMAP_HOST_DAV, LIZMAP_USER, LIZMAP_PASSWORD))
+    return not all((CREDENTIALS, qgis_version() >= 32200, LIZMAP_HOST_DAV, LIZMAP_USER, LIZMAP_PASSWORD))
 
 #
 # Important note, we are not using our own webdav library to create/remove fixtures.
@@ -63,15 +62,10 @@ def skip_test():
 
 class TestHttpProtocol(unittest.TestCase):
 
-    @classmethod
-    def random_string(cls, length: int = 5) -> str:
-        """ Generate random string. """
-        return ''.join(random.choice(string.ascii_lowercase) for _ in range(length))
-
     @unittest.skipIf(skip_test(), "Missing credentials")
     def setUp(self) -> None:
         self.prefix = 'unit_test_plugin_'
-        self.directory_name = self.prefix + self.random_string()
+        self.directory_name = self.prefix + random_string()
         self.local_dir_path = Path(plugin_test_data_path()).joinpath(self.directory_name)
         self.dav = WebDav(LIZMAP_HOST_DAV)
         options = {

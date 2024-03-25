@@ -185,7 +185,7 @@ from lizmap.toolbelt.layer import (
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.plugin import lizmap_user_folder
 from lizmap.toolbelt.resources import plugin_name, plugin_path, resources_path
-from lizmap.toolbelt.strings import human_size, unaccent
+from lizmap.toolbelt.strings import human_size, path_to_url, unaccent
 from lizmap.toolbelt.version import (
     format_qgis_version,
     format_version_integer,
@@ -4643,7 +4643,7 @@ class Lizmap:
         """ Refresh a single layer status. """
         relative_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.RELATIVE_PATH)
         # Refresh date and size from the server
-        result, error = self.webdav.file_stats(str(relative_path_layer))
+        result, error = self.webdav.file_stats(path_to_url(relative_path_layer))
         if result:
             self.dlg.table_files.file_status(row, result.last_modified_pretty, human_size(result.content_length))
         elif result is None and not error:
@@ -4653,12 +4653,18 @@ class Lizmap:
 
     def refresh_all_layers(self):
         """ Refresh the status of all layers. """
+        for row in range(self.dlg.table_files.rowCount()):
+            self.dlg.table_files.file_status(row, tr("Work in progress"), tr("Work in progress"))
+
         with OverrideCursor(Qt.WaitCursor):
             for row in range(self.dlg.table_files.rowCount()):
                 self.refresh_single_layer(row)
 
     def send_all_layers(self):
         """ Send all layers from the table on the server. """
+        for row in range(self.dlg.table_files.rowCount()):
+            self.dlg.table_files.file_status(row, tr("Work in progress"), tr("Work in progress"))
+
         with OverrideCursor(Qt.WaitCursor):
             for row in range(self.dlg.table_files.rowCount()):
                 relative_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.RELATIVE_PATH)
@@ -4671,14 +4677,13 @@ class Lizmap:
                 self.webdav.put_file(absolute_path_layer, relative_path_layer)
 
                 # Refresh date and size from the server
-                result, error = self.webdav.file_stats(str(relative_path_layer))
+                result, error = self.webdav.file_stats(path_to_url(relative_path_layer))
                 if result:
                     self.dlg.table_files.file_status(row, result.last_modified_pretty, human_size(result.content_length))
                 elif result is None and not error:
                     self.dlg.table_files.file_status(row, tr('Error'), tr("Not found on the server"))
                 else:
                     self.dlg.table_files.file_status(row, tr('Error'), error)
-        self.refresh_all_layers()
 
     def _refresh_cfg(self):
         """ Refresh CFG. """

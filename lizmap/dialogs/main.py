@@ -769,6 +769,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Dirty hack to trigger webdav check in plugin.py
         # Because all folders have been set in the combobox and the webdav is checking for repositories...
+        # Be careful of recursion call
         self.button_check_capabilities.click()
 
         if self.repository_combo.count() >= 1:

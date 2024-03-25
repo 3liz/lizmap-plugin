@@ -25,6 +25,7 @@ from lizmap.definitions.definitions import RepositoryComboData, ServerComboData
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.saas import webdav_properties
 from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.strings import path_to_url
 
 LOGGER = logging.getLogger("Lizmap")
 
@@ -365,11 +366,10 @@ class WebDav:
 
         return True, content
 
-    def put_file(self, file_path: Path, remote_path: str):
+    def put_file(self, file_path: Path, remote_path: Path):
         """ Send a generic file.
 
         :param file_path: Local file path to send.
-        :param local_root_path: The root path on the local, where it matchs the server URL and repository folder.
         :param remote_path: The path on the WebDAV.
         """
         if self.parent and self.parent.current_repository(RepositoryComboData.Path):
@@ -393,7 +393,7 @@ class WebDav:
         # print(f"DIRECTORY : {directory}")
         # print("End settings")
 
-        remote_server = self.dav_server + directory + str(remote_path)
+        remote_server = self.dav_server + directory + path_to_url(remote_path)
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {file_path} to {remote_server} with token {self.auth_id}")
@@ -404,7 +404,7 @@ class WebDav:
 
         error = self.generic.errorString()
         if error:
-            LOGGER.error("Error while sending the media : " + error)
+            LOGGER.error("Error while sending the generic file : " + error)
             return False, error
 
         return True, ''
