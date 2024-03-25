@@ -25,7 +25,7 @@ def version(remove_v_prefix=True) -> str:
     return v
 
 
-def format_qgis_version(qgis_version) -> tuple:
+def format_qgis_version(qgis_version: int) -> tuple:
     """ Split a QGIS int version number into major, minor, bugfix.
 
      If the minor version is a dev version, the next stable minor version is set.
