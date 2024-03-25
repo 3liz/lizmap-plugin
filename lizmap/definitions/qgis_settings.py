@@ -28,3 +28,7 @@ class Settings:
 
     # Changelogs
     SeenChangelog = 'seen_changelogs'
+
+    # Auto
+    AutoSave = 'auto_save_project'
+    AutoSend = 'auto_send_project'

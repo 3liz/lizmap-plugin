@@ -4327,8 +4327,8 @@ class Lizmap:
         auto_send = self.dlg.send_webdav.isChecked()
         if save_project is None:
             # Only save when we are in GUI
-            QgsSettings().setValue('lizmap/auto_save_project', auto_save)
-            QgsSettings().setValue('lizmap/auto_send_project', auto_send)
+            QgsSettings().setValue(Settings.key(Settings.AutoSave), auto_save)
+            QgsSettings().setValue(Settings.key(Settings.AutoSend), auto_send)
 
         if self.project.isDirty():
             if save_project or auto_save:
@@ -4954,10 +4954,10 @@ class Lizmap:
 
         self.dlg.show()
 
-        auto_save = QgsSettings().value('lizmap/auto_save_project', False, bool)
+        auto_save = QgsSettings().value(Settings.key(Settings.AutoSave), False, bool)
         self.dlg.checkbox_save_project.setChecked(auto_save)
 
-        auto_send = QgsSettings().value('lizmap/auto_send_project', False, bool)
+        auto_send = QgsSettings().value(Settings.key(Settings.AutoSend), False, bool)
         self.dlg.send_webdav.setChecked(auto_send)
 
         self.dlg.exec_()
