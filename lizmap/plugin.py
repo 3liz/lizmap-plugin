@@ -3737,10 +3737,12 @@ class Lizmap:
                             ) + '\n\n'
                             + tr(
                                 'Then in the "Source" tab, you can recompute the extent or check your logs in QGIS.'
+                            ) + '\n\n'
+                            + tr(
+                                'The extent has been set to a default value 0,0,0,0.'
                             )
                         )
-                    else:
-                        layer_options['extent'] = [0, 0, 0, 0]
+                    layer_options['extent'] = [0, 0, 0, 0]
                 layer_options['crs'] = layer.crs().authid()
 
             # styles
