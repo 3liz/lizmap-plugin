@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.3 - 2024-03-25
+
+* Bugfix about the previous version
+
 ## 4.3.2 - 2024-03-25
 
 * Bugfix about the previous version
