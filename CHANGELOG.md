@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.1 - 2024-03-25
+
+* Bugfix about the previous version
+
 ## 4.3.0 - 2024-03-22
 
 * Warn about a possible regression with QGIS 3.36 when saving the layer extent

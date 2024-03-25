@@ -11,5 +11,5 @@ CLOUD_ONLINE_LANGUAGES = ('en', 'fr')
 
 CLOUD_QGIS_MIN_RECOMMENDED = (3, 28, 0)
 
-UPLOAD_EXTENSIONS = ('gpkg', 'xlsx', 'fgb')
+UPLOAD_EXTENSIONS = ('fgb', 'gpkg', 'xlsx', 'xls', 'csv', 'ods', 'kml', 'geojson')
 UPLOAD_MAX_SIZE = 10000000  # 10 Mb
