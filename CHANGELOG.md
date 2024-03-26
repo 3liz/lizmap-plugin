@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 4.3.4 - 2024-03-26
+
+* Improve safeguards for beginners
+* Fix HTML table about checks when pressing the "Run" button
+* Various bug fixes
+
 ## 4.3.3 - 2024-03-25
 
 * Bugfix about the previous version
