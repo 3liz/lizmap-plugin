@@ -1722,14 +1722,8 @@ class Lizmap:
         cleaned = ', '.join([str(i) for i in map_scales])
 
         self.dlg.list_map_scales.setText(cleaned)
-
-        if self.dlg.list_map_scales.isVisible():
-            self.dlg.minimum_scale.setValue(min_scale)
-            self.dlg.maximum_scale.setValue(max_scale)
-        else:
-            # self.dlg.minimum_scale.setValue(min_scale)
-            # self.dlg.maximum_scale.setValue(max_scale)
-            pass
+        self.dlg.minimum_scale.setValue(min_scale)
+        self.dlg.maximum_scale.setValue(max_scale)
 
     def read_cfg_file(self, skip_tables=False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
@@ -3101,7 +3095,7 @@ class Lizmap:
 
         if check_server:
 
-            # Global checks config
+            # Global safeguards in the QGIS profile
             prevent_ecw = QgsSettings().value(Settings.key(Settings.PreventEcw), True, bool)
             prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthDb), True, bool)
             prevent_service = QgsSettings().value(Settings.key(Settings.PreventPgService), True, bool)
@@ -3110,9 +3104,9 @@ class Lizmap:
             allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), False, bool)
             count_parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), 2, int)
 
+            # Override safeguards by Lizmap Cloud
             lizmap_cloud = is_lizmap_cloud(server_metadata)
             if lizmap_cloud:
-                # But Lizmap Cloud override some user globals checks
                 prevent_ecw = True
                 prevent_auth_id = True
                 force_pg_user_pass = True
@@ -3122,6 +3116,17 @@ class Lizmap:
                 # prevent_service = False  We encourage service
                 # allow_parent_folder = False Of course we can
 
+            # Override safeguards by beginner mode
+            if beginner_mode:
+                prevent_ecw = True
+                prevent_auth_id = True
+                force_pg_user_pass = True
+                prevent_other_drive = True
+                count_parent_folder = 0
+                prevent_service = True
+                allow_parent_folder = False
+
+            # List of safeguards are now defined
             summary = []
             if prevent_ecw:
                 summary.append(PREVENT_ECW)
