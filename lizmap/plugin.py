@@ -73,6 +73,7 @@ from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
     DURATION_MESSAGE_BAR,
+    DURATION_SUCCESS_BAR,
     DURATION_WARNING_BAR,
     UNSTABLE_VERSION_PREFIX,
     GroupNames,
@@ -914,19 +915,19 @@ class Lizmap:
         list_cfg = list(self.layerList.keys())
         list_qgs = count_legend_items(self.project.layerTreeRoot(), self.project, [])
         if len(list_cfg) != len(list_qgs):
-            self.iface.messageBar().pushMessage(
-                'Lizmap',
-                tr(
-                    'The project has {count_qgs} items in the legend, while the Lizmap configuration has {count_cfg} '
-                    'items. Please open the plugin to sync the "{layer_tab}" tab.'
-                ).format(
-                    count_qgs=len(list_qgs),
-                    count_cfg=len(list_cfg),
-                    layer_tab=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
-                ),
-                Qgis.Warning,
-                duration=DURATION_WARNING_BAR,
-            )
+            # self.iface.messageBar().pushMessage(
+            #     'Lizmap',
+            #     tr(
+            #         'The project has {count_qgs} items in the legend, while the Lizmap configuration has {count_cfg} '
+            #         'items. Please open the plugin to sync the "{layer_tab}" tab.'
+            #     ).format(
+            #         count_qgs=len(list_qgs),
+            #         count_cfg=len(list_cfg),
+            #         layer_tab=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
+            #     ),
+            #     Qgis.Warning,
+            #     duration=DURATION_WARNING_BAR,
+            # )qt
             LOGGER.debug(
                 "Difference in counts between CFG and QGS\n\nList in CFG : {}\nList in QGS : {}".format(
                     ','.join(list_cfg), ','.join(list_qgs)))
@@ -1720,9 +1721,15 @@ class Lizmap:
 
         cleaned = ', '.join([str(i) for i in map_scales])
 
-        self.dlg.minimum_scale.setValue(min_scale)
-        self.dlg.maximum_scale.setValue(max_scale)
         self.dlg.list_map_scales.setText(cleaned)
+
+        if self.dlg.list_map_scales.isVisible():
+            self.dlg.minimum_scale.setValue(min_scale)
+            self.dlg.maximum_scale.setValue(max_scale)
+        else:
+            # self.dlg.minimum_scale.setValue(min_scale)
+            # self.dlg.maximum_scale.setValue(max_scale)
+            pass
 
     def read_cfg_file(self, skip_tables=False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
@@ -3007,8 +3014,20 @@ class Lizmap:
             Severities,
             SourceLayer,
         )
+        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
+        severities = Severities()
+
         self.dlg.check_results.truncate()
         checks = Checks()
+
+        # Fill the HTML table with all rules
+        self.dlg.html_help.setHtml(
+            checks.html(
+                severity=severities.blocking if beginner_mode else severities.important,
+                lizmap_cloud=is_lizmap_cloud(server_metadata)
+            )
+        )
 
         validator = QgsProjectServerValidator()
         valid, results = validator.validate(self.project)
@@ -3080,8 +3099,6 @@ class Lizmap:
 
                 self.dlg.log_panel.end_table()
 
-        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-
         if check_server:
 
             # Global checks config
@@ -3092,8 +3109,6 @@ class Lizmap:
             prevent_other_drive = QgsSettings().value(Settings.key(Settings.PreventDrive), True, bool)
             allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), False, bool)
             count_parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), 2, int)
-
-            beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
 
             lizmap_cloud = is_lizmap_cloud(server_metadata)
             if lizmap_cloud:
@@ -3153,7 +3168,6 @@ class Lizmap:
 
             self.dlg.log_panel.append("<br>")
 
-            severities = Severities()
             # Severity depends on beginner mode
             severity = severities.blocking if beginner_mode else severities.important
             # But override severities for Lizmap Cloud
@@ -4164,18 +4178,6 @@ class Lizmap:
 
         Check the user defined data from GUI and save them to both global and project config files.
         """
-        from lizmap.widgets.check_project import Checks, Severities
-
-        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
-        severities = Severities()
-        self.dlg.html_help.setHtml(
-            Checks().html(
-                severity=severities.blocking if beginner_mode else severities.important,
-                lizmap_cloud=is_lizmap_cloud(server_metadata)
-            )
-        )
-
         self.dlg.log_panel.clear()
         self.dlg.log_panel.append(tr('Start saving the Lizmap configuration'), style=Html.P, time=True)
         variables = self.project.customVariables()
@@ -4371,7 +4373,7 @@ class Lizmap:
                 'Lizmap',
                 tr('Project <a href="{}">published !</a>'.format(url)),
                 level=Qgis.Success,
-                duration=DURATION_MESSAGE_BAR,
+                duration=DURATION_SUCCESS_BAR,
             )
         return True
 

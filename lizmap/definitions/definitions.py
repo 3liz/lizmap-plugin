@@ -78,6 +78,7 @@ DEV_VERSION_PREFIX = ('master', 'dev')
 # https://qgis.org/pyqgis/master/gui/QgsMessageBar.html#qgis.gui.QgsMessageBar.pushMessage
 DURATION_MESSAGE_BAR = -1
 DURATION_WARNING_BAR = 7  # A warning with -1 will stay open forever
+DURATION_SUCCESS_BAR = 5  # A success with -1 will stay open forever
 
 
 @unique
