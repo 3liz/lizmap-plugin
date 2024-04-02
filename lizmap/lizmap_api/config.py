@@ -406,6 +406,11 @@ class LizmapConfig:
                         None,
                         None,
                     ), (
+                        "image/webp",
+                        "WebP",
+                        None,
+                        None,
+                    ), (
                         "image/jpeg",
                         "JPEG",
                         None,
