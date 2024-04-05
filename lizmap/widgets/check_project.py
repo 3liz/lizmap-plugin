@@ -542,7 +542,7 @@ class Checks:
             'duplicated_rule_key_label_legend',
             tr('The layer has some duplicated "label" in its legend'),
             tr(
-                "The layer should not have duplicated labels within its own legend. This is limitation on QGIS Server."
+                "The layer should not have duplicated labels within its own legend. This is a limitation on QGIS Server."
             ), (
                 '<ul>'
                 '<li>{}</li>'

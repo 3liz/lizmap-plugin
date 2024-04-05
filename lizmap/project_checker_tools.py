@@ -506,7 +506,7 @@ def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]
     return data
 
 
-def duplicated_label_legend(project: QgsProject) -> Dict[str, list[str]]:
+def duplicated_label_legend(project: QgsProject) -> Dict[str, List[str]]:
     """ Check for all duplicated labels in the legend, per layer. """
     results = {}
     for layer in project.mapLayers().values():
@@ -517,12 +517,12 @@ def duplicated_label_legend(project: QgsProject) -> Dict[str, list[str]]:
 
         # From QGIS source code :
         # https://github.com/qgis/QGIS/blob/71499aacf431d3ac244c9b75c3d345bdc53572fb/src/core/symbology/qgsrendererregistry.cpp#L33
-        if renderer.type() in ("categorizedSymbol", "RuleRenderer", "graduatedSymbol"):
+        if renderer.type() in ("RuleRenderer", ):
             results[layer.id()] = _duplicated_label_legend_layer(renderer)
     return results
 
 
-def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> list[str]:
+def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> List[str]:
     """ Check at the renderer level for the check above. """
     # noinspection PyUnresolvedReferences
     root_rule = renderer.rootRule()
