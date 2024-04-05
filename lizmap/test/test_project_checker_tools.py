@@ -1,8 +1,15 @@
 import unittest
 
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import (
+    QgsProject,
+    QgsRuleBasedRenderer,
+    QgsSymbol,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
 
 from lizmap.project_checker_tools import (
+    _duplicated_label_legend_layer,
     _split_layer_uri,
     duplicated_layer_with_filter,
     duplicated_layer_with_filter_legend,
@@ -185,3 +192,37 @@ class TestProjectTable(unittest.TestCase):
         #     "url=https://data.geopf.fr/private/wms-r?VERSION%3D1.3.0&amp;http-header:custom-header"
         # )
         # self.assertTrue(french_geopf_authcfg_url_parameters(raster))
+
+    def test_duplicated_sub_rule(self):
+        """ Test to detect duplicated sub rules. """
+        # noinspection PyTypeChecker
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+
+        label = 'label'
+
+        # Rule 1 with symbol
+        # noinspection PyUnresolvedReferences
+        rule_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label + '-1')
+        root_rule.appendChild(rule_1)
+
+        # Sub-rule to rule 1
+        # noinspection PyTypeChecker
+        rule_1_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label)
+        rule_1.appendChild(rule_1_1)
+
+        # Rule 2 with symbol
+        # noinspection PyUnresolvedReferences
+        rule_2 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label + '-2')
+        root_rule.appendChild(rule_2)
+
+        # Sub-rule to rule 2
+        # noinspection PyTypeChecker
+        rule_2_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label)
+        rule_2.appendChild(rule_2_1)
+
+        # Useful for debugging
+        # layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
+        # layer.setRenderer(QgsRuleBasedRenderer(root_rule))
+
+        data = _duplicated_label_legend_layer(QgsRuleBasedRenderer(root_rule))
+        self.assertListEqual([label], data)

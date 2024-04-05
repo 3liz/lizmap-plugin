@@ -538,6 +538,27 @@ class Checks:
             Severities().important,
             QIcon(':/images/themes/default/rendererRuleBasedSymbol.svg'),
         )
+        self.DuplicatedRuleKeyLabelLegend = Check(
+            'duplicated_rule_key_label_legend',
+            tr('The layer has some duplicated "label" in its legend'),
+            tr(
+                "The layer should not have duplicated labels within its own legend. This is limitation on QGIS Server."
+            ), (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'
+            ).format(
+                tr(
+                    'Open the last tab in this panel, to have raw HTML logs, '
+                    'you have a table showing all duplicated keys'
+                ),
+                tr('Make these labels unique'),
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/legend.svg'),
+        )
         self.DuplicatedLayerFilterLegend = Check(
             'duplicated_layers_with_different_filters',
             tr('Many layers next to each other having different filters.'),

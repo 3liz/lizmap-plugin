@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Tuple
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsDataSourceUri,
+    QgsFeatureRenderer,
     QgsLayerTree,
     QgsLayerTreeNode,
     QgsMapLayer,
@@ -502,6 +503,44 @@ def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]
         if not data[layer_id]:
             del data[layer_id]
 
+    return data
+
+
+def duplicated_label_legend(project: QgsProject) -> Dict[str, list[str]]:
+    """ Check for all duplicated labels in the legend, per layer. """
+    results = {}
+    for layer in project.mapLayers().values():
+        if not layer.isSpatial():
+            continue
+
+        renderer = layer.renderer()
+
+        # From QGIS source code :
+        # https://github.com/qgis/QGIS/blob/71499aacf431d3ac244c9b75c3d345bdc53572fb/src/core/symbology/qgsrendererregistry.cpp#L33
+        if renderer.type() in ("categorizedSymbol", "RuleRenderer", "graduatedSymbol"):
+            results[layer.id()] = _duplicated_label_legend_layer(renderer)
+    return results
+
+
+def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> list[str]:
+    """ Check at the renderer level for the check above. """
+    # noinspection PyUnresolvedReferences
+    root_rule = renderer.rootRule()
+    labels = {}
+    for rule in root_rule.children():
+        if rule.label() not in labels.keys():
+            labels[rule.label()] = 1
+        else:
+            labels[rule.label()] += 1
+
+        # Only rule based
+        for sub_rule in rule.children():
+            if sub_rule.label() not in labels.keys():
+                labels[sub_rule.label()] = 1
+            else:
+                labels[sub_rule.label()] += 1
+
+    data = [label for label, count in labels.items() if count >= 2]
     return data
 
 
