@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.3.5 - 2024-04-05
+
+* Add check for duplicated label in the legend within the same layer
+* Add WebP format
+
 ## 4.3.4 - 2024-03-26
 
 * Improve safeguards for beginners
