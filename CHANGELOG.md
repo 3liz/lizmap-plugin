@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.3.6 - 2024-04-10
+
+* Minor UX fix about dataviz
+* Disable legend label check temporary
+
 ## 4.3.5 - 2024-04-05
 
 * Add check for duplicated label in the legend within the same layer
