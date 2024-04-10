@@ -136,7 +136,6 @@ from lizmap.project_checker_tools import (
     PREVENT_OTHER_DRIVE,
     PREVENT_SERVICE,
     count_legend_items,
-    duplicated_label_legend,
     duplicated_layer_name_or_group,
     duplicated_layer_with_filter_legend,
     duplicated_rule_key_legend,
@@ -3094,36 +3093,37 @@ class Lizmap:
 
                 self.dlg.log_panel.end_table()
 
-            results = duplicated_label_legend(self.project)
-            if results:
-                self.dlg.log_panel.append(tr("Duplicated labels in the legend"), Html.H2)
-                self.dlg.log_panel.append("<br>")
-                self.dlg.log_panel.start_table()
-                self.dlg.log_panel.append(
-                    "<tr><th>{}</th><th>{}</th></tr>".format(tr('Layer'), tr('Label'))
-                )
-
-                i = 0
-                for layer_id, rules in results.items():
-                    layer = self.project.mapLayer(layer_id)
-                    # Add one error per layer is enough
-                    self.dlg.check_results.add_error(
-                        Error(
-                            layer.name(),
-                            checks.DuplicatedRuleKeyLabelLegend,
-                            source_type=SourceLayer(layer.name(), layer.id()),
-                        )
-                    )
-
-                    # But explain inside each layer which keys are duplicated
-                    for rule in rules:
-                        self.dlg.log_panel.add_row(i)
-                        self.dlg.log_panel.append(layer.name(), Html.Td)
-                        self.dlg.log_panel.append(rule, Html.Td)
-                        self.dlg.log_panel.end_row()
-                        i += 1
-
-                self.dlg.log_panel.end_table()
+            # results = duplicated_label_legend(self.project)
+            # # Temporary disable this check, see landuse in Narbone project
+            # if results:
+            #     self.dlg.log_panel.append(tr("Duplicated labels in the legend"), Html.H2)
+            #     self.dlg.log_panel.append("<br>")
+            #     self.dlg.log_panel.start_table()
+            #     self.dlg.log_panel.append(
+            #         "<tr><th>{}</th><th>{}</th></tr>".format(tr('Layer'), tr('Label'))
+            #     )
+            #
+            #     i = 0
+            #     for layer_id, rules in results.items():
+            #         layer = self.project.mapLayer(layer_id)
+            #         # Add one error per layer is enough
+            #         self.dlg.check_results.add_error(
+            #             Error(
+            #                 layer.name(),
+            #                 checks.DuplicatedRuleKeyLabelLegend,
+            #                 source_type=SourceLayer(layer.name(), layer.id()),
+            #             )
+            #         )
+            #
+            #         # But explain inside each layer which keys are duplicated
+            #         for rule in rules:
+            #             self.dlg.log_panel.add_row(i)
+            #             self.dlg.log_panel.append(layer.name(), Html.Td)
+            #             self.dlg.log_panel.append(rule, Html.Td)
+            #             self.dlg.log_panel.end_row()
+            #             i += 1
+            #
+            #     self.dlg.log_panel.end_table()
 
         if check_server:
 
@@ -4035,9 +4035,10 @@ class Lizmap:
 
         self.dlg.minimum_scale.setReadOnly(not use_native)
         self.dlg.maximum_scale.setReadOnly(not use_native)
-        self.dlg.list_map_scales.setVisible(not use_native)
-        self.dlg.button_reset_scales.setVisible(not use_native)
-        self.dlg.label_scales.setVisible(not use_native)
+        # The list of map scales is used for printing as well, this must be checked
+        # self.dlg.list_map_scales.setVisible(not use_native)
+        # self.dlg.button_reset_scales.setVisible(not use_native)
+        # self.dlg.label_scales.setVisible(not use_native)
 
         if use_native:
             msg = tr("When using native scales, you can set minimum and maximum scales.")

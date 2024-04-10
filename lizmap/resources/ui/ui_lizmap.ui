@@ -3323,30 +3323,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </item>
                   </layout>
                  </widget>
-                 <widget class="QWidget" name="html_layout">
-                  <attribute name="title">
-                   <string>HTML Layout</string>
-                  </attribute>
-                  <layout class="QVBoxLayout" name="verticalLayout">
-                   <item>
-                    <widget class="QLabel" name="label_dataviz_template">
-                     <property name="text">
-                      <string>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="HtmlEditorWidget" name="dataviz_html_template" native="true">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
                  <widget class="QWidget" name="dd_layout">
                   <attribute name="title">
                    <string>Drag and Drop Layout</string>
@@ -3466,6 +3442,30 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       </widget>
                      </item>
                     </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="html_layout">
+                  <attribute name="title">
+                   <string>HTML Layout</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <item>
+                    <widget class="QLabel" name="label_dataviz_template">
+                     <property name="text">
+                      <string>Optional container template (HTML with Bootstrap, use the id of the plot, such as $1)</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="HtmlEditorWidget" name="dataviz_html_template" native="true">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>

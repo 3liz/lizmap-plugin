@@ -330,7 +330,7 @@ class DatavizDefinitions(BaseDefinitions):
         self._layer_config['uuid'] = {
             'type': InputType.Text,
             'header': tr('UUID'),
-            'tooltip': tr('The UUID of the plot'),
+            'tooltip': tr("The UUID of the plot. It's a unique string auto-generated."),
             'default': generate_uuid,
             'read_only': True,
             'visible': True,

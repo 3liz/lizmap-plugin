@@ -62,7 +62,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('aggregation', self.label_aggregation)
         self.config.add_layer_label('traces', self.label_traces)
         self.config.add_layer_label('html_template', self.label_html_template)
-        self.config.add_layer_label('html_template', self.label_layout)
+        self.config.add_layer_label('layout', self.label_layout)
         self.config.add_layer_label('uuid', self.label_uuid)
 
         # noinspection PyCallByClass,PyArgumentList
