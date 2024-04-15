@@ -168,7 +168,6 @@ except ModuleNotFoundError:
 from qgis.core import QgsProjectServerValidator
 
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
-from lizmap.server_ftp import FtpServer
 from lizmap.server_lwc import MAX_DAYS, ServerManager
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.custom_logging import (
@@ -720,8 +719,6 @@ class Lizmap:
         for item in self.base_layer_widget_list.values():
             slot = self.on_baselayer_checkbox_change
             item.stateChanged.connect(slot)
-
-        self.server_ftp = FtpServer(self.dlg)
 
         self.server_manager = ServerManager(
             self.dlg,
@@ -4179,32 +4176,8 @@ class Lizmap:
         upload_is_visible = not self.dlg.mOptionsListWidget.item(Panels.Upload).isHidden()
         if upload_is_visible and self.dlg.send_webdav.isChecked():
             return self.send_files()
-            # We do not send both FTP and webdav
 
-        if not self.dlg.checkbox_ftp_transfer.isChecked():
-            return result
-
-        # Only deprecated FTP now
-        valid, message = self.server_ftp.connect(send_files=True)
-        if not valid:
-            # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage(
-                'Lizmap',
-                message,
-                level=Qgis.Critical,
-                duration=DURATION_WARNING_BAR,
-            )
-            return False
-
-        # noinspection PyUnresolvedReferences
-        self.iface.messageBar().pushMessage(
-            'Lizmap',
-            tr(
-                'Lizmap configuration file has been updated and sent to the FTP {}.'
-            ).format(self.server_ftp.host),
-            level=Qgis.Success,
-            duration=DURATION_MESSAGE_BAR,
-        )
+        return result
 
     def save_cfg_file(
             self,

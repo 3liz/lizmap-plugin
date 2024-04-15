@@ -1377,137 +1377,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </layout>
                 </widget>
                </item>
-               <item>
-                <widget class="QGroupBox" name="gb_ftp">
-                 <property name="title">
-                  <string>FTP transfert</string>
-                 </property>
-                 <layout class="QFormLayout" name="formLayout_2">
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="label_75">
-                    <property name="text">
-                     <string notr="true">This is currently an experimental feature. Only the &quot;.qgs&quot; and the &quot;.qgs.cfg&quot; will be transferred. For other kind of files, a proper FTP client must be used.</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLabel" name="label_77">
-                    <property name="text">
-                     <string notr="true">There isn't any storage for this experimental feature yet. Credentials must be entered when QGIS is reopened or when you open another project.</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_63">
-                    <property name="text">
-                     <string notr="true">Host</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QLineEdit" name="input_ftp_host"/>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_64">
-                    <property name="text">
-                     <string notr="true">User</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QLineEdit" name="input_ftp_user"/>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="label_71">
-                    <property name="text">
-                     <string notr="true">Password</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QgsPasswordLineEdit" name="input_ftp_password"/>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="label_74">
-                    <property name="text">
-                     <string notr="true">Directory</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
-                   <widget class="QLineEdit" name="input_ftp_directory">
-                    <property name="placeholderText">
-                     <string notr="true">/</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="1">
-                   <widget class="QLabel" name="label_76">
-                    <property name="text">
-                     <string notr="true">The checkbox about automatic saving of the project must be checked as well, on the left.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="1">
-                   <widget class="QCheckBox" name="checkbox_ftp_transfer">
-                    <property name="text">
-                     <string notr="true">Transfer &quot;.qgs&quot; and .qgs.cfg&quot; over FTP automatically.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_42">
-                    <item>
-                     <widget class="QPushButton" name="button_ftp_reset">
-                      <property name="text">
-                       <string notr="true">Reset</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="button_ftp_check">
-                      <property name="text">
-                       <string notr="true">Check</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_10">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
               </layout>
              </widget>
             </widget>
@@ -5254,12 +5123,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>HtmlEditorWidget</class>
    <extends>QWidget</extends>
    <header>lizmap.widgets.html_editor</header>
@@ -5337,13 +5200,6 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbHideNavbar</tabstop>
   <tabstop>liPopupContainer</tabstop>
   <tabstop>checkbox_scale_overview_map</tabstop>
-  <tabstop>input_ftp_host</tabstop>
-  <tabstop>input_ftp_user</tabstop>
-  <tabstop>input_ftp_password</tabstop>
-  <tabstop>input_ftp_directory</tabstop>
-  <tabstop>checkbox_ftp_transfer</tabstop>
-  <tabstop>button_ftp_reset</tabstop>
-  <tabstop>button_ftp_check</tabstop>
   <tabstop>repository_combo</tabstop>
   <tabstop>scrollArea_7</tabstop>
   <tabstop>layer_tree</tabstop>

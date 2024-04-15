@@ -981,7 +981,6 @@ class LizmapDialog(QDialog, FORM_CLASS):
         q_group_box = (
             self.gb_tree,
             self.panel_layer_all_settings,
-            self.gb_ftp,
             self.gb_project_thumbnail,
             self.gb_visibleTools,
             self.group_api_keys,
