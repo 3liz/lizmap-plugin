@@ -471,7 +471,7 @@ def french_geopf_authcfg_url_parameters(datasource: str) -> bool:
     return False
 
 
-def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]:
+def duplicated_rule_key_legend(project: QgsProject, filter_data: bool = True) -> Dict[str, Dict[str, int]]:
     """ Check for all duplicated rule keys in the legend. """
     results = {}
     for layer in project.mapLayers().values():
@@ -492,21 +492,15 @@ def duplicated_rule_key_legend(project: QgsProject) -> Dict[str, Dict[str, int]]
                 else:
                     results[layer.id()][item.ruleKey()] += 1
 
+    if not filter_data:
+        # For tests only
+        return results
+
     # Keep only duplicated keys
-    data = {}
-    for layer_id, keys in results.items():
-        data[layer_id] = {}
-        for key, count in keys.items():
-            if count >= 2:
-                data[layer_id][key] = count
-
-        if not data[layer_id]:
-            del data[layer_id]
-
-    return data
+    return _clean_result(results)
 
 
-def duplicated_label_legend(project: QgsProject) -> Dict[str, List[str]]:
+def duplicated_label_legend(project: QgsProject, filter_data: bool = True) -> Dict[str, Dict[str, int]]:
     """ Check for all duplicated labels in the legend, per layer. """
     results = {}
     for layer in project.mapLayers().values():
@@ -519,10 +513,16 @@ def duplicated_label_legend(project: QgsProject) -> Dict[str, List[str]]:
         # https://github.com/qgis/QGIS/blob/71499aacf431d3ac244c9b75c3d345bdc53572fb/src/core/symbology/qgsrendererregistry.cpp#L33
         if renderer.type() in ("RuleRenderer", ):
             results[layer.id()] = _duplicated_label_legend_layer(renderer)
-    return results
+
+    if not filter_data:
+        # For tests only
+        return results
+
+    # Keep only duplicated labels within a layer
+    return _clean_result(results)
 
 
-def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> List[str]:
+def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> Dict[str, int]:
     """ Check at the renderer level for the check above. """
     # noinspection PyUnresolvedReferences
     root_rule = renderer.rootRule()
@@ -540,7 +540,20 @@ def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> List[str]:
             else:
                 labels[sub_rule.label()] += 1
 
-    data = [label for label, count in labels.items() if count >= 2]
+    return labels
+
+
+def _clean_result(results: dict) -> dict:
+    """ Remove some lines from the dictionary if the count is less than 2. """
+    data = {}
+    for layer_id, labels in results.items():
+        data[layer_id] = {}
+        for label, count in labels.items():
+            if count >= 2:
+                data[layer_id][label] = count
+
+        if not data[layer_id]:
+            del data[layer_id]
     return data
 
 

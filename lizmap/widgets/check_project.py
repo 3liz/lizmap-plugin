@@ -540,9 +540,10 @@ class Checks:
         )
         self.DuplicatedRuleKeyLabelLegend = Check(
             'duplicated_rule_key_label_legend',
-            tr('The layer has some duplicated "label" in its legend'),
+            tr('The layer has some duplicated "label" within its own legend'),
             tr(
-                "The layer should not have duplicated labels within its own legend. This is a limitation on QGIS Server."
+                "The layer should not have duplicated labels within its own legend. This is a limitation on "
+                "QGIS Server."
             ), (
                 '<ul>'
                 '<li>{}</li>'
@@ -551,7 +552,7 @@ class Checks:
             ).format(
                 tr(
                     'Open the last tab in this panel, to have raw HTML logs, '
-                    'you have a table showing all duplicated keys'
+                    'you have a table showing all duplicated labels'
                 ),
                 tr('Make these labels unique'),
             ),
