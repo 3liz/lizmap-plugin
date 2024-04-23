@@ -539,8 +539,8 @@ class Checks:
             QIcon(':/images/themes/default/rendererRuleBasedSymbol.svg'),
         )
         self.DuplicatedRuleKeyLabelLegend = Check(
-            'duplicated_rule_key_label_legend',
-            tr('The layer has some duplicated "label" within its own legend'),
+            'duplicated_labels_legend',
+            tr('The layer has some duplicated "labels" within its own legend'),
             tr(
                 "The layer should not have duplicated labels within its own legend. This is a limitation on "
                 "QGIS Server."
