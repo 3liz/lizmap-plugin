@@ -1185,23 +1185,25 @@ class Lizmap:
         """Create action that will start plugin configuration"""
         LOGGER.debug("Plugin starting in the initGui")
 
-        request = QNetworkRequest()
-        request.setUrl(QUrl("https://plausible.snap.3liz.net/api/event"))
-        # request.setRawHeader(b"X-Debug-Request", b"true")
-        # request.setRawHeader(b"X-Forwarded-For", b"127.0.0.1")
-        request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-        data = {
-            "name": "plugin",
-            "props": {
-                "lizmap-plugin-version": version(),
-                "qgis-version-full": Qgis.QGIS_VERSION,
-                "qgis-version-name": Qgis.QGIS_RELEASE_NAME,
-                "python-version": platform.python_version(),
-            },
-            "url": "plugin.qgis.lizmap.com",
-            "domain": "plugin.qgis.lizmap.com",
-        }
-        QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
+        if not to_bool(os.getenv("CI"), default_value=False):
+            # Do not run in tests, only on production
+            request = QNetworkRequest()
+            request.setUrl(QUrl("https://plausible.snap.3liz.net/api/event"))
+            # request.setRawHeader(b"X-Debug-Request", b"true")
+            # request.setRawHeader(b"X-Forwarded-For", b"127.0.0.1")
+            request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
+            data = {
+                "name": "plugin",
+                "props": {
+                    "lizmap-plugin-version": version(),
+                    "qgis-version-full": Qgis.QGIS_VERSION,
+                    "qgis-version-name": Qgis.QGIS_RELEASE_NAME,
+                    "python-version": platform.python_version(),
+                },
+                "url": "plugin.qgis.lizmap.com",
+                "domain": "plugin.qgis.lizmap.com",
+            }
+            QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
 
         icon = QIcon(resources_path('icons', 'icon.png'))
         self.action = QAction(icon, 'Lizmap', self.iface.mainWindow())
