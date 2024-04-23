@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>181</height>
+    <width>744</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,13 +27,60 @@
       <widget class="QgsMapLayerComboBox" name="layer"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_fields">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Fields</string>
+        <string>Label</string>
        </property>
-       <property name="wordWrap">
-        <bool>true</bool>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
        </property>
+       <widget class="QWidget" name="tab_fields">
+        <attribute name="title">
+         <string>Fields</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_fields">
+           <property name="text">
+            <string>List of fields</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="ListFieldsSelection" name="fields"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_template">
+        <attribute name="title">
+         <string>HTML template</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_html_template">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>HTML template with expressions</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="HtmlEditorWidget" name="html_template" native="true"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
      <item row="2" column="0">
@@ -67,9 +114,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="ListFieldsSelection" name="fields"/>
-     </item>
     </layout>
    </item>
    <item>
@@ -91,7 +135,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Help|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -112,6 +156,12 @@
    <class>ListFieldsSelection</class>
    <extends>QListWidget</extends>
    <header>lizmap.widgets.list_fields_selection</header>
+  </customwidget>
+  <customwidget>
+   <class>HtmlEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>lizmap.widgets.html_editor</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
