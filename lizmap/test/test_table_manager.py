@@ -947,6 +947,7 @@ class TestTableManager(unittest.TestCase):
         json = {
             'lines': {
                 'fields': 'id,name',
+                'template': '<p>[% \"nom\" %]</p>\n',
                 'displayGeom': 'False',
                 'colorGeom': '',
                 'layerId': self.layer.id(),

@@ -60,6 +60,7 @@ class BaseEditionDialog(QDialog):
         self.lwc_versions[LwcVersions.Lizmap_3_5] = []
         self.lwc_versions[LwcVersions.Lizmap_3_6] = []
         self.lwc_versions[LwcVersions.Lizmap_3_7] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_8] = []
 
     def setup_ui(self):
         """ Build the UI. """

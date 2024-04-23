@@ -1,6 +1,7 @@
 """Definitions for tooltip."""
 
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.toolbelt.i18n import tr
 
 __copyright__ = 'Copyright 2020, 3Liz'
@@ -25,6 +26,13 @@ class ToolTipDefinitions(BaseDefinitions):
             'header': tr('Fields'),
             'default': None,
             'tooltip': tr('Fields to display in the tooltip.')
+        }
+        self._layer_config['template'] = {
+            'type': InputType.HtmlWysiwyg,
+            'header': tr('Template'),
+            'default': '',
+            'tooltip': tr('The HTML template to use. It can contain some QGIS expressions.'),
+            'version': LwcVersions.Lizmap_3_8,
         }
         self._layer_config['displayGeom'] = {
             'type': InputType.CheckBox,

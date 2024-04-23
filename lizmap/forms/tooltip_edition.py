@@ -25,21 +25,29 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.config = ToolTipDefinitions()
         self.config.add_layer_widget('layerId', self.layer)
         self.config.add_layer_widget('fields', self.fields)
+        self.config.add_layer_widget('template', self.html_template)
         self.config.add_layer_widget('displayGeom', self.display_geometry)
         self.config.add_layer_widget('colorGeom', self.color)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('fields', self.label_fields)
+        self.config.add_layer_label('template', self.label_html_template)
         self.config.add_layer_label('displayGeom', self.label_display_geometry)
         self.config.add_layer_label('colorGeom', self.label_color)
 
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.fields.set_layer)
+        self.layer.layerChanged.connect(self.html_template.set_layer)
         self.fields.set_layer(self.layer.currentLayer())
+        self.html_template.set_layer(self.layer.currentLayer())
 
         self.display_geometry.toggled.connect(self.enable_color)
         self.enable_color()
+
+        self.lwc_versions[LwcVersions.Lizmap_3_8] = [
+            self.label_html_template,
+        ]
 
         self.setup_ui()
         self.check_layer_wfs()
@@ -72,5 +80,8 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         if not_in_wfs:
             return not_in_wfs
 
-        if not self.fields.selection():
-            return tr('At least one field is mandatory.')
+        if self.fields.selection() and self.html_template.html_content() != '':
+            return tr("It's not possible to use both 'fields' and 'HTML template'. Please choose only one.")
+
+        if not self.fields.selection() and not self.html_template.html_content():
+            return tr('Either an HTML template or a field must be set.')
