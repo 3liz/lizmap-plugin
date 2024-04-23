@@ -5,6 +5,7 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 import os
+import platform
 import re
 import tempfile
 
@@ -12,7 +13,6 @@ from collections import OrderedDict
 from functools import partial
 from pathlib import Path
 from shutil import copyfile
-from sys import platform
 from typing import Dict, List, Optional, Tuple, Union
 
 from qgis.core import (

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Remove FTP support from the plugin
+* Check for duplicated label within a layer legend
+
 ## 4.3.6 - 2024-04-10
 
 * Minor UX fix about dataviz
