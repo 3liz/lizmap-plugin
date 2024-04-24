@@ -80,6 +80,9 @@ DURATION_MESSAGE_BAR = -1
 DURATION_WARNING_BAR = 7  # A warning with -1 will stay open forever
 DURATION_SUCCESS_BAR = 5  # A success with -1 will stay open forever
 
+PLAUSIBLE_DOMAIN = "plugin.qgis.lizmap.com"
+PLAUSIBLE_URL = "https://plausible.snap.3liz.net/api/event"
+
 
 @unique
 @total_ordering
