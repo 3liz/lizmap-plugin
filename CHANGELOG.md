@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.3.7 - 2024-04-24
+
 * Remove FTP support from the plugin
 * Check for duplicated label within a layer legend
 
