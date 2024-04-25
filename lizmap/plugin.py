@@ -33,6 +33,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
+from lizmap.dialogs.news import NewConfigDialog
 from lizmap.dialogs.server_wizard import CreateFolderWizard
 
 if Qgis.QGIS_VERSION_INT >= 32200:
@@ -4169,6 +4170,10 @@ class Lizmap:
 
     def save_cfg_file_cursor(self) -> bool:
         """ Save CFG file with a waiting cursor. """
+        if not self.dlg.check_cfg_file_exists():
+            new_project = NewConfigDialog()
+            new_project.exec_()
+
         with OverrideCursor(Qt.WaitCursor):
             result = self.save_cfg_file()
 

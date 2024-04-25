@@ -10,15 +10,41 @@ from qgis.PyQt.QtGui import QDesktopServices, QPixmap
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.online_help import online_lwc_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
 LOGGER = logging.getLogger('Lizmap')
-FORM_CLASS = load_ui('ui_new_version.ui')
+FORM_CLASS = load_ui('ui_news.ui')
 
 
-class NewVersionDialog(QDialog, FORM_CLASS):
+class BaseNewsDialog(QDialog, FORM_CLASS):
+
+    def __init__(self, link: str):
+        # noinspection PyArgumentList
+        QDialog.__init__(self)
+        self.setupUi(self)
+        self.link = link
+
+        self.logo.setText('')
+        pixmap = QPixmap(resources_path('icons', 'logo.png'))
+        # noinspection PyUnresolvedReferences
+        pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
+        self.logo.setPixmap(pixmap)
+
+        self.open_link.clicked.connect(self.open_website)
+
+        accept_button = self.button_box.button(QDialogButtonBox.Ignore)
+        accept_button.clicked.connect(self.accept)
+
+    def open_website(self):
+        """ Open the link. """
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(QUrl(self.link))
+
+
+class NewVersionDialog(BaseNewsDialog):
 
     @classmethod
     def check_version(cls, lwc_version: LwcVersions, count_server: int) -> bool:
@@ -53,9 +79,7 @@ class NewVersionDialog(QDialog, FORM_CLASS):
 
     def __init__(self, lwc_version: LwcVersions, link: str):
         # noinspection PyArgumentList
-        QDialog.__init__(self)
-        self.setupUi(self)
-        self.link = link
+        super().__init__(link)
         self.setWindowTitle(tr('New version {}').format(lwc_version.value))
 
         text = '<html><head/><body><p><span style=" font-size:16pt;">{} {}</span></p></body></html>'.format(
@@ -64,26 +88,34 @@ class NewVersionDialog(QDialog, FORM_CLASS):
         )
         self.label_main.setText(text)
 
-        self.label_version.setText(tr(
+        self.label_description.setText(tr(
             "This new version has been released recently. Please visit the website about the visual changelog to "
             "discover <strong>some new features</strong> in this version."
         ).format(lwc_version.value))
 
-        self.logo.setText('')
-        pixmap = QPixmap(resources_path('icons', 'logo.png'))
-        # noinspection PyUnresolvedReferences
-        pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
-        self.logo.setPixmap(pixmap)
-
         self.open_link.setText(tr("Open the visual changelog"))
-        self.open_link.clicked.connect(self.open_website)
-
-        accept_button = self.button_box.button(QDialogButtonBox.Ignore)
-        accept_button.clicked.connect(self.accept)
 
         self.append_version(lwc_version)
 
-    def open_website(self):
-        """ Open the visual changelog. """
+
+class NewConfigDialog(BaseNewsDialog):
+
+    def __init__(self):
+        link = str(online_lwc_help("publish/quick_start/index.html"))
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(QUrl(self.link))
+        super().__init__(link)
+        self.setWindowTitle(tr('New Lizmap project'))
+
+        text = '<html><head/><body><p><span style=" font-size:16pt;">{}</span></p></body></html>'.format(
+            tr("First Lizmap configuration for this project"),
+        )
+        self.label_main.setText(text)
+
+        self.label_description.setText(tr(
+            "As this is a new project aimed to be published on Lizmap, you might encounter in the next step some "
+            "'blockers' for generating the Lizmap configuration file. Please read the next panel carefully. You will "
+            "find some auto-fix tools to optimize your project. Read the error description in the last column of the "
+            "table, in the tooltip."
+        ))
+
+        self.open_link.setText(tr("Open the quick start guide"))

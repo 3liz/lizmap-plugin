@@ -17,7 +17,7 @@ from lizmap.definitions.definitions import (
 )
 from lizmap.definitions.online_help import current_locale
 from lizmap.dialogs.main import LizmapDialog
-from lizmap.dialogs.new_version import NewVersionDialog
+from lizmap.dialogs.news import NewVersionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder
 

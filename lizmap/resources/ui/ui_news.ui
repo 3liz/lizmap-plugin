@@ -47,12 +47,12 @@
       <set>Qt::AlignCenter</set>
      </property>
      <property name="wordWrap">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_version">
+    <widget class="QLabel" name="label_description">
      <property name="text">
       <string notr="true">VERSION SET IN PYTHON</string>
      </property>
