@@ -321,7 +321,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>18</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1575,6 +1575,19 @@ This is different to the map maximum extent (defined in QGIS project properties,
                             <layout class="QHBoxLayout" name="horizontalLayout_3">
                              <item>
                               <widget class="QLineEdit" name="inLayerLink"/>
+                             </item>
+                             <item>
+                              <widget class="QPushButton" name="button_browse_media">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string notr="true">...</string>
+                               </property>
+                              </widget>
                              </item>
                              <item>
                               <widget class="QPushButton" name="button_refresh_link">

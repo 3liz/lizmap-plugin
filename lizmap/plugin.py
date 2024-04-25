@@ -11,6 +11,7 @@ import zipfile
 
 from collections import OrderedDict
 from functools import partial
+from os.path import relpath
 from pathlib import Path
 from shutil import copyfile
 from typing import Dict, List, Optional, Tuple, Union
@@ -36,6 +37,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import QEventLoop
+from qgis.PyQt.QtWidgets import QFileDialog
 
 from lizmap.dialogs.news import NewConfigDialog
 from lizmap.dialogs.server_wizard import CreateFolderWizard
@@ -1261,8 +1263,10 @@ class Lizmap:
         # Link button
         self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.dlg.button_refresh_link.setText('')
-        self.dlg.button_refresh_link.setToolTip('Set the link from the dataUrl property in the layer properties.')
+        self.dlg.button_refresh_link.setToolTip(tr('Set the link from the dataUrl property in the layer properties'))
         self.dlg.button_refresh_link.clicked.connect(self.link_from_properties)
+        self.dlg.button_browse_media.setToolTip(tr('Open the file browser'))
+        self.dlg.button_browse_media.clicked.connect(self.open_media_file_browser)
 
         # detect project closed
         self.iface.projectRead.connect(self.on_project_read)
@@ -2909,6 +2913,15 @@ class Lizmap:
         value = layer_property(layer, LayerProperties.DataUrl)
         self.layer_options_list['link']['widget'].setText(value)
 
+    def open_media_file_browser(self):
+        """ Open the file picker for media. """
+        data_path, _ = QFileDialog.getOpenFileName(None, tr('Open media'), self.project.absolutePath())
+        # TODO check
+        # Maximum allowed parent folder
+        # ../media or media/
+        media_path = relpath(data_path, self.project.absolutePath())
+        self.layer_options_list['link']['widget'].setText(media_path)
+
     def _set_maptip(self, layer: QgsVectorLayer, html_content: str, check: bool = True) -> bool:
         """ Internal function to set the maptip on a layer. """
         if check and layer.mapTipTemplate() != '':
@@ -3837,6 +3850,10 @@ class Lizmap:
                 elif val['type'] == 'boolean':
                     if not val.get('use_proper_boolean'):
                         property_value = str(property_value)
+
+                if key == 'link':
+                    # TODO check media or ../media
+                    pass
 
                 if key in ('legend_image_option', 'noLegendImage'):
                     if layer_options.get('legend_image_option') and key == 'noLegendImage':
