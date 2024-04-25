@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.3.8 - 2024-04-25
+
+* Improve workflow when publishing a project for the first time
+* Add a new "Browser media" button
+* Allow HTML template for the Lizmap tooltip feature (Lizmap Web Client 3.8 feature, funded by PNR Ballons des Vosges)
+* Check for editing capabilities before to warn for Z or M values lost in Lizmap Web Client
+
 ## 4.3.7 - 2024-04-24
 
 * Remove FTP support from the plugin

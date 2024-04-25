@@ -903,7 +903,8 @@ class ServerManager:
                 # Lizmap Desktop version
                 "lizmap-plugin-version": lizmap_plugin_version,
                 # Lizmap Cloud
-                "lizmap-cloud": lizmap_cloud,
+                "lizmap-cloud-instances": lizmap_cloud,
+                "lizmap-cloud": 'yes' if any(instances) else 'no',
                 # QGIS
                 "qgis-version-full": qgis_version_full,
                 "qgis-version-branch": qgis_version_branch,

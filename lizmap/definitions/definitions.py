@@ -86,6 +86,9 @@ PLAUSIBLE_URL_PROD = "https://analytics.3liz.com/api/event"
 PLAUSIBLE_DOMAIN_TEST = "plugin.qgis.lizmap.com"
 PLAUSIBLE_URL_TEST = "https://plausible.snap.3liz.net/api/event"
 
+# PLAUSIBLE_DOMAIN_TEST = "plugin.qgis.lizmap.com"
+# PLAUSIBLE_URL_TEST = "https://analytics.3liz.com/api/event"
+
 
 @unique
 @total_ordering
