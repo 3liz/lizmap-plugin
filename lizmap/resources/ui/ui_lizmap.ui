@@ -5208,7 +5208,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsFileWidget</class>

@@ -35,6 +35,8 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('displayGeom', self.label_display_geometry)
         self.config.add_layer_label('colorGeom', self.label_color)
 
+        # TODO when 3.8 will be the default, change the default tab according to the LWC version
+
         self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.fields.set_layer)
@@ -61,6 +63,13 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
+
+    def post_load_form(self):
+        """ When the data has been loaded, check which tab to display. """
+        if self.fields.selection():
+            self.tab.setCurrentIndex(0)
+        else:
+            self.tab.setCurrentIndex(1)
 
     def enable_color(self):
         if self.display_geometry.isChecked():

@@ -24,7 +24,7 @@ class ToolTipDefinitions(BaseDefinitions):
             'type': InputType.Fields,
             'wfs_required': True,
             'header': tr('Fields'),
-            'default': None,
+            'default': '',  # Since LWC 3.8, it's not mandatory anymore, because it can be an HTML template
             'tooltip': tr('Fields to display in the tooltip.')
         }
         self._layer_config['template'] = {

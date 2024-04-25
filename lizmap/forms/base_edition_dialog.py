@@ -451,7 +451,7 @@ class BaseEditionDialog(QDialog):
                     value = definition['widget'].text()
                 value = value.strip(' \t')
             elif definition['type'] == InputType.HtmlWysiwyg:
-                value = definition['widget'].html_content()
+                value = definition['widget'].html_content().strip()
             elif definition['type'] == InputType.Json:
                 text = definition['widget'].text()
                 if text:
