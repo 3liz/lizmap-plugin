@@ -5,7 +5,6 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 import os
-import platform
 import re
 import tempfile
 
@@ -26,7 +25,6 @@ from qgis.core import (
     QgsMapLayer,
     QgsMapLayerModel,
     QgsMapLayerProxyModel,
-    QgsNetworkAccessManager,
     QgsProject,
     QgsRasterLayer,
     QgsRectangle,
@@ -34,8 +32,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QByteArray
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from lizmap.dialogs.server_wizard import CreateFolderWizard
 
@@ -79,8 +75,6 @@ from lizmap.definitions.definitions import (
     DURATION_MESSAGE_BAR,
     DURATION_SUCCESS_BAR,
     DURATION_WARNING_BAR,
-    PLAUSIBLE_DOMAIN,
-    PLAUSIBLE_URL,
     UNSTABLE_VERSION_PREFIX,
     GroupNames,
     Html,
@@ -1186,35 +1180,6 @@ class Lizmap:
     def initGui(self):
         """Create action that will start plugin configuration"""
         LOGGER.debug("Plugin starting in the initGui")
-
-        if not to_bool(os.getenv("CI"), default_value=False):
-            # Do not run in tests, only on production package
-            # For testing purpose, to test.
-            # Similar to QGIS dashboard https://feed.qgis.org/metabase/public/dashboard/df81071d-4c75-45b8-a698-97b8649d7228
-            # We only collect data listed in the list below
-            # and the country according to the IP
-            # The IP is not stored by Plausible Community Edition https://github.com/plausible/analytics
-            # The User-Agent is set by QGIS Desktop itself
-            request = QNetworkRequest()
-            request.setUrl(QUrl(PLAUSIBLE_URL))
-            # request.setRawHeader(b"X-Debug-Request", b"true")
-            # request.setRawHeader(b"X-Forwarded-For", b"127.0.0.1")
-            request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-            data = {
-                "name": "plugin",
-                "props": {
-                    "lizmap-plugin-version": version(),
-                    "qgis-version": Qgis.QGIS_VERSION,
-                    "qgis-version-number": Qgis.QGIS_VERSION_INT,
-                    "qgis-name": Qgis.QGIS_RELEASE_NAME,
-                    "python-version": platform.python_version(),
-                    "os-name": platform.system(),
-                    "os-version": platform.release(),
-                },
-                "url": PLAUSIBLE_DOMAIN,
-                "domain": PLAUSIBLE_DOMAIN,
-            }
-            QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
 
         icon = QIcon(resources_path('icons', 'icon.png'))
         self.action = QAction(icon, 'Lizmap', self.iface.mainWindow())
