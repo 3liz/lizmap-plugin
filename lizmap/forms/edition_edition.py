@@ -16,7 +16,7 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -152,7 +152,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         has_m_values = QgsWkbTypes.hasM(geometry_type)
         # noinspection PyArgumentList
         has_z_values = QgsWkbTypes.hasZ(geometry_type)
-        if has_z_values or has_m_values:
+        if (has_z_values or has_m_values) and modify_geometry:
             QMessageBox.warning(
                 self,
                 tr('Editing Z/M Values'),
