@@ -67,6 +67,7 @@ class Panels:
     AutoFix = 16
     Settings = 17
     Upload = 18
+    Training = 19
 
 
 MAPPING_INDEX_DOC = {
@@ -89,6 +90,7 @@ MAPPING_INDEX_DOC = {
     Panels.AutoFix: None,  # Auto-fix
     Panels.Settings: None,  # Settings
     Panels.Upload: None,
+    Panels.Training: None,
 }
 
 

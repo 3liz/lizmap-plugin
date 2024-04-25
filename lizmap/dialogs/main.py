@@ -399,6 +399,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             button.setIcon(copy_icon)
 
         self.mOptionsListWidget.item(Panels.Upload).setHidden(True)
+        self.mOptionsListWidget.item(Panels.Training).setHidden(True)
         self.label_upload_path.setText(tr(
             "Only files located in the <strong>current QGS file directory (or in a sub-directory)</strong>, "
             "having a file weight less than <strong>{}</strong> and having extensions <strong>{}</strong> are "
@@ -976,6 +977,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         icon = QIcon(resources_path('icons', 'upload.svg'))
         self.mOptionsListWidget.item(Panels.Upload).setIcon(icon)
         self.mOptionsListWidget.item(Panels.Upload).setData(Qt.UserRole, 'upload')
+
+        # Upload
+        # noinspection PyCallByClass,PyArgumentList
+        icon = QIcon(resources_path('icons', 'abc-block.png'))
+        self.mOptionsListWidget.item(Panels.Training).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Training).setData(Qt.UserRole, 'training')
 
         # Set stylesheet for QGroupBox
         q_group_box = (
