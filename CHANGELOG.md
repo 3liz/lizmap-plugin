@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.9 - 2024-04-26
+
+* Follow up previous version
+
 ## 4.3.8 - 2024-04-25
 
 * Improve workflow when publishing a project for the first time
