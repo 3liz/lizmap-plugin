@@ -12,6 +12,7 @@
 
 ### Environment variables
 
+* `LIZMAP_SKIP_STATS`, boolean, to skip the stats API
 * `LIZMAP_ADVANCED_USER`, boolean, to avoid some validity checks. This variable is not needed if you use the source code from Git.
 
 ### Branches

@@ -43,6 +43,7 @@ from lizmap.definitions.lizmap_cloud import (
 )
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.log_panel import LogPanel
+from lizmap.plausible import Plausible
 from lizmap.project_checker_tools import (
     ALLOW_PARENT_FOLDER,
     FORCE_LOCAL_FOLDER,
@@ -97,6 +98,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self._lwc_version = lwc_version
 
         self.mOptionsStackedWidget.currentChanged.connect(self.panel_changed)
+        self.plausible = Plausible(self)
 
         self.is_dev_version = is_dev_version
 
@@ -1211,6 +1213,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def panel_changed(self):
         """ When the panel on the right has changed. """
+        self.plausible.request_stat_event()
         if self.mOptionsStackedWidget.currentWidget() == self.page_settings:
             self.lizmap_cloud_instance()
 

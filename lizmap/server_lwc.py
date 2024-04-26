@@ -5,7 +5,6 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 import os
-import platform
 import time
 
 from enum import Enum
@@ -18,11 +17,10 @@ from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
     QgsMessageLog,
-    QgsNetworkAccessManager,
     QgsNetworkContentFetcher,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QByteArray, QPoint, Qt, QUrl, QVariant
+from qgis.PyQt.QtCore import QPoint, Qt, QUrl, QVariant
 from qgis.PyQt.QtGui import (
     QColor,
     QCursor,
@@ -44,18 +42,11 @@ from qgis.PyQt.QtWidgets import (
 
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
-    PLAUSIBLE_DOMAIN_PROD,
-    PLAUSIBLE_DOMAIN_TEST,
-    PLAUSIBLE_URL_PROD,
-    PLAUSIBLE_URL_TEST,
     UNSTABLE_VERSION_PREFIX,
     ReleaseStatus,
     ServerComboData,
 )
-from lizmap.definitions.lizmap_cloud import (
-    CLOUD_QGIS_MIN_RECOMMENDED,
-    EXCLUDED_DOMAINS,
-)
+from lizmap.definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import (
     CreateFolderWizard,
@@ -827,98 +818,6 @@ class ServerManager:
             )
 
         self.refresh_server_combo()
-        self.send_stats()
-
-    def send_stats(self):
-        """ Send stats. """
-        # For testing purpose, to test.
-        # Similar to QGIS dashboard https://feed.qgis.org/metabase/public/dashboard/df81071d-4c75-45b8-a698-97b8649d7228
-        # We only collect data listed in the list below
-        # and the country according to IP address.
-        # The IP is not stored by Plausible Community Edition https://github.com/plausible/analytics
-        # Plausible is GDPR friendly https://plausible.io/data-policy
-        # The User-Agent is set by QGIS Desktop itself
-
-        # Only turn ON for debug purpose, temporary !
-        debug = False
-
-        if self.table.rowCount() == 0:
-            # At least one server in the table
-            return
-
-        if to_bool(os.getenv("CI"), default_value=False):
-            # If running on CI, do not send stats
-            return
-
-        lizmap_plugin_version = version()
-        if lizmap_plugin_version in ('master', 'dev') and not debug:
-            # Dev versions of the plugin
-            debug = True
-
-        urls = []
-        for row in range(self.table.rowCount()):
-            url, _, _ = self._fetch_cells(row)
-            urls.append(url)
-
-        for url in urls:
-            if bool([domain for domain in EXCLUDED_DOMAINS if (domain in url)]) and not debug:
-                # We do want dev again
-                debug = True
-
-        instances = []
-        for row in range(self.server_combo.count()):
-            metadata = self.server_combo.itemData(row, ServerComboData.JsonMetadata.value)
-            instances.append(is_lizmap_cloud(metadata))
-
-        if all(instances):
-            lizmap_cloud = 'all'
-        elif any(instances):
-            lizmap_cloud = 'mixed'
-        else:
-            lizmap_cloud = 'no'
-
-        plausible_url = PLAUSIBLE_URL_TEST if debug else PLAUSIBLE_URL_PROD
-
-        request = QNetworkRequest()
-        request.setUrl(QUrl(plausible_url))
-        if debug:
-            request.setRawHeader(b"X-Debug-Request", b"true")
-            request.setRawHeader(b"X-Forwarded-For", b"127.0.0.1")
-        request.setHeader(QNetworkRequest.ContentTypeHeader, "application/json")
-
-        # Qgis.QGIS_VERSION → 3.34.6-Prizren
-        qgis_version_full = Qgis.QGIS_VERSION.split('-')[0]
-        # qgis_version_full → 3.34.6
-        qgis_version_branch = '.'.join(qgis_version_full.split('.')[0:2])
-        # qgis_version_branch → 3.34
-
-        python_version_full = platform.python_version()
-        # python_version_full → 3.10.12
-        python_version_branch = '.'.join(python_version_full.split('.')[0:2])
-        # python_version_branch → 3.10
-
-        data = {
-            "name": "plugin",
-            "props": {
-                # Lizmap Desktop version
-                "lizmap-plugin-version": lizmap_plugin_version,
-                # Lizmap Cloud
-                "lizmap-cloud-instances": lizmap_cloud,
-                "lizmap-cloud": 'yes' if any(instances) else 'no',
-                # QGIS
-                "qgis-version-full": qgis_version_full,
-                "qgis-version-branch": qgis_version_branch,
-                # Python
-                "python-version-full": python_version_full,
-                "python-version-branch": python_version_branch,
-                # OS
-                "os-name": platform.system(),
-                "os-version": platform.release(),
-            },
-            "url": plausible_url,
-            "domain": PLAUSIBLE_DOMAIN_TEST if debug else PLAUSIBLE_DOMAIN_PROD,
-        }
-        QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
 
     def save_table(self):
         """ Save the table as JSON in the user configuration file. """
