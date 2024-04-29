@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.10 - 2024-04-26
+
+* Fix language detection
+
 ## 4.3.9 - 2024-04-26
 
 * Follow up previous version
