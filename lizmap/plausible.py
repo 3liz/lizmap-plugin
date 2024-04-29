@@ -60,6 +60,10 @@ class Plausible:
             # If running on CI, do not send stats
             return False
 
+        if not self.dialog.current_lwc_version(default_value=False):
+            # Let's wait to have the JSON in the combobox
+            return False
+
         current = QDateTime().currentDateTimeUtc()
         if self.previous_date and self.previous_date.secsTo(current) < MIN_SECONDS:
             # Not more than one request per hour

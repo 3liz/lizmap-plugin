@@ -673,12 +673,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Return the current LWC server information from the server combobox. """
         return self.server_combo.currentData(info)
 
-    def current_lwc_version(self) -> Optional[LwcVersions]:
+    def current_lwc_version(self, default_value: bool = True) -> Optional[LwcVersions]:
         """ Return the current LWC version from the server combobox. """
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
         if metadata and metadata.get('info'):
             return LwcVersions.find_from_metadata(metadata)
+
+        if not default_value:
+            return None
 
         if self._lwc_version:
             return self._lwc_version
