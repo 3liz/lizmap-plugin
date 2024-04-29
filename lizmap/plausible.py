@@ -23,7 +23,7 @@ from lizmap.saas import is_lizmap_cloud
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.version import version
 
-MIN_SECONDES = 3600
+MIN_SECONDS = 3600
 ENV_SKIP_STATS = "LIZMAP_SKIP_STATS"
 
 
@@ -40,7 +40,7 @@ class Plausible:
     def __init__(self, dlg):
         """ Constructor. """
         self.dialog = dlg
-        self.current_date = None
+        self.previous_date = None
         self.locale = QgsSettings().value("locale/userLocale", QLocale().name())[0:2]
 
     def request_stat_event(self) -> bool:
@@ -58,15 +58,17 @@ class Plausible:
             return False
 
         current = QDateTime().currentDateTimeUtc()
-        if self.current_date and self.current_date.secsTo(current) < MIN_SECONDES:
+        if self.previous_date and self.previous_date.secsTo(current) < MIN_SECONDS:
             # Not more than one request per hour
             return False
 
-        self.current_date = current
-        self._send_stat_event()
-        return True
+        if self._send_stat_event():
+            self.previous_date = current
+            return True
 
-    def _send_stat_event(self):
+        return False
+
+    def _send_stat_event(self) -> bool:
         """ Send stats event to the API. """
         # Only turn ON for debug purpose, temporary !
         debug = False
@@ -93,7 +95,7 @@ class Plausible:
 
         if len(lizmap_cloud_instances) == 0:
             # Because of workshop servers
-            return
+            return False
 
         if all(lizmap_cloud_instances):
             lizmap_cloud = 'all'
@@ -137,6 +139,9 @@ class Plausible:
         qgis_server_branch = '.'.join(qgis_server_version.split('.')[0:2])
         # qgis_server_branch → 3.34
 
+        # QGIS version diff between desktop and server
+        qgis_diff = int(qgis_server_branch.split('.')[1]) - int(qgis_version_branch.split('.')[1])
+
         data = {
             "name": "plugin",
             "props": {
@@ -155,6 +160,8 @@ class Plausible:
                 # QGIS
                 "qgis-version-full": qgis_version_full,
                 "qgis-version-branch": qgis_version_branch,
+                # Diff between desktop and server
+                "qgis-version-diff": qgis_diff,
                 # Python
                 "python-version-full": python_version_full,
                 "python-version-branch": python_version_branch,
@@ -168,4 +175,7 @@ class Plausible:
             "domain": PLAUSIBLE_DOMAIN_TEST if debug else PLAUSIBLE_DOMAIN_PROD,
         }
         # noinspection PyArgumentList
-        QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
+        reply = QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
+        _ = reply
+        # return reply.attribute(QNetworkRequest.HttpStatusCodeAttribute).startswith(('1', '2', '3'))
+        return True

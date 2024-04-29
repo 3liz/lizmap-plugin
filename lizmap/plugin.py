@@ -4971,7 +4971,7 @@ class Lizmap:
         """ Check if the training panel should be visible or not. """
         current_url = self.dlg.current_server_info(ServerComboData.ServerUrl.value)
         if not current_url:
-            self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(False)
+            self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(True)
             return
 
         if bool([domain for domain in WORKSHOP_DOMAINS if (domain in current_url)]):
