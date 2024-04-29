@@ -41,7 +41,10 @@ class Plausible:
         """ Constructor. """
         self.dialog = dlg
         self.previous_date = None
-        self.locale = QgsSettings().value("locale/userLocale", QLocale().name())[0:2]
+        self.locale = QgsSettings().value("locale/userLocale", "")
+        if self.locale == "":
+            self.locale = QLocale().name()
+        self.locale = self.locale[0:2].lower()
 
     def request_stat_event(self) -> bool:
         """ Request to send an event to the API. """
