@@ -82,7 +82,7 @@ class Tooltip:
             alias = field.alias()
             name = field.name()
             fname = alias if alias else name
-            fname = fname.replace("'", "’")
+            fname = fname.replace("'", "’")  # noqa RUF001
 
             # adapt the view depending on the field type
             field_widget_setup = field.editorWidgetSetup()
@@ -145,9 +145,9 @@ class Tooltip:
             if node.visibilityExpression().enabled():
                 visibility = Tooltip._generate_eval_visibility(node.visibilityExpression().data().expression())
 
-            l = level
+            lvl = level
             # create div container
-            if l == 1:
+            if lvl == 1:
                 active = ''
                 if not headers:
                     active = 'active'
@@ -159,14 +159,16 @@ class Tooltip:
                     active = '{} {}'.format(active, visibility)
                 if visibility and not active:
                     active = visibility
-                h += '\n' + SPACES + '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'.format(
-                    active, regex.sub('_', node.name()), node.name())
+                h += '\n' + SPACES
+                h += (
+                    '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'
+                ).format(active, regex.sub('_', node.name()), node.name())
                 headers.append(h)
 
-            if l > 1:
-                a += '\n' + SPACES * l + '<fieldset class="{}">'.format(visibility)
-                a += '\n' + SPACES * l + '<legend>{}</legend>'.format(node.name())
-                a += '\n' + SPACES * l + '<div>'
+            if lvl > 1:
+                a += '\n' + SPACES * lvl + '<fieldset class="{}">'.format(visibility)
+                a += '\n' + SPACES * lvl + '<legend>{}</legend>'.format(node.name())
+                a += '\n' + SPACES * lvl + '<div>'
 
             # In case of root children
             before_tabs = []
@@ -177,7 +179,7 @@ class Tooltip:
             for n in node.children():
                 h = Tooltip.create_popup_node_item_from_form(layer, n, level, headers, html, relation_manager)
                 # If it is not root children, add html
-                if l > 0:
+                if lvl > 0:
                     a += h
                     continue
                 # If it is root children, store html in the right list
@@ -189,7 +191,7 @@ class Tooltip:
                 else:
                     content_tabs.append(h)
 
-            if l == 0:
+            if lvl == 0:
                 if before_tabs:
                     a += '\n<div class="before-tabs">'
                     a += '\n'.join(before_tabs)
@@ -205,22 +207,22 @@ class Tooltip:
                     a += '\n<div class="after-tabs">'
                     a += '\n'.join(after_tabs)
                     a += '\n</div>'
-            elif l == 1:
-                a += '\n' + SPACES * l + '</div>'
-            elif l > 1:
-                a += '\n' + SPACES * l + '</div>'
-                a += '\n' + SPACES * l + '</fieldset>'
+            elif lvl == 1:
+                a += '\n' + SPACES * lvl + '</div>'
+            elif lvl > 1:
+                a += '\n' + SPACES * lvl + '</div>'
+                a += '\n' + SPACES * lvl + '</fieldset>'
 
         html += a
         return html
 
     @staticmethod
-    def _generate_field_view(name: str):
-        return '"{}"'.format(name)
+    def _generate_field_view(name: str) -> str:
+        return f'"{name}"'
 
     @staticmethod
-    def _generate_eval_visibility(expression: str):
-        return "[% if ({}, '', 'hidden') %]".format(expression)
+    def _generate_eval_visibility(expression: str) -> str:
+        return f"[% if ({expression}, '', 'hidden') %]"
 
     @staticmethod
     def _generate_attribute_editor_relation(label: str, relation_id: str, referencing_layer_id: str) -> str:
@@ -235,7 +237,12 @@ class Tooltip:
         return result
 
     @staticmethod
-    def _generate_relation_reference(name: str, parent_pk: str, layer_id: str, display_expression: str):
+    def _generate_relation_reference(
+        name: str,
+        parent_pk: str,
+        layer_id: str,
+        display_expression: str,
+    ) -> str:
         expression = '''
                     "{}" = attribute(@parent, '{}')
                 '''.format(parent_pk, name)
@@ -249,12 +256,12 @@ class Tooltip:
                     )'''.format(
             layer_id,
             display_expression,
-            expression
+            expression,
         )
         return field_view
 
     @staticmethod
-    def _generate_field_name(name: str, fname: str, expression: str):
+    def _generate_field_name(name: str, fname: str, expression: str) -> str:
         text = '''
                     [% CASE
                         WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
@@ -267,12 +274,12 @@ class Tooltip:
                     END %]'''.format(
             name,
             fname,
-            expression
+            expression,
         )
         return text
 
     @staticmethod
-    def _generate_value_map(widget_config: Union[list, dict], name: str):
+    def _generate_value_map(widget_config: Union[list, dict], name: str) -> str:
         def escape_value(value: str) -> str:
             """Change ' to ’ for the HStore function. """
             return value.replace("'", "’")
@@ -305,7 +312,7 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def _generate_external_resource(widget_config: dict, name: str, fname: str):
+    def _generate_external_resource(widget_config: dict, name: str, fname: str) -> str:
         dview = widget_config['DocumentViewer']
 
         if dview == QgsExternalResourceWidget.Image:
@@ -354,7 +361,7 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def _generate_date(widget_config: dict, name: str):
+    def _generate_date(widget_config: dict, name: str) -> str:
         date_format = widget_config.get('display_format')
 
         if not date_format:
@@ -369,12 +376,12 @@ class Tooltip:
         return field_view
 
     @staticmethod
-    def _generate_value_relation(widget_config: dict, name: str):
+    def _generate_value_relation(widget_config: dict, name: str) -> str:
         vlid = widget_config['Layer']
 
         expression = '''"{}" = attribute(@parent, '{}')'''.format(
             widget_config['Key'],
-            name
+            name,
         )
 
         filter_exp = widget_config.get('FilterExpression', '').strip()
@@ -394,19 +401,19 @@ class Tooltip:
                     )'''.format(
                                 vlid,
                                 widget_config['Value'],
-                                expression
+                                expression,
                             )
         return field_view
 
     @staticmethod
-    def _generate_text_label(label: str, expression: str):
+    def _generate_text_label(label: str, expression: str) -> str:
         text = '''
                     <p><strong>{0}</strong>
                     <div class="field">{1}</div>
                     </p>
                     '''.format(
             label,
-            expression
+            expression,
         )
         return text
 
