@@ -2916,6 +2916,8 @@ class Lizmap:
     def open_media_file_browser(self):
         """ Open the file picker for media. """
         data_path, _ = QFileDialog.getOpenFileName(None, tr('Open media'), self.project.absolutePath())
+        if not data_path:
+            return
         # TODO check
         # Maximum allowed parent folder
         # ../media or media/
