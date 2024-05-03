@@ -1084,9 +1084,13 @@ class Lizmap:
         self.dlg.refresh_helper_target_version(current_version)
 
         # New print panel
-        # The checkbox is deprecated since LWC 3.7.0
+        # The checkbox is removed since LWC 3.7.0
         self.dlg.cbActivatePrint.setVisible(current_version <= LwcVersions.Lizmap_3_6)
         self.dlg.cbActivatePrint.setEnabled(current_version <= LwcVersions.Lizmap_3_6)
+
+        # The checkbox is removed since LWC 3.8.0
+        self.dlg.cbActivateZoomHistory.setVisible(current_version <= LwcVersions.Lizmap_3_7)
+        self.dlg.cbActivateZoomHistory.setEnabled(current_version <= LwcVersions.Lizmap_3_7)
 
         found = False
         for lwc_version, items in self.lwc_versions.items():
