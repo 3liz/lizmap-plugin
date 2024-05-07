@@ -1,13 +1,15 @@
 """Dialog for tooltip edition."""
 
 from qgis.core import QgsMapLayerProxyModel
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QIcon
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.tooltip import ToolTipDefinitions
+from lizmap.dialogs.html_maptip import HtmlMapTipDialog
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import load_ui
+from lizmap.toolbelt.resources import load_ui, resources_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
@@ -47,6 +49,8 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.display_geometry.toggled.connect(self.enable_color)
         self.enable_color()
 
+        self.generate_table.clicked.connect(self.generate_table_clicked)
+
         self.lwc_versions[LwcVersions.Lizmap_3_8] = [
             self.label_html_template,
         ]
@@ -70,6 +74,31 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
             self.tab.setCurrentIndex(0)
         else:
             self.tab.setCurrentIndex(1)
+
+    def generate_table_clicked(self):
+        """ Template about HTML table. """
+        layer = self.layer.currentLayer()
+        if not layer:
+            return
+
+        html_maptip_dialog = HtmlMapTipDialog(layer)
+        if not html_maptip_dialog.exec_():
+            return
+
+        if self.html_template.html_content():
+            box = QMessageBox(self)
+            box.setIcon(QMessageBox.Question)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
+            box.setWindowTitle(tr('Replace existing HTML with the template'))
+            box.setText(tr('This will erase your previous HTML.'))
+            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            box.setDefaultButton(QMessageBox.No)
+            result = box.exec_()
+            if result == QMessageBox.No:
+                return
+
+        result = html_maptip_dialog.map_tip()
+        self.html_template.set_html_content(result)
 
     def enable_color(self):
         if self.display_geometry.isChecked():

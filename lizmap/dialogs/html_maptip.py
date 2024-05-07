@@ -57,7 +57,7 @@ class HtmlMapTipDialog(QDialog, FORM_CLASS):
         for field in self.layer.fields():
             name = field.name()
             if name in self.layer.excludeAttributesWms():
-                fields += "<!-- Field {} excluded from WMS in the layer properties -->\n".format(name)
+                fields += "<!-- Field '{}' was excluded from WMS in the layer properties -->\n".format(name)
             else:
                 fields += field_template.format(display=field.displayName(), name=name)
 
