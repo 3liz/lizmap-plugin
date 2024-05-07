@@ -147,6 +147,9 @@ class Plausible:
         # qgis_server_branch → 3.34
 
         # QGIS version diff between desktop and server
+        # QGIS Server 3.34, QGIS Desktop 3.30 → 6
+        # QGIS Server 3.28, QGIS Desktop 3.36 → -8
+        # Positive number are better
         qgis_diff = int(qgis_server_branch.split('.')[1]) - int(qgis_version_branch.split('.')[1])
 
         data = {
