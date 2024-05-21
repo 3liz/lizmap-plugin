@@ -904,7 +904,7 @@ class Lizmap:
         self.dlg.path_training_folder.setStorageMode(QgsFileWidget.GetDirectory)
         self.dlg.path_training_folder.setDialogTitle(tr("Choose a folder to store the your data about the training"))
 
-        self.dlg.name_training_folder.setPlaceholderText(os.getlogin())
+        self.dlg.name_training_folder.setPlaceholderText(self.current_login())
 
         self.dlg.download_training_data.clicked.connect(self.download_training_data_clicked)
         self.dlg.open_training_folder.clicked.connect(self.open_training_folder_clicked)
@@ -995,6 +995,13 @@ class Lizmap:
                 LOGGER.info("Project has been renamed and Lizmap configuration file has been copied as well.")
 
         self.current_path = new_path
+
+    @staticmethod
+    def current_login() -> str:
+        try:
+            return os.getlogin()
+        except OSError:
+            return 'repository'
 
     def current_lwc_version(self) -> LwcVersions:
         """ Return the current selected LWC version from the server. """
@@ -5087,7 +5094,7 @@ class Lizmap:
         with OverrideCursor(Qt.WaitCursor):
             project = QgsProject.instance()
             project.read(str(file_path.joinpath(TRAINING_PROJECT)))
-            project.writeEntry("WMSServiceTitle", "/", os.getlogin())
+            project.writeEntry("WMSServiceTitle", "/", self.current_login())
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""
