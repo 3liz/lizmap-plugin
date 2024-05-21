@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.3.12 - 2024-05-21
+
+* Fix `Browser for media` button if `Cancel` was clicked
+* Add button to generate the HTML table in the ToolTip feature for Lizmap Web Client 3.8
+
 ## 4.3.11 - 2024-04-30
 
 * Fix language detection
