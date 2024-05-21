@@ -32,3 +32,6 @@ class Settings:
     # Auto
     AutoSave = 'auto_save_project'
     AutoSend = 'auto_send_project'
+
+    # Last Lizmap repository
+    LizmapRepository = 'lizmap_repository'

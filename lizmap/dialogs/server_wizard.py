@@ -20,6 +20,7 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsProviderConnectionException,
     QgsProviderRegistry,
+    QgsSettings,
 )
 from qgis.gui import QgsPasswordLineEdit
 from qgis.PyQt.QtCore import QRegExp, Qt, QUrl
@@ -45,6 +46,7 @@ from qgis.utils import OverrideCursor, iface
 
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
 from lizmap.definitions.online_help import online_lwc_help
+from lizmap.definitions.qgis_settings import Settings
 from lizmap.logger import log_function
 from lizmap.saas import is_lizmap_cloud, webdav_properties
 from lizmap.toolbelt.i18n import tr
@@ -660,6 +662,10 @@ class CreateNewFolderDavPage(QWizardPage):
         self.result = QLabel()
         self.result.setWordWrap(True)
         layout.addWidget(self.result)
+
+        previous_value: str = QgsSettings().value(Settings.key(Settings.LizmapRepository), type=str)
+        if previous_value:
+            self.add_suggestion(previous_value)
 
     def add_suggestion(self, suggestion):
         """ Add the suggestion. """

@@ -5071,7 +5071,11 @@ class Lizmap:
         destination = destination.replace('-', '_')
         destination = destination.replace(' ', '_')
         destination = destination.replace("'", '_')
-        output = Path(file_path).joinpath(destination.lower())
+        destination = destination.lower()
+        output = Path(file_path).joinpath(destination)
+
+        QgsSettings().setValue(Settings.key(Settings.LizmapRepository), destination)
+
         if not output.exists():
             output.mkdir()
         return output
@@ -5094,7 +5098,19 @@ class Lizmap:
         with OverrideCursor(Qt.WaitCursor):
             project = QgsProject.instance()
             project.read(str(file_path.joinpath(TRAINING_PROJECT)))
+            # Rename the project
             project.writeEntry("WMSServiceTitle", "/", self.current_login())
+
+        # Enable the "Upload" panel
+        item = self.dlg.mOptionsListWidget.item(Panels.Upload)
+        item.setFlags(item.flags() | Qt.ItemIsEnabled)
+
+        variables = self.project.customVariables()
+        if 'lizmap_user' in list(variables.keys()):
+            del variables['lizmap_user']
+        if 'lizmap_user_groups' in list(variables.keys()):
+            del variables['lizmap_user_groups']
+        self.project.setCustomVariables(variables)
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""
