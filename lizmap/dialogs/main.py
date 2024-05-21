@@ -1188,8 +1188,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
-        for i in range(1, self.mOptionsListWidget.count()):
+        for i in range(0, self.mOptionsListWidget.count()):
+
             item = self.mOptionsListWidget.item(i)
+
+            if i in (Panels.Information, Panels.Settings, Panels.Training):
+                # These panels are always accessible
+                item.setFlags(item.flags() | Qt.ItemIsEnabled)
+                continue
+
             if allow_navigation:
                 item.setFlags(item.flags() | Qt.ItemIsEnabled)
             else:

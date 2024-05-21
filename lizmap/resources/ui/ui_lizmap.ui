@@ -5135,19 +5135,29 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_64">
                  <property name="text">
-                  <string>2. Use auto-save and auto-send</string>
+                  <string>2. Use auto-save in the &quot;Settings&quot; panel and auto-send in the &quot;Upload&quot; panel</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLabel" name="label_57">
                  <property name="text">
-                  <string>3. Create a folder on your computer to store your project</string>
+                  <string>3. Create a folder on your computer to store files related to your Lizmap application</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QgsFileWidget" name="name_training_folder"/>
+                <widget class="QgsFileWidget" name="path_training_folder"/>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_66">
+                 <property name="text">
+                  <string>4. Choose a name used to identify your own folder within the Lizmap application</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="name_training_folder"/>
                </item>
                <item>
                 <widget class="QLabel" name="label_62">
@@ -5174,6 +5184,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                 <widget class="QPushButton" name="open_training_folder">
                  <property name="text">
                   <string>Open file browser</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="open_training_project">
+                 <property name="text">
+                  <string>Open the project</string>
                  </property>
                 </widget>
                </item>

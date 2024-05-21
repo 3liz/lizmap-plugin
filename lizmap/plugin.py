@@ -37,7 +37,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import QEventLoop
-from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtWidgets import QApplication, QFileDialog
 
 from lizmap.dialogs.news import NewConfigDialog
 from lizmap.dialogs.server_wizard import CreateFolderWizard
@@ -103,6 +103,8 @@ from lizmap.definitions.lizmap_cloud import (
     CLOUD_MAX_PARENT_FOLDER,
     CLOUD_NAME,
     CLOUD_QGIS_MIN_RECOMMENDED,
+    TRAINING_PROJECT,
+    TRAINING_ZIP,
     WORKSHOP_DOMAINS,
 )
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
@@ -899,10 +901,14 @@ class Lizmap:
 
         self.dlg.tab_dataviz.setCurrentIndex(0)
 
-        self.dlg.name_training_folder.setStorageMode(QgsFileWidget.GetDirectory)
-        self.dlg.name_training_folder.setDialogTitle(tr("Choose a folder to store the QGIS project"))
+        self.dlg.path_training_folder.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dlg.path_training_folder.setDialogTitle(tr("Choose a folder to store the your data about the training"))
+
+        self.dlg.name_training_folder.setPlaceholderText(os.getlogin())
+
         self.dlg.download_training_data.clicked.connect(self.download_training_data_clicked)
-        self.dlg.open_training_folder.clicked.connect(self.open_training_folder)
+        self.dlg.open_training_folder.clicked.connect(self.open_training_folder_clicked)
+        self.dlg.open_training_project.clicked.connect(self.open_training_project_clicked)
 
         self.drag_drop_dataviz = None
         self.layerList = None
@@ -4985,16 +4991,24 @@ class Lizmap:
 
     def download_training_data_clicked(self):
         """ Download the hard coded ZIP. """
-        if not self.dlg.name_training_folder.filePath():
+        if not self.dlg.path_training_folder.filePath():
             return
 
         metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
         webdav = webdav_properties(metadata)
-        url_path = f"{webdav['url']}/{webdav['projects_path']}/training.zip"
+        if not webdav.get('url'):
+            self.dlg.display_message_bar(
+                CLOUD_NAME,
+                tr("WebDav is not available on the instance '{}'").format(
+                    self.dlg.current_server_info(ServerComboData.ServerUrl.value)),
+                level=Qgis.Critical,
+            )
+
+        url_path = f"{webdav['url']}/{webdav['projects_path']}/{TRAINING_ZIP}"
 
         downloader = QgsFileDownloader(
             QUrl(url_path),
-            str(Path(tempfile.gettempdir()).joinpath("training.zip")),
+            str(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP)),
             delayStart=True,
             authcfg=self.dlg.current_server_info(ServerComboData.AuthId.value),
         )
@@ -5004,10 +5018,12 @@ class Lizmap:
         # downloader.downloadCanceled.connect(self.download_canceled)
         downloader.downloadCompleted.connect(self.download_completed)
         downloader.startDownload()
+        QApplication.setOverrideCursor(Qt.WaitCursor)
         loop.exec_()
 
     def download_error(self, errors):
         """ Display error message about the download. """
+        QApplication.restoreOverrideCursor()
         self.dlg.display_message_bar(
             CLOUD_NAME,
             tr("Error while downloading the project : {}").format(','.join(errors)),
@@ -5016,24 +5032,59 @@ class Lizmap:
 
     def download_completed(self):
         """ Extract the downloaded zip. """
-        output = Path(tempfile.gettempdir()).joinpath("training.zip")
-        with zipfile.ZipFile(output, 'r') as zip_ref:
-            zip_ref.extractall(self.dlg.name_training_folder.filePath())
+        QApplication.restoreOverrideCursor()
+        file_path = self.training_folder_destination()
+        with zipfile.ZipFile(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP), 'r') as zip_ref:
+            zip_ref.extractall(str(file_path))
+
+        cfg_file = file_path.joinpath(TRAINING_PROJECT + ".cfg")
+        if cfg_file.exists():
+            cfg_file.unlink()
 
         self.dlg.display_message_bar(
             CLOUD_NAME,
-            tr("Download and extract OK"),
+            tr("Download and extract OK about the training project"),
             level=Qgis.Success
         )
 
-    def open_training_folder(self):
+    def training_folder_destination(self) -> Optional[Path]:
+        """ Destination folder where to store the data. """
+        file_path = self.dlg.path_training_folder.filePath()
+        if not file_path:
+            return
+
+        destination = self.dlg.name_training_folder.text()
+        if not destination:
+            destination = self.dlg.name_training_folder.placeholderText()
+
+        destination = unaccent(destination)
+        destination = destination.replace('-', '_')
+        destination = destination.replace(' ', '_')
+        destination = destination.replace("'", '_')
+        output = Path(file_path).joinpath(destination.lower())
+        if not output.exists():
+            output.mkdir()
+        return output
+
+    def open_training_folder_clicked(self):
         """ Open the training folder set above. """
-        file_path = self.dlg.name_training_folder.filePath()
+        file_path = self.training_folder_destination()
         if not file_path:
             return
 
         # noinspection PyArgumentList
         QDesktopServices.openUrl(QUrl(f"file://{file_path}"))
+
+    def open_training_project_clicked(self):
+        """ Open the training project in QGIS Desktop. """
+        file_path = self.training_folder_destination()
+        if not file_path:
+            return
+
+        with OverrideCursor(Qt.WaitCursor):
+            project = QgsProject.instance()
+            project.read(str(file_path.joinpath(TRAINING_PROJECT)))
+            project.writeEntry("WMSServiceTitle", "/", os.getlogin())
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""

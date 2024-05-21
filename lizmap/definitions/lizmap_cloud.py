@@ -19,3 +19,6 @@ EXCLUDED_DOMAINS = ('demo.snap.lizmap.com', 'demo.lizmap.com', 'localhost:8130',
 # Domains which are designed for workshops
 # For the "Training" panel and excluded from Plausible as well
 WORKSHOP_DOMAINS = ('workshop.lizmap.com', 'formation.lizmap.com', )
+# Name of the ZIP in the "qgis/" folder in one of these servers
+TRAINING_ZIP = 'training.zip'
+TRAINING_PROJECT = "demo.qgs"
