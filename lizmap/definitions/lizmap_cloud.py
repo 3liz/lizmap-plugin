@@ -12,7 +12,7 @@ CLOUD_ONLINE_LANGUAGES = ('en', 'fr')
 CLOUD_QGIS_MIN_RECOMMENDED = (3, 28, 0)
 
 UPLOAD_EXTENSIONS = ('fgb', 'gpkg', 'xlsx', 'xls', 'csv', 'ods', 'kml', 'geojson')
-UPLOAD_MAX_SIZE = 10000000  # 10 Mb
+UPLOAD_MAX_SIZE = 11000000  # 11 Mb
 
 # Excluded domains from Plausible
 EXCLUDED_DOMAINS = ('demo.snap.lizmap.com', 'demo.lizmap.com', 'localhost:8130', )

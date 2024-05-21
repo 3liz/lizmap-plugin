@@ -5002,7 +5002,7 @@ class Lizmap:
         if not webdav.get('url'):
             self.dlg.display_message_bar(
                 CLOUD_NAME,
-                tr("WebDav is not available on the instance '{}'").format(
+                tr("WebDAV is not available on the instance '{}'").format(
                     self.dlg.current_server_info(ServerComboData.ServerUrl.value)),
                 level=Qgis.Critical,
             )

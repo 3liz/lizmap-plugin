@@ -5142,7 +5142,10 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_57">
                  <property name="text">
-                  <string>3. Create a folder on your computer to store files related to your Lizmap application</string>
+                  <string>3. Create a folder on your computer to store files related to your Lizmap server (this folder will represent your Lizmap server and will contain many Lizmap repositories)</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -5152,7 +5155,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_66">
                  <property name="text">
-                  <string>4. Choose a name used to identify your own folder within the Lizmap application</string>
+                  <string>4. Choose a name used to identify your own folder within the Lizmap server</string>
                  </property>
                 </widget>
                </item>
