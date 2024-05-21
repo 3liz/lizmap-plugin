@@ -16,7 +16,7 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import QgsFeaturePickerWidget
-from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt, QUrl
 from qgis.PyQt.QtGui import (
     QDesktopServices,
     QGuiApplication,
@@ -449,6 +449,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Open the how-to on Lizmap. """
         # noinspection PyArgumentList
         QDesktopServices.openUrl(online_lwc_help("publish/quick_start/index.html"))
+
+    @staticmethod
+    def open_workshop_edition():
+        """ Open the Editing workshop. """
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(QUrl("https://docs.3liz.org/workshop/workshop/"))
 
     @staticmethod
     def set_tooltip_webdav(button: QPushButton, date: str = None):
@@ -1016,6 +1022,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.group_remote,
             self.group_local_layers,
             self.group_project_status,
+            self.group_links,
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)

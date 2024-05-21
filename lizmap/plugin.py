@@ -909,6 +909,9 @@ class Lizmap:
         self.dlg.download_training_data.clicked.connect(self.download_training_data_clicked)
         self.dlg.open_training_folder.clicked.connect(self.open_training_folder_clicked)
         self.dlg.open_training_project.clicked.connect(self.open_training_project_clicked)
+        self.dlg.open_training_folder.clicked.connect(self.open_training_folder_clicked)
+        self.dlg.button_quick_start.clicked.connect(self.dlg.open_lizmap_how_to)
+        self.dlg.workshop_edition.clicked.connect(self.dlg.open_workshop_edition)
 
         self.drag_drop_dataviz = None
         self.layerList = None

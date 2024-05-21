@@ -5162,7 +5162,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_62">
                  <property name="text">
-                  <string>4. Download the data in the given folder</string>
+                  <string>5. Download the data in the given folder</string>
                  </property>
                 </widget>
                </item>
@@ -5176,7 +5176,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_63">
                  <property name="text">
-                  <string>5. Check what has been extracted and open this project in QGIS Desktop</string>
+                  <string>6. Check what has been extracted and open this project in QGIS Desktop</string>
                  </property>
                 </widget>
                </item>
@@ -5192,6 +5192,29 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  <property name="text">
                   <string>Open the project</string>
                  </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="group_links">
+                 <property name="title">
+                  <string>Links</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_59">
+                  <item>
+                   <widget class="QPushButton" name="button_quick_start">
+                    <property name="text">
+                     <string>Quick start guide</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="workshop_edition">
+                    <property name="text">
+                     <string>Workshop &quot;Edition&quot;</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
