@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.13 - 2024-05-22
+
+* Improve the panel for training
+
 ## 4.3.12 - 2024-05-21
 
 * Fix `Browser for media` button if `Cancel` was clicked
