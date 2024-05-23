@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.14 - 2024-05-23
+
+* Add option to use Widget tool config for pictures when generating HTML table
+
 ## 4.3.13 - 2024-05-22
 
 * Improve the panel for training
