@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>391</width>
-    <height>128</height>
+    <width>561</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,12 +15,45 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>If the attribute is empty, you can choose if the cell must be empty as well (the expression is easier) or if the row must be hidden (more complex expression).</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>For pictures, you can choose to reuse the configuration of the &quot;Attribute Form&quot; properties about the &quot;Widget tool&quot;.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="show_null">
+     <property name="toolTip">
+      <string>Show the row even if the content is empty or NULL</string>
+     </property>
      <property name="text">
       <string>Show a row when the value is empty or NULL</string>
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="use_widget_config">
+     <property name="toolTip">
+      <string>Use the &quot;Widget type&quot; to detect the field content</string>
+     </property>
+     <property name="text">
+      <string>Use configuration from the field &quot;Widget type&quot; in the &quot;Attribute Form&quot; panel</string>
      </property>
     </widget>
    </item>

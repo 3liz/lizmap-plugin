@@ -4578,6 +4578,11 @@ class Lizmap:
     def upload_media(self):
         """ Upload the current media path on the server. """
         current_path = self.dlg.inLayerLink.text()
+
+        # On Windows, it's like media\photo.png
+        # TODO check line below
+        # current_path = current_path.replace('\\', '/')
+
         if not current_path.startswith('media/'):
             self.dlg.display_message_bar(
                 'Lizmap',

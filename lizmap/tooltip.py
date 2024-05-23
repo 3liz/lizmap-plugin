@@ -46,6 +46,12 @@ class Tooltip:
         # Might be linked to QGIS 3.36 https://github.com/3liz/lizmap-web-client/issues/4307
         return {k: v for k, v in data.items() if v is not None}
 
+    @classmethod
+    def friendly_name(cls, name: str, alias: str) -> str:
+        fname = alias if alias else name
+        fname = fname.replace("'", "’")  # noqa RUF001
+        return fname
+
     @staticmethod
     def create_popup_node_item_from_form(
             layer: QgsVectorLayer,
@@ -79,10 +85,8 @@ class Tooltip:
             field = layer.fields()[node.idx()]
 
             # display field name or alias if filled
-            alias = field.alias()
             name = field.name()
-            fname = alias if alias else name
-            fname = fname.replace("'", "’")  # noqa RUF001
+            fname = Tooltip.friendly_name(name, field.alias())
 
             # adapt the view depending on the field type
             field_widget_setup = field.editorWidgetSetup()
