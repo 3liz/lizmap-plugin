@@ -3825,10 +3825,15 @@ class Lizmap:
                 if any(x != x for x in layer_options['extent']):
                     if layer.isSpatial():
                         # https://github.com/3liz/lizmap-plugin/issues/571
+                        if 33600 <= Qgis.QGIS_VERSION_INT < 33603:
+                            msg = tr('A bug has been identified with QGIS 3.36.0 to 3.36.2 included, please change.')
+                        else:
+                            msg = ""
                         QMessageBox.warning(
                             self.dlg,
                             'Lizmap',
-                            tr(
+                            msg
+                            + tr(
                                 'Please check your layer extent for "{}" with the ID "{}".'
                                 'The extent does not seem valid.'
                             ).format(layer.name(), layer.id()) + '\n\n'
