@@ -141,7 +141,15 @@ class Plausible:
         # lwc_version_light → 3.7.7
         lwc_version_branch = LwcVersions.find_from_metadata(metadata)
         # lwc_version_branch → 3.7 as Python enum
-        qgis_server_version = metadata.get('qgis_server_info').get('metadata').get('version')
+        qgis_server_info = metadata.get('qgis_server_info')
+        if not qgis_server_info:
+            return False
+        metadata = qgis_server_info.get('metadata')
+        if not metadata:
+            return False
+        qgis_server_version = metadata.get('version')
+        if not qgis_server_version:
+            return False
         # qgis_server_version → 3.34.6
         qgis_server_branch = '.'.join(qgis_server_version.split('.')[0:2])
         # qgis_server_branch → 3.34
