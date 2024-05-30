@@ -3064,6 +3064,10 @@ class Lizmap:
         self.dlg.check_results.truncate()
         checks = Checks()
 
+        # Check plugin version from the one hard-coded on the server side
+        recommended_plugin = server_metadata.get("lizmap_desktop_plugin_version")
+        _ = recommended_plugin
+
         # Fill the HTML table with all rules
         self.dlg.html_help.setHtml(
             checks.html(
