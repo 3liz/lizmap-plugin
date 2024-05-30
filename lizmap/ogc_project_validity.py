@@ -95,8 +95,7 @@ class OgcProjectValidity:
     def set_project_short_name(self):
         """ Check and set the project short name. """
         # Inspired by QgsProjectServerValidator::validate()
-        existing = self.existing_shortnames()
-
+        existing, _ = self.existing_shortnames()
         root_layer_name = self.project.readEntry("WMSRootName", "/", "")[0]
         if not root_layer_name and self.project.title():
             # If short name is not defined, we take the project title
