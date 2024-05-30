@@ -47,7 +47,6 @@ if Qgis.QGIS_VERSION_INT >= 32200:
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QRegExp,
     QStorageInfo,
     Qt,
     QTranslator,
@@ -4148,11 +4147,6 @@ class Lizmap:
         if not self.project.fileName().lower().endswith('qgs'):
             message += "\n\n" + tr(
                 "Your extension is QGZ. Please save again the project using the other extension.")
-            return False, message + base_message
-
-        if QRegExp(r'\s').indexIn(self.project.baseName()) >= 0:
-            message = tr(
-                "Your file name has a space in its name. The project file name mustn't have a space in its name.")
             return False, message + base_message
 
         if self.project.baseName() != unaccent(self.project.baseName()):
