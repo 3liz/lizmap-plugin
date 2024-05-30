@@ -3497,6 +3497,26 @@ class Lizmap:
             self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
     ) -> Optional[Dict]:
         """ Get the JSON CFG content. """
+
+        if lwc_version >= LwcVersions.Lizmap_3_6:
+            LOGGER.info(
+                'Lizmap Web Client target version {}, let\'s try to make the project valid.'.format(
+                    lwc_version.value)
+            )
+            # Set shortnames if it's not set
+            ogc_projet_validity = OgcProjectValidity(self.project)
+            ogc_projet_validity.add_shortnames()
+            ogc_projet_validity.set_project_short_name()
+
+            validator = QgsProjectServerValidator()
+            valid, results = validator.validate(self.project)
+            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
+        else:
+            LOGGER.info(
+                "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
+                    lwc_version.value)
+            )
+
         if not self.check_project(lwc_version, with_gui, check_server, ignore_error):
             # Some blocking issues, we can not continue
             return None
@@ -4318,25 +4338,6 @@ class Lizmap:
                         stop_process
                     ), QMessageBox.Ok)
                 return False
-
-        if lwc_version >= LwcVersions.Lizmap_3_6:
-            LOGGER.info(
-                'Lizmap Web Client target version {}, let\'s try to make the project valid.'.format(
-                    lwc_version.value)
-            )
-            # Set shortnames if it's not set
-            ogc_projet_validity = OgcProjectValidity(self.project)
-            ogc_projet_validity.add_shortnames()
-            ogc_projet_validity.set_project_short_name()
-
-            validator = QgsProjectServerValidator()
-            valid, results = validator.validate(self.project)
-            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
-        else:
-            LOGGER.info(
-                "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
-                    lwc_version.value)
-            )
 
         # global project option checking
         is_valid, message = self.check_global_project_options()
