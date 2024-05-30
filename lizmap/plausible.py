@@ -60,22 +60,38 @@ class Plausible:
             # If running on CI, do not send stats
             return False
 
-        if not self.dialog.current_lwc_version(default_value=False):
-            # Let's wait to have the JSON in the combobox
-            return False
-
         current = QDateTime().currentDateTimeUtc()
         if self.previous_date and self.previous_date.secsTo(current) < MIN_SECONDS:
             # Not more than one request per hour
             return False
 
-        if self._send_stat_event():
+        if not self.dialog.current_lwc_version(default_value=False):
+            # Let's wait to have the JSON in the combobox
+            return False
+
+        metadata = self.dialog.current_server_info(ServerComboData.JsonMetadata.value)
+        if not metadata:
+            return False
+
+        qgis_server_info = metadata.get('qgis_server_info')
+        if not qgis_server_info:
+            return False
+
+        qgis_metadata = qgis_server_info.get('metadata')
+        if not qgis_metadata:
+            return False
+
+        qgis_server_version = qgis_metadata.get('version')
+        if not qgis_server_version:
+            return False
+
+        if self._send_stat_event(metadata, qgis_server_version):
             self.previous_date = current
             return True
 
         return False
 
-    def _send_stat_event(self) -> bool:
+    def _send_stat_event(self, current_metadata: dict, qgis_server_version: str) -> bool:
         """ Send stats event to the API. """
         # Only turn ON for debug purpose, temporary !
         debug = False
@@ -134,22 +150,13 @@ class Plausible:
         # python_version_branch → 3.10
 
         # Current selected metadata
-        metadata = self.dialog.current_server_info(ServerComboData.JsonMetadata.value)
-        lwc_version_full = metadata.get("info").get("version")
+        lwc_version_full = current_metadata.get("info").get("version")
         # lwc_version_full → 3.7.7-pre.7357
         lwc_version_light = lwc_version_full.split('-')[0]
         # lwc_version_light → 3.7.7
-        lwc_version_branch = LwcVersions.find_from_metadata(metadata)
+        lwc_version_branch = LwcVersions.find_from_metadata(current_metadata)
         # lwc_version_branch → 3.7 as Python enum
-        qgis_server_info = metadata.get('qgis_server_info')
-        if not qgis_server_info:
-            return False
-        metadata = qgis_server_info.get('metadata')
-        if not metadata:
-            return False
-        qgis_server_version = metadata.get('version')
-        if not qgis_server_version:
-            return False
+
         # qgis_server_version → 3.34.6
         qgis_server_branch = '.'.join(qgis_server_version.split('.')[0:2])
         # qgis_server_branch → 3.34
