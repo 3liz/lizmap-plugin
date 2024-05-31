@@ -237,6 +237,10 @@ class Lizmap:
         # 04/01/2022
         QgsSettings().remove('lizmap/instance_target_url_authid')
 
+        if to_bool(os.getenv("LIZMAP_NORMAL_MODE"), default_value=False):
+            QgsSettings().setValue(Settings.key(Settings.BeginnerMode), False)
+            QgsSettings().setValue(Settings.key(Settings.PreventPgService), False)
+
         # Set some default settings when loading the plugin
         beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), defaultValue=None)
         if beginner_mode is None:
