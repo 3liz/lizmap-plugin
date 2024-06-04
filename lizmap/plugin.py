@@ -151,6 +151,7 @@ from lizmap.project_checker_tools import (
     duplicated_rule_key_legend,
     project_invalid_pk,
     project_safeguards_checks,
+    project_tos_layers,
     project_trust_layer_metadata,
     simplify_provider_side,
     trailing_layer_group_name,
@@ -3062,6 +3063,7 @@ class Lizmap:
             SourceLayer,
         )
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        lizmap_cloud = is_lizmap_cloud(server_metadata)
         beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
         severities = Severities()
 
@@ -3072,7 +3074,7 @@ class Lizmap:
         self.dlg.html_help.setHtml(
             checks.html(
                 severity=severities.blocking if beginner_mode else severities.important,
-                lizmap_cloud=is_lizmap_cloud(server_metadata)
+                lizmap_cloud=lizmap_cloud
             )
         )
 
@@ -3300,7 +3302,7 @@ class Lizmap:
 
         if check_server:
 
-            if is_lizmap_cloud(server_metadata):
+            if lizmap_cloud:
                 error, message = check_project_ssl_postgis(self.project)
                 for layer in error:
                     self.dlg.check_results.add_error(
@@ -3341,6 +3343,21 @@ class Lizmap:
             results = trailing_layer_group_name(self.project.layerTreeRoot(), self.project, [])
             for result in results:
                 self.dlg.check_results.add_error(result)
+
+            tos_checks = server_metadata.get("qgis_server_info").get("external_providers_tos_checks")
+            if tos_checks is not None:
+                google = tos_checks.get('google', False)
+                bing = tos_checks.get('bing', False)
+                if google or bing:
+                    for layer in project_tos_layers(self.project, google, bing):
+                        self.dlg.check_results.add_error(
+                            Error(
+                                layer.name,
+                                checks.LayerMissingApiKey,
+                                source_type=SourceLayer(layer.name, layer.layer_id),
+                            ),
+                            lizmap_cloud=lizmap_cloud,
+                        )
 
             if lwc_version >= LwcVersions.Lizmap_3_7:
                 results = duplicated_layer_with_filter_legend(self.project)
@@ -3482,7 +3499,7 @@ class Lizmap:
             msg = tr('You are using the "{mode}" mode.').format(mode=mode)
         self.dlg.label_check_resume.setText(msg)
 
-        self.dlg.auto_fix_tooltip(is_lizmap_cloud(server_metadata))
+        self.dlg.auto_fix_tooltip(lizmap_cloud)
         self.dlg.label_autofix.setVisible(self.dlg.has_auto_fix())
         self.dlg.push_visit_settings.setVisible(self.dlg.has_auto_fix())
 

@@ -288,7 +288,7 @@ class Checks:
                 ),
             ),
             Levels.Project,
-            Severities().low,
+            Severities().important,
             QIcon(':/images/themes/default/mIconWms.svg'),
         )
         self.ServerVersion = Check(
@@ -649,6 +649,41 @@ class Checks:
             Levels.Project,
             Severities().blocking,
             QIcon(':/images/themes/default/mIconWms.svg'),
+        )
+        self.LayerMissingApiKey = Check(
+            'layer_without_api_key',
+            tr('Missing API key'),
+            tr(
+                "The layer requires an API key to be exposed on the internet but the Lizmap configuration is missing "
+                "the API key. The layer will be discarded "
+                "on the server side."
+            ),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'.format(
+                    tr("Either add the API key for this provider"),
+                    tr('Or remove the layer.'),
+                    tr(
+                        'Or disable these API checks using environment variables on the server side of the Lizmap '
+                        'server plugin.'
+                    ),
+                )
+            ),
+            Levels.Layer,
+            Severities().low,
+            QIcon(':/images/themes/default/locked.svg'),
+            (
+                '<ul>'
+                '<li>{}</li>'
+                '<li>{}</li>'
+                '</ul>'.format(
+                    tr("Either add the API key for this provider"),
+                    tr('Or remove the layer.'),
+                )
+            ),
         )
         self.TrustProject = Check(
             'trust_project_metadata',
@@ -1040,7 +1075,7 @@ class TableCheck(QTableWidget):
         used_severity = error.check.severity
         if used_severity == Severities().unknown:
             if severity:
-                # The given severity is overriden the one in the error
+                # The given severity is overridden the one in the error
                 used_severity = severity
             else:
                 raise NotImplementedError('Missing severity level')
