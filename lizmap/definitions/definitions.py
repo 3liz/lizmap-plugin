@@ -71,6 +71,7 @@ class LwcVersions(Enum):
 
 # Possible prefix before a stable release
 # Note that 'pre' is not supported by the QGIS Desktop plugin manager
+# https://github.com/qgis/QGIS/blob/4ace69f83af20dd597c0da69e2daca714ed49992/python/pyplugin_installer/version_compare.py#L112
 # Master and dev is for internal purpose only, name of the current branch. It's not supported as well by QGIS Desktop
 UNSTABLE_VERSION_PREFIX = ('master', 'dev', 'pre', 'alpha', 'beta', 'rc')
 DEV_VERSION_PREFIX = ('master', 'dev')
