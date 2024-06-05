@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 4.3.15 - 2024-06-05
+
+* Warn the user about outdated QGIS version 3.36
+* Allow again the space in project name, fixed in LWC for a few versions now
+* Fix adding automatic shortname for the project
+* Check for layers which might need an API key, according to server configuration
+* Check for the recommended Desktop plugin version from the server
+
 ## 4.3.14 - 2024-05-23
 
 * Add option to use Widget tool config for pictures when generating HTML table
