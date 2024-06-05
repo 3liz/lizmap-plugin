@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from qgis.core import (
+    Qgis,
     QgsAbstractDatabaseProviderConnection,
     QgsDataSourceUri,
     QgsFeatureRenderer,
@@ -28,6 +29,7 @@ from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_vector_pg, update_uri
+from lizmap.toolbelt.version import qgis_version
 from lizmap.widgets.check_project import (
     RASTER_COUNT_CELL,
     Checks,
@@ -423,10 +425,17 @@ def use_estimated_metadata(project: QgsProject, fix: bool = False) -> List[Sourc
 
 def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool:
     """ Trust layer metadata at the project level. """
-    if not fix:
-        return project.trustLayerMetadata()
+    if qgis_version() < 32600:
+        if not fix:
+            return project.trustLayerMetadata()
 
-    project.setTrustLayerMetadata(True)
+        project.setTrustLayerMetadata(True)
+        return True
+
+    if not fix:
+        return project.flags() & Qgis.ProjectFlag.TrustStoredLayerStatistics
+
+    project.setFlag(Qgis.ProjectFlag.TrustStoredLayerStatistics, True)
     return True
 
 
