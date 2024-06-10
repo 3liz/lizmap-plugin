@@ -3361,6 +3361,10 @@ class Lizmap:
                 if self.dlg.inBingKey.text() != '':
                     bing = False
 
+                # If Lizmap Cloud, we override the check. These layers will be disarded in July
+                if lizmap_cloud:
+                    bing = google = True
+
                 if google or bing:
                     for layer in project_tos_layers(self.project, google, bing):
                         self.dlg.check_results.add_error(
