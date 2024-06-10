@@ -3346,10 +3346,21 @@ class Lizmap:
             for result in results:
                 self.dlg.check_results.add_error(result)
 
+            # TOS checks from the server
+            # These checks are only done if we find the server configuration below, starting with version 2.9.4
             tos_checks = server_metadata.get("qgis_server_info").get("external_providers_tos_checks")
             if tos_checks is not None:
+                # Server configuration, if set to True, it means an API key is required, the default behavior
                 google = tos_checks.get('google', False)
                 bing = tos_checks.get('bing', False)
+
+                # If an API key is provided, we do not report these layers
+                if self.dlg.inGoogleKey.text() != '':
+                    google = False
+
+                if self.dlg.inBingKey.text() != '':
+                    bing = False
+
                 if google or bing:
                     for layer in project_tos_layers(self.project, google, bing):
                         self.dlg.check_results.add_error(
