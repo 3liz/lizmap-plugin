@@ -25,15 +25,16 @@ def version(remove_v_prefix=True) -> str:
     return v
 
 
-def format_qgis_version(qgis_version: int) -> tuple:
+def format_qgis_version(qgis_version: int, increase_odd_number=True) -> tuple:
     """ Split a QGIS int version number into major, minor, bugfix.
 
-     If the minor version is a dev version, the next stable minor version is set.
+     If increase_odd_number is True and if the minor version is a dev version, the next stable minor version is set.
+     Useful for QGIS, where stable versions are even numbers only.
      """
     qgis_version = str(qgis_version)
     major = int(qgis_version[0])
     minor = int(qgis_version[1:3])
-    if minor % 2:
+    if minor % 2 and increase_odd_number:
         minor += 1
     bug_fix = int(qgis_version[3:])
     return major, minor, bug_fix

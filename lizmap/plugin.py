@@ -3361,10 +3361,6 @@ class Lizmap:
                 if self.dlg.inBingKey.text() != '':
                     bing = False
 
-                # If Lizmap Cloud, we override the check. These layers will be disarded in July
-                if lizmap_cloud:
-                    bing = google = True
-
                 if google or bing:
                     for layer in project_tos_layers(self.project, google, bing):
                         self.dlg.check_results.add_error(
@@ -3500,7 +3496,7 @@ class Lizmap:
                 current_version = version()
                 if current_version in DEV_VERSION_PREFIX:
                     current_version = next_git_tag()
-                min_required_version = format_qgis_version(min_required_version)
+                min_required_version = format_qgis_version(min_required_version, increase_odd_number=False)
                 min_required_version = '.'.join([str(i) for i in min_required_version])
                 if compareVersions(current_version, min_required_version) == 2:
                     self.dlg.check_results.add_error(Error(tr('Global'), checks.PluginDesktopVersion))
