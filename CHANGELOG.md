@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.3.16 - 2024-06-11
+
+* Fix wrong warning about missing API keys
+* Add Lizmap Web Client 3.9 configuration
+* Review about the training panel
+* Add link to Discourse channel
+
 ## 4.3.15 - 2024-06-05
 
 * Warn the user about outdated QGIS version 3.36
