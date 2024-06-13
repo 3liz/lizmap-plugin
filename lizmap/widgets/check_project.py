@@ -272,6 +272,7 @@ class Checks:
                 '<li>{project_properties}</li>'
                 '<li>{project_shortname}</li>'
                 '<li>{layer_shortname}</li>'
+                '<li>{group_shortname}</li>'
                 '</ul>'
             ).format(
                 project_properties=tr(
@@ -286,6 +287,10 @@ class Checks:
                     "If you need to fix the project shortname, go to the 'Project properties', "
                     "then 'QGIS Server' tab, first tab, and change the shortname."
                 ),
+                group_shortname=tr(
+                    "If you need to fix a group shortname, right-click on the group in the legend and then "
+                    "'Set Group WMS data…' and change the shortname."
+                )
             ),
             Levels.Project,
             Severities().important,
