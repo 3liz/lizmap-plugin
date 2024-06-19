@@ -165,6 +165,7 @@ class Check:
             icon: QIcon,
             alt_description_lizmap_cloud: str = None,
             alt_help_lizmap_cloud: str = None,
+            export_in_json: bool = True,
     ):
         self.data = data
         self.title = title
@@ -175,6 +176,7 @@ class Check:
         self.level = level
         self.severity = severity
         self.icon = icon
+        self.export_in_json = export_in_json
 
     def description_text(self, lizmap_cloud: bool) -> str:
         """ Return the best description of the check, depending on Lizmap Cloud. """
@@ -346,6 +348,9 @@ class Checks:
                 ),
                 downgrade=tr("Or downgrade your QGIS Desktop"),
             ),
+            # A CFG file can be moved between server, and mainly because the LWC is already checking by itself between
+            # QGIS Desktop in XML versus QGIS Server settings
+            export_in_json=False,
         )
         self.PkInt8 = Check(
             'primary_key_bigint',
@@ -1009,6 +1014,7 @@ class TableCheck(QTableWidget):
     # noinspection PyUnresolvedReferences
     DATA = Qt.UserRole
     JSON = DATA + 1
+    EXPORT = JSON + 1
 
     def setup(self):
         """ Setting up parameters. """
@@ -1069,6 +1075,8 @@ class TableCheck(QTableWidget):
         """ Export a sum up of warnings to JSON. """
         result = {}
         for row in range(self.rowCount()):
+            if not self.item(row, 1).data(self.EXPORT):
+                continue
             error_id = self.item(row, 3).data(self.JSON)
             if error_id not in result.keys():
                 result[error_id] = 1
@@ -1121,6 +1129,7 @@ class TableCheck(QTableWidget):
         item = QTableWidgetItem(error.check.level.label)
         item.setData(self.DATA, error.check.level.data)
         item.setData(self.JSON, error.check.level.data)
+        item.setData(self.EXPORT, error.check.export_in_json)
         item.setToolTip(error.check.level.tooltip)
         item.setIcon(error.check.level.icon)
         self.setItem(row, column, item)
