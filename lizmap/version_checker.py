@@ -128,7 +128,8 @@ class VersionChecker:
         template = (
             '<a href="https://github.com/3liz/lizmap-web-client/releases/tag/{tag}">'
             '{tag}   -    {date}'
-            '</a>')
+            '</a>'
+        )
 
         self.dialog.lwc_version_latest_changelog.setVisible(False)
         self.dialog.lwc_version_oldest_changelog.setVisible(False)
@@ -139,6 +140,7 @@ class VersionChecker:
         # During a few months, we can have two stable versions
         # But, we might have as well now a single one
         single_stable_version_release = True
+        self.dialog.lwc_version_feature_freeze.setVisible(False)
         for json_version in released_versions:
 
             # The is_dev flag is to raise an exception only for developers
@@ -164,12 +166,22 @@ class VersionChecker:
                 link = None
                 changelog_url = None
 
+            if status == ReleaseStatus.ReleaseCandidate:
+                template_release = (
+                    '<a href="https://github.com/3liz/lizmap-web-client/releases/">'
+                    '{tag}   -    {version}'
+                    '</a>'
+                ).format(tag=tr("Release candidate"), version=lwc_version.value)
+                self.dialog.lwc_version_feature_freeze.setText(template_release)
+                self.dialog.lwc_version_feature_freeze.setVisible(True)
+
+            text = template.format(
+                tag=json_version['latest_release_version'],
+                date=date_string,
+            )
+
             if status == ReleaseStatus.Stable:
                 if i == 0:
-                    text = template.format(
-                        tag=json_version['latest_release_version'],
-                        date=date_string,
-                    )
                     self.dialog.lwc_version_latest.setText(text)
                     self.date_newest_release_branch = qdate
                     self.newest_release_branch = json_version['latest_release_version']
@@ -188,10 +200,6 @@ class VersionChecker:
 
                 elif i == 1:
                     single_stable_version_release = False
-                    text = template.format(
-                        tag=json_version['latest_release_version'],
-                        date=date_string,
-                    )
                     self.dialog.lwc_version_oldest.setText(text)
                     self.date_oldest_release_branch = qdate
                     self.oldest_release_branche = json_version['latest_release_version']

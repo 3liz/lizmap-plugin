@@ -4,7 +4,7 @@ __email__ = 'info@3liz.org'
 
 import unittest
 
-from lizmap.definitions.definitions import LwcVersions
+from lizmap.definitions.definitions import LwcVersions, ReleaseStatus
 
 
 class TestDefinitions(unittest.TestCase):
@@ -40,3 +40,8 @@ class TestDefinitions(unittest.TestCase):
         self.assertTrue(LwcVersions.Lizmap_3_5 < LwcVersions.Lizmap_3_6)
         self.assertTrue(LwcVersions.Lizmap_3_5 <= LwcVersions.Lizmap_3_5)
         self.assertFalse(LwcVersions.Lizmap_3_5 < LwcVersions.Lizmap_3_4)
+
+    def test_release_status(self):
+        """ Test to retrieve release status. """
+        self.assertEqual(ReleaseStatus.find('feature_freeze'), ReleaseStatus.ReleaseCandidate)
+        self.assertEqual(ReleaseStatus.find('stable'), ReleaseStatus.Stable)

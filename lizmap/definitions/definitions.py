@@ -109,6 +109,9 @@ class ReleaseStatus(Enum):
     @classmethod
     def find(cls, status_string: str):
         """Return the release status from the string."""
+        if status_string == 'feature_freeze':
+            status_string = 'ReleaseCandidate'
+        status_string = status_string.lower()
         for status in cls.__members__.values():
             if str(status.value).lower() == status_string:
                 return status
