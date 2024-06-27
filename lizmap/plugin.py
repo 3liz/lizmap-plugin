@@ -3957,12 +3957,12 @@ class Lizmap:
 
                     max_version = val.get('max_version')
                     if max_version and lwc_version > max_version:
-                        LOGGER.info("Skipping key '{}' because of max_version.".format(key))
+                        # LOGGER.info("Skipping key '{}' because of max_version.".format(key))
                         continue
 
                     min_version = val.get('min_version')
                     if min_version and lwc_version < min_version:
-                        LOGGER.info("Skipping key '{}' because of min_version.".format(key))
+                        # LOGGER.info("Skipping key '{}' because of min_version.".format(key))
                         continue
 
                     if key == 'noLegendImage':

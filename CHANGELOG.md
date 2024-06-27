@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 4.3.17 - 2024-06-27
+
+* OGC validity on group - Add help about where to change it
+* CFG - Do not export old QGIS Server version in CFG file
+* UX - Display release candidate link if available in the online JSON file
+* Remove all occurrences of `zmax` and `zmin` in the source code #586
+* Fix loading of the plugin if no webdav is available fix #584
+
 ## 4.3.16 - 2024-06-11
 
 * Fix wrong warning about missing API keys
