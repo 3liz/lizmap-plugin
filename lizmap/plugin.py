@@ -2662,7 +2662,7 @@ class Lizmap:
 
     def add_osm_mapnik(self):
         """ Add the OSM mapnik base layer. """
-        source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0'
+        source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png'
         self._add_base_layer(
             source,
             'OpenStreetMap',
@@ -2671,7 +2671,7 @@ class Lizmap:
 
     def add_osm_opentopomap(self):
         """ Add the OSM OpenTopoMap base layer. """
-        source = 'type=xyz&zmin=0&zmax=18&url=https://tile.opentopomap.org/{z}/{x}/{y}.png'
+        source = 'type=xyz&url=https://tile.opentopomap.org/{z}/{x}/{y}.png'
         self._add_base_layer(
             source,
             'OpenTopoMap',

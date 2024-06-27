@@ -109,8 +109,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         hidden = lizmap._add_group_legend('hidden', project=project)
 
         # For testing, we add OSM as hidden layer
-        hidden_raster = QgsRasterLayer(
-            "type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png&zmax=19&zmin=0", "OSM", 'wms')
+        hidden_raster = QgsRasterLayer("type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png", "OSM", 'wms')
         project.addMapLayer(hidden_raster, False)
         hidden.addLayer(hidden_raster)
 
