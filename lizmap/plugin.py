@@ -1172,8 +1172,6 @@ class Lizmap:
         """ Check if we can enable or the webdav, according to the current selected server. """
         # I hope temporary, to force the version displayed
         self.dlg.refresh_helper_target_version(self.current_lwc_version())
-        self.webdav.config_project()
-        # LOGGER.critical(type(self.webdav))
 
         def disable_upload_panel():
             self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(True)
@@ -1194,6 +1192,8 @@ class Lizmap:
             disable_upload_panel()
             # LOGGER.critical("RETURN 1")
             return
+
+        self.webdav.config_project()
 
         # The dialog is already given.
         # We can check if WebDAV is supported.
