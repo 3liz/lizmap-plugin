@@ -278,7 +278,7 @@ class ServerManager:
         """ Check if the given LWC version is at least in the table. """
         for row in range(self.table.rowCount()):
             lwc_version = self.table.item(row, TableCell.LizmapVersion.value).data(Qt.DisplayRole)
-            if lwc_version.startswith(version_check):
+            if lwc_version and lwc_version.startswith(version_check):
                 return True
 
         return False
