@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 4.3.18 - 2024-07-01
+
+* Check first if the value was found about LWC version in the table fix #588
+* Fix how to parse a version as a string
+* Restore previous folder used from the QGS file
+* Training project - Make the project more unique using the username
+* Show unknown file size if equal to -1, for instance AVIF
+
 ## 4.3.17 - 2024-06-27
 
 * OGC validity on group - Add help about where to change it
