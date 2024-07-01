@@ -1004,6 +1004,7 @@ class Lizmap:
 
     @staticmethod
     def current_login() -> str:
+        """ Current login on the OS. """
         try:
             return os.getlogin()
         except OSError:
@@ -5097,7 +5098,12 @@ class Lizmap:
 
         cfg_file = file_path.joinpath(TRAINING_PROJECT + ".cfg")
         if cfg_file.exists():
+            # Never apply a CFG downloaded from the internet if it's present in the ZIP by mistake
             cfg_file.unlink()
+
+        # Make the project more unique
+        qgs_file = file_path.joinpath(TRAINING_PROJECT)
+        qgs_file.rename(Path(qgs_file.parent, qgs_file.stem + "_" + self.destination_name() + qgs_file.suffix))
 
         self.dlg.display_message_bar(
             CLOUD_NAME,
@@ -5105,12 +5111,8 @@ class Lizmap:
             level=Qgis.Success
         )
 
-    def training_folder_destination(self) -> Optional[Path]:
-        """ Destination folder where to store the data. """
-        file_path = self.dlg.path_training_folder.filePath()
-        if not file_path:
-            return
-
+    def destination_name(self) -> str:
+        """ Return the destination cleaned name. """
         destination = self.dlg.name_training_folder.text()
         if not destination:
             destination = self.dlg.name_training_folder.placeholderText()
@@ -5120,6 +5122,16 @@ class Lizmap:
         destination = destination.replace(' ', '_')
         destination = destination.replace("'", '_')
         destination = destination.lower()
+        return destination
+
+    def training_folder_destination(self) -> Optional[Path]:
+        """ Destination folder where to store the data. """
+        file_path = self.dlg.path_training_folder.filePath()
+        if not file_path:
+            return
+
+        destination = self.destination_name()
+
         output = Path(file_path).joinpath(destination)
 
         QgsSettings().setValue(Settings.key(Settings.LizmapRepository), destination)
