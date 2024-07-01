@@ -1058,11 +1058,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
             thumbnail = self.thumbnail_file()
             if thumbnail:
                 image_size = QImageReader(str(thumbnail)).size()
+                if image_size.width() > 0 and image_size.height() > 0:
+                    image_size = f"{image_size.width()}x{image_size.height()}px"
+                else:
+                    # Qt can not read image size for AVIF format
+                    # See https://github.com/novomesk/qt-avif-image-plugin
+                    image_size = tr("unknown size")
                 self.label_project_thumbnail.setText(
-                    tr("Thumbnail <a href=\"file://{}\">detected</a>, {}x{}px, {}").format(
+                    tr("Thumbnail <a href=\"file://{}\">detected</a>, {}, {}").format(
                         thumbnail.parent,
-                        image_size.width(),
-                        image_size.height(),
+                        image_size,
                         human_size(thumbnail.stat().st_size))
                 )
 
