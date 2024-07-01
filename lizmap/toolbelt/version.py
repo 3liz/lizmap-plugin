@@ -4,6 +4,8 @@ __copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
+from typing import Union
+
 from qgis.core import Qgis
 
 from lizmap.toolbelt.resources import metadata_config
@@ -25,18 +27,26 @@ def version(remove_v_prefix=True) -> str:
     return v
 
 
-def format_qgis_version(qgis_version: int, increase_odd_number=True) -> tuple:
+def format_qgis_version(input_version: Union[int, str], increase_odd_number=True) -> tuple:
     """ Split a QGIS int version number into major, minor, bugfix.
 
      If increase_odd_number is True and if the minor version is a dev version, the next stable minor version is set.
      Useful for QGIS, where stable versions are even numbers only.
      """
-    qgis_version = str(qgis_version)
-    major = int(qgis_version[0])
-    minor = int(qgis_version[1:3])
+    if isinstance(input_version, str) and '.' in input_version:
+        input_version = format_version_integer(input_version)
+
+    input_version = str(input_version)
+
+    bug_fix = int(input_version[-2:])
+    input_version = input_version[:-2]
+
+    minor = int(input_version[-2:])
     if minor % 2 and increase_odd_number:
         minor += 1
-    bug_fix = int(qgis_version[3:])
+
+    major = int(input_version[:-2])
+
     return major, minor, bug_fix
 
 

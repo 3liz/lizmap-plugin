@@ -30,13 +30,25 @@ class TestTools(unittest.TestCase):
 
     def test_format_qgis_version(self):
         """ Test to get a correct QGIS version number. """
-        self.assertTupleEqual((3, 12, 0), format_qgis_version(31100))
+        # Normal
         self.assertTupleEqual((3, 10, 0), format_qgis_version(31000))
+
+        # Increment to stable version
+
+        self.assertTupleEqual((3, 12, 0), format_qgis_version(31100))
+
+        # Zero in the middle
         self.assertTupleEqual((3, 4, 10), format_qgis_version(30410))
+        self.assertTupleEqual((4, 3, 14), format_qgis_version(40314, increase_odd_number=False))
+
+        # As string, with long numbers
+        self.assertTupleEqual((10, 11, 10), format_qgis_version("10.11.10", increase_odd_number=False))
+        self.assertTupleEqual((10, 12, 10), format_qgis_version("10.11.10", increase_odd_number=True))
 
     def test_format_version_int(self):
         """ Test to transform string version to int version. """
         self.assertEqual("000102", format_version_integer("0.1.2"))
+        self.assertEqual("040314", format_version_integer("4.3.14"))
         self.assertEqual("100912", format_version_integer("10.9.12"))
         self.assertEqual("030708", format_version_integer("3.7.8-alpha"))
         self.assertEqual("000000", format_version_integer("master"))
