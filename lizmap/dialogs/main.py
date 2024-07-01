@@ -784,6 +784,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
         # Be careful of recursion call
         self.button_check_capabilities.click()
 
+        self.default_lizmap_folder()
+
+    def default_lizmap_folder(self):
+        """ Make the default value for folder combobox. """
         if self.repository_combo.count() >= 1:
             # At least, make one selected
             self.repository_combo.setCurrentIndex(0)

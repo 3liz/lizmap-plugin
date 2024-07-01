@@ -1972,16 +1972,14 @@ class Lizmap:
         # Fill base-layer startup
         self.on_baselayer_checkbox_change()
         self.set_startup_baselayer_from_config()
+        self.dlg.default_lizmap_folder()
 
         # The return is used in tests
         return data
 
-    def get_qgis_layer_by_id(self, my_id) -> Optional[QgsMapLayer]:
-        """Get a QgsLayer by its ID"""
-        for layer in self.project.mapLayers().values():
-            if my_id == layer.id():
-                return layer
-        return None
+    def get_qgis_layer_by_id(self, my_id: str) -> Optional[QgsMapLayer]:
+        """ Get a QgsMapLayer by its ID. """
+        return self.project.mapLayers().get(my_id, None)
 
     def set_initial_extent_from_project(self):
         """ Set extent from QGIS server properties with the WMS advertised extent. """
