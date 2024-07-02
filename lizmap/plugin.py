@@ -1254,9 +1254,10 @@ class Lizmap:
         self.help_action.triggered.connect(self.show_help_cloud)
 
         # connect Lizmap signals and functions
+
         self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
-        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.save_cfg_file_cursor)
-        self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.ok_button_clicked)
+        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(partial(self.save_cfg_file_cursor, False))
+        self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(partial(self.save_cfg_file_cursor, True))
         self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help_question)
 
         # Connect the left menu to the right panel
@@ -3030,7 +3031,10 @@ class Lizmap:
         with open(json_file, 'w', encoding='utf8') as cfg_file:
             cfg_file.write(json_file_content)
 
-        LOGGER.info('The Lizmap configuration file has been written to "{}"'.format(json_file))
+        LOGGER.info(
+            'The Lizmap configuration file has been written to <a href="file://{path}">"{path}"</a>'.format(
+                path=json_file.absolute(),
+            ))
         self.clean_project()
         return True
 
@@ -4277,15 +4281,7 @@ class Lizmap:
 
         return True, ''
 
-    def ok_button_clicked(self):
-        """When the OK button is press, we 'apply' and close the dialog."""
-        if not self.save_cfg_file_cursor():
-            return
-
-        # Only close the dialog if no error
-        self.dlg.close()
-
-    def save_cfg_file_cursor(self) -> bool:
+    def save_cfg_file_cursor(self, close_dialog: bool):
         """ Save CFG file with a waiting cursor. """
         if not self.dlg.check_cfg_file_exists():
             new_project = NewConfigDialog()
@@ -4295,13 +4291,59 @@ class Lizmap:
             result = self.save_cfg_file()
 
         if not result:
-            return result
+            # Generation failed, error message without closing the dialog
+            # noinspection PyUnresolvedReferences
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr('An error occurred while generating the projet, please check logs'),
+                level=Qgis.Critical,
+                duration=DURATION_SUCCESS_BAR,
+            )
+            return
 
+        # Generation is OK
+        auto_send = None
+        url = None
         upload_is_visible = not self.dlg.mOptionsListWidget.item(Panels.Upload).isHidden()
         if upload_is_visible and self.dlg.send_webdav.isChecked():
-            return self.send_files()
+            # Send files if necessary
+            auto_send, url = self.send_files()
 
-        return result
+        if close_dialog:
+            # First close the dialog
+            # The method if the dialog will check which message bar is appropriate according to visibility
+            self.dlg.close()
+
+        if auto_send is None:
+            # noinspection PyUnresolvedReferences
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr(
+                    'The project has been generated in <a href="file://{path}">"{path}"</a>'
+                ).format(
+                    path=self.dlg.cfg_file().parent.absolute(),
+                ),
+                level=Qgis.Success,
+                duration=DURATION_SUCCESS_BAR,
+            )
+            return
+
+        if auto_send:
+            # noinspection PyUnresolvedReferences
+            self.dlg.display_message_bar(
+                'Lizmap',
+                tr('Project <a href="{}">published !</a>'.format(url)),
+                level=Qgis.Success,
+                duration=DURATION_SUCCESS_BAR,
+            )
+            return
+
+        self.dlg.display_message_bar(
+            'Lizmap',
+            tr('Project file generated, but the upload has failed'),
+            level=Qgis.Warning,
+            duration=DURATION_SUCCESS_BAR,
+        )
 
     def save_cfg_file(
             self,
@@ -4475,23 +4517,14 @@ class Lizmap:
 
         return True
 
-    def send_files(self):
+    def send_files(self) -> Tuple[bool, str]:
         """ Send both files to the server, designed for UI interaction.
 
         With a waiting cursor and sending messages to the message bar.
         """
         with OverrideCursor(Qt.WaitCursor):
             result, _, url = self.send_webdav()
-
-        if result:
-            # noinspection PyUnresolvedReferences
-            self.dlg.display_message_bar(
-                'Lizmap',
-                tr('Project <a href="{}">published !</a>'.format(url)),
-                level=Qgis.Success,
-                duration=DURATION_SUCCESS_BAR,
-            )
-        return True
+        return result, url
 
     def create_new_repository(self):
         """ Open wizard to create a new remote repository. """

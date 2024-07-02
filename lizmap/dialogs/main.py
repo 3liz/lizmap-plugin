@@ -854,7 +854,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if self.isVisible():
             self.message_bar.pushWidget(widget, level, duration)
         else:
-            self.iface.messageBar().pushWidget(widget, level, duration)
+            iface.messageBar().pushWidget(widget, level, duration)
 
     def setup_icons(self):
         """ Setup icons in the left menu. """
