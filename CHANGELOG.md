@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 4.3.19 - 2024-07-02
+
+* Fix a Python error when the dialog is hidden to display the message bar
+* Add again the message bar about the project file generation
+* Skip some layers if needed from the duplicated layer next to each other check
+
 ## 4.3.18 - 2024-07-01
 
 * Check first if the value was found about LWC version in the table fix #588
