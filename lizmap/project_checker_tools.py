@@ -325,6 +325,9 @@ def _recursive_duplicated_layer_with_filter_legend(
         if QgsLayerTree.isLayer(child):
             child = cast_to_layer(child)
             layer = project.mapLayer(child.layerId())
+            if layer.customProperty("lizmap-plugin-skip-duplicated-layer") == "yes":
+                # Layers from the Cadastre plugin
+                continue
 
             # Split base uri and filter
             base_uri, uri_filter = _split_layer_uri(layer.dataProvider().name(), layer.source())
