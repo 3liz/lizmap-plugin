@@ -5,8 +5,6 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 
-from typing import Tuple
-
 from qgis.core import Qgis, QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
 
@@ -20,6 +18,9 @@ from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.news import NewVersionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder
+
+# from typing import Tuple
+
 
 LOGGER = logging.getLogger('Lizmap')
 DAYS_BEING_OUTDATED = 90
@@ -37,7 +38,8 @@ class VersionChecker:
         self.date_newest_release_branch = None
         self.oldest_release_branche = None
         self.newest_release_branch = None
-        self.outdated = []
+        self.retired_versions = []
+        self.security_bugfix_only = []
         self.is_dev = is_dev
 
     def fetch(self):
@@ -72,22 +74,6 @@ class VersionChecker:
             output.write(content)
 
     @classmethod
-    def version_status(cls, status: str) -> Tuple[ReleaseStatus, str]:
-        """ Return the release status according to the JSON content. """
-        if status == 'dev':
-            flag = ReleaseStatus.Dev
-        elif status == 'feature_freeze':
-            flag = ReleaseStatus.ReleaseCandidate
-        elif status == 'stable':
-            flag = ReleaseStatus.Stable
-        elif status == 'retired':
-            flag = ReleaseStatus.Retired
-        else:
-            flag = ReleaseStatus.Unknown
-
-        return flag, cls.status_display_string(flag)
-
-    @classmethod
     def status_display_string(cls, status: ReleaseStatus) -> str:
         """ Return a human display string status. """
         if status == ReleaseStatus.Dev:
@@ -96,10 +82,12 @@ class VersionChecker:
             return tr('Feature freeze')
         elif status == ReleaseStatus.Stable:
             return tr('Stable')
+        elif status == ReleaseStatus.SecurityBugfixOnly:
+            return tr('Security bugfix only')
         elif status == ReleaseStatus.Retired:
             return tr('Not maintained')
         elif status is None or status == ReleaseStatus.Unknown:
-            return tr('Inconnu')
+            return tr('Unknown')
         else:
             raise Exception('Unknown status type : {}'.format(status))
 
@@ -120,7 +108,8 @@ class VersionChecker:
                 if lwc_version != version:
                     continue
 
-                flag, suffix = self.version_status(json_version.get('status'))
+                flag = LwcVersions.find(json_version.get('status'))
+                # suffix = self.status_display_string(flag)
                 self.dialog.server_combo.setItemData(index, flag, ServerComboData.LwcBranchStatus.value)
 
     def update_lwc_releases(self, released_versions: dict):
@@ -147,10 +136,10 @@ class VersionChecker:
             # if the Python source code is missing a version
             lwc_version = LwcVersions.find(json_version['branch'], self.is_dev)
 
-            qdate = QDate.fromString(
+            q_date = QDate.fromString(
                 json_version['latest_release_date'],
                 "yyyy-MM-dd")
-            date_string = qdate.toString(QLocale().dateFormat(QLocale.ShortFormat))
+            date_string = q_date.toString(QLocale().dateFormat(QLocale.ShortFormat))
             status = ReleaseStatus.find(json_version['status'])
 
             changelog = json_version.get('changelog')
@@ -183,7 +172,7 @@ class VersionChecker:
             if status == ReleaseStatus.Stable:
                 if i == 0:
                     self.dialog.lwc_version_latest.setText(text)
-                    self.date_newest_release_branch = qdate
+                    self.date_newest_release_branch = q_date
                     self.newest_release_branch = json_version['latest_release_version']
 
                     if link:
@@ -201,7 +190,7 @@ class VersionChecker:
                 elif i == 1:
                     single_stable_version_release = False
                     self.dialog.lwc_version_oldest.setText(text)
-                    self.date_oldest_release_branch = qdate
+                    self.date_oldest_release_branch = q_date
                     self.oldest_release_branche = json_version['latest_release_version']
 
                     if link:
@@ -210,8 +199,11 @@ class VersionChecker:
 
                 i += 1
             elif status == ReleaseStatus.Retired:
-                if qdate.daysTo(QDate.currentDate()) > DAYS_BEING_OUTDATED:
-                    self.outdated.append(lwc_version)
+                if q_date.daysTo(QDate.currentDate()) > DAYS_BEING_OUTDATED:
+                    self.retired_versions.append(lwc_version)
+            elif status == ReleaseStatus.SecurityBugfixOnly:
+                if q_date.daysTo(QDate.currentDate()) > DAYS_BEING_OUTDATED:
+                    self.security_bugfix_only.append(lwc_version)
 
         if single_stable_version_release:
             # We have only one single branch maintained, hide the oldest one.
@@ -220,7 +212,7 @@ class VersionChecker:
 
     def check_outdated_version(self, lwc_version: LwcVersions, with_gui: True):
         """ Display a warning about outdated LWC version. """
-        if lwc_version not in self.outdated:
+        if lwc_version not in self.retired_versions:
             return
 
         if with_gui:

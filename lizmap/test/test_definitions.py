@@ -45,3 +45,4 @@ class TestDefinitions(unittest.TestCase):
         """ Test to retrieve release status. """
         self.assertEqual(ReleaseStatus.find('feature_freeze'), ReleaseStatus.ReleaseCandidate)
         self.assertEqual(ReleaseStatus.find('stable'), ReleaseStatus.Stable)
+        self.assertEqual(ReleaseStatus.find('security_bugfix_only'), ReleaseStatus.SecurityBugfixOnly)
