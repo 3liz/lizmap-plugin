@@ -262,6 +262,7 @@ class Checks:
         )
         either_move_file = tr('Either move the file used for the layer')
         move_file = tr('Move the file used for the layer')
+        sql_example = "SELECT (row_number() OVER ())::integer AS id"
 
         self.OgcValid = Check(
             'ogc_validity',
@@ -362,12 +363,14 @@ class Checks:
             (
                 '<ul>'
                 '<li>{help}</li>'
+                '<li>{sql}</li>'
                 '</ul>'
             ).format(
                 help=tr(
                     "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
                     "an integer8."
                 ),
+                sql=tr("For PostgreSQL, it's possible to cast a view with : ") + sql_example,
             ),
             Levels.Layer,
             Severities().important,
@@ -383,12 +386,14 @@ class Checks:
             (
                 '<ul>'
                 '<li>{help}</li>'
+                '<li>{sql}</li>'
                 '</ul>'
             ).format(
                 help=tr(
                     "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
                     "an integer8."
                 ),
+                sql=tr("For PostgreSQL, it's possible to cast a view with : ") + sql_example,
             ),
             Levels.Layer,
             Severities().important,
