@@ -795,21 +795,32 @@ QListWidget::item::selected {
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
                   <item>
-                   <widget class="QCheckBox" name="cbHideProject">
-                    <property name="text">
-                     <string>Hide project in Lizmap Web Client</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="checkbox_wms_single_request_all_layers">
-                    <property name="toolTip">
-                     <string>All the map layers will be loaded as a single WMS image</string>
-                    </property>
-                    <property name="text">
-                     <string>Load layers as single WMS layer</string>
-                    </property>
-                   </widget>
+                   <layout class="QGridLayout" name="gridLayout_12">
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbHideProject">
+                      <property name="text">
+                       <string>Hide project in Lizmap Web Client</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="checkbox_wms_single_request_all_layers">
+                      <property name="toolTip">
+                       <string>All the map layers will be loaded as a single WMS image</string>
+                      </property>
+                      <property name="text">
+                       <string>Load layers as single WMS layer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="automatic_permalink">
+                      <property name="text">
+                       <string>Enable automatic permalink</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
@@ -5399,6 +5410,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>server_combo</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbHideProject</tabstop>
+  <tabstop>automatic_permalink</tabstop>
   <tabstop>checkbox_wms_single_request_all_layers</tabstop>
   <tabstop>inAcl</tabstop>
   <tabstop>button_wizard_group_visibility_project</tabstop>

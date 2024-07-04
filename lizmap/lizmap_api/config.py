@@ -202,8 +202,15 @@ class LizmapConfig:
             'hideProject': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
+            'automatic_permalink': {
+                'wType': 'checkbox',
+                'type': 'boolean',
+                'default': True,
+                'use_proper_boolean': True,
+                'always_export': True,
+            },
             'wms_single_request_for_all_layers': {
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
+                'wType': 'checkbox', 'type': 'boolean', 'default': False, 'use_proper_boolean': True,
             },
             'tmTimeFrameSize': {
                 'wType': 'spinbox', 'type': 'integer', 'default': 10

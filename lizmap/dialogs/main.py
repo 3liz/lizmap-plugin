@@ -208,6 +208,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_link.setToolTip(tooltip)
         self.inLayerLink.setToolTip(tooltip)
 
+        self.automatic_permalink.setToolTip(tr(
+            "On every pan, zoom, toggle of a layer, the permalink can be automatically updated in the URL."))
+
         self.use_native_scales.setToolTip(tr(
             "It's recommended, for instance on EPSG:3857, text on an external tile will have a better rendering."
         ))
