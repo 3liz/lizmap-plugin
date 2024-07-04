@@ -853,7 +853,7 @@ class ServerManager:
 
         level, messages, qgis_valid = self._messages_for_version(
             lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error,
-            lizmap_cloud=lizmap_cloud)
+            lizmap_cloud=lizmap_cloud, is_dev=self.parent.is_dev_version)
         if isinstance(qgis_valid, bool) and not qgis_valid:
             self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.UserRole + 1)
             self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
@@ -866,6 +866,7 @@ class ServerManager:
             qgis_desktop: Tuple[int, int],
             error: str = '',
             lizmap_cloud: bool = False,
+            is_dev: bool = False,
     ) -> Tuple[Qgis.MessageLevel, List[str], bool]:
         """Returns the list of messages and the color to use.
 
@@ -939,7 +940,10 @@ class ServerManager:
 
                 if bugfix > latest_bugfix:
                     # Congratulations :)
-                    messages.append(tr('Higher than a public release') + ' 👍')
+                    if lizmap_cloud and not is_dev:
+                        messages.append('👍')
+                    else:
+                        messages.append(tr('Higher than a public release') + ' 👍')
                     level = Qgis.Success
 
                 elif bugfix < latest_bugfix or is_pre_package:
