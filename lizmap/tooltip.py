@@ -141,7 +141,13 @@ class Tooltip:
 
         if isinstance(node, QgsAttributeEditorRelation):
             relation = node.relation()
-            a += Tooltip._generate_attribute_editor_relation(node.label(), relation.id(), relation.referencingLayerId())
+            if relation:
+                a += Tooltip._generate_attribute_editor_relation(node.label(), relation.id(), relation.referencingLayerId())
+            else:
+                # Ticket https://github.com/3liz/qgis-lizmap-server-plugin/issues/82
+                LOGGER.warning(
+                    f"The node '{node.name()}::{node.label()}' cannot be processed for the tooltip "
+                    f"because the relation has not been found.")
 
         if isinstance(node, QgsAttributeEditorContainer):
 
