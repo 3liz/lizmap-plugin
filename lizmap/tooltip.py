@@ -142,7 +142,8 @@ class Tooltip:
         if isinstance(node, QgsAttributeEditorRelation):
             relation = node.relation()
             if relation:
-                a += Tooltip._generate_attribute_editor_relation(node.label(), relation.id(), relation.referencingLayerId())
+                a += Tooltip._generate_attribute_editor_relation(
+                    node.label(), relation.id(), relation.referencingLayerId())
             else:
                 # Ticket https://github.com/3liz/qgis-lizmap-server-plugin/issues/82
                 LOGGER.warning(
