@@ -495,6 +495,10 @@ def duplicated_rule_key_legend(project: QgsProject, filter_data: bool = True) ->
             continue
 
         renderer = layer.renderer()
+        if not renderer:
+            # https://github.com/3liz/lizmap-plugin/issues/591
+            # A vector layer can be spatial but having symbology disabled
+            continue
 
         results[layer.id()] = {}
 
