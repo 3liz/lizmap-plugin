@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 4.3.20 - 2024-08-02
+
+* New option to disable the permalink automatically. Latest releases of Lizmap Web Client are needed
+* UX - Add SQL cast example in the tooltip for invalid PK
+* Do not display `-pre` packages for some customers
+* Add log if the relation was not found when generating the tooltip
+* Fix vector layer not having a renderer for checking duplicated rules
+
 ## 4.3.19 - 2024-07-02
 
 * Fix a Python error when the dialog is hidden to display the message bar
