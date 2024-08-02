@@ -461,6 +461,8 @@ class Lizmap:
         self.lwc_versions[LwcVersions.Lizmap_3_8] = [
             # Single WMS
             self.dlg.checkbox_wms_single_request_all_layers,
+            # Permalink, will be backported to 3.7, but wait a little before adding it to the 3.7 list
+            self.dlg.automatic_permalink,
         ]
 
         self.lizmap_cloud = [
@@ -511,6 +513,7 @@ class Lizmap:
         self.global_options['hideOverview']['widget'] = self.dlg.cbHideOverview
         self.global_options['hideNavbar']['widget'] = self.dlg.cbHideNavbar
         self.global_options['hideProject']['widget'] = self.dlg.cbHideProject
+        self.global_options['automatic_permalink']['widget'] = self.dlg.automatic_permalink
         self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.checkbox_wms_single_request_all_layers
         self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
         self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
@@ -3776,6 +3779,8 @@ class Lizmap:
                 liz2json["options"]['maxScale'] = self.maximum_scale_value()
             if key == 'use_native_zoom_levels':
                 liz2json["options"]['use_native_zoom_levels'] = self.dlg.use_native_scales.isChecked()
+            if key == 'automatic_permalink':
+                liz2json["options"]['automatic_permalink'] = self.dlg.automatic_permalink.isChecked()
 
         for key in self.layers_table.keys():
             manager = self.layers_table[key].get('manager')
