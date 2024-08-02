@@ -97,6 +97,7 @@ PLAUSIBLE_URL_TEST = "https://plausible.snap.3liz.net/api/event"
 class ReleaseStatus(Enum):
     Unknown = 'Unknown'
     Retired = 'Retired'
+    SecurityBugfixOnly = 'SecurityBugfixOnly'
     Stable = 'Stable'
     ReleaseCandidate = 'ReleaseCandidate'
     Dev = 'Dev'
@@ -111,6 +112,7 @@ class ReleaseStatus(Enum):
         """Return the release status from the string."""
         if status_string == 'feature_freeze':
             status_string = 'ReleaseCandidate'
+        status_string = status_string.replace("_", "")
         status_string = status_string.lower()
         for status in cls.__members__.values():
             if str(status.value).lower() == status_string:
