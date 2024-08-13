@@ -79,7 +79,7 @@ class Tooltip:
             if node.idx() < 0:
                 # The form might have been imported from QML with some not existing fields
                 LOGGER.warning(
-                    'Layer {} does not have a valid editor field'.format(layer.id()))
+                    f'Layer {layer.id()} does not have a valid editor field')
                 return html
 
             field = layer.fields()[node.idx()]
@@ -167,7 +167,7 @@ class Tooltip:
                     regex.sub('_', node.name()), active)
 
                 if visibility and active:
-                    active = '{} {}'.format(active, visibility)
+                    active = f'{active} {visibility}'
                 if visibility and not active:
                     active = visibility
                 h += '\n' + SPACES
@@ -177,8 +177,8 @@ class Tooltip:
                 headers.append(h)
 
             if lvl > 1:
-                a += '\n' + SPACES * lvl + '<fieldset class="{}">'.format(visibility)
-                a += '\n' + SPACES * lvl + '<legend>{}</legend>'.format(node.name())
+                a += '\n' + SPACES * lvl + f'<fieldset class="{visibility}">'
+                a += '\n' + SPACES * lvl + f'<legend>{node.name()}</legend>'
                 a += '\n' + SPACES * lvl + '<div>'
 
             # In case of root children
@@ -238,7 +238,7 @@ class Tooltip:
     @staticmethod
     def _generate_attribute_editor_relation(label: str, relation_id: str, referencing_layer_id: str) -> str:
         """ Generate the div. LWC will manage to include children in the given div."""
-        result = '\n' + SPACES + '<p><b>{}</b></p>'.format(label)
+        result = '\n' + SPACES + f'<p><b>{label}</b></p>'
         result += '\n' + SPACES
         result += (
             '<div id="popup_relation_{0}" data-relation-id="{0}" data-referencing-layer-id="{1}" '
@@ -254,9 +254,9 @@ class Tooltip:
         layer_id: str,
         display_expression: str,
     ) -> str:
-        expression = '''
-                    "{}" = attribute(@parent, '{}')
-                '''.format(parent_pk, name)
+        expression = f'''
+                    "{parent_pk}" = attribute(@parent, '{name}')
+                '''
 
         field_view = '''
                     aggregate(
@@ -315,11 +315,11 @@ class Tooltip:
 
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
-        field_view = '''
+        field_view = f'''
                     map_get(
-                        hstore_to_map('{}'),
-                        replace("{}", '\\'', '’')
-                    )'''.format(hstore, name)
+                        hstore_to_map('{hstore}'),
+                        replace("{name}", '\\'', '’')
+                    )'''
         return field_view
 
     @staticmethod
@@ -379,21 +379,18 @@ class Tooltip:
             # Fallback to ISO 8601, when the widget has not been configured yet
             date_format = "yyyy-MM-dd"
 
-        field_view = '''
+        field_view = f'''
                     format_date(
-                        "{}",
-                        '{}'
-                    )'''.format(name, date_format)
+                        "{name}",
+                        '{date_format}'
+                    )'''
         return field_view
 
     @staticmethod
     def _generate_value_relation(widget_config: dict, name: str) -> str:
         vlid = widget_config['Layer']
 
-        expression = '''"{}" = attribute(@parent, '{}')'''.format(
-            widget_config['Key'],
-            name,
-        )
+        expression = f'''"{widget_config['Key']}" = attribute(@parent, '{name}')'''
 
         filter_exp = widget_config.get('FilterExpression', '').strip()
         if filter_exp:
@@ -401,7 +398,7 @@ class Tooltip:
             filter_exp = filter_exp.replace('@current_geometry', 'geometry(@parent)')
             # replace current_value( only available in form by attribute(@parent, for aggregate
             filter_exp = filter_exp.replace('current_value(', 'attribute(@parent, ')
-            expression += ' AND {}'.format(filter_exp)
+            expression += f' AND {filter_exp}'
 
         field_view = '''
                     aggregate(
@@ -418,14 +415,11 @@ class Tooltip:
 
     @staticmethod
     def _generate_text_label(label: str, expression: str) -> str:
-        text = '''
-                    <p><strong>{0}</strong>
-                    <div class="field">{1}</div>
+        text = f'''
+                    <p><strong>{label}</strong>
+                    <div class="field">{expression}</div>
                     </p>
-                    '''.format(
-            label,
-            expression,
-        )
+                    '''
         return text
 
     @staticmethod
