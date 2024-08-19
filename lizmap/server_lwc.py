@@ -10,7 +10,7 @@ import time
 from enum import Enum
 from functools import partial
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -82,6 +82,14 @@ class Color(Enum):
 
 
 MAX_DAYS = 7
+
+
+def is_numeric(v: Union[str, int]) -> bool:
+    try:
+        int(v)
+        return True
+    except ValueError:
+        return False
 
 
 class ServerManager:
@@ -913,7 +921,13 @@ class ServerManager:
                 # But the online JSON public release might have nothing (because no public tag has been made)
                 latest_release_version = json_version.get('latest_release_version')
                 if latest_release_version:
-                    latest_bugfix = int(latest_release_version.split('.')[2])
+                    bugfix = latest_release_version.split('.')[2]
+                    if is_numeric(bugfix):
+                        latest_bugfix = int(bugfix)
+                    else:
+                        # It will be a string :(
+                        # Like 0-rc.4
+                        latest_bugfix = bugfix
                 else:
                     # So let's assume it's 0
                     latest_bugfix = 0
@@ -925,10 +939,14 @@ class ServerManager:
                 # Upgrade because the branch is not maintained anymore
                 messages.append(tr('Version {version} not maintained anymore').format(version=branch))
                 level = Qgis.Critical
+            elif status == ReleaseStatus.SecurityBugfixOnly:
+                # Upgrade because the branch is not maintained anymore
+                messages.append(tr('Version {version} not maintained anymore, only for security bugfix only').format(version=branch))
 
             # Remember a version can be 3.4.2-pre
+            # Or 3.8.0-rc.4
             items_bugfix = split_version[2].split('-')
-            is_pre_package = len(items_bugfix) > 1
+            is_pre_package = len(items_bugfix) > 1 and len(split_version) == 3
             bugfix = int(items_bugfix[0])
 
             if json_version['latest_release_version'] != full_version or is_pre_package:
@@ -938,7 +956,19 @@ class ServerManager:
                     # We continue
                     # return level, messages
 
-                if bugfix > latest_bugfix:
+                if not is_numeric(latest_bugfix):
+                    from pyplugin_installer.version_compare import (
+                        compareVersions,
+                    )
+                    if compareVersions(lizmap_version, json_version['latest_release_version']) == 2:
+                        # Like comparing 3.8.0-rc.4 and 3.8.0-rc.3
+                        messages.append(
+                            tr(
+                                'Not latest bugfix release, {version} is available'
+                            ).format(version=json_version['latest_release_version']))
+                        level = Qgis.Warning
+
+                if is_numeric(latest_bugfix) and bugfix > latest_bugfix:
                     # Congratulations :)
                     if lizmap_cloud and not is_dev:
                         messages.append('👍')
@@ -946,7 +976,7 @@ class ServerManager:
                         messages.append(tr('Higher than a public release') + ' 👍')
                     level = Qgis.Success
 
-                elif bugfix < latest_bugfix or is_pre_package:
+                elif is_numeric(latest_bugfix) and bugfix < latest_bugfix or is_pre_package:
                     # The user is not running the latest bugfix release on the maintained branch
 
                     if bugfix + 2 < latest_bugfix:
@@ -958,7 +988,7 @@ class ServerManager:
                         # People upgrading to a major version but keeping a .0 version have skills to upgrade to
                         # a .1 version
                         messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
-                    elif bugfix != 0 and status in (ReleaseStatus.Stable, ReleaseStatus.Retired):
+                    elif bugfix != 0 and status in (ReleaseStatus.ReleaseCandidate, ReleaseStatus.Stable, ReleaseStatus.SecurityBugfixOnly, ReleaseStatus.Retired):
                         # Even if the branch is retired, we encourage people upgrading to the latest
                         messages.append(
                             tr(

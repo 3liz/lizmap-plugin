@@ -4,7 +4,7 @@ __email__ = 'info@3liz.org'
 
 import unittest
 
-from pyplugin_installer.version_compare import compareVersions
+from pyplugin_installer.version_compare import chopString, compareVersions
 
 """ For testing the core PyPlugin installer 'API'.
 
@@ -26,3 +26,10 @@ class TestPyPluginInstaller(unittest.TestCase):
         # Ok, weird
         self.assertEqual(1, compareVersions("master", "1.0.0"))
         self.assertEqual(2, compareVersions("1.0.0", "master"))
+
+    def test_chop_strings(self):
+        """ Test chop strings. """
+        self.assertListEqual(['1', '0', '0'], chopString("1.0.0"))
+        self.assertListEqual(['1', '0', '0', 'pre'], chopString("1.0.0-pre"))
+        self.assertListEqual(['1', '0', '0', 'rc', '4'], chopString("1.0.0-rc.4"))
+        self.assertListEqual(['1', '0', '0', 'rc', '4', '1'], chopString("1.0.0-rc.4.1"))

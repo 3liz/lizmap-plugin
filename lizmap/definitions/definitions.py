@@ -97,6 +97,7 @@ PLAUSIBLE_URL_TEST = "https://plausible.snap.3liz.net/api/event"
 class ReleaseStatus(Enum):
     Unknown = 'Unknown'
     Retired = 'Retired'
+    SecurityBugfixOnly = 'security_bugfix_only'
     Stable = 'Stable'
     ReleaseCandidate = 'ReleaseCandidate'
     Dev = 'Dev'

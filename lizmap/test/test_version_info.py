@@ -21,6 +21,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2"), (3, 5, 2))
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre"), (3, 5, 2, 'pre'))
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, 'pre', 5204))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.8.0-rc.4"), (3, 8, 0, 'rc', 4))
 
     def test_version_info_lizmap_status(self):
         """ Test version info according to LWC version.
@@ -290,6 +291,54 @@ class TestVersionInfo(unittest.TestCase):
                     'your QGIS Desktop 3.28',
                     'The login is not a publisher/administrator',
                 ],
+                True,
+            )
+        )
+
+    def test_version_info_lwc_rc(self):
+        """ Test LWC version with RC."""
+        qgis_desktop = (3, 34)
+
+        # Test file with
+        # 3.8.0-rc.4 latest RC
+        json_path = Path(plugin_test_data_path('version_info_19082024.json'))
+
+        self.assertEqual(
+            ServerManager._messages_for_version('3.8.0-rc.4', '', 'bob_is_admin', json_path, qgis_desktop),
+            (
+                Qgis.Success,
+                [
+                    'A dev version, warrior ! 👍',
+                ],
+                True,
+            )
+        )
+
+        self.assertEqual(
+            ServerManager._messages_for_version('3.8.0-rc.3', '', 'bob_is_admin', json_path, qgis_desktop),
+            (
+                Qgis.Warning,
+                [
+                    'A dev version, warrior ! 👍',
+                    'Not latest bugfix release, 3.8.0-rc.4 is available',
+                ],
+                True,
+            )
+        )
+
+    def test_version_info_lwc_security_bugfix(self):
+        """ Test LWC version with security bugfix."""
+        qgis_desktop = (3, 34)
+
+        # Test file with
+        # 3.6.14 security bugfix only
+        json_path = Path(plugin_test_data_path('version_info_19082024.json'))
+
+        self.assertEqual(
+            ServerManager._messages_for_version('3.6.14', '', 'bob_is_admin', json_path, qgis_desktop),
+            (
+                Qgis.Warning,
+                ['Version 3.6 not maintained anymore, only for security bugfix only'],
                 True,
             )
         )
