@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.21 - 2024-08-19
+
+* Improve versions about feature freeze or security bugfix versions
+
 ## 4.3.20 - 2024-08-02
 
 * New option to disable the permalink automatically. Latest releases of Lizmap Web Client are needed
