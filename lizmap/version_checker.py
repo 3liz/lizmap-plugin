@@ -166,19 +166,21 @@ class VersionChecker:
                 link = None
                 changelog_url = None
 
-            if status == ReleaseStatus.ReleaseCandidate:
-                template_release = (
-                    '<a href="https://github.com/3liz/lizmap-web-client/releases/">'
-                    '{tag}   -    {version}'
-                    '</a>'
-                ).format(tag=tr("Release candidate"), version=lwc_version.value)
-                self.dialog.lwc_version_feature_freeze.setText(template_release)
-                self.dialog.lwc_version_feature_freeze.setVisible(True)
-
             text = template.format(
                 tag=json_version['latest_release_version'],
                 date=date_string,
             )
+
+            if status == ReleaseStatus.ReleaseCandidate:
+                if not json_version.get('first_release_date'):
+                    # TODO, remove in a few months
+                    text = (
+                        '<a href="https://github.com/3liz/lizmap-web-client/releases/">'
+                        '{tag}   -    {version}'
+                        '</a>'
+                    ).format(tag=tr("Release candidate"), version=lwc_version.value)
+                self.dialog.lwc_version_feature_freeze.setText(text)
+                self.dialog.lwc_version_feature_freeze.setVisible(True)
 
             if status == ReleaseStatus.Stable:
                 if i == 0:
