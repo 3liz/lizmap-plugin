@@ -219,6 +219,7 @@ class TestTableManager(unittest.TestCase):
             'lines': {
                 'edition_only': 'False',
                 'filterAttribute': 'name',
+                'allow_multiple_acl_values': False,
                 'filterPrivate': 'False',
                 'layerId': self.layer.id(),
                 'order': 0
