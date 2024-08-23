@@ -194,8 +194,8 @@ from lizmap.toolbelt.custom_logging import (
 from lizmap.toolbelt.git import current_git_hash, next_git_tag
 from lizmap.toolbelt.i18n import setup_translation, tr
 from lizmap.toolbelt.layer import (
-    get_layer_wms_parameters,
     layer_property,
+    layer_wms_parameters,
     relative_path,
     remove_all_ghost_layers,
 )
@@ -2444,18 +2444,19 @@ class Lizmap:
                     # deactivate wms checkbox if not needed
                     if key == 'externalWmsToggle':
                         wms_enabled = self.get_item_wms_capability(selected_item)
-                        if wms_enabled is not None:
-                            self.dlg.cbExternalWms.setEnabled(wms_enabled)
-                            if wms_enabled:
-                                self.dlg.cbExternalWms.toggled.connect(self.external_wms_toggled)
-                                self.external_wms_toggled()
-                            else:
-                                self.dlg.cbExternalWms.setChecked(False)
-                                try:
-                                    self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
-                                except TypeError:
-                                    # The object was not connected
-                                    pass
+                        self.dlg.cbExternalWms.setEnabled(wms_enabled)
+                        if wms_enabled:
+                            self.dlg.setToolTip("If the layer can be requested directly to the source provider.")
+                            self.dlg.cbExternalWms.toggled.connect(self.external_wms_toggled)
+                            self.external_wms_toggled()
+                        else:
+                            self.dlg.setToolTip("The selected item is not a WMS layer with an URL")
+                            self.dlg.cbExternalWms.setChecked(False)
+                            try:
+                                self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
+                            except TypeError:
+                                # The object was not connected
+                                pass
 
             layer = self._current_selected_layer()  # It can be a layer or a group
 
@@ -2567,21 +2568,20 @@ class Lizmap:
         """ Disable the format combobox is the checkbox third party WMS is checked. """
         self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
 
-    def get_item_wms_capability(self, selected_item) -> Optional[bool]:
-        """
-        Check if an item in the tree is a layer
-        and if it is a WMS layer
-        """
-        wms_enabled = False
-        is_layer = selected_item['type'] == 'layer'
-        if is_layer:
-            layer = self.get_qgis_layer_by_id(selected_item['id'])
-            if not layer:
-                return
-            if layer.providerType() in ['wms']:
-                if get_layer_wms_parameters(layer):
-                    wms_enabled = True
-        return wms_enabled
+    def get_item_wms_capability(self, selected_item) -> bool:
+        """ Check if an item in the tree is a WMS layer. """
+        if not selected_item['type'] == 'layer':
+            return False
+
+        layer = self.get_qgis_layer_by_id(selected_item['id'])
+
+        if not layer or not layer.providerType() in ('wms', ):
+            return False
+
+        if not layer_wms_parameters(layer):
+            return False
+
+        return True
 
     @staticmethod
     def existing_group(
@@ -4053,7 +4053,7 @@ class Lizmap:
             if isinstance(layer, QgsMapLayer) and to_bool(layer_options.get('externalWmsToggle', False)):
                 # Only for layers stored in disk
                 if layer.providerType() == 'wms':
-                    wms_params = get_layer_wms_parameters(layer)
+                    wms_params = layer_wms_parameters(layer)
                     if wms_params:
                         layer_options['externalAccess'] = wms_params
                     else:
