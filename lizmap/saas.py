@@ -4,7 +4,7 @@ __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from qgis.core import QgsDataSourceUri, QgsProject
 
@@ -39,6 +39,14 @@ def webdav_properties(metadata: dict) -> dict:
     if not metadata:
         return {}
     return metadata.get('webdav', {})
+
+
+def webdav_url(metadata: dict) -> Optional[str]:
+    """ Return the WebDAV URL according to metadata. """
+    webdav = webdav_properties(metadata)
+    if not webdav:
+        return
+    return f"{webdav['url']}/{webdav['projects_path']}"
 
 
 def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[SourceLayer], str]:
