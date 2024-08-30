@@ -20,6 +20,7 @@ from pyplugin_installer.version_compare import compareVersions
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsAuthMethodConfig,
     QgsCoordinateReferenceSystem,
     QgsEditFormConfig,
     QgsExpression,
@@ -107,6 +108,9 @@ from lizmap.definitions.lizmap_cloud import (
     TRAINING_PROJECT,
     TRAINING_ZIP,
     WORKSHOP_DOMAINS,
+    WORKSHOP_FOLDER_ID,
+    WORKSHOP_FOLDER_PATH,
+    WorkshopType,
 )
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.online_help import (
@@ -159,11 +163,7 @@ from lizmap.project_checker_tools import (
     trailing_layer_group_name,
     use_estimated_metadata,
 )
-from lizmap.saas import (
-    check_project_ssl_postgis,
-    is_lizmap_cloud,
-    webdav_properties,
-)
+from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud, webdav_url
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
@@ -910,15 +910,22 @@ class Lizmap:
 
         self.dlg.tab_dataviz.setCurrentIndex(0)
 
-        self.dlg.path_training_folder.setStorageMode(QgsFileWidget.GetDirectory)
-        self.dlg.path_training_folder.setDialogTitle(tr("Choose a folder to store the your data about the training"))
-
         self.dlg.name_training_folder.setPlaceholderText(self.current_login())
 
-        self.dlg.download_training_data.clicked.connect(self.download_training_data_clicked)
-        self.dlg.open_training_folder.clicked.connect(self.open_training_folder_clicked)
-        self.dlg.open_training_project.clicked.connect(self.open_training_project_clicked)
-        self.dlg.open_training_folder.clicked.connect(self.open_training_folder_clicked)
+        # When a ZIP is provided for the training
+        self.dlg.path_training_folder_zip.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dlg.path_training_folder_zip.setDialogTitle(tr("Choose a folder to store the your data about the training"))
+        self.dlg.download_training_data_zip.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.ZipFile))
+        self.dlg.open_training_project_zip.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.ZipFile))
+        self.dlg.open_training_folder_zip.clicked.connect(partial(self.open_training_folder_clicked, WorkshopType.ZipFile))
+
+        # When an individual QGS file is provided for the training
+        self.dlg.path_training_folder_qgs.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dlg.path_training_folder_qgs.setDialogTitle(tr("Choose a folder to store the your data about the training"))
+        self.dlg.download_training_data_qgs.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.IndividualQgsFile))
+        self.dlg.open_training_project_qgs.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.IndividualQgsFile))
+        self.dlg.open_training_folder_qgs.clicked.connect(partial(self.open_training_folder_clicked, WorkshopType.IndividualQgsFile))
+
         self.dlg.button_quick_start.clicked.connect(self.dlg.open_lizmap_how_to)
         self.dlg.workshop_edition.clicked.connect(self.dlg.open_workshop_edition)
 
@@ -5079,6 +5086,9 @@ class Lizmap:
     def check_training_panel(self):
         """ Check if the training panel should be visible or not. """
         current_url = self.dlg.current_server_info(ServerComboData.ServerUrl.value)
+        # By default, set to a long training, with ZIP file
+        self.dlg.workshop_type.setCurrentWidget(self.dlg.training_panel)
+
         if not current_url:
             self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(True)
             return
@@ -5086,14 +5096,35 @@ class Lizmap:
         if bool([domain for domain in WORKSHOP_DOMAINS if (domain in current_url)]):
             self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(False)
 
-    def download_training_data_clicked(self):
-        """ Download the hard coded ZIP. """
-        if not self.dlg.path_training_folder.filePath():
+        metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
+        repositories = metadata.get('repositories')
+        if not repositories:
             return
 
+        workshop = repositories.get(WORKSHOP_FOLDER_ID)
+        if not workshop:
+            return
+
+        auth_id = self.dlg.current_server_info(ServerComboData.AuthId.value)
+        user_project = workshop['projects'].get(self.login_from_auth_id(auth_id))
+        if not user_project:
+            return
+
+        # Now set, to a short training with the prepared project
+        self.dlg.workshop_type.setCurrentWidget(self.dlg.quick_workshop_panel)
+
+    def download_training_data_clicked(self, workshop_type: str = WorkshopType.ZipFile):
+        """ Download the hard coded ZIP. """
+        if workshop_type == WorkshopType.IndividualQgsFile:
+            if not self.dlg.path_training_folder_qgs.filePath():
+                return
+        else:
+            if not self.dlg.path_training_folder_zip.filePath():
+                return
+
         metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
-        webdav = webdav_properties(metadata)
-        if not webdav.get('url'):
+        url = webdav_url(metadata)
+        if not url:
             self.dlg.display_message_bar(
                 CLOUD_NAME,
                 tr("WebDAV is not available on the instance '{}'").format(
@@ -5101,11 +5132,20 @@ class Lizmap:
                 level=Qgis.Critical,
             )
 
-        url_path = f"{webdav['url']}/{webdav['projects_path']}/{TRAINING_ZIP}"
+        if workshop_type == WorkshopType.IndividualQgsFile:
+            auth_id = self.dlg.current_server_info(ServerComboData.AuthId.value)
+            user_project = self.login_from_auth_id(auth_id)
+            url_path = f"{url}/{WORKSHOP_FOLDER_PATH}/{user_project}.qgs"
+            destination = str(
+                self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(f'{user_project}.qgs'))
+            # TODO It's missing the download of the QGS file
+        else:
+            url_path = f"{url}/{TRAINING_ZIP}"
+            destination = str(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP))
 
         downloader = QgsFileDownloader(
             QUrl(url_path),
-            str(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP)),
+            destination,
             delayStart=True,
             authcfg=self.dlg.current_server_info(ServerComboData.AuthId.value),
         )
@@ -5113,10 +5153,22 @@ class Lizmap:
         downloader.downloadExited.connect(loop.quit)
         downloader.downloadError.connect(self.download_error)
         # downloader.downloadCanceled.connect(self.download_canceled)
-        downloader.downloadCompleted.connect(self.download_completed)
+        if workshop_type == WorkshopType.IndividualQgsFile:
+            downloader.downloadCompleted.connect(self.download_completed_qgs)
+        else:
+            downloader.downloadCompleted.connect(self.download_completed_zip)
         downloader.startDownload()
         QApplication.setOverrideCursor(Qt.WaitCursor)
         loop.exec_()
+
+    @staticmethod
+    def login_from_auth_id(auth_id) -> str:
+        """ Login used in the QGIS password manager from an Auth ID. """
+        # noinspection PyArgumentList
+        auth_manager = QgsApplication.authManager()
+        conf = QgsAuthMethodConfig()
+        auth_manager.loadAuthenticationConfig(auth_id, conf, True)
+        return conf.config('username')
 
     def download_error(self, errors):
         """ Display error message about the download. """
@@ -5127,10 +5179,22 @@ class Lizmap:
             level=Qgis.Critical
         )
 
+    def download_completed_qgs(self):
+        """ Extract the downloaded QGS. """
+        self.download_completed()
+
     def download_completed(self):
-        """ Extract the downloaded zip. """
+        """ Show the success bar, for both kind of workshops. """
         QApplication.restoreOverrideCursor()
-        file_path = self.training_folder_destination()
+        self.dlg.display_message_bar(
+            CLOUD_NAME,
+            tr("Download and extract OK about the training project"),
+            level=Qgis.Success
+        )
+
+    def download_completed_zip(self):
+        """ Extract the downloaded zip. """
+        file_path = self.training_folder_destination(WorkshopType.ZipFile)
         with zipfile.ZipFile(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP), 'r') as zip_ref:
             zip_ref.extractall(str(file_path))
 
@@ -5142,12 +5206,7 @@ class Lizmap:
         # Make the project more unique
         qgs_file = file_path.joinpath(TRAINING_PROJECT)
         qgs_file.rename(Path(qgs_file.parent, qgs_file.stem + "_" + self.destination_name() + qgs_file.suffix))
-
-        self.dlg.display_message_bar(
-            CLOUD_NAME,
-            tr("Download and extract OK about the training project"),
-            level=Qgis.Success
-        )
+        self.download_completed()
 
     def destination_name(self) -> str:
         """ Return the destination cleaned name. """
@@ -5162,42 +5221,55 @@ class Lizmap:
         destination = destination.lower()
         return destination
 
-    def training_folder_destination(self) -> Optional[Path]:
+    def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
         """ Destination folder where to store the data. """
-        file_path = self.dlg.path_training_folder.filePath()
-        if not file_path:
+        if workshop_type == WorkshopType.IndividualQgsFile:
+            output = Path(self.dlg.path_training_folder_qgs.filePath())
+            QgsSettings().setValue(Settings.key(Settings.LizmapRepository), WORKSHOP_FOLDER_ID)
+        else:
+            file_path = self.dlg.path_training_folder_zip.filePath()
+            if not file_path:
+                return
+
+            destination = self.destination_name()
+            output = Path(file_path).joinpath(destination)
+            QgsSettings().setValue(Settings.key(Settings.LizmapRepository), destination)
+
+        if not output:
             return
-
-        destination = self.destination_name()
-
-        output = Path(file_path).joinpath(destination)
-
-        QgsSettings().setValue(Settings.key(Settings.LizmapRepository), destination)
 
         if not output.exists():
             output.mkdir()
+
         return output
 
-    def open_training_folder_clicked(self):
+    def open_training_folder_clicked(self, workshop_type: str = WorkshopType.ZipFile):
         """ Open the training folder set above. """
-        file_path = self.training_folder_destination()
+        file_path = self.training_folder_destination(workshop_type)
         if not file_path:
             return
 
         # noinspection PyArgumentList
         QDesktopServices.openUrl(QUrl(f"file://{file_path}"))
 
-    def open_training_project_clicked(self):
+    def open_training_project_clicked(self, workshop_type: str = WorkshopType.ZipFile):
         """ Open the training project in QGIS Desktop. """
-        file_path = self.training_folder_destination()
+        file_path = self.training_folder_destination(workshop_type)
+        if workshop_type == WorkshopType.IndividualQgsFile:
+            auth_id = self.dlg.current_server_info(ServerComboData.AuthId.value)
+            user_project = self.login_from_auth_id(auth_id)
+            project_path = str(file_path.joinpath(f"{user_project}.qgs"))
+        else:
+            user_project = self.current_login()
+            project_path = str(file_path.joinpath(TRAINING_PROJECT))
+
         if not file_path:
             return
 
         with OverrideCursor(Qt.WaitCursor):
-            project = QgsProject.instance()
-            project.read(str(file_path.joinpath(TRAINING_PROJECT)))
+            self.project.read(project_path)
             # Rename the project
-            project.writeEntry("WMSServiceTitle", "/", self.current_login())
+            self.project.writeEntry("WMSServiceTitle", "/", user_project)
 
         # Enable the "Upload" panel
         item = self.dlg.mOptionsListWidget.item(Panels.Upload)
