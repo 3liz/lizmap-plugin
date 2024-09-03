@@ -132,17 +132,13 @@ class FilterByPolygonDefinitions(BaseDefinitions):
 
         metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
         connection = metadata.createConnection(datasource.uri(), {})
-        result = connection.executeSql("""
+        result = connection.executeSql(f"""
             SELECT tablename, indexname, indexdef
             FROM pg_indexes
-            WHERE schemaname = '{schema}'
-            AND tablename = '{table}'
-            AND indexdef ILIKE '%{geom}%'
-            AND indexdef ILIKE '%st_centroid%'""".format(
-            schema=datasource.schema(),
-            table=datasource.table(),
-            geom=datasource.geometryColumn(),
-            )
+            WHERE schemaname = '{datasource.schema()}'
+            AND tablename = '{datasource.table()}'
+            AND indexdef ILIKE '%{datasource.geometryColumn()}%'
+            AND indexdef ILIKE '%st_centroid%'"""
         )
         if len(result) >= 1:
             return True, None
@@ -156,10 +152,9 @@ class FilterByPolygonDefinitions(BaseDefinitions):
         message += tr(
             '<b>Either</b> do not use this option, <b>or</b> the following query must be executed by <b>yourself</b>')
         message += '\n'
-        message += "CREATE INDEX ON \"{schema}\".\"{table}\" USING GIST (ST_Centroid({geom}));".format(
-            schema=datasource.schema(),
-            table=datasource.table(),
-            geom=datasource.geometryColumn(),
+        message += (
+            f"CREATE INDEX ON \"{datasource.schema()}\".\"{datasource.table()}\" "
+            f"USING GIST (ST_Centroid({datasource.geometryColumn()}))"
         )
         return False, message
 
