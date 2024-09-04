@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.3.22 - 2024-09-04
+
+* New option to allow multiple ACL values within the same field for attribute filtering, for LWC 3.8.
+* Minor code refactoring about WMS layers parsing
+
 ## 4.3.21 - 2024-08-19
 
 * Improve versions about feature freeze or security bugfix versions
