@@ -5112,10 +5112,12 @@ class Lizmap:
         if not user_project:
             return
 
-        LOGGER.info(f"Remote project '{user_project}', matching the user connected, has been detected on the server")
-
         # Now set, to a short training with the prepared project
+        self.dlg.send_webdav.setChecked(True)
+        self.dlg.checkbox_save_project.setChecked(True)
+        self.dlg.radio_beginner.setChecked(True)
         self.dlg.workshop_type.setCurrentWidget(self.dlg.quick_workshop_panel)
+        LOGGER.info(f"Remote project '{user_project}', matching the user connected, has been detected on the server")
 
     def download_training_data_clicked(self, workshop_type: str = WorkshopType.ZipFile):
         """ Download the hard coded ZIP. """
