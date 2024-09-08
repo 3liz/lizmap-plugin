@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.3.23 - 2024-09-08
+
+* Fix regression form previous version about external WMS
+* Improve download of QGS project
+
 ## 4.3.22 - 2024-09-04
 
 * New option to allow multiple ACL values within the same field for attribute filtering, for LWC 3.8.
