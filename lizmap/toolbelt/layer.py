@@ -11,7 +11,6 @@ from qgis.core import (
     QgsMapLayer,
     QgsProject,
     QgsProviderRegistry,
-    QgsRasterLayer,
     QgsVectorLayer,
 )
 
@@ -86,17 +85,21 @@ def is_ghost_layer(layer):
     return count == 0
 
 
-def layer_wms_parameters(layer: QgsRasterLayer):
-    """ WMS parameters from a WMS layer. """
+def get_layer_wms_parameters(layer):
+    """
+    Get WMS parameters for a raster WMS layers
+    """
     uri = layer.dataProvider().dataSourceUri()
-    if 'wmts' in uri.lower():
-        # Avoid WMTS layers (not supported yet in Lizmap Web Client)
-        # This test is fragile as WMTS might not be in the URL
+    # avoid WMTS layers (not supported yet in Lizmap Web Client)
+    if 'wmts' in uri or 'WMTS' in uri:
         return None
 
-    # noinspection PyUnresolvedReferences
-    wms_params = urllib.parse.parse_qs(uri)
-    wms_params = {k: v[0] for k, v in wms_params.items()}
+    # Split WMS parameters
+    wms_params = dict((p.split('=') + [''])[:2] for p in uri.split('&'))
+
+    # urldecode WMS url
+    wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
+
     return wms_params
 
 

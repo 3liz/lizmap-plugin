@@ -2031,30 +2031,54 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
-                          <widget class="QGroupBox" name="groupBox_3">
-                           <property name="title">
-                            <string>Third-party WMS layers</string>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_63">
-                            <item>
-                             <widget class="QLabel" name="label_59">
-                              <property name="text">
-                               <string>Get images directly from WMS Server</string>
-                              </property>
-                              <property name="wordWrap">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QCheckBox" name="cbExternalWms">
-                              <property name="text">
-                               <string>Request directly</string>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
+                          <layout class="QHBoxLayout" name="horizontalLayout_25">
+                           <item>
+                            <widget class="QLabel" name="label_56">
+                             <property name="font">
+                              <font>
+                               <weight>50</weight>
+                               <bold>false</bold>
+                              </font>
+                             </property>
+                             <property name="text">
+                              <string>Third-party WMS layers</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QCheckBox" name="cbExternalWms">
+                             <property name="text">
+                              <string/>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_59">
+                             <property name="text">
+                              <string>Get images directly from WMS Server</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_34">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
                          </item>
                          <item>
                           <widget class="QCheckBox" name="cbSingleTile">
@@ -5598,6 +5622,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>group_layer_map_options</tabstop>
   <tabstop>liImageFormat</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
+  <tabstop>cbExternalWms</tabstop>
   <tabstop>cbSingleTile</tabstop>
   <tabstop>checkbox_server_cache</tabstop>
   <tabstop>inCacheExpiration</tabstop>
