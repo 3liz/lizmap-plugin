@@ -2308,7 +2308,7 @@ class Lizmap:
                     text = tr('Special group for Lizmap Web Client')
                     if self.is_dev_version:
                         # For debug purpose only about groups
-                        text += f'. Data group ID {Qt.UserRole} : {predefined_group}'
+                        text += f'. Data group ID {Qt.UserRole} : {predefined_group}'  # NOQA E203
                     item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
                 elif is_layer_wms_excluded(self.project, self.myDic[child_id]['name']):
                     text = tr(
@@ -3095,7 +3095,7 @@ class Lizmap:
 
         validator = QgsProjectServerValidator()
         valid, results = validator.validate(self.project)
-        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
+        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")  # NOQA E203
         if not valid:
             self.dlg.check_results.add_error(
                 Error(
@@ -3568,7 +3568,7 @@ class Lizmap:
 
             validator = QgsProjectServerValidator()
             valid, results = validator.validate(self.project)
-            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
+            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")  # NOQA E203
         else:
             LOGGER.info(
                 "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
@@ -4860,7 +4860,7 @@ class Lizmap:
             self.dlg.line_cfg_date.setText("")
             result, error = self.webdav.file_stats_cfg()
             if result:
-                self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+                self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")  # NOQA E203
             elif result is None and not error:
                 self.dlg.line_cfg_date.setText(tr(
                     "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
@@ -4874,7 +4874,7 @@ class Lizmap:
             self.dlg.line_thumbnail_date.setText("")
             result, error = self.webdav.file_stats_thumbnail()
             if result:
-                self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+                self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")  # NOQA E203
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, result.last_modified_pretty)
             elif result is None and not error:
                 self.dlg.line_thumbnail_date.setText(tr(
@@ -4922,7 +4922,7 @@ class Lizmap:
                 self.dlg.webdav_last_update.setText(f'<a href="{url}">{result.last_modified_pretty}</a>')
                 self.dlg.webdav_last_update.setOpenExternalLinks(True)
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_webdav, result.last_modified_pretty)
-                self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
+                self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")  # NOQA E203
             elif result is None and not error:
                 directory = self.dlg.current_repository()
                 self.dlg.line_qgs_date.setText(tr(
@@ -5096,6 +5096,8 @@ class Lizmap:
         if bool([domain for domain in WORKSHOP_DOMAINS if (domain in current_url)]):
             self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(False)
 
+        LOGGER.info("Current server has been detected as a training server.")
+
         metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
         repositories = metadata.get('repositories')
         if not repositories:
@@ -5109,6 +5111,8 @@ class Lizmap:
         user_project = workshop['projects'].get(self.login_from_auth_id(auth_id))
         if not user_project:
             return
+
+        LOGGER.info(f"Remote project '{user_project}', matching the user connected, has been detected on the server")
 
         # Now set, to a short training with the prepared project
         self.dlg.workshop_type.setCurrentWidget(self.dlg.quick_workshop_panel)
@@ -5138,7 +5142,6 @@ class Lizmap:
             url_path = f"{url}/{WORKSHOP_FOLDER_PATH}/{user_project}.qgs"
             destination = str(
                 self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(f'{user_project}.qgs'))
-            # TODO It's missing the download of the QGS file
         else:
             url_path = f"{url}/{TRAINING_ZIP}"
             destination = str(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP))
@@ -5181,16 +5184,38 @@ class Lizmap:
 
     def download_completed_qgs(self):
         """ Extract the downloaded QGS. """
-        self.download_completed()
+        # We start again about CFG file
+        metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
+        url = webdav_url(metadata)
+        auth_id = self.dlg.current_server_info(ServerComboData.AuthId.value)
+        user_project = self.login_from_auth_id(auth_id)
+        url_path = f"{url}/{WORKSHOP_FOLDER_PATH}/{user_project}.qgs.cfg"
+        destination = str(
+            self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(f'{user_project}.qgs.cfg'))
+
+        downloader = QgsFileDownloader(
+            QUrl(url_path),
+            destination,
+            delayStart=True,
+            authcfg=self.dlg.current_server_info(ServerComboData.AuthId.value),
+        )
+        loop = QEventLoop()
+        downloader.downloadExited.connect(loop.quit)
+        downloader.downloadError.connect(self.download_error)
+        # downloader.downloadCanceled.connect(self.download_canceled)
+        downloader.downloadCompleted.connect(self.download_completed)
+        downloader.startDownload()
+        loop.exec_()
 
     def download_completed(self):
         """ Show the success bar, for both kind of workshops. """
         QApplication.restoreOverrideCursor()
-        self.dlg.display_message_bar(
-            CLOUD_NAME,
-            tr("Download and extract OK about the training project"),
-            level=Qgis.Success
-        )
+        with OverrideCursor(Qt.WaitCursor):
+            self.dlg.display_message_bar(
+                CLOUD_NAME,
+                tr("Download and extract OK about the training project"),
+                level=Qgis.Success
+            )
 
     def download_completed_zip(self):
         """ Extract the downloaded zip. """
@@ -5250,7 +5275,7 @@ class Lizmap:
             return
 
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(QUrl(f"file://{file_path}"))
+        QDesktopServices.openUrl(QUrl(f"file://{file_path}"))  # NOQA E231
 
     def open_training_project_clicked(self, workshop_type: str = WorkshopType.ZipFile):
         """ Open the training project in QGIS Desktop. """
