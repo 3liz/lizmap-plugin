@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.3.24 - 2024-09-09
+
+* Improve download of QGS project
+
 ## 4.3.23 - 2024-09-08
 
 * Fix regression form previous version about external WMS
