@@ -140,6 +140,8 @@ class Tooltip:
             a += Tooltip._generate_field_name(name, fname, field_view)
 
         if isinstance(node, QgsAttributeEditorRelation):
+            # https://github.com/3liz/qgis-lizmap-server-plugin/issues/82
+            node.init(relation_manager)  # Initializes the relation from the ID
             relation = node.relation()
             if relation:
                 a += Tooltip._generate_attribute_editor_relation(
