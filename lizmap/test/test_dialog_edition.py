@@ -16,7 +16,6 @@ from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.toolbelt.resources import plugin_test_data_path
-from lizmap.toolbelt.version import qgis_version
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
@@ -61,11 +60,7 @@ class TestEditionDialog(unittest.TestCase):
         """Test we can load collection."""
         dialog = DatavizEditionDialog()
         self.assertFalse(dialog.error.isVisible())
-        if qgis_version() < 32200:
-            self.assertEqual('', dialog.x_field.currentField())
-            self.assertEqual(dialog.validate(), 'The field "x field" is mandatory.')
-        else:
-            self.assertEqual('id', dialog.x_field.currentField())
+        self.assertEqual('id', dialog.x_field.currentField())
 
         data = [
             {
@@ -92,15 +87,7 @@ class TestEditionDialog(unittest.TestCase):
         dialog = AtlasEditionDialog()
         self.assertFalse(dialog.error.isVisible())
 
-        if qgis_version() >= 32200:
-            self.assertEqual(dialog.primary_key.currentField(), 'id')
-        else:
-            self.assertEqual(dialog.validate(), 'The field "primary key" is mandatory.')
-            dialog.primary_key.setCurrentIndex(1)
-            self.assertEqual(dialog.validate(), 'The field "feature label" is mandatory.')
-            dialog.feature_label.setCurrentIndex(1)
-            self.assertEqual(dialog.validate(), 'The field "sort field" is mandatory.')
-            dialog.sort_field.setCurrentIndex(1)
+        self.assertEqual(dialog.primary_key.currentField(), 'id')
 
         self.assertEqual(
             'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n option of the QGIS '
@@ -126,14 +113,11 @@ class TestEditionDialog(unittest.TestCase):
 
         del dialog
         dialog = AtlasEditionDialog()
-        if qgis_version() < 32200:
-            self.assertEqual(dialog.validate(), 'The field "primary key" is mandatory.')
-        else:
-            self.assertEqual(
-                dialog.validate(),
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n option of the '
-                'QGIS Server tab in the "Project Properties" dialog.'
-            )
+        self.assertEqual(
+            dialog.validate(),
+            'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n option of the '
+            'QGIS Server tab in the "Project Properties" dialog.'
+        )
 
         dialog.load_form(data)
 

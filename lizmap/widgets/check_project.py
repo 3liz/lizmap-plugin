@@ -21,7 +21,6 @@ from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.online_help import pg_service_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.version import qgis_version
 
 # 10 000 * 10 000
 RASTER_COUNT_CELL = 100000000
@@ -245,9 +244,8 @@ class Checks:
     """ List of checks defined. """
 
     def __init__(self):
-        # Check QGIS_VERSION_INT
-        qgis_32200 = tr(
-            'With QGIS ≥ 3.22, you can use the auto-fix button in the dedicated panel of the plugin to fix currently '
+        qgis_auto_fix_button = tr(
+            'You can use the auto-fix button in the dedicated panel of the plugin to fix currently '
             'loaded layers'
         )
         other_auth = tr('Either switch to another authentication mechanism')
@@ -430,11 +428,11 @@ class Checks:
                 '<li>{help}</li>'
                 '</ul>'
             ).format(
-                auto_fix=qgis_32200,
+                auto_fix=qgis_auto_fix_button,
                 help=global_connection,
             ),
             Levels.Layer,
-            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            Severities().blocking,
             QIcon(':/images/themes/default/mIconPostgis.svg'),
         )
         self.EstimatedMetadata = Check(
@@ -447,11 +445,11 @@ class Checks:
                 '<li>{help}</li>'
                 '</ul>'
             ).format(
-                auto_fix=qgis_32200,
+                auto_fix=qgis_auto_fix_button,
                 help=global_connection,
             ),
             Levels.Layer,
-            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            Severities().blocking,
             QIcon(':/images/themes/default/mIconPostgis.svg'),
         )
         self.SimplifyGeometry = Check(
@@ -464,14 +462,14 @@ class Checks:
                 '<li>{help}</li>'
                 '</ul>'
             ).format(
-                auto_fix=qgis_32200,
+                auto_fix=qgis_auto_fix_button,
                 help=tr(
                     'Visit the layer properties, then in the "Rendering" tab to enable it simplification on the provider '
                     'side on the given layer.'
                 ),
             ),
             Levels.Layer,
-            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            Severities().blocking,
             QIcon(':/images/themes/default/mIconGeometryCollectionLayer.svg'),
         )
         self.RasterWithoutPyramid = Check(
@@ -731,11 +729,11 @@ class Checks:
                         'In the project properties → Data sources → at the bottom, there is a checkbox to trust the '
                         'project when the layer has no metadata.'
                     ),
-                    auto_fix=tr('With QGIS ≥ 3.22, you can use the auto-fix button in the dedicated panel of the plugin'),
+                    auto_fix=tr('You can use the auto-fix button in the dedicated panel of the plugin'),
                 )
             ),
             Levels.Project,
-            Severities().blocking if qgis_version() >= 32200 else Severities().important,
+            Severities().blocking,
             QIcon(':/images/themes/default/mIconQgsProjectFile.svg'),
         )
         self.EmptyBaseLayersGroup = Check(

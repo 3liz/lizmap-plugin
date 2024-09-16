@@ -2,7 +2,7 @@ SHELL:=bash
 .ONESHELL:
 .PHONY: env
 
-QGIS_VERSION ?= release-3_16
+QGIS_VERSION ?= release-3_22
 
 start_tests:
 	@echo 'Start docker compose'

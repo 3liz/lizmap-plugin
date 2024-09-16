@@ -8,13 +8,9 @@ from shutil import rmtree
 from qgis.PyQt.QtWidgets import QWizard
 
 from lizmap.dialogs.server_wizard import THUMBS, CreateFolderWizard
-from lizmap.toolbelt.strings import random_string
-from lizmap.toolbelt.version import qgis_version
-
-if qgis_version() >= 32200:
-    from lizmap.server_dav import WebDav, PropFindFileResponse, PropFindDirResponse
-
+from lizmap.server_dav import PropFindDirResponse, PropFindFileResponse, WebDav
 from lizmap.toolbelt.resources import plugin_test_data_path
+from lizmap.toolbelt.strings import random_string
 
 try:
     from lizmap.test.credentials import (
@@ -47,7 +43,7 @@ __email__ = 'info@3liz.org'
 
 def skip_test():
     """ Check conditions for running tests. """
-    return not all((CREDENTIALS, qgis_version() >= 32200, LIZMAP_HOST_DAV, LIZMAP_USER, LIZMAP_PASSWORD))
+    return not all((CREDENTIALS, LIZMAP_HOST_DAV, LIZMAP_USER, LIZMAP_PASSWORD))
 
 #
 # Important note, we are not using our own webdav library to create/remove fixtures.

@@ -25,6 +25,7 @@ from qgis.core import (
     QgsEditFormConfig,
     QgsExpression,
     QgsFileDownloader,
+    QgsIconUtils,
     QgsLayerTree,
     QgsLayerTreeGroup,
     QgsMapLayer,
@@ -38,17 +39,9 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsFileWidget
-from qgis.PyQt.QtCore import QEventLoop
-from qgis.PyQt.QtWidgets import QApplication, QFileDialog
-
-from lizmap.dialogs.news import NewConfigDialog
-from lizmap.dialogs.server_wizard import CreateFolderWizard
-
-if Qgis.QGIS_VERSION_INT >= 32200:
-    from qgis.core import QgsIconUtils
-
 from qgis.PyQt.QtCore import (
     QCoreApplication,
+    QEventLoop,
     QStorageInfo,
     Qt,
     QTranslator,
@@ -66,7 +59,9 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtWidgets import (
     QAction,
+    QApplication,
     QDialogButtonBox,
+    QFileDialog,
     QLineEdit,
     QMessageBox,
     QPushButton,
@@ -127,6 +122,8 @@ from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.html_maptip import HtmlMapTipDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
 from lizmap.dialogs.main import LizmapDialog
+from lizmap.dialogs.news import NewConfigDialog
+from lizmap.dialogs.server_wizard import CreateFolderWizard
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
@@ -185,6 +182,7 @@ except ModuleNotFoundError:
 from qgis.core import QgsProjectServerValidator
 
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
+from lizmap.server_dav import WebDav
 from lizmap.server_lwc import MAX_DAYS, ServerManager
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.custom_logging import (
@@ -211,9 +209,6 @@ from lizmap.toolbelt.version import (
 )
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
-
-if qgis_version() >= 32200:
-    from lizmap.server_dav import WebDav
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
@@ -301,12 +296,9 @@ class Lizmap:
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=self._version)
 
-        if Qgis.QGIS_VERSION_INT >= 32200:
-            self.webdav = WebDav()
-            # Give the dialog only the first time
-            self.webdav.setup_webdav_dialog(self.dlg)
-        else:
-            self.webdav = None
+        self.webdav = WebDav()
+        # Give the dialog only the first time
+        self.webdav.setup_webdav_dialog(self.dlg)
         # self.check_webdav()
 
         self.dock_html_preview = None
@@ -1501,27 +1493,26 @@ class Lizmap:
             "This value will be replaced on the server side when evaluating the expression thanks to "
             "the QGIS server Lizmap plugin.")
         # Register variable helps
-        if qgis_version() >= 32200:
-            QgsExpression.addVariableHelpText(
-                "lizmap_user",
-                "{}<br/><br/>{}<br/><br/>{}".format(
-                    tr("The current Lizmap login as a string."),
-                    tr("It might be an empty string if the user is not connected."),
-                    server_side,
-                )
+        QgsExpression.addVariableHelpText(
+            "lizmap_user",
+            "{}<br/><br/>{}<br/><br/>{}".format(
+                tr("The current Lizmap login as a string."),
+                tr("It might be an empty string if the user is not connected."),
+                server_side,
             )
-            QgsExpression.addVariableHelpText(
-                "lizmap_user_groups",
-                "{}<br/><br/>{}<br/><br/>{}<br/><br/>{}".format(
-                    tr("The current groups of the logged user as an <strong>array</strong>."),
-                    tr("It might be an empty array if the user is not connected."),
-                    tr(
-                        "You might need to use functions in the <strong>Array</strong> expression category, such as "
-                        "<pre>array_to_string</pre> to convert it to a string."),
-                    server_side,
-                )
+        )
+        QgsExpression.addVariableHelpText(
+            "lizmap_user_groups",
+            "{}<br/><br/>{}<br/><br/>{}<br/><br/>{}".format(
+                tr("The current groups of the logged user as an <strong>array</strong>."),
+                tr("It might be an empty array if the user is not connected."),
+                tr(
+                    "You might need to use functions in the <strong>Array</strong> expression category, such as "
+                    "<pre>array_to_string</pre> to convert it to a string."),
+                server_side,
             )
-            QgsExpression.addVariableHelpText("lizmap_repository", tr("The current repository ID on the server."))
+        )
+        QgsExpression.addVariableHelpText("lizmap_repository", tr("The current repository ID on the server."))
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
@@ -3401,7 +3392,7 @@ class Lizmap:
 
                             # Icon
                             for k, v in filters.items():
-                                if k == "_wkb_type" and Qgis.QGIS_VERSION_INT >= 32000:
+                                if k == "_wkb_type":
                                     icon = QgsIconUtils.iconForWkbType(v)
                                     break
                             else:
