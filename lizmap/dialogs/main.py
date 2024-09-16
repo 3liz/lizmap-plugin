@@ -109,10 +109,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_lizmap_logo.setPixmap(pixmap)
 
         # Initial extent widget
-        if qgis_version() >= 31800:
-            self.widget_initial_extent.setMapCanvas(iface.mapCanvas(), False)
-        else:
-            self.widget_initial_extent.setMapCanvas(iface.mapCanvas())
+        self.widget_initial_extent.setMapCanvas(iface.mapCanvas(), False)
         self.widget_initial_extent.setOutputCrs(self.project.crs())
         self.widget_initial_extent.setOriginalExtent(iface.mapCanvas().extent(), self.project.crs())
         self.project.crsChanged.connect(self.project_crs_changed)
@@ -544,20 +541,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def enabled_ssl_button(self, status: bool):
         """ Enable or not the button. """
-        if Qgis.QGIS_VERSION_INT <= 32200:
-            self.button_convert_ssl.setToolTip(tr("QGIS 3.22 minimum is required"))
-            self.button_convert_ssl.setEnabled(False)
-            return
-
         self.button_convert_ssl.setEnabled(status)
 
     def enabled_estimated_md_button(self, status: bool):
         """ Enable or not the button. """
-        if Qgis.QGIS_VERSION_INT <= 32200:
-            self.button_use_estimated_md.setToolTip(tr("QGIS 3.22 minimum is required"))
-            self.button_use_estimated_md.setEnabled(False)
-            return
-
         self.button_use_estimated_md.setEnabled(status)
 
     def enabled_trust_project(self, status: bool):

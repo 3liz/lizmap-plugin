@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Raise QGIS minimum version to 3.22
+
 ## 4.3.24 - 2024-09-09
 
 * Improve download of QGS project

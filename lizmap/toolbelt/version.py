@@ -13,10 +13,7 @@ from lizmap.toolbelt.resources import metadata_config
 
 def qgis_version():
     """ Return the QGIS version as integers. """
-    # The API has changed in QGIS 3.12
-    # Use the function layer
-    # noinspection PyUnresolvedReferences
-    return Qgis.QGIS_VERSION_INT
+    return Qgis.versionInt()
 
 
 def version(remove_v_prefix=True) -> str:

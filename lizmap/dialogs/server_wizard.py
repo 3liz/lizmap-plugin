@@ -49,13 +49,10 @@ from lizmap.definitions.online_help import online_lwc_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.logger import log_function
 from lizmap.saas import is_lizmap_cloud, webdav_properties
+from lizmap.server_dav import WebDav
 from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.version import qgis_version, version
-
-if qgis_version() >= 32200:
-    from lizmap.server_dav import WebDav
-
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
+from lizmap.toolbelt.version import version
 
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
@@ -945,11 +942,7 @@ class ServerWizard(BaseWizard):
             LOGGER.debug("Edit current information authentication ID : {}".format(self.auth_id))
             # Edit
             config.setId(self.auth_id)
-            if qgis_version() < 32000:
-                auth_manager.removeAuthenticationConfig(self.auth_id)
-                result = auth_manager.storeAuthenticationConfig(config)
-            else:
-                result = auth_manager.storeAuthenticationConfig(config, True)
+            result = auth_manager.storeAuthenticationConfig(config, True)
             # The JSON will be saved later, in the table
         else:
             # Creation
@@ -1120,15 +1113,13 @@ class ServerWizard(BaseWizard):
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs
             self.has_repository = False
-        if qgis_version() < 32200:
-            # Missing PyQGIS class for managing webdav
+
+        dav_metadata = webdav_properties(content)
+        if not dav_metadata:
             self.dav_url = None
         else:
-            dav_metadata = webdav_properties(content)
-            if not dav_metadata:
-                self.dav_url = None
-            else:
-                self.dav_url = self.trailing_slash(dav_metadata.get('url')) + dav_metadata.get('projects_path')
+            self.dav_url = self.trailing_slash(dav_metadata.get('url')) + dav_metadata.get('projects_path')
+
         return True, '', True
 
     def _uri(self) -> QgsDataSourceUri:
