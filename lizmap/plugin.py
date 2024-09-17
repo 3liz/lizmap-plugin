@@ -982,6 +982,11 @@ class Lizmap:
             # Until https://github.com/enricofer/autoSaver/pull/22 is merged
             return
 
+        new_cfg = new_path.with_suffix('.qgs.cfg')
+        if new_cfg.exists():
+            # The CFG was already here, let's keep the previous one
+            return
+
         if self.current_path and new_path != self.current_path and not to_bool(os.getenv("CI"), default_value=False):
             old_cfg = self.current_path.with_suffix('.qgs.cfg')
             if old_cfg.exists():
@@ -999,7 +1004,7 @@ class Lizmap:
                 if result == QMessageBox.No:
                     return
 
-                copyfile(str(old_cfg), str(new_path.with_suffix('.qgs.cfg')))
+                copyfile(str(old_cfg), str(new_cfg))
                 LOGGER.info("Project has been renamed and Lizmap configuration file has been copied as well.")
 
         self.current_path = new_path
