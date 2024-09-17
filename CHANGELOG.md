@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.4.0 - 2024-09-17
+
 * Do not ask to override a previous CFG when saving a QGS file to a new destination
 * Raise QGIS minimum version to 3.22
 
