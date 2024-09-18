@@ -174,7 +174,7 @@ class Tooltip:
                     active = visibility
                 h += '\n' + SPACES
                 h += (
-                    '<li class="{}"><a href="#popup_dd_[% $id %]_{}" data-toggle="tab">{}</a></li>'
+                    '<li class="nav-item"><button class="nav-link {}" data-bs-toggle="tab" data-bs-target="#popup_dd_[% $id %]_{}">{}</button></li>'
                 ).format(active, regex.sub('_', node.name()), node.name())
                 headers.append(h)
 
