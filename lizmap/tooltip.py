@@ -60,6 +60,7 @@ class Tooltip:
             headers: list,
             html: str,
             relation_manager: QgsRelationManager,
+            bootstrap_5: bool = False,
             ) -> str:
         regex = re.compile(r"[^a-zA-Z0-9_]", re.IGNORECASE)
         a = ''
@@ -173,9 +174,22 @@ class Tooltip:
                 if visibility and not active:
                     active = visibility
                 h += '\n' + SPACES
-                h += (
-                    '<li class="nav-item"><button class="nav-link {}" data-bs-toggle="tab" data-bs-target="#popup_dd_[% $id %]_{}">{}</button></li>'
-                ).format(active, regex.sub('_', node.name()), node.name())
+                id_tab = regex.sub('_', node.name())
+                if bootstrap_5:
+                    h += (
+                        f'<li class="nav-item">'
+                        f'<button class="nav-link {active}" data-bs-toggle="tab" '
+                        f'data-bs-target="#popup_dd_[% $id %]_{id_tab}">'
+                        f'{node.name()}'
+                        f'</button>'
+                        f'</li>'
+                    )
+                else:
+                    h += (
+                        f'<li class="{active}">'
+                        f'<a href="#popup_dd_[% $id %]_{id_tab}" data-toggle="tab">{node.name()}</a>'
+                        f'</li>'
+                    )
                 headers.append(h)
 
             if lvl > 1:
@@ -190,7 +204,8 @@ class Tooltip:
 
             level += 1
             for n in node.children():
-                h = Tooltip.create_popup_node_item_from_form(layer, n, level, headers, html, relation_manager)
+                h = Tooltip.create_popup_node_item_from_form(
+                    layer, n, level, headers, html, relation_manager, bootstrap_5)
                 # If it is not root children, add html
                 if lvl > 0:
                     a += h

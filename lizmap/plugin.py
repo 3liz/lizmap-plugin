@@ -3014,7 +3014,10 @@ class Lizmap:
 
         root = config.invisibleRootContainer()
         relation_manager = self.project.relationManager()
-        html_content = Tooltip.create_popup_node_item_from_form(layer, root, 0, [], '', relation_manager)
+        html_content = Tooltip.create_popup_node_item_from_form(
+            layer, root, 0, [], '', relation_manager,
+            bootstrap_5=self.current_lwc_version() >= LwcVersions.Lizmap_3_9,
+        )
         html_content = Tooltip.create_popup(html_content)
         html_content += Tooltip.css()
         self._set_maptip(layer, html_content)
