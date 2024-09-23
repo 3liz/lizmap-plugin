@@ -2538,7 +2538,6 @@ class Lizmap:
                 self.dlg.group_layer_tree_options.setEnabled(False)
                 self.dlg.checkbox_popup.setEnabled(False)
                 self.dlg.frame_layer_popup.setEnabled(False)
-                self.dlg.group_layer_embedded.setEnabled(False)
 
             elif self._current_item_predefined_group() in (
                     PredefinedGroup.Overview.value,
