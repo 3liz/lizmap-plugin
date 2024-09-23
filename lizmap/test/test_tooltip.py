@@ -503,7 +503,7 @@ class TestToolTip(unittest.TestCase):
         root = config.invisibleRootContainer()
         # noinspection PyArgumentList
         html_content = Tooltip.create_popup_node_item_from_form(
-            layer, root, 0, [], '', QgsProject.instance().relationManager())
+            layer, root, 0, [], '', QgsProject.instance().relationManager(), bootstrap_5=False)
 
         self.maxDiff = None
         expected = '''<ul class="nav nav-tabs">
@@ -554,3 +554,9 @@ class TestToolTip(unittest.TestCase):
 </div>'''
 
         self.assertEqual(expected, html_content, html_content)
+        self.assertFalse('data-bs-toggle="tab"' in html_content)
+
+        # Same but with Bootstrap 5
+        html_content = Tooltip.create_popup_node_item_from_form(
+            layer, root, 0, [], '', QgsProject.instance().relationManager(), bootstrap_5=True)
+        self.assertTrue('data-bs-toggle="tab"' in html_content)
