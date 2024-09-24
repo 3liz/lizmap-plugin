@@ -211,7 +211,8 @@ class Tooltip:
                     a += h
                     continue
                 # If it is root children, store html in the right list
-                if isinstance(n, QgsAttributeEditorField):
+                if isinstance(n, QgsAttributeEditorField) or (isinstance(n, QgsAttributeEditorElement) and n.type() == 6):
+                    # TODO QGIS_VERSION_INT 3.30.0 Change the integer with the QGIS enum `Qgis.AttributeEditorType.TextElement`
                     if not headers:
                         before_tabs.append(h)
                     else:
