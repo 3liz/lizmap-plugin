@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 4.4.1 - 2024-10-01
+
+* Improve the message when the LWC version is now in security bugfix only
+* Place text widget in right list according to the Drag&Drop form
+* Update HTML tooltip to handle Bootstrap 5 tabs with Lizmap Web Client 3.9
+
 ## 4.4.0 - 2024-09-17
 
 * Do not ask to override a previous CFG when saving a QGS file to a new destination
