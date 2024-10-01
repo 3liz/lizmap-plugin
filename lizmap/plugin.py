@@ -3595,14 +3595,13 @@ class Lizmap:
             if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) in eol:
                 if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
                     msg = tr(
-                        'This version of Lizmap Web Client has now reached its <strong>end of life</strong> '
-                        'and is not supported anymore.'
+                        'This version of Lizmap Web Client is now <strong>not supported anymore</strong>.'
                     )
                 else:
                     msg = tr(
-                        'This version of Lizmap Web Client has nearly reached its end of life as it is in '
-                        '<strong>security bugfix mode</strong>. Only critical bugfix are added and soon the '
-                        'branch will be declared <strong>end of life</strong>.'
+                        'This version of Lizmap Web Client is <strong>nearly not supported anymore</strong>. '
+                        'It is in <strong>security bugfix mode only</strong>, it means only critical bugfix are fixed '
+                        'and soon the branch will be declared <strong>not maintained</strong>.'
                     )
                 QMessageBox.warning(
                     self.dlg,
