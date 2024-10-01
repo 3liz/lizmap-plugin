@@ -9,6 +9,7 @@ CLOUD_MAX_PARENT_FOLDER = 2
 CLOUD_ONLINE_URL = 'https://docs.lizmap.cloud'
 CLOUD_ONLINE_LANGUAGES = ('en', 'fr')
 
+# TODO Fixme, the minimum version recommended varies on the LWC version
 CLOUD_QGIS_MIN_RECOMMENDED = (3, 28, 0)
 
 UPLOAD_EXTENSIONS = ('fgb', 'gpkg', 'xlsx', 'xls', 'csv', 'ods', 'kml', 'geojson')

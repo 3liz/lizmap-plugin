@@ -3591,7 +3591,19 @@ class Lizmap:
             target_status = ReleaseStatus.Unknown
 
         if is_lizmap_cloud(server_metadata):
-            if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
+            eol = (ReleaseStatus.Retired, ReleaseStatus.SecurityBugfixOnly)
+            if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) in eol:
+                if self.dlg.current_server_info(ServerComboData.LwcBranchStatus.value) == ReleaseStatus.Retired:
+                    msg = tr(
+                        'This version of Lizmap Web Client has now reached its <strong>end of life</strong> '
+                        'and is not supported anymore.'
+                    )
+                else:
+                    msg = tr(
+                        'This version of Lizmap Web Client has nearly reached its end of life as it is in '
+                        '<strong>security bugfix mode</strong>. Only critical bugfix are added and soon the '
+                        'branch will be declared <strong>end of life</strong>.'
+                    )
                 QMessageBox.warning(
                     self.dlg,
                     CLOUD_NAME,
@@ -3603,11 +3615,14 @@ class Lizmap:
                         lwc_version=lwc_version.value,
                     )
                     + "<br><br>"
+                    + msg
+                    + "<br><br>"
+                    + "<strong>"
                     + tr(
-                        'This version of Lizmap Web Client has now reached its end of life and is not supported '
-                        'anymore. Please visit your administration panel in your web browser, in the dashboard, and '
+                        'Please visit your administration panel in your web browser, in the dashboard, and '
                         'ask for the update.'
                     )
+                    + "</strong>"
                     + "<br><br>"
                     + tr(
                         'You might have some old project which need an update from you. The list is written on the '

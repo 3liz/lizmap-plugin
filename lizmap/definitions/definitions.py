@@ -116,7 +116,7 @@ class ReleaseStatus(Enum):
         for status in cls.__members__.values():
             if str(status.value).lower() == status_string:
                 return status
-        return None
+        return ReleaseStatus.Unknown
 
 
 @unique

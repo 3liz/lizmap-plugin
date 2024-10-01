@@ -5,8 +5,6 @@ __email__ = 'info@3liz.org'
 import json
 import logging
 
-from typing import Tuple
-
 from qgis.core import Qgis, QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
 
@@ -71,38 +69,6 @@ class VersionChecker:
         with open(lizmap_user_folder().joinpath("released_versions.json"), "w") as output:
             output.write(content)
 
-    @classmethod
-    def version_status(cls, status: str) -> Tuple[ReleaseStatus, str]:
-        """ Return the release status according to the JSON content. """
-        if status == 'dev':
-            flag = ReleaseStatus.Dev
-        elif status == 'feature_freeze':
-            flag = ReleaseStatus.ReleaseCandidate
-        elif status == 'stable':
-            flag = ReleaseStatus.Stable
-        elif status == 'retired':
-            flag = ReleaseStatus.Retired
-        else:
-            flag = ReleaseStatus.Unknown
-
-        return flag, cls.status_display_string(flag)
-
-    @classmethod
-    def status_display_string(cls, status: ReleaseStatus) -> str:
-        """ Return a human display string status. """
-        if status == ReleaseStatus.Dev:
-            return tr('Next')
-        elif status == ReleaseStatus.ReleaseCandidate:
-            return tr('Feature freeze')
-        elif status == ReleaseStatus.Stable:
-            return tr('Stable')
-        elif status == ReleaseStatus.Retired:
-            return tr('Not maintained')
-        elif status is None or status == ReleaseStatus.Unknown:
-            return tr('Inconnu')
-        else:
-            raise Exception('Unknown status type : {}'.format(status))
-
     def update_lwc_servers(self, released_versions: dict):
         """ Update LWC version status for each server. """
         for index in range(self.dialog.server_combo.count()):
@@ -120,7 +86,7 @@ class VersionChecker:
                 if lwc_version != version:
                     continue
 
-                flag, suffix = self.version_status(json_version.get('status'))
+                flag = ReleaseStatus.find(json_version.get('status'))
                 self.dialog.server_combo.setItemData(index, flag, ServerComboData.LwcBranchStatus.value)
 
     def update_lwc_releases(self, released_versions: dict):
