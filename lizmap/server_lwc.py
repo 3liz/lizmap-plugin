@@ -685,6 +685,8 @@ class ServerManager:
             markdown += '* Py-QGIS-Server : {}\n'.format(py_qgis_version)
             for plugin, info in plugins.items():
                 markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
+
+            markdown += self.modules_to_markdown(content)
             qgis_cell.setData(Qt.UserRole, markdown)
             self.update_action_version(
                 lizmap_version, qgis_server_version, row, login, lizmap_cloud=is_lizmap_cloud(content))
@@ -744,6 +746,22 @@ class ServerManager:
         qgis_cell.setData(Qt.UserRole, markdown)
         self.server_combo.setItemData(index, markdown, ServerComboData.MarkDown.value)
         self.update_action_version(lizmap_version, None, row)
+
+    @classmethod
+    def modules_to_markdown(cls, content: dict) -> str:
+        """ Export the list of LWC modules to markdown. """
+        # Available since LWC 3.8.2
+        text = '\n<details>\n'
+        text += '<summary>List of Lizmap Web Client modules :</summary>\n'
+        text += '<br/>\n'
+        modules = content.get("modules")
+        if modules:
+            for module, info in modules.items():
+                text += f'* {module} : {info.get("version", "")}\n'
+        else:
+            text += '* Version Lizmap Web Client 3.8 needed\n'
+        text += '</details>\n'
+        return text
 
     @classmethod
     def existing_json_server_list(cls) -> List:
@@ -1234,6 +1252,11 @@ class ServerManager:
     def display_all_versions(self, data: str):
         """ Display the markdown in a message box. """
         data = data.replace('*', '')
+        data = data.replace('<details>', '')
+        data = data.replace('</details>', '')
+        data = data.replace('<summary>', '')
+        data = data.replace('</summary>', '')
+        data = data.replace('<br/>', '')
         QMessageBox.information(
             self.parent,
             tr('Server versions'),
