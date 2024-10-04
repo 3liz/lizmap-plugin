@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.4.2 - 2024-10-04
+
+* Export the list of modules when requesting some support
+
 ## 4.4.1 - 2024-10-01
 
 * Improve the message when the LWC version is now in security bugfix only
