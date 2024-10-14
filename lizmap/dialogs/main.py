@@ -1017,6 +1017,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.group_local_layers,
             self.group_project_status,
             self.group_links,
+            self.group_box_max_scale_zoom,
         )
         for widget in q_group_box:
             widget.setStyleSheet(COMPLETE_STYLE_SHEET)

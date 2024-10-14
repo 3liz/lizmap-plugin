@@ -198,6 +198,24 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertIsNone(output['layers']['lines'].get('externalWmsToggle'))
         self.assertIsNone(output['layers']['lines'].get('metatileSize'))
 
+    def test_max_scale_lwc_3_7(self):
+        """ Test about maximum scale when zooming. """
+        lizmap = self._setup_empty_project(LwcVersions.Lizmap_3_6)
+
+        self.assertEqual(5000.0, lizmap.dlg.max_scale_points.scale())
+        self.assertEqual(5000.0, lizmap.dlg.max_scale_lines_polygons.scale())
+
+        # Max scale when zoomin
+        # Only points with a different value
+        lizmap.dlg.max_scale_points.setScale(1000.0)
+
+        # Check new values in the output config
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+
+        # Check scales in the CFG
+        self.assertEqual(1000.0, output['options']['max_scale_points'])
+        self.assertIsNone(output['options'].get('max_scale_lines_polygons'))
+
     def test_general_scales_properties_lwc_3_6(self):
         """ Test some UI settings about general properties with LWC 3.6. """
         lizmap = self._setup_empty_project(LwcVersions.Lizmap_3_6)
