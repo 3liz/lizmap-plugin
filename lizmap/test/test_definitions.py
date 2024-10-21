@@ -14,6 +14,8 @@ class TestDefinitions(unittest.TestCase):
         self.assertEqual(LwcVersions.find('3.5.0'), LwcVersions.Lizmap_3_5)
         self.assertEqual(LwcVersions.find('3.5.2-pre'), LwcVersions.Lizmap_3_5)
         self.assertEqual(LwcVersions.find('3.5.2-pre.5204'), LwcVersions.Lizmap_3_5)
+        self.assertEqual(LwcVersions.find('3.1.0'), LwcVersions.Lizmap_3_1)
+        self.assertEqual(LwcVersions.find('3.10.0'), LwcVersions.Lizmap_3_10)
 
         # Check a non-existing release in Python source code
         # The release string can be provided the online JSON file
@@ -33,13 +35,22 @@ class TestDefinitions(unittest.TestCase):
         self.assertTrue(LwcVersions.Lizmap_3_6 == LwcVersions.Lizmap_3_6)
         self.assertTrue(LwcVersions.Lizmap_3_6 != LwcVersions.Lizmap_3_5)
 
-        self.assertFalse(LwcVersions.Lizmap_3_4 > LwcVersions.Lizmap_3_5)
-        self.assertTrue(LwcVersions.Lizmap_3_6 >= LwcVersions.Lizmap_3_6)
+        self.assertTrue(LwcVersions.Lizmap_3_4 < LwcVersions.Lizmap_3_5)
         self.assertTrue(LwcVersions.Lizmap_3_6 > LwcVersions.Lizmap_3_5)
-
-        self.assertTrue(LwcVersions.Lizmap_3_5 < LwcVersions.Lizmap_3_6)
+        self.assertTrue(LwcVersions.Lizmap_3_6 >= LwcVersions.Lizmap_3_6)
         self.assertTrue(LwcVersions.Lizmap_3_5 <= LwcVersions.Lizmap_3_5)
-        self.assertFalse(LwcVersions.Lizmap_3_5 < LwcVersions.Lizmap_3_4)
+
+        self.assertEqual(LwcVersions.Lizmap_3_10, LwcVersions.latest())
+
+        # Do not confuse LWC 3.1 and 3.10
+        self.assertTrue(LwcVersions.Lizmap_3_10 > LwcVersions.Lizmap_3_9)
+        self.assertTrue(LwcVersions.Lizmap_3_9 < LwcVersions.Lizmap_3_10)
+        self.assertTrue(LwcVersions.Lizmap_3_10 >= LwcVersions.Lizmap_3_10)
+        self.assertTrue(LwcVersions.Lizmap_3_10 <= LwcVersions.Lizmap_3_10)
+
+    def test_version_list(self):
+        """ Test version as a list. """
+        self.assertListEqual([3, 10], LwcVersions.version_as_list(LwcVersions.Lizmap_3_10.value))
 
     def test_release_status(self):
         """ Test to retrieve release status. """

@@ -7,6 +7,7 @@ __email__ = 'info@3liz.org'
 from collections import namedtuple
 from enum import Enum, unique
 from functools import total_ordering
+from typing import List
 
 from qgis.PyQt.QtCore import Qt
 
@@ -27,7 +28,22 @@ class LwcVersions(Enum):
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:
-            return self.value < other.value
+            return self.version_as_list(self.value) < self.version_as_list(other.value)
+        return NotImplemented
+
+    def __ge__(self, other):
+        if self.__class__ is other.__class__:
+            return self.version_as_list(self.value) >= self.version_as_list(other.value)
+        return NotImplemented
+
+    def __gt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.version_as_list(self.value) > self.version_as_list(other.value)
+        return NotImplemented
+
+    def __le__(self, other):
+        if self.__class__ is other.__class__:
+            return self.version_as_list(self.value) <= self.version_as_list(other.value)
         return NotImplemented
 
     @staticmethod
@@ -49,8 +65,9 @@ class LwcVersions(Enum):
     @classmethod
     def find(cls, version_string: str, raise_exception: bool = False):
         """Return the LWC version for the given string."""
+        branch = cls.branch_from_version(version_string)
         for lwc_version in cls.__members__.values():
-            if version_string.startswith(lwc_version.value):
+            if branch == lwc_version.value:
                 return lwc_version
 
         if raise_exception:
@@ -63,6 +80,17 @@ class LwcVersions(Enum):
             # Not the best of course ! They will have a lot of blue.
             # It should be fixed ASAP.
             return LwcVersions.oldest()
+
+    @classmethod
+    def branch_from_version(cls, version_string: str) -> str:
+        """ Return the branch as a string from a version string. """
+        split_version = version_string.split('.')
+        return f"{split_version[0]}.{split_version[1]}"
+
+    @classmethod
+    def version_as_list(cls, version: str) -> List:
+        """ List from a version string. """
+        return [int(v) for v in version.split(".")]
 
     @classmethod
     def find_from_metadata(cls, metadata: dict):

@@ -44,7 +44,7 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
-from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
+from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX, LwcVersions
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.logger import log_function
@@ -1081,8 +1081,9 @@ class ServerWizard(BaseWizard):
             return False, tr('No "info" in the JSON document'), False
 
         lizmap_version = info.get('version')
-        if lizmap_version.startswith(('3.1', '3.2', '3.3', '3.4')):
-            # Wait for EOL QGIS 3.10 because linked to LWC 3.5
+        branch = LwcVersions.branch_from_version(lizmap_version)
+        if branch in ('3.1', '3.2', '3.3', '3.4'):
+            # Wait for EOL QGIS_VERSION_INT 3.10 because linked to LWC 3.5
             return True, '', True
 
         # For other versions, we continue to see the access

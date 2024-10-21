@@ -60,6 +60,8 @@ class TableManager:
         self.lwc_versions.append(LwcVersions.Lizmap_3_6)
         self.lwc_versions.append(LwcVersions.Lizmap_3_7)
         self.lwc_versions.append(LwcVersions.Lizmap_3_8)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_9)
+        self.lwc_versions.append(LwcVersions.Lizmap_3_10)
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))

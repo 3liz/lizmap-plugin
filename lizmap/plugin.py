@@ -227,6 +227,7 @@ class Lizmap:
 
         # Must only be used in tests
         # In production, version is coming from the UI, according to the current server selected
+        # In production, this variable must be None
         self._version = lwc_version
 
         # Keep it for a few months
@@ -455,6 +456,10 @@ class Lizmap:
             self.dlg.checkbox_wms_single_request_all_layers,
             # Permalink, will be backported to 3.7, but wait a little before adding it to the 3.7 list
             self.dlg.automatic_permalink,
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_9] = [
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_10] = [
         ]
 
         self.lizmap_cloud = [
