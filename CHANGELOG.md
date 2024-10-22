@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.4.3 - 2024-10-22
+
+* Improve layout when copy/pasting versions
+* Helper function for the Dynamic layer plugin
+
 ## 4.4.2 - 2024-10-04
 
 * Export the list of modules when requesting some support
