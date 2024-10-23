@@ -1132,6 +1132,20 @@ QListWidget::item::selected {
                   <string>Scales</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="2" column="0">
+                   <widget class="QCheckBox" name="use_native_scales">
+                    <property name="text">
+                     <string>Use native scales according to the project CRS (better display)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QCheckBox" name="hide_scale_value">
+                    <property name="text">
+                     <string>Hide numeric scale value</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_17">
                     <property name="text">
@@ -1139,12 +1153,8 @@ QListWidget::item::selected {
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QCheckBox" name="use_native_scales">
-                    <property name="text">
-                     <string>Use native scales according to the project CRS (better display)</string>
-                    </property>
-                   </widget>
+                  <item row="4" column="0">
+                   <widget class="WarningWidget" name="scales_warning" native="true"/>
                   </item>
                   <item row="7" column="0">
                    <layout class="QFormLayout" name="formLayout_6">
@@ -1236,14 +1246,41 @@ QListWidget::item::selected {
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
-                   <widget class="WarningWidget" name="scales_warning" native="true"/>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QCheckBox" name="hide_scale_value">
-                    <property name="text">
-                     <string>Hide numeric scale value</string>
+                  <item row="8" column="0">
+                   <widget class="QGroupBox" name="group_box_max_scale_zoom">
+                    <property name="title">
+                     <string>Maximum scale when zooming on a feature</string>
                     </property>
+                    <layout class="QFormLayout" name="formLayout_9">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_max_scale_points">
+                       <property name="text">
+                        <string>Points</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QgsScaleWidget" name="max_scale_points">
+                       <property name="showCurrentScaleButton">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_max_scale_polygons">
+                       <property name="text">
+                        <string>Lines/polygons</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QgsScaleWidget" name="max_scale_lines_polygons">
+                       <property name="showCurrentScaleButton">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -5512,6 +5549,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>

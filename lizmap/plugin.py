@@ -458,6 +458,7 @@ class Lizmap:
             self.dlg.automatic_permalink,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_9] = [
+            self.dlg.group_box_max_scale_zoom,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_10] = [
         ]
@@ -473,6 +474,8 @@ class Lizmap:
         # self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
         # self.global_options['minScale']['widget'] = self.dlg.minimum_scale
         # self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
+        self.global_options['max_scale_points']['widget'] = self.dlg.max_scale_points
+        self.global_options['max_scale_lines_polygons']['widget'] = self.dlg.max_scale_lines_polygons
         self.global_options['hide_numeric_scale_value']['widget'] = self.dlg.hide_scale_value
         self.global_options['acl']['widget'] = self.dlg.inAcl
         self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
@@ -1862,6 +1865,16 @@ class Lizmap:
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
                         item['widget'].setChecked(to_bool(json_options[key]))
+
+                if item['wType'] == 'scale':
+                    item['widget'].setShowCurrentScaleButton(True)
+                    item['widget'].setMapCanvas(self.iface.mapCanvas())
+                    item['widget'].setAllowNull(False)
+                    value = json_options.get(key)
+                    if value:
+                        item['widget'].setScale(value)
+                    else:
+                        item['widget'].setScale(item['default'])
 
                 if item['wType'] in ('text', 'textarea'):
                     if isinstance(item['default'], (list, tuple)):
@@ -3719,6 +3732,12 @@ class Lizmap:
                 # Get field value depending on widget type
                 if item['wType'] == 'text':
                     input_value = item['widget'].text().strip(' \t')
+
+                if item['wType'] == 'scale':
+                    input_value = item['widget'].scale()
+                    if input_value == item['default']:
+                        # Only save if different from the default value
+                        continue
 
                 if item['wType'] == 'wysiwyg':
                     input_value = item['widget'].html_content().strip(' \t')

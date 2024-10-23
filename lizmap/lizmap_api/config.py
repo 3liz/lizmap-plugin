@@ -55,6 +55,12 @@ class LizmapConfig:
             'maxScale': {
                 'wType': 'text', 'type': 'integer', 'default': 1000000000
             },
+            'max_scale_points': {
+                'wType': 'scale', 'type': 'float', 'default': 5000.0
+            },
+            'max_scale_lines_polygons': {
+                'wType': 'scale', 'type': 'float', 'default': 5000.0
+            },
             'use_native_zoom_levels': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': True,
                 'always_export': True, 'use_proper_boolean': True,
@@ -169,6 +175,7 @@ class LizmapConfig:
                     ),
                 ],
             },
+            # Deprecated, it has been removed in LWC 3.8
             'zoomHistory': {
                 'wType': 'checkbox', 'type': 'boolean', 'default': False
             },
