@@ -17,7 +17,7 @@ from shutil import copyfile
 from typing import Dict, List, Optional, Tuple, Union
 
 from pyplugin_installer.version_compare import compareVersions
-from qgis.core import (
+from qgis.core import (  # QgsIconUtils,
     Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
@@ -25,7 +25,6 @@ from qgis.core import (
     QgsEditFormConfig,
     QgsExpression,
     QgsFileDownloader,
-    QgsIconUtils,
     QgsLayerTree,
     QgsLayerTreeGroup,
     QgsMapLayer,
@@ -139,7 +138,7 @@ from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
-from lizmap.project_checker_tools import (
+from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legend,
     ALLOW_PARENT_FOLDER,
     FORCE_LOCAL_FOLDER,
     FORCE_PG_USER_PASS,
@@ -150,7 +149,6 @@ from lizmap.project_checker_tools import (
     count_legend_items,
     duplicated_label_legend,
     duplicated_layer_name_or_group,
-    duplicated_layer_with_filter_legend,
     duplicated_rule_key_legend,
     project_invalid_pk,
     project_safeguards_checks,
@@ -3388,52 +3386,53 @@ class Lizmap:
                             lizmap_cloud=lizmap_cloud,
                         )
 
-            if lwc_version >= LwcVersions.Lizmap_3_7:
-                results = duplicated_layer_with_filter_legend(self.project)
-                if results:
-                    self.dlg.log_panel.append(checks.DuplicatedLayerFilterLegend.title, Html.H2)
-                    self.dlg.log_panel.start_table()
-                    self.dlg.log_panel.append(
-                        "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(
-                            tr('Datasource'), tr('Filters'), tr('Layers'))
-                    )
-                    for i, result in enumerate(results):
-                        for uri, filters in result.items():
-                            self.dlg.log_panel.add_row(i)
-                            self.dlg.log_panel.append(uri, Html.Td)
-
-                            # Icon
-                            for k, v in filters.items():
-                                if k == "_wkb_type":
-                                    icon = QgsIconUtils.iconForWkbType(v)
-                                    break
-                            else:
-                                icon = QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg')
-
-                            del filters["_wkb_type"]
-
-                            uri_filter = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.keys()]) + '</ul>'
-                            self.dlg.log_panel.append(uri_filter, Html.Td)
-
-                            layer_names = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.values()]) + '</ul>'
-                            self.dlg.log_panel.append(layer_names, Html.Td)
-
-                            self.dlg.log_panel.end_row()
-
-                            self.dlg.check_results.add_error(
-                                Error(
-                                    uri,
-                                    checks.DuplicatedLayerFilterLegend,
-                                ),
-                                icon=icon,
-                            )
-
-                    self.dlg.log_panel.end_table()
-
-                    self.dlg.log_panel.append(tr(
-                        'Checkboxes are supported natively in the legend. Using filters for the same '
-                        'datasource are highly discouraged.'
-                    ), style=Html.P)
+            # if lwc_version >= LwcVersions.Lizmap_3_7:
+            #     # Temporary disabled, I think there are some valid use cases for this for now.
+            #     results = duplicated_layer_with_filter_legend(self.project)
+            #     if results:
+            #         self.dlg.log_panel.append(checks.DuplicatedLayerFilterLegend.title, Html.H2)
+            #         self.dlg.log_panel.start_table()
+            #         self.dlg.log_panel.append(
+            #             "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(
+            #                 tr('Datasource'), tr('Filters'), tr('Layers'))
+            #         )
+            #         for i, result in enumerate(results):
+            #             for uri, filters in result.items():
+            #                 self.dlg.log_panel.add_row(i)
+            #                 self.dlg.log_panel.append(uri, Html.Td)
+            #
+            #                 # Icon
+            #                 for k, v in filters.items():
+            #                     if k == "_wkb_type":
+            #                         icon = QgsIconUtils.iconForWkbType(v)
+            #                         break
+            #                 else:
+            #                     icon = QIcon(':/images/themes/default/algorithms/mAlgorithmMergeLayers.svg')
+            #
+            #                 del filters["_wkb_type"]
+            #
+            #                 uri_filter = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.keys()]) + '</ul>'
+            #                 self.dlg.log_panel.append(uri_filter, Html.Td)
+            #
+            #                 layer_names = '<ul>' + ''.join([f"<li>{k}</li>" for k in filters.values()]) + '</ul>'
+            #                 self.dlg.log_panel.append(layer_names, Html.Td)
+            #
+            #                 self.dlg.log_panel.end_row()
+            #
+            #                 self.dlg.check_results.add_error(
+            #                     Error(
+            #                         uri,
+            #                         checks.DuplicatedLayerFilterLegend,
+            #                     ),
+            #                     icon=icon,
+            #                 )
+            #
+            #         self.dlg.log_panel.end_table()
+            #
+            #         self.dlg.log_panel.append(tr(
+            #             'Checkboxes are supported natively in the legend. Using filters for the same '
+            #             'datasource are highly discouraged.'
+            #         ), style=Html.P)
 
         results = simplify_provider_side(self.project)
         for layer in results:
