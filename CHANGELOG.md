@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.4.4 - 2024-10-29
+
+* Add new settings about maximum scales when zooming on points, lines or polygons, for Lizmap Web Client 3.9
+* Temporary disable the "duplicated layer with different filters check"
+
 ## 4.4.3 - 2024-10-22
 
 * Improve layout when copy/pasting versions
