@@ -15,10 +15,9 @@ from qgis.core import (
 )
 
 from lizmap.project_checker_tools import (
-    InvalidType,
     auto_generated_primary_key_field,
-    invalid_type_primary_key,
     table_type,
+    valid_int4_primary_key,
 )
 
 # To run these tests:
@@ -50,7 +49,7 @@ if CREDENTIALS and not os.getenv("CI"):
 
 def skip_test():
     """ Check conditions for running tests. """
-    return not all((os.getenv("CI"), CREDENTIALS, PG_HOST, PG_PORT, PG_PASSWORD, PG_USER, PG_DATABASE))
+    return not all((CREDENTIALS, PG_HOST, PG_PORT, PG_PASSWORD, PG_USER, PG_DATABASE))
 
 
 class TestSql(unittest.TestCase):
@@ -201,8 +200,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
-        self.assertTrue(invalid_type_primary_key(layer, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer))
 
         # View
         del layer
@@ -214,8 +212,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual("", new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer_view))
 
         # Materialized view
         del layer_view
@@ -227,62 +224,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual("", new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
-
-    def test_invalid_int8_pk(self):
-        """ Test invalid int8 (bigint) primary key. """
-        table_name = "test_bigint"
-        field_name = "id"
-        sql = (
-            f"CREATE TABLE IF NOT EXISTS {self.schema}.{table_name}"
-            f"("
-            f"  {field_name} BIGINT PRIMARY KEY,"
-            f"  label TEXT"
-            f");"
-        )
-        self.cursor.execute(sql)
-        self.connection.commit()
-
-        self._create_views(table_name)
-
-        layer = self._vector_layer(table_name)
-
-        # Only testing QGIS
-        self.assertListEqual([0], layer.primaryKeyAttributes())
-        self.assertEqual(field_name, layer.fields().at(layer.primaryKeyAttributes()[0]).name())
-        new_uri = QgsDataSourceUri(layer.source())
-        self.assertEqual(field_name, new_uri.keyColumn())
-
-        # Lizmap check
-        self.assertTrue(invalid_type_primary_key(layer, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
-
-        # View
-        del layer
-        layer_view = self._vector_layer(table_name, 'view')
-
-        # Only testing QGIS
-        self.assertListEqual([], layer_view.primaryKeyAttributes())
-        new_uri = QgsDataSourceUri(layer_view.source())
-        self.assertEqual("", new_uri.keyColumn())
-
-        # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
-
-        # Materialized view
-        del layer_view
-        layer_materialized_view = self._vector_layer(table_name, 'view_m')
-
-        # Only testing QGIS
-        self.assertListEqual([], layer_materialized_view.primaryKeyAttributes())
-        new_uri = QgsDataSourceUri(layer_materialized_view.source())
-        self.assertEqual("", new_uri.keyColumn())
-
-        # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer_materialized_view))
 
     def test_invalid_composite_pk(self):
         """ Test invalid composite primary keys. """
@@ -315,8 +257,7 @@ class TestSql(unittest.TestCase):
 
         # Lizmap check
         # TODO check what we expect
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer))
 
         result, field = auto_generated_primary_key_field(layer)
         self.assertFalse(result)
@@ -332,8 +273,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual("", new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer_view))
         result, field = auto_generated_primary_key_field(layer_view)
         self.assertTrue(result)
         self.assertEqual('', field)
@@ -348,8 +288,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual("", new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer_materialized_view))
         result, field = auto_generated_primary_key_field(layer_materialized_view)
         self.assertTrue(result)
         self.assertEqual('', field)
@@ -379,8 +318,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
+        self.assertTrue(valid_int4_primary_key(layer))
 
         # View
         # We need to give the PK
@@ -394,8 +332,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        self.assertTrue(valid_int4_primary_key(layer_view))
         result, field = auto_generated_primary_key_field(layer_view)
         self.assertFalse(result)
         self.assertIsNone(field)
@@ -412,8 +349,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        self.assertTrue(valid_int4_primary_key(layer_materialized_view))
         result, field = auto_generated_primary_key_field(layer_materialized_view)
         self.assertFalse(result)
         self.assertIsNone(field)
@@ -444,8 +380,7 @@ class TestSql(unittest.TestCase):
 
         # Lizmap check
         # TODO check
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer))
         result, field = auto_generated_primary_key_field(layer)
         self.assertFalse(result)
         self.assertIsNone(field)
@@ -462,8 +397,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_view, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer_view))
         result, field = auto_generated_primary_key_field(layer_view)
         self.assertFalse(result)
         self.assertIsNone(field)
@@ -480,8 +414,7 @@ class TestSql(unittest.TestCase):
         self.assertEqual(field_name, new_uri.keyColumn())
 
         # Lizmap check
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Int8))
-        self.assertFalse(invalid_type_primary_key(layer_materialized_view, InvalidType.Varchar))
+        self.assertFalse(valid_int4_primary_key(layer_materialized_view))
         result, field = auto_generated_primary_key_field(layer_materialized_view)
         self.assertFalse(result)
         self.assertIsNone(field)
