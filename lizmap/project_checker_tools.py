@@ -387,7 +387,7 @@ def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
         if not is_vector_pg(layer, geometry_check=True):
             continue
 
-        if layer.geometryType() == QgsWkbTypes.PointGeometry:
+        if layer.geometryType() == QgsWkbTypes.GeometryType.PointGeometry:
             continue
 
         has_simplification = layer.simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod.NoSimplification

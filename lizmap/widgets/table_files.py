@@ -53,9 +53,9 @@ class TableFiles(QTableWidget):
         """ Setting up parameters. """
         # Do not use the constructor __init__, it's not working. Maybe because of UI files ?
 
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setAlternatingRowColors(True)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setVisible(True)
@@ -109,7 +109,7 @@ class TableFiles(QTableWidget):
         remove_button.setText('')
         remove_button.setIcon(QIcon(":/images/themes/default/mActionDeleteSelected.svg"))
         remove_button.setToolTip(tr('Remove the remote file'))
-        remove_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        remove_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
         remove_button.clicked.connect(partial(self.button_remove_layer, row))
 
         cell = QWidget()

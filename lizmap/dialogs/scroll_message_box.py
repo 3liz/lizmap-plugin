@@ -29,4 +29,4 @@ class ScrollMessageBox(QMessageBox):
         scroll.setMinimumSize(400, 200)
         grid.addWidget(scroll, 0, 1)
         children[1].setText('')
-        self.exec_()
+        self.exec()

@@ -202,22 +202,22 @@ class TestProjectTable(unittest.TestCase):
 
         # Rule 1 with symbol
         # noinspection PyUnresolvedReferences
-        rule_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label + '-1')
+        rule_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry), label=label + '-1')
         root_rule.appendChild(rule_1)
 
         # Sub-rule to rule 1
         # noinspection PyTypeChecker
-        rule_1_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label)
+        rule_1_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry), label=label)
         rule_1.appendChild(rule_1_1)
 
         # Rule 2 with symbol
         # noinspection PyUnresolvedReferences
-        rule_2 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label + '-2')
+        rule_2 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry), label=label + '-2')
         root_rule.appendChild(rule_2)
 
         # Sub-rule to rule 2
         # noinspection PyTypeChecker
-        rule_2_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label=label)
+        rule_2_1 = QgsRuleBasedRenderer.Rule(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry), label=label)
         rule_2.appendChild(rule_2_1)
 
         # Useful for debugging

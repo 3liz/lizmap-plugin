@@ -39,7 +39,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
         # TODO when 3.8 will be the default, change the default tab according to the LWC version
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.fields.set_layer)
         self.layer.layerChanged.connect(self.html_template.set_layer)
@@ -82,19 +82,19 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
             return
 
         html_maptip_dialog = HtmlMapTipDialog(layer)
-        if not html_maptip_dialog.exec_():
+        if not html_maptip_dialog.exec():
             return
 
         if self.html_template.html_content():
             box = QMessageBox(self)
-            box.setIcon(QMessageBox.Question)
+            box.setIcon(QMessageBox.Icon.Question)
             box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
             box.setWindowTitle(tr('Replace existing HTML with the template'))
             box.setText(tr('This will erase your previous HTML.'))
-            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            box.setDefaultButton(QMessageBox.No)
-            result = box.exec_()
-            if result == QMessageBox.No:
+            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            box.setDefaultButton(QMessageBox.StandardButton.No)
+            result = box.exec()
+            if result == QMessageBox.StandardButton.No:
                 return
 
         result = html_maptip_dialog.map_tip()

@@ -64,16 +64,16 @@ class BaseEditionDialog(QDialog):
 
     def setup_ui(self):
         """ Build the UI. """
-        self.button_box.button(QDialogButtonBox.Help).setToolTip(
+        self.button_box.button(QDialogButtonBox.StandardButton.Help).setToolTip(
             tr('Open the online documentation for this feature.'))
         self.error.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         if not self.config.help_path():
-            self.button_box.button(QDialogButtonBox.Help).setVisible(False)
+            self.button_box.button(QDialogButtonBox.StandardButton.Help).setVisible(False)
 
-        self.button_box.button(QDialogButtonBox.Help).clicked.connect(self.open_help)
-        self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
-        self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
+        self.button_box.button(QDialogButtonBox.StandardButton.Help).clicked.connect(self.open_help)
+        self.button_box.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.close)
+        self.button_box.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(self.accept)
         self.error.setVisible(False)
 
         for layer_config in self.config.layer_config.values():
@@ -525,13 +525,13 @@ class BaseEditionDialog(QDialog):
                     "Your current Lizmap instance, running version {}, is not providing the needed information. "
                     "You should upgrade your Lizmap instance to at least 3.6.1 to use this wizard."
                 ).format(json_metadata["info"]["version"]),
-                QMessageBox.Ok
+                QMessageBox.StandardButton.Ok
             )
             return None
         # End of duplicated
 
         wizard_dialog = WizardGroupDialog(helper, self.allowed_groups.text(), acl['groups'])
-        if not wizard_dialog.exec_():
+        if not wizard_dialog.exec():
             return
 
         text = wizard_dialog.preview.text()

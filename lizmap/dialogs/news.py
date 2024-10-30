@@ -35,7 +35,7 @@ class BaseNewsDialog(QDialog, FORM_CLASS):
 
         self.open_link.clicked.connect(self.open_website)
 
-        accept_button = self.button_box.button(QDialogButtonBox.Ignore)
+        accept_button = self.button_box.button(QDialogButtonBox.StandardButton.Ignore)
         accept_button.clicked.connect(self.accept)
 
     def open_website(self):

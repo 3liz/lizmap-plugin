@@ -209,7 +209,7 @@ class LoginPasswordPage(QWizardPage):
         layout.addWidget(self.password_edit)
 
         # Progress bar
-        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
         self.progress = QProgressBar()
         self.progress.setMinimum(0)
         self.progress.setValue(0)
@@ -779,9 +779,9 @@ class BaseWizard(QWizard):
         # noinspection PyArgumentList
         super().__init__(parent)
         self.setWindowTitle(tr("Lizmap Web Client instance"))
-        self.setWizardStyle(QWizard.ClassicStyle)
-        self.setOption(QWizard.NoBackButtonOnStartPage)
-        self.setOption(QWizard.HaveHelpButton)
+        self.setWizardStyle(QWizard.WizardStyle.ClassicStyle)
+        self.setOption(QWizard.WizardOption.NoBackButtonOnStartPage)
+        self.setOption(QWizard.WizardOption.HaveHelpButton)
 
         self.setMinimumSize(800, 550)
 
@@ -1231,4 +1231,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     wizard = ServerWizard()
     wizard.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

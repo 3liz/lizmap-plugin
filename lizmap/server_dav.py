@@ -203,7 +203,7 @@ class WebDav:
         self.qgs = self.webdav.store(self.qgs_path, url, self.auth_id, Qgis.ActionStart.Deferred)
         self.qgs.stored.connect(loop.quit)
         self.qgs.store()
-        loop.exec_()
+        loop.exec()
 
         error = self.qgs.errorString()
         if error:
@@ -215,7 +215,7 @@ class WebDav:
         self.cfg = self.webdav.store(self.cfg_path, url, self.auth_id, Qgis.ActionStart.Deferred)
         self.cfg.stored.connect(loop.quit)
         self.cfg.store()
-        loop.exec_()
+        loop.exec()
 
         error = self.cfg.errorString()
         if error:
@@ -244,7 +244,7 @@ class WebDav:
         self.thumbnail = self.webdav.store(str(self.thumbnail_path), url, self.auth_id, Qgis.ActionStart.Deferred)
         self.thumbnail.stored.connect(loop.quit)
         self.thumbnail.store()
-        loop.exec_()
+        loop.exec()
 
         error = self.thumbnail.errorString()
         if error:
@@ -271,7 +271,7 @@ class WebDav:
         self.action = self.webdav.store(str(self.action_path), url, self.auth_id, Qgis.ActionStart.Deferred)
         self.action.stored.connect(loop.quit)
         self.action.store()
-        loop.exec_()
+        loop.exec()
 
         error = self.action.errorString()
         if error:
@@ -296,7 +296,7 @@ class WebDav:
         self.media = self.webdav.store(str(file_path), url, self.auth_id, Qgis.ActionStart.Deferred)
         self.media.stored.connect(loop.quit)
         self.media.store()
-        loop.exec_()
+        loop.exec()
 
         error = self.media.errorString()
         if error:
@@ -400,7 +400,7 @@ class WebDav:
         self.generic = self.webdav.store(str(file_path), remote_server, self.auth_id, Qgis.ActionStart.Deferred)
         self.generic.stored.connect(loop.quit)
         self.generic.store()
-        loop.exec_()
+        loop.exec()
 
         error = self.generic.errorString()
         if error:
@@ -571,11 +571,11 @@ class WebDav:
 
         data = reply.readAll()
         content = data.data().decode('utf8')
-        if reply.error() == QNetworkReply.NoError:
+        if reply.error() == QNetworkReply.NetworkError.NoError:
             # No error occurred, return the parsed response without any error message
             return self.parse_propfind_response(content), ''
 
-        if reply.error() == QNetworkReply.ContentNotFoundError:
+        if reply.error() == QNetworkReply.NetworkError.ContentNotFoundError:
             # The file doesn't exist on the server
             # Return None and empty error message
             return None, ''
@@ -643,7 +643,7 @@ class WebDav:
         network_request.setUrl(QUrl(self.dav_server + directory))
 
         reply = self._custom_blocking_request(network_request, 'MKCOL')
-        if reply.error() == QNetworkReply.NoError:
+        if reply.error() == QNetworkReply.NetworkError.NoError:
             return True, ''
 
         error = self.xml_reply_from_dav(reply)
@@ -673,7 +673,7 @@ class WebDav:
         reply: QNetworkReply
         # noinspection PyUnresolvedReferences
         reply.finished.connect(loop.quit)
-        loop.exec_()
+        loop.exec()
         return reply
 
     @classmethod

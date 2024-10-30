@@ -154,7 +154,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
     def add_expression_in_html(self):
         """ Open the expression builder dialog without any layer set. """
         dialog = QgsExpressionBuilderDialog(None)
-        if not dialog.exec_():
+        if not dialog.exec():
             return
         self._insert_qgis_expression(dialog.expressionText())
 

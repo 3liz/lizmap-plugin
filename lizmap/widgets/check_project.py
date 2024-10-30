@@ -1023,9 +1023,9 @@ class TableCheck(QTableWidget):
         """ Setting up parameters. """
         # Do not use the constructor __init__, it's not working. Maybe because of UI files ?
 
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setAlternatingRowColors(True)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setVisible(True)

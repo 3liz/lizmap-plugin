@@ -369,9 +369,9 @@ class TestHttpProtocol(unittest.TestCase):
         # Message are always in English, hardcoded in source code
         self.assertEqual("The resource you tried to create already exists", dialog.currentPage().result.text())
 
-        self.assertFalse(dialog.button(QWizard.FinishButton).isVisible())
+        self.assertFalse(dialog.button(QWizard.WizardButton.FinishButton).isVisible())
 
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         self.assertEqual(self.directory_name, dialog.field("folder_name"))
 
@@ -379,7 +379,7 @@ class TestHttpProtocol(unittest.TestCase):
 
         self.assertFalse(THUMBS in dialog.currentPage().result.text())
         self.assertTrue(self.directory_name in dialog.currentPage().result.text())
-        self.assertTrue(dialog.button(QWizard.FinishButton).isVisible())
+        self.assertTrue(dialog.button(QWizard.WizardButton.FinishButton).isVisible())
 
 
 if __name__ == "__main__":
