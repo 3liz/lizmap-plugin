@@ -87,15 +87,15 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             column.setToolTip(sub_definition['tooltip'])
             self.traces.setHorizontalHeaderItem(i, column)
         header = self.traces.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
 
-        self.traces.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.traces.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.traces.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.traces.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.traces.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.traces.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.traces.setAlternatingRowColors(True)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.current_layer_changed)
         self.layer.layerChanged.connect(self.check_layer_wfs)
 
@@ -196,8 +196,8 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
         dialog = TraceDatavizEditionDialog(
             self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection())
-        result = dialog.exec_()
-        if result != QDialog.Accepted:
+        result = dialog.exec()
+        if result != QDialog.DialogCode.Accepted:
             return
 
         data = dialog.save_form()

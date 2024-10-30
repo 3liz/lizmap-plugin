@@ -76,9 +76,9 @@ class TableManager:
             if not item.get('visible', True):
                 self.table.setColumnHidden(i, True)
 
-        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_existing_row)
 
@@ -209,8 +209,8 @@ class TableManager:
         """ When clicking on the "add" button, to add new row in the table. """
         # We give the main UI of the plugin in the edition dialog
         dialog = self.edition(self.parent, self._primary_keys())
-        result = dialog.exec_()
-        if result == QDialog.Accepted:
+        result = dialog.exec()
+        if result == QDialog.DialogCode.Accepted:
             data = dialog.save_form()
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
@@ -243,8 +243,8 @@ class TableManager:
         # We give the main UI of the plugin in the edition dialog
         dialog = self.edition(self.parent, self._primary_keys())
         dialog.load_form(data)
-        result = dialog.exec_()
-        if result == QDialog.Accepted:
+        result = dialog.exec()
+        if result == QDialog.DialogCode.Accepted:
             data = dialog.save_form()
             self._edit_row(row, data)
 
@@ -751,7 +751,7 @@ class TableManager:
                         has_index, message = self.definitions.has_spatial_centroid_index(vector_layer)
                         if not has_index:
                             # noinspection PyUnresolvedReferences,PyArgumentList
-                            QMessageBox.critical(self.parent, tr('Filter by polygon'), message, QMessageBox.Ok)
+                            QMessageBox.critical(self.parent, tr('Filter by polygon'), message, QMessageBox.StandardButton.Ok)
 
         if self.definitions.key() in [
             'locateByLayer',

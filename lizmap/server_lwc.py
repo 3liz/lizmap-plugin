@@ -148,9 +148,9 @@ class ServerManager:
 
         # Table
         self.table.setColumnCount(7)
-        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_row)
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -158,7 +158,7 @@ class ServerManager:
 
         # Headers
         header = self.table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
 
         # URL of the server, hidden
         item = QTableWidgetItem(tr('URL'))
@@ -321,9 +321,9 @@ class ServerManager:
         """ Add a new row in the table, asking the URL to the user. """
         existing = self.existing_json_server_list()
         dialog = ServerWizard(self.parent, existing)
-        result = dialog.exec_()
+        result = dialog.exec()
 
-        if result != QDialog.Accepted:
+        if result != QDialog.DialogCode.Accepted:
             return
 
         row = self.table.rowCount()
@@ -366,9 +366,9 @@ class ServerManager:
             if server.get('url') != url:
                 data.append({'url': server.get('url'), 'auth_id': auth_id})
         dialog = ServerWizard(self.parent, data, url=url, auth_id=auth_id, name=name)
-        result = dialog.exec_()
+        result = dialog.exec()
 
-        if result != QDialog.Accepted:
+        if result != QDialog.DialogCode.Accepted:
             return
 
         self._edit_row(row, dialog.current_url(), dialog.auth_id, dialog.current_name())
@@ -398,7 +398,7 @@ class ServerManager:
                         "We couldn't remove the login/password from the QGIS authentication database. "
                         "Please remove manually the line '{}' from your QGIS authentication database in the your QGIS "
                         "global settings, then 'Authentication' tab.").format(auth_id),
-                    QMessageBox.Ok)
+                    QMessageBox.StandardButton.Ok)
                 self.table.clearSelection()
                 return
             LOGGER.debug("Row {} removed from the QGIS authentication database".format(auth_id))
@@ -509,7 +509,7 @@ class ServerManager:
         request.setUrl(QUrl(ServerWizard.url_metadata(url)))
         request.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         # According to QGIS debug panel, this is not working for now
-        request.setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.PreferNetwork)
+        request.setAttribute(QNetworkRequest.Attribute.CacheLoadControlAttribute, QNetworkRequest.CacheLoadControl.PreferNetwork)
         self.fetchers[row].fetchContent(request, auth_id)
 
     def request_finished(self, row: int):
@@ -542,10 +542,10 @@ class ServerManager:
             self.display_action(row, Qgis.Warning, tr('Temporary not available'))
             return
 
-        if reply.error() != QNetworkReply.NoError:
-            if reply.error() == QNetworkReply.HostNotFoundError:
+        if reply.error() != QNetworkReply.NetworkError.NoError:
+            if reply.error() == QNetworkReply.NetworkError.HostNotFoundError:
                 self.display_action(row, Qgis.Warning, tr('Host can not be found. Is-it an intranet server ?'))
-            if reply.error() == QNetworkReply.ContentNotFoundError:
+            if reply.error() == QNetworkReply.NetworkError.ContentNotFoundError:
                 self.display_action(
                     row,
                     Qgis.Critical,
@@ -1207,12 +1207,12 @@ class ServerManager:
         show_fonts.triggered.connect(slot)
 
         # noinspection PyArgumentList
-        menu.exec_(QCursor.pos())
+        menu.exec(QCursor.pos())
 
     def create_remote_repository(self, authid: str, webdav_server: str, server: str):
         """ Open the wizard for repository creation. """
         dialog = CreateFolderWizard(self.parent, webdav_server=webdav_server, auth_id=authid, url=server)
-        dialog.exec_()
+        dialog.exec()
 
     def copy_as_markdown(self, data: str, action_data: str, action_required: bool):
         """ Copy the server information. """
@@ -1247,7 +1247,7 @@ class ServerManager:
         # noinspection PyArgumentList
         layout.addWidget(widget)
         dialog.setLayout(layout)
-        dialog.exec_()
+        dialog.exec()
 
     def display_all_versions(self, data: str):
         """ Display the markdown in a message box. """
@@ -1261,7 +1261,7 @@ class ServerManager:
             self.parent,
             tr('Server versions'),
             data,
-            QMessageBox.Ok)
+            QMessageBox.StandardButton.Ok)
 
     @staticmethod
     def released_versions() -> Path:

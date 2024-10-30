@@ -35,7 +35,7 @@ def is_database_layer(layer) -> bool:
 
 def is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
     """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
-    if layer.type() != QgsMapLayer.VectorLayer:
+    if layer.type() != QgsMapLayer.LayerType.VectorLayer:
         return False
 
     if layer.dataProvider().name() != 'postgres':

@@ -41,7 +41,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('hideLayer', self.label_hide_layer)
         self.config.add_layer_label('custom_config', self.label_has_custom_config)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.layer_changed)
         self.layer.layerChanged.connect(self.primary_key.setLayer)

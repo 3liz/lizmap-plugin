@@ -32,18 +32,18 @@ class WizardGroupDialog(QDialog, FORM_CLASS):
         self.label_additional.setToolTip(tooltip)
 
         # Server groups
-        self.list.setSelectionMode(QAbstractItemView.MultiSelection)
-        self.list.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.list.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.list.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        self.list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.list.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.list.setAlternatingRowColors(True)
         self.list.itemSelectionChanged.connect(self.update_preview)
 
         # Additional groups
         self.additional.textChanged.connect(self.update_preview)
 
-        accept_button = self.buttons.button(QDialogButtonBox.Ok)
+        accept_button = self.buttons.button(QDialogButtonBox.StandardButton.Ok)
         accept_button.clicked.connect(self.accept)
-        cancel_button = self.buttons.button(QDialogButtonBox.Cancel)
+        cancel_button = self.buttons.button(QDialogButtonBox.StandardButton.Cancel)
         cancel_button.clicked.connect(self.reject)
 
         self.populate_widgets(current_acl, server_groups)

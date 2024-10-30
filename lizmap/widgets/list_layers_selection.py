@@ -13,8 +13,8 @@ __revision__ = "$Format:%H$"
 class ListLayersSelection(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setSelectionMode(QAbstractItemView.MultiSelection)
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.project = None
 
     def set_project(self, project: QgsProject):
@@ -23,7 +23,7 @@ class ListLayersSelection(QListWidget):
         self.clear()
 
         for layer in self.project.mapLayers().values():
-            if layer.type() != QgsMapLayer.VectorLayer:
+            if layer.type() != QgsMapLayer.LayerType.VectorLayer:
                 continue
 
             if not layer.isSpatial():

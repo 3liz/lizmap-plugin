@@ -44,7 +44,7 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('triggerFilter', self.label_trigger)
         self.config.add_layer_label('duration', self.label_duration)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.primary_key.setAllowEmptyFieldName(False)
         self.feature_label.setAllowEmptyFieldName(False)
         self.sort_field.setAllowEmptyFieldName(False)

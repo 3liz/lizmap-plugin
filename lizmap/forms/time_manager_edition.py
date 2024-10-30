@@ -43,7 +43,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('min_timestamp', self.label_min_value)
         self.config.add_layer_label('max_timestamp', self.label_max_value)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
 
         self.start_field.setAllowEmptyFieldName(False)
         self.end_field.setAllowEmptyFieldName(True)

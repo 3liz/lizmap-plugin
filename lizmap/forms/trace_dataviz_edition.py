@@ -45,8 +45,8 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.z_field.setAllowEmptyFieldName(True)
         self.color_field.setAllowEmptyFieldName(True)
 
-        self.button_box.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
-        self.button_box.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
+        self.button_box.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.close)
+        self.button_box.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(self.accept)
         self.error.setVisible(False)
 
         color_definition = self.config.layer_config['color']

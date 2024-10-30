@@ -58,7 +58,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
 
         self.layer.layerChanged.connect(self.layer_changed)
         self.layer.layerChanged.connect(self.check_layer_wfs)
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         providers = QgsProviderRegistry.instance().providerList()
         providers.remove('postgres')
         self.layer.setExcludedProviders(providers)

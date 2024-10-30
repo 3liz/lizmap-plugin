@@ -13,8 +13,8 @@ __revision__ = "$Format:%H$"
 class ListFieldsSelection(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setSelectionMode(QAbstractItemView.MultiSelection)
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.layer = None
 
     def set_layer(self, layer: QgsVectorLayer):

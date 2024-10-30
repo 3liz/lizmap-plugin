@@ -889,7 +889,7 @@ class Lizmap:
         ))
 
         # Filter by polygon
-        self.dlg.layer_filter_polygon.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        self.dlg.layer_filter_polygon.setFilters(QgsMapLayerProxyModel.Filter.PolygonLayer)
         self.dlg.layer_filter_polygon.layerChanged.connect(self.dlg.field_filter_polygon.setLayer)
         self.dlg.field_filter_polygon.setLayer(self.dlg.layer_filter_polygon.currentLayer())
 
@@ -997,17 +997,17 @@ class Lizmap:
             old_cfg = self.current_path.with_suffix('.qgs.cfg')
             if old_cfg.exists():
                 box = QMessageBox(self.dlg)
-                box.setIcon(QMessageBox.Question)
+                box.setIcon(QMessageBox.Icon.Question)
                 box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
                 box.setWindowTitle(tr('Project has been renamed'))
                 box.setText(tr(
                     'The previous project located at "{}" was associated to a Lizmap configuration. '
                     'Do you want to copy the previous Lizmap configuration file to this new project ?'
                 ).format(self.current_path))
-                box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-                box.setDefaultButton(QMessageBox.No)
-                result = box.exec_()
-                if result == QMessageBox.No:
+                box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                box.setDefaultButton(QMessageBox.StandardButton.No)
+                result = box.exec()
+                if result == QMessageBox.StandardButton.No:
                     return
 
                 copyfile(str(old_cfg), str(new_cfg))
@@ -1268,10 +1268,10 @@ class Lizmap:
 
         # connect Lizmap signals and functions
 
-        self.dlg.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.dlg.close)
-        self.dlg.buttonBox.button(QDialogButtonBox.Apply).clicked.connect(partial(self.save_cfg_file_cursor, False))
-        self.dlg.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(partial(self.save_cfg_file_cursor, True))
-        self.dlg.buttonBox.button(QDialogButtonBox.Help).clicked.connect(self.show_help_question)
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.dlg.close)
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(partial(self.save_cfg_file_cursor, False))
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(partial(self.save_cfg_file_cursor, True))
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Help).clicked.connect(self.show_help_question)
 
         # Connect the left menu to the right panel
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
@@ -1653,14 +1653,14 @@ class Lizmap:
                     "Your current Lizmap instance, running version {}, is not providing the needed information. "
                     "You should upgrade your Lizmap instance to at least 3.6.1 to use this wizard."
                 ).format(json_metadata["info"]["version"]),
-                QMessageBox.Ok
+                QMessageBox.StandardButton.Ok
             )
             return None
         # End of duplicated
 
         current_acl = line_edit.text()
         wizard_dialog = WizardGroupDialog(helper, current_acl, acl['groups'])
-        if not wizard_dialog.exec_():
+        if not wizard_dialog.exec():
             return None
 
         text = wizard_dialog.preview.text()
@@ -1679,7 +1679,7 @@ class Lizmap:
             return
 
         box = QMessageBox(self.dlg)
-        box.setIcon(QMessageBox.Question)
+        box.setIcon(QMessageBox.Icon.Question)
         box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
         box.setWindowTitle(tr('Online documentation'))
         box.setText(tr(
@@ -1688,22 +1688,22 @@ class Lizmap:
 
         if is_lizmap_cloud(current_metadata):
             cloud_help = QPushButton("Lizmap Hosting")
-            box.addButton(cloud_help, QMessageBox.NoRole)
+            box.addButton(cloud_help, QMessageBox.ButtonRole.NoRole)
 
         if page:
             text = self.dlg.mOptionsListWidget.item(index).text()
             current_page = QPushButton(tr("Page '{}' in the plugin").format(text))
-            box.addButton(current_page, QMessageBox.NoRole)
+            box.addButton(current_page, QMessageBox.ButtonRole.NoRole)
         else:
             current_page = None
 
         lwc_help = QPushButton("Lizmap Web Client")
-        box.addButton(lwc_help, QMessageBox.YesRole)
-        box.setStandardButtons(QMessageBox.Cancel)
+        box.addButton(lwc_help, QMessageBox.ButtonRole.YesRole)
+        box.setStandardButtons(QMessageBox.StandardButton.Cancel)
 
-        result = box.exec_()
+        result = box.exec()
 
-        if result == QMessageBox.Cancel:
+        if result == QMessageBox.StandardButton.Cancel:
             return
 
         if box.clickedButton() == lwc_help:
@@ -1739,17 +1739,17 @@ class Lizmap:
         scales = ', '.join([str(i) for i in self.global_options['mapScales']['default']])
         if self.dlg.list_map_scales.text() != '':
             box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Question)
+            box.setIcon(QMessageBox.Icon.Question)
             box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
-            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            box.setDefaultButton(QMessageBox.No)
+            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            box.setDefaultButton(QMessageBox.StandardButton.No)
             box.setWindowTitle(tr('Reset the scales'))
             box.setText(tr(
                 'You have some scales predefined. Are you sure you want to reset with "{}" ?'
             ).format(scales))
 
-            result = box.exec_()
-            if result == QMessageBox.No:
+            result = box.exec()
+            if result == QMessageBox.StandardButton.No:
                 return
 
         self.dlg.list_map_scales.setText(scales)
@@ -1771,7 +1771,7 @@ class Lizmap:
                 tr(
                     'Map scales: Write down integer scales separated by comma. '
                     'You must enter at least 2 min and max values.'),
-                QMessageBox.Ok)
+                QMessageBox.StandardButton.Ok)
             min_scale = 1
             max_scale = 1000000000
         else:
@@ -1842,7 +1842,7 @@ class Lizmap:
                     'Please re-configure the options in the Layers tab completely. '
                     'The previous .cfg has been saved as .cfg.back')
                 QMessageBox.critical(
-                    self.dlg, tr('Lizmap Error'), message, QMessageBox.Ok)
+                    self.dlg, tr('Lizmap Error'), message, QMessageBox.StandardButton.Ok)
                 self.dlg.log_panel.append(message, abort=True, style=Html.P)
                 LOGGER.critical('Error while reading the Lizmap configuration file')
 
@@ -1976,7 +1976,7 @@ class Lizmap:
                     'should find your previous Lizmap configuration file and use the path above. Lizmap will load it.'
                 )
                 QMessageBox.warning(
-                    self.dlg, tr('New Lizmap configuration'), message, QMessageBox.Ok)
+                    self.dlg, tr('New Lizmap configuration'), message, QMessageBox.StandardButton.Ok)
 
             # Add default variables in the project
             if not variables.get('lizmap_user'):
@@ -2135,7 +2135,7 @@ class Lizmap:
             self.dlg,
             tr('Lizmap Error'),
             message,
-            QMessageBox.Ok)
+            QMessageBox.StandardButton.Ok)
 
     def set_tree_item_data(self, item_type, item_key, json_layers):
         """Define default data or data from previous configuration for one item (layer or group)
@@ -2362,7 +2362,7 @@ class Lizmap:
                 'Errors encountered while reading the last layer tree state. '
                 'Please re-configure the options in the Layers tab completely'
             )
-            QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.Ok)
+            QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.StandardButton.Ok)
             self.dlg.log_panel.append(message, abort=True, style=Html.P)
             return {}
 
@@ -2482,7 +2482,7 @@ class Lizmap:
             # Disable QGIS popup for layer without geom
             is_vector = isinstance(layer, QgsVectorLayer)
             # noinspection PyUnresolvedReferences
-            has_geom = is_vector and layer.wkbType() != QgsWkbTypes.NoGeometry
+            has_geom = is_vector and layer.wkbType() != QgsWkbTypes.Type.NoGeometry
             self.dlg.btConfigurePopup.setEnabled(has_geom)
             self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
             self.dlg.button_generate_html_table.setEnabled(is_vector)
@@ -2842,7 +2842,7 @@ class Lizmap:
                     'Some fields or alias could not be found in the layer. You must check the result manually '
                     'about these values below :'
                 ) + '<br><br>' + ','.join(errors),
-                QMessageBox.Ok)
+                QMessageBox.StandardButton.Ok)
 
         flag = self._set_maptip(layer, html)
         if flag:
@@ -2856,7 +2856,7 @@ class Lizmap:
 
         html_editor = HtmlEditorDialog()
         html_editor.editor.set_html_content(self.dlg.teLayerAbstract.toPlainText())
-        if not html_editor.exec_():
+        if not html_editor.exec():
             return
 
         self.dlg.teLayerAbstract.setPlainText(html_editor.editor.html_content())
@@ -2890,7 +2890,7 @@ class Lizmap:
                 LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
 
             popup_dialog = LizmapPopupDialog(text)
-            if not popup_dialog.exec_():
+            if not popup_dialog.exec():
                 return
 
             content = popup_dialog.txtPopup.text()
@@ -2910,7 +2910,7 @@ class Lizmap:
             html_editor = HtmlEditorDialog()
             html_editor.set_layer(layer)
             html_editor.editor.set_html_content(layer.mapTipTemplate())
-            if not html_editor.exec_():
+            if not html_editor.exec():
                 return
 
             self._set_maptip(layer, html_editor.editor.html_content(), False)
@@ -2975,16 +2975,16 @@ class Lizmap:
         """ Internal function to set the maptip on a layer. """
         if check and layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Question)
+            box.setIcon(QMessageBox.Icon.Question)
             box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
             box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
             box.setText(tr(
                 'A maptip already exists for this layer. This is going to override it. '
                 'Are you sure you want to continue ?'))
-            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            box.setDefaultButton(QMessageBox.No)
-            result = box.exec_()
-            if result == QMessageBox.No:
+            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            box.setDefaultButton(QMessageBox.StandardButton.No)
+            result = box.exec()
+            if result == QMessageBox.StandardButton.No:
                 return False
 
         layer.setMapTipTemplate(html_content)
@@ -2992,7 +2992,7 @@ class Lizmap:
             self.dlg,
             tr('Maptip'),
             tr('The maptip has been set in the layer "{}".').format(layer.name()),
-            QMessageBox.Ok
+            QMessageBox.StandardButton.Ok
         )
         self.dock_html_preview.update_html()
         return True
@@ -3004,7 +3004,7 @@ class Lizmap:
             return
 
         html_maptip_dialog = HtmlMapTipDialog(layer)
-        if not html_maptip_dialog.exec_():
+        if not html_maptip_dialog.exec():
             return
 
         result = html_maptip_dialog.map_tip()
@@ -3018,13 +3018,13 @@ class Lizmap:
 
         config = layer.editFormConfig()
         # noinspection PyUnresolvedReferences
-        if config.layout() != QgsEditFormConfig.TabLayout:
+        if config.layout() != QgsEditFormConfig.EditorLayout.TabLayout:
             LOGGER.warning('Maptip : the layer is not using a drag and drop form.')
             QMessageBox.warning(
                 self.dlg,
                 tr('Lizmap - Warning'),
                 tr('The form for this layer is not a drag and drop layout.'),
-                QMessageBox.Ok)
+                QMessageBox.StandardButton.Ok)
             return
 
         root = config.invisibleRootContainer()
@@ -3539,7 +3539,7 @@ class Lizmap:
         if with_gui and self.dlg.check_results.has_rows():
             self.dlg.mOptionsListWidget.setCurrentRow(Panels.Checks)
             self.dlg.tab_log.setCurrentIndex(0)
-            self.dlg.out_log.moveCursor(QTextCursor.Start)
+            self.dlg.out_log.moveCursor(QTextCursor.MoveOperation.Start)
             self.dlg.out_log.ensureCursorVisible()
 
         beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), True, bool)
@@ -3647,7 +3647,7 @@ class Lizmap:
                     )
                     + "<br><br>"
                     + tr('This is not blocking your current usage of the plugin, only to advise you.'),
-                    QMessageBox.Ok
+                    QMessageBox.StandardButton.Ok
                 )
 
             qgis_server_info = server_metadata.get('qgis_server_info')
@@ -3679,7 +3679,7 @@ class Lizmap:
                     )
                     + "<br><br>"
                     + tr('This is not blocking your current usage of the plugin, only to advise you.'),
-                    QMessageBox.Ok
+                    QMessageBox.StandardButton.Ok
                 )
 
         metadata = {
@@ -3922,7 +3922,7 @@ class Lizmap:
             geometry_type = -1
             if layer_type == 'layer':
                 layer = self.get_qgis_layer_by_id(k)
-                if layer and layer.type() == QgsMapLayer.VectorLayer:  # if it is a vector layer:
+                if layer and layer.type() == QgsMapLayer.LayerType.VectorLayer:  # if it is a vector layer:
                     geometry_type = layer.geometryType()
 
             # geometry type
@@ -4088,7 +4088,7 @@ class Lizmap:
                             'deprecated for vector layer, you should switch to another kind of popup, for instance to '
                             'a "QGIS HTML maptip". This will be removed in a future version of Lizmap.'
                         ).format(layer_options["name"]),
-                        QMessageBox.Ok
+                        QMessageBox.StandardButton.Ok
                     )
 
             # Add external WMS options if needed
@@ -4332,7 +4332,7 @@ class Lizmap:
         """ Save CFG file with a waiting cursor. """
         if not self.dlg.check_cfg_file_exists():
             new_project = NewConfigDialog()
-            new_project.exec_()
+            new_project.exec()
 
         with OverrideCursor(Qt.WaitCursor):
             result = self.save_cfg_file()
@@ -4469,14 +4469,14 @@ class Lizmap:
                             "check you have provided the correct server URL."
                         ),
                         stop_process
-                    ), QMessageBox.Ok)
+                    ), QMessageBox.StandardButton.Ok)
                 return False
 
         # global project option checking
         is_valid, message = self.check_global_project_options()
         if not is_valid:
             QMessageBox.critical(
-                self.dlg, tr('Lizmap Error'), '{}\n\n{}'.format(message, stop_process), QMessageBox.Ok)
+                self.dlg, tr('Lizmap Error'), '{}\n\n{}'.format(message, stop_process), QMessageBox.StandardButton.Ok)
             return False
 
         # Get configuration from input fields
@@ -4581,7 +4581,7 @@ class Lizmap:
             auth_id=self.webdav.auth_id,
             url=self.webdav.server_url(),
         )
-        dialog.exec_()
+        dialog.exec()
         self.dlg.refresh_versions_button.click()
 
     # def open_web_browser_project(self):
@@ -4606,7 +4606,7 @@ class Lizmap:
         server = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         if not qgis_exists:
             box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Question)
+            box.setIcon(QMessageBox.Icon.Question)
             box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
             box.setWindowTitle(tr('The project is not published yet'))
             box.setText(tr(
@@ -4617,10 +4617,10 @@ class Lizmap:
                 'Do you want to publish it for the first time in this directory ?'
             ).format(
                 self.project.baseName(), server, folder))
-            box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            box.setDefaultButton(QMessageBox.No)
-            result = box.exec_()
-            if result == QMessageBox.No:
+            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            box.setDefaultButton(QMessageBox.StandardButton.No)
+            result = box.exec()
+            if result == QMessageBox.StandardButton.No:
                 return False, '', ''
 
         with OverrideCursor(Qt.WaitCursor):
@@ -4662,7 +4662,7 @@ class Lizmap:
             return
 
         box = QMessageBox(self.dlg)
-        box.setIcon(QMessageBox.Question)
+        box.setIcon(QMessageBox.Icon.Question)
         box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
         box.setWindowTitle(tr('Create "media" directory on the server'))
         box.setText(tr(
@@ -4672,10 +4672,10 @@ class Lizmap:
             server=self.dlg.server_combo.currentText(),
             name=self.dlg.repository_combo.currentText()
         ))
-        box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        box.setDefaultButton(QMessageBox.No)
-        result = box.exec_()
-        if result == QMessageBox.No:
+        box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        box.setDefaultButton(QMessageBox.StandardButton.No)
+        result = box.exec()
+        if result == QMessageBox.StandardButton.No:
             return
 
         directory += 'media/'
@@ -4760,7 +4760,7 @@ class Lizmap:
 
         if result:
             box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Information)
+            box.setIcon(QMessageBox.Icon.Information)
             box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
             box.setWindowTitle(tr('Cache about the thumbnail'))
             box.setText(tr(
@@ -4771,9 +4771,9 @@ class Lizmap:
                 'CTRL + F5 (or CTRL + MAJ + R or similar) to force the refresh of the page without using the '
                 'web-browser cache.'
             ).format(number=24))
-            box.setStandardButtons(QMessageBox.Ok)
-            box.setDefaultButton(QMessageBox.Ok)
-            box.exec_()
+            box.setStandardButtons(QMessageBox.StandardButton.Ok)
+            box.setDefaultButton(QMessageBox.StandardButton.Ok)
+            box.exec()
 
             file_stats, error = self.webdav.file_stats_thumbnail()
             if error:
@@ -4807,14 +4807,14 @@ class Lizmap:
     def _question_remove_remote_file(self) -> bool:
         """ Question to confirme deletion on the remote server. """
         box = QMessageBox(self.dlg)
-        box.setIcon(QMessageBox.Question)
+        box.setIcon(QMessageBox.Icon.Question)
         box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
         box.setWindowTitle(tr('Remove a remote file'))
         box.setText(tr('Are you sure you want to remove the remote file ?'))
-        box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        box.setDefaultButton(QMessageBox.No)
-        result = box.exec_()
-        return result == QMessageBox.No
+        box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        box.setDefaultButton(QMessageBox.StandardButton.No)
+        result = box.exec()
+        return result == QMessageBox.StandardButton.No
 
     def remove_remote_file(self, button: QPushButton):
         """ Remove a remote file. """
@@ -5200,7 +5200,7 @@ class Lizmap:
             downloader.downloadCompleted.connect(self.download_completed_zip)
         downloader.startDownload()
         QApplication.setOverrideCursor(Qt.WaitCursor)
-        loop.exec_()
+        loop.exec()
 
     @staticmethod
     def login_from_auth_id(auth_id) -> str:
@@ -5243,7 +5243,7 @@ class Lizmap:
         # downloader.downloadCanceled.connect(self.download_canceled)
         downloader.downloadCompleted.connect(self.download_completed)
         downloader.startDownload()
-        loop.exec_()
+        loop.exec()
 
     def download_completed(self):
         """ Show the success bar, for both kind of workshops. """
@@ -5391,6 +5391,6 @@ class Lizmap:
         auto_send = QgsSettings().value(Settings.key(Settings.AutoSend), False, bool)
         self.dlg.send_webdav.setChecked(auto_send)
 
-        self.dlg.exec_()
+        self.dlg.exec()
         # self.check_webdav()
         return True

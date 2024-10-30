@@ -16,9 +16,9 @@ class LizmapPopupDialog(QDialog, FORM_CLASS):
         QDialog.__init__(self)
         self.setupUi(self)
 
-        accept_button = self.bbConfigurePopup.button(QDialogButtonBox.Ok)
+        accept_button = self.bbConfigurePopup.button(QDialogButtonBox.StandardButton.Ok)
         accept_button.clicked.connect(self.accept)
-        cancel_button = self.bbConfigurePopup.button(QDialogButtonBox.Cancel)
+        cancel_button = self.bbConfigurePopup.button(QDialogButtonBox.StandardButton.Cancel)
         cancel_button.clicked.connect(self.reject)
 
         self.groupBox.setStyleSheet(COMPLETE_STYLE_SHEET)

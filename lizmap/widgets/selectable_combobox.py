@@ -73,7 +73,7 @@ class CheckableFieldComboBox(CheckableComboBox):
 
         if not layer:
             return
-        if layer.type() != QgsMapLayer.VectorLayer:
+        if layer.type() != QgsMapLayer.LayerType.VectorLayer:
             return
 
         self.layer = layer

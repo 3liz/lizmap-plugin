@@ -20,9 +20,9 @@ class HtmlMapTipDialog(QDialog, FORM_CLASS):
         self.setupUi(self)
         self.layer = layer
 
-        accept_button = self.button_box.button(QDialogButtonBox.Ok)
+        accept_button = self.button_box.button(QDialogButtonBox.StandardButton.Ok)
         accept_button.clicked.connect(self.accept)
-        cancel_button = self.button_box.button(QDialogButtonBox.Cancel)
+        cancel_button = self.button_box.button(QDialogButtonBox.StandardButton.Cancel)
         cancel_button.clicked.connect(self.reject)
 
     @staticmethod

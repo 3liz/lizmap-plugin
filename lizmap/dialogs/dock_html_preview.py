@@ -86,7 +86,7 @@ class HtmlPreview(QDockWidget):
         self.layout.addLayout(horizontal)
 
         self.web_view = QWebView(self.dock)
-        size_policy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(self.web_view.sizePolicy().hasHeightForWidth())
@@ -95,7 +95,7 @@ class HtmlPreview(QDockWidget):
 
         self.setWidget(self.dock)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         # noinspection PyUnresolvedReferences
         self.layer.layerChanged.connect(self.current_layer_changed)
         self.current_layer_changed()

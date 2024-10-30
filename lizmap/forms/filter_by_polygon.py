@@ -36,7 +36,7 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('filter_mode', self.label_filter_mode)
         self.config.add_layer_label('spatial_relationship', self.label_spatial_relationship)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.primary_key.setLayer)
         self.layer.layerChanged.connect(self.enable_primary_key_field)
 

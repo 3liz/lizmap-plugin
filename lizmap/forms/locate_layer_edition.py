@@ -37,7 +37,7 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('minLength', self.label_autocomplete)
         self.config.add_layer_label('filterOnLocate', self.label_filter_layer)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.display_field.setLayer)
         self.layer.layerChanged.connect(self.field_group_by.setLayer)

@@ -36,7 +36,7 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('allow_multiple_acl_values', self.label_allow_multiple)
         self.config.add_layer_label('filterPrivate', self.label_filter_by)
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.field.setLayer)
         self.layer.layerChanged.connect(self.check_multiple_option)
 

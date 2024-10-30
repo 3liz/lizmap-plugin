@@ -162,7 +162,7 @@ class VersionChecker:
                         # If the changelog link has been published
                         if NewVersionDialog.check_version(lwc_version, self.dialog.table_server.rowCount):
                             new_version = NewVersionDialog(lwc_version, changelog_url)
-                            new_version.exec_()
+                            new_version.exec()
                         else:
                             NewVersionDialog.append_version(lwc_version)
 

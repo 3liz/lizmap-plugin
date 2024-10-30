@@ -406,7 +406,7 @@ class TestToolTip(unittest.TestCase):
         layer.dataProvider().addFeatures([feature])
 
         config = layer.editFormConfig()
-        config.setLayout(QgsEditFormConfig.TabLayout)
+        config.setLayout(QgsEditFormConfig.EditorLayout.TabLayout)
         config.clearTabs()
 
         root = config.invisibleRootContainer()
@@ -442,7 +442,7 @@ class TestToolTip(unittest.TestCase):
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
 
         config = layer.editFormConfig()
-        config.setLayout(QgsEditFormConfig.TabLayout)
+        config.setLayout(QgsEditFormConfig.EditorLayout.TabLayout)
         config.clearTabs()
 
         root = config.invisibleRootContainer()
@@ -498,7 +498,7 @@ class TestToolTip(unittest.TestCase):
         self.assertTrue(layer.isValid())
 
         config = layer.editFormConfig()
-        self.assertEqual(QgsEditFormConfig.TabLayout, config.layout())
+        self.assertEqual(QgsEditFormConfig.EditorLayout.TabLayout, config.layout())
 
         root = config.invisibleRootContainer()
         # noinspection PyArgumentList

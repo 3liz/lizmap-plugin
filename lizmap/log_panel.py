@@ -106,5 +106,5 @@ if __name__ == '__main__':
     layout.addWidget(edit)
     logger = LogPanel(edit)
     logger.append("Title", Html.H2, time=True)
-    dialog.exec_()
-    sys.exit(app.exec_())
+    dialog.exec()
+    sys.exit(app.exec())

@@ -75,7 +75,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             'select'
         )
 
-        self.layer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
 
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.layerChanged.connect(self.field.setLayer)

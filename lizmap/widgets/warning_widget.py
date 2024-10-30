@@ -18,7 +18,7 @@ class WarningWidget(QWidget):
         image_widget = QLabel()
         warning_icon = QPixmap(":images/themes/default/mIconWarning.svg")
         image_widget.setPixmap(warning_icon)
-        image_widget.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+        image_widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
 
         # noinspection PyArgumentList
         layout.addWidget(image_widget)

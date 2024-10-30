@@ -26,15 +26,15 @@ class HtmlEditorDialog(QDialog):
         layout.addWidget(self.editor)
 
         self.button_box = QDialogButtonBox()
-        self.button_box.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.button_box.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok)
         # noinspection PyArgumentList
         layout.addWidget(self.button_box)
 
         self.setLayout(layout)
 
-        accept_button = self.button_box.button(QDialogButtonBox.Ok)
+        accept_button = self.button_box.button(QDialogButtonBox.StandardButton.Ok)
         accept_button.clicked.connect(self.accept)
-        cancel_button = self.button_box.button(QDialogButtonBox.Cancel)
+        cancel_button = self.button_box.button(QDialogButtonBox.StandardButton.Cancel)
         cancel_button.clicked.connect(self.reject)
 
     def set_layer(self, layer: QgsVectorLayer):

@@ -61,24 +61,24 @@ class TestWizardServer(unittest.TestCase):
         # URL page
         #
         self.assertEqual(WizardPages.UrlPage, dialog.currentId())
-        self.assertFalse(dialog.button(QWizard.NextButton).isEnabled())
+        self.assertFalse(dialog.button(QWizard.WizardButton.NextButton).isEnabled())
         # Not a JSON content when appending index.php/view/app/metadata
         dialog.currentPage().url_edit.setText('https://foo.org')
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         #
         # Login and password page
         #
 
         self.assertEqual(WizardPages.LoginPasswordPage, dialog.currentId())
-        self.assertFalse(dialog.button(QWizard.NextButton).isEnabled())
+        self.assertFalse(dialog.button(QWizard.WizardButton.NextButton).isEnabled())
 
         # Wrong credentials
         dialog.currentPage().login_edit.setText('admin')
         dialog.currentPage().password_edit.setText('admin')
 
-        self.assertTrue(dialog.button(QWizard.NextButton).isEnabled())
-        dialog.button(QWizard.NextButton).click()
+        self.assertTrue(dialog.button(QWizard.WizardButton.NextButton).isEnabled())
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         # Back to the first panel because of the URL is not a JSON reply
         self.assertEqual(WizardPages.UrlPage, dialog.currentId())
@@ -87,12 +87,12 @@ class TestWizardServer(unittest.TestCase):
         self.assertEqual("", dialog.page(WizardPages.LoginPasswordPage).result_login_password.text())
 
         dialog.currentPage().url_edit.setText("https://demo.snap.lizmap.com/lizmap_3_6")
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         dialog.currentPage().login_edit.setText('admin_WRONG')
         dialog.currentPage().password_edit.setText('admin_WRONG')
 
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         # Still on the same page because of the login & password now...
 
@@ -113,18 +113,18 @@ class TestWizardServer(unittest.TestCase):
         #
         self.assertEqual(WizardPages.UrlPage, dialog.currentId())
         dialog.currentPage().url_edit.setText(LIZMAP_HOST_WEB)
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         #
         # Login and password page
         #
 
         self.assertEqual(WizardPages.LoginPasswordPage, dialog.currentId())
-        self.assertFalse(dialog.button(QWizard.NextButton).isEnabled())
+        self.assertFalse(dialog.button(QWizard.WizardButton.NextButton).isEnabled())
 
         dialog.currentPage().login_edit.setText(LIZMAP_USER)
         dialog.currentPage().password_edit.setText(LIZMAP_PASSWORD)
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         #
         # Name page
@@ -134,7 +134,7 @@ class TestWizardServer(unittest.TestCase):
         self.assertNotEqual('', dialog.page(WizardPages.LoginPasswordPage).result_login_password.text())
 
         self.assertEqual(NamePage.automatic_name(LIZMAP_HOST_WEB), dialog.currentPage().name_edit.text())
-        dialog.button(QWizard.NextButton).click()
+        dialog.button(QWizard.WizardButton.NextButton).click()
 
         #
         # Saving credentials page

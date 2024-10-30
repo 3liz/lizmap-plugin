@@ -60,8 +60,8 @@ class DragDropDatavizManager:
         # Drag and drop
         self.tree.setDragEnabled(True)
         self.tree.setAcceptDrops(True)
-        self.tree.setDragDropMode(QAbstractItemView.InternalMove)
-        self.tree.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tree.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+        self.tree.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
 
     def add_current_plot_from_combo(self):
         """ Button to add the current plot from the combobox into the tree widget. """
@@ -220,10 +220,10 @@ class DragDropDatavizManager:
             children.append(current_item.child(child))
 
         box = QMessageBox(self.parent)
-        box.setIcon(QMessageBox.Question)
+        box.setIcon(QMessageBox.Icon.Question)
         box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
-        box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        box.setDefaultButton(QMessageBox.No)
+        box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        box.setDefaultButton(QMessageBox.StandardButton.No)
 
         if current_item.data(0, Qt.UserRole) == Container.Container:
             box.setWindowTitle(tr('Remove the container'))
@@ -235,8 +235,8 @@ class DragDropDatavizManager:
             box.setWindowTitle(tr('Remove the plot'))
             box.setText(tr('Are you sure you want to remove the plot from the layout?'))
 
-        result = box.exec_()
-        if result == QMessageBox.No:
+        result = box.exec()
+        if result == QMessageBox.StandardButton.No:
             return
 
         for child in children:
