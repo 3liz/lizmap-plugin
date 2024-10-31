@@ -46,7 +46,8 @@ jobs:
     strategy:
       matrix:
         qgis_version: [
-          # "latest",
+          "latest",
+          "release-3_40",
           "release-3_34",
           "release-3_28",
           "release-3_22",
