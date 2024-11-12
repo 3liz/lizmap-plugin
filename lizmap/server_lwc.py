@@ -1065,9 +1065,14 @@ class ServerManager:
                     qgis_server = (int(split[0]), int(split[1]), int(split[2]))
                     if lizmap_cloud and qgis_server < CLOUD_QGIS_MIN_RECOMMENDED:
                         messages.insert(0, tr(
-                            'QGIS Server version {}.{} is not maintained anymore by QGIS.org since February 2023. '
+                            'QGIS Server version {major}.{minor} is not maintained anymore by QGIS.org since '
+                            '{month_and_year}. '
                             'Please visit your administration panel in the web browser to ask for the update.'
-                        ).format(qgis_server[0], qgis_server[1]))
+                        ).format(
+                            major=qgis_server[0],
+                            minor=qgis_server[1],
+                            month_and_year=tr("February 2024"),
+                        ))
                         level = Qgis.Critical
 
             if len(messages) == 0:

@@ -3667,10 +3667,12 @@ class Lizmap:
                     + "<br><br>"
                     + tr(
                         'This version of QGIS Server has now reached its end of life and is not supported '
-                        'anymore by QGIS.org since February 2023, see the '
+                        'anymore by QGIS.org since {month_and_year}, see the '
                         '<a href="https://www.qgis.org/en/site/getinvolved/development/roadmap.html#release-schedule">'
                         'QGIS roadmap'
                         '</a>.'
+                    ).format(
+                        month_and_year=tr("February 2024"),
                     )
                     + "<br><br>"
                     + tr(
