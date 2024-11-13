@@ -221,13 +221,13 @@ class ServerManager:
         """ Fetch the authentication settings for a given token. """
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
-            LOGGER.warning("Master password is not set, could not look for ID {}".format(auth_id))
+            LOGGER.warning(f"Master password is not set, could not look for ID {auth_id}")
             return None
 
         conf = QgsAuthMethodConfig()
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
         if not conf.id():
-            LOGGER.debug("Skipping password ID {}, it wasn't found in the password manager".format(auth_id))
+            LOGGER.debug(f"Skipping password ID {auth_id}, it wasn't found in the password manager")
             return None
 
         # LOGGER.info("Found password ID {}".format(auth_id))
@@ -248,7 +248,7 @@ class ServerManager:
     def cache_file_for_name(cls, name: str) -> Path:
         """ Return a cache file name according to a server name. """
         name = name.replace('/', '-')
-        cache_file = lizmap_user_folder().joinpath("cache_server_metadata").joinpath('{}.json'.format(name))
+        cache_file = lizmap_user_folder().joinpath("cache_server_metadata").joinpath(f'{name}.json')
         return cache_file
 
     def check_validity_servers(self) -> bool:
@@ -401,7 +401,7 @@ class ServerManager:
                     QMessageBox.StandardButton.Ok)
                 self.table.clearSelection()
                 return
-            LOGGER.debug("Row {} removed from the QGIS authentication database".format(auth_id))
+            LOGGER.debug(f"Row {auth_id} removed from the QGIS authentication database")
 
         self.table.clearSelection()
         self.table.removeRow(row)
@@ -503,13 +503,14 @@ class ServerManager:
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
 
         if auth_id:
-            QgsMessageLog.logMessage("Using the token for <a href='{0}'>{0}</a>".format(url), "Lizmap", Qgis.Info)
+            QgsMessageLog.logMessage(f"Using the token for <a href='{url}'>{url}</a>", "Lizmap", Qgis.Info)
 
         request = QNetworkRequest()
         request.setUrl(QUrl(ServerWizard.url_metadata(url)))
         request.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         # According to QGIS debug panel, this is not working for now
-        request.setAttribute(QNetworkRequest.Attribute.CacheLoadControlAttribute, QNetworkRequest.CacheLoadControl.PreferNetwork)
+        request.setAttribute(
+            QNetworkRequest.Attribute.CacheLoadControlAttribute, QNetworkRequest.CacheLoadControl.PreferNetwork)
         self.fetchers[row].fetchContent(request, auth_id)
 
     def request_finished(self, row: int):
@@ -631,7 +632,7 @@ class ServerManager:
         # Add the JSON metadata in the server combobox
         index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
         self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
-        LOGGER.info("Saving server metadata from network : {} - {}".format(index, server_alias))
+        LOGGER.info(f"Saving server metadata from network : {index} - {server_alias}")
         self.parent.tooltip_server_combo(index)
         # Server combo is refreshed, maybe we can allow the menu bar
         self.check_dialog_validity()
@@ -640,10 +641,16 @@ class ServerManager:
         if self.server_combo.currentData(ServerComboData.ServerUrl.value) == url:
             self.parent.refresh_combo_repositories()
 
+        lwc_version_txt = f'* Lizmap Web Client : {lizmap_version}'
+        git_hash = info.get('commit')
+        if git_hash:
+            lwc_version_txt += f" - commit {git_hash} https://github.com/3liz/lizmap-web-client/commit/{git_hash}"
+        lwc_version_txt += '\n'
+
         # Markdown
         markdown = '**Versions :**\n\n'
-        markdown += '* Lizmap Web Client : {}\n'.format(lizmap_version)
-        markdown += '* Lizmap plugin : {}\n'.format(version())
+        markdown += lwc_version_txt
+        markdown += f'* Lizmap plugin : {version()}\n'
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
         qgis_cell.setData(Qt.UserRole, markdown)
         qgis_cell.setData(Qt.UserRole + 1, content)
@@ -674,7 +681,7 @@ class ServerManager:
             plugins = qgis_server_info.get('plugins')
             # plugins = {'atlasprint': {'version': '3.2.2'}}
             # Temporary, add plugins as markdown in the data
-            markdown += '* QGIS Server : {}\n'.format(qgis_server_version)
+            markdown += f'* QGIS Server : {qgis_server_version}\n'
             py_qgis = qgis_server_info.get('py_qgis_server')
             if py_qgis:
                 py_qgis_version = py_qgis.get('version', 'Not used')
@@ -682,9 +689,13 @@ class ServerManager:
                 # Legacy, old server running
                 py_qgis_version = qgis_metadata.get('py_qgis_server_version', 'Not used')
 
-            markdown += '* Py-QGIS-Server : {}\n'.format(py_qgis_version)
+            markdown += f'* Py-QGIS-Server : {py_qgis_version}\n'
             for plugin, info in plugins.items():
-                markdown += '* QGIS Server plugin {} : {}\n'.format(plugin, info['version'])
+                plugin_version = info['version']
+                if plugin_version.lower().startswith("not"):
+                    # https://github.com/3liz/qgis-lizmap-server-plugin/commit/4e8e8c51102470eac0dc2ec622db9ab41d37f1c1
+                    continue
+                markdown += f'* QGIS Server plugin {plugin} : {plugin_version}\n'
 
             markdown += self.modules_to_markdown(content)
             qgis_cell.setData(Qt.UserRole, markdown)
@@ -755,9 +766,12 @@ class ServerManager:
         text += '<summary>List of Lizmap Web Client modules :</summary>\n'
         text += '<br/>\n'
         modules = content.get("modules")
-        if modules:
-            for module, info in modules.items():
-                text += f'* {module} : {info.get("version", "")}\n'
+        if isinstance(modules, dict):
+            if len(modules.keys()) >= 1:
+                for module, info in modules.items():
+                    text += f'* {module} : {info.get("version", "")}\n'
+            else:
+                text += '* No module\n'
         else:
             text += '* Version Lizmap Web Client 3.8 needed\n'
         text += '</details>\n'
@@ -804,11 +818,11 @@ class ServerManager:
                 with open(cache_file, encoding='utf8') as f:
                     metadata = json.load(f)
                     self.server_combo.setItemData(index, metadata, ServerComboData.JsonMetadata.value)
-                    LOGGER.info("Loading server <a href='{}'>{}</a> using cache in the drop down list".format(url, name))
+                    LOGGER.info(f"Loading server <a href='{url}'>{name}</a> using cache in the drop down list")
             else:
                 self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
                 LOGGER.info(
-                    "Loading server <a href='{}'>{}</a> without metadata in the drop down list".format(url, name))
+                    f"Loading server <a href='{url}'>{name}</a> without metadata in the drop down list")
 
             self.parent.tooltip_server_combo(index)
 
@@ -905,10 +919,11 @@ class ServerManager:
         split_version = lizmap_version.split('.')
         if len(split_version) not in (3, 4):
             # 3.4.0-pre but also 3.4.0-rc.1
+            # noinspection PyTypeChecker
             QgsMessageLog.logMessage(
-                "The version '{}' is not correct.".format(lizmap_version), "Lizmap", Qgis.Critical)
+                f"The version '{lizmap_version}' is not correct.", "Lizmap", Qgis.Critical)
 
-        branch = '{}.{}'.format(split_version[0], split_version[1])
+        branch = f'{split_version[0]}.{split_version[1]}'
         full_version = '{}.{}'.format(branch, split_version[2].split('-')[0])
 
         messages = []
@@ -1008,10 +1023,12 @@ class ServerManager:
                         messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
                     elif bugfix != 0 and status in (ReleaseStatus.ReleaseCandidate, ReleaseStatus.Stable, ReleaseStatus.SecurityBugfixOnly, ReleaseStatus.Retired):
                         # Even if the branch is retired, we encourage people upgrading to the latest
-                        messages.append(
-                            tr(
-                                'Not latest bugfix release, {version} is available'
-                            ).format(version=json_version['latest_release_version']))
+                        if not lizmap_cloud:
+                            # Only advertise if it's not a customer
+                            messages.append(
+                                tr(
+                                    'Not latest bugfix release, {version} is available'
+                                ).format(version=json_version['latest_release_version']))
 
                     if is_pre_package:
                         # Pre-release, maybe the package got some updates
@@ -1295,7 +1312,7 @@ class ServerManager:
 
             if '@{}'.format(url) in conf.name():
                 # Old format
-                LOGGER.warning("Migrating the URL {} in the QGIS authentication database".format(url))
+                LOGGER.warning(f"Migrating the URL {url} in the QGIS authentication database")
                 user = conf.config('username')
                 password = conf.config('password')
 
@@ -1328,7 +1345,7 @@ class ServerManager:
             split = conf.name().split('@')
             if QUrl(split[-1]).isValid():
                 LOGGER.critical(
-                    "Is the password ID '{}' in the QGIS authentication database a Lizmap server URL ? If yes, "
-                    "please remove it manually, otherwise skip this message. Go in the QGIS global properties, "
-                    "then 'Authentication' panel and check this ID.".format(config)
+                    f"Is the password ID '{config}' in the QGIS authentication database a Lizmap server URL ? If yes, "
+                    f"please remove it manually, otherwise skip this message. Go in the QGIS global properties, "
+                    f"then 'Authentication' panel and check this ID."
                 )

@@ -280,12 +280,15 @@ class TestVersionInfo(unittest.TestCase):
             'qgis_desktop': qgis_desktop,
             'error': "NO_ACCESS",
         }
+        # QGIS server 3.22 is EOL since February 2023, but the 2024 is hardcoded, as we do not have 3.22 on the
+        # infrastructure
+        # TODO, to be fixed with a proper table
         self.assertEqual(
             ServerManager._messages_for_version(**data, lizmap_cloud=True),
             (
                 Qgis.Critical,
                 [
-                    'QGIS Server version 3.22 is not maintained anymore by QGIS.org since February 2023. Please visit '
+                    'QGIS Server version 3.22 is not maintained anymore by QGIS.org since February 2024. Please visit '
                     'your administration panel in the web browser to ask for the update.',
                     'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server 3.22 or downgrade '
                     'your QGIS Desktop 3.28',
