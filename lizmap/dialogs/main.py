@@ -571,7 +571,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def follow_map_theme_toggled(self):
         """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
-        text = ". " + tr("Overriden by the map theme")
+        text = ". " + tr("Overridden by the map theme")
 
         # List of item data where we need to add the text suffix.
         items = ('expand_at_startup', 'hide_at_startup')

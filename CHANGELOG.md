@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Add Qt6 compatibility
+* Review social networks links
+* Fix export of modules etc. in the markdown
+* Do not notify Lizmap Cloud users if the instance is not up to date
+
 ## 4.4.4 - 2024-10-29
 
 * Add new settings about maximum scales when zooming on points, lines or polygons, for Lizmap Web Client 3.9
