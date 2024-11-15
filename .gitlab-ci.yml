@@ -39,7 +39,7 @@ package-zip:
       --plugin-repo-url https://packages.3liz.org/pub/lizmap-qgis-plugin/${STATUS}/
       --transifex-token ${TX_TOKEN}
   tags:
-    - infrav3-plain
+    - factory-plain
   artifacts:
     untracked: true
     expose_as: 'QGIS package'
@@ -48,6 +48,7 @@ package-zip:
       - plugins.xml
 
 push-zip:
+  image: ${REGISTRY_URL}/factory-ci-runner:fabric-ci
   only:
     - master
   except:
