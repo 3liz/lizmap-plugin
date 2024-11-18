@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.4.5 - 2024-11-18
+
 * Add Qt6 compatibility
 * Review social networks links
 * Fix export of modules etc. in the markdown
