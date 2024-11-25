@@ -78,8 +78,11 @@ def project_safeguards_checks(
             if layer.source().lower().endswith('ecw') and prevent_ecw:
                 results[SourceLayer(layer.name(), layer.id())] = checks.PreventEcw
 
-            if french_geopf_authcfg_url_parameters(layer.source()) and prevent_auth_id:
-                results[SourceLayer(layer.name(), layer.id())] = checks.FrenchGeoPlateformeUrl
+            if prevent_auth_id:
+                if french_geopf_authcfg_url_parameters(layer.source()):
+                    results[SourceLayer(layer.name(), layer.id())] = checks.FrenchGeoPlateformeUrl
+                elif authcfg_url_parameters(layer.source()):
+                    results[SourceLayer(layer.name(), layer.id())] = checks.RasterAuthenticationDb
 
         if is_vector_pg(layer):
             # Make a copy by using a string, so we are sure to have user or password
@@ -470,6 +473,19 @@ def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: Li
     return results
 
 
+def authcfg_url_parameters(datasource: str) -> bool:
+    """ Check for authcfg in a datasource, using a plain string.
+
+    This function is not using QgsDataSourceUri::authConfigId()
+    """
+    url_param = QUrlQuery(html.unescape(datasource))
+    for param in url_param.queryItems():
+        if param[0].lower() == 'authcfg' and param[1] != '':
+            return True
+
+    return False
+
+
 def french_geopf_authcfg_url_parameters(datasource: str) -> bool:
     """ Check for authcfg in a datasource, using a plain string.
 
@@ -477,14 +493,9 @@ def french_geopf_authcfg_url_parameters(datasource: str) -> bool:
     """
     if 'data.geopf.fr' not in datasource.lower():
         return False
-
-    url_param = QUrlQuery(html.unescape(datasource))
-    for param in url_param.queryItems():
-        if param[0].lower() == 'authcfg' and param[1] != '':
-            return True
-        # if param[0].lower().startswith("http-header:"):
-        #     return True
-    return False
+    # if param[0].lower().startswith("http-header:"):
+    #     return True
+    return authcfg_url_parameters(datasource)
 
 
 def duplicated_rule_key_legend(project: QgsProject, filter_data: bool = True) -> Dict[str, Dict[str, int]]:

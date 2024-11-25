@@ -251,7 +251,7 @@ class Checks:
         other_auth = tr('Either switch to another authentication mechanism')
         safeguard = tr('Or disable this safeguard in your Lizmap plugin settings')
         global_connection = tr(
-            'To fix layers loaded <b>later</b>, edit your global PostgreSQL connection to enable this option, then '
+            'To fix layers loaded <b>later</b>, edit your global PostgreSQL/raster connection to enable this option, then '
             'change the datasource by right clicking on each layer above, then click "Change datasource" in the menu. '
             'Finally reselect your layer in the new dialog with the updated connection. When opening a QGIS project in '
             'your computer, with a fresh launched QGIS software, you mustn\'t have any prompt for a user or password. '
@@ -798,6 +798,39 @@ class Checks:
                 '<li>{help}</li>'
                 '</ul>'
             ).format(help=tr('Switch to a COG format'))
+        )
+        self.RasterAuthenticationDb = Check(
+            f"{Settings.PreventPgAuthDb}_raster",
+            tr('QGIS Authentication database'),
+            tr(
+                'The layer is using the QGIS authentication database. You have activated a safeguard preventing you '
+                'using the QGIS authentication database.'
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '<li>{other}</li>'
+                '<li>{global_connection}</li>'
+                '</ul>'.format(
+                    help=other_auth,
+                    other=safeguard,
+                    global_connection=global_connection,
+                )
+            ),
+            Levels.Layer,
+            Severities().unknown,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+            tr('The layer is using the QGIS authentication database. This is not compatible with {}').format(CLOUD_NAME),
+            (
+                '<ul>'
+                '<li>{login_pass}</li>'
+                '</ul>'
+            ).format(
+                login_pass=tr(
+                    'Store the login and password in the layer by editing the global connection and do the '
+                    '"Change datasource" on each layer.'
+                )
+            )
         )
         self.AuthenticationDb = Check(
             Settings.PreventPgAuthDb,

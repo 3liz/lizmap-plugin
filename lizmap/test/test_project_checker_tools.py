@@ -11,6 +11,7 @@ from qgis.core import (
 from lizmap.project_checker_tools import (
     _duplicated_label_legend_layer,
     _split_layer_uri,
+    authcfg_url_parameters,
     duplicated_layer_with_filter,
     duplicated_layer_with_filter_legend,
     duplicated_rule_key_legend,
@@ -169,6 +170,7 @@ class TestProjectTable(unittest.TestCase):
             "&amp;authCFG=x3rzac9"
         )
         self.assertFalse(french_geopf_authcfg_url_parameters(raster))
+        self.assertTrue(authcfg_url_parameters(raster))
 
         # data.GEOPF.fr
         raster = (
@@ -177,6 +179,7 @@ class TestProjectTable(unittest.TestCase):
             "&amp;authCFG=x3rzac9"
         )
         self.assertTrue(french_geopf_authcfg_url_parameters(raster))
+        self.assertTrue(authcfg_url_parameters(raster))
 
         # Correct
         raster = (
@@ -184,6 +187,7 @@ class TestProjectTable(unittest.TestCase):
             "layers=SCAN25TOUR_PYR-JPEG_WLD_WM&amp;styles&amp;url=https://data.geopf.fr/private/wms-r?VERSION%3D1.3.0"
         )
         self.assertFalse(french_geopf_authcfg_url_parameters(raster))
+        self.assertFalse(authcfg_url_parameters(raster))
 
         # http-header
         # raster = (
