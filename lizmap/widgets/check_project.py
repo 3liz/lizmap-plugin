@@ -532,7 +532,7 @@ class Checks:
                 '</ul>'
             ).format(
                 tr('Switch to a CRS having not inverted axis.'),
-                tr('Upgrade your Lizmap Web Client to 3.7.4.'),
+                tr('Upgrade your Lizmap Web Client to latest 3.7.'),
             ),
             Levels.Project,
             Severities().important,
