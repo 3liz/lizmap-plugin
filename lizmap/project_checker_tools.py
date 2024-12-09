@@ -240,10 +240,24 @@ def invalid_type_primary_key(layer: QgsVectorLayer, check_field: str) -> bool:
     return field.typeName().lower() == check_field
 
 
+def _duplicated_layer_name_or_group(layer_tree: QgsLayerTreeNode, result: Dict) -> Dict[str, int]:
+    """ Recursive function to check all group names. """
+    for child in layer_tree.children():
+        if QgsLayerTree.isGroup(child):
+            child = cast_to_group(child)
+            name = child.name()
+            if name not in result.keys():
+                result[name] = 1
+            else:
+                result[name] += 1
+            result = _duplicated_layer_name_or_group(child, result)
+    return result
+
+
 def duplicated_layer_name_or_group(project: QgsProject) -> dict:
     """ The CFG can only store layer/group names which are unique. """
     result = {}
-    # Vector and raster layers
+    # For all layer within the project
     for layer in project.mapLayers().values():
         layer: QgsMapLayer
         name = layer.name()
@@ -252,16 +266,8 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
         else:
             result[name] += 1
 
-    # Groups
-    for child in project.layerTreeRoot().children():
-        if QgsLayerTree.isGroup(child):
-            child = cast_to_group(child)
-            name = child.name()
-            if name not in result.keys():
-                result[name] = 1
-            else:
-                result[name] += 1
-
+    # For all groups with a recursive function
+    result = _duplicated_layer_name_or_group(project.layerTreeRoot(), result)
     return result
 
 
