@@ -116,6 +116,7 @@ from lizmap.definitions.online_help import (
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
+from lizmap.dialogs.confirmation_text_box import ConfirmationTextMessageBox
 from lizmap.dialogs.dock_html_preview import HtmlPreview
 from lizmap.dialogs.html_editor import HtmlEditorDialog
 from lizmap.dialogs.html_maptip import HtmlMapTipDialog
@@ -3563,6 +3564,17 @@ class Lizmap:
             )
 
             return False
+
+        important_issues = self.dlg.check_results.has_importants()
+        if important_issues >= 1 and lizmap_cloud:
+            base_name = self.project.baseName()
+            dialog = ConfirmationTextMessageBox(important_issues, f"{base_name}:{important_issues}")
+            result = dialog.exec()
+            self.dlg.log_panel.append(tr(
+                "{count} error(s) have been found on the project, user has agreed with these errors : {result}"
+            ).format(count=important_issues, result="<strong>" + tr("Yes") + "<strong>" if result else tr("No")), Html.P)
+            if not result:
+                return False
 
         return True
 

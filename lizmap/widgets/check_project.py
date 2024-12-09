@@ -1083,6 +1083,14 @@ class TableCheck(QTableWidget):
                 return True
         return False
 
+    def has_importants(self) -> int:
+        """ If the table has at least one important issue. """
+        count = 0
+        for row in range(self.rowCount()):
+            if self.item(row, 0).data(self.DATA) == 1:
+                count += 1
+        return count
+
     def has_rows(self) -> int:
         """ If the table has at least one row displayed. """
         return self.rowCount()
