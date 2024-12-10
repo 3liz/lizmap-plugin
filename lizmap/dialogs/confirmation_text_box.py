@@ -49,12 +49,12 @@ class ConfirmationTextMessageBox(QDialog):
         message += " " + tr("{count} error(s)").format(count=number)
         message += "</strong><br><br>"
         message += tr(
-            'You should really consider fixing these "<strong>Important</strong>" issues to avoid technical problems '
+            'You should really consider fixing these "<strong>important</strong>" issues to avoid technical problems '
             'on Lizmap later.'
         )
         message += "<br><br>"
         message += tr(
-            'You can decide to skip fixing these "Important" issues but you must write the name of the project with '
+            'You can decide to skip fixing these "important" issues but you must write the name of the project with '
             'the number of error in the input text below so as to generate the Lizmap configuration file.'
         )
         message += "<br><br>"

@@ -3,6 +3,7 @@ from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QLabel
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.layouts import Dpi, FormatType, LayoutsDefinitions
@@ -24,6 +25,8 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.parent = parent
+        self.layout_type: QLabel
+        self.layout_type.setWordWrap(True)
         self.config = LayoutsDefinitions()
         self.config.add_layer_widget('layout', self.layout)
         self.config.add_layer_widget('enabled', self.enabled)
@@ -79,6 +82,12 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
             return
 
         is_atlas = atlas_layout.atlas().enabled()
+        if is_atlas:
+            msg = tr("The layout is an atlas.")
+        else:
+            msg = tr("The layout is not atlas.")
+        msg += " " + tr("Some features are enabled or not because of this setting.")
+        self.layout_type.setText(msg)
         self.icon.setEnabled(is_atlas)
         self.label_icon.setEnabled(is_atlas)
 
