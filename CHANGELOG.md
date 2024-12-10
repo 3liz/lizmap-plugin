@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.4.6 - 2024-12-10
+
+* Rephrase sentences about print layouts
+* Check for raster layer using AuthDB if needed
+* Use a recursive function to browse all group names when looking for duplicated items
+* Add a confirmation text input if the project has some "important" errors before generating CFG file, Lizmap Cloud only
+
 ## 4.4.5 - 2024-11-18
 
 * Add Qt6 compatibility
