@@ -10,9 +10,9 @@ class WarningWidget(QWidget):
 
     """ Widget to show a warning sign with a text. """
 
-    def __init__(self, flags, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """ Constructor. """
-        super().__init__(flags, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         layout = QHBoxLayout(self)
         image_widget = QLabel()

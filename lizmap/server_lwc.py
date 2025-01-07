@@ -682,14 +682,16 @@ class ServerManager:
             # plugins = {'atlasprint': {'version': '3.2.2'}}
             # Temporary, add plugins as markdown in the data
             markdown += f'* QGIS Server : {qgis_server_version}\n'
-            py_qgis = qgis_server_info.get('py_qgis_server')
-            if py_qgis:
-                py_qgis_version = py_qgis.get('version', 'Not used')
+            server_wrapper = qgis_server_info.get('py_qgis_server')
+            if server_wrapper:
+                wrapper_version = server_wrapper.get('version', 'Not used')
+                wrapper_name = server_wrapper.get('name', 'Py-QGIS-Server or QJazz')
             else:
                 # Legacy, old server running
-                py_qgis_version = qgis_metadata.get('py_qgis_server_version', 'Not used')
+                wrapper_version = qgis_metadata.get('py_qgis_server_version', 'Not used')
+                wrapper_name = 'Py-QGIS-Server'
 
-            markdown += f'* Py-QGIS-Server : {py_qgis_version}\n'
+            markdown += f'* {wrapper_name} : {wrapper_version}\n'
             for plugin, info in plugins.items():
                 plugin_version = info['version']
                 if plugin_version.lower().startswith("not"):
