@@ -168,30 +168,30 @@ class Html(Enum):
 @unique
 class ServerComboData(Enum):
     """ The server combobox. """
-    AuthId = Qt.UserRole  # String with the authentication ID
-    ServerUrl = Qt.UserRole + 1  # String with the server URL
-    JsonMetadata = Qt.UserRole + 2  # JSON from the server, raw
-    # LwcVersion = Qt.UserRole + 3  # Enum item with the LWC version
-    LwcBranchStatus = Qt.UserRole + 4  # Enum item about the release status at that time.
-    MarkDown = Qt.UserRole + 5  # Markdown for the server
+    AuthId = Qt.ItemDataRole.UserRole  # String with the authentication ID
+    ServerUrl = Qt.ItemDataRole.UserRole + 1  # String with the server URL
+    JsonMetadata = Qt.ItemDataRole.UserRole + 2  # JSON from the server, raw
+    # LwcVersion = Qt.ItemDataRole.UserRole + 3  # Enum item with the LWC version
+    LwcBranchStatus = Qt.ItemDataRole.UserRole + 4  # Enum item about the release status at that time.
+    MarkDown = Qt.ItemDataRole.UserRole + 5  # Markdown for the server
 
 
 @unique
 class RepositoryComboData(Enum):
     """ The repository combobox. """
-    Id = Qt.UserRole  # ID of the repository
-    Path = Qt.UserRole + 1  # Path on the server
+    Id = Qt.ItemDataRole.UserRole  # ID of the repository
+    Path = Qt.ItemDataRole.UserRole + 1  # Path on the server
 
 
 @unique
 class PredefinedGroup(Enum):
     """ The list of predefined group in LWC. """
-    No = Qt.UserRole                    # 256
-    Hidden = Qt.UserRole + 1            # 257
-    Baselayers = Qt.UserRole + 2        # 258 The group `baselayers`
-    BackgroundColor = Qt.UserRole + 3   # 259
-    Overview = Qt.UserRole + 4          # 260
-    BaselayerItem = Qt.UserRole + 5     # 261 Layer or group in the `baselayers`, which will be an item in the combobox
+    No = Qt.ItemDataRole.UserRole                    # 256
+    Hidden = Qt.ItemDataRole.UserRole + 1            # 257
+    Baselayers = Qt.ItemDataRole.UserRole + 2        # 258 The group `baselayers`
+    BackgroundColor = Qt.ItemDataRole.UserRole + 3   # 259
+    Overview = Qt.ItemDataRole.UserRole + 4          # 260
+    BaselayerItem = Qt.ItemDataRole.UserRole + 5     # 261 Layer or group in the `baselayers`, which will be an item in the combobox
 
 
 class GroupNames:

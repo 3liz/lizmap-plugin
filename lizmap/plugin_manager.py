@@ -50,7 +50,7 @@ class QgisPluginManager:
                 latest_stable_version = plugin_metadata['version_available']
                 latest_stable_date = QDateTime.fromString(
                     plugin_metadata['update_date'],
-                    Qt.ISODateWithMs
+                    Qt.DateFormat.ISODateWithMs
                 )
                 date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.ShortFormat))
 

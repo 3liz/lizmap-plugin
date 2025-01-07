@@ -105,7 +105,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_lizmap_logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
         # noinspection PyUnresolvedReferences
-        pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio)
         self.label_lizmap_logo.setPixmap(pixmap)
 
         # Initial extent widget
@@ -697,7 +697,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         url = self.server_combo.itemData(index, ServerComboData.ServerUrl.value)
         metadata = self.server_combo.itemData(index, ServerComboData.JsonMetadata.value)
         if not metadata or not metadata.get('info'):
-            self.server_combo.setItemData(index, tr('No metadata about this server'), Qt.ToolTipRole)
+            self.server_combo.setItemData(index, tr('No metadata about this server'), Qt.ItemDataRole.ToolTipRole)
             return
 
         target_version = LwcVersions.find_from_metadata(metadata)
@@ -710,7 +710,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             '<b>URL</b> {}<br>'
             '<b>Target branch</b> {}'
         ).format(url, target_version)
-        self.server_combo.setItemData(index, msg, Qt.ToolTipRole)
+        self.server_combo.setItemData(index, msg, Qt.ItemDataRole.ToolTipRole)
 
     def refresh_combo_repositories(self):
         """ Refresh the combobox about repositories. """
@@ -766,7 +766,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.repository_combo.setItemData(
                 index,
                 "ID : {}<br>Path : {}".format(repository_id, repository_data['path']),
-                Qt.ToolTipRole)
+                Qt.ItemDataRole.ToolTipRole)
             self.repository_combo.setItemData(index, repository_data['path'], RepositoryComboData.Path.value)
 
         # Dirty hack to trigger webdav check in plugin.py
@@ -1201,13 +1201,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
             if i in (Panels.Information, Panels.Settings, Panels.Training):
                 # These panels are always accessible
-                item.setFlags(item.flags() | Qt.ItemIsEnabled)
+                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
                 continue
 
             if allow_navigation:
-                item.setFlags(item.flags() | Qt.ItemIsEnabled)
+                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
             else:
-                item.setFlags(item.flags() & ~ Qt.ItemIsEnabled)
+                item.setFlags(item.flags() & ~ Qt.ItemFlag.ItemIsEnabled)
 
         if allow_navigation:
             self.label_warning_project.setVisible(False)
@@ -1271,7 +1271,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def fix_project_ssl(self):
         """ Fix the current project about SSL. """
         self.enabled_ssl_button(False)
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             count = fix_ssl(self.project, force=False)
 
         if count >= 2:
@@ -1283,7 +1283,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def fix_project_estimated_md(self):
         """ Fix the current project about estimated metadata. """
         self.enabled_estimated_md_button(False)
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             count = len(use_estimated_metadata(self.project, fix=True))
 
         if count >= 2:
@@ -1301,7 +1301,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def fix_simplify_geom_provider(self):
         """ Fix the current layers simplify geom. """
         self.enabled_simplify_geom(False)
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             count = len(simplify_provider_side(self.project, fix=True))
 
         if count >= 2:

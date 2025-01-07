@@ -196,7 +196,7 @@ class TableManagerDataviz(TableManager):
 
         doc = QJsonDocument.fromJson(json_object.encode('utf8'))
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             error = request.post(network_request, QByteArray(doc.toJson()))
 
         if error != QgsBlockingNetworkRequest.NoError:

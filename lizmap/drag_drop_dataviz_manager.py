@@ -72,7 +72,7 @@ class DragDropDatavizManager:
         text = self.combo_plots.itemText(index)
         icon = self.combo_plots.itemIcon(index)
         # noinspection PyUnresolvedReferences
-        uuid = self.combo_plots.itemData(index, Qt.UserRole)
+        uuid = self.combo_plots.itemData(index, Qt.ItemDataRole.UserRole)
         self._add_plot_in_tree(text, icon, uuid)
 
     def metadata_from_uuid(self, uuid: str) -> Union[Tuple[None, None], Tuple[str, QIcon]]:
@@ -85,7 +85,7 @@ class DragDropDatavizManager:
             return 'plot name', QIcon()
 
         # noinspection PyUnresolvedReferences
-        index = self.combo_plots.findData(uuid, Qt.UserRole)
+        index = self.combo_plots.findData(uuid, Qt.ItemDataRole.UserRole)
         if index < 0:
             return None, None
 
@@ -97,7 +97,7 @@ class DragDropDatavizManager:
         """ Internal function to add a plot in the tree. """
         if name_parent:
             # noinspection PyUnresolvedReferences
-            parents = self.tree.findItems(name_parent, Qt.MatchContains | Qt.MatchRecursive, 0)
+            parents = self.tree.findItems(name_parent, Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive, 0)
             parent_item = parents[0]
             item = QTreeWidgetItem(parent_item)
         else:
@@ -110,15 +110,15 @@ class DragDropDatavizManager:
         item.setIcon(0, icon)
         # Row type
         # noinspection PyUnresolvedReferences
-        item.setData(0, Qt.UserRole, Container.Plot)
+        item.setData(0, Qt.ItemDataRole.UserRole, Container.Plot)
         # UUID
         # noinspection PyUnresolvedReferences
-        item.setData(0, Qt.UserRole + 1, uuid)
+        item.setData(0, Qt.ItemDataRole.UserRole + 1, uuid)
         # item.setBackground(0, QBrush(Qt.lightGray))
         # noinspection PyUnresolvedReferences
-        item.setFlags(item.flags() & ~ Qt.ItemIsDropEnabled)
+        item.setFlags(item.flags() & ~ Qt.ItemFlag.ItemIsDropEnabled)
         # noinspection PyUnresolvedReferences
-        item.setData(0, Qt.ToolTipRole, "Plot <b>{}</b><br>UUID {}".format(text, uuid))
+        item.setData(0, Qt.ItemDataRole.ToolTipRole, "Plot <b>{}</b><br>UUID {}".format(text, uuid))
         if name_parent:
             self.tree.addTopLevelItem(item)
             parent_item.setExpanded(True)
@@ -164,10 +164,10 @@ class DragDropDatavizManager:
             icon = self.table.item(row, icon_index).icon()
             title = self.table.item(row, title_index).text()
             # noinspection PyUnresolvedReferences
-            uuid = self.table.item(row, uuid_index).data(Qt.UserRole)
+            uuid = self.table.item(row, uuid_index).data(Qt.ItemDataRole.UserRole)
             self.combo_plots.addItem(icon, title, uuid)
             index = self.combo_plots.findData(uuid)
-            self.combo_plots.setItemData(index, uuid, Qt.ToolTipRole)
+            self.combo_plots.setItemData(index, uuid, Qt.ItemDataRole.ToolTipRole)
 
     def add_container(self):
         """ When the "add" container button is clicked, we add a new row in the tree widget. """
@@ -190,7 +190,7 @@ class DragDropDatavizManager:
 
         item = self.tree.itemFromIndex(selection[0])
         # noinspection PyUnresolvedReferences
-        if item.data(0, Qt.UserRole) == Container.Plot:
+        if item.data(0, Qt.ItemDataRole.UserRole) == Container.Plot:
             return
 
         new_name, ok = QInputDialog.getText(
@@ -225,7 +225,7 @@ class DragDropDatavizManager:
         box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         box.setDefaultButton(QMessageBox.StandardButton.No)
 
-        if current_item.data(0, Qt.UserRole) == Container.Container:
+        if current_item.data(0, Qt.ItemDataRole.UserRole) == Container.Container:
             box.setWindowTitle(tr('Remove the container'))
             if children:
                 box.setText(tr('Are you sure you want to remove the container and all elements inside?'))
@@ -264,7 +264,7 @@ class DragDropDatavizManager:
             child: QTreeWidgetItem
 
             # noinspection PyUnresolvedReferences
-            row_type = child.data(0, Qt.UserRole)
+            row_type = child.data(0, Qt.ItemDataRole.UserRole)
 
             if row_type == Container.Container:
                 tmp = {
@@ -280,7 +280,7 @@ class DragDropDatavizManager:
                     # The name is not used and mustn't be used for reading the CFG, it's just easier to debug the CFG
                     # instead of dealing with a UUID
                     '_name': child.text(0),
-                    'uuid': child.data(0, Qt.UserRole + 1),
+                    'uuid': child.data(0, Qt.ItemDataRole.UserRole + 1),
                 })
         return data
 
@@ -307,7 +307,7 @@ class DragDropDatavizManager:
                         "the drag&drop layout, only : {}.".format(
                             line["uuid"],
                             ','.join(
-                                [self.combo_plots.itemData(i, Qt.UserRole) for i in range(self.combo_plots.count())])
+                                [self.combo_plots.itemData(i, Qt.ItemDataRole.UserRole) for i in range(self.combo_plots.count())])
                         ))
                     continue
 
@@ -323,7 +323,7 @@ class DragDropDatavizManager:
         parent_item = None
         if name_parent:
             # noinspection PyUnresolvedReferences
-            parents = self.tree.findItems(name_parent, Qt.MatchContains | Qt.MatchRecursive, 0)
+            parents = self.tree.findItems(name_parent, Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive, 0)
             if not parents:
                 # Strange, it shouldn't happen.
                 return
@@ -331,18 +331,18 @@ class DragDropDatavizManager:
             parent_item = parents[0]
 
             item = QTreeWidgetItem(parent_item)
-            item.setBackground(0, QBrush(Qt.gray))
+            item.setBackground(0, QBrush(Qt.GlobalColor.gray))
 
         else:
             # At the top
             item = QTreeWidgetItem(self.tree.invisibleRootItem())
-            item.setBackground(0, QBrush(Qt.gray))
+            item.setBackground(0, QBrush(Qt.GlobalColor.gray))
 
         item.setText(0, name)
         # noinspection PyUnresolvedReferences
-        item.setData(0, Qt.UserRole, Container.Container)
+        item.setData(0, Qt.ItemDataRole.UserRole, Container.Container)
         # noinspection PyUnresolvedReferences
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled)
+        item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsDragEnabled | Qt.ItemFlag.ItemIsDropEnabled)
         if name_parent:
             self.tree.addTopLevelItem(item)
             parent_item.setExpanded(True)

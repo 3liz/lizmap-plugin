@@ -30,7 +30,7 @@ class BaseNewsDialog(QDialog, FORM_CLASS):
         self.logo.setText('')
         pixmap = QPixmap(resources_path('icons', 'logo.png'))
         # noinspection PyUnresolvedReferences
-        pixmap = pixmap.scaled(100, 100, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio)
         self.logo.setPixmap(pixmap)
 
         self.open_link.clicked.connect(self.open_website)

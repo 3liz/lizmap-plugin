@@ -138,7 +138,7 @@ class TestUiLizmapDialog(unittest.TestCase):
         self.assertEqual(item.text(0), 'lines')
         self.assertTrue(item.text(1).startswith('lines_'))
         self.assertEqual(item.text(2), 'layer')
-        self.assertEqual(item.data(0, Qt.UserRole + 1), PredefinedGroup.No.value)
+        self.assertEqual(item.data(0, Qt.ItemDataRole.UserRole + 1), PredefinedGroup.No.value)
         self.assertEqual(item.text(3), '')  # Not used, just to test
 
         self.assertFalse(lizmap.dlg.list_group_visibility.isEnabled())
@@ -158,27 +158,27 @@ class TestUiLizmapDialog(unittest.TestCase):
         lizmap.save_value_layer_group_data('abstract')
 
         # Click the group base-layers
-        group_item = lizmap.dlg.layer_tree.findItems('baselayers', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        group_item = lizmap.dlg.layer_tree.findItems('baselayers', Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
         self.assertFalse(lizmap.dlg.panel_layer_all_settings.isEnabled())
 
         # Click the group project-background-color
         group_item = lizmap.dlg.layer_tree.findItems(
-            'project-background-color', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+            'project-background-color', Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
         self.assertTrue(lizmap.dlg.panel_layer_all_settings.isEnabled())
         self.assertTrue(lizmap.dlg.group_layer_metadata.isEnabled())
         self.assertFalse(lizmap.dlg.group_layer_tree_options.isEnabled())
 
         # Click the group hidden
-        group_item = lizmap.dlg.layer_tree.findItems('hidden', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        group_item = lizmap.dlg.layer_tree.findItems('hidden', Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
         # It should work, maybe the test click and click in the UI is missing one thing
         # self.assertEqual(PredefinedGroup.Hidden.value, lizmap._current_item_predefined_group())
         # self.assertFalse(lizmap.dlg.panel_layer_all_settings.isEnabled())
 
         # Back to a layer outside of these groups
-        group_item = lizmap.dlg.layer_tree.findItems('lines', Qt.MatchContains | Qt.MatchRecursive, 0)[0]
+        group_item = lizmap.dlg.layer_tree.findItems('lines', Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive, 0)[0]
         lizmap.dlg.layer_tree.setCurrentItem(group_item)
         self.assertTrue(lizmap.dlg.list_group_visibility.isEnabled())
 

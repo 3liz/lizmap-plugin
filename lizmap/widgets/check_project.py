@@ -1048,7 +1048,7 @@ class TableCheck(QTableWidget):
     """ Subclassing of QTableWidget in the plugin. """
 
     # noinspection PyUnresolvedReferences
-    DATA = Qt.UserRole
+    DATA = Qt.ItemDataRole.UserRole
     JSON = DATA + 1
     EXPORT = JSON + 1
 
@@ -1132,7 +1132,7 @@ class TableCheck(QTableWidget):
         """ Export a sum up of warnings to Markdown. """
         result = {}
         for row in range(self.rowCount()):
-            error_name = self.item(row, 3).data(Qt.DisplayRole)
+            error_name = self.item(row, 3).data(Qt.ItemDataRole.DisplayRole)
             if error_name not in result.keys():
                 result[error_name] = 1
             else:

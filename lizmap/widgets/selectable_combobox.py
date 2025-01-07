@@ -30,8 +30,8 @@ class CheckableComboBox:
             self.select_all.clicked.connect(self.select_all_clicked)
 
     def select_all_clicked(self):
-        for item in self.model.findItems("*", Qt.MatchWildcard):
-            item.setCheckState(Qt.Checked)
+        for item in self.model.findItems("*", Qt.MatchFlag.MatchWildcard):
+            item.setCheckState(Qt.CheckState.Checked)
 
     def append_row(self, item: QStandardItem):
         """Add an item to the combobox."""
@@ -46,15 +46,15 @@ class CheckableComboBox:
 
     def selected_items(self) -> list:
         checked_items = []
-        for item in self.model.findItems("*", Qt.MatchWildcard):
-            if item.checkState() == Qt.Checked:
+        for item in self.model.findItems("*", Qt.MatchFlag.MatchWildcard):
+            if item.checkState() == Qt.CheckState.Checked:
                 checked_items.append(item.data())
         return checked_items
 
     def set_selected_items(self, items):
-        for item in self.model.findItems("*", Qt.MatchWildcard):
+        for item in self.model.findItems("*", Qt.MatchFlag.MatchWildcard):
             checked = item.data() in items
-            item.setCheckState(Qt.Checked if checked else Qt.Unchecked)
+            item.setCheckState(Qt.CheckState.Checked if checked else Qt.CheckState.Unchecked)
 
     def text_changed(self, text):
         """Update the preview with all selected items, separated by a comma."""

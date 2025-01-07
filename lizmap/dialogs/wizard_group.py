@@ -73,7 +73,7 @@ class WizardGroupDialog(QDialog, FORM_CLASS):
             cell = QListWidgetItem()
             cell.setText(group_data['label'])
             cell.setData(Qt.ItemDataRole.UserRole, group_id)
-            cell.setData(Qt.ToolTipRole, group_id)
+            cell.setData(Qt.ItemDataRole.ToolTipRole, group_id)
             self.list.addItem(cell)
             if group_id in existing:
                 cell.setSelected(True)

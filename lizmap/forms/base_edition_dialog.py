@@ -66,7 +66,7 @@ class BaseEditionDialog(QDialog):
         """ Build the UI. """
         self.button_box.button(QDialogButtonBox.StandardButton.Help).setToolTip(
             tr('Open the online documentation for this feature.'))
-        self.error.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.error.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         if not self.config.help_path():
             self.button_box.button(QDialogButtonBox.StandardButton.Help).setVisible(False)
@@ -100,7 +100,7 @@ class BaseEditionDialog(QDialog):
                             index = widget.findData(item.value['data'])
                             tooltip = item.value.get('tooltip')
                             if tooltip:
-                                widget.setItemData(index, tooltip, Qt.ToolTipRole)
+                                widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
                         default = layer_config.get('default')
                         if default and not isinstance(default, (list, tuple)):
                             index = widget.findData(default.value['data'])
@@ -140,8 +140,8 @@ class BaseEditionDialog(QDialog):
                         # The tooltip is not showing
                         widget.setText(tr('Read only, check the tooltip on the label'))
                         widget.setStyleSheet("font: italic;")
-                        widget.setAttribute(Qt.WA_TransparentForMouseEvents)
-                        widget.setFocusPolicy(Qt.NoFocus)
+                        widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+                        widget.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
             if not layer_config.get('visible', True):
                 if widget is not None:
@@ -224,7 +224,7 @@ class BaseEditionDialog(QDialog):
                                 layer_config['widget'].findData(item.value.get('data'))
                             )
                             brush = QBrush()
-                            brush.setStyle(Qt.SolidPattern)
+                            brush.setStyle(Qt.BrushStyle.SolidPattern)
                             brush.setColor(QColor(NEW_FEATURE_COLOR))
                             item_combo.setBackground(brush)
 
@@ -378,7 +378,7 @@ class BaseEditionDialog(QDialog):
                 if definition.get('multiple_selection', False):
                     for val in value:
                         index = definition['widget'].findData(val)
-                        definition['widget'].setItemCheckState(index, Qt.Checked)
+                        definition['widget'].setItemCheckState(index, Qt.CheckState.Checked)
                 else:
                     index = definition['widget'].findData(value)
                     definition['widget'].setCurrentIndex(index)

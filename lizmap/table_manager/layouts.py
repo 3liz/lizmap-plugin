@@ -114,7 +114,7 @@ class TableManagerLayouts(TableManager):
             if not cell:
                 continue
 
-            lizmap_layouts.append(cell.data(Qt.UserRole))
+            lizmap_layouts.append(cell.data(Qt.ItemDataRole.UserRole))
 
         qgis_layouts = []
         for layout in QgsProject.instance().layoutManager().printLayouts():
@@ -139,10 +139,10 @@ class TableManagerLayouts(TableManager):
             if not cell:
                 continue
 
-            value = cell.data(Qt.UserRole)
+            value = cell.data(Qt.ItemDataRole.UserRole)
             if value == old_name:
                 LOGGER.info("Renaming layout from '{}' to '{}'".format(old_name, new_name))
-                cell.setData(Qt.UserRole, new_name)
+                cell.setData(Qt.ItemDataRole.UserRole, new_name)
                 cell.setText(new_name)
                 break
 

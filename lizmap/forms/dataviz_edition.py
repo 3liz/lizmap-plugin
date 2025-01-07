@@ -140,7 +140,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         values = list()
         for row in range(self.traces.rowCount()):
             item = self.traces.item(row, 0)
-            cell = item.data(Qt.UserRole)
+            cell = item.data(Qt.ItemDataRole.UserRole)
             values.append(cell)
         return values
 
@@ -162,7 +162,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     # Do not put if not item, it might be False
                     raise Exception('Cell is not initialized ({}, {})'.format(row, i))
 
-                cell = item.data(Qt.UserRole)
+                cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Safeguard
                     # Do not put if not cell, it might be False
@@ -214,15 +214,15 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             value = data.get(key)
             if not value:
                 cell.setText('')
-                cell.setData(Qt.UserRole, '')
+                cell.setData(Qt.ItemDataRole.UserRole, '')
                 self.traces.setItem(row, i, cell)
                 continue
 
             input_type = self.config.layer_config[key]['type']
             if input_type == InputType.Field:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
                 # Get the icon for the field
                 if self.layer:
@@ -232,10 +232,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
             elif input_type == InputType.Color:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 if value:
-                    cell.setData(Qt.DecorationRole, QColor(value))
+                    cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
 
             else:
                 raise Exception('InputType "{}" not implemented'.format(input_type))

@@ -31,19 +31,19 @@ class ListLayersSelection(QListWidget):
 
             cell = QListWidgetItem()
             cell.setText(layer.name())
-            cell.setData(Qt.UserRole, layer.id())
+            cell.setData(Qt.ItemDataRole.UserRole, layer.id())
             cell.setIcon(QgsMapLayerModel.iconForLayer(layer))
             self.addItem(cell)
 
     def set_selection(self, layers: tuple):
         for i in range(self.count()):
             item = self.item(i)
-            item.setSelected(item.data(Qt.UserRole) in layers)
+            item.setSelected(item.data(Qt.ItemDataRole.UserRole) in layers)
 
     def selection(self) -> list:
         selection = []
         for i in range(self.count()):
             item = self.item(i)
             if item.isSelected():
-                selection.append(item.data(Qt.UserRole))
+                selection.append(item.data(Qt.ItemDataRole.UserRole))
         return selection
