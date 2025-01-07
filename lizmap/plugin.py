@@ -374,7 +374,7 @@ class Lizmap:
 
                 if tooltip:
                     # noinspection PyUnresolvedReferences
-                    item_info['widget'].setItemData(index, tooltip, Qt.ToolTipRole)
+                    item_info['widget'].setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
 
                 if icon:
                     if isinstance(icon, str):
@@ -1140,7 +1140,7 @@ class Lizmap:
                         # QComboBox
                         brush = QBrush()
                         # noinspection PyUnresolvedReferences
-                        brush.setStyle(Qt.SolidPattern)
+                        brush.setStyle(Qt.BrushStyle.SolidPattern)
                         brush.setColor(QColor(NEW_FEATURE_COLOR))
                         item.setBackground(brush)
             else:
@@ -1249,7 +1249,7 @@ class Lizmap:
 
         self.dock_html_preview = HtmlPreview(None)
         self.dock_html_preview.set_server_url(self.dlg.current_server_info(ServerComboData.ServerUrl.value))
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_html_preview)
+        self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.dock_html_preview)
         self.dock_html_preview.setVisible(False)
         self.dlg.button_maptip_preview.setText('')
         self.dlg.button_maptip_preview.setToolTip(tr('Open the HTML Lizmap maptip popup preview dock'))
@@ -2302,10 +2302,10 @@ class Lizmap:
                     if self.myDic[child_id]['name'].lower() == 'overview':
                         predefined_group = PredefinedGroup.Overview.value
 
-                elif parent_node.data(0, Qt.UserRole + 1) == PredefinedGroup.Baselayers.value:
+                elif parent_node.data(0, Qt.ItemDataRole.UserRole + 1) == PredefinedGroup.Baselayers.value:
                     # Parent is "baselayers", children will be an item in the dropdown menu
                     predefined_group = PredefinedGroup.BaselayerItem.value
-                elif parent_node.data(0, Qt.UserRole + 1) != PredefinedGroup.No.value:
+                elif parent_node.data(0, Qt.ItemDataRole.UserRole + 1) != PredefinedGroup.No.value:
                     # Others will be in "hidden" or "overview".
                     # TODO fixme maybe ?
                     predefined_group = PredefinedGroup.Hidden.value
@@ -2321,7 +2321,7 @@ class Lizmap:
                     text = tr('Special group for Lizmap Web Client')
                     if self.is_dev_version:
                         # For debug purpose only about groups
-                        text += f'. Data group ID {Qt.UserRole} : {predefined_group}'  # NOQA E203
+                        text += f'. Data group ID {Qt.ItemDataRole.UserRole} : {predefined_group}'  # NOQA E203
                     item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
                 elif is_layer_wms_excluded(self.project, self.myDic[child_id]['name']):
                     text = tr(
@@ -2332,7 +2332,7 @@ class Lizmap:
                 else:
                     item.setToolTip(0, self.myDic[child_id]['name'])
                 item.setIcon(0, child_icon)
-                item.setData(0, Qt.UserRole + 1, predefined_group)
+                item.setData(0, Qt.ItemDataRole.UserRole + 1, predefined_group)
                 self.myDic[child_id]['item'] = item
 
                 # Move group or layer to its parent node
@@ -2926,7 +2926,7 @@ class Lizmap:
         if text not in self.layerList:
             return None
 
-        return item.data(0, Qt.UserRole + 1)
+        return item.data(0, Qt.ItemDataRole.UserRole + 1)
 
     def _current_selected_item_in_config(self) -> Optional[str]:
         """ Either a group or a layer name. """
@@ -3078,7 +3078,7 @@ class Lizmap:
         lwc_version = self.current_lwc_version()
         # Let's trigger UI refresh according to latest releases, if it wasn't available on startup
         self.lwc_version_changed()
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.check_project(lwc_version)
 
     def check_project(
@@ -4348,7 +4348,7 @@ class Lizmap:
             new_project = NewConfigDialog()
             new_project.exec()
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result = self.save_cfg_file()
 
         if not result:
@@ -4583,7 +4583,7 @@ class Lizmap:
 
         With a waiting cursor and sending messages to the message bar.
         """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, _, url = self.send_webdav()
         return result, url
 
@@ -4611,7 +4611,7 @@ class Lizmap:
             # Maybe we are on a new server ?
             return False, '', ''
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             qgis_exists, error = self.webdav.check_exists_qgs()
         if error:
             self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
@@ -4637,7 +4637,7 @@ class Lizmap:
             if result == QMessageBox.StandardButton.No:
                 return False, '', ''
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             flag, error, url = self.webdav.send_all_project_files()
         if not flag:
             # Error while sending files
@@ -4663,7 +4663,7 @@ class Lizmap:
         if not directory:
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, msg = self.webdav.file_stats_media()
         if result is not None:
             self.dlg.display_message_bar(
@@ -4749,7 +4749,7 @@ class Lizmap:
             )
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, message = self.webdav.send_media(current_file)
         if not result and message:
             self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
@@ -4766,7 +4766,7 @@ class Lizmap:
 
     def upload_thumbnail(self):
         """ Upload the thumbnail on the server. """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, message = self.webdav.send_thumbnail()
         if not result and message:
             self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
@@ -4798,7 +4798,7 @@ class Lizmap:
 
     def upload_action(self):
         """ Upload the action file on the server. """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, error = self.webdav.send_action()
         if not result and error:
             self.dlg.display_message_bar('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
@@ -4834,7 +4834,7 @@ class Lizmap:
         """ Remove a remote file. """
         if self._question_remove_remote_file():
             return
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             if 'qgs' in button.objectName():
                 self.webdav.remove_qgs()
                 self.check_latest_update_webdav()
@@ -4873,7 +4873,7 @@ class Lizmap:
         for row in range(self.dlg.table_files.rowCount()):
             self.dlg.table_files.file_status(row, tr("Work in progress"), tr("Work in progress"))
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             for row in range(self.dlg.table_files.rowCount()):
                 self.refresh_single_layer(row)
 
@@ -4882,7 +4882,7 @@ class Lizmap:
         for row in range(self.dlg.table_files.rowCount()):
             self.dlg.table_files.file_status(row, tr("Work in progress"), tr("Work in progress"))
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             for row in range(self.dlg.table_files.rowCount()):
                 relative_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.RELATIVE_PATH)
                 absolute_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.ABSOLUTE_PATH)
@@ -4904,7 +4904,7 @@ class Lizmap:
 
     def _refresh_cfg(self):
         """ Refresh CFG. """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             directory = self.dlg.current_repository()
             self.dlg.line_cfg_date.setText("")
             result, error = self.webdav.file_stats_cfg()
@@ -4918,7 +4918,7 @@ class Lizmap:
 
     def _refresh_thumbnail(self):
         """ Refresh thumbnail. """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             directory = self.dlg.current_repository()
             self.dlg.line_thumbnail_date.setText("")
             result, error = self.webdav.file_stats_thumbnail()
@@ -4936,7 +4936,7 @@ class Lizmap:
 
     def _refresh_action(self):
         """ Refresh action. """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.dlg.line_action_date.setText("")
             result, error = self.webdav.file_stats_action()
             if result:
@@ -4954,7 +4954,7 @@ class Lizmap:
 
         # Media
         self.dlg.line_media_date.setText("")
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, error = self.webdav.file_stats_media()
             if result:
                 self.dlg.line_media_date.setText(result.last_modified_pretty)
@@ -4963,7 +4963,7 @@ class Lizmap:
 
     def check_latest_update_webdav(self):
         """ Check the latest date about QGS file on the server. """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.dlg.line_qgs_date.setText("")
             result, error = self.webdav.file_stats_qgs()
             if result:
@@ -5129,7 +5129,7 @@ class Lizmap:
         if self.dock_html_preview.isVisible():
             return
 
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dock_html_preview)
+        self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.dock_html_preview)
         self.dock_html_preview.setVisible(True)
 
     def check_training_panel(self):
@@ -5213,7 +5213,7 @@ class Lizmap:
         else:
             downloader.downloadCompleted.connect(self.download_completed_zip)
         downloader.startDownload()
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         loop.exec()
 
     @staticmethod
@@ -5262,7 +5262,7 @@ class Lizmap:
     def download_completed(self):
         """ Show the success bar, for both kind of workshops. """
         QApplication.restoreOverrideCursor()
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.dlg.display_message_bar(
                 CLOUD_NAME,
                 tr("Download and extract OK about the training project"),
@@ -5343,14 +5343,14 @@ class Lizmap:
         if not file_path:
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.project.read(project_path)
             # Rename the project
             self.project.writeEntry("WMSServiceTitle", "/", user_project)
 
         # Enable the "Upload" panel
         item = self.dlg.mOptionsListWidget.item(Panels.Upload)
-        item.setFlags(item.flags() | Qt.ItemIsEnabled)
+        item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
 
         variables = self.project.customVariables()
         if 'lizmap_user' in list(variables.keys()):

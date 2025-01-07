@@ -104,7 +104,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         if is_atlas:
             # Formats options
             for index, item in enumerate(self.config.layer_config.get('formats_available')['items']):
-                self.formats.setItemCheckState(index, Qt.Checked if item == FormatType.Pdf else Qt.Unchecked)
+                self.formats.setItemCheckState(index, Qt.CheckState.Checked if item == FormatType.Pdf else Qt.CheckState.Unchecked)
 
             # Default format
             index = self.default_format.findData(FormatType.Pdf.value['data'])
@@ -112,7 +112,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
 
             # DPI options
             for index, item in enumerate(self.config.layer_config.get('dpi_available')['items']):
-                self.dpi.setItemCheckState(index, Qt.Checked if item == Dpi.Dpi100 else Qt.Unchecked)
+                self.dpi.setItemCheckState(index, Qt.CheckState.Checked if item == Dpi.Dpi100 else Qt.CheckState.Unchecked)
 
             # Default DPI
             index = self.default_dpi.findData(Dpi.Dpi100.value['data'])

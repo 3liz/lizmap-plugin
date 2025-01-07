@@ -36,4 +36,4 @@ def user_settings() -> Path:
 def plugin_date() -> QDateTime:
     """Return the version defined in metadata.txt."""
     date = metadata_config()["general"]["dateTime"]
-    return QDateTime().fromString(date, Qt.ISODate)
+    return QDateTime().fromString(date, Qt.DateFormat.ISODate)

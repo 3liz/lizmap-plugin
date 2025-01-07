@@ -723,7 +723,7 @@ class WebDav:
 
         # Transform from UTC to local timezone
         qdate = QDateTime.fromString(last_modified, Qt.DateFormat.RFC2822Date)
-        qdate.setTimeSpec(Qt.UTC)
+        qdate.setTimeSpec(Qt.TimeSpec.UTC)
         qdate_locale = qdate.toLocalTime()
         date_string = qdate_locale.toString(QLocale().dateFormat(QLocale.ShortFormat))
         date_string += " "

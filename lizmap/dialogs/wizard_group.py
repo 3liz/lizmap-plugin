@@ -54,7 +54,7 @@ class WizardGroupDialog(QDialog, FORM_CLASS):
         for i in range(self.list.count()):
             item = self.list.item(i)
             if item.isSelected():
-                selection.append(item.data(Qt.UserRole))
+                selection.append(item.data(Qt.ItemDataRole.UserRole))
 
         more = self.additional.text()
         more = more.strip()
@@ -72,8 +72,8 @@ class WizardGroupDialog(QDialog, FORM_CLASS):
         for group_id, group_data in server_groups.items():
             cell = QListWidgetItem()
             cell.setText(group_data['label'])
-            cell.setData(Qt.UserRole, group_id)
-            cell.setData(Qt.ToolTipRole, group_id)
+            cell.setData(Qt.ItemDataRole.UserRole, group_id)
+            cell.setData(Qt.ItemDataRole.ToolTipRole, group_id)
             self.list.addItem(cell)
             if group_id in existing:
                 cell.setSelected(True)

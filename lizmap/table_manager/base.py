@@ -136,7 +136,7 @@ class TableManager:
                     index = widget.findData(item.value['data'])
                     tooltip = item.value.get('tooltip')
                     if tooltip:
-                        widget.setItemData(index, tooltip, Qt.ToolTipRole)
+                        widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
                 default = general_config.get('default')
                 default: enum
                 if default:
@@ -196,7 +196,7 @@ class TableManager:
                             # When saving the form, we will check if the current input is already in this list.
                             continue
 
-                        cell = item.data(Qt.UserRole)
+                        cell = item.data(Qt.ItemDataRole.UserRole)
                         if cell is None:
                             # Do not put if not cell, it might be False
                             raise Exception('Cell has no data ({}, {})'.format(row, i))
@@ -227,7 +227,7 @@ class TableManager:
 
         # Invalid layer
         cell = self.table.item(row, 0)
-        value = cell.data(Qt.UserRole + 1)
+        value = cell.data(Qt.ItemDataRole.UserRole + 1)
         if isinstance(value, bool) and not value:
             # value is a boolean = False
             # We can't edit a layer which is invalid,
@@ -237,7 +237,7 @@ class TableManager:
         data = dict()
         for i, key in enumerate(self.keys):
             cell = self.table.item(row, i)
-            value = cell.data(Qt.UserRole)
+            value = cell.data(Qt.ItemDataRole.UserRole)
             data[key] = value
 
         # We give the main UI of the plugin in the edition dialog
@@ -270,24 +270,24 @@ class TableManager:
 
             if input_type == InputType.Layer:
                 self._layer = self.project.mapLayer(value)
-                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
                 if self._layer:
                     cell.setText(self._layer.name())
-                    cell.setData(Qt.ToolTipRole, '{} ({})'.format(self._layer.name(), self._layer.crs().authid()))
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, '{} ({})'.format(self._layer.name(), self._layer.crs().authid()))
                     if self._layer.isValid():
                         cell.setIcon(QgsMapLayerModel.iconForLayer(self._layer))
-                        cell.setData(Qt.UserRole + 1, True)
+                        cell.setData(Qt.ItemDataRole.UserRole + 1, True)
 
                 if not self._layer or not self._layer.isValid():
                     # Layer is not correctly loading in QGIS
-                    cell.setData(Qt.UserRole + 1, False)
+                    cell.setData(Qt.ItemDataRole.UserRole + 1, False)
                     cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
                     if self._layer:
                         tooltip_value = self._layer.name()
                     else:
                         tooltip_value = value
                     cell.setData(
-                        Qt.ToolTipRole,
+                        Qt.ItemDataRole.ToolTipRole,
                         tr(
                             'Layer {} is unavailable in QGIS, it\'s not possible to edit its configuration.'
                         ).format(tooltip_value)
@@ -302,13 +302,13 @@ class TableManager:
                             names.append(vector.name())
                 display = ' ,'.join(names)
                 cell.setText(display)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, display)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, display)
 
             elif input_type in (InputType.Field, InputType.PrimaryKeyField):
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
                 # All field inputs are not required, so we might have an empty string
                 # Only check for icon if the field is defined
@@ -320,7 +320,7 @@ class TableManager:
                             cell.setIcon(self._layer.fields().iconForField(index))
                         else:
                             cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
-                            cell.setData(Qt.ToolTipRole, tr(
+                            cell.setData(Qt.ItemDataRole.ToolTipRole, tr(
                                 'Field "{}" not found in the layer. You should check this configuration or fix your '
                                 'fields.'
                             ).format(value))
@@ -328,51 +328,51 @@ class TableManager:
                         # No layer
                         cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
                         cell.setData(
-                            Qt.ToolTipRole,
+                            Qt.ItemDataRole.ToolTipRole,
                             tr("Not possible to check the field type if the layer is not loaded in QGIS").format(value)
                         )
 
             elif input_type == InputType.Fields:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             elif input_type == InputType.File:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             elif input_type == InputType.Color:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 if value:
-                    cell.setData(Qt.DecorationRole, QColor(value))
+                    cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
 
             elif input_type == InputType.CheckBox:
                 if value:
                     cell.setText('✓')
-                    cell.setData(Qt.UserRole, True)
-                    cell.setData(Qt.ToolTipRole, tr('True'))
+                    cell.setData(Qt.ItemDataRole.UserRole, True)
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, tr('True'))
                 else:
                     cell.setText('')
-                    cell.setData(Qt.UserRole, False)
-                    cell.setData(Qt.ToolTipRole, tr('False'))
+                    cell.setData(Qt.ItemDataRole.UserRole, False)
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, tr('False'))
                 cell.setTextAlignment(Qt.AlignCenter)
 
             elif input_type == InputType.Json:
                 if value:
                     cell.setText(json.dumps(value))
-                    cell.setData(Qt.UserRole, value)
-                    cell.setData(Qt.ToolTipRole, value)
+                    cell.setData(Qt.ItemDataRole.UserRole, value)
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 else:
                     cell.setText('')
-                    cell.setData(Qt.UserRole, '')
-                    cell.setData(Qt.ToolTipRole, '')
+                    cell.setData(Qt.ItemDataRole.UserRole, '')
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, '')
 
             elif input_type in (InputType.List, InputType.CheckBoxAsDropdown):
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 items = self.definitions.layer_config[key].get('items')
                 multiple_selection = self.definitions.layer_config[key].get('multiple_selection', False)
                 if items:
@@ -413,8 +413,8 @@ class TableManager:
                 else:
                     display = '{}'.format(value)
                 cell.setText(display)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             elif input_type == InputType.Text:
                 separator = self.definitions.layer_config[key].get('separator', ',')
@@ -423,8 +423,8 @@ class TableManager:
 
                 # TODO check why value is type 'function'
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
                 if self.definitions.key() == 'layouts' and key == 'layout':
                     manager = QgsProject.instance().layoutManager()
@@ -449,20 +449,20 @@ class TableManager:
 
             elif input_type == InputType.MultiLine:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             elif input_type == InputType.HtmlWysiwyg:
                 cell.setText(value)
-                cell.setData(Qt.UserRole, value)
-                cell.setData(Qt.ToolTipRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             elif input_type == InputType.Collection:
                 json_dump = json.dumps(value)
                 cell.setText(json_dump)
-                cell.setData(Qt.UserRole, value)
+                cell.setData(Qt.ItemDataRole.UserRole, value)
                 function = self.definitions.layer_config[key]['represent_value']
-                cell.setData(Qt.ToolTipRole, function(value))
+                cell.setData(Qt.ItemDataRole.ToolTipRole, function(value))
 
             else:
                 raise Exception('InputType "{}" not implemented'.format(input_type))
@@ -520,7 +520,7 @@ class TableManager:
                 if not cell:
                     continue
 
-                value = cell.data(Qt.UserRole)
+                value = cell.data(Qt.ItemDataRole.UserRole)
                 if value == layer_id:
                     self.table.removeRow(i)
                     LOGGER.info("Removing '{}' from table {}".format(layer_id, self.definitions.key()))
@@ -590,7 +590,7 @@ class TableManager:
                     # Do not put if not item, it might be False
                     raise Exception('Cell is not initialized ({}, {})'.format(row, i))
 
-                cell = item.data(Qt.UserRole)
+                cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Do not put if not cell, it might be False
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
@@ -1148,7 +1148,7 @@ class TableManager:
         layers = {}
         for row in range(self.table.rowCount()):
             cell = self.table.item(row, index_layer)
-            layer_id = cell.data(Qt.UserRole)
+            layer_id = cell.data(Qt.ItemDataRole.UserRole)
 
             if layer_id not in layers.keys():
                 layers[layer_id] = []
@@ -1162,7 +1162,7 @@ class TableManager:
 
             for i in index_fields:
                 cell = self.table.item(row, i)
-                field_text = cell.data(Qt.UserRole)
+                field_text = cell.data(Qt.ItemDataRole.UserRole)
                 if not field_text:
                     # Some field input are not required
                     continue
@@ -1173,7 +1173,7 @@ class TableManager:
 
             for i in index_list_fields:
                 cell = self.table.item(row, i)
-                field_text = cell.data(Qt.UserRole)
+                field_text = cell.data(Qt.ItemDataRole.UserRole)
                 if not field_text:
                     # Some field input are not required
                     continue
@@ -1184,7 +1184,7 @@ class TableManager:
 
             if index_traces is not None:
                 cell = self.table.item(row, index_traces)
-                field_json = cell.data(Qt.UserRole)
+                field_json = cell.data(Qt.ItemDataRole.UserRole)
                 for trace in field_json:
                     fields = ('y_field', 'z_field', 'colorfield')
                     for f in fields:

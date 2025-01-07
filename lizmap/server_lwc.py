@@ -153,7 +153,7 @@ class ServerManager:
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_row)
-        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self.context_menu_requested)
 
         # Headers
@@ -268,14 +268,14 @@ class ServerManager:
 
         # All rows must have a login
         for row in range(self.table.rowCount()):
-            login = self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole)
+            login = self.table.item(row, TableCell.Login.value).data(Qt.ItemDataRole.DisplayRole)
             if not login:
                 # All rows must have a login
                 return False
 
         # For LWC ≥ 3.6, rows must have QGIS server version
         for row in range(self.table.rowCount()):
-            qgis_server = self.table.item(row, TableCell.QgisVersion.value).data(Qt.UserRole + 1)
+            qgis_server = self.table.item(row, TableCell.QgisVersion.value).data(Qt.ItemDataRole.UserRole + 1)
             if isinstance(qgis_server, bool):
                 # It means QGIS server is not configured correctly.
                 return False
@@ -285,7 +285,7 @@ class ServerManager:
     def check_lwc_version(self, version_check: str) -> bool:
         """ Check if the given LWC version is at least in the table. """
         for row in range(self.table.rowCount()):
-            lwc_version = self.table.item(row, TableCell.LizmapVersion.value).data(Qt.DisplayRole)
+            lwc_version = self.table.item(row, TableCell.LizmapVersion.value).data(Qt.ItemDataRole.DisplayRole)
             if lwc_version and lwc_version.startswith(version_check):
                 return True
 
@@ -301,7 +301,7 @@ class ServerManager:
 
         missing = False
         for row in range(self.table.rowCount()):
-            if not self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole):
+            if not self.table.item(row, TableCell.Login.value).data(Qt.ItemDataRole.DisplayRole):
                 missing = True
 
         if not missing:
@@ -312,7 +312,7 @@ class ServerManager:
         # Maybe by loading again all logins, we can avoid the "false" return
         self.load_table()
         for row in range(self.table.rowCount()):
-            if not self.table.item(row, TableCell.Login.value).data(Qt.DisplayRole):
+            if not self.table.item(row, TableCell.Login.value).data(Qt.ItemDataRole.DisplayRole):
                 return False
 
         return True
@@ -345,9 +345,9 @@ class ServerManager:
         url_item = self.table.item(row, TableCell.Url.value)
         login_item = self.table.item(row, TableCell.Login.value)
         name_item = self.table.item(row, TableCell.Name.value)
-        url = url_item.data(Qt.UserRole)
-        auth_id = login_item.data(Qt.UserRole)
-        name = name_item.data(Qt.UserRole)
+        url = url_item.data(Qt.ItemDataRole.UserRole)
+        auth_id = login_item.data(Qt.ItemDataRole.UserRole)
+        name = name_item.data(Qt.ItemDataRole.UserRole)
         return url, auth_id, name
 
     def edit_row(self):
@@ -420,46 +420,46 @@ class ServerManager:
 
         # URL
         cell = QTableWidgetItem()
-        cell.setData(Qt.UserRole, server_url)
+        cell.setData(Qt.ItemDataRole.UserRole, server_url)
         self.table.setItem(row, TableCell.Url.value, cell)
 
         # Name
         cell = QTableWidgetItem()
         cell.setText(name)
-        cell.setData(Qt.ToolTipRole, tr(
+        cell.setData(Qt.ItemDataRole.ToolTipRole, tr(
             '<b>URL</b> {}<br>'
             '<b>Login</b> {}<br>'
             '<b>Password ID</b> {}').format(server_url, login, auth_id))
-        cell.setData(Qt.UserRole, name)
+        cell.setData(Qt.ItemDataRole.UserRole, name)
         self.table.setItem(row, TableCell.Name.value, cell)
 
         # Login
         cell = QTableWidgetItem()
         cell.setText(login)
-        cell.setData(Qt.UserRole, auth_id)
+        cell.setData(Qt.ItemDataRole.UserRole, auth_id)
         self.table.setItem(row, TableCell.Login.value, cell)
 
         # LWC Version
         cell = QTableWidgetItem()
         cell.setText('')
-        cell.setData(Qt.UserRole, None)
+        cell.setData(Qt.ItemDataRole.UserRole, None)
         self.table.setItem(row, TableCell.LizmapVersion.value, cell)
 
         # QGIS Version
         cell = QTableWidgetItem()
         cell.setText('')
-        cell.setData(Qt.UserRole, '')
+        cell.setData(Qt.ItemDataRole.UserRole, '')
         self.table.setItem(row, TableCell.QgisVersion.value, cell)
 
         # Action
         cell = QTableWidgetItem()
         cell.setText('')
-        cell.setData(Qt.UserRole, '')
+        cell.setData(Qt.ItemDataRole.UserRole, '')
         self.table.setItem(row, TableCell.Action.value, cell)
 
         # Action text, hidden
         cell = QTableWidgetItem()
-        cell.setData(Qt.UserRole, '')
+        cell.setData(Qt.ItemDataRole.UserRole, '')
         self.table.setItem(row, TableCell.ActionText.value, cell)
 
         self.table.clearSelection()
@@ -619,7 +619,7 @@ class ServerManager:
         lizmap_cell.setText(lizmap_version)
 
         # Reply is good at this step, let's save it in our cache
-        server_alias = self.table.item(row, TableCell.Name.value).data(Qt.UserRole)
+        server_alias = self.table.item(row, TableCell.Name.value).data(Qt.ItemDataRole.UserRole)
         json_file_content = json.dumps(
             content,
             sort_keys=False,
@@ -652,8 +652,8 @@ class ServerManager:
         markdown += lwc_version_txt
         markdown += f'* Lizmap plugin : {version()}\n'
         markdown += '* QGIS Desktop : {}\n'.format(Qgis.QGIS_VERSION.split('-')[0])
-        qgis_cell.setData(Qt.UserRole, markdown)
-        qgis_cell.setData(Qt.UserRole + 1, content)
+        qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
+        qgis_cell.setData(Qt.ItemDataRole.UserRole + 1, content)
 
         # Only adding Lizmap saas if set to true
         if is_lizmap_cloud(content):
@@ -669,7 +669,7 @@ class ServerManager:
             self.update_action_version(lizmap_version, None, row, login)
             # Make a better warning to upgrade ASAP
             markdown += '* QGIS Server and plugins unknown status\n'
-            qgis_cell.setData(Qt.UserRole, markdown)
+            qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
             return
 
         if qgis_server_info and "error" not in qgis_server_info.keys():
@@ -698,7 +698,7 @@ class ServerManager:
                 markdown += f'* QGIS Server plugin {plugin} : {plugin_version}\n'
 
             markdown += self.modules_to_markdown(content)
-            qgis_cell.setData(Qt.UserRole, markdown)
+            qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
             self.update_action_version(
                 lizmap_version, qgis_server_version, row, login, lizmap_cloud=is_lizmap_cloud(content))
             return
@@ -712,7 +712,7 @@ class ServerManager:
             qgis_cell.setText(tr("Not possible"))
             qgis_cell.setToolTip(
                 tr("Not possible to determine QGIS Server version because you need at least Lizmap Web Client 3.5"))
-            qgis_cell.setData(Qt.UserRole, markdown)
+            qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
             self.update_action_version(lizmap_version, None, row)
             return
 
@@ -721,7 +721,7 @@ class ServerManager:
             if not login:
                 # No admin login provided and running LWC >= 3.5
                 markdown += '* QGIS Server and plugins unknown status because no admin login provided\n'
-                qgis_cell.setData(Qt.UserRole, markdown)
+                qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
 
                 font = qgis_cell.font()
                 font.setItalic(True)
@@ -739,7 +739,7 @@ class ServerManager:
                             '* QGIS Server and plugins unknown status because the login provided is not an '
                             'administrator\n'
                         )
-                        qgis_cell.setData(Qt.UserRole, markdown)
+                        qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
                         self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
                         return
 
@@ -748,13 +748,13 @@ class ServerManager:
                         'please review your server settings in the Lizmap Web Client administration interface, '
                         'then in the "Server Information" panel.\n'
                     )
-                    qgis_cell.setData(Qt.UserRole, markdown)
+                    qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
                     self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
                     return
 
         # Unknown
         markdown += '* QGIS Server and plugins unknown status\n'
-        qgis_cell.setData(Qt.UserRole, markdown)
+        qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
         self.server_combo.setItemData(index, markdown, ServerComboData.MarkDown.value)
         self.update_action_version(lizmap_version, None, row)
 
@@ -895,7 +895,7 @@ class ServerManager:
             lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error,
             lizmap_cloud=lizmap_cloud, is_dev=self.parent.is_dev_version)
         if isinstance(qgis_valid, bool) and not qgis_valid:
-            self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.UserRole + 1)
+            self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.ItemDataRole.UserRole + 1)
             self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
 
         self.display_action(row, level, '\n'.join(messages))
@@ -1149,9 +1149,9 @@ class ServerManager:
             color = None
 
         if color:
-            cell.setData(Qt.ForegroundRole, QVariant(color))
+            cell.setData(Qt.ItemDataRole.ForegroundRole, QVariant(color))
         else:
-            cell.setData(Qt.ForegroundRole, None)
+            cell.setData(Qt.ItemDataRole.ForegroundRole, None)
         self.table.setItem(row, TableCell.Action.value, cell)
 
     def context_menu_requested(self, position: QPoint):
@@ -1168,13 +1168,13 @@ class ServerManager:
 
         open_url = menu.addAction(tr("Open home page URL") + "…")
         left_item = self.table.item(item.row(), TableCell.Url.value)
-        url = left_item.data(Qt.UserRole)
+        url = left_item.data(Qt.ItemDataRole.UserRole)
         slot = partial(QDesktopServices.openUrl, QUrl(url))
         open_url.triggered.connect(slot)
 
         open_server_info_url = menu.addAction(tr("Open server information URL") + "…")
         left_item = self.table.item(item.row(), TableCell.Url.value)
-        url = left_item.data(Qt.UserRole)
+        url = left_item.data(Qt.ItemDataRole.UserRole)
         slot = partial(QDesktopServices.openUrl, QUrl(ServerWizard.url_server_info(url)))
         open_server_info_url.triggered.connect(slot)
 
@@ -1186,46 +1186,46 @@ class ServerManager:
         if is_dev:
             open_url = menu.addAction(tr("Open raw JSON file URL") + "…")
             left_item = self.table.item(item.row(), TableCell.Url.value)
-            url = left_item.data(Qt.UserRole)
+            url = left_item.data(Qt.ItemDataRole.UserRole)
             slot = partial(QDesktopServices.openUrl, QUrl(ServerWizard.url_metadata(url)))
             open_url.triggered.connect(slot)
 
         action_item = self.table.item(item.row(), TableCell.Action.value)
-        action_data = action_item.data(Qt.DisplayRole)
-        action_required = action_item.data(Qt.ForegroundRole) in (Color.Advice.value, Color.Critical.value)
+        action_data = action_item.data(Qt.ItemDataRole.DisplayRole)
+        action_required = action_item.data(Qt.ItemDataRole.ForegroundRole) in (Color.Advice.value, Color.Critical.value)
 
         qgis_server_item = self.table.item(item.row(), TableCell.QgisVersion.value)
-        data = qgis_server_item.data(Qt.UserRole)
+        data = qgis_server_item.data(Qt.ItemDataRole.UserRole)
 
         show_all_versions = menu.addAction(tr("Display all versions") + "…")
         slot = partial(self.display_all_versions, data)
         show_all_versions.triggered.connect(slot)
 
         server_as_markdown = menu.addAction(tr("Copy versions in the clipboard for a support request"))
-        data = qgis_server_item.data(Qt.UserRole)
+        data = qgis_server_item.data(Qt.ItemDataRole.UserRole)
         slot = partial(self.copy_as_markdown, data, action_data, action_required)
         server_as_markdown.triggered.connect(slot)
 
-        webdav = webdav_properties(qgis_server_item.data(Qt.UserRole + 1))
+        webdav = webdav_properties(qgis_server_item.data(Qt.ItemDataRole.UserRole + 1))
         if webdav:
             login_item = self.table.item(item.row(), TableCell.Login.value)
-            auth_id = login_item.data(Qt.UserRole)
+            auth_id = login_item.data(Qt.ItemDataRole.UserRole)
             action_remote_repository = menu.addAction(tr("Create a remote Lizmap repository") + "…")
             qgis_dav = ServerWizard.trailing_slash(
                 ServerWizard.trailing_slash(webdav.get('url'))
                 + webdav.get('projects_path'))
             left_item = self.table.item(item.row(), TableCell.Url.value)
-            url = left_item.data(Qt.UserRole)
+            url = left_item.data(Qt.ItemDataRole.UserRole)
             slot = partial(self.create_remote_repository, auth_id, qgis_dav, url)
             action_remote_repository.triggered.connect(slot)
 
         show_fonts = menu.addAction(tr("Show fonts available on QGIS Server") + "…")
-        data = qgis_server_item.data(Qt.UserRole + 1).get('qgis_server_info')
+        data = qgis_server_item.data(Qt.ItemDataRole.UserRole + 1).get('qgis_server_info')
         fonts = data.get('fonts')
         if fonts is None:
             fonts = [tr('Upgrade your Lizmap server plugin to have the list of fonts.')]
         name_item = self.table.item(item.row(), TableCell.Name.value)
-        slot = partial(self.show_fonts, fonts, name_item.data(Qt.DisplayRole))
+        slot = partial(self.show_fonts, fonts, name_item.data(Qt.ItemDataRole.DisplayRole))
         show_fonts.triggered.connect(slot)
 
         # noinspection PyArgumentList

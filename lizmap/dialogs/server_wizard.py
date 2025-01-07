@@ -23,8 +23,8 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import QgsPasswordLineEdit
-from qgis.PyQt.QtCore import QRegExp, Qt, QUrl
-from qgis.PyQt.QtGui import QDesktopServices, QRegExpValidator
+from qgis.PyQt.QtCore import QRegularExpression, Qt, QUrl
+from qgis.PyQt.QtGui import QDesktopServices, QRegularExpressionValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -646,8 +646,8 @@ class CreateNewFolderDavPage(QWizardPage):
         layout.addLayout(horizontal)
 
         self.custom_name = QLineEdit()
-        regexp = QRegExp("^[a-z0-9]+$")
-        validator = QRegExpValidator(regexp, self.custom_name)
+        regexp = QRegularExpression("^[a-z0-9]+$")
+        validator = QRegularExpressionValidator(regexp, self.custom_name)
         self.custom_name.setValidator(validator)
         layout.addWidget(self.custom_name)
         self.registerField("folder_name", self.custom_name)
@@ -678,7 +678,7 @@ class CreateNewFolderDavPage(QWizardPage):
         auth_id = parent_wizard.auth_id
 
         LOGGER.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             server_dav = WebDav(dav_url, auth_id)
             if parent_wizard._user:
                 # Only for tests, because authid is not available
@@ -752,7 +752,7 @@ class LizmapNewRepositoryPage(QWizardPage):
         network_request = QgsBlockingNetworkRequest()
         network_request.setAuthCfg(self.wizard().auth_id)
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             network_request.get(request)
 
         response = network_request.reply().content()
@@ -853,7 +853,7 @@ class ServerWizard(BaseWizard):
             self.page(WizardPages.UrlPage).result_url.setText('')
             self.currentPage().result_login_password.setText(tr("Fetching") + "…")
 
-            with OverrideCursor(Qt.WaitCursor):
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
                 self.currentPage().progress.setMaximum(0)
 
                 flag, message, url_valid = self.request_check_url(

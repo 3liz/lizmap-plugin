@@ -44,7 +44,7 @@ class TableFiles(QTableWidget):
     """ Subclassing of QTableWidget in the plugin. """
 
     # noinspection PyUnresolvedReferences
-    ABSOLUTE_PATH = Qt.UserRole
+    ABSOLUTE_PATH = Qt.ItemDataRole.UserRole
     RELATIVE_PATH = ABSOLUTE_PATH + 1
 
     val_Changed = pyqtSignal(int, str, name='valChanged')

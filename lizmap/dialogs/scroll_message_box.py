@@ -24,7 +24,7 @@ class ScrollMessageBox(QMessageBox):
         grid = self.findChild(QGridLayout)
         label = QLabel(children[1].text(), self)
         label.setWordWrap(True)
-        label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         scroll.setWidget(label)
         scroll.setMinimumSize(400, 200)
         grid.addWidget(scroll, 0, 1)
