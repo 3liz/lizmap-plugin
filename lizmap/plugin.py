@@ -3684,7 +3684,7 @@ class Lizmap:
                         'QGIS roadmap'
                         '</a>.'
                     ).format(
-                        month_and_year=tr("February 2024"),
+                        month_and_year=tr("February 2024"),  # About QGIS 3.28
                     )
                     + "<br><br>"
                     + tr(

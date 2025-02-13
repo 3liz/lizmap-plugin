@@ -238,7 +238,7 @@ class TestVersionInfo(unittest.TestCase):
         # QGIS server version = QGIS desktop version
         data = {
             'lizmap_version': '3.5.11',
-            'server_version': "3.28.0",
+            'server_version': "3.34.0",
             'login': 'simple_lambda',
             'json_path': json_path,
             'qgis_desktop': qgis_desktop,
