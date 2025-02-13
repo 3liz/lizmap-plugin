@@ -586,6 +586,12 @@ def _clean_result(results: dict) -> dict:
     for layer_id, labels in results.items():
         data[layer_id] = {}
         for label, count in labels.items():
+            if label == "":
+                # In a rule based symbology, this can be an empty string
+                label = tr("(empty string)")
+            else:
+                # Add some quotes, to see if they are some leading trailing spaces
+                label = f'"{label}"'
             if count >= 2:
                 data[layer_id][label] = count
 

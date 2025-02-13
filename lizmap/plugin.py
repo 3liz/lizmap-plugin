@@ -3182,6 +3182,7 @@ class Lizmap:
             if results:
                 self.dlg.log_panel.append(tr("Duplicated labels in the legend"), Html.H2)
                 self.dlg.log_panel.append("<br>")
+                self.dlg.log_panel.append("<em>" + tr("A leading or a trailing spaces can be added.") + "</em>")
                 self.dlg.log_panel.start_table()
                 self.dlg.log_panel.append(
                     "<tr><th>{}</th><th>{}</th><th>{}</th></tr>".format(tr('Layer'), tr('Label'), tr('Count'))
@@ -3684,7 +3685,7 @@ class Lizmap:
                         'QGIS roadmap'
                         '</a>.'
                     ).format(
-                        month_and_year=tr("February 2024"),
+                        month_and_year=tr("February 2024"),  # About QGIS 3.28
                     )
                     + "<br><br>"
                     + tr(

@@ -1028,7 +1028,7 @@ class SourceType:
 
     Field = SourceField
     Layer = SourceLayer
-    Groupe = SourceGroup
+    Group = SourceGroup
 
 
 class Error:
@@ -1188,7 +1188,7 @@ class TableCheck(QTableWidget):
             layer = QgsProject.instance().mapLayer(error.source_type.layer_id)
             item.setIcon(QgsMapLayerModel.iconForLayer(layer))
             item.setData(self.JSON, error.source_type.layer_id)
-        elif isinstance(error.source_type, SourceType.Groupe):
+        elif isinstance(error.source_type, SourceType.Group):
             item.setToolTip(error.source_type.name)
             item.setIcon(QIcon(":images/themes/default/mActionFolder.svg"))
             item.setData(self.JSON, error.source_type.name)

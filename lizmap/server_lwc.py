@@ -1090,7 +1090,7 @@ class ServerManager:
                         ).format(
                             major=qgis_server[0],
                             minor=qgis_server[1],
-                            month_and_year=tr("February 2024"),
+                            month_and_year=tr("February 2024"),  # About QGIS 3.28
                         ))
                         level = Qgis.Critical
 
