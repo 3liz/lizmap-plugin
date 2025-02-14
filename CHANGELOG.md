@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.4.7 - 2025-02-14
+
+* Add tip about trailing/leading white space
+* Better support for QJazz
+* Raise to QGIS Server 3.34 for Lizmap Cloud customers
+* Temporary remove the Qt6 compatibility
+
 ## 4.4.6 - 2024-12-10
 
 * Rephrase sentences about print layouts
