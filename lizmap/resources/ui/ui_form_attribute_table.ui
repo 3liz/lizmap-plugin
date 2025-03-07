@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
-    <height>303</height>
+    <width>554</width>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,9 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="1">
+      <widget class="ListFieldsSelection" name="fields_to_hide"/>
+     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_pivot_table">
        <property name="text">
@@ -71,6 +74,13 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_hide_layer">
+       <property name="text">
+        <string>Hide layer in the list</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="1">
       <widget class="QCheckBox" name="hide_layer">
        <property name="toolTip">
@@ -81,15 +91,12 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_hide_layer">
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_has_custom_config">
        <property name="text">
-        <string>Hide layer in the list</string>
+        <string notr="true">Has a custom config</string>
        </property>
       </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="ListFieldsSelection" name="fields_to_hide"/>
      </item>
      <item row="6" column="1">
       <widget class="QCheckBox" name="has_custom_config">
@@ -98,10 +105,38 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_has_custom_config">
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_export_allowed_groups">
        <property name="text">
-        <string notr="true">Has a custom config</string>
+        <string>Export allowed groups</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QCheckBox" name="export_enabled">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="allowed_groups"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="button_wizard_group">
+         <property name="text">
+          <string notr="true">WIZARD</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_export_enabled">
+       <property name="text">
+        <string>Export enabled</string>
        </property>
       </widget>
      </item>

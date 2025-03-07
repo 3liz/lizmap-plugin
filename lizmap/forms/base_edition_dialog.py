@@ -23,7 +23,7 @@ from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
 
-__copyright__ = 'Copyright 2023, 3Liz'
+__copyright__ = 'Copyright 2025, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -61,6 +61,7 @@ class BaseEditionDialog(QDialog):
         self.lwc_versions[LwcVersions.Lizmap_3_6] = []
         self.lwc_versions[LwcVersions.Lizmap_3_7] = []
         self.lwc_versions[LwcVersions.Lizmap_3_8] = []
+        self.lwc_versions[LwcVersions.Lizmap_3_9] = []
 
     def setup_ui(self):
         """ Build the UI. """
@@ -530,6 +531,7 @@ class BaseEditionDialog(QDialog):
             return None
         # End of duplicated
 
+        # Object name "allowed_groups" used "edition" and "attribute table"
         wizard_dialog = WizardGroupDialog(helper, self.allowed_groups.text(), acl['groups'])
         if not wizard_dialog.exec():
             return

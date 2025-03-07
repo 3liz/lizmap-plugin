@@ -2,9 +2,10 @@
 from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
 
 from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.toolbelt.i18n import tr
 
-__copyright__ = 'Copyright 2020, 3Liz'
+__copyright__ = 'Copyright 2025, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
@@ -40,6 +41,22 @@ class AttributeTableDefinitions(BaseDefinitions):
             'header': tr('Fields to hide'),
             'default': '',
             'tooltip': tr('List of fields to hide in the attribute table.')
+        }
+        self._layer_config['export_enabled'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Export enabled'),
+            'default': True,
+            'tooltip': tr('If the export of the layer is enabled.'),
+            'version': LwcVersions.Lizmap_3_9,
+            'use_json': True,
+        }
+        self._layer_config['export_allowed_groups'] = {
+            'type': InputType.Text,
+            'header': tr('Allowed groups for export'),
+            'default': '',
+            'tooltip': tr('Allowed list of groups for exporting the data. If empty, everyone can export the data.'),
+            'version': LwcVersions.Lizmap_3_9,
+            'use_json': True,
         }
         self._layer_config['pivot'] = {
             'type': InputType.CheckBox,
