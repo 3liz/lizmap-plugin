@@ -458,6 +458,7 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_9] = [
             self.dlg.group_box_max_scale_zoom,
+            self.dlg.children_lizmap_features_table,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_10] = [
         ]
@@ -539,7 +540,8 @@ class Lizmap:
         self.layer_options_list['popupFrame']['widget'] = self.dlg.frame_layer_popup
         self.layer_options_list['popupTemplate']['widget'] = None
         self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
-        self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.cbPopupDisplayChildren
+        self.layer_options_list['children_lizmap_features_table']['widget'] = self.dlg.children_lizmap_features_table
+        self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.popup_display_children
         self.layer_options_list['popup_allow_download']['widget'] = self.dlg.checkbox_popup_allow_download
         self.layer_options_list['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
         self.layer_options_list['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
@@ -706,6 +708,8 @@ class Lizmap:
                     control.textChanged.connect(slot)
                 elif item['wType'] == 'checkbox':
                     control.stateChanged.connect(slot)
+                elif item['wType'] == 'radio':
+                    control.toggled.connect(slot)
                 elif item['wType'] == 'list':
                     control.currentIndexChanged.connect(slot)
                 elif item['wType'] == 'layers':
@@ -1860,7 +1864,7 @@ class Lizmap:
                 if item.get('tooltip'):
                     item['widget'].setToolTip(item.get('tooltip'))
 
-                if item['wType'] == 'checkbox':
+                if item['wType'] in ('checkbox', 'radio'):
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
                         item['widget'].setChecked(to_bool(json_options[key]))
@@ -2216,7 +2220,7 @@ class Lizmap:
                                 continue
 
                         # checkboxes
-                        if item['wType'] == 'checkbox':
+                        if item['wType'] in ('checkbox', 'radio'):
                             self.myDic[item_key][key] = to_bool(json_layers[json_key][key], False)
                         # spin box
                         elif item['wType'] == 'spinbox':
@@ -2437,7 +2441,7 @@ class Lizmap:
                             val['widget'].setPlainText(text)
                     elif val['wType'] == 'spinbox':
                         val['widget'].setValue(int(selected_item[key]))
-                    elif val['wType'] == 'checkbox':
+                    elif val['wType'] in ('checkbox', 'radio'):
                         val['widget'].setChecked(selected_item[key])
                         children = val.get('children')
                         if children:
@@ -2539,7 +2543,7 @@ class Lizmap:
                             val['widget'].setPlainText(text)
                     elif val['wType'] == 'spinbox':
                         val['widget'].setValue(val['default'])
-                    elif val['wType'] == 'checkbox':
+                    elif val['wType'] in ('checkbox', 'radio'):
                         val['widget'].setChecked(val['default'])
                     elif val['wType'] == 'list':
 
@@ -2774,7 +2778,7 @@ class Lizmap:
             self.set_layer_metadata(layer_or_group_text, key)
         elif layer_option['wType'] == 'spinbox':
             self.layerList[layer_or_group_text][key] = layer_option['widget'].value()
-        elif layer_option['wType'] == 'checkbox':
+        elif layer_option['wType'] in ('checkbox', 'radio'):
             checked = layer_option['widget'].isChecked()
             self.layerList[layer_or_group_text][key] = checked
             children = layer_option.get('children')
@@ -3739,7 +3743,7 @@ class Lizmap:
         if self.dlg.widget_initial_extent.outputExtent().isNull():
             self.set_initial_extent_from_project()
 
-        # gui user defined options
+        # GUI user defined options
         for key, item in self.global_options.items():
             if item.get('widget'):
                 input_value = None
@@ -4003,7 +4007,7 @@ class Lizmap:
                         property_value = int(property_value)
                     except Exception:
                         property_value = 1
-                elif val['type'] == 'boolean':
+                elif val['type'] in ('boolean', 'radio'):
                     if not val.get('use_proper_boolean'):
                         property_value = str(property_value)
 

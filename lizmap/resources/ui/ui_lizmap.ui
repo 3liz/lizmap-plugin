@@ -1961,21 +1961,28 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <widget class="QWidget" name="page_display_relation">
                                <layout class="QVBoxLayout" name="verticalLayout_55">
                                 <item>
-                                 <layout class="QHBoxLayout" name="horizontalLayout_36">
-                                  <item>
-                                   <widget class="QCheckBox" name="cbPopupDisplayChildren">
-                                    <property name="toolTip">
-                                     <string>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</string>
-                                    </property>
-                                    <property name="styleSheet">
-                                     <string notr="true"/>
-                                    </property>
-                                    <property name="text">
-                                     <string>Display related children</string>
-                                    </property>
-                                   </widget>
-                                  </item>
-                                 </layout>
+                                 <widget class="QRadioButton" name="children_no_display">
+                                  <property name="text">
+                                   <string>No children displayed</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item>
+                                 <widget class="QRadioButton" name="children_lizmap_features_table">
+                                  <property name="text">
+                                   <string>Display table of children (recommended)</string>
+                                  </property>
+                                 </widget>
+                                </item>
+                                <item>
+                                 <widget class="QRadioButton" name="popup_display_children">
+                                  <property name="toolTip">
+                                   <string>When checked, Lizmap will show children data under each parent popup. You should activate popup for parent and child layers.</string>
+                                  </property>
+                                  <property name="text">
+                                   <string>Display related children with popups</string>
+                                  </property>
+                                 </widget>
                                 </item>
                                </layout>
                               </widget>
@@ -5795,7 +5802,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>scrollArea_15</tabstop>
   <tabstop>down_attribute_table_button</tabstop>
   <tabstop>remove_attribute_table_button</tabstop>
-  <tabstop>cbPopupDisplayChildren</tabstop>
+  <tabstop>children_no_display</tabstop>
+  <tabstop>children_lizmap_features_table</tabstop>
+  <tabstop>popup_display_children</tabstop>
   <tabstop>edit_attribute_table_button</tabstop>
   <tabstop>cbLimitDataToBbox</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
