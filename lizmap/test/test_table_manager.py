@@ -991,6 +991,46 @@ class TestTableManager(unittest.TestCase):
         # Automatically added, so we add it manually for the comparaison
         json['lines']['custom_config'] = 'False'
 
+        # Allowing groups for exporting
+        json['lines']['export_enabled'] = True
+        self.assertIsNone(json['lines'].get('export_allowed_groups'))
+
+        self.assertDictEqual(data, json)
+
+        self.assertDictEqual({self.layer.id(): ['id']}, table_manager.wfs_fields_used())
+
+    def test_attribute_table_export_acl(self):
+        """Test table manager with attribute table with export ACL"""
+        table = QTableWidget()
+        definitions = AttributeTableDefinitions()
+
+        table_manager = TableManager(
+            None, definitions, None, table, None, None, None, None)
+
+        json = {
+            'lines': {
+                'primaryKey': 'id',
+                'export_enabled': True,
+                'export_allowed_groups': [
+                    'admins',
+                    'publishers',
+                ],
+                'hiddenFields': 'id,name,value',
+                'pivot': 'False',
+                'hideAsChild': 'False',
+                'hideLayer': 'False',
+                'layerId': self.layer.id(),
+                'order': 0
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json(LwcVersions.latest())
+
+        # Automatically added, so we add it manually for the comparaison
+        json['lines']['custom_config'] = 'False'
+
         self.assertDictEqual(data, json)
 
         self.assertDictEqual({self.layer.id(): ['id']}, table_manager.wfs_fields_used())
