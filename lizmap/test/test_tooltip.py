@@ -26,6 +26,8 @@ __email__ = 'info@3liz.org'
 
 class TestToolTip(unittest.TestCase):
 
+    maxDiff = None
+
     def check_layer_context(self, field_value, expression, expected):
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
 
@@ -59,16 +61,33 @@ class TestToolTip(unittest.TestCase):
         template = Tooltip._generate_field_name('field_a', 'Field Name', '\'foo\'')
 
         expected = '''
-                    [% CASE
-                        WHEN "field_a" IS NOT NULL OR trim("field_a") != ''
-                        THEN concat(
-                            '<p>', '<b>Field Name</b>',
-                            '<div class="field">', 'foo', '</div>',
-                            '</p>'
-                        )
-                        ELSE ''
-                    END %]'''
-        self.assertEqual(expected, template)
+                    [%
+                    concat(
+                        '<div class="control-group ',
+                        CASE
+                            WHEN "field_a" IS NULL OR trim("field_a") = ''
+                                THEN ' control-has-empty-value '
+                            ELSE ''
+                        END,
+                        '">',
+                        '    <label ',
+                        '       id="dd_jforms_view_edition_field_a_label" ',
+                        '       class="control-label jforms-label" ',
+                        '       for="dd_jforms_view_edition_field_a" >',
+                        '    Field Name',
+                        '    </label>',
+                        '    <div class="controls">',
+                        '        <span ',
+                        '            id="dd_jforms_view_edition_field_a" ',
+                        '            class="jforms-control-input" ',
+                        '        >',
+                                    'foo',
+                        '        </span>',
+                        '    </div>',
+                        '</div>'
+                    )
+                    %]'''
+        self.assertEqual(expected, template, template)
 
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
         sub_context = QgsExpressionContext()
@@ -79,7 +98,7 @@ class TestToolTip(unittest.TestCase):
         layer.dataProvider().addFeatures([feature])
         sub_context.setFeature(next(layer.getFeatures()))
         expression = QgsExpression().replaceExpressionText(template, sub_context)
-        self.assertEqual('\n                    <p><b>Field Name</b><div class="field">foo</div></p>', expression)
+        self.assertEqual('\n                    <div class="control-group ">    <label        id="dd_jforms_view_edition_field_a_label"        class="control-label jforms-label"        for="dd_jforms_view_edition_field_a" >    Field Name    </label>    <div class="controls">        <span             id="dd_jforms_view_edition_field_a"             class="jforms-control-input"         >foo        </span>    </div></div>', expression, expression)
 
     def test_visibility_expression(self):
         """Test the visibility expression."""
@@ -115,15 +134,32 @@ class TestToolTip(unittest.TestCase):
 
         template = Tooltip._generate_field_name('is_ok', 'Is ok ?', field_view)
         expected = '''
-                    [% CASE
-                        WHEN "is_ok" IS NOT NULL OR trim("is_ok") != ''
-                        THEN concat(
-                            '<p>', '<b>Is ok ?</b>',
-                            '<div class="field">', "is_ok", '</div>',
-                            '</p>'
-                        )
-                        ELSE ''
-                    END %]'''
+                    [%
+                    concat(
+                        '<div class="control-group ',
+                        CASE
+                            WHEN "is_ok" IS NULL OR trim("is_ok") = ''
+                                THEN ' control-has-empty-value '
+                            ELSE ''
+                        END,
+                        '">',
+                        '    <label ',
+                        '       id="dd_jforms_view_edition_is_ok_label" ',
+                        '       class="control-label jforms-label" ',
+                        '       for="dd_jforms_view_edition_is_ok" >',
+                        '    Is ok ?',
+                        '    </label>',
+                        '    <div class="controls">',
+                        '        <span ',
+                        '            id="dd_jforms_view_edition_is_ok" ',
+                        '            class="jforms-control-input" ',
+                        '        >',
+                                    "is_ok",
+                        '        </span>',
+                        '    </div>',
+                        '</div>'
+                    )
+                    %]'''
         self.assertEqual(expected, template, template)
 
         layer = QgsVectorLayer('Point', 'temporary_points', 'memory')
@@ -138,7 +174,7 @@ class TestToolTip(unittest.TestCase):
         layer.dataProvider().addFeatures([feature])
         sub_context.setFeature(next(layer.getFeatures()))
         expression = QgsExpression().replaceExpressionText(template, sub_context)
-        self.assertEqual('\n                    <p><b>Is ok ?</b><div class="field">true</div></p>', expression, expression)
+        self.assertEqual('\n                    <div class="control-group ">    <label        id="dd_jforms_view_edition_is_ok_label"        class="control-label jforms-label"        for="dd_jforms_view_edition_is_ok" >    Is ok ?    </label>    <div class="controls">        <span             id="dd_jforms_view_edition_is_ok"             class="jforms-control-input"         >true        </span>    </div></div>', expression, expression)
 
         # FIXME On memory layers, we can't custom config on checkbox widget
         # config = {
@@ -517,19 +553,36 @@ class TestToolTip(unittest.TestCase):
 <div class="tab-content">
   <div id="popup_dd_[% $id %]_tab_1" class="tab-pane active">
     
-                    [% CASE
-                        WHEN "name" IS NOT NULL OR trim("name") != ''
-                        THEN concat(
-                            '<p>', '<b>name</b>',
-                            '<div class="field">', 
+                    [%
+                    concat(
+                        '<div class="control-group ',
+                        CASE
+                            WHEN "name" IS NULL OR trim("name") = ''
+                                THEN ' control-has-empty-value '
+                            ELSE ''
+                        END,
+                        '">',
+                        '    <label ',
+                        '       id="dd_jforms_view_edition_name_label" ',
+                        '       class="control-label jforms-label" ',
+                        '       for="dd_jforms_view_edition_name" >',
+                        '    name',
+                        '    </label>',
+                        '    <div class="controls">',
+                        '        <span ',
+                        '            id="dd_jforms_view_edition_name" ',
+                        '            class="jforms-control-input" ',
+                        '        >',
+                                    
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         replace("name", '\\'', '’')
-                    ), '</div>',
-                            '</p>'
-                        )
-                        ELSE ''
-                    END %]
+                    ),
+                        '        </span>',
+                        '    </div>',
+                        '</div>'
+                    )
+                    %]
   </div>
 
   <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
@@ -537,19 +590,36 @@ class TestToolTip(unittest.TestCase):
 
   <div id="popup_dd_[% $id %]_invisible" class="tab-pane ">
     
-                    [% CASE
-                        WHEN "name" IS NOT NULL OR trim("name") != ''
-                        THEN concat(
-                            '<p>', '<b>name</b>',
-                            '<div class="field">', 
+                    [%
+                    concat(
+                        '<div class="control-group ',
+                        CASE
+                            WHEN "name" IS NULL OR trim("name") = ''
+                                THEN ' control-has-empty-value '
+                            ELSE ''
+                        END,
+                        '">',
+                        '    <label ',
+                        '       id="dd_jforms_view_edition_name_label" ',
+                        '       class="control-label jforms-label" ',
+                        '       for="dd_jforms_view_edition_name" >',
+                        '    name',
+                        '    </label>',
+                        '    <div class="controls">',
+                        '        <span ',
+                        '            id="dd_jforms_view_edition_name" ',
+                        '            class="jforms-control-input" ',
+                        '        >',
+                                    
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         replace("name", '\\'', '’')
-                    ), '</div>',
-                            '</p>'
-                        )
-                        ELSE ''
-                    END %]
+                    ),
+                        '        </span>',
+                        '    </div>',
+                        '</div>'
+                    )
+                    %]
   </div>
 </div>'''
 

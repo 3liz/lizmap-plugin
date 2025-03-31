@@ -35,7 +35,7 @@ class Tooltip:
 
     @staticmethod
     def create_popup(html: str) -> str:
-        template = '''<div class="container popup_lizmap_dd" style="width:100%;">
+        template = '''<div class="container popup_lizmap_dd form-horizontal" style="width:100%;">
     {}
 </div>\n'''
         return template.format(html)
@@ -294,15 +294,32 @@ class Tooltip:
     @staticmethod
     def _generate_field_name(name: str, fname: str, expression: str) -> str:
         text = '''
-                    [% CASE
-                        WHEN "{0}" IS NOT NULL OR trim("{0}") != ''
-                        THEN concat(
-                            '<p>', '<b>{1}</b>',
-                            '<div class="field">', {2}, '</div>',
-                            '</p>'
-                        )
-                        ELSE ''
-                    END %]'''.format(
+                    [%
+                    concat(
+                        '<div class="control-group ',
+                        CASE
+                            WHEN "{0}" IS NULL OR trim("{0}") = ''
+                                THEN ' control-has-empty-value '
+                            ELSE ''
+                        END,
+                        '">',
+                        '    <label ',
+                        '       id="dd_jforms_view_edition_{0}_label" ',
+                        '       class="control-label jforms-label" ',
+                        '       for="dd_jforms_view_edition_{0}" >',
+                        '    {1}',
+                        '    </label>',
+                        '    <div class="controls">',
+                        '        <span ',
+                        '            id="dd_jforms_view_edition_{0}" ',
+                        '            class="jforms-control-input" ',
+                        '        >',
+                                    {2},
+                        '        </span>',
+                        '    </div>',
+                        '</div>'
+                    )
+                    %]'''.format(
             name,
             fname,
             expression,
@@ -444,6 +461,7 @@ class Tooltip:
 
     @staticmethod
     def css() -> str:
+        """ CSS for LWC <= 3.7. """
         css = '''<style>
     div.popup_lizmap_dd {
         margin: 2px;
@@ -481,6 +499,97 @@ class Tooltip:
         margin-top: 15px !important;
     }
 
+</style>\n'''
+        return css
+
+    @staticmethod
+    def css_3_8_6() -> str:
+        """ CSS for LWC from 3.8.0 to 3.8.6. """
+        css = '''<style>
+/* Flat style for editing forms & drag-and-drop designed popup */
+div.popup_lizmap_dd ul.nav-tabs {
+  border-bottom: 1px solid var(--color-contrasted-elements);
+}
+
+div.popup_lizmap_dd .nav-tabs > li > a {
+  color: var(--color-text-primary);
+  padding: 5px;
+  border: none;
+}
+
+div.popup_lizmap_dd .nav > li > a:hover,
+div.popup_lizmap_dd .nav > li > a:focus {
+  text-decoration: none;
+}
+
+div.popup_lizmap_dd .nav-tabs > li > a:hover,
+div.popup_lizmap_dd .nav-tabs > li > a:focus {
+  background: none;
+  border: none;
+  border-bottom: 3px solid var(--color-contrasted-elements);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+div.popup_lizmap_dd .nav-tabs > li.active > a,
+div.popup_lizmap_dd .nav-tabs > li.active > a:hover,
+div.popup_lizmap_dd .nav-tabs > li.active > a:focus {
+  background: none;
+  border: none;
+  border-bottom: 3px solid var(--color-contrasted-elements);
+  color: var(--color-text-primary);
+  cursor: auto;
+}
+
+div.popup_lizmap_dd div.tab-pane {
+  border-left: 1px solid var(--color-contrasted-elements);
+  border-right: 1px solid var(--color-contrasted-elements);
+  border-bottom: 1px solid var(--color-contrasted-elements);
+  padding: 5px;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+}
+
+div.popup_lizmap_dd div.tab-pane.attribute-layer-child-content {
+  border: none;
+}
+
+div.popup_lizmap_dd #tabform {
+  border: none;
+}
+
+div.popup_lizmap_dd legend {
+  color: var(--color-text-primary);
+  border-bottom: none;
+  padding: 5px;
+  width: unset;
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+div.popup_lizmap_dd fieldset {
+  padding: 10px;
+  padding-top: 0;
+  margin: 0 5px;
+  border: 1px solid var(--color-contrasted-elements-light);
+  border-radius: 5px;
+  background: rgb(255 255 255 / 20%);
+}
+/* Minor adaptation for popup compared to editing form */
+div.popup_lizmap_dd {
+  font-size: 12px;
+}
+div.popup_lizmap_dd .form-horizontal .control-group {
+  margin-bottom: 0px !important;
+}
+div.popup_lizmap_dd label {
+  padding-top: 0px !important;
+  font-size: 12px !important;
+  width: 130px !important;
+}
+div.popup_lizmap_dd .controls {
+  margin-left: 140px !important;
+}
 </style>\n'''
         return css
 
