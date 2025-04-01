@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.4.8 - 2025-02-14
+
+* Allow groups ACL for layer export capabilities, for Lizmap Web Client 3.9
+* Popup - Update the CSS for LWC 3.8.0 to 3.8.6, do not provide CSS if higher than 3.8.7 included
+
 ## 4.4.7 - 2025-02-14
 
 * Add tip about trailing/leading white space
