@@ -3035,7 +3035,16 @@ class Lizmap:
             bootstrap_5=self.current_lwc_version() >= LwcVersions.Lizmap_3_9,
         )
         html_content = Tooltip.create_popup(html_content)
-        html_content += Tooltip.css()
+
+        server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        versions = ServerManager.split_lizmap_version(server_metadata['info']['version'])
+        if versions[0:2] <= (3, 7):
+            # LWC 3.7.X and older
+            html_content += Tooltip.css()
+        elif (3, 8, 0) <= versions[0:3] <= (3, 8, 7):
+            # LWC 3.8.0 to 3.8.6
+            html_content += Tooltip.css_3_8_6()
+
         self._set_maptip(layer, html_content)
 
     def write_project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True) -> bool:
