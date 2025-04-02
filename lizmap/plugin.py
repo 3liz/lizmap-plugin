@@ -3902,11 +3902,15 @@ class Lizmap:
             # In tests, we don't have the variable set
             liz2json['options']['dataviz_drag_drop'] = self.drag_drop_dataviz.to_json()
 
-        default_background_color_index = self.existing_group(
-            self.existing_group(
-                self.project.layerTreeRoot(), GroupNames.BaseLayers), GroupNames.BackgroundColor, index=True)
-        if default_background_color_index is not None and default_background_color_index >= 0:
-            liz2json["options"]["default_background_color_index"] = default_background_color_index
+        base_layers_group = self.existing_group(self.project.layerTreeRoot(), GroupNames.BaseLayers)
+        if base_layers_group:
+            base_layers_group: QgsLayerTreeGroup
+            base_layers_group.setIsMutuallyExclusive(True, -1)
+
+            default_background_color_index = self.existing_group(
+                base_layers_group, GroupNames.BackgroundColor, index=True)
+            if default_background_color_index is not None and default_background_color_index >= 0:
+                liz2json["options"]["default_background_color_index"] = default_background_color_index
 
         if not isinstance(self.layerList, dict):
             # Wierd bug when the dialog was not having a server at the beginning
