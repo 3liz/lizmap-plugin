@@ -120,7 +120,7 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
-           <string>Attribute table</string>
+           <string>Attribute table&amp;selection</string>
           </property>
          </item>
          <item>
@@ -2676,6 +2676,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>This tool enables also the selection : tools and buttons.</string>
                  </property>
                 </widget>
                </item>
