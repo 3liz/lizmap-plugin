@@ -1222,13 +1222,18 @@ class ServerManager:
             action_remote_repository.triggered.connect(slot)
 
         show_fonts = menu.addAction(tr("Show fonts available on QGIS Server") + "…")
-        data = qgis_server_item.data(Qt.ItemDataRole.UserRole + 1).get('qgis_server_info')
-        fonts = data.get('fonts')
-        if fonts is None:
-            fonts = [tr('Upgrade your Lizmap server plugin to have the list of fonts.')]
-        name_item = self.table.item(item.row(), TableCell.Name.value)
-        slot = partial(self.show_fonts, fonts, name_item.data(Qt.ItemDataRole.DisplayRole))
-        show_fonts.triggered.connect(slot)
+        data = qgis_server_item.data(Qt.ItemDataRole.UserRole + 1)
+        if data:
+            data = data.get('qgis_server_info')
+            fonts = data.get('fonts')
+            if fonts is None:
+                fonts = [tr('Upgrade your Lizmap server plugin to have the list of fonts.')]
+            name_item = self.table.item(item.row(), TableCell.Name.value)
+            slot = partial(self.show_fonts, fonts, name_item.data(Qt.ItemDataRole.DisplayRole))
+            show_fonts.triggered.connect(slot)
+        else:
+            # HTTP Connection refused
+            ...
 
         # noinspection PyArgumentList
         menu.exec(QCursor.pos())
