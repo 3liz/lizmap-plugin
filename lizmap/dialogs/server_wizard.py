@@ -22,7 +22,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsSettings,
 )
-from qgis.gui import QgsPasswordLineEdit
+from qgis.gui import (
+    QgsAuthConfigSelect,
+    QgsCollapsibleGroupBox,
+    QgsPasswordLineEdit,
+)
 from qgis.PyQt.QtCore import QRegularExpression, Qt, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QRegularExpressionValidator
 from qgis.PyQt.QtNetwork import QNetworkRequest
@@ -208,6 +212,18 @@ class LoginPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.password_edit)
 
+        group_advanced = QgsCollapsibleGroupBox()
+        group_advanced.setTitle(tr("Advanced"))
+        group_advanced.setCollapsed(True)
+        layout_advanced = QVBoxLayout()
+        group_advanced.setLayout(layout_advanced)
+        layout_advanced.addWidget(QLabel(tr(
+            "Reuse an existing authentification, <strong>fields above will be discarded</strong>")))
+        self.auth_widget = QgsAuthConfigSelect(self)
+        layout_advanced.addWidget(self.auth_widget)
+        layout.addWidget(group_advanced)
+        self.auth_widget.selectedConfigIdChanged.connect(self.auth_id_changed)
+
         # Progress bar
         layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
         self.progress = QProgressBar()
@@ -223,21 +239,23 @@ class LoginPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.result_login_password)
 
+    def auth_id_changed(self):
+        self.login_edit.setText("Not used")
+        self.password_edit.setText("Not used")
+
     def initializePage(self) -> None:
         """ Page creation. """
         if not self.auth_id:
             return
 
-        conf = QgsAuthMethodConfig()
-        QgsApplication.authManager().loadAuthenticationConfig(self.auth_id, conf, True)
-        if conf.id():
-            self.login_edit.setText(conf.config('username'))
-            self.password_edit.setText(conf.config('password'))
+        result = self.wizard().auth_id_to_login(self.auth_id)
+        if not result:
+            # The credentials have been removed from the password database
+            # Must do something
             return
 
-        # The credentials have been removed from the password database
-        # Must do something
-        return
+        self.login_edit.setText(result[0])
+        self.password_edit.setText(result[1])
 
     def nextId(self) -> int:
         """ Next ID, only if the URL is correct. """
@@ -788,6 +806,17 @@ class BaseWizard(QWizard):
         # noinspection PyUnresolvedReferences
         self.helpRequested.connect(self.open_online_help)
 
+    @classmethod
+    def auth_id_to_login(cls, auth_id: str) -> Optional[Tuple[str, str]]:
+        """ Retrieve login and password from an auth ID. """
+        conf = QgsAuthMethodConfig()
+        # noinspection PyArgumentList
+        QgsApplication.authManager().loadAuthenticationConfig(auth_id, conf, True)
+        if not conf.id():
+            return None
+
+        return conf.config('username'), conf.config('password')
+
     @staticmethod
     def open_online_help() -> None:
         """ Open the online help about this form. """
@@ -821,6 +850,7 @@ class ServerWizard(BaseWizard):
         # noinspection PyArgumentList
         super().__init__(parent)
 
+        # If url and auth_id are defined, we are editing a server
         self.auth_id = auth_id
         self.server_info = None
         self.is_lizmap_cloud = False
@@ -832,9 +862,6 @@ class ServerWizard(BaseWizard):
             existing = []
 
         self.existing = existing
-
-        # If url and auth_id are defined, we are editing a server
-        self.auth_id = auth_id
 
         self.setPage(WizardPages.UrlPage, UrlPage(url))
         self.setPage(WizardPages.LoginPasswordPage, LoginPasswordPage(auth_id))
@@ -852,6 +879,11 @@ class ServerWizard(BaseWizard):
         if self.currentId() == WizardPages.LoginPasswordPage:
             self.page(WizardPages.UrlPage).result_url.setText('')
             self.currentPage().result_login_password.setText(tr("Fetching") + "…")
+
+            if self.currentPage().auth_widget.configId() != "":
+                result = self.auth_id_to_login(self.currentPage().auth_widget.configId())
+                self.currentPage().login_edit.setText(result[0])
+                self.currentPage().password_edit.setText(result[1])
 
             with OverrideCursor(Qt.CursorShape.WaitCursor):
                 self.currentPage().progress.setMaximum(0)
@@ -924,6 +956,11 @@ class ServerWizard(BaseWizard):
 
         Only if it's a new server, it will be saved in the JSON file.
         """
+        if self.page(WizardPages.LoginPasswordPage).auth_widget.configId() != "":
+            LOGGER.info("The user is advanced, he used an existing auth, skip saving.")
+            self.auth_id = self.page(WizardPages.LoginPasswordPage).auth_widget.configId()
+            return True
+
         url = self.current_url()
         login = self.current_login()
         password = self.field('password')
