@@ -564,7 +564,19 @@ class Lizmap:
         # TODO lizmap 4, to remove
         self.mapQgisGeometryType = {
             0: 'point',
-            1: 'line',
+            1: 'line',       if item_type == 'layer':
+            layer = self.get_qgis_layer_by_id(item_key)
+            
+            # layer corrupted ?
+            if layer is None:
+                error_msg = tr(
+                    "The layer '{}' seems corrupted in QGIS project. It will be ignored. Check the layer"
+                    " configuration."
+                ).format(item_key))
+                self.display_error(error_msg)
+                return
+
+            # layer name
             2: 'polygon',
             3: 'unknown',
             4: 'none'
@@ -2161,7 +2173,16 @@ class Lizmap:
         # DEFAULT VALUES : layers have got more precise data
         keep_metadata = False
         if item_type == 'layer':
-
+            layer = self.get_qgis_layer_by_id(item_key)
+            
+            # layer corrupted ?
+            if layer is None:
+                self.display_error(tr(
+                    "The layer '{}' seems corrupted in QGIS project. It will be ignored. Check the layer"
+                    " configuration."
+                ).format(item_key))
+                return
+ 
             # layer name
             layer = self.get_qgis_layer_by_id(item_key)
             self.myDic[item_key]['name'] = layer.name()
