@@ -22,9 +22,13 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsSettings,
 )
-from qgis.gui import QgsPasswordLineEdit
+from qgis.gui import QgsCollapsibleGroupBox, QgsPasswordLineEdit
 from qgis.PyQt.QtCore import QRegularExpression, Qt, QUrl
-from qgis.PyQt.QtGui import QDesktopServices, QRegularExpressionValidator
+from qgis.PyQt.QtGui import (
+    QDesktopServices,
+    QIcon,
+    QRegularExpressionValidator,
+)
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -32,6 +36,7 @@ from qgis.PyQt.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QPlainTextEdit,
     QProgressBar,
     QPushButton,
     QRadioButton,
@@ -45,18 +50,25 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor, iface
 
 from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX, LwcVersions
-from lizmap.definitions.online_help import online_lwc_help
+from lizmap.definitions.lizmap_cloud import CLOUD_MANAGER_URL, CLOUD_NAME
+from lizmap.definitions.online_help import (
+    online_lwc_help,
+    pg_service_help_on_pg,
+    pg_service_help_on_qgis,
+)
 from lizmap.definitions.qgis_settings import Settings
-from lizmap.logger import log_function
 from lizmap.saas import is_lizmap_cloud, webdav_properties
 from lizmap.server_dav import WebDav
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
+from lizmap.toolbelt.postgresql import generate_service_content
 from lizmap.toolbelt.version import version
 
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
 DEBUG = True
+TEST_SERVER = "http://localhost:8130/"
+TEST_LOGIN = "admin"
 
 
 class WizardPages(IntEnum):
@@ -66,10 +78,13 @@ class WizardPages(IntEnum):
     NamePage = auto()
     MasterPasswordPage = auto()
     AddOrNotPostgresqlPage = auto()
-    PostgresqlPage = auto()
+    PostgresqlServiceOrNotPage = auto()
+    PostgresqlServicePage = auto()
+    PostgresqlLoginPasswordPage = auto()
     SuggestionNewFolder = auto()
     CreateNewFolderDav = auto()
     LizmapNewRepository = auto()
+    ReadyToGo = auto()
 
 
 class UrlPage(QWizardPage):
@@ -208,6 +223,11 @@ class LoginPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.password_edit)
 
+        # Quick debug
+        if self.field('url') == TEST_SERVER:
+            self.login_edit.setText(TEST_LOGIN)
+            self.password_edit.setText(TEST_LOGIN)
+
         # Progress bar
         layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
         self.progress = QProgressBar()
@@ -334,18 +354,13 @@ class MasterPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.result_master_password)
 
-    @log_function
     def nextId(self) -> int:
         """ Next page, according to lizmap.com hosting. """
-        # Temporary disable the PG page
-        # parent_wizard: ServerWizard = self.wizard()
-        # if parent_wizard.is_lizmap_cloud:
-        #     LOGGER.debug("After saving the auth ID, go the PostgreSQL page.")
-        #     return WizardPages.AddOrNotPostgresqlPage
+        parent_wizard: ServerWizard = self.wizard()
+        if parent_wizard.is_lizmap_cloud:
+            return WizardPages.AddOrNotPostgresqlPage
 
-        # Finished
-        LOGGER.debug("After saving the auth ID, it's finished")
-        return -1
+        return WizardPages.ReadyToGo
 
 
 class AddOrNotPostgresqlPage(QWizardPage):
@@ -354,7 +369,6 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        LOGGER.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
         self.setTitle(tr("PostgreSQL"))
 
         layout = QVBoxLayout()
@@ -365,10 +379,14 @@ class AddOrNotPostgresqlPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(QLabel(tr("It's recommended as it will set up the connection with optimized parameters.")))
 
+        layout.addWidget(QLabel(
+            "<i>"
+            + tr("Role, SSL prefer, service, estimated metadata, display tables without geometry")
+            + "</i>"
+        ))
+
         self.no = QRadioButton(tr("No"))
         self.yes = QRadioButton(tr("Yes (recommended)"))
-        self.yes.setChecked(True)
-
         # noinspection PyArgumentList
         layout.addWidget(self.yes)
         # noinspection PyArgumentList
@@ -377,65 +395,169 @@ class AddOrNotPostgresqlPage(QWizardPage):
         self.registerField("postgresql_no", self.no)
         self.registerField("postgresql_yes", self.yes)
 
-        # noinspection PyUnresolvedReferences
-        self.yes.toggled.connect(self.isComplete)
-        # The "yes" is already registered, not needed to connect also the "no" because mutually exclusive
-        # self.no.toggled.connect(self.isComplete)
+    def validatePage(self):
+        return self.field("postgresql_no") or self.field("postgresql_yes")
 
-    # def isComplete(self) -> bool:
-    #     """ Form validation before the next step. """
-    #     LOGGER.debug("Calling AddOrNotPGPage::isComplete")
-    #     if self.field("postgresql_yes"):
-    #         # Add PG
-    #         # self.wizard().button(QWizard.NextButton).setVisible(True)
-    #         self.setFinalPage(False)
-    #         LOGGER.debug("Enf of function isComplete, returning True to PG page")
-    #         self.completeChanged.emit()
-    #         return True
-    #
-    #     # The user doesn't to add PG
-    #
-    #     if not self.wizard().dav_url:
-    #         # No webdav module
-    #         self.setFinalPage(True)
-    #         # self.wizard().button(QWizard.NextButton).setVisible(False)
-    #         LOGGER.debug("Enf of function isComplete, returning True, no dav")
-    #         self.completeChanged.emit()
-    #         return True
-    #
-    #     if self.wizard().has_repository:
-    #         # Already has some repository, we do not suggest a new one
-    #         self.setFinalPage(True)
-    #         # self.wizard().button(QWizard.NextButton).setVisible(False)
-    #         LOGGER.debug("Enf of function isComplete, returning True, already repositories")
-    #         self.completeChanged.emit()
-    #         return True
-    #
-    #     # Webdav repository
-    #     self.setFinalPage(False)
-    #     # self.wizard().button(QWizard.NextButton).setVisible(True)
-    #     LOGGER.debug("Enf of function isComplete, returning True to add webdav directory")
-    #     self.completeChanged.emit()
-    #     return True
-
-    @log_function
     def nextId(self) -> int:
         """ Next step. """
-        LOGGER.debug("Calling AddOrNotPGPage::nextId")
         if self.field("postgresql_yes"):
-            return WizardPages.PostgresqlPage
+            return WizardPages.PostgresqlServiceOrNotPage
 
-        if not self.wizard().dav_url:
-            return -1
+        return WizardPages.ReadyToGo
 
-        if self.wizard().has_repository:
-            return -1
 
-        return WizardPages.SuggestionNewFolder
+class PostgresqlServiceOrNotPage(QWizardPage):
+
+    """ Use a PostgreSQL service or not. """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("PostgreSQL"))
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Connection name
+        self.pg_name_label = QLabel(tr("Chosen name"))
+        self.pg_name_edit = QLineEdit()
+        self.pg_name_edit.setText(self.field("name"))
+        self.registerField("pg_name*", self.pg_name_edit)
+        # noinspection PyArgumentList
+        layout.addWidget(self.pg_name_label)
+        # noinspection PyArgumentList
+        layout.addWidget(self.pg_name_edit)
+
+        # Session role
+        self.pg_role_label = QLabel(tr("Session role"))
+        self.pg_role_edit = QLineEdit()
+        self.registerField("pg_session_role", self.pg_role_edit)
+        # noinspection PyArgumentList
+        layout.addWidget(self.pg_role_label)
+        # noinspection PyArgumentList
+        layout.addWidget(self.pg_role_edit)
+
+        layout.addWidget(QLabel(tr("Would you like to use a PostgreSQL service file ?")))
+
+        self.yes = QRadioButton(tr("Yes (recommended)"))
+        layout.addWidget(self.yes)
+        help_service = QLabel(tr(
+            "It's recommended but a little bit more complex to set up. A more granular access control can be set in "
+            "your projects."
+        ))
+        help_service.setWordWrap(True)
+        layout.addWidget(help_service)
+
+        self.no = QRadioButton(tr("No"))
+        layout.addWidget(self.no)
+        layout.addWidget(QLabel(tr("Less secure, as user and password will be written in clear in QGS files.")))
+
+        self.registerField("postgresql_service_no", self.no)
+        self.registerField("postgresql_service_yes", self.yes)
+
+    def validatePage(self):
+        return self.field("postgresql_service_no") or self.field("postgresql_service_yes")
+
+    def nextId(self) -> int:
+        """ Next step. """
+        if self.field("postgresql_service_yes"):
+            return WizardPages.PostgresqlServicePage
+
+        return WizardPages.PostgresqlLoginPasswordPage
 
 
 # noinspection PyArgumentList
-class PostgresqlPage(QWizardPage):
+class PostgresqlServicePage(QWizardPage):
+
+    """ Wizard for the PostgreSQL service connection. """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("Adding a PostgreSQL connection"))
+        self.setSubTitle("Using a service file")
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # Helper
+        label = QLabel(tr(
+            f'Fill your service name, which can be found in email or by visiting '
+            f'<a href="{CLOUD_MANAGER_URL}">{CLOUD_NAME}</a>'
+        ))
+        label.setOpenExternalLinks(True)
+        label.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(label)
+
+        # Service
+        self.service_label = QLabel(tr("Service name"))
+        self.service_edit = QLineEdit()
+        self.registerField("pg_service*", self.service_edit)
+        self.service_edit.textEdited.connect(self.service_content)
+        # noinspection PyArgumentList
+        layout.addWidget(self.service_label)
+        # noinspection PyArgumentList
+        layout.addWidget(self.service_edit)
+
+        # Result
+        self.skip_db = QCheckBox()
+        self.skip_db.setText(tr("Skip the database creation if a failure happen again."))
+        self.skip_db.setVisible(False)
+        self.registerField("skip_db", self.skip_db)
+
+        # TODO CHECK
+        self.skip_db_label = QLabel(tr(
+            "If checked and if it fails again, you will need to use the native QGIS dialog to set-up your connection. "
+            "Remember to not use the QGIS password manager for storing login and password about PostGIS, instead use "
+            "a plain text storage, by checking both buttons 'Store' for login and password. We also recommend checking "
+            "'Use estimated table metadata' and 'Also list tables with no geometry'."))
+        self.skip_db_label.setVisible(False)
+        self.skip_db_label.setWordWrap(True)
+
+        self.result_pg = QLabel()
+        self.result_pg.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(self.result_pg)
+        layout.addWidget(self.skip_db)
+        layout.addWidget(self.skip_db_label)
+
+        # Helper about service
+        self.group_helper = QgsCollapsibleGroupBox()
+        self.group_helper.setTitle(tr("Help about service"))
+        layout_helper = QVBoxLayout()
+        button_qgis_help = QPushButton(tr('QGIS Online Help'))
+        button_pg_help = QPushButton(tr('PostgreSQL Online Help'))
+        button_qgis_help.setIcon(QIcon(":/images/themes/default/console/iconHelpConsole.svg"))
+        button_pg_help.setIcon(QIcon(":/images/themes/default/console/iconHelpConsole.svg"))
+        button_qgis_help.clicked.connect(lambda: QDesktopServices.openUrl(pg_service_help_on_qgis()))
+        button_pg_help.clicked.connect(lambda: QDesktopServices.openUrl(pg_service_help_on_pg()))
+        layout_helper.addWidget(button_qgis_help)
+        layout_helper.addWidget(button_pg_help)
+        self.text_area = QPlainTextEdit()
+        self.text_area.setReadOnly(True)
+        layout_helper.addWidget(self.text_area)
+        self.group_helper.setLayout(layout_helper)
+        layout.addWidget(self.group_helper)
+
+        self.service_content()
+
+    def service_content(self):
+        """ Update the service content example. """
+        self.text_area.setPlainText(
+            generate_service_content(
+                self.service_edit.text(),
+            )
+        )
+
+    def initializePage(self) -> None:
+        """ Page creation. """
+        self.pg_name_edit.setText(self.field("name").replace('/', '-'))
+
+    def nextId(self) -> int:
+        """ Next ID. """
+        return WizardPages.ReadyToGo
+
+
+class PostgresqlLoginPasswordPage(QWizardPage):
 
     """ Wizard for the PostgreSQL connection. """
 
@@ -455,15 +577,6 @@ class PostgresqlPage(QWizardPage):
         label.setWordWrap(True)
         # noinspection PyArgumentList
         layout.addWidget(label)
-
-        # Connection name
-        self.pg_name_label = QLabel(tr("Name"))
-        self.pg_name_edit = QLineEdit()
-        self.registerField("pg_name*", self.pg_name_edit)
-        # noinspection PyArgumentList
-        layout.addWidget(self.pg_name_label)
-        # noinspection PyArgumentList
-        layout.addWidget(self.pg_name_edit)
 
         # Host
         self.host_label = QLabel(tr("Host"))
@@ -524,6 +637,7 @@ class PostgresqlPage(QWizardPage):
         self.skip_db.setVisible(False)
         self.registerField("skip_db", self.skip_db)
 
+        # TODO Check
         self.skip_db_label = QLabel(tr(
             "If checked and if it fails again, you will need to use the native QGIS dialog to set-up your connection. "
             "Remember to not use the QGIS password manager for storing login and password about PostGIS, instead use "
@@ -548,11 +662,7 @@ class PostgresqlPage(QWizardPage):
 
     def nextId(self) -> int:
         """ Next ID. """
-        if self.wizard().has_repository:
-            # Finished
-            return -1
-
-        return WizardPages.SuggestionNewFolder
+        return WizardPages.ReadyToGo
 
 
 class SuggestionNewFolderPage(QWizardPage):
@@ -579,7 +689,6 @@ class SuggestionNewFolderPage(QWizardPage):
 
         self.no = QRadioButton(tr("No"))
         self.yes = QRadioButton(tr("Yes (recommended)"))
-        self.yes.setChecked(True)
 
         # noinspection PyArgumentList
         layout.addWidget(self.yes)
@@ -741,6 +850,7 @@ class LizmapNewRepositoryPage(QWizardPage):
         """ Open the web browser. """
         # noinspection PyArgumentList
         url = QUrl('{}/admin.php/admin/maps/createSection'.format(self.wizard().current_url()))
+        # noinspection PyArgumentList
         QDesktopServices.openUrl(url)
 
     def refresh_list(self):
@@ -769,6 +879,38 @@ class LizmapNewRepositoryPage(QWizardPage):
                 break
         else:
             self.result.setText(error)
+
+
+class ReadyToGoPage(QWizardPage):
+
+    """ Ready to go. """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(tr("Ready to go"))
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        # noinspection PyArgumentList
+        layout.addWidget(QLabel(tr("TUTORIAL LINK")))
+        label_warning = QLabel(tr(
+            "It's the first time you are using the QGIS native authentication database. When pressing the Next "
+            "button, you will be prompted for another password to secure your password manager. "
+            "This password is <b>not</b> related to Lizmap, only to <b>your QGIS current profile on this "
+            "computer</b> to unlock your password manager. "
+            "This password is not recoverable. Read more on the <a href=\""
+            "https://docs.qgis.org/latest/en/docs/user_manual/auth_system/auth_overview.html#master-password"
+            "\">QGIS documentation</a>."
+        ))
+        label_warning.setOpenExternalLinks(True)
+        label_warning.setWordWrap(True)
+        # noinspection PyArgumentList
+        layout.addWidget(label_warning)
+
+    def nextId(self) -> int:
+        """ Last page. """
+        return -1
 
 
 class BaseWizard(QWizard):
@@ -841,12 +983,14 @@ class ServerWizard(BaseWizard):
         self.setPage(WizardPages.NamePage, NamePage(name))
         self.setPage(WizardPages.MasterPasswordPage, MasterPasswordPage())
         self.setPage(WizardPages.AddOrNotPostgresqlPage, AddOrNotPostgresqlPage())
-        self.setPage(WizardPages.PostgresqlPage, PostgresqlPage())
-        self.setPage(WizardPages.SuggestionNewFolder, SuggestionNewFolderPage())
-        self.setPage(WizardPages.CreateNewFolderDav, CreateNewFolderDavPage())
-        self.setPage(WizardPages.LizmapNewRepository, LizmapNewRepositoryPage())
+        self.setPage(WizardPages.PostgresqlServiceOrNotPage, PostgresqlServiceOrNotPage())
+        self.setPage(WizardPages.PostgresqlServicePage, PostgresqlServicePage())
+        self.setPage(WizardPages.PostgresqlLoginPasswordPage, PostgresqlLoginPasswordPage())
+        self.setPage(WizardPages.ReadyToGo, ReadyToGoPage())
+        # self.setPage(WizardPages.SuggestionNewFolder, SuggestionNewFolderPage())
+        # self.setPage(WizardPages.CreateNewFolderDav, CreateNewFolderDavPage())
+        # self.setPage(WizardPages.LizmapNewRepository, LizmapNewRepositoryPage())
 
-    @log_function
     def validateCurrentPage(self):
         """Specific rules for page validation. """
         if self.currentId() == WizardPages.LoginPasswordPage:
@@ -887,7 +1031,7 @@ class ServerWizard(BaseWizard):
             LOGGER.debug("Saving to the authentication database is : {} valid".format("" if result else "not"))
             return result
 
-        elif self.currentId() == WizardPages.PostgresqlPage:
+        elif self.currentId() in (WizardPages.PostgresqlLoginPasswordPage, WizardPages.PostgresqlServicePage):
             skip_db_saving = self.field("skip_db")
             if not self.test_pg():
                 if skip_db_saving:
@@ -918,7 +1062,13 @@ class ServerWizard(BaseWizard):
         """ Cleaned input login. """
         return self.clean_data(self.field("login"))
 
-    @log_function
+    def postgresql(self) -> Tuple[str, str]:
+        """ Identifier for a PostgreSQL connection. """
+        if self.field("pg_host"):
+            return 'postgresql_host', self.field("pg_host")
+        else:
+            return 'postgresql_service', self.field("pg_service")
+
     def save_auth_id(self) -> bool:
         """ Save login and password in the QGIS password manager.
 
@@ -1061,13 +1211,13 @@ class ServerWizard(BaseWizard):
         net_req.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         request = QgsBlockingNetworkRequest()
         error = request.get(net_req)
-        if error == QgsBlockingNetworkRequest.NetworkError:
+        if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
             return False, tr("Network error"), False
-        elif error == QgsBlockingNetworkRequest.ServerExceptionError:
+        elif error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
             return False, tr("Server exception error") + ". " + tr('Please check the URL'), False
-        elif error == QgsBlockingNetworkRequest.TimeoutError:
+        elif error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
             return False, tr("Timeout error"), False
-        elif error != QgsBlockingNetworkRequest.NoError:
+        elif error != QgsBlockingNetworkRequest.ErrorCode.NoError:
             return False, tr("Unknown error"), False
 
         response = request.reply().content()
@@ -1125,18 +1275,21 @@ class ServerWizard(BaseWizard):
 
     def _uri(self) -> QgsDataSourceUri:
         """ URI of the current PG credentials. """
-        uri = QgsDataSourceUri()
-        uri.setConnection(
-            self.field("pg_host"),
-            str(self.field('pg_port')),
-            self.field("pg_db_name"),
-            self.field("pg_user"),
-            self.field("pg_password"),
-            QgsDataSourceUri.SslPrefer,
-        )
+        if self.field("pg_host"):
+            uri = QgsDataSourceUri()
+            uri.setConnection(
+                self.field("pg_host"),
+                str(self.field('pg_port')),
+                self.field("pg_db_name"),
+                self.field("pg_user"),
+                self.field("pg_password"),
+                QgsDataSourceUri.SslMode.SslPrefer,
+            )
+        else:
+            # TODO change with QGIS 3.42 to use the proper API
+            uri = QgsDataSourceUri(f"service='{self.field("pg_service")}' sslmode=prefer")
         return uri
 
-    @log_function
     def test_pg(self) -> bool:
         """ Test the connection. """
         uri = self._uri()
@@ -1160,7 +1313,6 @@ class ServerWizard(BaseWizard):
         self.currentPage().skip_db_label.setVisible(True)
         return False
 
-    @log_function
     def save_pg(self) -> bool:
         """ Save the current connection in the QGIS browser. """
         name = self.field("pg_name")
@@ -1170,19 +1322,14 @@ class ServerWizard(BaseWizard):
             self.currentPage().result_pg.setText(tr('Connection name is already existing, please choose another one'))
             return False
 
-        self._save_pg(name, self._uri())
+        self._save_pg(name, self._uri(), self.field("pg_session_role"))
         iface.browserModel().reload()
         self.currentPage().result_pg.setText(THUMBS)
         return True
 
     @staticmethod
-    @log_function
-    def _save_pg(name: str, uri: QgsDataSourceUri) -> bool:
+    def _save_pg(name: str, uri: QgsDataSourceUri, session_role: str = "") -> bool:
         """ Save a PG connection from a URI. """
-        LOGGER.info(
-            "Create PG connection '{}' : host {}, database {}, user {}, pass XXXXX, port {}".format(
-                name, uri.host(), uri.database(), uri.username(), uri.port())
-        )
         config = {
             "saveUsername": True,
             "savePassword": True,
@@ -1192,6 +1339,7 @@ class ServerWizard(BaseWizard):
             "geometryColumnsOnly": True,
             "dontResolveType": False,
             "publicOnly": False,
+            "session_role": session_role,
         }
         metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
         # noinspection PyTypeChecker
@@ -1229,6 +1377,8 @@ class CreateFolderWizard(BaseWizard):
 if __name__ == '__main__':
     """ For manual tests. """
     app = QApplication(sys.argv)
-    wizard = ServerWizard()
+    wizard = ServerWizard(
+        url=TEST_SERVER,
+    )
     wizard.show()
     sys.exit(app.exec())

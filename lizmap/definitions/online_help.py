@@ -94,10 +94,15 @@ MAPPING_INDEX_DOC = {
 }
 
 
-def pg_service_help() -> QUrl:
+def pg_service_help_on_qgis() -> QUrl:
     """ Open the QGIS.org documentation about PG Service. """
     # The QGIS documentation is better than the PostgreSQL doc :/
     return QUrl(
         f"https://docs.qgis.org/latest/{current_locale()}/docs/user_manual/managing_data_source/opening_data.html"
         f"#postgresql-service-connection-file"
     )
+
+
+def pg_service_help_on_pg() -> QUrl:
+    """ Open the PostgreSQL documentation about PG Service. """
+    return QUrl("https://www.postgresql.org/docs/current/libpq-pgservice.html")

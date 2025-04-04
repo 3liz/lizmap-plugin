@@ -6,8 +6,14 @@ CLOUD_DOMAIN = 'lizmap.com'
 CLOUD_NAME = 'Lizmap Cloud'
 CLOUD_MAX_PARENT_FOLDER = 2
 
+CLOUD_MANAGER_URL = 'https://www.lizmap.com/manager/'
 CLOUD_ONLINE_URL = 'https://docs.lizmap.cloud'
 CLOUD_ONLINE_LANGUAGES = ('en', 'fr')
+
+ROLE_DOC_URL = {
+    'en': 'https://docs.lizmap.cloud/en/postgresql.html#rights-and-roles',
+    'fr': 'https://docs.lizmap.cloud/fr/postgresql.html#les-droits-et-roles',
+}
 
 # TODO Fixme, the minimum version recommended varies on the LWC version
 # When changed, check for occurrences about the date
