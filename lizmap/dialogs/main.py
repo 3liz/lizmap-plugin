@@ -74,7 +74,7 @@ from lizmap.definitions.definitions import (
 from lizmap.definitions.online_help import (
     Panels,
     online_lwc_help,
-    pg_service_help,
+    pg_service_help_on_qgis,
 )
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
 from lizmap.toolbelt.i18n import tr
@@ -442,7 +442,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def open_pg_service_help():
         """ Open the PG service documentation. """
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(pg_service_help())
+        QDesktopServices.openUrl(pg_service_help_on_qgis())
 
     @staticmethod
     def open_lizmap_how_to():

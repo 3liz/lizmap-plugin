@@ -18,7 +18,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
-from lizmap.definitions.online_help import pg_service_help
+from lizmap.definitions.online_help import pg_service_help_on_qgis
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.toolbelt.i18n import tr
 
@@ -880,7 +880,7 @@ class Checks:
                 '</ul>'.format(
                     help=other_auth,
                     other=safeguard,
-                    doc=pg_service_help().toString(),  # Sorry, the link is not easily clickable in a QTextEdit
+                    doc=pg_service_help_on_qgis().toString(),  # Sorry, the link is not easily clickable in a QTextEdit
                     global_connection=global_connection,
                 )
             ),
