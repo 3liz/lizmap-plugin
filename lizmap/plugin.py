@@ -2164,6 +2164,11 @@ class Lizmap:
 
             # layer name
             layer = self.get_qgis_layer_by_id(item_key)
+            if layer is None:
+                self.display_error(tr(
+                    "The layer seems '{}' invalid. Check the layer configuration or remove it."
+                ).format(item_key))
+                return
             self.myDic[item_key]['name'] = layer.name()
             # title and abstract
             self.myDic[item_key]['title'] = layer.name()
