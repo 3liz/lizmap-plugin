@@ -2164,7 +2164,7 @@ class Lizmap:
             layer = self.get_qgis_layer_by_id(item_key)
             
             # layer corrupted ?
-            if layer is None:
+            if not layer:
                 error_msg = tr(
                     "The layer '{}' seems invalid. Check the layer configuration."
                 ).format(item_key)
