@@ -371,8 +371,7 @@ class LizmapConfig:
                         'expand_at_startup',
                         tr('Show legend image at startup'),
                         tr(
-                            'The legend image will be displayed be default at startup. This will make more request to '
-                            'QGIS server. Use with cautious.'
+                            'The legend image will be displayed be default at startup.'
                         ),
                         ':images/themes/default/mActionShowAllLayers.svg',
                     ), (
