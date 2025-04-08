@@ -2161,9 +2161,16 @@ class Lizmap:
         # DEFAULT VALUES : layers have got more precise data
         keep_metadata = False
         if item_type == 'layer':
+            layer = self.get_qgis_layer_by_id(item_key)
+            # layer corrupted ?
+            if not layer:
+                error_msg = tr(
+                    "The layer '{}' seems invalid. Check the layer configuration."
+                ).format(item_key)
+                self.display_error(error_msg)
+                return
 
             # layer name
-            layer = self.get_qgis_layer_by_id(item_key)
             self.myDic[item_key]['name'] = layer.name()
             # title and abstract
             self.myDic[item_key]['title'] = layer.name()
