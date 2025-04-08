@@ -38,26 +38,6 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="tab_fields">
-        <attribute name="title">
-         <string>Fields</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_fields">
-           <property name="text">
-            <string>List of fields</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="ListFieldsSelection" name="fields"/>
-         </item>
-        </layout>
-       </widget>
        <widget class="QWidget" name="tab_template">
         <attribute name="title">
          <string>HTML template</string>
@@ -100,6 +80,26 @@
          </item>
          <item>
           <widget class="HtmlEditorWidget" name="html_template" native="true"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_fields">
+        <attribute name="title">
+         <string>Fields</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_fields">
+           <property name="text">
+            <string>List of fields</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="ListFieldsSelection" name="fields"/>
          </item>
         </layout>
        </widget>
