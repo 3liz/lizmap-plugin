@@ -2,7 +2,18 @@
 
 ## Unreleased
 
-## 4.4.8 - 2025-02-14
+## 4.4.9 - 2025-04-08
+
+* Always set mutually exclusive on the `baselayers` group
+* Fix Python error when getting metadata of corrupted QGIS layer, contribution from @TeoGoddet
+* UX :
+  * Change order between legacy field selector about tooltip, versus new HTML way of tooltip
+  * Rephrase about legend options, with LWC >= 3.7, cautious about "GetLegendGraphic" is not true anymore
+  * Attribute table tool is also for selection
+* Server list - Make possible to reuse an existing auth from the database
+* Skip error on a server if the connection was refused when right-clicking
+
+## 4.4.8 - 2025-04-01
 
 * Allow groups ACL for layer export capabilities, for Lizmap Web Client 3.9
 * Popup - Update the CSS for LWC 3.8.0 to 3.8.6, do not provide CSS if higher than 3.8.7 included
