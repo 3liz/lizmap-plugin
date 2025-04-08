@@ -2169,7 +2169,7 @@ class Lizmap:
                     "The layer '{}' seems invalid. Check the layer configuration."
                 ).format(item_key)
                 self.display_error(error_msg)
-                raise Exception(error_msg)
+                return
 
             # layer name
             self.myDic[item_key]['name'] = layer.name()
