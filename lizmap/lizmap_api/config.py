@@ -344,8 +344,16 @@ class LizmapConfig:
             'popupMaxFeatures': {
                 'wType': 'spinbox', 'type': 'integer', 'default': 10
             },
+            'children_lizmap_features_table': {
+                'wType': 'radio',
+                'type': 'boolean',
+                'default': True,
+                'use_proper_boolean': True,
+            },
             'popupDisplayChildren': {
-                'wType': 'checkbox', 'type': 'boolean', 'default': False
+                'wType': 'radio',
+                'type': 'boolean',
+                'default': False,
             },
             'popup_allow_download': {
                 'wType': 'checkbox',
