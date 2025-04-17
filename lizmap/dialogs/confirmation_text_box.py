@@ -70,7 +70,7 @@ class ConfirmationTextMessageBox(QDialog):
         self.main_layout.addLayout(self.horizontal_layout)
 
         self.button_box = QDialogButtonBox(self)
-        self.button_box.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.button_box.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok)
         self.button_box.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(self.accept)
         self.main_layout.addWidget(self.button_box)

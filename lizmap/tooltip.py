@@ -363,7 +363,7 @@ class Tooltip:
     def _generate_external_resource(widget_config: dict, name: str, fname: str) -> str:
         dview = widget_config['DocumentViewer']
 
-        if dview == QgsExternalResourceWidget.Image:
+        if dview == QgsExternalResourceWidget.DocumentViewerContent.Image:
             field_view = '''
                     concat(
                        '<a href="',
@@ -377,7 +377,7 @@ class Tooltip:
                        </a>'
                     )'''.format(name, fname)
 
-        elif dview == QgsExternalResourceWidget.Web:
+        elif dview == QgsExternalResourceWidget.DocumentViewerContent.Web:
             # web view
             field_view = '''
                     concat(
@@ -393,7 +393,7 @@ class Tooltip:
                        </a>'
                     )'''.format(name, fname)
 
-        elif dview == QgsExternalResourceWidget.NoContent:
+        elif dview == QgsExternalResourceWidget.DocumentViewerContent.NoContent:
             field_view = '''
                     concat(
                         '<a href="',

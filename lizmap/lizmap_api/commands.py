@@ -58,9 +58,9 @@ def install_message_hook( verbose=False ):
     # Add a hook to qgis  message log
     def writelogmessage(message, tag, level):
         arg = '{}: {}'.format( tag, message )
-        if level == Qgis.Warning:
+        if level == Qgis.MessageLevel.Warning:
             print("Warning: %s" % arg, file=sys.stderr)
-        elif level == Qgis.Critical:
+        elif level == Qgis.MessageLevel.Critical:
             print("Error: %s" % arg, file=sys.stderr)
         elif verbose:
             # Qgis is somehow very noisy

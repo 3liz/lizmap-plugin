@@ -61,7 +61,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         # "media" folder, SVG directory or absolute path
         self.icon: QgsFileWidget
         self.icon.setFilter("Images SVG, PNG, JPG (*.png *.jpg *.jpeg *.svg)")
-        self.icon.setRelativeStorage(QgsFileWidget.RelativeProject)
+        self.icon.setRelativeStorage(QgsFileWidget.RelativeStorage.RelativeProject)
 
         self.setup_ui()
 
@@ -71,7 +71,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         layout = manager.layoutByName(self.layout.text())
 
         atlas_layout = None
-        if layout.layoutType() == QgsMasterLayoutInterface.PrintLayout:
+        if layout.layoutType() == QgsMasterLayoutInterface.Type.PrintLayout:
             for _print_layout in manager.printLayouts():
                 if _print_layout.name() == self.layout.text():
                     atlas_layout = _print_layout

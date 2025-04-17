@@ -199,12 +199,12 @@ class TableManagerDataviz(TableManager):
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             error = request.post(network_request, QByteArray(doc.toJson()))
 
-        if error != QgsBlockingNetworkRequest.NoError:
-            if error == QgsBlockingNetworkRequest.NetworkError:
+        if error != QgsBlockingNetworkRequest.ErrorCode.NoError:
+            if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
                 message = tr('Network error : {}').format(server)
-            elif error == QgsBlockingNetworkRequest.TimeoutError:
+            elif error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
                 message = tr('Timeout error : {}').format(server)
-            elif error == QgsBlockingNetworkRequest.ServerExceptionError:
+            elif error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
                 # Customized error from the server about the request
                 # We should have a JSON
                 response = request.reply().content()

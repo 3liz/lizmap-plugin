@@ -158,7 +158,7 @@ class HtmlPreview(QDockWidget):
             return
 
         now = QDateTime.currentDateTime()
-        now_str = now.toString(QLocale.c().timeFormat(QLocale.ShortFormat))
+        now_str = now.toString(QLocale.c().timeFormat(QLocale.FormatType.ShortFormat))
         self.label.setText(tr("Last update") + " " + now_str)
 
         exp_context = QgsExpressionContext()

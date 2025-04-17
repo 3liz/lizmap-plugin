@@ -912,14 +912,14 @@ class Lizmap:
         self.dlg.name_training_folder.setPlaceholderText(self.current_login())
 
         # When a ZIP is provided for the training
-        self.dlg.path_training_folder_zip.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dlg.path_training_folder_zip.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
         self.dlg.path_training_folder_zip.setDialogTitle(tr("Choose a folder to store the your data about the training"))
         self.dlg.download_training_data_zip.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.ZipFile))
         self.dlg.open_training_project_zip.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.ZipFile))
         self.dlg.open_training_folder_zip.clicked.connect(partial(self.open_training_folder_clicked, WorkshopType.ZipFile))
 
         # When an individual QGS file is provided for the training
-        self.dlg.path_training_folder_qgs.setStorageMode(QgsFileWidget.GetDirectory)
+        self.dlg.path_training_folder_qgs.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
         self.dlg.path_training_folder_qgs.setDialogTitle(tr("Choose a folder to store the your data about the training"))
         self.dlg.download_training_data_qgs.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.IndividualQgsFile))
         self.dlg.open_training_project_qgs.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.IndividualQgsFile))
@@ -2057,7 +2057,7 @@ class Lizmap:
         msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.") + ' '
         msg += prefix + ' : '
         msg += ','.join(names)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
+        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
 
     def layer_renamed(self, node, name: str):
         """ When a layer/group is renamed in the legend. """
@@ -2071,7 +2071,7 @@ class Lizmap:
         msg = tr(
             "The layer '{}' has been renamed. The configuration in the Lizmap <b>Layers</b> tab only must be checked."
         ).format(name)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
+        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
@@ -2489,6 +2489,7 @@ class Lizmap:
             # Disable popup configuration for groups and raster
             # Disable QGIS popup for layer without geom
             is_vector = isinstance(layer, QgsVectorLayer)
+            # is_raster = isinstance(layer, QgsRasterLayer)
             # noinspection PyUnresolvedReferences
             has_geom = is_vector and layer.wkbType() != QgsWkbTypes.Type.NoGeometry
             self.dlg.btConfigurePopup.setEnabled(has_geom)
@@ -2747,7 +2748,7 @@ class Lizmap:
             tr('Please close and reopen the dialog to display your layer in the tab "{tab_name}".').format(
                 tab_name=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
             ),
-            Qgis.Warning,
+            Qgis.MessageLevel.Warning,
         )
 
     @staticmethod
@@ -3087,7 +3088,7 @@ class Lizmap:
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
         self.dlg.display_message_bar(
-            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.Success)
+            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.MessageLevel.Success)
 
     def check_project_clicked(self):
         """ Launch the check on the current project. """
@@ -3340,7 +3341,7 @@ class Lizmap:
                         "The process is stopping, the Lizmap configuration file is not going to be generated because "
                         "some safeguards are not compatible and you are using the 'Beginner' mode. Either fix these "
                         "issues or switch to a 'Normal' mode if you know what you are doing."
-                    ), Html.P, level=Qgis.Critical)
+                    ), Html.P, level=Qgis.MessageLevel.Critical)
                 else:
                     self.dlg.log_panel.append(tr(
                         "The process is continuing but these layers might be invisible if the server is not well "
@@ -3577,7 +3578,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 tr("Blocking issue"),
                 tr("The project has at least one blocking issue. The file is not saved."),
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
             )
 
             return False
@@ -4281,7 +4282,7 @@ class Lizmap:
                 'Lizmap has found these layers which are ghost layers: {}. '
                 'They have been removed. You must save your project.').format(', '.join(layers))
             # noinspection PyUnresolvedReferences
-            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.Warning, duration=DURATION_WARNING_BAR)
+            self.iface.messageBar().pushMessage('Lizmap', message, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
 
     def check_global_project_options(self) -> Tuple[bool, str]:
         """Checks that the needed options are correctly set : relative path, project saved, etc.
@@ -4378,7 +4379,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('An error occurred while generating the projet, please check logs'),
-                level=Qgis.Critical,
+                level=Qgis.MessageLevel.Critical,
                 duration=DURATION_SUCCESS_BAR,
             )
             return
@@ -4405,7 +4406,7 @@ class Lizmap:
                 ).format(
                     path=self.dlg.cfg_file().parent.absolute(),
                 ),
-                level=Qgis.Success,
+                level=Qgis.MessageLevel.Success,
                 duration=DURATION_SUCCESS_BAR,
             )
             return
@@ -4415,7 +4416,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('Project <a href="{}">published !</a>'.format(url)),
-                level=Qgis.Success,
+                level=Qgis.MessageLevel.Success,
                 duration=DURATION_SUCCESS_BAR,
             )
             return
@@ -4423,7 +4424,7 @@ class Lizmap:
         self.dlg.display_message_bar(
             'Lizmap',
             tr('Project file generated, but the upload has failed'),
-            level=Qgis.Warning,
+            level=Qgis.MessageLevel.Warning,
             duration=DURATION_SUCCESS_BAR,
         )
 
@@ -4472,7 +4473,7 @@ class Lizmap:
             self.dlg.log_panel.append(tr("No project or server"), Html.H2)
             self.dlg.log_panel.append(
                 tr('Either you do not have a server reachable for a long time or you do not have a project opened.'),
-                level=Qgis.Warning,
+                level=Qgis.MessageLevel.Warning,
             )
             return False
 
@@ -4582,7 +4583,7 @@ class Lizmap:
                 self.iface.messageBar().pushMessage(
                     'Lizmap',
                     tr('Please do not forget to save the QGIS project before publishing your map'),
-                    level=Qgis.Warning,
+                    level=Qgis.MessageLevel.Warning,
                     duration=DURATION_WARNING_BAR
                 )
 
@@ -4591,7 +4592,7 @@ class Lizmap:
             self.iface.messageBar().pushMessage(
                 'Lizmap',
                 msg,
-                level=Qgis.Success,
+                level=Qgis.MessageLevel.Success,
                 duration=DURATION_MESSAGE_BAR
             )
             # No automatic saving, the process is finished
@@ -4635,7 +4636,7 @@ class Lizmap:
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             qgis_exists, error = self.webdav.check_exists_qgs()
         if error:
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
             return False, '', ''
 
         server = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
@@ -4663,7 +4664,7 @@ class Lizmap:
         if not flag:
             # Error while sending files
             LOGGER.error(error)
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
             return False, error, ''
 
         LOGGER.debug("Webdav has been OK : {}".format(url))
@@ -4690,7 +4691,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('The "media" directory was already existing on the server. Please check with a file browser.'),
-                level=Qgis.Info,
+                level=Qgis.MessageLevel.Info,
                 duration=DURATION_WARNING_BAR,
                 more_details=msg,
             )
@@ -4716,12 +4717,12 @@ class Lizmap:
         directory += 'media/'
         result, msg = self.webdav.make_dir(directory)
         if not result and msg:
-            self.dlg.display_message_bar('Lizmap', msg, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            self.dlg.display_message_bar('Lizmap', msg, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
             return
 
         self.dlg.display_message_bar(
             'Lizmap',
-            tr('The "media" directory has been created'), level=Qgis.Success, duration=DURATION_WARNING_BAR)
+            tr('The "media" directory has been created'), level=Qgis.MessageLevel.Success, duration=DURATION_WARNING_BAR)
 
     def create_media_dir_local(self):
         """ Create the local "media" directory. """
@@ -4730,7 +4731,7 @@ class Lizmap:
         self.dlg.display_message_bar(
             'Lizmap',
             tr('The local <a href="file://{}">"media"</a> directory has been created').format(media),
-            level=Qgis.Success,
+            level=Qgis.MessageLevel.Success,
             duration=DURATION_WARNING_BAR,
         )
 
@@ -4746,7 +4747,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('Path not starting by "media/"'),
-                level=Qgis.Critical,
+                level=Qgis.MessageLevel.Critical,
                 duration=DURATION_WARNING_BAR
             )
             return
@@ -4756,7 +4757,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('Path does not exist'),
-                level=Qgis.Critical,
+                level=Qgis.MessageLevel.Critical,
                 duration=DURATION_WARNING_BAR
             )
             return
@@ -4765,7 +4766,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('Path is not a file'),
-                level=Qgis.Critical,
+                level=Qgis.MessageLevel.Critical,
                 duration=DURATION_WARNING_BAR
             )
             return
@@ -4773,14 +4774,14 @@ class Lizmap:
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, message = self.webdav.send_media(current_file)
         if not result and message:
-            self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            self.dlg.display_message_bar('Lizmap', message, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
             return
 
         msg = tr("File send")
         self.dlg.display_message_bar(
             'Lizmap',
             f'<a href="{self.webdav.media_url(current_path)}">{msg}</a>',
-            level=Qgis.Success,
+            level=Qgis.MessageLevel.Success,
             duration=DURATION_WARNING_BAR,
         )
         return
@@ -4790,7 +4791,7 @@ class Lizmap:
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, message = self.webdav.send_thumbnail()
         if not result and message:
-            self.dlg.display_message_bar('Lizmap', message, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            self.dlg.display_message_bar('Lizmap', message, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
             return
 
         if result:
@@ -4822,14 +4823,14 @@ class Lizmap:
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             result, error = self.webdav.send_action()
         if not result and error:
-            self.dlg.display_message_bar('Lizmap', error, level=Qgis.Critical, duration=DURATION_WARNING_BAR)
+            self.dlg.display_message_bar('Lizmap', error, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
             return
 
         if result:
             self.dlg.display_message_bar(
                 'Lizmap',
                 tr('Upload of the action file is successful.'),
-                level=Qgis.Success,
+                level=Qgis.MessageLevel.Success,
                 duration=DURATION_WARNING_BAR
             )
             file_stats, error = self.webdav.file_stats_action()
@@ -5206,7 +5207,7 @@ class Lizmap:
                 CLOUD_NAME,
                 tr("WebDAV is not available on the instance '{}'").format(
                     self.dlg.current_server_info(ServerComboData.ServerUrl.value)),
-                level=Qgis.Critical,
+                level=Qgis.MessageLevel.Critical,
             )
 
         if workshop_type == WorkshopType.IndividualQgsFile:
@@ -5252,7 +5253,7 @@ class Lizmap:
         self.dlg.display_message_bar(
             CLOUD_NAME,
             tr("Error while downloading the project : {}").format(','.join(errors)),
-            level=Qgis.Critical
+            level=Qgis.MessageLevel.Critical
         )
 
     def download_completed_qgs(self):
@@ -5287,7 +5288,7 @@ class Lizmap:
             self.dlg.display_message_bar(
                 CLOUD_NAME,
                 tr("Download and extract OK about the training project"),
-                level=Qgis.Success
+                level=Qgis.MessageLevel.Success
             )
 
     def download_completed_zip(self):

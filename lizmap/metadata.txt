@@ -25,4 +25,4 @@ icon=resources/icons/icon.png
 experimental=False
 deprecated=False
 server=False
-supportsQt6=false
+supportsQt6=true

@@ -39,7 +39,7 @@ class LogPanel:
             style: Html = None,
             abort=None,
             time: bool = False,
-            level: Qgis.MessageLevel = Qgis.Info,
+            level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
     ):
         """ Append text to the log. """
         if abort:
@@ -47,10 +47,10 @@ class LogPanel:
 
         if time:
             now = QDateTime.currentDateTime()
-            now_str = now.toString(QLocale().timeFormat(QLocale.ShortFormat))
+            now_str = now.toString(QLocale().timeFormat(QLocale.FormatType.ShortFormat))
             msg = now_str + ' : ' + msg
 
-        if level == Qgis.Warning:
+        if level == Qgis.MessageLevel.Warning:
             # byte_array = QByteArray()
             # QBuffer
             # buffer( & byteArray);
@@ -64,9 +64,9 @@ class LogPanel:
             output = ''
             if style in (Html.H1, Html.H2, Html.H3):
                 output += '<br>'
-            if level == Qgis.Warning:
+            if level == Qgis.MessageLevel.Warning:
                 output += '<{0} style="color: orange">{1}</{0}>'.format(style.value, msg)
-            elif level == Qgis.Critical:
+            elif level == Qgis.MessageLevel.Critical:
                 output += '<{0} style="color: red">{1}</{0}>'.format(style.value, msg)
             else:
                 output += '<{0}>{1}</{0}>'.format(style.value, msg)

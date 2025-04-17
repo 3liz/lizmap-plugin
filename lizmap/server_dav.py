@@ -725,7 +725,7 @@ class WebDav:
         qdate = QDateTime.fromString(last_modified, Qt.DateFormat.RFC2822Date)
         qdate.setTimeSpec(Qt.TimeSpec.UTC)
         qdate_locale = qdate.toLocalTime()
-        date_string = qdate_locale.toString(QLocale().dateFormat(QLocale.ShortFormat))
+        date_string = qdate_locale.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
         date_string += " "
         date_string += qdate_locale.toString("hh:mm:ss")
 

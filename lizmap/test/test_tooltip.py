@@ -271,7 +271,7 @@ class TestToolTip(unittest.TestCase):
     def test_external_resource_web(self):
         """Test we can generate external resource for web."""
         widget_config = {
-            'DocumentViewer': QgsExternalResourceWidget.Web,
+            'DocumentViewer': QgsExternalResourceWidget.DocumentViewerContent.Web,
         }
         expression = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
         expected = '''
@@ -317,7 +317,7 @@ class TestToolTip(unittest.TestCase):
     def test_external_resource_image(self):
         """Test we can generate external resource for an image."""
         widget_config = {
-            'DocumentViewer': QgsExternalResourceWidget.Image,
+            'DocumentViewer': QgsExternalResourceWidget.DocumentViewerContent.Image,
         }
         expression = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
         expected = '''
@@ -342,7 +342,7 @@ class TestToolTip(unittest.TestCase):
     def test_external_resource_no_content(self):
         """Test we can generate external resource for no content."""
         widget_config = {
-            'DocumentViewer': QgsExternalResourceWidget.NoContent,
+            'DocumentViewer': QgsExternalResourceWidget.DocumentViewerContent.NoContent,
         }
         expression = Tooltip._generate_external_resource(widget_config, 'field_a', 'fname')
         expected = '''

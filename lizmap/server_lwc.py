@@ -503,7 +503,7 @@ class ServerManager:
         self.fetchers[row].finished.connect(partial(self.request_finished, row))
 
         if auth_id:
-            QgsMessageLog.logMessage(f"Using the token for <a href='{url}'>{url}</a>", "Lizmap", Qgis.Info)
+            QgsMessageLog.logMessage(f"Using the token for <a href='{url}'>{url}</a>", "Lizmap", Qgis.MessageLevel.Info)
 
         request = QNetworkRequest()
         request.setUrl(QUrl(ServerWizard.url_metadata(url)))
@@ -540,42 +540,42 @@ class ServerManager:
 
         if not reply:
             lizmap_cell.setText(tr('Error'))
-            self.display_action(row, Qgis.Warning, tr('Temporary not available'))
+            self.display_action(row, Qgis.MessageLevel.Warning, tr('Temporary not available'))
             return
 
         if reply.error() != QNetworkReply.NetworkError.NoError:
             if reply.error() == QNetworkReply.NetworkError.HostNotFoundError:
-                self.display_action(row, Qgis.Warning, tr('Host can not be found. Is-it an intranet server ?'))
+                self.display_action(row, Qgis.MessageLevel.Warning, tr('Host can not be found. Is-it an intranet server ?'))
             if reply.error() == QNetworkReply.NetworkError.ContentNotFoundError:
                 self.display_action(
                     row,
-                    Qgis.Critical,
+                    Qgis.MessageLevel.Critical,
                     tr('Not a valid Lizmap URL or this version is already not maintained < 3.2'))
             else:
-                self.display_action(row, Qgis.Critical, reply.errorString())
+                self.display_action(row, Qgis.MessageLevel.Critical, reply.errorString())
             lizmap_cell.setText(tr('Error'))
             return
 
         content = self.fetchers[row].contentAsString()
         if not content:
-            self.display_action(row, Qgis.Critical, tr('Not a valid Lizmap URL'))
+            self.display_action(row, Qgis.MessageLevel.Critical, tr('Not a valid Lizmap URL'))
             return
 
         try:
             content = json.loads(content)
         except json.JSONDecodeError:
-            self.display_action(row, Qgis.Critical, tr('Not a JSON document.'))
+            self.display_action(row, Qgis.MessageLevel.Critical, tr('Not a JSON document.'))
             return
 
         info = content.get('info')
         if not info:
-            self.display_action(row, Qgis.Critical, tr('No "info" in the JSON document'))
+            self.display_action(row, Qgis.MessageLevel.Critical, tr('No "info" in the JSON document'))
             return
 
         # Lizmap version
         lizmap_version = info.get('version')
         if not info:
-            self.display_action(row, Qgis.Critical, tr('No "version" in the JSON document'))
+            self.display_action(row, Qgis.MessageLevel.Critical, tr('No "version" in the JSON document'))
             return
 
         # LWC version split
@@ -589,7 +589,7 @@ class ServerManager:
                     if not qgis_server.get('mime_type'):
                         self.display_action(
                             row,
-                            Qgis.Critical,
+                            Qgis.MessageLevel.Critical,
                             tr(
                                 'QGIS Server is not loaded properly. Check the settings in the administration '
                                 'interface.'
@@ -604,14 +604,14 @@ class ServerManager:
         elif branch < (3, 6):
             # qgis_server must be in the JSON file
             if not qgis_server:
-                self.display_action(row, Qgis.Critical, tr('No "qgis_server" in the JSON document'))
+                self.display_action(row, Qgis.MessageLevel.Critical, tr('No "qgis_server" in the JSON document'))
                 return
 
             mime_type = qgis_server.get('mime_type')
             if not mime_type:
                 self.display_action(
                     row,
-                    Qgis.Critical,
+                    Qgis.MessageLevel.Critical,
                     tr('QGIS Server is not loaded properly. Check the settings in the administration interface.')
                 )
                 return
@@ -923,13 +923,13 @@ class ServerManager:
             # 3.4.0-pre but also 3.4.0-rc.1
             # noinspection PyTypeChecker
             QgsMessageLog.logMessage(
-                f"The version '{lizmap_version}' is not correct.", "Lizmap", Qgis.Critical)
+                f"The version '{lizmap_version}' is not correct.", "Lizmap", Qgis.MessageLevel.Critical)
 
         branch = f'{split_version[0]}.{split_version[1]}'
         full_version = '{}.{}'.format(branch, split_version[2].split('-')[0])
 
         messages = []
-        level = Qgis.Warning
+        level = Qgis.MessageLevel.Warning
 
         # Special case for 3.5.0, 3.5.1-pre, 3.5.1-pre.5110
         # Upgrade ASAP, keep it for a few months
@@ -938,7 +938,7 @@ class ServerManager:
                 '⚠ ' + tr(
                     "Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version."))
             # Return False for QGIS server status, considering blocking
-            return Qgis.Critical, messages, False
+            return Qgis.MessageLevel.Critical, messages, False
 
         is_dev_version = False
         for i, json_version in enumerate(json_content):
@@ -949,7 +949,7 @@ class ServerManager:
             status = ReleaseStatus.find(json_version['status'])
             if status in (ReleaseStatus.Dev, ReleaseStatus.ReleaseCandidate):
                 messages.append(tr('A dev version, warrior !') + ' 👍')
-                level = Qgis.Success
+                level = Qgis.MessageLevel.Success
                 is_dev_version = True
 
                 # In LWC source code, we have branch X.Y.0 even if we are in dev mode
@@ -973,7 +973,7 @@ class ServerManager:
             if status == ReleaseStatus.Retired:
                 # Upgrade because the branch is not maintained anymore
                 messages.append(tr('Version {version} not maintained anymore').format(version=branch))
-                level = Qgis.Critical
+                level = Qgis.MessageLevel.Critical
             elif status == ReleaseStatus.SecurityBugfixOnly:
                 # Upgrade because the branch is not maintained anymore
                 messages.append(tr('Version {version} not maintained anymore, only for security bugfix only').format(version=branch))
@@ -1001,7 +1001,7 @@ class ServerManager:
                             tr(
                                 'Not latest bugfix release, {version} is available'
                             ).format(version=json_version['latest_release_version']))
-                        level = Qgis.Warning
+                        level = Qgis.MessageLevel.Warning
 
                 if is_numeric(latest_bugfix) and bugfix > latest_bugfix:
                     # Congratulations :)
@@ -1009,14 +1009,14 @@ class ServerManager:
                         messages.append('👍')
                     else:
                         messages.append(tr('Higher than a public release') + ' 👍')
-                    level = Qgis.Success
+                    level = Qgis.MessageLevel.Success
 
                 elif is_numeric(latest_bugfix) and bugfix < latest_bugfix or is_pre_package:
                     # The user is not running the latest bugfix release on the maintained branch
 
                     if bugfix + 2 < latest_bugfix:
                         # Let's make it clear when they are 2 release late
-                        level = Qgis.Critical
+                        level = Qgis.MessageLevel.Critical
 
                     if bugfix == 0 and status == ReleaseStatus.Stable:
                         # I consider a .0 version fragile
@@ -1040,21 +1040,21 @@ class ServerManager:
                 # Running 3.5.X
                 if not login:
                     messages.insert(0, tr('No administrator/publisher login provided'))
-                    level = Qgis.Critical
+                    level = Qgis.MessageLevel.Critical
                     if int(split_version[1]) >= 6:
                         qgis_server_valid = False
 
                 if login and error == "NO_ACCESS":
                     messages.insert(0, tr('The login is not a publisher/administrator'))
                     # Starting from version 3.9.2, login is required
-                    level = Qgis.Critical
+                    level = Qgis.MessageLevel.Critical
                     if int(split_version[1]) >= 6:
                         qgis_server_valid = False
 
                 if login and error == "WRONG_CREDENTIALS":
                     messages.insert(0, tr('Check your credentials, wrong login/password'))
                     # Starting from version 3.9.2, login is required
-                    level = Qgis.Critical
+                    level = Qgis.MessageLevel.Critical
                     if int(split_version[1]) >= 6:
                         qgis_server_valid = False
 
@@ -1063,7 +1063,7 @@ class ServerManager:
                         'Please check your "Server Information" panel in the Lizmap administration interface. '
                         'There is an error reading the QGIS Server configuration.'
                     ))
-                    level = Qgis.Critical
+                    level = Qgis.MessageLevel.Critical
                     if int(split_version[1]) >= 6:
                         qgis_server_valid = False
 
@@ -1079,7 +1079,7 @@ class ServerManager:
                             'QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server {}.{} or '
                             'downgrade your QGIS Desktop {}.{}'
                         ).format(qgis_server[0], qgis_server[1], qgis_desktop[0], qgis_desktop[1]))
-                        level = Qgis.Critical
+                        level = Qgis.MessageLevel.Critical
 
                     qgis_server = (int(split[0]), int(split[1]), int(split[2]))
                     if lizmap_cloud and qgis_server < CLOUD_QGIS_MIN_RECOMMENDED:
@@ -1092,16 +1092,16 @@ class ServerManager:
                             minor=qgis_server[1],
                             month_and_year=tr("February 2024"),  # About QGIS 3.28
                         ))
-                        level = Qgis.Critical
+                        level = Qgis.MessageLevel.Critical
 
             if len(messages) == 0:
-                level = Qgis.Success
+                level = Qgis.MessageLevel.Success
                 messages.append("👍")
 
             return level, messages, qgis_server_valid
 
         # This should not happen
-        return Qgis.Critical, [f"Version {branch} has not been detected as a known version."], False
+        return Qgis.MessageLevel.Critical, [f"Version {branch} has not been detected as a known version."], False
 
     @classmethod
     def split_lizmap_version(cls, lwc_version: str) -> tuple:
@@ -1140,11 +1140,11 @@ class ServerManager:
         cell = QTableWidgetItem()
         cell.setText(message)
         cell.setToolTip(message)
-        if level == Qgis.Success:
+        if level == Qgis.MessageLevel.Success:
             color = Color.Success.value
-        elif level == Qgis.Critical:
+        elif level == Qgis.MessageLevel.Critical:
             color = Color.Critical.value
-        elif level == Qgis.Warning:
+        elif level == Qgis.MessageLevel.Warning:
             color = Color.Advice.value
         else:
             # color = Color.Normal.value
@@ -1249,7 +1249,7 @@ class ServerManager:
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
         self.parent.display_message_bar(
-            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.Success)
+            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.MessageLevel.Success)
         if not action_required:
             return
 

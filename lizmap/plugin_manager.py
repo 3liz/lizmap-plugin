@@ -52,7 +52,7 @@ class QgisPluginManager:
                     plugin_metadata['update_date'],
                     Qt.DateFormat.ISODateWithMs
                 )
-                date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.ShortFormat))
+                date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
 
                 template = (
                     '{name} <a href="{url}">'

@@ -358,7 +358,7 @@ class TableManager:
                     cell.setText('')
                     cell.setData(Qt.ItemDataRole.UserRole, False)
                     cell.setData(Qt.ItemDataRole.ToolTipRole, tr('False'))
-                cell.setTextAlignment(Qt.AlignCenter)
+                cell.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
             elif input_type == InputType.Json:
                 if value:
@@ -431,7 +431,7 @@ class TableManager:
                     layout = manager.layoutByName(value)
 
                     atlas_layout = None
-                    if layout.layoutType() == QgsMasterLayoutInterface.PrintLayout:
+                    if layout.layoutType() == QgsMasterLayoutInterface.Type.PrintLayout:
                         for _print_layout in manager.printLayouts():
                             if _print_layout.name() == value:
                                 atlas_layout = _print_layout

@@ -1098,13 +1098,13 @@ class ServerWizard(BaseWizard):
         net_req.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         request = QgsBlockingNetworkRequest()
         error = request.get(net_req)
-        if error == QgsBlockingNetworkRequest.NetworkError:
+        if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
             return False, tr("Network error"), False
-        elif error == QgsBlockingNetworkRequest.ServerExceptionError:
+        elif error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
             return False, tr("Server exception error") + ". " + tr('Please check the URL'), False
-        elif error == QgsBlockingNetworkRequest.TimeoutError:
+        elif error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
             return False, tr("Timeout error"), False
-        elif error != QgsBlockingNetworkRequest.NoError:
+        elif error != QgsBlockingNetworkRequest.ErrorCode.NoError:
             return False, tr("Unknown error"), False
 
         response = request.reply().content()
@@ -1169,7 +1169,7 @@ class ServerWizard(BaseWizard):
             self.field("pg_db_name"),
             self.field("pg_user"),
             self.field("pg_password"),
-            QgsDataSourceUri.SslPrefer,
+            QgsDataSourceUri.SslMode.SslPrefer,
         )
         return uri
 

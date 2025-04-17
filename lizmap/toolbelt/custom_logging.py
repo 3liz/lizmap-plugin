@@ -30,17 +30,17 @@ def qgis_level(logging_level):
     :rtype: Qgis.MessageLevel
     """
     if logging_level == "CRITICAL":
-        return Qgis.Critical
+        return Qgis.MessageLevel.Critical
     elif logging_level == "ERROR":
-        return Qgis.Critical
+        return Qgis.MessageLevel.Critical
     elif logging_level == "WARNING":
-        return Qgis.Warning
+        return Qgis.MessageLevel.Warning
     elif logging_level == "INFO":
-        return Qgis.Info
+        return Qgis.MessageLevel.Info
     elif logging_level == "DEBUG":
-        return Qgis.Info
+        return Qgis.MessageLevel.Info
 
-    return Qgis.Info
+    return Qgis.MessageLevel.Info
 
 
 class QgsLogHandler(logging.Handler):
@@ -65,7 +65,7 @@ class QgsLogHandler(logging.Handler):
                 "handle the full log"
             ).format(PLUGIN_NAME)
             print(message)  # noqa: T201
-            QgsMessageLog.logMessage(message, PLUGIN_NAME, Qgis.Critical)
+            QgsMessageLog.logMessage(message, PLUGIN_NAME, Qgis.MessageLevel.Critical)
 
 
 def add_logging_handler_once(logger, handler):

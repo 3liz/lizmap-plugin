@@ -175,7 +175,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.helper_layer_group.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         tooltip = tr("The layer to check group IDs")
         self.helper_layer_group.setToolTip(tooltip)
-        self.helper_field_group.setFilters(QgsFieldProxyModel.String)
+        self.helper_field_group.setFilters(QgsFieldProxyModel.Filter.String)
         self.helper_field_group.setLayer(self.helper_layer_group.currentLayer())
         self.label_helper_layer_group.setToolTip(tooltip)
         tooltip = tr("The field which must contains group IDs")
@@ -567,7 +567,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(self.table_checks.to_markdown_summarized())
         self.display_message_bar(
-            tr('Copied'), tr('Your results have been copied in your clipboard.'), level=Qgis.Success)
+            tr('Copied'), tr('Your results have been copied in your clipboard.'), level=Qgis.MessageLevel.Success)
 
     def follow_map_theme_toggled(self):
         """ If the theme is loaded at startup, the UX is updated about the toggled checkbox and the legend option. """
@@ -652,7 +652,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 'You are strongly encouraged to upgrade your QGIS server. You will have issues when your QGIS '
                 'server {} will read your QGS project made with this version of QGIS desktop {}.'
             ).format(qgis_server, qgis_desktop)
-            self.display_message_bar(title, description, Qgis.Warning, more_details=more)
+            self.display_message_bar(title, description, Qgis.MessageLevel.Warning, more_details=more)
 
         if widget:
             self.warning_old_server.setVisible(True)
@@ -797,7 +797,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self,
             title: str,
             message: str = None,
-            level: Qgis.MessageLevel = Qgis.Info,
+            level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
             duration: int = None,
             more_details: str = None,
             open_logs: bool = False):
@@ -1265,7 +1265,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             tr("Debug"),
             tr("{count} feature(s) having at least one group not on the server").format(
                 count=count),
-            Qgis.Info if count >= 1 else Qgis.Success
+            Qgis.MessageLevel.Info if count >= 1 else Qgis.MessageLevel.Success
         )
 
     def fix_project_ssl(self):
@@ -1278,7 +1278,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             msg = tr('{} layers updated').format(count)
         else:
             msg = tr('{} layer updated').format(count)
-        self.display_message_bar("SSL", msg, Qgis.Success)
+        self.display_message_bar("SSL", msg, Qgis.MessageLevel.Success)
 
     def fix_project_estimated_md(self):
         """ Fix the current project about estimated metadata. """
@@ -1290,13 +1290,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
             msg = tr('{} layers updated').format(count)
         else:
             msg = tr('{} layer updated').format(count)
-        self.display_message_bar(tr("Estimated metadata"), msg, Qgis.Success)
+        self.display_message_bar(tr("Estimated metadata"), msg, Qgis.MessageLevel.Success)
 
     def fix_project_trust(self):
         """ Fix the current project trust metadata. """
         self.enabled_trust_project(False)
         project_trust_layer_metadata(self.project, True)
-        self.display_message_bar(tr("Trust project"), tr('Trust project is enabled'), Qgis.Success)
+        self.display_message_bar(tr("Trust project"), tr('Trust project is enabled'), Qgis.MessageLevel.Success)
 
     def fix_simplify_geom_provider(self):
         """ Fix the current layers simplify geom. """
@@ -1308,7 +1308,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             msg = tr('{} layers updated').format(count)
         else:
             msg = tr('{} layer updated').format(count)
-        self.display_message_bar(tr("Simplify geometry on the provider side"), msg, Qgis.Success)
+        self.display_message_bar(tr("Simplify geometry on the provider side"), msg, Qgis.MessageLevel.Success)
 
     def activateWindow(self):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """

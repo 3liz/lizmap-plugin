@@ -116,7 +116,7 @@ class VersionChecker:
             qdate = QDate.fromString(
                 json_version['latest_release_date'],
                 "yyyy-MM-dd")
-            date_string = qdate.toString(QLocale().dateFormat(QLocale.ShortFormat))
+            date_string = qdate.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
             status = ReleaseStatus.find(json_version['status'])
 
             changelog = json_version.get('changelog')
@@ -201,7 +201,7 @@ class VersionChecker:
                 'update of the plugin in a few months will remove the support for writing the Lizmap configuration '
                 'file to this version.'.format(self.newest_release_branch, self.oldest_release_branche)
             )
-            self.dialog.display_message_bar(title, description, Qgis.Warning, 10, details)
+            self.dialog.display_message_bar(title, description, Qgis.MessageLevel.Warning, 10, details)
             return
 
         LOGGER.warning(

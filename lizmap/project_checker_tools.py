@@ -399,7 +399,7 @@ def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
         if layer.geometryType() == QgsWkbTypes.GeometryType.PointGeometry:
             continue
 
-        has_simplification = layer.simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod.NoSimplification
+        has_simplification = layer.simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod.SimplifyHint.NoSimplification
         provider_simplification = not layer.simplifyMethod().forceLocalOptimization()
         if has_simplification and provider_simplification:
             continue
@@ -408,7 +408,7 @@ def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
 
         if fix:
             simplify = layer.simplifyMethod()
-            simplify.setSimplifyHints(QgsVectorSimplifyMethod.GeometrySimplification)
+            simplify.setSimplifyHints(QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification)
             simplify.setForceLocalOptimization(False)
             layer.setSimplifyMethod(simplify)
 

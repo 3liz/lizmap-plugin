@@ -44,7 +44,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.6.0', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'No administrator/publisher login provided',
                     'A dev version, warrior ! 👍'
@@ -57,7 +57,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.6.0', '', 'bob_is_admin', json_path, qgis_desktop),
             (
-                Qgis.Success,
+                Qgis.MessageLevel.Success,
                 [
                     'A dev version, warrior ! 👍'
                 ],
@@ -69,7 +69,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, qgis_desktop, error='HTTP_ERROR'),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'Please check your "Server Information" panel in the Lizmap administration interface. There is an '
                     'error reading the QGIS Server configuration.',
@@ -83,7 +83,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.5.1', '', 'bob_is_not_admin', json_path, qgis_desktop, error='NO_ACCESS'),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'The login is not a publisher/administrator'
                 ],
@@ -95,7 +95,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.5.1', '', 'bob_is_admin', json_path, qgis_desktop),
             (
-                Qgis.Success,
+                Qgis.MessageLevel.Success,
                 [
                     '👍'
                 ],
@@ -107,7 +107,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.5.1-pre', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     '⚠ Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version.'
                 ],
@@ -119,7 +119,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.5.1-pre.5110', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     '⚠ Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version.'
                 ],
@@ -131,7 +131,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.5.0', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     '⚠ Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version.'
                 ],
@@ -143,7 +143,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9', '', '', json_path, qgis_desktop),
             (
-                Qgis.Success,
+                Qgis.MessageLevel.Success,
                 [
                     '👍'
                 ],
@@ -155,7 +155,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9', '', '', json_path, qgis_desktop),
             (
-                Qgis.Success,
+                Qgis.MessageLevel.Success,
                 [
                     '👍'
                 ],
@@ -167,7 +167,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.4.9-pre', '', '', json_path, qgis_desktop),
             (
-                Qgis.Warning,
+                Qgis.MessageLevel.Warning,
                 [
                     'Not latest bugfix release, 3.4.9 is available',
                     '. This version is not based on a tag.'
@@ -180,7 +180,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.4.8', '', '', json_path, qgis_desktop),
             (
-                Qgis.Warning,
+                Qgis.MessageLevel.Warning,
                 [
                     'Not latest bugfix release, 3.4.9 is available'
                 ],
@@ -192,7 +192,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.4.5', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'Not latest bugfix release, 3.4.9 is available'
                 ],
@@ -204,7 +204,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.3.16', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'Version 3.3 not maintained anymore'
                 ],
@@ -216,7 +216,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.2.0', '', '', json_path, qgis_desktop),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'Version 3.2 not maintained anymore',
                 ],
@@ -249,7 +249,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version(**data, lizmap_cloud=True),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'The login is not a publisher/administrator',
                 ],
@@ -263,7 +263,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version(**data),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'The login is not a publisher/administrator',
                 ],
@@ -286,7 +286,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version(**data, lizmap_cloud=True),
             (
-                Qgis.Critical,
+                Qgis.MessageLevel.Critical,
                 [
                     'QGIS Server version 3.22 is not maintained anymore by QGIS.org since February 2024. Please visit '
                     'your administration panel in the web browser to ask for the update.',
@@ -309,7 +309,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.8.0-rc.4', '', 'bob_is_admin', json_path, qgis_desktop),
             (
-                Qgis.Success,
+                Qgis.MessageLevel.Success,
                 [
                     'A dev version, warrior ! 👍',
                 ],
@@ -320,7 +320,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.8.0-rc.3', '', 'bob_is_admin', json_path, qgis_desktop),
             (
-                Qgis.Warning,
+                Qgis.MessageLevel.Warning,
                 [
                     'A dev version, warrior ! 👍',
                     'Not latest bugfix release, 3.8.0-rc.4 is available',
@@ -340,7 +340,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertEqual(
             ServerManager._messages_for_version('3.6.14', '', 'bob_is_admin', json_path, qgis_desktop),
             (
-                Qgis.Warning,
+                Qgis.MessageLevel.Warning,
                 ['Version 3.6 not maintained anymore, only for security bugfix only'],
                 True,
             )
