@@ -1004,7 +1004,9 @@ class TableManager:
                     continue
 
                 value = layer.get(key)
-                if value:
+                # The value can be equal to "False".
+                # https://github.com/3liz/lizmap-plugin/issues/629
+                if value or isinstance(value, bool):
                     if definition['type'] == InputType.Layer:
                         vector_layer = self.project.mapLayer(value)
                         if not vector_layer or not vector_layer.isValid():
