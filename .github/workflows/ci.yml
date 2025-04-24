@@ -47,10 +47,9 @@ jobs:
       matrix:
         qgis_version: [
 #          "latest",
-#          "release-3_40",
+#          "3.40",
           "release-3_34",
           "release-3_28",
-          "release-3_22",
         ]
     steps:
 
