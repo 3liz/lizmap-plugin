@@ -724,7 +724,7 @@ class TestTableManager(unittest.TestCase):
             table_manager.wfs_fields_used())
 
     def test_dataviz_box(self):
-        """Box chart has an empty key."""
+        """Box chart has an empty key about aggregation."""
         layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
         QgsProject.instance().addMapLayer(layer)
         self.assertTrue(layer.isValid())
@@ -740,7 +740,7 @@ class TestTableManager(unittest.TestCase):
                 'title': 'My graph',
                 'type': 'box',
                 'x_field': 'id',
-                'aggregation': '',
+                'aggregation': '',  # Empty key
                 'y_field': 'first name',
                 'color': '#00aaff',
                 'colorfield': 'first color field',
@@ -992,6 +992,8 @@ class TestTableManager(unittest.TestCase):
         json['lines']['custom_config'] = 'False'
 
         # Allowing groups for exporting
+        # Check the default value to True, by default
+        # https://github.com/3liz/lizmap-plugin/issues/629
         json['lines']['export_enabled'] = True
         self.assertIsNone(json['lines'].get('export_allowed_groups'))
 
@@ -1007,10 +1009,12 @@ class TestTableManager(unittest.TestCase):
         table_manager = TableManager(
             None, definitions, None, table, None, None, None, None)
 
+        # Check the default value to False
+        # https://github.com/3liz/lizmap-plugin/issues/629
         json = {
             'lines': {
                 'primaryKey': 'id',
-                'export_enabled': True,
+                'export_enabled': False,  # Set it to "False" to try the default value #629
                 'export_allowed_groups': [
                     'admins',
                     'publishers',
