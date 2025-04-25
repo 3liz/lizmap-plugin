@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 4.5.0 - 2025-04-25
+
+* Raise to minimum QGIS 3.28
+* Enable lizmap-features-table with a radio button, Lizmap Web Client 3.9
+* Improve PyQt6 compatibility
+
 ## 4.4.9 - 2025-04-08
 
 * Always set mutually exclusive on the `baselayers` group
