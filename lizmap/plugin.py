@@ -5259,6 +5259,12 @@ class Lizmap:
             tr("Error while downloading the project : {}").format(','.join(errors)),
             level=Qgis.MessageLevel.Critical
         )
+        zip_file = f"The file qgis/{TRAINING_ZIP} was maybe not found on the server ?"
+        QMessageBox.warning(
+            self.dlg,
+            tr('Training'),
+            tr('Is the training well prepared by the trainer ?') + " " + zip_file,
+        )
 
     def download_completed_qgs(self):
         """ Extract the downloaded QGS. """

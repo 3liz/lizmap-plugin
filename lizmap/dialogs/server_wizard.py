@@ -959,6 +959,7 @@ class ServerWizard(BaseWizard):
         if self.page(WizardPages.LoginPasswordPage).auth_widget.configId() != "":
             LOGGER.info("The user is advanced, he used an existing auth, skip saving.")
             self.auth_id = self.page(WizardPages.LoginPasswordPage).auth_widget.configId()
+            self.save_json_server()
             return True
 
         url = self.current_url()
