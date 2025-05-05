@@ -112,18 +112,10 @@ class TestToolTip(unittest.TestCase):
         expression = QgsExpression().replaceExpressionText(expression, QgsExpressionContext())
         self.assertEqual('hidden', expression)
 
-    def test_relation_reference(self):
-        """Test we can generate a relation reference."""
-        result = Tooltip._generate_relation_reference('name', 'parent_pk', 'layer_id', 'display_expression')
-        expected = '''
-                    aggregate(
-                        layer:='layer_id',
-                        aggregate:='concatenate',
-                        expression:=to_string(display_expression),
-                        filter:=
-                    "parent_pk" = attribute(@parent, 'name')
-                
-                    )'''
+    def test_represent_value(self):
+        """Test we can generate a represent_value."""
+        result = Tooltip._generate_represent_value('name', )
+        expected = 'represent_value("name")'
         self.assertEqual(expected, result)
 
     def test_checkbox(self):
@@ -357,81 +349,6 @@ class TestToolTip(unittest.TestCase):
 
         expected = '<a href="test.png" target="_blank">test</a>'
         self.check_layer_context('test.png', expression, expected)
-
-    def test_value_relation(self):
-        """Test we can generate a value relation."""
-        widget_config = {
-            'Key': 'key',
-            'Layer': 'layer_id',
-            'FilterExpression': 'filter_expression',
-            'Value': 'value',
-        }
-        result = Tooltip._generate_value_relation(widget_config, 'foo')
-        expected = '''
-                    aggregate(
-                        layer:='layer_id',
-                        aggregate:='concatenate',
-                        expression:=to_string("value"),
-                        filter:="key" = attribute(@parent, 'foo') AND filter_expression
-                    )'''
-        self.assertEqual(expected, result)
-        expression = QgsExpression(result)
-        self.assertFalse(expression.hasParserError())
-
-        # https://github.com/3liz/lizmap-web-client/issues/4307
-        widget_config['FilterExpression'] = None
-        widget_config = Tooltip.remove_none(widget_config)
-        result = Tooltip._generate_value_relation(widget_config, 'foo')
-        expected = '''
-                    aggregate(
-                        layer:='layer_id',
-                        aggregate:='concatenate',
-                        expression:=to_string("value"),
-                        filter:="key" = attribute(@parent, 'foo')
-                    )'''
-        self.assertEqual(expected, result)
-        expression = QgsExpression(result)
-        self.assertFalse(expression.hasParserError())
-
-    def test_value_relation_current_geometry(self):
-        """Test a value relation with @current_geometry in widget config FilterExpression."""
-        widget_config = {
-            'Key': 'key',
-            'Layer': 'layer_id',
-            'FilterExpression': 'intersects(@current_geometry, $geometry)',
-            'Value': 'value',
-        }
-        result = Tooltip._generate_value_relation(widget_config, 'foo')
-        expected = '''
-                    aggregate(
-                        layer:='layer_id',
-                        aggregate:='concatenate',
-                        expression:=to_string("value"),
-                        filter:="key" = attribute(@parent, 'foo') AND intersects(geometry(@parent), $geometry)
-                    )'''
-        self.assertEqual(expected, result)
-        expression = QgsExpression(result)
-        self.assertFalse(expression.hasParserError())
-
-    def test_value_relation_current_value(self):
-        """Test a value relation with current_value in widget config FilterExpression."""
-        widget_config = {
-            'Key': 'key',
-            'Layer': 'layer_id',
-            'FilterExpression': '''"fkey" = current_value('bar')''',
-            'Value': 'value',
-        }
-        result = Tooltip._generate_value_relation(widget_config, 'foo')
-        expected = '''
-                    aggregate(
-                        layer:='layer_id',
-                        aggregate:='concatenate',
-                        expression:=to_string("value"),
-                        filter:="key" = attribute(@parent, 'foo') AND "fkey" = attribute(@parent, 'bar')
-                    )'''
-        self.assertEqual(expected, result)
-        expression = QgsExpression(result)
-        self.assertFalse(expression.hasParserError())
 
     def test_layer_non_existing_field(self):
         """Test we do not generate for non-existing fields."""
