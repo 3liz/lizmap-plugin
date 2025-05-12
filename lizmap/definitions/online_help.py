@@ -97,7 +97,16 @@ MAPPING_INDEX_DOC = {
 def pg_service_help() -> QUrl:
     """ Open the QGIS.org documentation about PG Service. """
     # The QGIS documentation is better than the PostgreSQL doc :/
+    return _qgis_help('user_manual/managing_data_source/opening_data.html#postgresql-service-connection-file')
+
+
+def qgis_theme_help() -> QUrl:
+    """ Open the theme help page. """
+    return _qgis_help('user_manual/introduction/general_tools.html#map-themes')
+
+
+def _qgis_help(page: str) -> QUrl:
+    """ Open a QGIS help page. """
     return QUrl(
-        f"https://docs.qgis.org/latest/{current_locale()}/docs/user_manual/managing_data_source/opening_data.html"
-        f"#postgresql-service-connection-file"
+        f"https://docs.qgis.org/latest/{current_locale()}/docs/{page}"
     )

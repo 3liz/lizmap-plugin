@@ -1517,11 +1517,22 @@ This is different to the map maximum extent (defined in QGIS project properties,
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QCheckBox" name="activate_first_map_theme">
-                    <property name="text">
-                     <string>Activate first map theme on startup</string>
-                    </property>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_36">
+                    <item>
+                     <widget class="QCheckBox" name="activate_first_map_theme">
+                      <property name="text">
+                       <string>Activate first map theme on startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="help_map_theme">
+                      <property name="text">
+                       <string notr="true">HELP</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -5667,6 +5678,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>inSourceProject</tabstop>
   <tabstop>cbHideGroupCheckbox</tabstop>
   <tabstop>activate_first_map_theme</tabstop>
+  <tabstop>help_map_theme</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>add_group_hidden</tabstop>
   <tabstop>add_group_baselayers</tabstop>

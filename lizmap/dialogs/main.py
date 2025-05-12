@@ -75,6 +75,7 @@ from lizmap.definitions.online_help import (
     Panels,
     online_lwc_help,
     pg_service_help,
+    qgis_theme_help,
 )
 from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
 from lizmap.toolbelt.i18n import tr
@@ -197,6 +198,9 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
+        self.help_map_theme.setIcon(QIcon(":/images/themes/default/mActionHelpContents.svg"))
+        self.help_map_theme.setText("")
+        self.help_map_theme.clicked.connect(self.open_theme_help)
         self.activate_first_map_theme.toggled.connect(self.follow_map_theme_toggled)
 
         tooltip = tr(
@@ -437,6 +441,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         #         ),
         #         level=Qgis.Warning,
         #     )
+
+    @staticmethod
+    def open_theme_help():
+        """ Open the QGIS theme documentation. """
+        # noinspection PyArgumentList
+        QDesktopServices.openUrl(qgis_theme_help())
 
     @staticmethod
     def open_pg_service_help():
