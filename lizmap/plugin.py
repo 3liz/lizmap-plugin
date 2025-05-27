@@ -5162,6 +5162,8 @@ class Lizmap:
         """ Check if the training panel should be visible or not. """
         current_url = self.dlg.current_server_info(ServerComboData.ServerUrl.value)
         # By default, set to a long training, with ZIP file
+        # We check now step by step if it's a short training
+        # with the login used with an existing QGS file on the server.
         self.dlg.workshop_type.setCurrentWidget(self.dlg.training_panel)
 
         if not current_url:
@@ -5171,7 +5173,10 @@ class Lizmap:
         if bool([domain for domain in WORKSHOP_DOMAINS if (domain in current_url)]):
             self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(False)
 
-        LOGGER.info("Current server has been detected as a training server.")
+        LOGGER.info(
+            "Current server has been detected as a training server, set as long workshop by default for now. "
+            "Checking then if it can be a short workshop."
+        )
 
         metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
         repositories = metadata.get('repositories')
@@ -5193,7 +5198,10 @@ class Lizmap:
         self.dlg.checkbox_save_project.setChecked(True)
         self.dlg.radio_beginner.setChecked(True)
         self.dlg.workshop_type.setCurrentWidget(self.dlg.quick_workshop_panel)
-        LOGGER.info(f"Remote project '{user_project}', matching the user connected, has been detected on the server")
+        LOGGER.info(
+            f"Remote project '{user_project.get('title')}', matching the user connected, "
+            f"has been detected on the server. So set the workshop as short."
+        )
 
     def download_training_data_clicked(self, workshop_type: str = WorkshopType.ZipFile):
         """ Download the hard coded ZIP. """
