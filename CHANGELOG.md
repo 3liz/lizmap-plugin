@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Disable checked checkbox for not spatial layers
+* Add OSM as dataUrl as well as attributionUrl
+* Add link to the QGIS theme online help
+* Use `represent_value` in some cases in the Drag&Drop layout
+
 ## 4.5.0 - 2025-04-25
 
 * Raise to minimum QGIS 3.28
