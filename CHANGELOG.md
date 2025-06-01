@@ -2,8 +2,10 @@
 
 ## Unreleased
 
+## 4.5.1 - 2025-04-25
+
 * Disable checked checkbox for not spatial layers
-* Add OSM as dataUrl as well as attributionUrl
+* Add OSM.org URL as "data URL" as well as "attribution URL" in QGIS Server properties
 * Add link to the QGIS theme online help
 * Use `represent_value` in some cases in the Drag&Drop layout
 
