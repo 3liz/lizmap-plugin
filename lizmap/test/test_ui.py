@@ -82,6 +82,10 @@ class TestUiLizmapDialog(unittest.TestCase):
             'hide_at_startup',
             lizmap.myDic.get('legend_hidden_startup_layer_id').get('legend_image_option'))
 
+        self.assertEqual(
+            'id',
+            lizmap.myDic.get('legend_hidden_startup_layer_id').get('primary_key'))
+
         # For LWC 3.6
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False, ignore_error=True)
         self.assertTrue('<table>' in output['options']['datavizTemplate'])
