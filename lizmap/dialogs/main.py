@@ -216,6 +216,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
             "It's recommended, for instance on EPSG:3857, text on an external tile will have a better rendering."
         ))
 
+        self.help_lizmap_features_table.setText("")
+        self.help_lizmap_features_table.setIcon(QIcon(":/images/themes/default/mActionHelpContents.svg"))
+        self.help_lizmap_features_table.clicked.connect(self.open_lizmap_features_table_help)
+
         self.log_panel = LogPanel(self.out_log)
         self.button_clear_log.setIcon(QIcon(":images/themes/default/console/iconClearConsole.svg"))
         self.button_clear_log.clicked.connect(self.log_panel.clear)
@@ -441,6 +445,27 @@ class LizmapDialog(QDialog, FORM_CLASS):
         #         ),
         #         level=Qgis.Warning,
         #     )
+
+    def open_lizmap_features_table_help(self):
+        """ Open Lizmap-Features-Table helper."""
+        QMessageBox.information(
+            self,
+            'Lizmap-Features-Table',
+            tr('For now, to use this new behavior, it is needed to enable the layer in the "Attribute table" tool as well.')
+            + "<br><br>"
+            + tr(
+                'Soon, it will not be necessary to enable the attribute table tool on the children layer. Hopefully,'
+                'it will be done in 3.9.1.'
+            )
+            + "<br><br>"
+            + tr(
+                'For more advanced features about lizmap-features-table, it\'s possible to customize it more, add some virtual columns based on QGIS expressions,'
+                'by adding the HTML manually in the parent layer maptip, from the '
+                '<a href="https://docs.3liz.org/lizmap-web-client/js/module-FeaturesTable.html">documentation</a>. '
+                'But with using this radio button, it is not needed to add extra HTML.'
+            ),
+            QMessageBox.StandardButton.Ok
+        )
 
     @staticmethod
     def open_theme_help():
