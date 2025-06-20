@@ -832,6 +832,24 @@ class Checks:
                 )
             )
         )
+        self.RasterPostgreSqlLayer = Check(
+            "postgis_raster",
+            tr('PostgreSQL PostGIS raster'),
+            tr(
+                'The layer is stored in a PostgreSQL database. This is discouraged. Using a raster in PostgreSQL is good '
+                'for data analysis, on cells. But for rendering, it is better to use a file based layer, like COG.'
+            ),
+            (
+                '<ul>'
+                '<li>{help}</li>'
+                '</ul>'.format(
+                    help=tr("Switch to a file based layer for rendering, like COG."),
+                )
+            ),
+            Levels.Layer,
+            Severities().important,
+            QIcon(':/images/themes/default/mIconPostgis.svg'),
+        )
         self.AuthenticationDb = Check(
             Settings.PreventPgAuthDb,
             tr('QGIS Authentication database'),

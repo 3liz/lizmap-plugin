@@ -84,6 +84,10 @@ def project_safeguards_checks(
                 elif authcfg_url_parameters(layer.source()):
                     results[SourceLayer(layer.name(), layer.id())] = checks.RasterAuthenticationDb
 
+            if layer.dataProvider().name() == 'postgresraster':
+                # PostGIS raster is good for analysis, like with Altiprofil, but not in a QGIS project, for rendering
+                results[SourceLayer(layer.name(), layer.id())] = checks.RasterPostgreSqlLayer
+
         if is_vector_pg(layer):
             # Make a copy by using a string, so we are sure to have user or password
             datasource = QgsDataSourceUri(layer.source())
