@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-## 4.5.1 - 2025-04-25
+## 4.5.2 - 2025-06-20
+
+* Add check about PostgreSQL raster layer
+* Add helper about Lizmap Features Table, for Lizmap Web Client 3.9.0
+
+## 4.5.1 - 2025-06-01
 
 * Disable checked checkbox for not spatial layers
 * Add OSM.org URL as "data URL" as well as "attribution URL" in QGIS Server properties

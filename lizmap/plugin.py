@@ -5202,6 +5202,7 @@ class Lizmap:
 
         # Now set, to a short training with the prepared project
         # TODO remove or improve very soon
+        # Fixme, the settings must be used, and not the UI checkbox
         self.dlg.send_webdav.setChecked(True)
         self.dlg.checkbox_save_project.setChecked(True)
         self.dlg.radio_beginner.setChecked(True)
