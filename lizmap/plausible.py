@@ -106,6 +106,10 @@ class Plausible:
         for row in range(self.dialog.server_combo.count()):
             metadata = self.dialog.server_combo.itemData(row, ServerComboData.JsonMetadata.value)
             url = self.dialog.server_combo.itemData(row, ServerComboData.ServerUrl.value)
+
+            if not url or not metadata:
+                continue
+
             if bool([domain for domain in EXCLUDED_DOMAINS if (domain in url)]):
                 # We do not want to count for dev
                 debug = True
