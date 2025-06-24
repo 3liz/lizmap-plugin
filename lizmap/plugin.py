@@ -462,6 +462,8 @@ class Lizmap:
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_10] = [
         ]
+        self.lwc_versions[LwcVersions.Lizmap_3_11] = [
+        ]
 
         self.lizmap_cloud = [
             self.dlg.label_lizmap_search_grant,

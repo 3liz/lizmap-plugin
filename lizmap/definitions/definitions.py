@@ -25,6 +25,11 @@ class LwcVersions(Enum):
     Lizmap_3_8 = '3.8'
     Lizmap_3_9 = '3.9'
     Lizmap_3_10 = '3.10'
+    Lizmap_3_11 = '3.11'
+
+    # When adding a new version in the list above, do also :
+    # lizmap/plugin.py, add the variable self.lwc_versions[LwcVersions.Lizmap_3_X] = []
+    # lizmap/forms/base_edition_dialog.py, add the variable self.lwc_versions[LwcVersions.Lizmap_3_X] = []
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:
