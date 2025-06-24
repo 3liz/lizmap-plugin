@@ -40,7 +40,7 @@ class TestDefinitions(unittest.TestCase):
         self.assertTrue(LwcVersions.Lizmap_3_6 >= LwcVersions.Lizmap_3_6)
         self.assertTrue(LwcVersions.Lizmap_3_5 <= LwcVersions.Lizmap_3_5)
 
-        self.assertEqual(LwcVersions.Lizmap_3_10, LwcVersions.latest())
+        self.assertEqual(LwcVersions.Lizmap_3_11, LwcVersions.latest())
 
         # Do not confuse LWC 3.1 and 3.10
         self.assertTrue(LwcVersions.Lizmap_3_10 > LwcVersions.Lizmap_3_9)

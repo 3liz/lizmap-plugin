@@ -30,6 +30,7 @@ class LwcVersions(Enum):
     # When adding a new version in the list above, do also :
     # lizmap/plugin.py, add the variable self.lwc_versions[LwcVersions.Lizmap_3_X] = []
     # lizmap/forms/base_edition_dialog.py, add the variable self.lwc_versions[LwcVersions.Lizmap_3_X] = []
+    # lizmap/test/test_definitions.py, change unit test about LwcVersions.latest()
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:
