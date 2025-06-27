@@ -44,6 +44,7 @@ class HtmlPreview(QDockWidget):
     def __init__(self, parent, *__args):
         """ Constructor. """
         super().__init__(parent, *__args)
+        self.setObjectName("html_maptip_preview")
         self.setWindowTitle("Lizmap HTML Maptip Preview")
 
         self._server_url = None
