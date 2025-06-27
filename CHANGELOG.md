@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 4.5.3 - 2025-06-27
+
+* Add log debug about WMS capability
+* Trust project by default and add geometry to WMS GetFeatureInfo for newly CFG file
+* Skip Python error if the metadata was not loaded
+* Add configuration for Lizmap Web Client 3.11
+
 ## 4.5.2 - 2025-06-20
 
 * Add check about PostgreSQL raster layer
