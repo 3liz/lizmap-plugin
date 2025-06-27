@@ -2477,6 +2477,8 @@ class Lizmap:
                     # deactivate wms checkbox if not needed
                     if key == 'externalWmsToggle':
                         wms_enabled = self.get_item_wms_capability(selected_item)
+                        LOGGER.debug(
+                            f"Selected layer '{selected_item}' return value for WMS capability is '{wms_enabled}'")
                         if wms_enabled is not None:
                             self.dlg.cbExternalWms.setEnabled(wms_enabled)
                             if wms_enabled:
