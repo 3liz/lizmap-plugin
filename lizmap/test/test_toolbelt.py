@@ -4,12 +4,18 @@ import unittest
 
 from pathlib import Path
 
+# from qgis.testing import start_app
+from qgis.core import QgsRasterLayer
+
+from lizmap.toolbelt.layer import get_layer_wms_parameters
 from lizmap.toolbelt.lizmap import sidecar_media_dirs
 from lizmap.toolbelt.strings import human_size
 
-__copyright__ = 'Copyright 2024, 3Liz'
+__copyright__ = 'Copyright 2025, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+
+# start_app()
 
 
 class TestToolBelt(unittest.TestCase):
@@ -59,3 +65,52 @@ class TestToolBelt(unittest.TestCase):
             ]
             expected.sort()
             self.assertListEqual(expected, sidecar_media_dirs(test))
+
+    def test_wms_properties_wms(self):
+        """ Test external WMS. """
+        raster = QgsRasterLayer(
+            "contextualWMSLegend=0&"
+            "crs=EPSG:2056&"
+            "dpiMode=7&"
+            "featureCount=10&"
+            "format=image/jpeg&"
+            "layers=ch.swisstopo.pixelkarte-grau&"
+            "styles&"
+            "tilePixelRatio=0&"
+            "url=https://wms.geo.admin.ch/",
+            "wms",
+            "wms"
+        )
+        self.assertTrue(raster.isValid())
+        self.assertEqual('wms', raster.providerType())
+
+        data = get_layer_wms_parameters(raster)
+
+        self.assertEqual("0", data['contextualWMSLegend'])
+        self.assertEqual("EPSG:2056", data['crs'])
+        self.assertEqual("7", data['dpiMode'])
+        self.assertEqual("10", data['featureCount'])
+        self.assertEqual("image/jpeg", data['format'])
+        self.assertEqual("ch.swisstopo.pixelkarte-grau", data['layers'])
+        self.assertEqual("", data['styles'])
+        self.assertEqual("0", data['tilePixelRatio'])
+        self.assertEqual("https://wms.geo.admin.ch/", data['url'])
+
+    def test_wms_properties_wmts(self):
+        """ Test external WMTS. """
+        raster = QgsRasterLayer(
+            "crs=EPSG:3857&"
+            "dpiMode=7&"
+            "format=image/jpeg&"
+            "layers=ORTHOIMAGERY.ORTHOPHOTOS&"
+            "styles=normal&"
+            "tileMatrixSet=PM&"
+            "url=https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities",
+            "wms",
+            "wms"
+        )
+        self.assertTrue(raster.isValid())
+        self.assertEqual('wms', raster.providerType())
+
+        data = get_layer_wms_parameters(raster)
+        self.assertIsNone(data)

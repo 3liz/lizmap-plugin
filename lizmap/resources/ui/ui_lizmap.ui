@@ -2098,7 +2098,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                          <item>
                           <layout class="QHBoxLayout" name="horizontalLayout_25">
                            <item>
-                            <widget class="QLabel" name="label_56">
+                            <widget class="QLabel" name="label_external_wms_check">
                              <property name="font">
                               <font>
                                <weight>50</weight>
