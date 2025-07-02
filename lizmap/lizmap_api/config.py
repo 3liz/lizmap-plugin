@@ -269,6 +269,9 @@ class LizmapConfig:
 
         # We want to translate some items, do not make this variable static
         self.layerOptionDefinitions = {
+            'primary_key': {
+                'wType': 'list', 'type': 'field', 'default': '',
+            },
             'title': {
                 'wType': 'text', 'type': 'string', 'default': '', 'isMetadata': True
             },

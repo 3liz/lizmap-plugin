@@ -1038,6 +1038,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.gb_generalOptions,
             self.gb_interface,
             self.gb_baselayersOptions,
+            self.group_box_primary_key,
             self.predefined_groups_legend,
             self.predefined_groups,
             self.predefined_baselayers,
