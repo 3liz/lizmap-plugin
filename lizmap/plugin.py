@@ -4385,7 +4385,7 @@ class Lizmap:
         if not self.dlg.check_cfg_file_exists():
             # Convenient option for users, for new CFG file only : project trust, and add geometry to GetFeatureInfo
             project_trust_layer_metadata(self.project, True)
-            self.project.writeEntry('WMSAddWktGeometry', '', True)
+            self.project.writeEntryBool('WMSAddWktGeometry', '/', True)
 
             new_project = NewConfigDialog()
             new_project.exec()
