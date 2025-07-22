@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix `WMSAddWktGeometry` set as an integer instead of a boolean in .qgs
+
 ## 4.5.3 - 2025-06-27
 
 * Add log debug about WMS capability
