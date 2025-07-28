@@ -1559,6 +1559,28 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
                       <item>
+                       <widget class="QGroupBox" name="group_box_primary_key">
+                        <property name="title">
+                         <string>Datasource</string>
+                        </property>
+                        <layout class="QFormLayout" name="formLayout_11">
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_55">
+                           <property name="text">
+                            <string>Primary key</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <widget class="QgsFieldComboBox" name="primary_key"/>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <layout class="QFormLayout" name="formLayout_10"/>
+                      </item>
+                      <item>
                        <widget class="QgsCollapsibleGroupBox" name="group_layer_metadata">
                         <property name="title">
                          <string>Metadata</string>

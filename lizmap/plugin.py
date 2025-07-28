@@ -165,6 +165,7 @@ from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.widgets.check_project import Check, SourceField
+from lizmap.widgets.primary_key_field import enable_primary_key_field
 from lizmap.widgets.project_tools import (
     empty_baselayers,
     is_layer_published_wfs,
@@ -531,6 +532,7 @@ class Lizmap:
 
         self.layer_options_list = lizmap_config.layerOptionDefinitions
         # Add widget information
+        self.layer_options_list['primary_key']['widget'] = self.dlg.primary_key
         self.layer_options_list['title']['widget'] = self.dlg.inLayerTitle
         self.layer_options_list['abstract']['widget'] = self.dlg.teLayerAbstract
         self.layer_options_list['link']['widget'] = self.dlg.inLayerLink
@@ -701,23 +703,30 @@ class Lizmap:
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
-            if item.get('widget'):
-                control = item['widget']
-                slot = partial(self.save_value_layer_group_data, key)
-                if item['wType'] in ('text', 'spinbox'):
-                    control.editingFinished.connect(slot)
-                elif item['wType'] == 'textarea':
-                    control.textChanged.connect(slot)
-                elif item['wType'] == 'checkbox':
-                    control.stateChanged.connect(slot)
-                elif item['wType'] == 'radio':
-                    control.toggled.connect(slot)
-                elif item['wType'] == 'list':
-                    control.currentIndexChanged.connect(slot)
-                elif item['wType'] == 'layers':
-                    control.layerChanged.connect(slot)
-                elif item['wType'] == 'fields':
+            control = item.get('widget')
+            if not isinstance(control, QWidget):
+                # Be careful, big waste of time if control is not checked to be a QWidget for QgsFieldComboBox
+                # https://github.com/qgis/QGIS/issues/62317
+                continue
+
+            slot = partial(self.save_value_layer_group_data, key)
+            if item['wType'] in ('text', 'spinbox'):
+                control.editingFinished.connect(slot)
+            elif item['wType'] == 'textarea':
+                control.textChanged.connect(slot)
+            elif item['wType'] == 'checkbox':
+                control.stateChanged.connect(slot)
+            elif item['wType'] == 'radio':
+                control.toggled.connect(slot)
+            elif item['wType'] == 'list':
+                if item['type'] == 'field':
                     control.fieldChanged.connect(slot)
+                else:
+                    control.currentIndexChanged.connect(slot)
+            elif item['wType'] == 'layers':
+                control.layerChanged.connect(slot)
+            elif item['wType'] == 'fields':
+                control.fieldChanged.connect(slot)
 
         self.crs_3857_base_layers_list = {
             'osm-mapnik': self.dlg.cbOsmMapnik,
@@ -2245,9 +2254,13 @@ class Lizmap:
                                     self.myDic[item_key][key] = json_layers[json_key][key]
                         # lists
                         elif item['wType'] == 'list':
-                            # New way with data, label, tooltip and icon
-                            datas = [j[0] for j in item['list']]
-                            if json_layers[json_key][key] in datas:
+                            if item.get('list'):
+                                # New way with data, label, tooltip and icon
+                                datas = [j[0] for j in item['list']]
+                                if json_layers[json_key][key] in datas:
+                                    self.myDic[item_key][key] = json_layers[json_key][key]
+                            else:
+                                # The list is managed by the layer and function enable_primary_key_field()
                                 self.myDic[item_key][key] = json_layers[json_key][key]
 
                 else:
@@ -2416,6 +2429,8 @@ class Lizmap:
         #     if val.get('widget'):
         #         val.get('widget').setEnabled(True)
 
+        self.dlg.group_box_primary_key.setVisible(False)
+
         i_key = self._current_selected_item_in_config()
         if i_key:
             self.enable_check_box_in_layer_tab(True)
@@ -2505,6 +2520,11 @@ class Lizmap:
             self.dlg.button_generate_html_table.setEnabled(is_vector)
             self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
 
+            if is_vector:
+                self.dlg.primary_key.setLayer(layer)
+                enable_primary_key_field(self.dlg.primary_key, layer)
+            self.dlg.group_box_primary_key.setVisible(is_vector)
+
             if self.current_lwc_version() >= LwcVersions.Lizmap_3_7 and not self.dlg.cbLayerIsBaseLayer.isChecked():
                 # Starting from LWC 3.7, this checkbox is deprecated
                 self.dlg.cbLayerIsBaseLayer.setEnabled(False)
@@ -2559,9 +2579,13 @@ class Lizmap:
                         val['widget'].setChecked(val['default'])
                     elif val['wType'] == 'list':
 
-                        # New way with data, label, tooltip and icon
-                        index = val['widget'].findData(val['default'])
-                        val['widget'].setCurrentIndex(index)
+                        if val.get('default'):
+                            # New way with data, label, tooltip and icon
+                            index = val['widget'].findData(val['default'])
+                            val['widget'].setCurrentIndex(index)
+                        else:
+                            # The list is managed by the layer and function enable_primary_key_field()
+                            val['widget'].setCurrentIndex(0)
 
         self.enable_popup_source_button()
         self.dlg.follow_map_theme_toggled()
@@ -2810,9 +2834,13 @@ class Lizmap:
                     if self.layer_options_list[children]['widget'].isChecked():
                         self.layer_options_list[children]['widget'].setChecked(False)
         elif layer_option['wType'] == 'list':
-            # New way with data, label, tooltip and icon
-            datas = [j[0] for j in layer_option['list']]
-            self.layerList[layer_or_group_text][key] = datas[layer_option['widget'].currentIndex()]
+            if layer_option.get('list'):
+                # New way with data, label, tooltip and icon
+                datas = [j[0] for j in layer_option['list']]
+                self.layerList[layer_or_group_text][key] = datas[layer_option['widget'].currentIndex()]
+            else:
+                # The list is managed by the layer and function enable_primary_key_field()
+                self.layerList[layer_or_group_text][key] = layer_option['widget'].currentField()
 
         # Deactivate the "exclude" widget if necessary
         if 'exclude' in layer_option \
