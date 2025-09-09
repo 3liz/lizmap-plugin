@@ -1,4 +1,13 @@
-"""Test Lizmap dialog form edition."""
+"""Test Lizmap dialog form edition.
+
+__copyright__ = 'Copyright 2023, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
+
+from pathlib import Path
+
+import pytest
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import unittest
@@ -15,26 +24,18 @@ from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-from lizmap.toolbelt.resources import plugin_test_data_path
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+from .compat import TestCase
 
-# Crashing in QGIS_VERSION_INT 3.16
-# from qgis.testing import start_app
-# start_app()
+@pytest.fixture(scope="class", autouse=True)
+def layer(data: Path) -> None:
+    layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
+    QgsProject.instance().addMapLayer(layer)
+    assert layer.isValid()
+    return layer
 
 
-class TestEditionDialog(unittest.TestCase):
-
-    def setUp(self) -> None:
-        self.layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(self.layer)
-        self.assertTrue(self.layer.isValid())
-
-    def tearDown(self) -> None:
-        del self.layer
+class TestEditionDialog(TestCase):
 
     def test_batch_loading_dialogs(self):
         """Open all dialogs to check that definitions are correct."""
@@ -54,13 +55,13 @@ class TestEditionDialog(unittest.TestCase):
         ]
         for dialog in dialogs:
             d = dialog()
-            self.assertFalse(d.error.isVisible())
+            assert not d.error.isVisible()
 
     def test_load_save_collection_dataviz(self):
         """Test we can load collection."""
         dialog = DatavizEditionDialog()
-        self.assertFalse(dialog.error.isVisible())
-        self.assertEqual('id', dialog.x_field.currentField())
+        assert not dialog.error.isVisible()
+        assert 'id' == dialog.x_field.currentField()
 
         data = [
             {
@@ -75,14 +76,14 @@ class TestEditionDialog(unittest.TestCase):
                 'z_field': '',
             }
         ]
-        self.assertEqual(0, dialog.traces.rowCount())
+        assert 0 == dialog.traces.rowCount()
         dialog.load_collection(data)
-        self.assertEqual(2, dialog.traces.rowCount())
+        assert 2 == dialog.traces.rowCount()
 
         result = dialog.save_collection()
         self.assertCountEqual(result, data)
 
-    def test_atlas_dialog(self):
+    def test_atlas_dialog(self, layer: QgsVectorLayer):
         """Test atlas dialog."""
         dialog = AtlasEditionDialog()
         self.assertFalse(dialog.error.isVisible())
@@ -100,7 +101,7 @@ class TestEditionDialog(unittest.TestCase):
         for key, value in data.items():
 
             if key == 'layer':
-                self.assertEqual(value, self.layer.id())
+                self.assertEqual(value, layer.id())
             elif key in ['primaryKey', 'featureLabel', 'sortField']:
                 pass
                 # self.assertEqual(value, first_field)

@@ -1,6 +1,10 @@
-"""Test tools."""
+"""Test tools.
 
-import unittest
+__copyright__ = 'Copyright 2023, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
+from pathlib import Path
 
 from qgis.core import QgsField, QgsVectorLayer
 from qgis.PyQt.QtCore import QVariant
@@ -8,23 +12,21 @@ from qgis.PyQt.QtCore import QVariant
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
-from lizmap.toolbelt.resources import plugin_test_data_path
 from lizmap.toolbelt.strings import merge_strings, unaccent
 from lizmap.toolbelt.version import format_qgis_version, format_version_integer
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+
+from .compat import TestCase
 
 
-class TestTools(unittest.TestCase):
+class TestTools(TestCase):
 
-    def test_database_based_layer(self):
+    def test_database_based_layer(self, data: Path):
         """ Test if a layer is in a database. """
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
         self.assertFalse(is_database_layer(layer))
 
-        path = plugin_test_data_path('points_lines.gpkg', copy=True)
+        path = str(data.joinpath('points_lines.gpkg'))
         layer = QgsVectorLayer(path + '|layername=lines', 'lines', 'ogr')
         self.assertTrue(is_database_layer(layer))
 

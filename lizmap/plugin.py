@@ -3613,7 +3613,11 @@ class Lizmap:
         return True
 
     def project_config_file(
-            self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
+        self, 
+        lwc_version: LwcVersions,
+        with_gui: bool = True,
+        check_server=True,
+        ignore_error=False,
     ) -> Optional[Dict]:
         """ Get the JSON CFG content. """
 

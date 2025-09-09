@@ -1,0 +1,4 @@
+pytest
+webdavclient3
+psycopg[binary]
+

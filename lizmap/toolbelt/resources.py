@@ -53,30 +53,6 @@ def metadata_config() -> configparser:
     return config
 
 
-def plugin_test_data_path(*args, copy=False):
-    """Get the path to the plugin test data path.
-
-    :param args List of path elements e.g. ['img', 'logos', 'image.png']
-    :type args: str
-
-    :param copy: If the file must be copied into a temporary directory first.
-    :type copy: bool
-
-    :return: Absolute path to the resources folder.
-    :rtype: str
-    """
-    path = abspath(abspath(join(plugin_path(), "test", "data")))
-    for item in args:
-        path = abspath(join(path, item))
-
-    if copy:
-        temp = tempfile.mkdtemp()
-        shutil.copy(path, temp)
-        return join(temp, args[-1])
-    else:
-        return path
-
-
 def resources_path(*args):
     """Get the path to our resources folder.
 

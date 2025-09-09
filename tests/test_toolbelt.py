@@ -1,6 +1,10 @@
-"""Test toolbelt."""
+"""Test toolbelt.
+
+__copyright__ = 'Copyright 2025, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
 import tempfile
-import unittest
 
 from pathlib import Path
 
@@ -11,14 +15,11 @@ from lizmap.toolbelt.layer import get_layer_wms_parameters
 from lizmap.toolbelt.lizmap import sidecar_media_dirs
 from lizmap.toolbelt.strings import human_size
 
-__copyright__ = 'Copyright 2025, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
-# start_app()
+from .compat import TestCase
 
 
-class TestToolBelt(unittest.TestCase):
+class TestToolBelt(TestCase):
 
     def test_human_size(self):
         """ Test human size. """

@@ -1,4 +1,13 @@
-"""Test tooltip."""
+"""Test tooltip.
+
+__copyright__ = 'Copyright 2020, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
+from pathlib import Path
+
+import pytest
+
 from qgis.core import (
     QgsAttributeEditorContainer,
     QgsAttributeEditorField,
@@ -14,19 +23,13 @@ from qgis.core import (
 )
 from qgis.gui import QgsExternalResourceWidget
 from qgis.PyQt.QtCore import QVariant
-from qgis.testing import unittest
 
-from lizmap.toolbelt.resources import plugin_test_data_path
 from lizmap.tooltip import Tooltip
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+from .compat import TestCase
 
 
-class TestToolTip(unittest.TestCase):
-
-    maxDiff = None
+class TestToolTip(TestCase):
 
     def check_layer_context(self, field_value, expression, expected):
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
@@ -389,7 +392,7 @@ class TestToolTip(unittest.TestCase):
 
         self.assertEqual(expected, html_content)
 
-    @unittest.skip
+    @pytest.mark.skip()
     def test_display_group(self):
         """Test we can hide some groups."""
         layer = QgsVectorLayer('None?field=field_a:string', 'table', 'memory')
@@ -443,9 +446,9 @@ class TestToolTip(unittest.TestCase):
     </div>'''
         self.assertEqual(expected, html_content)
 
-    def test_tooltip_layer(self):
+    def test_tooltip_layer(self, data: Path):
         """Test tooltip on a layer."""
-        layer = QgsVectorLayer(plugin_test_data_path('complex_form.geojson'), 'form', 'ogr')
+        layer = QgsVectorLayer(str(data.joinpath('complex_form.geojson')), 'form', 'ogr')
         # noinspection PyArgumentList
         QgsProject.instance().addMapLayer(layer)
         self.assertTrue(layer.isValid())

@@ -1,11 +1,10 @@
 services:
   qgis:
+    user: ${UID}:${GID}
     image: qgis/qgis:${QGIS_VERSION}
-    container_name: qgis
-    volumes:
-      # - /tmp/.X11-unix:/tmp/.X11-unix
-      - ../lizmap:/tests_directory/lizmap
+    container_name: qgis-lizmap-tests
     environment:
-      # - DISPLAY=unix$DISPLAY
-      - CI=True
-      - DISPLAY=:99
+        QGIS_VERSION: ${QGIS_VERSION}
+    volumes:
+      - ..:/src
+    command: bash /src/.docker/run-tests.sh

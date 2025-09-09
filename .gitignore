@@ -27,8 +27,7 @@ dist/
 .pytest_cache
 __output__
 
-# Docker
-.docker/.env
+.docker-venv-*
 
 *.qgz
 *_attachments.zip

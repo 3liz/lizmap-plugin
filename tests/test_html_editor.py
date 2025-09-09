@@ -1,6 +1,11 @@
-"""Test HTML editor dialog."""
+"""Test HTML editor dialog.
 
-import unittest
+__copyright__ = 'Copyright 2023, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
+
+import pytest
 
 from lizmap.widgets.html_editor import (
     QGIS_EXPRESSION_TEXT,
@@ -9,17 +14,18 @@ from lizmap.widgets.html_editor import (
     expression_from_qgis_to_html,
 )
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+
+from .compat import TestCase
 
 
-class TestHtmlEditorWidget(unittest.TestCase):
+class TestHtmlEditorWidget(TestCase):
 
     # It seems I can't get trumbowyg loading if it's not show in a UI ?
-    @unittest.expectedFailure
+    @pytest.mark.xfail()
     def test_html_editor_dialog(self):
         """ Test to open, save some HTML. """
+        # NOTE: Fail with error
+        # "TypeError: HtmlEditorWidget.__init__() missing 1 required positional argument: 'parent'"
         html_editor = HtmlEditorWidget()
         html = "<p>Lizmap is <strong>cool</strong></p>"
         html_editor.set_html_content(html)

@@ -1,18 +1,19 @@
-"""Test code layout."""
+"""Test code layout.
+
+__copyright__ = 'Copyright 2023, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
 
 import re
-import unittest
 
 from pathlib import Path
 
 from lizmap.toolbelt.resources import resources_path
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+from .compat import TestCase
 
-
-class TestCodeLayout(unittest.TestCase):
+class TestCodeLayout(TestCase):
 
     @staticmethod
     def ui_files():

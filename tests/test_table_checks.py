@@ -1,13 +1,15 @@
-import unittest
-
-from lizmap.widgets.check_project import Checks, Error, TableCheck
-
+"""
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
+
+from lizmap.widgets.check_project import Checks, Error, TableCheck
+
+from .compat import TestCase
 
 
-class TestProjectTable(unittest.TestCase):
+class TestProjectTable(TestCase):
 
     def test(self):
         table = TableCheck(None)

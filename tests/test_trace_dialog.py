@@ -1,66 +1,73 @@
-"""Test Traces."""
-from collections import OrderedDict
-
-from qgis.core import QgsProject, QgsVectorLayer
-from qgis.testing import unittest
-
-from lizmap.definitions.dataviz import GraphType
-from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
-from lizmap.toolbelt.resources import plugin_test_data_path
+"""Test Traces.
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
+from collections import OrderedDict
+from pathlib import Path
+
+import pytest
+
+from qgis.core import QgsProject, QgsVectorLayer
+
+from lizmap.definitions.dataviz import GraphType
+from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 
 
-class TestTraceDialog(unittest.TestCase):
+@pytest.fixture()
+def layer(data: Path):
+    layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
+    assert layer.isValid()
+    QgsProject.instance().addMapLayer(layer)
 
-    def setUp(self) -> None:
-        self.layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
-        QgsProject.instance().addMapLayer(self.layer)
-        self.assertTrue(self.layer.isValid())
+    yield layer
+    QgsProject.instance().removeMapLayer(layer)
 
-    def tearDown(self) -> None:
-        QgsProject.instance().removeMapLayer(self.layer)
-        del self.layer
 
-    def test_z_field(self):
+
+from .compat import TestCase
+
+
+class TestTraceDialog(TestCase):
+
+    def test_z_field(self, layer: QgsVectorLayer):
         """Test Z field is visible or not."""
         # Must be visible
-        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Sunburst, [])
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Sunburst, [])
         self.assertEqual(GraphType.Sunburst, dialog._graph)
         # self.assertTrue(dialog.label_z_field.isVisible())
         # self.assertTrue(dialog.z_field.isVisible())
         self.assertFalse(dialog.z_field.allowEmptyFieldName())
 
         # Not visible
-        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram, [])
         self.assertFalse(dialog.label_z_field.isVisible())
         self.assertFalse(dialog.z_field.isVisible())
         self.assertTrue(dialog.z_field.allowEmptyFieldName())
 
-    def test_unique(self):
+    def test_unique(self, layer: QgsVectorLayer):
         """Test Y is unique when we add a new row."""
-        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram, [])
         self.assertFalse(dialog.error.isVisible())
         self.assertEqual('id', dialog.y_field.currentField())
         self.assertIsNone(dialog.validate())
 
         # Same but with a unique value not existing
-        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, ['hello'])
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram, ['hello'])
         self.assertFalse(dialog.error.isVisible())
         self.assertEqual('id', dialog.y_field.currentField())
         self.assertIsNone(dialog.validate())
 
         # Same but with a unique value
-        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, ['id'])
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram, ['id'])
         self.assertFalse(dialog.error.isVisible())
         self.assertEqual('id', dialog.y_field.currentField())
         self.assertEqual('This Y field is already existing.', dialog.validate())
 
-    def test_trace_dialog(self):
+    def test_trace_dialog(self, layer: QgsVectorLayer):
         """Test trace dialog."""
-        dialog = TraceDatavizEditionDialog(None, self.layer, GraphType.Histogram, [])
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram, [])
         self.assertFalse(dialog.error.isVisible())
 
         # TODO better to check these ones

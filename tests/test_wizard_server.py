@@ -1,6 +1,12 @@
-"""Test the instance wizard."""
+"""Test the instance wizard.
+
+__copyright__ = 'Copyright 2023, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
 import os
-import unittest
+
+import pytest
 
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QWizard
@@ -26,22 +32,17 @@ except ImportError:
     LIZMAP_PASSWORD = ''
     LIZMAP_USER = ''
 
-# from qgis.testing import start_app
-# start_app()
 
-
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+from .compat import TestCase
 
 
 def skip_test():
     """ Check conditions for running tests. """
     return not all((
-        CREDENTIALS, LIZMAP_USER, LIZMAP_HOST_WEB, LIZMAP_PASSWORD, os.getenv('CI'), 'lizmap.local' in LIZMAP_HOST_WEB))
+        CREDENTIALS, LIZMAP_USER, LIZMAP_HOST_WEB, LIZMAP_PASSWORD, 'lizmap.local' in LIZMAP_HOST_WEB))
 
 
-class TestWizardServer(unittest.TestCase):
+class TestWizardServer(TestCase):
 
     def test_url(self):
         """ Test the validity of the URL. """
@@ -51,7 +52,7 @@ class TestWizardServer(unittest.TestCase):
 
         self.assertTrue(UrlPage.url_valid(QUrl("http://lizmap.local:8130/")))
 
-    @unittest.skipIf(qgis_version() < 34000, "Always failing, do not use unexpectedSuccess as well")
+    @pytest.mark.skipif(qgis_version() < 34000, reason="Require Qgis > 3.40")
     def test_server_creation_wrong_data(self):
         """ Test to create a new server with wrong data only. """
         dialog = ServerWizard(None, [])
@@ -102,8 +103,8 @@ class TestWizardServer(unittest.TestCase):
             dialog.page(WizardPages.LoginPasswordPage).result_login_password.text())
         self.assertEqual(WizardPages.LoginPasswordPage, dialog.currentId())
 
-    @unittest.skipIf(skip_test(), "Missing credentials")
-    def X_test_server_creation_real_data(self):
+    @pytest.mark.skipif(skip_test(), reason="Missing credentials")
+    def test_server_creation_real_data(self):
         """ Test to create a new server with correct data. """
         dialog = ServerWizard(None, [])
         dialog.show()

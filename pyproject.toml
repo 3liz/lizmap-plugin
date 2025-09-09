@@ -1,0 +1,121 @@
+[project]
+name = "Lizmap"
+description = "Publish and share your QGIS maps on the Web via Lizmap Web Client" 
+authors = [
+    { name = "3Liz", email = "info@3liz.com" }
+]
+requires-python = ">= 3.9"
+license = "GPL-2.0-only" 
+license-files = ["LICENSE"]
+readme = "README.md"
+classifiers = [
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://docs.lizmap.com"
+repository ="https://github.com/3liz/lizmap-plugin"
+"Bug Reports" = "https://github.com/3liz/lizmap-plugin/issues"
+
+
+[dependency-groups]
+dev = [
+    "pytest >= 5.3",
+    "pre-commit",
+    {include-group = "test"},
+    {include-group = "lint"},
+]
+test = [ 
+    "webdavclient3",
+    "psycopg[binary]",
+]
+lint = [
+    "ruff",
+    "mypy",
+    "bandit",    
+    "vulture",
+]
+packaging = [
+    "qgis-plugin-ci>=2.7.0",
+]
+
+#
+# Qgis plugin ci
+#
+# https://opengisch.github.io/qgis-plugin-ci/index.html
+#
+
+[tool.qgis-plugin-ci]
+plugin_path = "lizmap"
+github_organization_slug = "3liz"
+project_slug = "lizmap-plugin"
+transifex_organization = "3liz-1"
+transifex_project = "lizmap-locales"
+transifex_resource = "lizmap_qgis_plugin"
+transifex_coordinator = "etrimaille"
+changelog_include = true
+
+#
+# Ruff
+#
+# https://doc.astral.sh/ruff/configuration
+#
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+exclude = [
+    ".venv",
+    ".local",
+    "tests/.*",
+]
+
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.ruff.lint]
+extend-select = ["E", "F", "I", "ANN", "W", "T", "COM", "RUF"]
+# COM812 conflict with formatter
+ignore = [
+    "ANN002",
+    "ANN003",
+    "ANN204",
+    "T201",
+    "COM812",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test/*" = [
+    "ANN201",
+]
+
+[tool.ruff.lint.isort]
+lines-between-types = 1
+known-third-party = [
+    "qgis",
+]
+order-by-type = true
+
+[tool.ruff.lint.flake8-annotations]
+ignore-fully-untyped = true
+suppress-none-returning = true
+suppress-dummy-args = true
+
+#
+# Mypy
+#
+[tool.mypy]
+python_version = "3.9"
+
+[[tool.mypy.overrides]]
+module = "qgis.*"
+ignore_missing_imports = true

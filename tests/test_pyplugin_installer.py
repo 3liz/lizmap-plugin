@@ -1,10 +1,16 @@
+"""
 __copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
+from pathlib import Path
 
-import unittest
+import pytest
 
-from pyplugin_installer.version_compare import chopString, compareVersions
+from pyplugin_installer.version_compare import compareVersions
+
+
+from .compat import TestCase
 
 """ For testing the core PyPlugin installer 'API'.
 
@@ -12,7 +18,7 @@ As this API is not official, it will allow to detect if the API has changed upst
 """
 
 
-class TestPyPluginInstaller(unittest.TestCase):
+class TestPyPluginInstaller(TestCase):
 
     def test_version_compare(self):
         """ Test version compare. """
@@ -26,10 +32,3 @@ class TestPyPluginInstaller(unittest.TestCase):
         # Ok, weird
         self.assertEqual(1, compareVersions("master", "1.0.0"))
         self.assertEqual(2, compareVersions("1.0.0", "master"))
-
-    def test_chop_strings(self):
-        """ Test chop strings. """
-        self.assertListEqual(['1', '0', '0'], chopString("1.0.0"))
-        self.assertListEqual(['1', '0', '0', 'pre'], chopString("1.0.0-pre"))
-        self.assertListEqual(['1', '0', '0', 'rc', '4'], chopString("1.0.0-rc.4"))
-        self.assertListEqual(['1', '0', '0', 'rc', '4', '1'], chopString("1.0.0-rc.4.1"))

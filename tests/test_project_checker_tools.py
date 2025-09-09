@@ -1,4 +1,11 @@
-import unittest
+"""
+__copyright__ = 'Copyright 2024, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
+from pathlib import Path
+
+import pytest
 
 from qgis.core import (
     QgsProject,
@@ -18,20 +25,13 @@ from lizmap.project_checker_tools import (
     french_geopf_authcfg_url_parameters,
     trailing_layer_group_name,
 )
-from lizmap.toolbelt.resources import plugin_test_data_path
 from lizmap.widgets.check_project import Error
 
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
-# from qgis.testing import start_app
-# start_app()
+from .compat import TestCase
 
 
-class TestProjectTable(unittest.TestCase):
-
-    maxDiff = None
+class TestProjectTable(TestCase):
 
     def test_trailing_spaces(self):
         """ Test about trailing spaces in the table. """
@@ -82,9 +82,9 @@ class TestProjectTable(unittest.TestCase):
             )
         )
 
-    def test_legend_filter_duplicated_layers(self):
+    def test_legend_filter_duplicated_layers(self, data: Path):
         """ Test duplicated layers with different filters. """
-        project_file = plugin_test_data_path('duplicated_filter.qgs')
+        project_file = str(data.joinpath('duplicated_filter.qgs'))
         project = QgsProject.instance()
         project.read(project_file)
         data = duplicated_layer_with_filter(project)
@@ -104,9 +104,9 @@ class TestProjectTable(unittest.TestCase):
             data[layer]
         )
 
-    def test_legend_filter_duplicated_layers_legend(self):
+    def test_legend_filter_duplicated_layers_legend(self, data: Path):
         """ Test duplicated layers with different filters using the legend. """
-        project_file = plugin_test_data_path('duplicated_filter.qgs')
+        project_file = str(data.joinpath('duplicated_filter.qgs'))
         project = QgsProject.instance()
         project.read(project_file)
         data = duplicated_layer_with_filter_legend(project)
@@ -146,9 +146,9 @@ class TestProjectTable(unittest.TestCase):
             data[2][layer]
         )
 
-    def test_rule_key_legend(self):
+    def test_rule_key_legend(self, data: Path):
         """ Test duplicated rule key in the legend. """
-        project_file = plugin_test_data_path('rule_key_duplicated.qgs')
+        project_file = str(data.joinpath('rule_key_duplicated.qgs'))
         project = QgsProject.instance()
         project.read(project_file)
 

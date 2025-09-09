@@ -1,15 +1,20 @@
+"""
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
 
-import unittest
+import pytest
 
 from qgis.core import QgsDataSourceUri
 
 from lizmap.saas import _update_ssl
 
 
-class TestSaas(unittest.TestCase):
+from .compat import TestCase
+
+
+class TestSaas(TestCase):
 
     def test_ssl_update(self):
         """ Test we can update an SSL connection. """

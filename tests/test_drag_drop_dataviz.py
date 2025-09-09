@@ -1,23 +1,25 @@
 """Test table manager."""
+from pathlib import Path
+
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QComboBox, QTableWidget, QTreeWidget
-from qgis.testing import unittest
 
 from lizmap.definitions.dataviz import DatavizDefinitions
 from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.table_manager.base import TableManager
-from lizmap.toolbelt.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 
-class TestDragDropDataviz(unittest.TestCase):
+from .compat import TestCase
 
-    def test_read_cfg_DD_dataviz(self):
+class TestDragDropDataviz(TestCase):
+
+    def test_read_cfg_DD_dataviz(self, data: Path):
         """ Test to read the data from the CFG. """
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
         QgsProject.instance().addMapLayer(layer)
         self.assertTrue(layer.isValid())
 
@@ -101,8 +103,3 @@ class TestDragDropDataviz(unittest.TestCase):
         # tree_widget.show()
         # sys.exit(app.exec_())
         self.assertListEqual(data, manager.to_json())
-
-
-if __name__ == "__main__":
-    from qgis.testing import start_app
-    start_app()

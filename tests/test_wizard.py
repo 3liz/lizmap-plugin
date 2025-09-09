@@ -1,16 +1,18 @@
-"""Test group wizard."""
+"""Test group wizard.
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
 
 from qgis.PyQt.QtCore import Qt
-from qgis.testing import unittest
 
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 
+from .compat import TestCase
 
-class TestWizardGroupAclDialog(unittest.TestCase):
+
+class TestWizardGroupAclDialog(TestCase):
 
     def test_ui(self):
         """ Test the UI."""

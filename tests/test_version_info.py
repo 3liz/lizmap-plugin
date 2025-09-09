@@ -1,20 +1,19 @@
-""" Test version info. """
+""" Test version info. 
 
-import unittest
+__copyright__ = 'Copyright 2022, 3Liz'
+__license__ = 'GPL version 3'
+__email__ = 'info@3liz.org'
+"""
 
 from pathlib import Path
 
 from qgis.core import Qgis
 
 from lizmap.server_lwc import ServerManager
-from lizmap.toolbelt.resources import plugin_test_data_path
 
-__copyright__ = 'Copyright 2022, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+from .compat import TestCase
 
-
-class TestVersionInfo(unittest.TestCase):
+class TestVersionInfo(TestCase):
 
     def test_split_lizmap_version(self):
         """ Test to split the LWC version. """
@@ -23,7 +22,7 @@ class TestVersionInfo(unittest.TestCase):
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, 'pre', 5204))
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.8.0-rc.4"), (3, 8, 0, 'rc', 4))
 
-    def test_version_info_lizmap_status(self):
+    def test_version_info_lizmap_status(self, data: Path):
         """ Test version info according to LWC version.
 
         With the given JSON file, 3.6 was on development and login was not required.
@@ -36,7 +35,7 @@ class TestVersionInfo(unittest.TestCase):
         # 3.5.0 critical
         # 3.4.9 latest 3.4.X
         # 3.3.X deprecated
-        json_path = Path(plugin_test_data_path('version_info_15022022.json'))
+        json_path = data.joinpath('version_info_15022022.json')
 
         qgis_desktop = (3, 28)
 
@@ -224,7 +223,7 @@ class TestVersionInfo(unittest.TestCase):
             )
         )
 
-    def test_version_info_qgis_server_status(self):
+    def test_version_info_qgis_server_status(self, data: Path):
         """ Test a valid QGIS server status."""
         qgis_desktop = (3, 28)
 
@@ -233,7 +232,7 @@ class TestVersionInfo(unittest.TestCase):
         # 3.6.2 latest 3.6.X, QGIS server must be valid
         # 3.5.11 latest 3.5.X, QGIS server is not needed
         # 3.4.X deprecated
-        json_path = Path(plugin_test_data_path('version_info_27032023.json'))
+        json_path = data.joinpath('version_info_27032023.json')
 
         # QGIS server version = QGIS desktop version
         data = {
@@ -298,13 +297,13 @@ class TestVersionInfo(unittest.TestCase):
             )
         )
 
-    def test_version_info_lwc_rc(self):
+    def test_version_info_lwc_rc(self, data: Path):
         """ Test LWC version with RC."""
         qgis_desktop = (3, 34)
 
         # Test file with
         # 3.8.0-rc.4 latest RC
-        json_path = Path(plugin_test_data_path('version_info_19082024.json'))
+        json_path = data.joinpath('version_info_19082024.json')
 
         self.assertEqual(
             ServerManager._messages_for_version('3.8.0-rc.4', '', 'bob_is_admin', json_path, qgis_desktop),
@@ -329,13 +328,13 @@ class TestVersionInfo(unittest.TestCase):
             )
         )
 
-    def test_version_info_lwc_security_bugfix(self):
+    def test_version_info_lwc_security_bugfix(self, data: Path):
         """ Test LWC version with security bugfix."""
         qgis_desktop = (3, 34)
 
         # Test file with
         # 3.6.14 security bugfix only
-        json_path = Path(plugin_test_data_path('version_info_19082024.json'))
+        json_path = data.joinpath('version_info_19082024.json')
 
         self.assertEqual(
             ServerManager._messages_for_version('3.6.14', '', 'bob_is_admin', json_path, qgis_desktop),

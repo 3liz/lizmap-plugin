@@ -1,24 +1,30 @@
 """Test layer information."""
+from pathlib import Path
+
+import pytest
 
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
 
 from lizmap.definitions.definitions import LayerProperties, LwcVersions
 from lizmap.plugin import Lizmap
 from lizmap.toolbelt.layer import layer_property
-from lizmap.toolbelt.resources import plugin_test_data_path
 
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 
-class TestLayerTree(unittest.TestCase):
+from .compat import TestCase
 
-    def test_read_properties(self):
+
+
+
+class TestLayerTree(TestCase):
+
+    def test_read_properties(self, data: Path):
         """ Test we can read a layer property. """
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), 'lines', 'ogr')
+        layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
         layer.setDataUrl('https://hello.world')
         self.assertEqual('https://hello.world', layer_property(layer, LayerProperties.DataUrl))
 
@@ -30,11 +36,11 @@ class TestLayerTree(unittest.TestCase):
         self.assertListEqual(lizmap.string_to_list(' a '), ['a'])
         self.assertListEqual(lizmap.string_to_list('a,b'), ['a', 'b'])
 
-    def test_layer_metadata(self):
+    def test_layer_metadata(self, data: Path):
         """ Test metadata coming from layer or from Lizmap. """
         project = QgsProject.instance()
         layer_name = 'lines'
-        layer = QgsVectorLayer(plugin_test_data_path('lines.geojson'), layer_name, 'ogr')
+        layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), layer_name, 'ogr')
         project.addMapLayer(layer)
         self.assertTrue(layer.isValid())
 

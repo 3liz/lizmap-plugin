@@ -1,20 +1,25 @@
+"""
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
+from pathlib import Path
 
-import unittest
+import pytest
 
 from qgis.core import QgsProject
 
 from lizmap.ogc_project_validity import OgcProjectValidity
-from lizmap.toolbelt.resources import plugin_test_data_path
+
+from .compat import TestCase
+
+@pytest.fixture(scope="class", autouse=True)
+def teardown():
+    yield
+    QgsProject.instance().clear()
 
 
-class TestShortNames(unittest.TestCase):
-
-    def tearDown(self) -> None:
-        # noinspection PyArgumentList
-        QgsProject.instance().clear()
+class TestShortNames(TestCase):
 
     def test_shortname_generation(self):
         """ Test we can generate shortname. """
@@ -50,9 +55,9 @@ class TestShortNames(unittest.TestCase):
         self.assertEqual("layer", OgcProjectValidity.short_name("layer_", ['layer_']))
         self.assertEqual("layer_1", OgcProjectValidity.short_name("layer_", ['layer_', 'layer']))
 
-    def test_parse_legend(self):
+    def test_parse_legend(self, data: Path):
         """ Test to read and add all shortnames in a project. """
-        project_file = plugin_test_data_path('shortnames.qgs')
+        project_file = str(data.joinpath('shortnames.qgs'))
         project = QgsProject.instance()
         project.read(project_file)
 
