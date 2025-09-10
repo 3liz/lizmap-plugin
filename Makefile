@@ -39,22 +39,23 @@ $(REQUIREMENTS): check-uv-install
 #
 # Static analysis
 #
+
 LINT_TARGETS=$(PYTHON_MODULE) $(EXTRA_LINT_TARGETS)
 
 lint:
-	$(UV_RUN) ruff check --preview  --output-format=concise $(LINT_TARGETS)
+	@ $(UV_RUN) ruff check --preview  --output-format=concise $(LINT_TARGETS)
 
 lint-fix:
-	$(UV_RUN) ruff check --preview --fix $(LINT_TARGETS)
+	@ $(UV_RUN) ruff check --preview --fix $(LINT_TARGETS)
 
 format:
-	$(UV_RUN) format $(LINT_TARGETS) 
+	@ $(UV_RUN) format $(LINT_TARGETS) 
 
 typecheck:
-	$(UV_RUN) mypy $(LINT_TARGETS)
+	@ $(UV_RUN) mypy $(LINT_TARGETS)
 
 scan:
-	$(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
+	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
 
 
 check-uv-install:

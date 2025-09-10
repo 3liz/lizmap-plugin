@@ -122,7 +122,7 @@ class TestSql(TestCase):
             f"("
             f"  {field_name} INT,"
             f"  label TEXT"
-            f");" # fmt: skip
+            f");"  # fmt: ignore
         )
         cursor.execute(sql)
         connection.commit()
@@ -487,7 +487,7 @@ class TestSql(TestCase):
             f"("
             f"  id SERIAL PRIMARY KEY,"
             f"  label TEXT"
-            f");" # fmt: skip
+            f");"  # fmt: ignore
         )
         cursor.execute(sql)
         connection.commit()
