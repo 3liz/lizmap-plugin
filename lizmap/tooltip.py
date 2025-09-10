@@ -49,7 +49,7 @@ class Tooltip:
     @classmethod
     def friendly_name(cls, name: str, alias: str) -> str:
         fname = alias if alias else name
-        fname = fname.replace("'", "’")  # noqa RUF001
+        fname = fname.replace("'", "’")
         return fname
 
     @staticmethod

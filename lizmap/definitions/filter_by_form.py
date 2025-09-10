@@ -77,7 +77,7 @@ class FilterByFormDefinitions(BaseDefinitions):
 
     @staticmethod
     def primary_keys() -> tuple:
-        return tuple()
+        return ()
 
     def key(self) -> str:
         return 'formFilterLayers'

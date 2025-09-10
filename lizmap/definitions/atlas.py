@@ -117,7 +117,7 @@ class AtlasDefinitions(BaseDefinitions):
 
     @staticmethod
     def primary_keys() -> tuple:
-        return 'layer',
+        return ('layer',)
 
     def key(self) -> str:
         return 'atlas'

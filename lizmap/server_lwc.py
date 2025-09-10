@@ -1011,7 +1011,7 @@ class ServerManager:
                         messages.append(tr('Higher than a public release') + ' 👍')
                     level = Qgis.MessageLevel.Success
 
-                elif is_numeric(latest_bugfix) and bugfix < latest_bugfix or is_pre_package:
+                elif (is_numeric(latest_bugfix) and bugfix < latest_bugfix) or is_pre_package:
                     # The user is not running the latest bugfix release on the maintained branch
 
                     if bugfix + 2 < latest_bugfix:

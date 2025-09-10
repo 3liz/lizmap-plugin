@@ -4,7 +4,7 @@ import json
 import re
 
 from collections import OrderedDict
-from typing import Union
+from typing import Optional
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
@@ -251,7 +251,7 @@ class BaseEditionDialog(QDialog):
                 found = True
 
     @staticmethod
-    def is_layer_in_wfs(layer: QgsVectorLayer) -> Union[None, str]:
+    def is_layer_in_wfs(layer: QgsVectorLayer) -> Optional[str]:
         """ Check if the layer in the WFS capabilities. """
         if is_layer_published_wfs(QgsProject.instance(), layer.id()):
             return None
@@ -297,7 +297,7 @@ class BaseEditionDialog(QDialog):
 
                 if not widget.allowEmptyFieldName():
                     if widget.currentField() == '':
-                        names = re.findall('.[^A-Z]*', k)
+                        names = re.findall(r'.[^A-Z]*', k)
                         names = [n.lower().replace('_', ' ') for n in names]
                         msg = tr('The field "{}" is mandatory.').format(' '.join(names))
                         return msg

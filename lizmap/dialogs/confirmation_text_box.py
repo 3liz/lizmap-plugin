@@ -24,7 +24,7 @@ class ConfirmationTextMessageBox(QDialog):
         super().__init__(*__args)
 
         self.setWindowTitle(tr("Error(s) on the project"))
-        self.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        self.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
 
         # Text to use for enabling the OK button
         self.confirmation_text = confirmation_text

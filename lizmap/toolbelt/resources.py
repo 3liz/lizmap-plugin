@@ -1,8 +1,6 @@
 """ Tools to work with resource files. """
 
 import configparser
-import shutil
-import tempfile
 
 from os.path import abspath, dirname, join, pardir
 

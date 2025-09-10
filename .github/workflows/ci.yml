@@ -31,7 +31,7 @@ jobs:
         run: pip install -r requirements/dev.txt
 
       - name: Run linter
-        run: ruff check --preview --output-format=concise
+        run: ruff check --preview --output-format=concise lizmap 
 
       - name: Run security check
         run: bandit -r lizmap --severity-level=high

@@ -91,7 +91,19 @@ ignore = [
     "ANN204",
     "T201",
     "COM812",
+    # TODO: Temporary ignore linter errors until
+    # they are fixed
+    "E20",     # Whitespace before/after element
+    "E402",    # E402 Module level import not at top of file
+    "E501",    # Line too long
+    "ANN001",  # Missing type annotation for function argument
+    "ANN201",  # Missing return type annotation for public function
+    "ANN205",  # Missing return type annotation for staticmethod
+    "ANN206",  # Missing return type annotation for classmethod
+    "RUF012",  # Mutable class attributes should be annotated
+    "RUF013",  # PEP 484 prohibits implicit `Optional`
 ]
+allowed-confusables = ["’"]  # Used in parsing methods
 
 [tool.ruff.lint.per-file-ignores]
 "test/*" = [

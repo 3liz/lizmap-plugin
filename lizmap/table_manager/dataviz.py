@@ -304,7 +304,7 @@ class TableManagerDataviz(TableManager):
 
         # Set the layer in the feature combobox if not set or if it's a different one
         previous_layer = self.parent.dataviz_feature_picker.layer()
-        if previous_layer and previous_layer.id() != layer.id() or not previous_layer:
+        if (previous_layer and previous_layer.id() != layer.id()) or not previous_layer:
             self.parent.dataviz_feature_picker.setLayer(child_layer)
 
         # Make widget visible

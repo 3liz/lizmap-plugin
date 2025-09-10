@@ -221,7 +221,7 @@ class DragDropDatavizManager:
 
         box = QMessageBox(self.parent)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
         box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         box.setDefaultButton(QMessageBox.StandardButton.No)
 

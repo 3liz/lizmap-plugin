@@ -1,3 +1,7 @@
+#
+# TODO: UNUSED DEPRECATED MODULE - REMOVE ME
+#
+
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
@@ -18,10 +22,10 @@ qgis_application = None
 def init_qgis(verbose=False):
     """ Initialize qgis application
     """
-    from qgis.core import Qgis, QgsApplication
+    from qgis.core import QgsApplication
     global qgis_application
 
-    qgisPrefixPath = os.environ.get('QGIS_PREFIX_PATH','/usr/')
+    qgisPrefixPath = os.environ.get('QGIS_PREFIX_PATH', '/usr/')
     sys.path.append(os.path.join(qgisPrefixPath, "share/qgis/python/plugins/"))
 
     # Set offscreen mode when no display
@@ -44,7 +48,7 @@ def init_qgis(verbose=False):
             del qgis_application
 
     if verbose:
-         print(qgis_application.showSettings(),file=sys.stderr)
+        print(qgis_application.showSettings(), file=sys.stderr)
 
     # Install logging hook
     install_message_hook( verbose )
@@ -53,7 +57,7 @@ def init_qgis(verbose=False):
 def install_message_hook( verbose=False ):
     """ Install message log hook
     """
-    from qgis.core import Qgis, QgsApplication, QgsMessageLog
+    from qgis.core import Qgis, QgsApplication
 
     # Add a hook to qgis  message log
     def writelogmessage(message, tag, level):
@@ -71,24 +75,25 @@ def install_message_hook( verbose=False ):
     messageLog.messageReceived.connect( writelogmessage )
 
 
-
 # Command line
 
-__description__="""Generate a Lizmap configuration file from Qgis project"""
-__version__="1.0"
+__description__ = """Generate a Lizmap configuration file from Qgis project"""
+__version__ = "1.0"
+
 
 def api_version():
     try:
         return pkg_resources.get_distribution("lizmap-api").version
-    except DistributionNotFound:
+    except DistributionNotFound:  # noqa F821  
         return "0.0.0"
+
 
 def create_config(argv=None):
     """ Create a lizmap configuration file
     """
     import argparse
 
-    version = "version %s (api %s)" % (__version__,api_version())
+    version = "version %s (api %s)" % (__version__, api_version())
     parser = argparse.ArgumentParser(description=__description__)
     parser.add_argument('project'         , metavar="PATH", help="Qgis project file")
     parser.add_argument('--version'       , action='version', version=version, help="show version and exit")
@@ -128,12 +133,12 @@ def create_config(argv=None):
 
         json_config = config.from_template(tpl)
     else:
-       json_config = config.to_json()
+        json_config = config.to_json()
 
     if args.server:
         config.configure_server_options()
 
-    with open(output+'.cfg','w') as fp:
+    with open(output + '.cfg', 'w') as fp:
         print("Writing lizmap config")
         fp.write(json_config)
 

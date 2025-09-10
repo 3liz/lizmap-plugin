@@ -708,7 +708,7 @@ class LizmapConfig:
         prj.writeEntry("WFSLayers", "/", [lid for lid, lyr in prj.mapLayers().items() if lyr.type() == QgsMapLayer.LayerType.VectorLayer])
         for lid, lyr in prj.mapLayers().items():
             if lyr.type() == QgsMapLayer.LayerType.VectorLayer:
-                prj.writeEntry("WFSLayersPrecision", "/"+lid, WFSLayersPrecision)
+                prj.writeEntry("WFSLayersPrecision", "/" + lid, WFSLayersPrecision)
         prj.writeEntry("WCSLayers", "/", [lid for lid, lyr in prj.mapLayers().items() if lyr.type() == QgsMapLayer.LayerType.RasterLayer])
         prj.setDirty()
 
@@ -725,8 +725,8 @@ class LizmapConfig:
         layers = self.project.mapLayers().values()
         ctx['project'] = self.project
         ctx['layers'] = layers
-        ctx['vectorlayers'] = [l for l in layers if l.type() == QgsMapLayer.LayerType.VectorLayer]
-        ctx['rasterlayers'] = [l for l in layers if l.type() == QgsMapLayer.LayerType.RasterLayer]
+        ctx['vectorlayers'] = [lr for lr in layers if lr.type() == QgsMapLayer.LayerType.VectorLayer]
+        ctx['rasterlayers'] = [lr for lr in layers if lr.type() == QgsMapLayer.LayerType.RasterLayer]
         rendered = template.render(ctx)
         with open("/srv/projects/test_lizmap_api/api_output.json", "w") as fp:
             fp.write(rendered)

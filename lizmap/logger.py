@@ -12,7 +12,7 @@ def log_function(func):
     def log_function_core(*args, **kwargs):
         LOGGER.info(f"Calling function {func.__name__}")
         value = func(*args, **kwargs)
-        LOGGER.info(f"End of function {func.__name__} with return : {str(value)}")
+        LOGGER.info(f"End of function {func.__name__} with return : {value!s}")
         return value
 
     return log_function_core
