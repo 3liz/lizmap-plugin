@@ -5,6 +5,8 @@ PYTHON_MODULE=lizmap
 QGIS_VERSION:=3.40
 QGIS_DOCKER_IMAGE:=qgis/qgis:$(QGIS_VERSION)
 
+-include .localconfig.mk
+
 #
 # Configure
 #
@@ -33,18 +35,19 @@ $(REQUIREMENTS): check-uv-install
 #
 # Static analysis
 #
+LINT_TARGETS=$(PYTHON_MODULE) $(EXTRA_LINT_TARGETS)
 
 lint:
-	$(UV_RUN) ruff check --preview  --output-format=concise $(PYTHON_MODULE)
+	$(UV_RUN) ruff check --preview  --output-format=concise $(LINT_TARGETS)
 
 lint-fix:
-	$(UV_RUN) ruff check --preview --fix $(PYTHON_MODULE)
+	$(UV_RUN) ruff check --preview --fix $(LINT_TARGETS)
 
 format:
-	$(UV_RUN) format $(PYTHON_MODULE) 
+	$(UV_RUN) format $(LINT_TARGETS) 
 
 typecheck:
-	$(UV_RUN) mypy $(PYTHON_MODULE)
+	$(UV_RUN) mypy $(LINT_TARGETS)
 
 scan:
 	$(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)

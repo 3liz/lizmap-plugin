@@ -28,6 +28,7 @@ dist/
 __output__
 
 .docker-venv-*
+.localconfig.mk
 
 *.qgz
 *_attachments.zip
