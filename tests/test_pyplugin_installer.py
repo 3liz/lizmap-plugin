@@ -3,12 +3,9 @@ __copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 """
-from pathlib import Path
 
-import pytest
 
 from pyplugin_installer.version_compare import compareVersions
-
 
 from .compat import TestCase
 

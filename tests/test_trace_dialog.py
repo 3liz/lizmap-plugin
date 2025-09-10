@@ -25,7 +25,6 @@ def layer(data: Path):
     QgsProject.instance().removeMapLayer(layer)
 
 
-
 from .compat import TestCase
 
 

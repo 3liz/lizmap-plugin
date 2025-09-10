@@ -117,7 +117,7 @@ class TestToolTip(TestCase):
 
     def test_represent_value(self):
         """Test we can generate a represent_value."""
-        result = Tooltip._generate_represent_value('name', )
+        result = Tooltip._generate_represent_value('name' )
         expected = 'represent_value("name")'
         self.assertEqual(expected, result)
 
@@ -287,7 +287,7 @@ class TestToolTip(TestCase):
         expected = '''<a href="test.pdf" target="_blank">
                        
                        <iframe src="test.pdf" width="100%" height="300" title="fname"/>
-                       </a>'''
+                       </a>'''  # noqa W293
         self.check_layer_context('test.pdf', expression, expected)
 
     def test_attribute_editor_relation(self):
@@ -541,7 +541,7 @@ class TestToolTip(TestCase):
                     )
                     %]
   </div>
-</div>'''
+</div>'''  # noqa W293
 
         self.assertEqual(expected, html_content, html_content)
         self.assertFalse('data-bs-toggle="tab"' in html_content)

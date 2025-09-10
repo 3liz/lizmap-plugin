@@ -48,6 +48,7 @@ from .compat import TestCase
 # So we are sure that fixtures are cleaned and set properly (because I trust more this library :) )
 #
 
+
 @dataclass(frozen=True)
 class Dav:
     directory_name: str
@@ -81,7 +82,6 @@ def webdav(data: Path) -> Dav:
 
     # Clean on local
     rmtree(dav.local_dir_path, ignore_errors=True)
-
 
 
 @pytest.mark.skipif(
@@ -137,7 +137,7 @@ class TestHttpProtocol(TestCase):
         self.assertTrue(result)
 
         # Check it exists using external library
-        self.assertTrue(dav.client.check(webdav.directory_name))
+        self.assertTrue(webdav.client.check(webdav.directory_name))
 
         # Check already existing directory
         result, msg = webdav.dav.make_dir_basic(

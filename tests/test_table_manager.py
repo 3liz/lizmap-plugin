@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from qgis.core import Qgis, QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QComboBox, QTableWidget, QTreeWidget
 
 from lizmap.definitions.atlas import AtlasDefinitions
@@ -38,7 +38,7 @@ from .compat import TestCase
 def layer(data: Path) -> None:
     layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
     assert layer.isValid()
-    
+
     QgsProject.instance().addMapLayer(layer)
     yield layer
     QgsProject.instance().clear()

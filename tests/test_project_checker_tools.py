@@ -5,8 +5,6 @@ __email__ = 'info@3liz.org'
 """
 from pathlib import Path
 
-import pytest
-
 from qgis.core import (
     QgsProject,
     QgsRuleBasedRenderer,
@@ -26,7 +24,6 @@ from lizmap.project_checker_tools import (
     trailing_layer_group_name,
 )
 from lizmap.widgets.check_project import Error
-
 
 from .compat import TestCase
 
@@ -90,8 +87,8 @@ class TestProjectTable(TestCase):
         data = duplicated_layer_with_filter(project)
         self.assertIsInstance(data, dict)
         # We have a single datasource
-        self.assertEqual(1, len(list(data.keys())))
-        layer = list(data.keys())[0]
+        self.assertEqual(1, len(data.keys()))
+        layer = next(iter(data.keys()))
         self.assertDictEqual(
             {
                 '"name" = \'5 Name\'': 'half lines filter 5',
@@ -115,7 +112,7 @@ class TestProjectTable(TestCase):
         # +3 icons
         self.assertEqual(3, len(data), data)
 
-        layer = list(data[0].keys())[0]
+        layer = next(iter(data[0].keys()))
         self.assertDictEqual(
             {
                 '"name" = \'1 Name\'': 'detected lines filter 1',
@@ -125,7 +122,7 @@ class TestProjectTable(TestCase):
             data[0][layer],
             data[0][layer]
         )
-        layer = list(data[1].keys())[0]
+        layer = next(iter((data[1].keys())))
         self.assertDictEqual(
             {
                 '"name" = \'1 Name\'': 'half lines filter 1',
@@ -135,7 +132,7 @@ class TestProjectTable(TestCase):
             data[1][layer],
             data[1][layer]
         )
-        layer = list(data[2].keys())[0]
+        layer = next(iter((data[2].keys())))
         self.assertDictEqual(
             {
                 '"name" = \'4 Name\'': 'half lines filter 4',

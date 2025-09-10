@@ -1,21 +1,16 @@
-import configparser
 import logging
 import os
 import sys
-import warnings
 
 from pathlib import Path
 
-from typing import Any, Dict, Generator, Optional
-
 import pytest
 
-from qgis.core import Qgis, QgsApplication, QgsFontUtils, QgsProject
+from qgis.core import Qgis, QgsApplication
 from qgis.PyQt import Qt
+from qgis.testing import start_app
 
-from qgis.testing import start_app, stop_app
-
-#with warnings.catch_warnings():
+# with warnings.catch_warnings():
 #    warnings.filterwarnings("ignore", category=DeprecationWarning)
 #    from osgeo import gdal
 
@@ -33,6 +28,7 @@ def pytest_report_header(config):
 #
 # Fixtures
 #
+
 
 @pytest.fixture(scope="session")
 def rootdir(request: pytest.FixtureRequest) -> Path:
@@ -52,15 +48,16 @@ def data(rootdir: Path) -> Path:
 # Which is not initialized when QGIS app
 # is initialized from testing module
 def _patch_iface():
+    import qgis.utils
+
     from qgis.testing.mocked import get_iface
-    import qgis.utils 
     qgis.utils.iface = get_iface()
 
 
 def pytest_sessionstart(session):
     """Start qgis application"""
     os.environ["QT_QPA_PLATFORM"] = "offscreen"
-    
+
     sys.path.append("/usr/share/qgis/python")
 
     start_app()
@@ -75,7 +72,7 @@ def pytest_sessionstart(session):
 
 def install_logger_hook(verbose: bool = False) -> None:
     """Install message log hook"""
-    from qgis.core import Qgis, QgsApplication
+    from qgis.core import Qgis
 
     # Add a hook to qgis  message log
     def writelogmessage(message, tag, level):

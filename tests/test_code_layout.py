@@ -13,6 +13,7 @@ from lizmap.toolbelt.resources import resources_path
 
 from .compat import TestCase
 
+
 class TestCodeLayout(TestCase):
 
     @staticmethod

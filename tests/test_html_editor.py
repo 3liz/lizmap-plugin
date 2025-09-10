@@ -14,7 +14,6 @@ from lizmap.widgets.html_editor import (
     expression_from_qgis_to_html,
 )
 
-
 from .compat import TestCase
 
 

@@ -13,6 +13,7 @@ from lizmap.ogc_project_validity import OgcProjectValidity
 
 from .compat import TestCase
 
+
 @pytest.fixture(scope="class", autouse=True)
 def teardown():
     yield

@@ -15,6 +15,7 @@ __email__ = 'info@3liz.org'
 
 from .compat import TestCase
 
+
 class TestDragDropDataviz(TestCase):
 
     def test_read_cfg_DD_dataviz(self, data: Path):

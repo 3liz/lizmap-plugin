@@ -4,11 +4,9 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 """
 
-import os
 
 # noinspection PyPackageRequirements
 import psycopg
-
 import pytest
 
 from qgis.core import (
@@ -55,16 +53,17 @@ def connection():
             f"host={PG_HOST} user={PG_USER} password={PG_PASSWORD} port={PG_PORT} dbname={PG_DATABASE}"
         )
 
- 
+
 @pytest.fixture(scope='class')
 def cursor(connection):
     cursor = connection.cursor()
     cursor.execute(f"DROP SCHEMA IF EXISTS {TestSql.schema} CASCADE;")
     cursor.execute("CREATE EXTENSION IF NOT EXISTS postgis;")
     cursor.execute(f"CREATE SCHEMA {TestSql.schema};")
-    
+
     connection.commit()
     return cursor
+
 
 @pytest.mark.skipif(
     not all((CREDENTIALS, PG_HOST, PG_PORT, PG_PASSWORD, PG_USER, PG_DATABASE)),
@@ -123,7 +122,7 @@ class TestSql(TestCase):
             f"("
             f"  {field_name} INT,"
             f"  label TEXT"
-            f");"
+            f");" # fmt: skip
         )
         cursor.execute(sql)
         connection.commit()
@@ -488,7 +487,7 @@ class TestSql(TestCase):
             f"("
             f"  id SERIAL PRIMARY KEY,"
             f"  label TEXT"
-            f");"
+            f");" # fmt: skip
         )
         cursor.execute(sql)
         connection.commit()

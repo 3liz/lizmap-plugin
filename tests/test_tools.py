@@ -15,7 +15,6 @@ from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.strings import merge_strings, unaccent
 from lizmap.toolbelt.version import format_qgis_version, format_version_integer
 
-
 from .compat import TestCase
 
 

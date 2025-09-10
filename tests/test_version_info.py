@@ -1,4 +1,4 @@
-""" Test version info. 
+""" Test version info.
 
 __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
@@ -12,6 +12,7 @@ from qgis.core import Qgis
 from lizmap.server_lwc import ServerManager
 
 from .compat import TestCase
+
 
 class TestVersionInfo(TestCase):
 

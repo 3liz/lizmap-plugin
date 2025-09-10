@@ -1,8 +1,6 @@
 """Test layer information."""
 from pathlib import Path
 
-import pytest
-
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing.mocked import get_iface
 
@@ -16,8 +14,6 @@ __email__ = 'info@3liz.org'
 
 
 from .compat import TestCase
-
-
 
 
 class TestLayerTree(TestCase):

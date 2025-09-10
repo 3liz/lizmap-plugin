@@ -18,8 +18,8 @@ from qgis.testing.mocked import get_iface
 from lizmap.definitions.definitions import LwcVersions, PredefinedGroup
 from lizmap.plugin import Lizmap
 
-from .utils import temporary_file_path
 from .compat import TestCase
+from .utils import temporary_file_path
 
 
 @pytest.fixture(autouse=True)
@@ -95,11 +95,11 @@ class TestUiLizmapDialog(TestCase):
             check_server=False,
             ignore_error=True,
         )
-       
+
         # NOTE: Seems that HTML widget not working in tests
         # See lizmap.widgets.html_editor line 117
         logging.warning("HTML widget not working in tests")
-        #self.assertTrue('<table>' in output['options']['datavizTemplate'])
+        # self.assertTrue('<table>' in output['options']['datavizTemplate'])
 
         self.assertEqual(output['layers']['legend_displayed_startup']['legend_image_option'], 'expand_at_startup')
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('noLegendImage'))
@@ -111,7 +111,11 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output['layers']['legend_displayed_startup'].get('legend_image_option'))
         self.assertEqual(output['layers']['legend_displayed_startup']['noLegendImage'], str(False))
 
-    def _setup_empty_project(self, data: Path, lwc_version=LwcVersions.latest()):
+    def _setup_empty_project(
+        self,
+        data: Path,
+        lwc_version=LwcVersions.latest(),
+    ) -> Lizmap:
         """ Internal function to add a layer and a basic check. """
         project = QgsProject.instance()
         layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
@@ -234,7 +238,7 @@ class TestUiLizmapDialog(TestCase):
 
         # Check new values in the output config
         output = lizmap.project_config_file(
-            LwcVersions.latest(), 
+            LwcVersions.latest(),
             check_server=False,
             ignore_error=True,
         )
@@ -284,7 +288,7 @@ class TestUiLizmapDialog(TestCase):
         # Check an empty list and a populated list then
         self.assertIsNone(output['options'].get('acl'))
         lizmap.dlg.inAcl.setText('cadastre,urbanism')
-        
+
         output = lizmap.project_config_file(
             LwcVersions.latest(),
             check_server=False,

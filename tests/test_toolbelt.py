@@ -15,7 +15,6 @@ from lizmap.toolbelt.layer import get_layer_wms_parameters
 from lizmap.toolbelt.lizmap import sidecar_media_dirs
 from lizmap.toolbelt.strings import human_size
 
-
 from .compat import TestCase
 
 

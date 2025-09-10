@@ -3,9 +3,8 @@
 #
 import unittest
 
-import pytest
-
 case = unittest.TestCase()
+
 
 class TestCase:
     assertCountEqual = case.assertCountEqual

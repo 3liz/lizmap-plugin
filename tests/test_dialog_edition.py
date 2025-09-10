@@ -10,7 +10,6 @@ from pathlib import Path
 import pytest
 
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.testing import unittest
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.atlas_edition import AtlasEditionDialog
@@ -26,6 +25,7 @@ from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 
 from .compat import TestCase
+
 
 @pytest.fixture(scope="class", autouse=True)
 def layer(data: Path) -> None:

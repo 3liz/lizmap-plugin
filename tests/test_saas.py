@@ -4,12 +4,10 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 """
 
-import pytest
 
 from qgis.core import QgsDataSourceUri
 
 from lizmap.saas import _update_ssl
-
 
 from .compat import TestCase
 
