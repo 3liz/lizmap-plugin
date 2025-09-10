@@ -41,14 +41,10 @@ lizmap/i18n/lizmap_qgis_plugin_*.ts
 lizmap/i18n/lizmap_qgis_plugin_*.qm
 
 unittest.qgs
-lizmap/test/data/unit_test_plugin_*
-lizmap/test/data/*.gpkg-shm
-lizmap/test/data/*.gpkg-wal
-test/server/data/*.gpkg-shm
-test/server/data/*.gpkg-wal
-lizmap/test/data/lizmap_3_3.qgs.cfg.back
-lizmap/test/data/shortnames.qgs.cfg
-lizmap/test/credentials.py.back
-lizmap/test/credentials.py
+tests/data/unit_test_plugin_*
+tests/data/*.gpkg-shm
+tests/data/*.gpkg-wal
+tests/data/shortnames.qgs.cfg
+tests/credentials.py
 **/symbology-style.db
 **/*.qgs.bak

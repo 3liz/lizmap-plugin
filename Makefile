@@ -2,7 +2,7 @@ SHELL:=bash
 
 PYTHON_MODULE=lizmap
 
-QGIS_VERSION:=3.40
+QGIS_VERSION ?= 3.40
 QGIS_DOCKER_IMAGE:=qgis/qgis:$(QGIS_VERSION)
 
 -include .localconfig.mk
@@ -10,6 +10,10 @@ QGIS_DOCKER_IMAGE:=qgis/qgis:$(QGIS_VERSION)
 #
 # Configure
 #
+
+ifeq ($(USE_UV), 1)
+UV_RUN ?= uv run
+endif
 
 
 REQUIREMENTS= \
@@ -69,7 +73,11 @@ test:
 #
 # Test using docker image
 #
+QGIS_IMAGE_REPOSITORY ?= qgis/qgis
+QGIS_IMAGE_TAG ?= $(QGIS_IMAGE_REPOSITORY):$(QGIS_VERSION)
+
 export QGIS_VERSION
+export QGIS_IMAGE_TAG
 export UID=$(shell id -u)
 export GID=$(shell id -g)
 docker-test:
@@ -77,5 +85,16 @@ docker-test:
 		--quiet-pull \
 		--abort-on-container-exit \
 		--exit-code-from qgis
+	cd .docker && docker compose down -v
 
+#
+# Code managment
+#
 
+# Display a summary of codes annotations
+show-annotation-%:
+	@grep -nR --color=auto --include=*.py '# $*' lizmap/ || true
+
+# Output variable
+echo-variable-%:
+	@echo "$($*)"
