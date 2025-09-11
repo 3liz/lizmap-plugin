@@ -28,12 +28,12 @@ repository ="https://github.com/3liz/lizmap-plugin"
 
 [dependency-groups]
 dev = [
-    "pytest >= 5.3",
     "pre-commit",
-    {include-group = "test"},
+    {include-group = "tests"},
     {include-group = "lint"},
 ]
-test = [ 
+tests = [
+    "pytest >= 5.3",
     "webdavclient3",
     "psycopg[binary]",
 ]
@@ -44,7 +44,7 @@ lint = [
     "vulture",
 ]
 packaging = [
-    "qgis-plugin-ci>=2.7.0",
+    "qgis-plugin-ci >= 2.7.0",
 ]
 
 #

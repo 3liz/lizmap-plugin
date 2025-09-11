@@ -430,8 +430,9 @@ lint = [
 packaging = [
     { name = "qgis-plugin-ci" },
 ]
-test = [
+tests = [
     { name = "psycopg", extra = ["binary"] },
+    { name = "pytest" },
     { name = "webdavclient3" },
 ]
 
@@ -455,8 +456,9 @@ lint = [
     { name = "vulture" },
 ]
 packaging = [{ name = "qgis-plugin-ci", specifier = ">=2.7.0" }]
-test = [
+tests = [
     { name = "psycopg", extras = ["binary"] },
+    { name = "pytest", specifier = ">=5.3" },
     { name = "webdavclient3" },
 ]
 

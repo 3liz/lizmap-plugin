@@ -17,23 +17,24 @@ endif
 
 REQUIREMENTS= \
 	dev \
+	tests \
 	packaging \
 	$(NULL)
 
-.PHONY: uv-required update-requirements $(REQUIREMENTS)
-
-update-requirements: $(REQUIREMENTS)
+.PHONY: uv-required update-requirements
 
 # Require uv (https://docs.astral.sh/uv/) for extracting
 # infos from project's dependency-groups
-$(REQUIREMENTS): check-uv-install
-	@echo "Updating requirements for '$@'"
-	@uv export --format requirements.txt \
-		--no-annotate \
-		--no-editable \
-		--no-hashes \
-		--only-group $@ \
-		-q -o requirements/$@.txt
+update-requirements: check-uv-install
+	@for group in $(REQUIREMENTS); do \
+		echo "Updating requirements for '$$group'"; \
+		uv export --format requirements.txt \
+			--no-annotate \
+			--no-editable \
+			--no-hashes \
+			--only-group $$group \
+			-q -o requirements/$$group.txt; \
+	done
 
 #
 # Static analysis
