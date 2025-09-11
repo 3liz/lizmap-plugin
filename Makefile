@@ -3,7 +3,6 @@ SHELL:=bash
 PYTHON_MODULE=lizmap
 
 QGIS_VERSION ?= 3.40
-QGIS_DOCKER_IMAGE:=qgis/qgis:$(QGIS_VERSION)
 
 -include .localconfig.mk
 

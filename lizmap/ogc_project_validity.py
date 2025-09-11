@@ -9,6 +9,7 @@ import re
 from typing import List, Tuple
 
 from qgis.core import (
+    Qgis,
     QgsLayerTree,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
@@ -45,7 +46,10 @@ class OgcProjectValidity:
             if QgsLayerTree.isLayer(child):
                 child = cast_to_layer(child)
                 layer = self.project.mapLayer(child.layerId())
-                short_name = layer.shortName()
+                if Qgis.QGIS_VERSION_INT < 33800:
+                    short_name = layer.shortName()
+                else:
+                    short_name = layer.serverProperties().shortName()
                 if not short_name or short_name in duplicated:
                     source = short_name if short_name else layer.name()
                     new_shortname = self.short_name(source, existing_shortnames)
@@ -81,8 +85,14 @@ class OgcProjectValidity:
                 child = cast_to_layer(child)
                 child: QgsLayerTreeLayer
                 layer = self.project.mapLayer(child.layerId())
-                if layer.shortName():
-                    existing_shortnames.append(layer.shortName())
+
+                if Qgis.QGIS_VERSION_INT < 33800:
+                    short_name = layer.shortName()
+                else:
+                    short_name = layer.serverProperties().shortName()
+
+                if short_name:
+                    existing_shortnames.append(short_name)
             else:
                 child = cast_to_group(child)
                 child: QgsLayerTreeGroup
