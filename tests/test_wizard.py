@@ -1,9 +1,4 @@
-"""Test group wizard.
-
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-"""
+"""Test group wizard."""
 
 from qgis.PyQt.QtCore import Qt
 
@@ -13,20 +8,12 @@ from .compat import TestCase
 
 
 class TestWizardGroupAclDialog(TestCase):
-
     def test_ui(self):
-        """ Test the UI."""
+        """Test the UI."""
         dialog = WizardGroupDialog(
             "Helper",  # Helper not needed in test
             "foo,admins,bar",  # Existing string in the config
-            {
-                "admins": {
-                    "label": "admins"
-                },
-                "group_a": {
-                    "label": "group_a"
-                }
-            }
+            {"admins": {"label": "admins"}, "group_a": {"label": "group_a"}},
         )
 
         self.assertEqual(2, dialog.list.count())

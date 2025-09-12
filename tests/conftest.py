@@ -17,6 +17,7 @@ from qgis.testing import start_app
 
 def pytest_report_header(config):
     from osgeo import gdal
+
     message = (
         f"QGIS : {Qgis.QGIS_VERSION_INT}\n"
         f"Python GDAL : {gdal.VersionInfo('VERSION_NUM')}\n"
@@ -24,6 +25,7 @@ def pytest_report_header(config):
         f"QT : {Qt.QT_VERSION_STR}"
     )
     return message
+
 
 #
 # Fixtures
@@ -44,6 +46,7 @@ def data(rootdir: Path) -> Path:
 # Session
 #
 
+
 # Path the 'qgis.utils.iface' property
 # Which is not initialized when QGIS app
 # is initialized from testing module
@@ -51,6 +54,7 @@ def _patch_iface():
     import qgis.utils
 
     from qgis.testing.mocked import get_iface
+
     qgis.utils.iface = get_iface()
 
 
@@ -64,6 +68,7 @@ def pytest_sessionstart(session):
     install_logger_hook(verbose=True)
     # Patch 'iface' in qgis.utils
     _patch_iface()
+
 
 #
 # Logger hook

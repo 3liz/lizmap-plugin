@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import os
 
 # Edit the default value in the getenv function if not using environment variable

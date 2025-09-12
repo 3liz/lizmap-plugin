@@ -1,9 +1,3 @@
-"""Test tools.
-
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-"""
 from pathlib import Path
 
 from qgis.core import QgsField, QgsVectorLayer
@@ -19,18 +13,17 @@ from .compat import TestCase
 
 
 class TestTools(TestCase):
-
     def test_database_based_layer(self, data: Path):
-        """ Test if a layer is in a database. """
-        layer = QgsVectorLayer(str(data.joinpath('lines.geojson')), 'lines', 'ogr')
+        """Test if a layer is in a database."""
+        layer = QgsVectorLayer(str(data.joinpath("lines.geojson")), "lines", "ogr")
         self.assertFalse(is_database_layer(layer))
 
-        path = str(data.joinpath('points_lines.gpkg'))
-        layer = QgsVectorLayer(path + '|layername=lines', 'lines', 'ogr')
+        path = str(data.joinpath("points_lines.gpkg"))
+        layer = QgsVectorLayer(path + "|layername=lines", "lines", "ogr")
         self.assertTrue(is_database_layer(layer))
 
     def test_format_qgis_version(self):
-        """ Test to get a correct QGIS version number. """
+        """Test to get a correct QGIS version number."""
         # Normal
         self.assertTupleEqual((3, 10, 0), format_qgis_version(31000))
 
@@ -47,7 +40,7 @@ class TestTools(TestCase):
         self.assertTupleEqual((10, 12, 10), format_qgis_version("10.11.10", increase_odd_number=True))
 
     def test_format_version_int(self):
-        """ Test to transform string version to int version. """
+        """Test to transform string version to int version."""
         self.assertEqual("000102", format_version_integer("0.1.2"))
         self.assertEqual("040314", format_version_integer("4.3.14"))
         self.assertEqual("100912", format_version_integer("10.9.12"))
@@ -55,58 +48,59 @@ class TestTools(TestCase):
         self.assertEqual("000000", format_version_integer("master"))
 
     def test_to_bool(self):
-        """ Test the to_bool function. """
-        self.assertTrue(to_bool('trUe'))
-        self.assertTrue(to_bool('1'))
+        """Test the to_bool function."""
+        self.assertTrue(to_bool("trUe"))
+        self.assertTrue(to_bool("1"))
         self.assertTrue(to_bool(-1))
         self.assertTrue(to_bool(1))
         self.assertTrue(to_bool(5))
         self.assertTrue(to_bool(True))
         self.assertTrue(to_bool(None, default_value=True))
-        self.assertTrue(to_bool(''))
-        self.assertTrue(to_bool('', default_value=True))
+        self.assertTrue(to_bool(""))
+        self.assertTrue(to_bool("", default_value=True))
 
-        self.assertFalse(to_bool('false'))
-        self.assertFalse(to_bool('FALSE'))
-        self.assertFalse(to_bool('', default_value=False))
-        self.assertFalse(to_bool('0'))
+        self.assertFalse(to_bool("false"))
+        self.assertFalse(to_bool("FALSE"))
+        self.assertFalse(to_bool("", default_value=False))
+        self.assertFalse(to_bool("0"))
         self.assertFalse(to_bool(0))
         self.assertFalse(to_bool(False))
         self.assertFalse(to_bool(None, default_value=False))
 
     def test_unaccent(self):
-        """ Test to unaccent a string. """
+        """Test to unaccent a string."""
         self.assertEqual("a lAyer", unaccent("à lÂyér"))
 
     def test_merge_strings(self):
-        """ Test to merge two strings and remove common parts. """
+        """Test to merge two strings and remove common parts."""
         self.assertEqual(
-            'I like chocolate and banana',
-            merge_strings('I like chocolate', 'chocolate and banana')
+            "I like chocolate and banana", merge_strings("I like chocolate", "chocolate and banana")
         )
 
         # LWC 3.6.1
         # instance name is duplicated
         self.assertEqual(
-            'https://demo.lizmap.com/lizmap/assets/js/dataviz/plotly-latest.min.js',
-            merge_strings('https://demo.lizmap.com/lizmap/', '/lizmap/assets/js/dataviz/plotly-latest.min.js')
+            "https://demo.lizmap.com/lizmap/assets/js/dataviz/plotly-latest.min.js",
+            merge_strings(
+                "https://demo.lizmap.com/lizmap/", "/lizmap/assets/js/dataviz/plotly-latest.min.js"
+            ),
         )
 
         # Nothing in common
         self.assertEqual(
-            'https://demo.lizmap.com/lizmap/assets/js/dataviz/plotly-latest.min.js',
-            merge_strings('https://demo.lizmap.com/lizmap/', 'assets/js/dataviz/plotly-latest.min.js')
+            "https://demo.lizmap.com/lizmap/assets/js/dataviz/plotly-latest.min.js",
+            merge_strings("https://demo.lizmap.com/lizmap/", "assets/js/dataviz/plotly-latest.min.js"),
         )
 
         # Only slash
         self.assertEqual(
-            'https://demo.lizmap.com/lizmap/assets/js/dataviz/plotly-latest.min.js',
-            merge_strings('https://demo.lizmap.com/lizmap/', '/assets/js/dataviz/plotly-latest.min.js')
+            "https://demo.lizmap.com/lizmap/assets/js/dataviz/plotly-latest.min.js",
+            merge_strings("https://demo.lizmap.com/lizmap/", "/assets/js/dataviz/plotly-latest.min.js"),
         )
 
     def _layer_lizmap_popup(self) -> QgsVectorLayer:
-        """ Internal function for setting up the layer. """
-        layer = QgsVectorLayer('Point?crs=epsg:4326', 'Layer', "memory")
+        """Internal function for setting up the layer."""
+        layer = QgsVectorLayer("Point?crs=epsg:4326", "Layer", "memory")
         self.assertTrue(layer.startEditing())
 
         # Normal field
@@ -126,47 +120,47 @@ class TestTools(TestCase):
         return layer
 
     def test_convert_lizmap_popup_1(self):
-        """ Normal test about the Lizmap popup. """
+        """Normal test about the Lizmap popup."""
         layer = self._layer_lizmap_popup()
 
-        text = '''
+        text = """
         <p style="background-color:{$color}">
             <b>LINE</b> : { $an alias } - {$name}
-        </p>'''
-        expected = '''
+        </p>"""
+        expected = """
         <p style="background-color:{$color}">
             <b>LINE</b> : [% "longfield" %] - [% "name" %]
-        </p>'''
+        </p>"""
         result = convert_lizmap_popup(text, layer)
         self.assertEqual(expected, result[0])
-        self.assertListEqual(['color'], result[1])
+        self.assertListEqual(["color"], result[1])
 
     def test_convert_lizmap_popup_2(self):
-        """ Normal test with an alias. """
+        """Normal test with an alias."""
         layer = self._layer_lizmap_popup()
-        text = '''
+        text = """
         <p>
             <b>LINE</b> : { $an alias } - {$name}
-        </p>'''
-        expected = '''
+        </p>"""
+        expected = """
         <p>
             <b>LINE</b> : [% "longfield" %] - [% "name" %]
-        </p>'''
+        </p>"""
         result = convert_lizmap_popup(text, layer)
         self.assertEqual(expected, result[0])
         self.assertListEqual([], result[1])
 
     def test_convert_lizmap_popup_3(self):
-        """ Test with accents, digit, underscores. """
+        """Test with accents, digit, underscores."""
         layer = self._layer_lizmap_popup()
-        text = '''
+        text = """
         <a href="media/pdf/{$îD_cödÊ_1}.pdf" target="_blank">
             Link
-        </a>'''
-        expected = '''
+        </a>"""
+        expected = """
         <a href="media/pdf/[% "îD_cödÊ_1" %].pdf" target="_blank">
             Link
-        </a>'''
+        </a>"""
         result = convert_lizmap_popup(text, layer)
         self.assertEqual(expected, result[0])
         self.assertListEqual([], result[1])

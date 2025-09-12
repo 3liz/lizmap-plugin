@@ -1,8 +1,3 @@
-"""
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-"""
 from pathlib import Path
 
 import pytest
@@ -21,9 +16,8 @@ def teardown():
 
 
 class TestShortNames(TestCase):
-
     def test_shortname_generation(self):
-        """ Test we can generate shortname. """
+        """Test we can generate shortname."""
         self.assertEqual("layer", OgcProjectValidity.short_name("layer", []))
         self.assertEqual("layer", OgcProjectValidity.short_name("    layer   ", []))
         self.assertEqual("l_1_layer", OgcProjectValidity.short_name("!1 layer", []))
@@ -37,53 +31,52 @@ class TestShortNames(TestCase):
         # German Eszett
         self.assertEqual("B_B", OgcProjectValidity.short_name("BßB", []))
 
-        shortname = OgcProjectValidity.short_name('こんにちは', [])
+        shortname = OgcProjectValidity.short_name("こんにちは", [])
         self.assertEqual(5, len(shortname))
         self.assertTrue(shortname.isalpha())
 
     def test_shortname_prefix(self):
-        """ Test with different prefix. """
+        """Test with different prefix."""
         self.assertEqual("a_123_layer", OgcProjectValidity.short_name("a_123 layer", []))
-        self.assertEqual("b_123_layer", OgcProjectValidity.short_name("123 layer", [], 'b'))
+        self.assertEqual("b_123_layer", OgcProjectValidity.short_name("123 layer", [], "b"))
         self.assertEqual("l_123_layer", OgcProjectValidity.short_name("123 layer", []))
 
     def test_shortname_incrementation(self):
-        """ Test the shortname incrementation. """
-        self.assertEqual("layer", OgcProjectValidity.short_name("layer", ['gis']))
-        self.assertEqual("LAYER", OgcProjectValidity.short_name("LAYER", ['layer']))
-        self.assertEqual("layer_1", OgcProjectValidity.short_name("layer", ['layer']))
-        self.assertEqual("layer_2", OgcProjectValidity.short_name("layer", ['layer', 'layer_1']))
-        self.assertEqual("layer", OgcProjectValidity.short_name("layer_", ['layer_']))
-        self.assertEqual("layer_1", OgcProjectValidity.short_name("layer_", ['layer_', 'layer']))
+        """Test the shortname incrementation."""
+        self.assertEqual("layer", OgcProjectValidity.short_name("layer", ["gis"]))
+        self.assertEqual("LAYER", OgcProjectValidity.short_name("LAYER", ["layer"]))
+        self.assertEqual("layer_1", OgcProjectValidity.short_name("layer", ["layer"]))
+        self.assertEqual("layer_2", OgcProjectValidity.short_name("layer", ["layer", "layer_1"]))
+        self.assertEqual("layer", OgcProjectValidity.short_name("layer_", ["layer_"]))
+        self.assertEqual("layer_1", OgcProjectValidity.short_name("layer_", ["layer_", "layer"]))
 
     def test_parse_legend(self, data: Path):
-        """ Test to read and add all shortnames in a project. """
-        project_file = str(data.joinpath('shortnames.qgs'))
+        """Test to read and add all shortnames in a project."""
+        project_file = str(data.joinpath("shortnames.qgs"))
         project = QgsProject.instance()
         project.read(project_file)
 
         validator = OgcProjectValidity(project)
         # There are duplicated shortname in the project by default
         existing, duplicated = validator.existing_shortnames()
-        self.assertListEqual(
-            existing,
-            ['lines-1', 'sub-group', 'duplicated-layer', 'duplicated-layer']
-        )
-        self.assertListEqual(
-            duplicated,
-            ['duplicated-layer']
-        )
+        self.assertListEqual(existing, ["lines-1", "sub-group", "duplicated-layer", "duplicated-layer"])
+        self.assertListEqual(duplicated, ["duplicated-layer"])
 
         validator.add_shortnames()
         existing, duplicated = validator.existing_shortnames()
         self.assertListEqual(
             existing,
-            ['lines-1', 'lines-1_1', 'group-1', 'sub-group', 'lines-2', 'duplicated-layer_1', 'duplicated-layer_2']
+            [
+                "lines-1",
+                "lines-1_1",
+                "group-1",
+                "sub-group",
+                "lines-2",
+                "duplicated-layer_1",
+                "duplicated-layer_2",
+            ],
         )
-        self.assertListEqual(
-            duplicated,
-            []
-        )
+        self.assertListEqual(duplicated, [])
 
         # Project short name
         self.assertEqual("", project.readEntry("WMSRootName", "/", "")[0])
