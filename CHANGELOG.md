@@ -2,7 +2,9 @@
 
 ## Unreleased
 
+* Raise to minimum QGIS 3.34
 * Fix `WMSAddWktGeometry` set as an integer instead of a boolean in .qgs
+* Refactor tests to run on QGIS 3.34, 340 and 3.44
 
 ## 4.5.3 - 2025-06-27
 
