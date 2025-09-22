@@ -1,0 +1,321 @@
+from pathlib import Path
+
+from qgis.core import Qgis
+
+from lizmap.server_lwc import ServerManager
+
+from .compat import TestCase
+
+
+class TestVersionInfo(TestCase):
+    def test_split_lizmap_version(self):
+        """Test to split the LWC version."""
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2"), (3, 5, 2))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre"), (3, 5, 2, "pre"))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, "pre", 5204))
+        self.assertTupleEqual(ServerManager.split_lizmap_version("3.8.0-rc.4"), (3, 8, 0, "rc", 4))
+
+    def test_version_info_lizmap_status(self, data: Path):
+        """Test version info according to LWC version.
+
+        With the given JSON file, 3.6 was on development and login was not required.
+        See the second test for a more up-to-date version file with 3.6 and server login required.
+        """
+
+        # Test file with
+        # 3.6.0 active dev
+        # 3.5.1 latest 3.5.X
+        # 3.5.0 critical
+        # 3.4.9 latest 3.4.X
+        # 3.3.X deprecated
+        json_path = data.joinpath("version_info_15022022.json")
+
+        qgis_desktop = (3, 28)
+
+        # 3.6.0 without a login
+        self.assertEqual(
+            ServerManager._messages_for_version("3.6.0", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                ["No administrator/publisher login provided", "A dev version, warrior ! 👍"],
+                False,
+            ),
+        )
+
+        # 3.6.0 with login
+        self.assertEqual(
+            ServerManager._messages_for_version("3.6.0", "", "bob_is_admin", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Success,
+                ["A dev version, warrior ! 👍"],
+                True,
+            ),
+        )
+
+        # 3.5.1 with error
+        self.assertEqual(
+            ServerManager._messages_for_version(
+                "3.5.1", "", "bob_is_admin", json_path, qgis_desktop, error="HTTP_ERROR"
+            ),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    'Please check your "Server Information" panel in the Lizmap administration interface. There is an '
+                    "error reading the QGIS Server configuration.",
+                ],
+                True,
+            ),
+        )
+
+        # 3.5.1 with login denied
+        # Starting with the QGIS plugin version 3.9.2, login is required
+        self.assertEqual(
+            ServerManager._messages_for_version(
+                "3.5.1", "", "bob_is_not_admin", json_path, qgis_desktop, error="NO_ACCESS"
+            ),
+            (
+                Qgis.MessageLevel.Critical,
+                ["The login is not a publisher/administrator"],
+                True,
+            ),
+        )
+
+        # 3.5.1
+        self.assertEqual(
+            ServerManager._messages_for_version("3.5.1", "", "bob_is_admin", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Success,
+                ["👍"],
+                True,
+            ),
+        )
+
+        # 3.5.1-pre
+        self.assertEqual(
+            ServerManager._messages_for_version("3.5.1-pre", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "⚠ Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version."
+                ],
+                False,
+            ),
+        )
+
+        # 3.5.1-pre.5110
+        self.assertEqual(
+            ServerManager._messages_for_version("3.5.1-pre.5110", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "⚠ Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version."
+                ],
+                False,
+            ),
+        )
+
+        # 3.5.0
+        self.assertEqual(
+            ServerManager._messages_for_version("3.5.0", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "⚠ Upgrade to 3.5.1 as soon as possible, some critical issues were detected with this version."
+                ],
+                False,
+            ),
+        )
+
+        # 3.4.10-rc.4
+        self.assertEqual(
+            ServerManager._messages_for_version("3.4.9", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Success,
+                ["👍"],
+                True,
+            ),
+        )
+
+        # Latest 3.4.9 without login
+        self.assertEqual(
+            ServerManager._messages_for_version("3.4.9", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Success,
+                ["👍"],
+                True,
+            ),
+        )
+
+        # Latest 3.4.9-pre
+        self.assertEqual(
+            ServerManager._messages_for_version("3.4.9-pre", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Warning,
+                ["Not latest bugfix release, 3.4.9 is available", ". This version is not based on a tag."],
+                True,
+            ),
+        )
+
+        # 3.4.8
+        self.assertEqual(
+            ServerManager._messages_for_version("3.4.8", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Warning,
+                ["Not latest bugfix release, 3.4.9 is available"],
+                True,
+            ),
+        )
+
+        # 3.4.5, critical because more than 2 releases late
+        self.assertEqual(
+            ServerManager._messages_for_version("3.4.5", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                ["Not latest bugfix release, 3.4.9 is available"],
+                True,
+            ),
+        )
+
+        # 3.3.16
+        self.assertEqual(
+            ServerManager._messages_for_version("3.3.16", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                ["Version 3.3 not maintained anymore"],
+                True,
+            ),
+        )
+
+        # 3.2.0
+        self.assertEqual(
+            ServerManager._messages_for_version("3.2.0", "", "", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "Version 3.2 not maintained anymore",
+                ],
+                True,
+            ),
+        )
+
+    def test_version_info_qgis_server_status(self, data: Path):
+        """Test a valid QGIS server status."""
+        qgis_desktop = (3, 28)
+
+        # Test file with
+        # 3.7.0 active dev
+        # 3.6.2 latest 3.6.X, QGIS server must be valid
+        # 3.5.11 latest 3.5.X, QGIS server is not needed
+        # 3.4.X deprecated
+        json_path = data.joinpath("version_info_27032023.json")
+
+        # QGIS server version = QGIS desktop version
+        data = {
+            "lizmap_version": "3.5.11",
+            "server_version": "3.34.0",
+            "login": "simple_lambda",
+            "json_path": json_path,
+            "qgis_desktop": qgis_desktop,
+            "error": "NO_ACCESS",
+        }
+
+        # 3.5.11 with simple login
+        self.assertEqual(
+            ServerManager._messages_for_version(**data, lizmap_cloud=True),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "The login is not a publisher/administrator",
+                ],
+                True,
+            ),
+        )
+
+        data["lizmap_version"] = "3.6.2"
+
+        # 3.6.2 with simple login
+        self.assertEqual(
+            ServerManager._messages_for_version(**data),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "The login is not a publisher/administrator",
+                ],
+                False,
+            ),
+        )
+
+        # QGIS server < QGIS desktop
+        data = {
+            "lizmap_version": "3.5.11",
+            "server_version": "3.22.0",
+            "login": "simple_lambda",
+            "json_path": json_path,
+            "qgis_desktop": qgis_desktop,
+            "error": "NO_ACCESS",
+        }
+        # QGIS server 3.22 is EOL since February 2023, but the 2024 is hardcoded, as we do not have 3.22 on the
+        # infrastructure
+        # TODO, to be fixed with a proper table
+        self.assertEqual(
+            ServerManager._messages_for_version(**data, lizmap_cloud=True),
+            (
+                Qgis.MessageLevel.Critical,
+                [
+                    "QGIS Server version 3.22 is not maintained anymore by QGIS.org since February 2024. Please visit "
+                    "your administration panel in the web browser to ask for the update.",
+                    "QGIS Server version < QGIS Desktop version. Either upgrade your QGIS Server 3.22 or downgrade "
+                    "your QGIS Desktop 3.28",
+                    "The login is not a publisher/administrator",
+                ],
+                True,
+            ),
+        )
+
+    def test_version_info_lwc_rc(self, data: Path):
+        """Test LWC version with RC."""
+        qgis_desktop = (3, 34)
+
+        # Test file with
+        # 3.8.0-rc.4 latest RC
+        json_path = data.joinpath("version_info_19082024.json")
+
+        self.assertEqual(
+            ServerManager._messages_for_version("3.8.0-rc.4", "", "bob_is_admin", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Success,
+                [
+                    "A dev version, warrior ! 👍",
+                ],
+                True,
+            ),
+        )
+
+        self.assertEqual(
+            ServerManager._messages_for_version("3.8.0-rc.3", "", "bob_is_admin", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Warning,
+                [
+                    "A dev version, warrior ! 👍",
+                    "Not latest bugfix release, 3.8.0-rc.4 is available",
+                ],
+                True,
+            ),
+        )
+
+    def test_version_info_lwc_security_bugfix(self, data: Path):
+        """Test LWC version with security bugfix."""
+        qgis_desktop = (3, 34)
+
+        # Test file with
+        # 3.6.14 security bugfix only
+        json_path = data.joinpath("version_info_19082024.json")
+
+        self.assertEqual(
+            ServerManager._messages_for_version("3.6.14", "", "bob_is_admin", json_path, qgis_desktop),
+            (
+                Qgis.MessageLevel.Warning,
+                ["Version 3.6 not maintained anymore, only for security bugfix only"],
+                True,
+            ),
+        )

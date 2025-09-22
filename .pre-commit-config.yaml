@@ -1,32 +1,8 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 0.12.12
     hooks:
-      - id: trailing-whitespace
-        exclude: |
-            (?x)^(
-                lizmap/resources/html/trumbowyg/(.*)|
-                lizmap/test/test_tooltip.py
-            )$
-      - id: end-of-file-fixer
-        exclude: lizmap/resources/html/trumbowyg
-      - id: check-yaml
-      - id: check-added-large-files
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-        exclude: lizmap/lizmap_api/
-        additional_dependencies: [
-          flake8-builtins,
-          flake8-absolute-import
-        ]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: [ ]
+      - id: ruff-check
+      - id: ruff-format

@@ -6,26 +6,21 @@ on:
       - "*"
     branches:
       - master
-    paths:
-      - 'lizmap/**'
-      - '.docker/**'
   pull_request:
     branches:
       - master
-    paths:
-      - 'lizmap/**'
 
 jobs:
 
-  flake8:
+  lint:
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           architecture: x64
@@ -35,40 +30,32 @@ jobs:
       - name: Install Python requirements
         run: pip install -r requirements/dev.txt
 
-      - name: Run flake8
-        run: flake8
+      - name: Run linter
+        run: ruff check --preview --output-format=concise lizmap 
+
+      - name: Run security check
+        run: bandit -r lizmap --severity-level=high
 
   tests:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .docker
     strategy:
+      fail-fast: false
       matrix:
         qgis_version: [
-#          "latest",
-#          "3.40",
-          "release-3_34",
-          "release-3_28",
+            "3.34",
+            "3.40",
+            "3.44",
         ]
     steps:
 
       - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          submodules: 'true'
-
-      - name: Make env
-        run: cd .. && make env QGIS_VERSION=${{ matrix.qgis_version }}
-
-      - name: Launching docker compose
-        run: ./start.sh
+        uses: actions/checkout@v5
 
       - name: Running tests
-        run: ./exec.sh
+        run: make docker-test QGIS_VERSION=${{ matrix.qgis_version }}
 
   release:
-    needs: [tests, flake8]
+    needs: [tests, lint]
 
     runs-on: ubuntu-latest
     if: github.repository_owner == '3liz' && contains(github.ref, 'refs/tags/')
@@ -77,10 +64,10 @@ jobs:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: "pip"

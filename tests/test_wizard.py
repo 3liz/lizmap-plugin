@@ -1,0 +1,28 @@
+"""Test group wizard."""
+
+from qgis.PyQt.QtCore import Qt
+
+from lizmap.dialogs.wizard_group import WizardGroupDialog
+
+from .compat import TestCase
+
+
+class TestWizardGroupAclDialog(TestCase):
+    def test_ui(self):
+        """Test the UI."""
+        dialog = WizardGroupDialog(
+            "Helper",  # Helper not needed in test
+            "foo,admins,bar",  # Existing string in the config
+            {"admins": {"label": "admins"}, "group_a": {"label": "group_a"}},
+        )
+
+        self.assertEqual(2, dialog.list.count())
+        selection = dialog.list.selectedItems()
+        self.assertEqual(1, len(selection))
+        self.assertEqual("admins", selection[0].data(Qt.ItemDataRole.UserRole))
+        self.assertEqual("foo,bar", dialog.additional.text())
+        self.assertEqual("admins,foo,bar", dialog.preview.text())
+
+        # Set empty the custom CSV list
+        dialog.additional.setText("")
+        self.assertEqual("admins", dialog.preview.text())

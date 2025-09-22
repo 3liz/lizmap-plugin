@@ -120,7 +120,12 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             html_content = self._js('tEditor.getHtml();')
         else:
             html_content = self.web_view.text()
-        return QGIS_EXPRESSION_TEXT.sub(expression_from_html_to_qgis, html_content)
+
+        # NOTE: html_content may be None
+        if html_content:
+            return QGIS_EXPRESSION_TEXT.sub(expression_from_html_to_qgis, html_content)
+        else:
+            return ""
 
     def set_html_content(self, content: str):
         """ Set the HTML in the editor. """

@@ -64,7 +64,7 @@ class QgsLogHandler(logging.Handler):
                 "Due to memory limitations on this machine, the plugin {} can not "
                 "handle the full log"
             ).format(PLUGIN_NAME)
-            print(message)  # noqa: T201
+            print(message)
             QgsMessageLog.logMessage(message, PLUGIN_NAME, Qgis.MessageLevel.Critical)
 
 

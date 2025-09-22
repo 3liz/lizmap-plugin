@@ -18,7 +18,7 @@ UPLOAD_EXTENSIONS = ('fgb', 'gpkg', 'xlsx', 'xls', 'csv', 'ods', 'kml', 'geojson
 UPLOAD_MAX_SIZE = 11000000  # 11 Mb
 
 # Excluded domains from Plausible
-EXCLUDED_DOMAINS = ('demo.snap.lizmap.com', 'demo.lizmap.com', 'localhost:8130', )
+EXCLUDED_DOMAINS = ('demo.snap.lizmap.com', 'demo.lizmap.com', 'localhost:8130' )
 # Domains which are designed for workshops
 # For the "Training" panel and excluded from Plausible as well
 WORKSHOP_DOMAINS = (

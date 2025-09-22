@@ -55,7 +55,7 @@ class QgisPluginManager:
                 date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
 
                 template = (
-                    '{name} <a href="{url}">'
+                    '{name} <a href="{url}">'   # noqa RUF027
                     '{tag}   -    {date}'
                     '</a>'
                 )

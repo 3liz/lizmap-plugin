@@ -1005,7 +1005,7 @@ class Lizmap:
             if old_cfg.exists():
                 box = QMessageBox(self.dlg)
                 box.setIcon(QMessageBox.Icon.Question)
-                box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+                box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
                 box.setWindowTitle(tr('Project has been renamed'))
                 box.setText(tr(
                     'The previous project located at "{}" was associated to a Lizmap configuration. '
@@ -1687,7 +1687,7 @@ class Lizmap:
 
         box = QMessageBox(self.dlg)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
         box.setWindowTitle(tr('Online documentation'))
         box.setText(tr(
             'Different documentations are possible. Which online documentation would you like to open ?'
@@ -1747,7 +1747,7 @@ class Lizmap:
         if self.dlg.list_map_scales.text() != '':
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
             box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             box.setDefaultButton(QMessageBox.StandardButton.No)
             box.setWindowTitle(tr('Reset the scales'))
@@ -2334,7 +2334,7 @@ class Lizmap:
                     text = tr('Special group for Lizmap Web Client')
                     if self.is_dev_version:
                         # For debug purpose only about groups
-                        text += f'. Data group ID {Qt.ItemDataRole.UserRole} : {predefined_group}'  # NOQA E203
+                        text += f'. Data group ID {Qt.ItemDataRole.UserRole} : {predefined_group}'
                     item.setToolTip(0, self.myDic[child_id]['name'] + ' - ' + text)
                 elif is_layer_wms_excluded(self.project, self.myDic[child_id]['name']):
                     text = tr(
@@ -2998,7 +2998,7 @@ class Lizmap:
         if check and layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')))
             box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
             box.setText(tr(
                 'A maptip already exists for this layer. This is going to override it. '
@@ -3140,7 +3140,7 @@ class Lizmap:
 
         validator = QgsProjectServerValidator()
         valid, results = validator.validate(self.project)
-        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")  # NOQA E203
+        LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
         if not valid:
             self.dlg.check_results.add_error(
                 Error(
@@ -3364,7 +3364,7 @@ class Lizmap:
         if check_server:
 
             if lizmap_cloud:
-                error, message = check_project_ssl_postgis(self.project)
+                error, _message = check_project_ssl_postgis(self.project)
                 for layer in error:
                     self.dlg.check_results.add_error(
                         Error(
@@ -3613,7 +3613,11 @@ class Lizmap:
         return True
 
     def project_config_file(
-            self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
+        self,
+        lwc_version: LwcVersions,
+        with_gui: bool = True,
+        check_server=True,
+        ignore_error=False,
     ) -> Optional[Dict]:
         """ Get the JSON CFG content. """
 
@@ -3628,8 +3632,8 @@ class Lizmap:
             ogc_projet_validity.set_project_short_name()
 
             validator = QgsProjectServerValidator()
-            valid, results = validator.validate(self.project)
-            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")  # NOQA E203
+            valid, _results = validator.validate(self.project)
+            LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
         else:
             LOGGER.info(
                 "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
@@ -4663,7 +4667,7 @@ class Lizmap:
         if not qgis_exists:
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
             box.setWindowTitle(tr('The project is not published yet'))
             box.setText(tr(
                 'The project <b>"{}"</b> does not exist yet on the server <br>'
@@ -4719,7 +4723,7 @@ class Lizmap:
 
         box = QMessageBox(self.dlg)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
         box.setWindowTitle(tr('Create "media" directory on the server'))
         box.setText(tr(
             'Are you sure you want to create the "media" directory on the server <strong>{server}</strong> in the '
@@ -4817,7 +4821,7 @@ class Lizmap:
         if result:
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Information)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
             box.setWindowTitle(tr('Cache about the thumbnail'))
             box.setText(tr(
                 'The upload of the thumbnail is successful. You can open it in your <a href="{}">web-browser</a>.'
@@ -4864,7 +4868,7 @@ class Lizmap:
         """ Question to confirme deletion on the remote server. """
         box = QMessageBox(self.dlg)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')), )
+        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
         box.setWindowTitle(tr('Remove a remote file'))
         box.setText(tr('Are you sure you want to remove the remote file ?'))
         box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -4951,7 +4955,7 @@ class Lizmap:
             self.dlg.line_cfg_date.setText("")
             result, error = self.webdav.file_stats_cfg()
             if result:
-                self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")  # NOQA E203
+                self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
             elif result is None and not error:
                 self.dlg.line_cfg_date.setText(tr(
                     "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
@@ -4965,7 +4969,7 @@ class Lizmap:
             self.dlg.line_thumbnail_date.setText("")
             result, error = self.webdav.file_stats_thumbnail()
             if result:
-                self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")  # NOQA E203
+                self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, result.last_modified_pretty)
             elif result is None and not error:
                 self.dlg.line_thumbnail_date.setText(tr(
@@ -5013,7 +5017,7 @@ class Lizmap:
                 self.dlg.webdav_last_update.setText(f'<a href="{url}">{result.last_modified_pretty}</a>')
                 self.dlg.webdav_last_update.setOpenExternalLinks(True)
                 self.dlg.set_tooltip_webdav(self.dlg.button_upload_webdav, result.last_modified_pretty)
-                self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")  # NOQA E203
+                self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
             elif result is None and not error:
                 directory = self.dlg.current_repository()
                 self.dlg.line_qgs_date.setText(tr(
@@ -5384,7 +5388,7 @@ class Lizmap:
             return
 
         # noinspection PyArgumentList
-        QDesktopServices.openUrl(QUrl(f"file://{file_path}"))  # NOQA E231
+        QDesktopServices.openUrl(QUrl(f"file://{file_path}"))
 
     def open_training_project_clicked(self, workshop_type: str = WorkshopType.ZipFile):
         """ Open the training project in QGIS Desktop. """

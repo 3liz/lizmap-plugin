@@ -49,7 +49,7 @@ class ToolTipDefinitions(BaseDefinitions):
 
     @staticmethod
     def primary_keys() -> tuple:
-        return 'layerId',
+        return ('layerId',)
 
     def key(self) -> str:
         return 'tooltipLayers'

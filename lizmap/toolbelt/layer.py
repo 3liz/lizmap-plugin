@@ -95,7 +95,7 @@ def get_layer_wms_parameters(layer):
         return None
 
     # Split WMS parameters
-    wms_params = dict((p.split('=') + [''])[:2] for p in uri.split('&'))
+    wms_params = dict([*p.split('='), ''][:2] for p in uri.split('&'))
 
     # urldecode WMS url
     wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')

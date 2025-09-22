@@ -88,7 +88,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         if self.html_template.html_content():
             box = QMessageBox(self)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')),)
+            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')))
             box.setWindowTitle(tr('Replace existing HTML with the template'))
             box.setText(tr('This will erase your previous HTML.'))
             box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)

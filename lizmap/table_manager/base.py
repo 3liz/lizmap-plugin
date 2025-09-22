@@ -548,7 +548,7 @@ class TableManager:
 
         data = dict()
 
-        if self.definitions.key() in ('filter_by_polygon', 'layouts', ):
+        if self.definitions.key() in ('filter_by_polygon', 'layouts' ):
             data['config'] = dict()
             for config_key, general_config in self.definitions.general_config.items():
                 widget = general_config.get('widget')
