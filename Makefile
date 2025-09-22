@@ -17,6 +17,7 @@ endif
 
 REQUIREMENTS= \
 	dev \
+	lint \
 	tests \
 	packaging \
 	$(NULL)
