@@ -78,7 +78,7 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         layer = self.layer.currentLayer()
         if not layer:
             return tr('A layer is mandatory.')
@@ -90,3 +90,5 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         if not_in_wfs:
             return not_in_wfs
+
+        return None

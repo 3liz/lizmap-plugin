@@ -67,7 +67,7 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -79,3 +79,5 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.display_field.currentField():
             return tr('Display field is mandatory.')
+
+        return None

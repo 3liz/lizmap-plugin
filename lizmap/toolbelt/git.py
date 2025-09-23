@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import os
 import subprocess
 
@@ -78,8 +74,7 @@ def next_git_tag():
         return 'next'
     versions = tag.split('.')
     try:
-        text = '{}.{}.{}-alpha'.format(versions[0], versions[1], int(versions[2]) + 1)
-        return text
+        return '{}.{}.{}-alpha'.format(versions[0], versions[1], int(versions[2]) + 1)
     except ValueError:
         # 4.0.0-beta.1 can not be cast to int
         return 'next'

@@ -98,10 +98,9 @@ class WebDav:
             if not metadata:
                 # Module not enabled
                 return None
-            qgis_folder = self.url_slash(
+            return self.url_slash(
                 self.url_slash(metadata.get('url'))
                 + metadata.get('projects_path'))
-            return qgis_folder
 
         return self.url_slash(self._dav_server)
 
@@ -127,26 +126,27 @@ class WebDav:
 
     def project_url(self) -> str:
         """ Returns the URL to the project in the web browser. """
-        server = self.server_url() + 'index.php/view/map?repository={repository}&project={project}'.format(
-            repository=self.parent.current_repository(RepositoryComboData.Id),
-            project=Path(self.qgs_path).stem
+        return (
+            self.server_url()
+            + 'index.php/view/map?repository={repository}&project={project}'.format(
+                repository=self.parent.current_repository(RepositoryComboData.Id),
+                project=Path(self.qgs_path).stem
+            )
         )
-        return server
 
     def thumbnail_url(self) -> str:
         """ Returns the URL to the thumbnail in the web browser. """
-        server = (
-                self.server_url()
-                + 'index.php/view/media/illustration?repository={repository}&project={project}'.format(
-                    repository=self.parent.current_repository(RepositoryComboData.Id),
-                    project=Path(self.qgs_path).stem
-                )
+        return (
+            self.server_url()
+            + 'index.php/view/media/illustration?repository={repository}&project={project}'.format(
+                repository=self.parent.current_repository(RepositoryComboData.Id),
+                project=Path(self.qgs_path).stem
+            )
         )
-        return server
 
     def media_url(self, media: str) -> str:
         """ Returns the URL to the media in the web browser. """
-        server = (
+        return (
             self.server_url()
             + 'index.php/view/media/getMedia?repository={repository}&project={project}&path={media}'.format(
                 repository=self.parent.current_repository(RepositoryComboData.Id),
@@ -154,7 +154,6 @@ class WebDav:
                 media=media
             )
         )
-        return server
 
     def setup_webdav_dialog(self, dialog: LizmapDialog = None) -> bool:
         """ Setting up the WebDAV connection. """
@@ -690,10 +689,9 @@ class WebDav:
         data = reply.readAll()
         content = data.data().decode('utf8')
         if not content:
-            msg = tr(
+            return tr(
                 "Unknown error from the webdav server. No content has been returned."
             ) + " ; Error from the HTTP request " + reply.errorString()
-            return msg
 
         # noinspection PyBroadException
         try:
@@ -748,16 +746,15 @@ class WebDav:
             quota_available = node.childNodes[0].data
 
             return PropFindDirResponse(http, quota_used, quota_available, last_modified, date_string, href)
-        else:
-            # Length
-            node = root.getElementsByTagName("d:getcontentlength")[0]
-            length = node.childNodes[0].data
+        # Length
+        node = root.getElementsByTagName("d:getcontentlength")[0]
+        length = node.childNodes[0].data
 
-            # Etag
-            node = root.getElementsByTagName("d:getetag")[0]
-            etag = node.childNodes[0].data.strip('"')
+        # Etag
+        node = root.getElementsByTagName("d:getetag")[0]
+        etag = node.childNodes[0].data.strip('"')
 
-            return PropFindFileResponse(http, etag, length, last_modified, date_string, href)
+        return PropFindFileResponse(http, etag, length, last_modified, date_string, href)
 
     def _for_test(self, user: str, password: str, repository: str, file_name: str):
         """ Only for testing purpose. """

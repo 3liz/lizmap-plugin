@@ -78,11 +78,10 @@ class LwcVersions(Enum):
                 f'The version string "{version_string}" was not found in Python files. Developers, please add it. No '
                 f'stress, nothing in production ;-)'
             )
-        else:
-            # For non developers, we return the oldest if the string was not found ...
-            # Not the best of course ! They will have a lot of blue.
-            # It should be fixed ASAP.
-            return LwcVersions.oldest()
+        # For non developers, we return the oldest if the string was not found ...
+        # Not the best of course ! They will have a lot of blue.
+        # It should be fixed ASAP.
+        return LwcVersions.oldest()
 
     @classmethod
     def branch_from_version(cls, version_string: str) -> str:

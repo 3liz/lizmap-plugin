@@ -67,10 +67,12 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
             # Only enable it if the layer is stored in PostgreSQL
             self.allow_multiple.setEnabled(True)
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
 
         if not self.field.currentField():
             return tr('Field is mandatory.')
+
+        return None

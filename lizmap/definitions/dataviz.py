@@ -16,8 +16,7 @@ from lizmap.toolbelt.strings import random_string
 
 def generate_uuid(layer: QgsVectorLayer, plot_type: str) -> str:
     """ Generate a UUID for the given layer. """
-    uuid = '{}_plot_{}_{}'.format(layer.name(), plot_type, random_string())
-    return uuid
+    return '{}_plot_{}_{}'.format(layer.name(), plot_type, random_string())
 
 
 @unique

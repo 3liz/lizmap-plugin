@@ -284,11 +284,11 @@ class TableManagerDataviz(TableManager):
         project = QgsProject.instance()
         layer = project.mapLayer(layer_id)
         if not layer:
-            return
+            return None
 
         relations = project.relationManager().referencingRelations(layer)
         if not relations:
-            return
+            return None
 
         if len(relations) >= 2:
             LOGGER.warning(
@@ -315,3 +315,4 @@ class TableManagerDataviz(TableManager):
         if feature.isValid():
             # The current feature can be set to NULL because of "only_show_child"
             return "\"{}\" IN ('{}')".format(field.name(), feature.id())
+        return None

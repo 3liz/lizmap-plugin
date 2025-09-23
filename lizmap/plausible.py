@@ -203,8 +203,6 @@ class Plausible:
             "url": plausible_url,
             "domain": PLAUSIBLE_DOMAIN_TEST if debug else PLAUSIBLE_DOMAIN_PROD,
         }
-        # noinspection PyArgumentList
-        reply = QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
-        _ = reply
+        _reply = QgsNetworkAccessManager.instance().post(request, QByteArray(str.encode(json.dumps(data))))
         # return reply.attribute(QNetworkRequest.HttpStatusCodeAttribute).startswith(('1', '2', '3'))
         return True
