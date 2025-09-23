@@ -27,27 +27,14 @@ def is_database_layer(layer: QgsMapLayer) -> bool:
 
     uri = QgsProviderRegistry.instance().decodeUri('ogr', layer.source())
     extension = os.path.splitext(uri['path'])[1]
-    if extension.lower() == '.gpkg':
-        return True
-
-    return False
+    return extension.lower() == '.gpkg'
 
 
 def is_vector_pg(layer: QgsMapLayer, geometry_check: bool = False) -> bool:
     """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
-    if layer.type() != QgsMapLayer.LayerType.VectorLayer:
-        return False
-
-    if layer.dataProvider().name() != 'postgres':
-        return False
-
-    if not geometry_check:
-        return True
-
-    if not layer.isSpatial():
-        return False
-
-    return True
+    return layer.type() == QgsMapLayer.LayerType.VectorLayer \
+        and layer.dataProvider().name() == "postgres" \
+        and (not geometry_check or layer.isSpatial())
 
 
 def relative_path(max_parent: int) -> str:

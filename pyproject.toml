@@ -100,9 +100,8 @@ ignore = [
     "T201",
     "E20",     # Whitespace before/after element
     "E501",    # Line too long
-    #"ANN206",  # Missing return type annotation for classmethod
     "RUF012",  # Mutable class attributes should be annotated
-    "SIM",
+    #"SIM",
     "RET",
     "C4",
 ]

@@ -252,9 +252,7 @@ class ServerManager:
         now = time.time()
         cache_dir = lizmap_user_folder().joinpath("cache_server_metadata")
         for item in cache_dir.glob('*'):
-            if os.stat(item).st_mtime < now - MAX_DAYS * 86400:
-                item.unlink()
-            elif force:
+            if os.stat(item).st_mtime < now - MAX_DAYS * 86400 or force:
                 item.unlink()
 
     @classmethod
@@ -418,7 +416,7 @@ class ServerManager:
 
         self.table.clearSelection()
         self.table.removeRow(row)
-        if row in self.fetchers.keys():
+        if row in self.fetchers:
             del self.fetchers[row]
         self.save_table()
         self.refresh_server_combo()
@@ -685,7 +683,7 @@ class ServerManager:
             qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
             return
 
-        if qgis_server_info and "error" not in qgis_server_info.keys():
+        if qgis_server_info and "error" not in qgis_server_info:
             # The current user is an admin, running at least LWC >= 3.5.1
             qgis_metadata = qgis_server_info.get('metadata')
             qgis_server_version = qgis_metadata.get('version')
@@ -748,7 +746,7 @@ class ServerManager:
                 self.update_action_version(lizmap_version, None, row)
                 return
             else:
-                if "error" in qgis_server_info.keys():
+                if "error" in qgis_server_info:
                     if qgis_server_info['error'] in ('NO_ACCESS', 'WRONG_CREDENTIALS'):
                         markdown += (
                             '* QGIS Server and plugins unknown status because the login provided is not an '
@@ -969,7 +967,7 @@ class ServerManager:
 
         is_dev_version = False
         for i, json_version in enumerate(json_content):
-            if not json_version['branch'] == branch:
+            if json_version['branch'] != branch:
                 continue
 
             qgis_server_valid = True

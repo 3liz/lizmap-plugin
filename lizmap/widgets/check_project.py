@@ -1098,10 +1098,7 @@ class TableCheck(QTableWidget):
 
     def has_blocking(self) -> bool:
         """ If the table has at least one blocking issue. """
-        for row in range(self.rowCount()):
-            if self.item(row, 0).data(self.DATA) == 0:
-                return True
-        return False
+        return any(self.item(row, 0).data(self.DATA) == 0 for row in range(self.rowCount()))
 
     def has_importants(self) -> int:
         """ If the table has at least one important issue. """
@@ -1142,7 +1139,7 @@ class TableCheck(QTableWidget):
             if not self.item(row, 1).data(self.EXPORT):
                 continue
             error_id = self.item(row, 3).data(self.JSON)
-            if error_id not in result.keys():
+            if error_id not in result:
                 result[error_id] = 1
             else:
                 result[error_id] += 1
@@ -1153,7 +1150,7 @@ class TableCheck(QTableWidget):
         result = {}
         for row in range(self.rowCount()):
             error_name = self.item(row, 3).data(Qt.ItemDataRole.DisplayRole)
-            if error_name not in result.keys():
+            if error_name not in result:
                 result[error_name] = 1
             else:
                 result[error_name] += 1

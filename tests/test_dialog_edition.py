@@ -55,7 +55,7 @@ class TestEditionDialog(TestCase):
         """Test we can load collection."""
         dialog = DatavizEditionDialog()
         assert not dialog.error.isVisible()
-        assert "id" == dialog.x_field.currentField()
+        assert dialog.x_field.currentField() == "id"
 
         data = [
             {
@@ -71,9 +71,9 @@ class TestEditionDialog(TestCase):
                 "z_field": "",
             },
         ]
-        assert 0 == dialog.traces.rowCount()
+        assert dialog.traces.rowCount() == 0
         dialog.load_collection(data)
-        assert 2 == dialog.traces.rowCount()
+        assert dialog.traces.rowCount() == 2
 
         result = dialog.save_collection()
         self.assertCountEqual(result, data)
