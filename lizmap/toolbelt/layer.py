@@ -93,8 +93,7 @@ def get_layer_wms_parameters(layer):
 def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:
     if item_property == LayerProperties.DataUrl:
         return layer.dataUrl()
-    else:
-        raise NotImplementedError
+    raise NotImplementedError
 
 
 def remove_all_ghost_layers():

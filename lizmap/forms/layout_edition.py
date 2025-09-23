@@ -122,7 +122,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         else:
             self.icon.setFilePath("")
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -134,6 +134,8 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         default_dpi = self.default_dpi.currentData()
         if default_dpi not in self.dpi.checkedItemsData():
             return tr('The default DPI is not the available list.')
+
+        return None
 
     def open_wizard_group(self):
         """ Open the wizard about ACL. """

@@ -265,8 +265,7 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
             result[name] += 1
 
     # For all groups with a recursive function
-    result = _duplicated_layer_name_or_group(project.layerTreeRoot(), result)
-    return result
+    return _duplicated_layer_name_or_group(project.layerTreeRoot(), result)
 
 
 def _split_layer_uri(provider: str, source: str) -> Tuple[str, Optional[str]]:
@@ -311,8 +310,7 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[Dict[str, Dict
     if len(unique_datasource.keys()) == 0:
         return None
 
-    data = {k: v for k, v in unique_datasource.items() if len(v.values()) >= 2}
-    return data
+    return {k: v for k, v in unique_datasource.items() if len(v.values()) >= 2}
 
 
 def duplicated_layer_with_filter_legend(project: QgsProject) -> List:

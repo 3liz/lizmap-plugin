@@ -108,7 +108,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
             self.color.setEnabled(False)
             self.color.setToNull()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -123,3 +123,5 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.fields.selection() and not self.html_template.html_content():
             return tr('Either an HTML template or a field must be set.')
+
+        return None
