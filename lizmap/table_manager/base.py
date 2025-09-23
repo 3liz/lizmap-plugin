@@ -1,5 +1,4 @@
 """Table manager."""
-import enum
 import inspect
 import json
 import logging
@@ -12,15 +11,18 @@ from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
+    QAbstractButton,
     QAbstractItemView,
     QDialog,
     QMessageBox,
     QTableWidgetItem,
+    QWidget,
 )
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.i18n import tr
@@ -29,18 +31,21 @@ from lizmap.toolbelt.resources import plugin_name
 LOGGER = logging.getLogger(plugin_name())
 
 
-__copyright__ = 'Copyright 2022, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 class TableManager:
 
     """ Class to manage a table with add, edit, remove, reorder rows. """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, remove_button, edit_button,
-            up_button, down_button):
+        self,
+        parent: LizmapDialog,
+        definitions: BaseDefinitions,
+        edition: Optional[QDialog],
+        table: QWidget,
+        remove_button: QAbstractButton,
+        edit_button: QAbstractButton,
+        up_button: QAbstractButton,
+        down_button: QAbstractButton,
+    ):
         """ Constructor. """
         self.parent = parent
         self.definitions = definitions
@@ -138,7 +143,6 @@ class TableManager:
                     if tooltip:
                         widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
                 default = general_config.get('default')
-                default: enum
                 if default:
                     index = widget.findData(default.value['data'])
                     widget.setCurrentIndex(index)
@@ -790,7 +794,7 @@ class TableManager:
 
         return data
 
-    def _from_json_legacy(self, data) -> list:
+    def _from_json_legacy(self, data: Dict) -> list:
         """Reformat the JSON data from 3.3 to 3.4 format.
 
         Used for atlas when all keys are stored in the main config scope.

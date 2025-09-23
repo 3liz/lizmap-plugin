@@ -133,7 +133,7 @@ class OgcProjectValidity:
         self.project.writeEntry("WMSRootName", "/", project_short_name)
 
     @classmethod
-    def short_name(cls, layer_name: str, existing: List[str], prefix='l') -> str:
+    def short_name(cls, layer_name: str, existing: List[str], prefix: str = 'l') -> str:
         """ Generate a layer short name.
 
         The default prefix is 'l' for layer.

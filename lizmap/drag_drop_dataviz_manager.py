@@ -1,6 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 import logging
 
@@ -93,7 +90,7 @@ class DragDropDatavizManager:
         icon = self.combo_plots.itemIcon(index)
         return text, icon
 
-    def _add_plot_in_tree(self, text: str, icon: QIcon, uuid: str, name_parent=None):
+    def _add_plot_in_tree(self, text: str, icon: QIcon, uuid: str, name_parent: Optional[str] = None):
         """ Internal function to add a plot in the tree. """
         if name_parent:
             # noinspection PyUnresolvedReferences
@@ -290,7 +287,7 @@ class DragDropDatavizManager:
         self._container_from_cfg(data)
         return True
 
-    def _container_from_cfg(self, data: list, parent: str = None) -> bool:
+    def _container_from_cfg(self, data: list, parent: Optional[str] = None) -> bool:
         """ Recursive function to read the container data. """
         for line in data:
             line: dict
@@ -318,7 +315,7 @@ class DragDropDatavizManager:
 
         return True
 
-    def _add_container(self, name: str, name_parent: str = None):
+    def _add_container(self, name: str, name_parent: Optional[str] = None):
         """ Add a new container in the tree. """
         parent_item = None
         if name_parent:

@@ -1,25 +1,29 @@
 """Dialog for locate by layer edition."""
 
+from typing import TYPE_CHECKING, Dict, Optional
+
 from qgis.core import QgsMapLayerProxyModel
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.layer import is_vector_pg
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-from lizmap.toolbelt.layer import is_vector_pg
+if TYPE_CHECKING:
+    from lizmap.dialog.main import LizmapDialog
 
 CLASS = load_ui('ui_form_locate_layer.ui')
 
 
 class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = LocateByLayerDefinitions()

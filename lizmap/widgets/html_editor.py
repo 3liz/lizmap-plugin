@@ -48,7 +48,7 @@ def expression_from_qgis_to_html(match):
     return escape(match.group())
 
 
-def expression_from_html_to_qgis(match) -> str:
+def expression_from_html_to_qgis(match: re.Match) -> str:
     """ Method to unescape QGIS expression to be used in QGIS. """
     if not match:
         return ''
@@ -163,7 +163,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             return
         self._insert_qgis_expression(dialog.expressionText())
 
-    def _js(self, command) -> str:
+    def _js(self, command: str) -> str:
         """ Internal function to execute Javascript in the editor. """
         if not WEBKIT_AVAILABLE:
             return None

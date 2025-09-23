@@ -1,7 +1,7 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
+from typing import (
+    Optional,
+    Type,
+)
 
 from qgis.core import (
     QgsMapLayerModel,
@@ -26,6 +26,7 @@ from lizmap.toolbelt.i18n import tr
 RASTER_COUNT_CELL = 100000000
 
 
+# TODO: use dataclass
 class Header:
 
     """ Header in tables. """
@@ -35,6 +36,7 @@ class Header:
         self.tooltip = tooltip
 
 
+# TODO: use dataclass
 class Headers:
     """ List of headers in the table. """
 
@@ -53,7 +55,7 @@ class Headers:
 class Severity:
 
     """ A level of severity, if it's blocking or not. """
-    def __init__(self, data: int, label: str, tooltip: str, color, size: int):
+    def __init__(self, data: int, label: str, tooltip: str, color: str, size: int):
         self.data = data
         self.label = label
         self.color = color
@@ -162,8 +164,8 @@ class Check:
             level: Level,
             severity: Severity,
             icon: QIcon,
-            alt_description_lizmap_cloud: str = None,
-            alt_help_lizmap_cloud: str = None,
+            alt_description_lizmap_cloud: Optional[str] = None,
+            alt_help_lizmap_cloud: Optional[str] = None,
             export_in_json: bool = True,
     ):
         self.data = data
@@ -1028,7 +1030,7 @@ class SourceLayer(Source):
 class SourceField(Source):
 
     """ For identifying a field in a layer in a project. """
-    def __init__(self, name, layer_id: str):
+    def __init__(self, name: str, layer_id: str):
         super().__init__(name)
         self.layer_id = layer_id
 
@@ -1052,7 +1054,7 @@ class SourceType:
 class Error:
 
     """ An error is defined by a check and a source. """
-    def __init__(self, source: str, check: Check, source_type=None):
+    def __init__(self, source: str, check: Check, source_type: Optional[Type[Source]] = None):
         self.source = source
         self.check = check
         self.source_type = source_type
@@ -1162,7 +1164,13 @@ class TableCheck(QTableWidget):
         text += '\n'
         return text
 
-    def add_error(self, error: Error, lizmap_cloud: bool = False, severity=None, icon=None):
+    def add_error(
+        self,
+        error: Error,
+        lizmap_cloud: bool = False,
+        severity: Optional[Severity] = None,
+        icon: Optional[QIcon] = None,
+    ):
         """ Add an error in the table. """
         # By default, let's take the one in the error
         used_severity = error.check.severity
