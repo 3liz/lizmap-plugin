@@ -1,5 +1,7 @@
 """Dialog for edition layer edition."""
 
+from typing import TYPE_CHECKING, Dict, Optional
+
 from qgis.core import (
     QgsMapLayerProxyModel,
     QgsProject,
@@ -16,9 +18,8 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 
 CLASS = load_ui('ui_form_edition.ui')
@@ -26,7 +27,12 @@ CLASS = load_ui('ui_form_edition.ui')
 
 class EditionLayerDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = EditionDefinitions()

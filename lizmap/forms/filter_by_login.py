@@ -1,4 +1,5 @@
 """Dialog for filter by login."""
+from typing import TYPE_CHECKING, Dict, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 
@@ -11,9 +12,8 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+if TYPE_CHECKING:
+    from lizmap.dialogs import LizmapDialog
 
 
 CLASS = load_ui('ui_form_filter_by_login.ui')
@@ -21,7 +21,12 @@ CLASS = load_ui('ui_form_filter_by_login.ui')
 
 class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByLoginDefinitions()

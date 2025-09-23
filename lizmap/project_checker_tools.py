@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import html
 
 from os.path import relpath
@@ -393,7 +389,7 @@ def _recursive_duplicated_layer_with_filter_legend(
     return output
 
 
-def simplify_provider_side(project: QgsProject, fix=False) -> List[SourceLayer]:
+def simplify_provider_side(project: QgsProject, fix: bool = False) -> List[SourceLayer]:
     """ Return the list of layer name which can be simplified on the server side. """
     results = []
     for layer in project.mapLayers().values():
@@ -446,7 +442,7 @@ def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool
     return True
 
 
-def count_legend_items(layer_tree: QgsLayerTreeNode, project, list_qgs: list) -> list:
+def count_legend_items(layer_tree: QgsLayerTreeNode, project: QgsProject, list_qgs: list) -> list:
     """ Count all items in the project legend. """
     for child in layer_tree.children():
         # noinspection PyArgumentList
@@ -461,7 +457,7 @@ def count_legend_items(layer_tree: QgsLayerTreeNode, project, list_qgs: list) ->
     return list_qgs
 
 
-def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project, results: List) -> List:
+def trailing_layer_group_name(layer_tree: QgsLayerTreeNode, project: QgsProject, results: List) -> List:
     """ Check for a trailing space in layer or group name. """
     for child in layer_tree.children():
         # noinspection PyArgumentList

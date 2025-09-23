@@ -17,7 +17,7 @@ from qgis.core import (
 from lizmap.definitions.definitions import LayerProperties
 
 
-def is_database_layer(layer) -> bool:
+def is_database_layer(layer: QgsMapLayer) -> bool:
     """ Check if the layer is a database layer.
 
     It returns True for postgres, spatialite and gpkg files.
@@ -33,7 +33,7 @@ def is_database_layer(layer) -> bool:
     return False
 
 
-def is_vector_pg(layer: QgsMapLayer, geometry_check=False) -> bool:
+def is_vector_pg(layer: QgsMapLayer, geometry_check: bool = False) -> bool:
     """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
     if layer.type() != QgsMapLayer.LayerType.VectorLayer:
         return False

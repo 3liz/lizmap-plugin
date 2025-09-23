@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import json
 import logging
 import os
@@ -30,6 +26,7 @@ from qgis.core import (  # QgsIconUtils,
     QgsMapLayer,
     QgsMapLayerModel,
     QgsMapLayerProxyModel,
+    QgsMasterLayoutInterface,
     QgsProject,
     QgsRasterLayer,
     QgsRectangle,
@@ -37,7 +34,7 @@ from qgis.core import (  # QgsIconUtils,
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.gui import QgsFileWidget
+from qgis.gui import QgisInterface, QgsFileWidget
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QEventLoop,
@@ -217,7 +214,7 @@ VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions
 
 class Lizmap:
 
-    def __init__(self, iface, lwc_version: LwcVersions = None):
+    def __init__(self, iface: QgisInterface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
         LOGGER.info("Plugin starting")
         self.iface = iface
@@ -1791,7 +1788,7 @@ class Lizmap:
         self.dlg.minimum_scale.setValue(min_scale)
         self.dlg.maximum_scale.setValue(max_scale)
 
-    def read_cfg_file(self, skip_tables=False) -> dict:
+    def read_cfg_file(self, skip_tables: bool = False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
@@ -2065,9 +2062,8 @@ class Lizmap:
         msg += ','.join(names)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
 
-    def layer_renamed(self, node, name: str):
+    def layer_renamed(self, _, name: str):
         """ When a layer/group is renamed in the legend. """
-        _ = node
         if not self.dlg.check_cfg_file_exists():
             # Not a Lizmap project
             return
@@ -2075,9 +2071,15 @@ class Lizmap:
         # Temporary workaround for
         # https://github.com/3liz/lizmap-plugin/issues/498
         msg = tr(
-            "The layer '{}' has been renamed. The configuration in the Lizmap <b>Layers</b> tab only must be checked."
-        ).format(name)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
+            f"The layer '{name}' has been renamed. "
+            "The configuration in the Lizmap <b>Layers</b> tab only must be checked."
+        )
+        self.iface.messageBar().pushMessage(
+            'Lizmap',
+            msg,
+            level=Qgis.MessageLevel.Warning,
+            duration=DURATION_WARNING_BAR,
+        )
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
@@ -2114,7 +2116,7 @@ class Lizmap:
 
         LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
 
-    def layout_renamed(self, layout, new_name: str):
+    def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
         """ When a layout has been renamed in the project. """
         if not self.dlg.check_cfg_file_exists():
             return
@@ -2128,11 +2130,12 @@ class Lizmap:
 
         self.layers_table['layouts']['manager'].layout_removed(name)
 
-    def check_wfs_is_checked(self, layer: QgsVectorLayer):
+    def check_wfs_is_checked(self, layer: QgsVectorLayer) -> bool:
         """ Check if the layer is published as WFS. """
         if not is_layer_published_wfs(self.project, layer.id()):
             self.display_error(tr(
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
+                'The layers you have chosen for this tool must be checked in the '
+                '"WFS Capabilities" option of the '
                 'QGIS Server tab in the "Project Properties" dialog.'))
             return False
         return True
@@ -2606,7 +2609,7 @@ class Lizmap:
         """ Disable the format combobox is the checkbox third party WMS is checked. """
         self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
 
-    def get_item_wms_capability(self, selected_item) -> Optional[bool]:
+    def get_item_wms_capability(self, selected_item: Dict) -> bool:
         """
         Check if an item in the tree is a layer
         and if it is a WMS layer
@@ -2615,11 +2618,8 @@ class Lizmap:
         is_layer = selected_item['type'] == 'layer'
         if is_layer:
             layer = self.get_qgis_layer_by_id(selected_item['id'])
-            if not layer:
-                return
-            if layer.providerType() in ['wms']:
-                if get_layer_wms_parameters(layer):
-                    wms_enabled = True
+            if layer and layer.providerType() in ['wms'] and get_layer_wms_parameters(layer):
+                wms_enabled = True
         return wms_enabled
 
     @staticmethod
@@ -2735,7 +2735,13 @@ class Lizmap:
         source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
         self._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
 
-    def _add_base_layer(self, source: str, name: str, attribution_url: str = None, attribution_name: str = None):
+    def _add_base_layer(
+        self,
+        source: str,
+        name: str,
+        attribution_url: Optional[str] = None,
+        attribution_name: Optional[str] = None,
+    ):
         """ Add a base layer to the "baselayers" group. """
         self.add_group_baselayers()
         raster = QgsRasterLayer(source, name, 'wms')
@@ -3112,7 +3118,11 @@ class Lizmap:
             self.check_project(lwc_version)
 
     def check_project(
-            self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
+        self,
+        lwc_version: LwcVersions,
+        with_gui: bool = True,
+        check_server: bool = True,
+        ignore_error: bool = False,
     ) -> bool:
         """ Check the project against all rules defined. """
         # Import must be done after QTranslator
@@ -3616,8 +3626,8 @@ class Lizmap:
         self,
         lwc_version: LwcVersions,
         with_gui: bool = True,
-        check_server=True,
-        ignore_error=False,
+        check_server: bool = True,
+        ignore_error: bool = False,
     ) -> Optional[Dict]:
         """ Get the JSON CFG content. """
 
@@ -4453,10 +4463,12 @@ class Lizmap:
         )
 
     def save_cfg_file(
-            self,
-            lwc_version: LwcVersions = None,
-            save_project: bool = None,
-            with_gui: bool = True,
+        self,
+        lwc_version: Optional[LwcVersions] = None,
+        # TODO find better semantic
+        save_project: Optional[bool] = None,
+        # FIXME seems to be redondant with save_project == None
+        with_gui: bool = True,
     ) -> bool:
         """Save the CFG file.
 
@@ -5272,7 +5284,7 @@ class Lizmap:
         loop.exec()
 
     @staticmethod
-    def login_from_auth_id(auth_id) -> str:
+    def login_from_auth_id(auth_id: str) -> str:
         """ Login used in the QGIS password manager from an Auth ID. """
         # noinspection PyArgumentList
         auth_manager = QgsApplication.authManager()

@@ -32,7 +32,7 @@ def online_cloud_help(page: str = '') -> QUrl:
     return QUrl(f"{CLOUD_ONLINE_URL}/{locale}/{page}")
 
 
-def online_lwc_help(page: str = '', version=VERSION) -> QUrl:
+def online_lwc_help(page: str = '', version: str = VERSION) -> QUrl:
     """ Online help URL according to locale and version. """
     locale = current_locale()
     if locale not in ONLINE_HELP_LANGUAGES:

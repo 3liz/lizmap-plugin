@@ -4,7 +4,7 @@ import json
 import re
 
 from collections import OrderedDict
-from typing import Optional
+from typing import Dict, Optional
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
@@ -19,14 +19,10 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
-
-__copyright__ = 'Copyright 2025, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
@@ -35,7 +31,12 @@ class BaseEditionDialog(QDialog):
 
     """ Class managing the edition form, either creation or editing. """
 
-    def __init__(self, parent: QDialog = None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: LizmapDialog,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         """ Constructor. """
         # parent is the main UI of the plugin
         # noinspection PyArgumentList

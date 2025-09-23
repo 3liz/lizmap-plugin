@@ -1,6 +1,9 @@
 """Definitions for dataviz."""
 
 from enum import Enum, unique
+from typing import (
+    Dict,
+)
 
 from qgis.core import QgsVectorLayer
 
@@ -9,10 +12,6 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import resources_path
 from lizmap.toolbelt.strings import random_string
-
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 
 def generate_uuid(layer: QgsVectorLayer, plot_type: str) -> str:
@@ -128,7 +127,7 @@ class AggregationType(Enum):
     }
 
 
-def represent_traces(data) -> str:
+def represent_traces(data: Dict) -> str:
     """Generate HTMl string for the tooltip instead of JSON representation."""
     # Nice to have : color in a small square
     html = '<ul>'

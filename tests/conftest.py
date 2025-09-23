@@ -34,7 +34,7 @@ def pytest_report_header(config):
 
 @pytest.fixture(scope="session")
 def rootdir(request: pytest.FixtureRequest) -> Path:
-    return Path(request.config.rootdir.strpath)
+    return request.config.rootpath
 
 
 @pytest.fixture(scope="session")
