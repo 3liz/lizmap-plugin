@@ -1,3 +1,4 @@
+import contextlib
 import json
 import logging
 import os
@@ -1159,7 +1160,7 @@ class Lizmap:
                 found = True
 
         # Change in all table manager too
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             manager = self.layers_table[key].get('manager')
             if manager:
                 manager.set_lwc_version(current_version)
@@ -1805,7 +1806,7 @@ class Lizmap:
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
-                for key in self.layers_table.keys():
+                for key in self.layers_table:
                     if key in sjson:
                         self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
@@ -1852,7 +1853,7 @@ class Lizmap:
 
         else:
             LOGGER.info('Lizmap CFG does not exist for this project.')
-            for key in self.layers_table.keys():
+            for key in self.layers_table:
                 manager = self.layers_table[key].get('manager')
                 if manager:
                     manager.truncate()
@@ -1962,7 +1963,7 @@ class Lizmap:
         if self.project.fileName().lower().endswith('qgs'):
             # Manage lizmap_user project variable
             variables = self.project.customVariables()
-            if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists() and not skip_tables:
+            if 'lizmap_user' in variables and not self.dlg.check_cfg_file_exists() and not skip_tables:
                 # The variable 'lizmap_user' exists in the project as a variable
                 # But no CFG was found, maybe the project has been renamed.
                 message = tr(
@@ -2489,11 +2490,9 @@ class Lizmap:
                                 self.external_wms_toggled()
                             else:
                                 self.dlg.cbExternalWms.setChecked(False)
-                                try:
+                                with contextlib.suppress(TypeError):
+                                    # Raise TypeError if the object was not connected
                                     self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
-                                except TypeError:
-                                    # The object was not connected
-                                    pass
 
             layer = self._current_selected_layer()  # It can be a layer or a group
 
@@ -3501,11 +3500,11 @@ class Lizmap:
             self.dlg.enabled_simplify_geom(True)
 
         data = {}
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             manager: TableManager = self.layers_table[key].get('manager')
             if manager:
                 for layer_id, fields in manager.wfs_fields_used().items():
-                    if layer_id not in data.keys():
+                    if layer_id not in data:
                         data[layer_id] = []
                     for f in fields:
                         if f not in data[layer_id]:
@@ -3886,7 +3885,7 @@ class Lizmap:
             if key == 'automatic_permalink':
                 liz2json["options"]['automatic_permalink'] = self.dlg.automatic_permalink.isChecked()
 
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             manager = self.layers_table[key].get('manager')
             if manager:
                 try:
@@ -3921,10 +3920,8 @@ class Lizmap:
                     # The print combobox is removed
                     # Let's remove from the CFG file
                     if lwc_version >= LwcVersions.Lizmap_3_7:
-                        try:
+                        with contextlib.suppress(KeyError):
                             del liz2json['options']['print']
-                        except KeyError:
-                            pass
                     else:
                         # We do not want to save this table if it's less than LWC 3.7
                         LOGGER.info("Skipping the 'layout' table because version is less than LWC 3.7")
@@ -4169,11 +4166,9 @@ class Lizmap:
                 else:
                     layer_options['externalWmsToggle'] = str(False)
 
-            if 'serverFrame' in layer_options.keys():
-                del layer_options['serverFrame']
+            layer_options.pop('serverFrame', None)
 
-            if 'popupFrame' in layer_options.keys():
-                del layer_options['popupFrame']
+            layer_options.pop('popupFrame', None)
 
             # Add layer options to the json object
             liz2json["layers"][v['name']] = layer_options
@@ -4258,11 +4253,9 @@ class Lizmap:
 
     def disconnect_map_scales_min_max(self):
         """ Disconnect the list of scales to min/max fields. """
-        try:
+        with contextlib.suppress(TypeError):
+            # Raise if it wasn't connected
             self.dlg.list_map_scales.editingFinished.disconnect(self.get_min_max_scales)
-        except TypeError:
-            # It wasn't connected
-            pass
 
     def native_scales_toggled(self):
         """ When the checkbox native scales is toggled. """
@@ -5173,7 +5166,7 @@ class Lizmap:
             pass
 
     def reinit_default_properties(self):
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             self.layers_table[key]['jsonConfig'] = dict()
 
     def on_project_read(self):

@@ -61,11 +61,8 @@ class NewVersionDialog(BaseNewsDialog):
             return False
 
         versions: list = QgsSettings().value(Settings.key(Settings.SeenChangelog), type=list)
-        if lwc_version.value in versions:
-            # Already seen this changelog
-            return False
-
-        return True
+        # Already seen this changelog ?
+        return lwc_version.value not in versions
 
     @classmethod
     def append_version(cls, lwc_version: LwcVersions):

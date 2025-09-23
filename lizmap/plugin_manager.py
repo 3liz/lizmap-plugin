@@ -84,7 +84,7 @@ class QgisPluginManager:
 
         current_version = ServerManager.split_lizmap_version(current_version)
 
-        if 'Lizmap' not in self.metadata.keys():
+        if 'Lizmap' not in self.metadata:
             # No QGIS plugin manager, nothing we can do now...
             LOGGER.debug("Version checker : NO QPM, nothing we can do now...")
             return False

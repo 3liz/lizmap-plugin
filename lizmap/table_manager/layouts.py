@@ -106,7 +106,7 @@ class TableManagerLayouts(TableManager):
                     json['formats_available'] = ('pdf', 'png', 'jpeg', 'svg')
 
             # Then we override by the CFG file
-            if layout.name() in tmp_layout_cfg.keys():
+            if layout.name() in tmp_layout_cfg:
                 for item_key, cfg_value in tmp_layout_cfg[layout.name()].items():
                     json[item_key] = cfg_value
 

@@ -110,7 +110,7 @@ def project_safeguards_checks(
         # Only vector/raster file based
 
         components = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
-        if 'path' not in components.keys():
+        if 'path' not in components:
             # The layer is not file base.
             continue
 
@@ -190,9 +190,7 @@ def project_tos_layers(project: QgsProject, google_check: bool, bing_check: bool
     layers = []
     for layer in project.mapLayers().values():
         datasource = layer.source().lower()
-        if 'google.com' in datasource and google_check:
-            layers.append(SourceLayer(layer.name(), layer.id()))
-        elif 'virtualearth.net' in datasource and bing_check:
+        if ('google.com' in datasource and google_check) or ('virtualearth.net' in datasource and bing_check):
             layers.append(SourceLayer(layer.name(), layer.id()))
 
     return layers
@@ -246,7 +244,7 @@ def _duplicated_layer_name_or_group(layer_tree: QgsLayerTreeNode, result: Dict) 
         if QgsLayerTree.isGroup(child):
             child = cast_to_group(child)
             name = child.name()
-            if name not in result.keys():
+            if name not in result:
                 result[name] = 1
             else:
                 result[name] += 1
@@ -261,7 +259,7 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
     for layer in project.mapLayers().values():
         layer: QgsMapLayer
         name = layer.name()
-        if name not in result.keys():
+        if name not in result:
             result[name] = 1
         else:
             result[name] += 1
@@ -302,7 +300,7 @@ def duplicated_layer_with_filter(project: QgsProject) -> Optional[Dict[str, Dict
         if not uri_filter:
             continue
 
-        if base_uri not in unique_datasource.keys():
+        if base_uri not in unique_datasource:
             # First time we meet this datasource, we append
             unique_datasource[base_uri] = {}
 
@@ -358,7 +356,7 @@ def _recursive_duplicated_layer_with_filter_legend(
                 # Saving the current URI
                 previous_uri = base_uri
 
-            if base_uri not in tmp_list.keys():
+            if base_uri not in tmp_list:
                 # First time we meet this datasource, we append
                 tmp_list[base_uri] = {
                     '_wkb_type': layer.wkbType(),
@@ -485,11 +483,7 @@ def authcfg_url_parameters(datasource: str) -> bool:
     This function is not using QgsDataSourceUri::authConfigId()
     """
     url_param = QUrlQuery(html.unescape(datasource))
-    for param in url_param.queryItems():
-        if param[0].lower() == 'authcfg' and param[1] != '':
-            return True
-
-    return False
+    return any(param[0].lower() == 'authcfg' and param[1] != '' for param in url_param.queryItems())
 
 
 def french_geopf_authcfg_url_parameters(datasource: str) -> bool:
@@ -524,7 +518,7 @@ def duplicated_rule_key_legend(project: QgsProject, filter_data: bool = True) ->
         if renderer.type() in ("categorizedSymbol", "RuleRenderer", "graduatedSymbol"):
 
             for item in renderer.legendSymbolItems():
-                if item.ruleKey() not in results[layer.id()].keys():
+                if item.ruleKey() not in results[layer.id()]:
                     results[layer.id()][item.ruleKey()] = 1
                 else:
                     results[layer.id()][item.ruleKey()] += 1
@@ -565,14 +559,14 @@ def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> Dict[str, in
     root_rule = renderer.rootRule()
     labels = {}
     for rule in root_rule.children():
-        if rule.label() not in labels.keys():
+        if rule.label() not in labels:
             labels[rule.label()] = 1
         else:
             labels[rule.label()] += 1
 
         # Only rule based
         for sub_rule in rule.children():
-            if sub_rule.label() not in labels.keys():
+            if sub_rule.label() not in labels:
                 labels[sub_rule.label()] = 1
             else:
                 labels[sub_rule.label()] += 1

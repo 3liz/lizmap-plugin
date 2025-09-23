@@ -154,10 +154,7 @@ class UrlPage(QWizardPage):
         if not url.scheme().startswith('http'):
             return False
 
-        if 'php' in url.path():
-            return False
-
-        return True
+        return 'php' not in url.path()
 
 
 class LoginPasswordPage(QWizardPage):
@@ -929,11 +926,8 @@ class ServerWizard(BaseWizard):
         elif self.currentId() == WizardPages.PostgresqlPage:
             skip_db_saving = self.field("skip_db")
             if not self.test_pg():
-                if skip_db_saving:
-                    # Second attempt, we skip
-                    return True
-                else:
-                    return False
+                # Second attempt, we skip
+                return skip_db_saving
 
             return self.save_pg()
 
@@ -1155,7 +1149,7 @@ class ServerWizard(BaseWizard):
 
         self.server_info = content
         self.is_lizmap_cloud = is_lizmap_cloud(content)
-        self.has_repository = True if len(content.get('repositories', [])) >= 1 else False
+        self.has_repository = len(content.get('repositories', [])) >= 1
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs
             self.has_repository = False

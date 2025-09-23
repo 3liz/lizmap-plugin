@@ -75,7 +75,7 @@ check-uv-install:
 #
 
 test:
-	cd tests && $(UV_RUN) pytest -v
+	$(UV_RUN) pytest -v tests/
 
 #
 # Test using docker image

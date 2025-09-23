@@ -175,9 +175,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     # Do not put if not cell, it might be False
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
 
-                if input_type == InputType.Field:
-                    trace_data[sub_key] = cell
-                elif input_type == InputType.Color:
+                if input_type == InputType.Field or input_type == InputType.Color:
                     trace_data[sub_key] = cell
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))

@@ -41,6 +41,7 @@ class BaseEditionDialog(QDialog):
         # parent is the main UI of the plugin
         # noinspection PyArgumentList
         super().__init__(parent)
+
         self.parent = parent
         self.config = None
         self.unicity = unicity
@@ -187,7 +188,7 @@ class BaseEditionDialog(QDialog):
 
         # For definition properties
         found = False
-        for lwc_version in self.lwc_versions.keys():
+        for lwc_version in self.lwc_versions:
             if found:
                 for layer_config in self.config.layer_config.values():
                     version = layer_config.get('version')
@@ -212,7 +213,7 @@ class BaseEditionDialog(QDialog):
 
         # For items in combobox
         found = False
-        for lwc_version in self.lwc_versions.keys():
+        for lwc_version in self.lwc_versions:
             if found:
                 for layer_config in self.config.layer_config.values():
                     widget_type = layer_config.get('type')
