@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import logging
 
 from base64 import b64encode
@@ -44,7 +40,7 @@ PropFindDirResponse = namedtuple(
 
 class WebDav:
 
-    def __init__(self, dav_server: str = None, auth_id: str = None):
+    def __init__(self, dav_server: Optional[str] = None, auth_id: Optional[str] = None):
         """ Constructor. """
         super().__init__()
         # Either from the dialog
@@ -334,7 +330,7 @@ class WebDav:
             return None, tr('No action found on the local file system, not checking on the server.')
         return self.remove_file(self.action_path.name)
 
-    def remove_file(self, remote_path: str):
+    def remove_file(self, remote_path: str) -> Tuple[bool, str]:
         """ Remove a remote file path. """
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
@@ -342,7 +338,7 @@ class WebDav:
             # Only for tests
             user, password = self._user, self._password
         else:
-            return None, 'Missing auth ID'
+            return False, 'Missing auth ID'
 
         if self.parent and self.parent.current_repository(RepositoryComboData.Path):
             directory = self.parent.current_repository(RepositoryComboData.Path)
@@ -350,7 +346,7 @@ class WebDav:
             # Only for tests
             directory = self._repository
         else:
-            return None, 'Missing repository'
+            return False, 'Missing repository'
 
         network_request = QNetworkRequest()
         network_request.setRawHeader(b"Authorization", self._token(user, password))
@@ -366,7 +362,7 @@ class WebDav:
 
         return True, content
 
-    def put_file(self, file_path: Path, remote_path: Path):
+    def put_file(self, file_path: Path, remote_path: Path) -> Tuple[bool, str]:
         """ Send a generic file.
 
         :param file_path: Local file path to send.
@@ -378,7 +374,7 @@ class WebDav:
             # Only for tests
             directory = self._repository
         else:
-            return None, 'Missing repository'
+            return False, 'Missing repository'
 
         # directory = self.url_slash(directory)
 
@@ -596,7 +592,13 @@ class WebDav:
             return False, 'Missing auth ID'
         return self.make_dirs_recursive_basic(directory, exists_ok, user, password)
 
-    def make_dirs_recursive_basic(self, file_path: Path, exists_ok: bool, user: str, password: str):
+    def make_dirs_recursive_basic(
+        self,
+        file_path: Path,
+        exists_ok: bool,
+        user: str,
+        password: str,
+    ) -> Tuple[bool, str]:
         """ Make all dirs if necessary. """
         if self.parent and self.parent.current_repository(RepositoryComboData.Path):
             directory = self.parent.current_repository(RepositoryComboData.Path)
@@ -677,7 +679,7 @@ class WebDav:
         return reply
 
     @classmethod
-    def _token(cls, user: str, password: str = None) -> bytes:
+    def _token(cls, user: str, password: Optional[str] = None) -> bytes:
         """ Return the encoded token for HTTP requests. """
         token = b64encode(f"{user}:{password}".encode('utf-8')).decode("ascii")
         return "Basic {}".format(token).encode("utf-8")

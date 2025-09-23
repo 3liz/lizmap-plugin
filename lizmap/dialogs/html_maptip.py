@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 
 from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
@@ -36,13 +32,13 @@ class HtmlMapTipDialog(QDialog, FORM_CLASS):
         return field_template
 
     @staticmethod
-    def table_row_html(display: str, cell: str):
+    def table_row_html(display: str, cell: str) -> str:
         """ Table row with an expression. """
-        field_template = """    <tr>
+        field_template = f"""    <tr>
               <th>{display}</th>
               <td>{cell}</td>
             </tr>
-        """.format(display=display, cell=cell)
+        """
         return field_template
 
     @staticmethod

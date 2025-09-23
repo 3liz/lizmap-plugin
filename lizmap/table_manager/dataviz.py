@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtNetwork import QNetworkRequest
-from qgis.PyQt.QtWidgets import QDialog, QLabel
+from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QLabel, QWidget
 from qgis.utils import OverrideCursor
 
 from lizmap.definitions.base import BaseDefinitions
@@ -39,11 +39,6 @@ from lizmap.toolbelt.strings import merge_strings
 LOGGER = logging.getLogger(plugin_name())
 
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 class TableManagerDataviz(TableManager):
 
     """ Table manager for dataviz.
@@ -53,8 +48,14 @@ class TableManagerDataviz(TableManager):
     """
 
     def __init__(
-            self, parent: LizmapDialog, definitions: BaseDefinitions, edition: Optional[QDialog], table, edit_button,
-            up_button, down_button):
+        self, parent: LizmapDialog,
+        definitions: BaseDefinitions,
+        edition: Optional[QDialog],
+        table: QWidget,
+        edit_button: QAbstractButton,
+        up_button: QAbstractButton,
+        down_button: QAbstractButton,
+    ):
         TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
 
         label = tr(

@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import json
 import logging
 import os
@@ -10,7 +6,13 @@ import time
 from enum import Enum
 from functools import partial
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import (
+    Callable,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 
 from qgis.core import (
     Qgis,
@@ -30,6 +32,7 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtWidgets import (
+    QAbstractButton,
     QAbstractItemView,
     QDialog,
     QHeaderView,
@@ -38,6 +41,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QTableWidgetItem,
     QVBoxLayout,
+    QWidget,
 )
 
 from lizmap.definitions.definitions import (
@@ -96,8 +100,17 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent: LizmapDialog, table, add_button, add_first_server, remove_button, edit_button, refresh_button,
-            up_button, down_button, function_check_dialog_validity
+        self,
+        parent: LizmapDialog,
+        table: QWidget,
+        add_button: QAbstractButton,
+        add_first_server: QAbstractButton,
+        remove_button: QAbstractButton,
+        edit_button: QAbstractButton,
+        refresh_button: QAbstractButton,
+        up_button: QAbstractButton,
+        down_button: QAbstractButton,
+        function_check_dialog_validity: Callable,
     ):
         self.parent = parent
         self.table = table
@@ -884,9 +897,13 @@ class ServerManager:
             json_file.write(json_file_content)
 
     def update_action_version(
-            self, lizmap_version: str, qgis_server_version, row: int, login: str = None,
-            error: str = None,
-            lizmap_cloud: bool = False,
+        self,
+        lizmap_version: str,
+        qgis_server_version: str,
+        row: int,
+        login: Optional[str] = None,
+        error: Optional[str] = None,
+        lizmap_cloud: bool = False,
     ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
         version_file = lizmap_user_folder().joinpath('released_versions.json')
@@ -894,8 +911,15 @@ class ServerManager:
             return
 
         level, messages, qgis_valid = self._messages_for_version(
-            lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error,
-            lizmap_cloud=lizmap_cloud, is_dev=self.parent.is_dev_version)
+            lizmap_version,
+            qgis_server_version,
+            login, version_file,
+            self.qgis_desktop,
+            error,
+            lizmap_cloud=lizmap_cloud,
+            is_dev=self.parent.is_dev_version,
+        )
+
         if isinstance(qgis_valid, bool) and not qgis_valid:
             self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.ItemDataRole.UserRole + 1)
             self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
@@ -904,7 +928,10 @@ class ServerManager:
 
     @staticmethod
     def _messages_for_version(
-            lizmap_version: str, server_version: str, login: str, json_path: Path,
+            lizmap_version: str,
+            server_version: str,
+            login: str,
+            json_path: Path,
             qgis_desktop: Tuple[int, int],
             error: str = '',
             lizmap_cloud: bool = False,

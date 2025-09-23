@@ -119,7 +119,7 @@ class TableFiles(QTableWidget):
         hbox.addWidget(remove_button)
         self.setCellWidget(row, column, cell)
 
-    def file_status(self, row: int, date, size):
+    def file_status(self, row: int, date: str, size: str):
         cell = QTableWidgetItem(date)
         self.setItem(row, 2, cell)
         cell = QTableWidgetItem(size)

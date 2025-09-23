@@ -1,5 +1,7 @@
 """Dialog for dataviz edition."""
 
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
 from qgis.core import QgsApplication, QgsMapLayerProxyModel
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
@@ -19,9 +21,8 @@ from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 
 CLASS = load_ui('ui_form_dataviz.ui')
@@ -29,7 +30,12 @@ CLASS = load_ui('ui_form_dataviz.ui')
 
 class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.parent = parent
@@ -127,7 +133,8 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
-    def load_collection(self, value) -> None:
+    # TODO Find if value is typable
+    def load_collection(self, value: Any) -> None:
         """Load a collection into the table from JSON string."""
         for trace in value:
             row = self.traces.rowCount()

@@ -1,5 +1,7 @@
 """Dialog for time manager."""
 
+from typing import TYPE_CHECKING, Dict, Optional
+
 from qgis.core import (
     QgsExpression,
     QgsExpressionContext,
@@ -15,17 +17,19 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 CLASS = load_ui('ui_form_time_manager.ui')
+
+if TYPE_CHECKING:
+    from qgis.PyQt.QtWidgets import QWidget
 
 
 class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, version: LwcVersions = None):
+    def __init__(self,
+        parent: Optional["QWidget"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, version)
         self.setupUi(self)
         self.config = TimeManagerDefinitions()
