@@ -181,17 +181,11 @@ class Check:
 
     def description_text(self, lizmap_cloud: bool) -> str:
         """ Return the best description of the check, depending on Lizmap Cloud. """
-        if lizmap_cloud and self.alt_description:
-            return self.alt_description
-        else:
-            return self.description
+        return self.alt_description if lizmap_cloud and self.alt_description else self.description
 
     def help_text(self, lizmap_cloud: bool) -> str:
         """ Return the best help of the check, depending on Lizmap Cloud. """
-        if lizmap_cloud and self.alt_help:
-            return self.alt_help
-        else:
-            return self.helper
+        return self.alt_help if lizmap_cloud and self.alt_help else self.helper
 
     def html_help(self, index: int, severity: Severity, lizmap_cloud: False) -> str:
         """ HTML string to show in an HTML table. """
@@ -200,7 +194,7 @@ class Check:
             row_class = "class=\"odd-row\""
 
         severities = Severities()
-        html_str = (
+        return (
             "<tr {row_class}>"
             "<td>{title}</td>"
             "<td>{description}</td>"
@@ -216,11 +210,10 @@ class Check:
             level=self.level.label,
             severity=severity.label if self.severity == severities.unknown else self.severity.label,
         )
-        return html_str
 
     def html_tooltip(self, lizmap_cloud: bool = False) -> str:
         """ HTML string to be used as a tooltip. """
-        html_str = (
+        return (
             "<strong>{description}</strong>"
             "<br>"
             "<p>{how_to_fix}</p>"
@@ -228,7 +221,6 @@ class Check:
             description=self.description_text(lizmap_cloud),
             how_to_fix=self.help_text(lizmap_cloud),
         )
-        return html_str
 
     def __str__(self):
         return f'<{self.title} : {self.description_text(False)} :{self.level} → {self.severity}>'

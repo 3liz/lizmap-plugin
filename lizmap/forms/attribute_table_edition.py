@@ -73,6 +73,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.check_layer_wfs()
         self.enable_primary_key_field()
 
+    # TODO: Type me !
     def check_layer_wfs(self):
         """ When the layer has changed in the combobox, check if the layer is published as WFS. """
         layer = self.layer.currentLayer()
@@ -100,7 +101,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.has_custom_config.setChecked(layer_has_custom_attribute_table(layer))
         self.enable_primary_key_field()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -112,3 +113,5 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.primary_key.currentField():
             return tr('Primary key field is mandatory.')
+
+        return None

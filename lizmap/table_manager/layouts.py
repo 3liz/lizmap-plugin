@@ -139,7 +139,7 @@ class TableManagerLayouts(TableManager):
         if len(diff) >= 2:
             # Sorry, I don't know which one it was.
             return
-        elif len(diff) == 0:
+        if len(diff) == 0:
             # Strange, no diff
             # Nothing to do
             return

@@ -258,10 +258,9 @@ class BaseEditionDialog(QDialog):
         if is_layer_published_wfs(QgsProject.instance(), layer.id()):
             return None
 
-        msg = tr(
+        return tr(
             'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
             ' option of the QGIS Server tab in the "Project Properties" dialog.')
-        return msg
 
     def validate(self):
         """ Validate the form or not.
@@ -274,20 +273,19 @@ class BaseEditionDialog(QDialog):
                     if key == k:
                         if layer_config['type'] == InputType.Layer:
                             if layer_config['widget'].currentLayer().id() in self.unicity[key]:
-                                msg = tr(
+                                return tr(
                                     'A duplicated "{}"="{}" is already in the table.'.format(
                                         key, layer_config['widget'].currentLayer().name()))
-                                return msg
                         else:
                             raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
 
         if self.primary_key_valid is not None:
             if not self.primary_key_valid:
-                msg = tr(
-                    "The primary key defined in your datasource for the layer '{}' is not valid. The layer is stored "
+                return tr(
+                    "The primary key defined in your datasource for the layer '{}' "
+                    "is not valid. The layer is stored "
                     "in a database and must have a valid primary key defined in the project."
                 ).format(self.layer.currentLayer().name())
-                return msg
 
         for k, layer_config in self.config.layer_config.items():
             if layer_config['type'] in (InputType.Field, InputType.PrimaryKeyField):
@@ -301,8 +299,7 @@ class BaseEditionDialog(QDialog):
                     if widget.currentField() == '':
                         names = re.findall(r'.[^A-Z]*', k)
                         names = [n.lower().replace('_', ' ') for n in names]
-                        msg = tr('The field "{}" is mandatory.').format(' '.join(names))
-                        return msg
+                        return tr('The field "{}" is mandatory.').format(' '.join(names))
 
         return None
 
@@ -532,7 +529,7 @@ class BaseEditionDialog(QDialog):
                 ).format(json_metadata["info"]["version"]),
                 QMessageBox.StandardButton.Ok
             )
-            return None
+            return
         # End of duplicated
 
         # Object name "allowed_groups" used "edition" and "attribute table"

@@ -50,18 +50,17 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
         self.enable_primary_key_field()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         layer = self.layer.currentLayer()
         if not layer:
             return tr('A layer is mandatory.')
 
         mode = self.filter_mode.currentData()
         if mode == FilterMode.Editing.value['data'] and layer.providerType() != 'postgres':
-            msg = '{}\n{}'.format(
+            return '{}\n{}'.format(
                 tr('The mode is set on "Editing only" but the layer is not stored in PostgreSQL.'),
                 tr('PostgreSQL is the only type of layer supported with editing capabilities.'),
             )
-            return msg
 
         if layer.providerType() == 'postgres' and self.checkbox_use_centroid.isChecked():
             has_index, message = self.config.has_spatial_centroid_index(layer)
@@ -74,3 +73,5 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.primary_key.currentField():
             return tr('Field is mandatory.')
+
+        return None

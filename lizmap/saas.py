@@ -45,7 +45,7 @@ def webdav_url(metadata: dict) -> Optional[str]:
     """ Return the WebDAV URL according to metadata. """
     webdav = webdav_properties(metadata)
     if not webdav:
-        return
+        return None
     return f"{webdav['url']}/{webdav['projects_path']}"
 
 

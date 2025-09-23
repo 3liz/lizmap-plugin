@@ -24,40 +24,36 @@ class HtmlMapTipDialog(QDialog, FORM_CLASS):
     @staticmethod
     def table_row(display: str, name: str) -> str:
         """ Table row, including NULL values. """
-        field_template = """    <tr>
+        return f"""    <tr>
               <th>{display}</th>
               <td>[% "{name}" %]</td>
             </tr>
-        """.format(display=display, name=name)
-        return field_template
+        """
 
     @staticmethod
     def table_row_html(display: str, cell: str) -> str:
         """ Table row with an expression. """
-        field_template = f"""    <tr>
+        return f"""    <tr>
               <th>{display}</th>
               <td>{cell}</td>
             </tr>
         """
-        return field_template
 
     @staticmethod
     def table_row_not_null(display: str, name: str) -> str:
         """ Table row, hidden if NULL. """
-        field_template = """
+        return f"""
         [% with_variable(
             'content',
             '<tr><th>{display}</th><td>' || "{name}" || '</td></tr>',
             if( "{name}" is not NULL or "{name}" <> '',@content,'')
         )
         %]
-        """.format(display=display, name=name)
-        return field_template
+        """
 
     @staticmethod
     def image(field: str) -> str:
-        field_template = f'<img src=\'[% "{field}" %]\' />'
-        return field_template
+        return f'<img src=\'[% "{field}" %]\' />'
 
     def map_tip(self) -> str:
         table_template = """<table class="table table-condensed table-striped table-bordered lizmapPopupTable">
@@ -94,6 +90,4 @@ class HtmlMapTipDialog(QDialog, FORM_CLASS):
                     else:
                         fields += self.table_row_not_null(display, name)
 
-        result = table_template.format(field=tr("Field"), value=tr("Value"), fields_template=fields)
-
-        return result
+        return table_template.format(field=tr("Field"), value=tr("Value"), fields_template=fields)

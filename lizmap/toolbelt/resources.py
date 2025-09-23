@@ -34,11 +34,10 @@ def plugin_name():
     :return: The plugin name.
     :rtype: basestring
     """
-    metadata = metadata_config()
-    name = metadata["general"]["name"]
-    return name
+    return metadata_config()["general"]["name"]
 
 
+# FIXME: Do not reload each time (use @functools.cached)
 def metadata_config() -> configparser:
     """Get the INI config parser for the metadata file.
 

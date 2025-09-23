@@ -107,8 +107,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
         exp = QgsExpression('to_string({})'.format(expression))
         exp.prepare(exp_context)
-        value = exp.evaluate(exp_context)
-        return value
+        return exp.evaluate(exp_context)
 
     def set_visible_min_max(self):
         """ Some widgets are hidden when the layer is stored in a database.
@@ -134,7 +133,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
     def end_field_changed(self):
         self.edit_max_value.setText('')
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -151,3 +150,5 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         if self.edit_min_value.isVisible():
             if self.edit_min_value.text() == '' or self.edit_max_value.text() == '':
                 return msg
+
+        return None

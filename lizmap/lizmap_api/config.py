@@ -1,6 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 import collections
 import json
@@ -496,6 +493,7 @@ class LizmapConfig:
         matches = self.project.mapLayersByName(name)
         if len(matches) > 0:
             return matches[0]
+        return None
 
     def to_json(self, p_global_options=None, p_layer_options=None, p_attributes_options=None,
                 sort_keys=False, indent=4, **kwargs):
@@ -525,17 +523,16 @@ class LizmapConfig:
             def map_dict(ob):
                 if isinstance(ob, collections.abc.Mapping):
                     return {k: map_dict(v) for k, v in ob.items()}
-                elif isinstance(ob, bool):
+                if isinstance(ob, bool):
                     return str(ob)
-                else:
-                    return ob
+                return ob
 
             config = map_dict(config)
 
         # Write json to the cfg file
-        json_file_content = json.dumps(config, sort_keys=sort_keys, indent=indent, **kwargs)
-        return json_file_content
+        return json.dumps(config, sort_keys=sort_keys, indent=indent, **kwargs)
 
+    # TODO: Type me !
     def set_global_options(self, options):
         """ Set the global lizmap configuration options
         """

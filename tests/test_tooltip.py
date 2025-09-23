@@ -1,6 +1,8 @@
 """Test tooltip."""
+import re
 
 from pathlib import Path
+from textwrap import dedent
 
 import pytest
 
@@ -53,35 +55,42 @@ class TestToolTip(TestCase):
     def test_field_name(self):
         """Test we can generate the field name correctly."""
         template = Tooltip._generate_field_name("field_a", "Field Name", "'foo'")
+        template = dedent(template)
 
-        expected = """
-                    [%
-                    concat(
-                        '<div class="control-group ',
-                        CASE
-                            WHEN "field_a" IS NULL OR trim("field_a") = ''
-                                THEN ' control-has-empty-value '
-                            ELSE ''
-                        END,
-                        '">',
-                        '    <label ',
-                        '       id="dd_jforms_view_edition_field_a_label" ',
-                        '       class="control-label jforms-label" ',
-                        '       for="dd_jforms_view_edition_field_a" >',
-                        '    Field Name',
-                        '    </label>',
-                        '    <div class="controls">',
-                        '        <span ',
-                        '            id="dd_jforms_view_edition_field_a" ',
-                        '            class="jforms-control-input" ',
-                        '        >',
-                                    'foo',
-                        '        </span>',
-                        '    </div>',
-                        '</div>'
-                    )
-                    %]"""
-        self.assertEqual(expected, template, template)
+        expected = dedent("""
+            [%
+            concat(
+                '<div class="control-group ',
+                CASE
+                    WHEN "field_a" IS NULL OR trim("field_a") = ''
+                        THEN ' control-has-empty-value '
+                    ELSE ''
+                END,
+                '">',
+                '    <label ',
+                '       id="dd_jforms_view_edition_field_a_label" ',
+                '       class="control-label jforms-label" ',
+                '       for="dd_jforms_view_edition_field_a" >',
+                '    Field Name',
+                '    </label>',
+                '    <div class="controls">',
+                '        <span ',
+                '            id="dd_jforms_view_edition_field_a" ',
+                '            class="jforms-control-input" ',
+                '        >',
+                            'foo',
+                '        </span>',
+                '    </div>',
+                '</div>'
+            )
+            %]""")
+
+        # NOTE: Get rid of indentation for comparing the two strings
+        self.assertEqual(
+            re.sub(r"^[ ]+", "", expected, flags=re.MULTILINE),
+            re.sub(r"^[ ]+", "", template, flags=re.MULTILINE),
+            template,
+        )
 
         layer = QgsVectorLayer("None?field=field_a:string", "table", "memory")
         sub_context = QgsExpressionContext()
@@ -92,11 +101,24 @@ class TestToolTip(TestCase):
         layer.dataProvider().addFeatures([feature])
         sub_context.setFeature(next(layer.getFeatures()))
         expression = QgsExpression().replaceExpressionText(template, sub_context)
-        self.assertEqual(
-            '\n                    <div class="control-group ">    <label        id="dd_jforms_view_edition_field_a_label"        class="control-label jforms-label"        for="dd_jforms_view_edition_field_a" >    Field Name    </label>    <div class="controls">        <span             id="dd_jforms_view_edition_field_a"             class="jforms-control-input"         >foo        </span>    </div></div>',
-            expression,
-            expression,
-        )
+        expression = re.sub(r"\s+", " ", expression).strip()
+
+        expected = '''<div class="control-group ">
+            <label
+             id="dd_jforms_view_edition_field_a_label"
+              class="control-label jforms-label"
+              for="dd_jforms_view_edition_field_a"
+            > Field Name </label>
+            <div class="controls">
+              <span
+                id="dd_jforms_view_edition_field_a"
+                class="jforms-control-input"
+                >foo </span>
+            </div></div>'''
+
+        expected = re.sub(r"\s+", " ", expected).strip()
+
+        assert expected == expression
 
     def test_visibility_expression(self):
         """Test the visibility expression."""
@@ -123,34 +145,36 @@ class TestToolTip(TestCase):
         self.assertEqual('"is_ok"', field_view)
 
         template = Tooltip._generate_field_name("is_ok", "Is ok ?", field_view)
-        expected = """
-                    [%
-                    concat(
-                        '<div class="control-group ',
-                        CASE
-                            WHEN "is_ok" IS NULL OR trim("is_ok") = ''
-                                THEN ' control-has-empty-value '
-                            ELSE ''
-                        END,
-                        '">',
-                        '    <label ',
-                        '       id="dd_jforms_view_edition_is_ok_label" ',
-                        '       class="control-label jforms-label" ',
-                        '       for="dd_jforms_view_edition_is_ok" >',
-                        '    Is ok ?',
-                        '    </label>',
-                        '    <div class="controls">',
-                        '        <span ',
-                        '            id="dd_jforms_view_edition_is_ok" ',
-                        '            class="jforms-control-input" ',
-                        '        >',
-                                    "is_ok",
-                        '        </span>',
-                        '    </div>',
-                        '</div>'
-                    )
-                    %]"""
-        self.assertEqual(expected, template, template)
+        template = dedent(template)
+        expected = dedent("""
+            [%
+            concat(
+                '<div class="control-group ',
+                CASE
+                    WHEN "is_ok" IS NULL OR trim("is_ok") = ''
+                        THEN ' control-has-empty-value '
+                    ELSE ''
+                END,
+                '">',
+                '    <label ',
+                '       id="dd_jforms_view_edition_is_ok_label" ',
+                '       class="control-label jforms-label" ',
+                '       for="dd_jforms_view_edition_is_ok" >',
+                '    Is ok ?',
+                '    </label>',
+                '    <div class="controls">',
+                '        <span ',
+                '            id="dd_jforms_view_edition_is_ok" ',
+                '            class="jforms-control-input" ',
+                '        >',
+                            "is_ok",
+                '        </span>',
+                '    </div>',
+                '</div>'
+            )
+            %]""")
+
+        assert expected == template
 
         layer = QgsVectorLayer("Point", "temporary_points", "memory")
         provider = layer.dataProvider()
@@ -163,12 +187,25 @@ class TestToolTip(TestCase):
         feature.setAttributes([True])
         layer.dataProvider().addFeatures([feature])
         sub_context.setFeature(next(layer.getFeatures()))
+
         expression = QgsExpression().replaceExpressionText(template, sub_context)
-        self.assertEqual(
-            '\n                    <div class="control-group ">    <label        id="dd_jforms_view_edition_is_ok_label"        class="control-label jforms-label"        for="dd_jforms_view_edition_is_ok" >    Is ok ?    </label>    <div class="controls">        <span             id="dd_jforms_view_edition_is_ok"             class="jforms-control-input"         >true        </span>    </div></div>',
-            expression,
-            expression,
-        )
+        expression = re.sub(r"\s+", " ", expression).strip()
+
+        expected = '''<div class="control-group ">
+            <label
+                id="dd_jforms_view_edition_is_ok_label"
+                class="control-label jforms-label"
+                for="dd_jforms_view_edition_is_ok"
+            > Is ok ? </label>
+            <div class="controls">
+                <span
+                    id="dd_jforms_view_edition_is_ok"
+                    class="jforms-control-input" >true </span>
+            </div></div>'''
+
+        expected = re.sub(r"\s+", " ", expected).strip()
+
+        assert expected == expression
 
         # FIXME On memory layers, we can't custom config on checkbox widget
         # config = {
@@ -196,11 +233,12 @@ class TestToolTip(TestCase):
             ]
         }
         expression = Tooltip._generate_value_map(widget_config, "field_a")
-        expected = """
-                    map_get(
-                        hstore_to_map('"a"=>"A","b"=>"B"'),
-                        replace("field_a", '\\'', '’')
-                    )"""
+        expected = dedent("""
+            map_get(
+                hstore_to_map('"a"=>"A","b"=>"B"'),
+                replace("field_a", '\\'', '’')
+            )""",
+        )
         self.assertEqual(expected, expression)
         self.check_layer_context("a", expression, "A")
 
@@ -212,11 +250,12 @@ class TestToolTip(TestCase):
             }
         }
         expression = Tooltip._generate_value_map(widget_config, "field_a")
-        expected = """
-                    map_get(
-                        hstore_to_map('"a"=>"A","b"=>"B"'),
-                        replace("field_a", '\\'', '’')
-                    )"""
+        expected = dedent("""
+            map_get(
+                hstore_to_map('"a"=>"A","b"=>"B"'),
+                replace("field_a", '\\'', '’')
+            )""",
+        )
         self.assertEqual(expected, expression)
         self.check_layer_context("a", expression, "A")
 
@@ -241,11 +280,12 @@ class TestToolTip(TestCase):
             ]
         }
         expression = Tooltip._generate_value_map(widget_config, "field_a")
-        expected = """
-                    map_get(
-                        hstore_to_map('"a"=>"L’eau c’est bon","b"=>"B"'),
-                        replace("field_a", '\\'', '’')
-                    )"""
+        expected = dedent("""
+            map_get(
+                hstore_to_map('"a"=>"L’eau c’est bon","b"=>"B"'),
+                replace("field_a", '\\'', '’')
+            )""",
+        )
         self.assertEqual(expected, expression)
         self.check_layer_context("a", expression, "L’eau c’est bon")
 
@@ -255,11 +295,12 @@ class TestToolTip(TestCase):
             "display_format": "yyyy",
         }
         expression = Tooltip._generate_date(widget_config, "field_a")
-        expected = """
-                    format_date(
-                        "field_a",
-                        'yyyy'
-                    )"""
+        expected = dedent("""
+            format_date(
+                "field_a",
+                'yyyy'
+            )""",
+        )
         self.assertEqual(expected, expression)
         self.check_layer_context("2012-05-15", expression, "2012")
 
@@ -302,11 +343,12 @@ class TestToolTip(TestCase):
     def test_text_widget(self):
         """Test to check the text widget."""
         expression = Tooltip._generate_text_label("a label", "a text widget")
-        expected = """
-                    <p><strong>a label</strong>
-                    <div class="field">a text widget</div>
-                    </p>
-                    """
+        expected = dedent("""
+            <p><strong>a label</strong>
+            <div class="field">a text widget</div>
+            </p>
+            """,
+        )
         self.assertEqual(expected, expression)
 
     def test_external_resource_image(self):
@@ -468,15 +510,15 @@ class TestToolTip(TestCase):
         self.maxDiff = None
         expected = """<ul class="nav nav-tabs">
 
-  <li class="active"><a href="#popup_dd_[% $id %]_tab_1" data-toggle="tab">tab 1</a></li>
+            <li class="active"><a href="#popup_dd_[% $id %]_tab_1" data-toggle="tab">tab 1</a></li>
 
-  <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
+            <li class=""><a href="#popup_dd_[% $id %]_tab2" data-toggle="tab">tab2</a></li>
 
-  <li class="[% if (False, '', 'hidden') %]"><a href="#popup_dd_[% $id %]_invisible" data-toggle="tab">invisible</a></li>
-</ul>
-<div class="tab-content">
-  <div id="popup_dd_[% $id %]_tab_1" class="tab-pane active">
-    
+            <li class="[% if (False, '', 'hidden') %]"><a href="#popup_dd_[% $id %]_invisible" data-toggle="tab">invisible</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="popup_dd_[% $id %]_tab_1" class="tab-pane active">
+
                     [%
                     concat(
                         '<div class="control-group ',
@@ -497,7 +539,7 @@ class TestToolTip(TestCase):
                         '            id="dd_jforms_view_edition_name" ',
                         '            class="jforms-control-input" ',
                         '        >',
-                                    
+
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         replace("name", '\\'', '’')
@@ -507,13 +549,13 @@ class TestToolTip(TestCase):
                         '</div>'
                     )
                     %]
-  </div>
+            </div>
 
-  <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
-  </div>
+            <div id="popup_dd_[% $id %]_tab2" class="tab-pane ">
+            </div>
 
-  <div id="popup_dd_[% $id %]_invisible" class="tab-pane ">
-    
+            <div id="popup_dd_[% $id %]_invisible" class="tab-pane ">
+
                     [%
                     concat(
                         '<div class="control-group ',
@@ -534,7 +576,7 @@ class TestToolTip(TestCase):
                         '            id="dd_jforms_view_edition_name" ',
                         '            class="jforms-control-input" ',
                         '        >',
-                                    
+
                     map_get(
                         hstore_to_map('"a"=>"A","b"=>"B","c"=>"C"'),
                         replace("name", '\\'', '’')
@@ -544,8 +586,12 @@ class TestToolTip(TestCase):
                         '</div>'
                     )
                     %]
-  </div>
-</div>"""  # noqa W293
+            </div>
+        </div>"""
+
+        # NOTE: Get rid of indentation for comparing the two strings
+        expected = re.sub(r"^[ ]+", "", expected, flags=re.MULTILINE)
+        html_content = re.sub(r"^[ ]+", "", html_content, flags=re.MULTILINE)
 
         self.assertEqual(expected, html_content, html_content)
         self.assertFalse('data-bs-toggle="tab"' in html_content)

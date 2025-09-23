@@ -835,8 +835,7 @@ class BaseWizard(QWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}index.php/view/app/metadata'.format(base_url)
-        return url
+        return '{}index.php/view/app/metadata'.format(base_url)
 
 
 class ServerWizard(BaseWizard):
@@ -917,13 +916,13 @@ class ServerWizard(BaseWizard):
             self.currentPage().result_login_password.setText(message)
             return False
 
-        elif self.currentId() == WizardPages.MasterPasswordPage:
+        if self.currentId() == WizardPages.MasterPasswordPage:
             LOGGER.debug("Validate current page, going to save the auth")
             result = self.save_auth_id()
             LOGGER.debug("Saving to the authentication database is : {} valid".format("" if result else "not"))
             return result
 
-        elif self.currentId() == WizardPages.PostgresqlPage:
+        if self.currentId() == WizardPages.PostgresqlPage:
             skip_db_saving = self.field("skip_db")
             if not self.test_pg():
                 # Second attempt, we skip
@@ -940,8 +939,7 @@ class ServerWizard(BaseWizard):
 
     def current_url(self) -> str:
         """ Cleaned input URL. """
-        url = self.trailing_slash(self.clean_data(self.field('url')))
-        return url
+        return self.trailing_slash(self.clean_data(self.field('url')))
 
     def current_name(self) -> str:
         """ Cleaned input name. """
@@ -1066,15 +1064,13 @@ class ServerWizard(BaseWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}index.php/dataviz/service/'.format(base_url)
-        return url
+        return '{}index.php/dataviz/service/'.format(base_url)
 
     @staticmethod
     def url_server_info(base_url: str) -> str:
         """ Return the URL to the server information panel. """
         base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}admin.php/admin/server_information'.format(base_url)
-        return url
+        return '{}admin.php/admin/server_information'.format(base_url)
 
     def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
         """ Check the URL and given login.
@@ -1102,11 +1098,11 @@ class ServerWizard(BaseWizard):
         error = request.get(net_req)
         if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
             return False, tr("Network error"), False
-        elif error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
+        if error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
             return False, tr("Server exception error") + ". " + tr('Please check the URL'), False
-        elif error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
+        if error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
             return False, tr("Timeout error"), False
-        elif error != QgsBlockingNetworkRequest.ErrorCode.NoError:
+        if error != QgsBlockingNetworkRequest.ErrorCode.NoError:
             return False, tr("Unknown error"), False
 
         response = request.reply().content()
@@ -1142,7 +1138,7 @@ class ServerWizard(BaseWizard):
                     message += "<br><br>"
                     message += tr('Right') + " : lizmap.admin.server.information.view"
                 return False, message, True
-            elif error == 'WRONG_CREDENTIALS':
+            if error == 'WRONG_CREDENTIALS':
                 message = tr(
                     "Either the login or the password is wrong. It must be your login you use in your web-browser.")
                 return False, message, True

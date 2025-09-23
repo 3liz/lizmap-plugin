@@ -259,8 +259,7 @@ class ServerManager:
     def cache_file_for_name(cls, name: str) -> Path:
         """ Return a cache file name according to a server name. """
         name = name.replace('/', '-')
-        cache_file = lizmap_user_folder().joinpath("cache_server_metadata").joinpath(f'{name}.json')
-        return cache_file
+        return lizmap_user_folder().joinpath("cache_server_metadata", f'{name}.json')
 
     def check_validity_servers(self) -> bool:
         """ Check if all servers are valid with at least a login. """
@@ -745,25 +744,24 @@ class ServerManager:
 
                 self.update_action_version(lizmap_version, None, row)
                 return
-            else:
-                if "error" in qgis_server_info:
-                    if qgis_server_info['error'] in ('NO_ACCESS', 'WRONG_CREDENTIALS'):
-                        markdown += (
-                            '* QGIS Server and plugins unknown status because the login provided is not an '
-                            'administrator\n'
-                        )
-                        qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
-                        self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
-                        return
-
+            if "error" in qgis_server_info:
+                if qgis_server_info['error'] in ('NO_ACCESS', 'WRONG_CREDENTIALS'):
                     markdown += (
-                        '* QGIS Server and plugins unknown status because of the settings in QGIS Server, '
-                        'please review your server settings in the Lizmap Web Client administration interface, '
-                        'then in the "Server Information" panel.\n'
+                        '* QGIS Server and plugins unknown status because the login provided is not an '
+                        'administrator\n'
                     )
                     qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
                     self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
                     return
+
+                markdown += (
+                    '* QGIS Server and plugins unknown status because of the settings in QGIS Server, '
+                    'please review your server settings in the Lizmap Web Client administration interface, '
+                    'then in the "Server Information" panel.\n'
+                )
+                qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
+                self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
+                return
 
         # Unknown
         markdown += '* QGIS Server and plugins unknown status\n'

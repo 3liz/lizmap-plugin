@@ -184,7 +184,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         # Let's repaint colors on widgets because of the numeric versus date type
         self.version_lwc()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -228,3 +228,5 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             index = self.layer.currentLayer().fields().indexFromName(widget.currentField())
             if self.layer.currentLayer().fields().fieldOrigin(index) in forbidden:
                 return field_origin.format(widget.currentField())
+
+        return None

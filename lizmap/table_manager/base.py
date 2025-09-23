@@ -225,7 +225,7 @@ class TableManager:
         selection = self.table.selectedIndexes()
 
         if len(selection) <= 0:
-            return
+            return None
 
         row = selection[0].row()
 
@@ -236,7 +236,7 @@ class TableManager:
             # value is a boolean = False
             # We can't edit a layer which is invalid,
             # Maybe just the layer wasn't loaded in QGIS desktop because the file was missing
-            return
+            return None
 
         data = dict()
         for i, key in enumerate(self.keys):
@@ -790,8 +790,9 @@ class TableManager:
 
         return [layer]
 
+    # TODO: type me !
     @staticmethod
-    def _from_json_legacy_order(data):
+    def _from_json_legacy_order(data: Dict) -> Dict:
         """Used when there is a dictionary with the row number as a key.
 
         No keys will be removed.
@@ -803,6 +804,7 @@ class TableManager:
             for a_layer in layers.values():
                 if a_layer['order'] == row:
                     return a_layer
+            return None
 
         order = []
         for layer in data.values():
@@ -815,6 +817,7 @@ class TableManager:
 
         return new_data
 
+    # TODO: type me !
     @staticmethod
     def _from_json_legacy_capabilities(data):
         """Function used for the edition capabilities.
@@ -826,6 +829,7 @@ class TableManager:
             layer.pop('geometryType')
         return data
 
+    # TODO: type me !
     @staticmethod
     def _from_json_legacy_form_filter(data):
         """ Read form filter and transform it if needed. """

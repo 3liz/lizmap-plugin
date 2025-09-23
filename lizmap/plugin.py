@@ -2773,8 +2773,7 @@ class Lizmap:
     def string_to_list(text):
         """ Format a string to a list. """
         data = text.split(',') if len(text) > 0 else []
-        data = [item.strip() for item in data]
-        return data
+        return [item.strip() for item in data]
 
     def save_value_layer_group_data(self, key: str):
         """ Save the new value from the UI in the global layer property self.layerList.
@@ -2958,11 +2957,11 @@ class Lizmap:
         """ Either a group or a layer name. """
         item = self.dlg.layer_tree.currentItem()
         if not item:
-            return
+            return None
 
         text = item.text(1)
         if text not in self.layerList:
-            return
+            return None
 
         return text
 
@@ -2971,15 +2970,14 @@ class Lizmap:
         lid = self._current_selected_item_in_config()
         if not lid:
             LOGGER.warning('No item selected in the Lizmap layer tree.')
-            return
+            return None
 
         layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
         if not layers:
             LOGGER.warning('Layers not found with searched text from the tree : {}'.format(lid))
-            return
+            return None
 
-        layer = layers[0]
-        return layer
+        return layers[0]
 
     def link_from_properties(self):
         """ Button set link from layer in the Lizmap configuration. """
@@ -4180,8 +4178,7 @@ class Lizmap:
         use_native = self.dlg.use_native_scales.isChecked()
         if use_native:
             return [self.dlg.minimum_scale.value(), self.dlg.maximum_scale.value()]
-        else:
-            return [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
+        return [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
 
     def minimum_scale_value(self) -> int:
         """ Return the minimum scale value. """
@@ -5358,11 +5355,11 @@ class Lizmap:
             destination = self.dlg.name_training_folder.placeholderText()
 
         destination = unaccent(destination)
+        # TODO: Use maketrans()
         destination = destination.replace('-', '_')
         destination = destination.replace(' ', '_')
         destination = destination.replace("'", '_')
-        destination = destination.lower()
-        return destination
+        return destination.lower()
 
     def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
         """ Destination folder where to store the data. """
@@ -5372,14 +5369,14 @@ class Lizmap:
         else:
             file_path = self.dlg.path_training_folder_zip.filePath()
             if not file_path:
-                return
+                return None
 
             destination = self.destination_name()
             output = Path(file_path).joinpath(destination)
             QgsSettings().setValue(Settings.key(Settings.LizmapRepository), destination)
 
         if not output:
-            return
+            return None
 
         if not output.exists():
             output.mkdir()

@@ -8,6 +8,7 @@
 import logging
 import re
 
+from textwrap import dedent
 from typing import Union
 
 from qgis.core import (
@@ -25,10 +26,6 @@ from qgis.PyQt.QtXml import QDomDocument
 
 LOGGER = logging.getLogger('Lizmap')
 SPACES = '  '
-
-__copyright__ = 'Copyright 2021, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 
 class Tooltip:
@@ -48,9 +45,7 @@ class Tooltip:
 
     @classmethod
     def friendly_name(cls, name: str, alias: str) -> str:
-        fname = alias if alias else name
-        fname = fname.replace("'", "’")
-        return fname
+        return (alias if alias else name).replace("'", "’")
 
     @staticmethod
     def create_popup_node_item_from_form(
@@ -272,38 +267,37 @@ class Tooltip:
 
     @staticmethod
     def _generate_field_name(name: str, fname: str, expression: str) -> str:
-        text = '''
-                    [%
-                    concat(
-                        '<div class="control-group ',
-                        CASE
-                            WHEN "{0}" IS NULL OR trim("{0}") = ''
-                                THEN ' control-has-empty-value '
-                            ELSE ''
-                        END,
-                        '">',
-                        '    <label ',
-                        '       id="dd_jforms_view_edition_{0}_label" ',
-                        '       class="control-label jforms-label" ',
-                        '       for="dd_jforms_view_edition_{0}" >',
-                        '    {1}',
-                        '    </label>',
-                        '    <div class="controls">',
-                        '        <span ',
-                        '            id="dd_jforms_view_edition_{0}" ',
-                        '            class="jforms-control-input" ',
-                        '        >',
-                                    {2},
-                        '        </span>',
-                        '    </div>',
-                        '</div>'
-                    )
-                    %]'''.format(
-            name,
-            fname,
-            expression,
-        )
-        return text
+        return '''
+            [%
+            concat(
+                '<div class="control-group ',
+                CASE
+                    WHEN "{0}" IS NULL OR trim("{0}") = ''
+                        THEN ' control-has-empty-value '
+                    ELSE ''
+                END,
+                '">',
+                '    <label ',
+                '       id="dd_jforms_view_edition_{0}_label" ',
+                '       class="control-label jforms-label" ',
+                '       for="dd_jforms_view_edition_{0}" >',
+                '    {1}',
+                '    </label>',
+                '    <div class="controls">',
+                '        <span ',
+                '            id="dd_jforms_view_edition_{0}" ',
+                '            class="jforms-control-input" ',
+                '        >',
+                            {2},
+                '        </span>',
+                '    </div>',
+                '</div>'
+            )
+            %]'''.format(
+                name,
+                fname,
+                expression,
+            )
 
     @staticmethod
     def _generate_value_map(widget_config: Union[list, dict], name: str) -> str:
@@ -331,12 +325,12 @@ class Tooltip:
 
         # noinspection PyCallByClass,PyArgumentList
         hstore = QgsHstoreUtils.build(values)
-        field_view = f'''
-                    map_get(
-                        hstore_to_map('{hstore}'),
-                        replace("{name}", '\\'', '’')
-                    )'''
-        return field_view
+        return dedent(f'''
+            map_get(
+                hstore_to_map('{hstore}'),
+                replace("{name}", '\\'', '’')
+            )''',
+        )
 
     @staticmethod
     def _generate_external_resource(widget_config: dict, name: str, fname: str) -> str:
@@ -395,26 +389,27 @@ class Tooltip:
             # Fallback to ISO 8601, when the widget has not been configured yet
             date_format = "yyyy-MM-dd"
 
-        field_view = f'''
-                    format_date(
-                        "{name}",
-                        '{date_format}'
-                    )'''
-        return field_view
+        return dedent(f'''
+            format_date(
+                "{name}",
+                '{date_format}'
+            )''',
+        )
 
     @staticmethod
     def _generate_text_label(label: str, expression: str) -> str:
-        text = f'''
-                    <p><strong>{label}</strong>
-                    <div class="field">{expression}</div>
-                    </p>
-                    '''
-        return text
+        return dedent(f'''
+            <p><strong>{label}</strong>
+            <div class="field">{expression}</div>
+            </p>
+            ''',
+        )
 
+    # TODO: Set as literal constant
     @staticmethod
     def css() -> str:
         """ CSS for LWC <= 3.7. """
-        css = '''<style>
+        return '''<style>
     div.popup_lizmap_dd {
         margin: 2px;
     }
@@ -452,12 +447,12 @@ class Tooltip:
     }
 
 </style>\n'''
-        return css
 
+    # TODO: Set as literal constant
     @staticmethod
     def css_3_8_6() -> str:
         """ CSS for LWC from 3.8.0 to 3.8.6. """
-        css = '''<style>
+        return '''<style>
 /* Flat style for editing forms & drag-and-drop designed popup */
 div.popup_lizmap_dd ul.nav-tabs {
   border-bottom: 1px solid var(--color-contrasted-elements);
@@ -543,7 +538,6 @@ div.popup_lizmap_dd .controls {
   margin-left: 140px !important;
 }
 </style>\n'''
-        return css
 
 # BE CAREFUL
 # This file MUST BE an exact copy between

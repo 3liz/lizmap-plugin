@@ -332,7 +332,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         """ Add the current trace from the combobox in the HTML template. """
         self.html_template.insert_text("{{$y{}}}".format(self.trace_combo.currentData()))
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -365,3 +365,5 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
             if not isinstance(data, dict):
                 return tr('The JSON layout must be a dictionary.')
+
+        return None

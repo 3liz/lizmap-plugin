@@ -108,8 +108,7 @@ class TestSql(TestCase):
 
         if pk:
             uri.setKeyColumn(pk)
-        layer = QgsVectorLayer(uri.uri(False), "test", "postgres")
-        return layer
+        return QgsVectorLayer(uri.uri(False), "test", "postgres")
 
     def test_invalid_auto_generated_pk(
         self,
