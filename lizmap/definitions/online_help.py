@@ -1,9 +1,5 @@
 """Online help definitions. """
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QLocale, QUrl
 
@@ -20,8 +16,7 @@ ONLINE_HELP_LANGUAGES = ('en', 'es', 'it', 'ja', 'pt', 'fi', 'fr')
 def current_locale() -> str:
     """ Get the main language, with 2 characters only. """
     locale = QgsSettings().value("locale/userLocale", QLocale().name())
-    locale = locale[0:2]
-    return locale
+    return locale[0:2]
 
 
 def online_cloud_help(page: str = '') -> QUrl:
@@ -32,7 +27,7 @@ def online_cloud_help(page: str = '') -> QUrl:
     return QUrl(f"{CLOUD_ONLINE_URL}/{locale}/{page}")
 
 
-def online_lwc_help(page: str = '', version=VERSION) -> QUrl:
+def online_lwc_help(page: str = '', version: str = VERSION) -> QUrl:
     """ Online help URL according to locale and version. """
     locale = current_locale()
     if locale not in ONLINE_HELP_LANGUAGES:

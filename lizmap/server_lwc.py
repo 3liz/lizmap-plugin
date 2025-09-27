@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import json
 import logging
 import os
@@ -10,7 +6,13 @@ import time
 from enum import Enum
 from functools import partial
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import (
+    Callable,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 
 from qgis.core import (
     Qgis,
@@ -30,6 +32,7 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtWidgets import (
+    QAbstractButton,
     QAbstractItemView,
     QDialog,
     QHeaderView,
@@ -38,6 +41,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QTableWidgetItem,
     QVBoxLayout,
+    QWidget,
 )
 
 from lizmap.definitions.definitions import (
@@ -96,8 +100,17 @@ class ServerManager:
     """ Fetch the Lizmap server version for a list of server. """
 
     def __init__(
-            self, parent: LizmapDialog, table, add_button, add_first_server, remove_button, edit_button, refresh_button,
-            up_button, down_button, function_check_dialog_validity
+        self,
+        parent: LizmapDialog,
+        table: QWidget,
+        add_button: QAbstractButton,
+        add_first_server: QAbstractButton,
+        remove_button: QAbstractButton,
+        edit_button: QAbstractButton,
+        refresh_button: QAbstractButton,
+        up_button: QAbstractButton,
+        down_button: QAbstractButton,
+        function_check_dialog_validity: Callable,
     ):
         self.parent = parent
         self.table = table
@@ -239,17 +252,14 @@ class ServerManager:
         now = time.time()
         cache_dir = lizmap_user_folder().joinpath("cache_server_metadata")
         for item in cache_dir.glob('*'):
-            if os.stat(item).st_mtime < now - MAX_DAYS * 86400:
-                item.unlink()
-            elif force:
+            if os.stat(item).st_mtime < now - MAX_DAYS * 86400 or force:
                 item.unlink()
 
     @classmethod
     def cache_file_for_name(cls, name: str) -> Path:
         """ Return a cache file name according to a server name. """
         name = name.replace('/', '-')
-        cache_file = lizmap_user_folder().joinpath("cache_server_metadata").joinpath(f'{name}.json')
-        return cache_file
+        return lizmap_user_folder().joinpath("cache_server_metadata", f'{name}.json')
 
     def check_validity_servers(self) -> bool:
         """ Check if all servers are valid with at least a login. """
@@ -405,7 +415,7 @@ class ServerManager:
 
         self.table.clearSelection()
         self.table.removeRow(row)
-        if row in self.fetchers.keys():
+        if row in self.fetchers:
             del self.fetchers[row]
         self.save_table()
         self.refresh_server_combo()
@@ -672,7 +682,7 @@ class ServerManager:
             qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
             return
 
-        if qgis_server_info and "error" not in qgis_server_info.keys():
+        if qgis_server_info and "error" not in qgis_server_info:
             # The current user is an admin, running at least LWC >= 3.5.1
             qgis_metadata = qgis_server_info.get('metadata')
             qgis_server_version = qgis_metadata.get('version')
@@ -734,25 +744,24 @@ class ServerManager:
 
                 self.update_action_version(lizmap_version, None, row)
                 return
-            else:
-                if "error" in qgis_server_info.keys():
-                    if qgis_server_info['error'] in ('NO_ACCESS', 'WRONG_CREDENTIALS'):
-                        markdown += (
-                            '* QGIS Server and plugins unknown status because the login provided is not an '
-                            'administrator\n'
-                        )
-                        qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
-                        self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
-                        return
-
+            if "error" in qgis_server_info:
+                if qgis_server_info['error'] in ('NO_ACCESS', 'WRONG_CREDENTIALS'):
                     markdown += (
-                        '* QGIS Server and plugins unknown status because of the settings in QGIS Server, '
-                        'please review your server settings in the Lizmap Web Client administration interface, '
-                        'then in the "Server Information" panel.\n'
+                        '* QGIS Server and plugins unknown status because the login provided is not an '
+                        'administrator\n'
                     )
                     qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
                     self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
                     return
+
+                markdown += (
+                    '* QGIS Server and plugins unknown status because of the settings in QGIS Server, '
+                    'please review your server settings in the Lizmap Web Client administration interface, '
+                    'then in the "Server Information" panel.\n'
+                )
+                qgis_cell.setData(Qt.ItemDataRole.UserRole, markdown)
+                self.update_action_version(lizmap_version, None, row, login, error=qgis_server_info['error'])
+                return
 
         # Unknown
         markdown += '* QGIS Server and plugins unknown status\n'
@@ -884,9 +893,13 @@ class ServerManager:
             json_file.write(json_file_content)
 
     def update_action_version(
-            self, lizmap_version: str, qgis_server_version, row: int, login: str = None,
-            error: str = None,
-            lizmap_cloud: bool = False,
+        self,
+        lizmap_version: str,
+        qgis_server_version: str,
+        row: int,
+        login: Optional[str] = None,
+        error: Optional[str] = None,
+        lizmap_cloud: bool = False,
     ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
         version_file = lizmap_user_folder().joinpath('released_versions.json')
@@ -894,8 +907,15 @@ class ServerManager:
             return
 
         level, messages, qgis_valid = self._messages_for_version(
-            lizmap_version, qgis_server_version, login, version_file, self.qgis_desktop, error,
-            lizmap_cloud=lizmap_cloud, is_dev=self.parent.is_dev_version)
+            lizmap_version,
+            qgis_server_version,
+            login, version_file,
+            self.qgis_desktop,
+            error,
+            lizmap_cloud=lizmap_cloud,
+            is_dev=self.parent.is_dev_version,
+        )
+
         if isinstance(qgis_valid, bool) and not qgis_valid:
             self.table.item(row, TableCell.QgisVersion.value).setData(False, Qt.ItemDataRole.UserRole + 1)
             self.table.item(row, TableCell.QgisVersion.value).setText(tr("Configuration error"))
@@ -904,7 +924,10 @@ class ServerManager:
 
     @staticmethod
     def _messages_for_version(
-            lizmap_version: str, server_version: str, login: str, json_path: Path,
+            lizmap_version: str,
+            server_version: str,
+            login: str,
+            json_path: Path,
             qgis_desktop: Tuple[int, int],
             error: str = '',
             lizmap_cloud: bool = False,
@@ -942,7 +965,7 @@ class ServerManager:
 
         is_dev_version = False
         for i, json_version in enumerate(json_content):
-            if not json_version['branch'] == branch:
+            if json_version['branch'] != branch:
                 continue
 
             qgis_server_valid = True

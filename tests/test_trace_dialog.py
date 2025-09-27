@@ -8,6 +8,8 @@ from qgis.core import QgsProject, QgsVectorLayer
 from lizmap.definitions.dataviz import GraphType
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 
+from .compat import TestCase
+
 
 @pytest.fixture()
 def layer(data: Path):
@@ -17,9 +19,6 @@ def layer(data: Path):
 
     yield layer
     QgsProject.instance().removeMapLayer(layer)
-
-
-from .compat import TestCase
 
 
 class TestTraceDialog(TestCase):

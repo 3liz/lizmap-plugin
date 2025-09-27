@@ -9,7 +9,6 @@ from lizmap.definitions.definitions import LayerProperties, LwcVersions
 from lizmap.plugin import Lizmap
 from lizmap.toolbelt.layer import layer_property
 
-
 from .compat import TestCase
 
 

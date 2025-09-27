@@ -1,9 +1,11 @@
 """Dialog for layout edition."""
+from typing import Dict, Optional
+
 from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QLabel
+from qgis.PyQt.QtWidgets import QWidget
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.layouts import Dpi, FormatType, LayoutsDefinitions
@@ -11,21 +13,21 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 CLASS = load_ui('ui_form_layout.ui')
 
 
 class LayoutEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional[QWidget] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.parent = parent
-        self.layout_type: QLabel
+        # self.layout_type: QLabel
         self.layout_type.setWordWrap(True)
         self.config = LayoutsDefinitions()
         self.config.add_layer_widget('layout', self.layout)
@@ -120,7 +122,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         else:
             self.icon.setFilePath("")
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -132,6 +134,8 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         default_dpi = self.default_dpi.currentData()
         if default_dpi not in self.dpi.checkedItemsData():
             return tr('The default DPI is not the available list.')
+
+        return None
 
     def open_wizard_group(self):
         """ Open the wizard about ACL. """

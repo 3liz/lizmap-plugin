@@ -1,8 +1,7 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 import sys
+
+from typing import Optional
 
 from qgis.core import Qgis
 from qgis.PyQt.QtCore import QDateTime, QLocale
@@ -36,8 +35,8 @@ class LogPanel:
     def append(
             self,
             msg: str,
-            style: Html = None,
-            abort=None,
+            style: Optional[Html] = None,
+            abort: bool = False,
             time: bool = False,
             level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
     ):

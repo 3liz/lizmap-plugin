@@ -1,4 +1,5 @@
 """Dialog for filter by form."""
+from typing import TYPE_CHECKING, Dict, Optional
 
 from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
@@ -10,17 +11,19 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2022, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 CLASS = load_ui('ui_form_filter_by_form.ui')
+
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 
 class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByFormDefinitions()
@@ -181,7 +184,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         # Let's repaint colors on widgets because of the numeric versus date type
         self.version_lwc()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -225,3 +228,5 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             index = self.layer.currentLayer().fields().indexFromName(widget.currentField())
             if self.layer.currentLayer().fields().fieldOrigin(index) in forbidden:
                 return field_origin.format(widget.currentField())
+
+        return None

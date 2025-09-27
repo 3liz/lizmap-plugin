@@ -1,17 +1,14 @@
 """Definitions used in Lizmap"""
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 from collections import namedtuple
 from enum import Enum, unique
 from functools import total_ordering
-from typing import List
+from typing import Sequence
 
 from qgis.PyQt.QtCore import Qt
 
 
+# TODO refactorize
 @unique
 @total_ordering
 class LwcVersions(Enum):
@@ -53,23 +50,23 @@ class LwcVersions(Enum):
         return NotImplemented
 
     @staticmethod
-    def as_list():
+    def as_list() -> Sequence["LwcVersions"]:
         return list(map(lambda c: c, LwcVersions))
 
     @staticmethod
-    def latest():
+    def latest() -> "LwcVersions":
         """ Latest version definition in the Python files, like LWC 3.X """
         # Latest is used in test by default
         # As the plugin is not fetching the online JSON file, we still need to choose one LWC version
         return LwcVersions.as_list()[-1]
 
     @staticmethod
-    def oldest():
+    def oldest() -> "LwcVersions":
         """ Oldest version definition in the Python file, like LWC 3.1 """
         return LwcVersions.as_list()[0]
 
     @classmethod
-    def find(cls, version_string: str, raise_exception: bool = False):
+    def find(cls, version_string: str, raise_exception: bool = False) -> "LwcVersions":
         """Return the LWC version for the given string."""
         branch = cls.branch_from_version(version_string)
         for lwc_version in cls.__members__.values():
@@ -81,11 +78,10 @@ class LwcVersions(Enum):
                 f'The version string "{version_string}" was not found in Python files. Developers, please add it. No '
                 f'stress, nothing in production ;-)'
             )
-        else:
-            # For non developers, we return the oldest if the string was not found ...
-            # Not the best of course ! They will have a lot of blue.
-            # It should be fixed ASAP.
-            return LwcVersions.oldest()
+        # For non developers, we return the oldest if the string was not found ...
+        # Not the best of course ! They will have a lot of blue.
+        # It should be fixed ASAP.
+        return LwcVersions.oldest()
 
     @classmethod
     def branch_from_version(cls, version_string: str) -> str:
@@ -94,12 +90,12 @@ class LwcVersions(Enum):
         return f"{split_version[0]}.{split_version[1]}"
 
     @classmethod
-    def version_as_list(cls, version: str) -> List:
+    def version_as_list(cls, version: str) -> Sequence[int]:
         """ List from a version string. """
         return [int(v) for v in version.split(".")]
 
     @classmethod
-    def find_from_metadata(cls, metadata: dict):
+    def find_from_metadata(cls, metadata: dict) -> "LwcVersions":
         """ Return the release status from metadata. """
         version = metadata.get("info").get("version")
         return LwcVersions.find(version)
@@ -143,7 +139,7 @@ class ReleaseStatus(Enum):
         return NotImplemented
 
     @classmethod
-    def find(cls, status_string: str):
+    def find(cls, status_string: str) -> "ReleaseStatus":
         """Return the release status from the string."""
         if status_string == 'feature_freeze':
             status_string = 'ReleaseCandidate'

@@ -1,7 +1,7 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
+from typing import (
+    Optional,
+    Type,
+)
 
 from qgis.core import (
     QgsMapLayerModel,
@@ -26,6 +26,7 @@ from lizmap.toolbelt.i18n import tr
 RASTER_COUNT_CELL = 100000000
 
 
+# TODO: use dataclass
 class Header:
 
     """ Header in tables. """
@@ -35,6 +36,7 @@ class Header:
         self.tooltip = tooltip
 
 
+# TODO: use dataclass
 class Headers:
     """ List of headers in the table. """
 
@@ -53,7 +55,7 @@ class Headers:
 class Severity:
 
     """ A level of severity, if it's blocking or not. """
-    def __init__(self, data: int, label: str, tooltip: str, color, size: int):
+    def __init__(self, data: int, label: str, tooltip: str, color: str, size: int):
         self.data = data
         self.label = label
         self.color = color
@@ -162,8 +164,8 @@ class Check:
             level: Level,
             severity: Severity,
             icon: QIcon,
-            alt_description_lizmap_cloud: str = None,
-            alt_help_lizmap_cloud: str = None,
+            alt_description_lizmap_cloud: Optional[str] = None,
+            alt_help_lizmap_cloud: Optional[str] = None,
             export_in_json: bool = True,
     ):
         self.data = data
@@ -179,17 +181,11 @@ class Check:
 
     def description_text(self, lizmap_cloud: bool) -> str:
         """ Return the best description of the check, depending on Lizmap Cloud. """
-        if lizmap_cloud and self.alt_description:
-            return self.alt_description
-        else:
-            return self.description
+        return self.alt_description if lizmap_cloud and self.alt_description else self.description
 
     def help_text(self, lizmap_cloud: bool) -> str:
         """ Return the best help of the check, depending on Lizmap Cloud. """
-        if lizmap_cloud and self.alt_help:
-            return self.alt_help
-        else:
-            return self.helper
+        return self.alt_help if lizmap_cloud and self.alt_help else self.helper
 
     def html_help(self, index: int, severity: Severity, lizmap_cloud: False) -> str:
         """ HTML string to show in an HTML table. """
@@ -198,7 +194,7 @@ class Check:
             row_class = "class=\"odd-row\""
 
         severities = Severities()
-        html_str = (
+        return (
             "<tr {row_class}>"
             "<td>{title}</td>"
             "<td>{description}</td>"
@@ -214,11 +210,10 @@ class Check:
             level=self.level.label,
             severity=severity.label if self.severity == severities.unknown else self.severity.label,
         )
-        return html_str
 
     def html_tooltip(self, lizmap_cloud: bool = False) -> str:
         """ HTML string to be used as a tooltip. """
-        html_str = (
+        return (
             "<strong>{description}</strong>"
             "<br>"
             "<p>{how_to_fix}</p>"
@@ -226,7 +221,6 @@ class Check:
             description=self.description_text(lizmap_cloud),
             how_to_fix=self.help_text(lizmap_cloud),
         )
-        return html_str
 
     def __str__(self):
         return f'<{self.title} : {self.description_text(False)} :{self.level} → {self.severity}>'
@@ -1028,7 +1022,7 @@ class SourceLayer(Source):
 class SourceField(Source):
 
     """ For identifying a field in a layer in a project. """
-    def __init__(self, name, layer_id: str):
+    def __init__(self, name: str, layer_id: str):
         super().__init__(name)
         self.layer_id = layer_id
 
@@ -1052,7 +1046,7 @@ class SourceType:
 class Error:
 
     """ An error is defined by a check and a source. """
-    def __init__(self, source: str, check: Check, source_type=None):
+    def __init__(self, source: str, check: Check, source_type: Optional[Type[Source]] = None):
         self.source = source
         self.check = check
         self.source_type = source_type
@@ -1096,10 +1090,7 @@ class TableCheck(QTableWidget):
 
     def has_blocking(self) -> bool:
         """ If the table has at least one blocking issue. """
-        for row in range(self.rowCount()):
-            if self.item(row, 0).data(self.DATA) == 0:
-                return True
-        return False
+        return any(self.item(row, 0).data(self.DATA) == 0 for row in range(self.rowCount()))
 
     def has_importants(self) -> int:
         """ If the table has at least one important issue. """
@@ -1140,7 +1131,7 @@ class TableCheck(QTableWidget):
             if not self.item(row, 1).data(self.EXPORT):
                 continue
             error_id = self.item(row, 3).data(self.JSON)
-            if error_id not in result.keys():
+            if error_id not in result:
                 result[error_id] = 1
             else:
                 result[error_id] += 1
@@ -1151,7 +1142,7 @@ class TableCheck(QTableWidget):
         result = {}
         for row in range(self.rowCount()):
             error_name = self.item(row, 3).data(Qt.ItemDataRole.DisplayRole)
-            if error_name not in result.keys():
+            if error_name not in result:
                 result[error_name] = 1
             else:
                 result[error_name] += 1
@@ -1162,7 +1153,13 @@ class TableCheck(QTableWidget):
         text += '\n'
         return text
 
-    def add_error(self, error: Error, lizmap_cloud: bool = False, severity=None, icon=None):
+    def add_error(
+        self,
+        error: Error,
+        lizmap_cloud: bool = False,
+        severity: Optional[Severity] = None,
+        icon: Optional[QIcon] = None,
+    ):
         """ Add an error in the table. """
         # By default, let's take the one in the error
         used_severity = error.check.severity

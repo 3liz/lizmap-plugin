@@ -7,10 +7,6 @@ from lizmap.definitions.filter_by_polygon import FilterLogin
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import resources_path
 
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 
 @unique
 class SingleOrMultipleValues(Enum):

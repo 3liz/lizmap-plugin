@@ -22,8 +22,6 @@ First you must [install `uv`](https://docs.astral.sh/uv/getting-started/installa
 > uv venv --system-site-packages
 # Update the project's environment
 > uv sync --frozen   
-# Tell make that we are using uv 
-> echo "USE_UV=1" >> .localconfig.mk
 ```
 
 Run the tests:

@@ -1,8 +1,9 @@
 """Dialog for tooltip edition."""
+from typing import Dict, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.PyQt.QtGui import QColor, QIcon
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -11,17 +12,16 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 CLASS = load_ui('ui_form_tooltip.ui')
 
 
 class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(self,
+        parent: Optional[QWidget] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = ToolTipDefinitions()
@@ -108,7 +108,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
             self.color.setEnabled(False)
             self.color.setToNull()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -123,3 +123,5 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.fields.selection() and not self.html_template.html_content():
             return tr('Either an HTML template or a field must be set.')
+
+        return None

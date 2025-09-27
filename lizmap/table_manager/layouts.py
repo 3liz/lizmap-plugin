@@ -5,9 +5,9 @@ import logging
 from enum import Enum
 from typing import Optional
 
-from qgis.core import QgsProject
+from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QWidget
 
 from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.definitions import LwcVersions
@@ -17,19 +17,31 @@ from lizmap.toolbelt.resources import plugin_name
 LOGGER = logging.getLogger(plugin_name())
 
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 class TableManagerLayouts(TableManager):
 
     """ Table manager for layouts. """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, edit_button, up_button,
-            down_button):
-        TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
+        self,
+        parent: Optional[QWidget],
+        definitions: BaseDefinitions,
+        edition: Optional[QDialog],
+        table: QWidget,
+        edit_button: QAbstractButton,
+        up_button: QAbstractButton,
+        down_button: QAbstractButton,
+    ):
+        TableManager.__init__(
+            self,
+            parent,
+            definitions,
+            edition,
+            table,
+            None,
+            edit_button,
+            up_button,
+            down_button,
+        )
 
     @staticmethod
     def label_dictionary_list() -> str:
@@ -94,13 +106,13 @@ class TableManagerLayouts(TableManager):
                     json['formats_available'] = ('pdf', 'png', 'jpeg', 'svg')
 
             # Then we override by the CFG file
-            if layout.name() in tmp_layout_cfg.keys():
+            if layout.name() in tmp_layout_cfg:
                 for item_key, cfg_value in tmp_layout_cfg[layout.name()].items():
                     json[item_key] = cfg_value
 
             self._edit_row(row, json)
 
-    def layout_renamed(self, layout, new_name: str):
+    def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
         """ When a layout has been renamed in the project. """
         # The 'layout' has already the new name !
         # Shame, I need to make a diff to find which one was it...
@@ -127,7 +139,7 @@ class TableManagerLayouts(TableManager):
         if len(diff) >= 2:
             # Sorry, I don't know which one it was.
             return
-        elif len(diff) == 0:
+        if len(diff) == 0:
             # Strange, no diff
             # Nothing to do
             return

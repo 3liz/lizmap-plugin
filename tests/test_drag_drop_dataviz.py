@@ -9,7 +9,6 @@ from lizmap.definitions.dataviz import DatavizDefinitions
 from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.table_manager.base import TableManager
 
-
 from .compat import TestCase
 
 

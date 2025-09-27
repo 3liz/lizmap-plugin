@@ -1,5 +1,7 @@
 """ Wizard for ACL group. """
 
+from typing import Optional
+
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
@@ -13,14 +15,10 @@ from lizmap.toolbelt.resources import load_ui
 
 FORM_CLASS = load_ui('ui_wizard_group.ui')
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 
 class WizardGroupDialog(QDialog, FORM_CLASS):
 
-    def __init__(self, helper: str, current_acl: str, server_groups: dict = None):
+    def __init__(self, helper: str, current_acl: str, server_groups: Optional[dict] = None):
         """ Constructor. """
         QDialog.__init__(self)
         self.setupUi(self)

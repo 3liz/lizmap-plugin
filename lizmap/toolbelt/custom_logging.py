@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 """Setting up logging using QGIS, file, Sentry..."""
 
 import logging
@@ -29,16 +25,11 @@ def qgis_level(logging_level):
     :return: The QGIS Level
     :rtype: Qgis.MessageLevel
     """
-    if logging_level == "CRITICAL":
+    if logging_level in ("CRITICAL", "ERROR"):
         return Qgis.MessageLevel.Critical
-    elif logging_level == "ERROR":
-        return Qgis.MessageLevel.Critical
-    elif logging_level == "WARNING":
+
+    if logging_level == "WARNING":
         return Qgis.MessageLevel.Warning
-    elif logging_level == "INFO":
-        return Qgis.MessageLevel.Info
-    elif logging_level == "DEBUG":
-        return Qgis.MessageLevel.Info
 
     return Qgis.MessageLevel.Info
 

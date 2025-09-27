@@ -1,4 +1,5 @@
 """Dialog for atlas edition."""
+from typing import TYPE_CHECKING, Dict, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 
@@ -8,9 +9,8 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 
 CLASS = load_ui('ui_form_atlas.ui')
@@ -18,7 +18,12 @@ CLASS = load_ui('ui_form_atlas.ui')
 
 class AtlasEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = AtlasDefinitions()
@@ -73,7 +78,7 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         layer = self.layer.currentLayer()
         if not layer:
             return tr('A layer is mandatory.')
@@ -85,3 +90,5 @@ class AtlasEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         if not_in_wfs:
             return not_in_wfs
+
+        return None
