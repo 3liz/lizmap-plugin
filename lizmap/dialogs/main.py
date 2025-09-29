@@ -60,11 +60,26 @@ from lizmap.saas import fix_ssl, is_lizmap_cloud
 from lizmap.table_manager.upload_files import TableFilesManager
 from lizmap.widgets.check_project import Checks, Headers, TableCheck
 
+WEBKIT_AVAILABLE = False
 try:
-    from qgis.PyQt.QtWebKitWidgets import QWebView
+    # Prefer QWebEngine (modern)
+    from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+    WebView = QWebEngineView
     WEBKIT_AVAILABLE = True
+    WEB_ENGINE = True
 except ModuleNotFoundError:
-    WEBKIT_AVAILABLE = False
+    try:
+        # Fallback to legacy QtWebKit
+        from qgis.PyQt.QtWebKitWidgets import QWebView
+        from qgis.PyQt.QtWebKit import QWebSettings
+        WebView = QWebView
+        WEBKIT_AVAILABLE = True
+        WEB_ENGINE = False
+    except ModuleNotFoundError:
+        # Neither WebEngine nor WebKit is available
+        WebView = None
+        WEB_ENGINE = False
+        WEBKIT_AVAILABLE = False
 
 from lizmap.definitions.definitions import (
     LwcVersions,
@@ -115,11 +130,12 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.widget_initial_extent.setOriginalExtent(iface.mapCanvas().extent(), self.project.crs())
         self.project.crsChanged.connect(self.project_crs_changed)
 
-        if WEBKIT_AVAILABLE:
-            self.dataviz_viewer = QWebView()
+        if WebView:
+            self.dataviz_viewer = WebView()
         else:
+            from qgis.PyQt.QtWidgets import QLabel
             self.dataviz_viewer = QLabel(tr('You must install Qt Webkit to enable this feature.'))
-        self.html_content.layout().addWidget(self.dataviz_viewer)
+
 
         self.dataviz_feature_picker = QgsFeaturePickerWidget()
 
