@@ -5,22 +5,37 @@ __email__ = 'info@3liz.org'
 import logging
 import os
 import re
+import json
 
 from html import escape, unescape
 
 from qgis.core import QgsApplication, QgsVectorLayer
 from qgis.gui import QgsCodeEditorHTML, QgsExpressionBuilderDialog
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QUrl, QEventLoop
 from qgis.PyQt.QtGui import QIcon
 
 from lizmap.toolbelt.convert import to_bool
 
+WEBKIT_AVAILABLE = False
 try:
-    from qgis.PyQt.QtWebKit import QWebSettings
-    from qgis.PyQt.QtWebKitWidgets import QWebView
+    # Prefer QWebEngine (modern)
+    from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+    WebView = QWebEngineView
     WEBKIT_AVAILABLE = True
+    WEB_ENGINE = True
 except ModuleNotFoundError:
-    WEBKIT_AVAILABLE = False
+    try:
+        # Fallback to legacy QtWebKit
+        from qgis.PyQt.QtWebKitWidgets import QWebView
+        from qgis.PyQt.QtWebKit import QWebSettings
+        WebView = QWebView
+        WEBKIT_AVAILABLE = True
+        WEB_ENGINE = False
+    except ModuleNotFoundError:
+        # Neither WebEngine nor WebKit is available
+        WebView = None
+        WEB_ENGINE = False
+        WEBKIT_AVAILABLE = False
 
 if to_bool(os.getenv("CI"), default_value=False):
     # Failing in Pycharm when launching tests, maybe because of the QApplication ?
@@ -62,7 +77,9 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         QWidget.__init__(self, parent=parent)
         self.setupUi(self)
 
-        if WEBKIT_AVAILABLE:
+        if WebView:
+            self.web_view = WebView(self)    
+        elif WEBKIT_AVAILABLE:
             self.web_view = QWebView()
         else:
             self.web_view = QgsCodeEditorHTML()
@@ -96,12 +113,13 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         # noinspection PyArgumentList
         base_url = QUrl.fromLocalFile(resources_path('html', 'html_editor.html'))
         self.web_view.setHtml(html_content, base_url)
-
-        self.web_view.settings().setAttribute(QWebSettings.LocalContentCanAccessRemoteUrls, True)
-        self.web_view.settings().setAttribute(QWebSettings.LocalContentCanAccessFileUrls, True)
-        self.web_view.settings().setAttribute(QWebSettings.JavascriptEnabled, True)
-        self.web_view.settings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
-        self.web_view.settings().setAttribute(QWebSettings.DnsPrefetchEnabled, True)
+        
+        if not WEB_ENGINE and WebView:
+            self.web_view.settings().setAttribute(QWebSettings.LocalContentCanAccessRemoteUrls, True)
+            self.web_view.settings().setAttribute(QWebSettings.LocalContentCanAccessFileUrls, True)
+            self.web_view.settings().setAttribute(QWebSettings.JavascriptEnabled, True)
+            self.web_view.settings().setAttribute(QWebSettings.DeveloperExtrasEnabled, True)
+            self.web_view.settings().setAttribute(QWebSettings.DnsPrefetchEnabled, True)
 
     def enable_expression(self):
         """ Enable the expression widget without any layer. """
@@ -114,24 +132,19 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         self.stacked_expression.setVisible(True)
         self.stacked_expression.setCurrentWidget(self.page_expression_layer)
 
-    def html_content(self) -> str:
-        """ Returns the content as an HTML string. """
+    def html_content(self):
         if WEBKIT_AVAILABLE:
             html_content = self._js('tEditor.getHtml();')
         else:
             html_content = self.web_view.text()
+        return QGIS_EXPRESSION_TEXT.sub(expression_from_html_to_qgis, html_content or "")
 
-        # NOTE: html_content may be None
-        if html_content:
-            return QGIS_EXPRESSION_TEXT.sub(expression_from_html_to_qgis, html_content)
-        else:
-            return ""
 
     def set_html_content(self, content: str):
         """ Set the HTML in the editor. """
         html_content = QGIS_EXPRESSION_TEXT.sub(expression_from_qgis_to_html, content)
         if WEBKIT_AVAILABLE:
-            self._js('tEditor.setHtml(`{}`);'.format(html_content))
+            self._js(f'tEditor.setHtml({json.dumps(html_content)});')
         else:
             self.web_view.setText(html_content)
 
@@ -163,8 +176,17 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             return
         self._insert_qgis_expression(dialog.expressionText())
 
-    def _js(self, command) -> str:
-        """ Internal function to execute Javascript in the editor. """
-        if not WEBKIT_AVAILABLE:
+    def _js(self, command):
+        if WEB_ENGINE:  # QWebEngineView
+            loop = QEventLoop()
+            result_container = {}
+            def _callback(result):
+                result_container['value'] = result
+                loop.quit()
+            self.web_view.page().runJavaScript(command, _callback)
+            loop.exec_()
+            return result_container.get('value')
+        elif WEBKIT_AVAILABLE:  # legacy QWebView
+            return self.web_view.page().currentFrame().evaluateJavaScript(command)
+        else:
             return None
-        return self.web_view.page().currentFrame().evaluateJavaScript(command)
