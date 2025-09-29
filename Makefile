@@ -46,7 +46,7 @@ update-requirements: check-uv-install
 # Static analysis
 #
 
-LINT_TARGETS=$(PYTHON_MODULE) $(EXTRA_LINT_TARGETS)
+LINT_TARGETS=$(PYTHON_MODULE) tests $(EXTRA_LINT_TARGETS)
 
 lint:
 	@ $(UV_RUN) ruff check --preview  --output-format=concise $(LINT_TARGETS)

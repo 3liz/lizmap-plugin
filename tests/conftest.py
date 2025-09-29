@@ -1,5 +1,4 @@
 import logging
-import os
 import sys
 
 from pathlib import Path
@@ -8,7 +7,8 @@ import pytest
 
 from qgis.core import Qgis, QgsApplication
 from qgis.PyQt import Qt
-from qgis.testing import start_app
+
+from .qgis_testing import start_app
 
 # with warnings.catch_warnings():
 #    warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -49,25 +49,11 @@ def data(rootdir: Path) -> Path:
 # Path the 'qgis.utils.iface' property
 # Which is not initialized when QGIS app
 # is initialized from testing module
-def _patch_iface():
-    import qgis.utils
-
-    from qgis.testing.mocked import get_iface
-
-    qgis.utils.iface = get_iface()
-
 
 def pytest_sessionstart(session):
     """Start qgis application"""
-    os.environ["QT_QPA_PLATFORM"] = "offscreen"
-
     sys.path.append("/usr/share/qgis/python")
-
-    start_app()
-    install_logger_hook(verbose=True)
-    # Patch 'iface' in qgis.utils
-    _patch_iface()
-
+    start_app(session.path, False)
 
 #
 # Logger hook
