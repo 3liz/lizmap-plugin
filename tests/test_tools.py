@@ -7,7 +7,7 @@ from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.strings import merge_strings, unaccent
-from lizmap.toolbelt.version import format_qgis_version, format_version_integer
+from lizmap.toolbelt.version import format_version_integer, qgis_version_info
 
 from .compat import TestCase
 
@@ -22,22 +22,18 @@ class TestTools(TestCase):
         layer = QgsVectorLayer(path + "|layername=lines", "lines", "ogr")
         self.assertTrue(is_database_layer(layer))
 
-    def test_format_qgis_version(self):
+    def test_qgis_version_info(self):
         """Test to get a correct QGIS version number."""
         # Normal
-        self.assertTupleEqual((3, 10, 0), format_qgis_version(31000))
+        self.assertTupleEqual((3, 10, 0), qgis_version_info(31000))
 
         # Increment to stable version
 
-        self.assertTupleEqual((3, 12, 0), format_qgis_version(31100))
+        self.assertTupleEqual((3, 12, 0), qgis_version_info(31100))
 
         # Zero in the middle
-        self.assertTupleEqual((3, 4, 10), format_qgis_version(30410))
-        self.assertTupleEqual((4, 3, 14), format_qgis_version(40314, increase_odd_number=False))
-
-        # As string, with long numbers
-        self.assertTupleEqual((10, 11, 10), format_qgis_version("10.11.10", increase_odd_number=False))
-        self.assertTupleEqual((10, 12, 10), format_qgis_version("10.11.10", increase_odd_number=True))
+        self.assertTupleEqual((3, 4, 10), qgis_version_info(30410))
+        self.assertTupleEqual((4, 3, 14), qgis_version_info(40314, increase_odd_number=False))
 
     def test_format_version_int(self):
         """Test to transform string version to int version."""

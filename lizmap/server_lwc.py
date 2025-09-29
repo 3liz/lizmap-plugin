@@ -61,7 +61,7 @@ from lizmap.saas import is_lizmap_cloud, webdav_properties
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
-from lizmap.toolbelt.version import format_qgis_version, qgis_version, version
+from lizmap.toolbelt.version import qgis_version_info, version
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -125,7 +125,7 @@ class ServerManager:
         self.check_dialog_validity = function_check_dialog_validity
 
         # QGIS desktop version tuple, eg (3, 22)
-        current = format_qgis_version(qgis_version())
+        current = qgis_version_info(Qgis.versionInt())
         self.qgis_desktop = (int(current[0]), int(current[1]))
 
         # Network

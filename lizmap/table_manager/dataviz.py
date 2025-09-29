@@ -99,7 +99,7 @@ class TableManagerDataviz(TableManager):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return
 
-        # qgis_version() < 3.14
+        # qgis version < 3.14
         if isinstance(self.parent.dataviz_feature_picker, QLabel):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return

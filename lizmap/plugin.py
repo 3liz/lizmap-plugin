@@ -68,6 +68,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor
 from qgis.utils import plugins as all_plugins
 
+from lizmap.config import LizmapConfig, MappingQgisGeometryType
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
@@ -135,7 +136,6 @@ from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legend,
     ALLOW_PARENT_FOLDER,
@@ -199,9 +199,8 @@ from lizmap.toolbelt.plugin import lizmap_user_folder
 from lizmap.toolbelt.resources import plugin_name, plugin_path, resources_path
 from lizmap.toolbelt.strings import human_size, path_to_url, unaccent
 from lizmap.toolbelt.version import (
-    format_qgis_version,
     format_version_integer,
-    qgis_version,
+    qgis_version_info,
     version,
 )
 from lizmap.tooltip import Tooltip
@@ -285,7 +284,7 @@ class Lizmap:
 
         if file_path:
             self.translator = QTranslator()
-            self.translator.load(file_path)
+            self.translator.load(str(file_path.absolute()))
             QCoreApplication.installTranslator(self.translator)
 
         lizmap_config = LizmapConfig(project=self.project)
@@ -562,16 +561,6 @@ class Lizmap:
         # self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
         # self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
 
-        # map QGIS geometry type
-        # TODO lizmap 4, to remove
-        self.mapQgisGeometryType = {
-            0: 'point',
-            1: 'line',
-            2: 'polygon',
-            3: 'unknown',
-            4: 'none'
-        }
-
         # Disable checkboxes on the layer tab
         self.enable_check_box_in_layer_tab(False)
 
@@ -762,7 +751,7 @@ class Lizmap:
         # Debug
         # self.server_manager.clean_cache(True)
 
-        current = format_qgis_version(qgis_version())
+        current = qgis_version_info(Qgis.versionInt())
         current = '{}.{}'.format(current[0], current[1])
         self.dlg.label_current_qgis.setText('<b>{}</b>'.format(current))
         text = self.dlg.qgis_and_lwc_versions_issue.text()
@@ -1178,12 +1167,13 @@ class Lizmap:
             if lzm_version['branch'] != current_version.value:
                 continue
 
+            # TODO: check type of returned value (int)
             qgis_min = lzm_version.get('qgis_min_version_recommended')
             qgis_max = lzm_version.get('qgis_max_version_recommended')
             if not (qgis_min or qgis_max):
                 break
 
-            if qgis_min <= qgis_version() < qgis_max:
+            if qgis_min <= Qgis.versionInt() < qgis_max:
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
             else:
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
@@ -3567,7 +3557,7 @@ class Lizmap:
                 current_version = version()
                 if current_version in DEV_VERSION_PREFIX:
                     current_version = next_git_tag()
-                min_required_version = format_qgis_version(min_required_version, increase_odd_number=False)
+                min_required_version = qgis_version_info(min_required_version, increase_odd_number=False)
                 min_required_version = '.'.join([str(i) for i in min_required_version])
                 if compareVersions(current_version, min_required_version) == 2:
                     self.dlg.check_results.add_error(Error(tr('Global'), checks.PluginDesktopVersion))
@@ -3735,7 +3725,7 @@ class Lizmap:
                 )
 
         metadata = {
-            'qgis_desktop_version': qgis_version(),
+            'qgis_desktop_version': Qgis.versionInt(),
             'lizmap_plugin_version_str': current_version,
             'lizmap_plugin_version': int(format_version_integer(current_version)),
             'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version.value))),
@@ -3981,7 +3971,7 @@ class Lizmap:
 
             # geometry type
             if geometry_type != -1:
-                layer_options["geometryType"] = self.mapQgisGeometryType[layer.geometryType()]
+                layer_options["geometryType"] = MappingQgisGeometryType[layer.geometryType()]
 
             # extent
             if layer:
@@ -3993,7 +3983,7 @@ class Lizmap:
                 if any(x != x for x in layer_options['extent']):
                     if layer.isSpatial():
                         # https://github.com/3liz/lizmap-plugin/issues/571
-                        if 33600 <= Qgis.QGIS_VERSION_INT < 33603:
+                        if 33600 <= Qgis.versionInt() < 33603:
                             msg = tr('A bug has been identified with QGIS 3.36.0 to 3.36.2 included, please change.')
                         else:
                             msg = ""
