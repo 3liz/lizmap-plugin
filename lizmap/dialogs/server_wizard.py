@@ -1116,6 +1116,8 @@ class ServerWizard(BaseWizard):
             return False, tr('No "info" in the JSON document'), False
 
         lizmap_version = info.get('version')
+
+        # TODO: Should we deprecate this ?
         branch = LwcVersions.branch_from_version(lizmap_version)
         if branch in ('3.1', '3.2', '3.3', '3.4'):
             # Wait for EOL QGIS_VERSION_INT 3.10 because linked to LWC 3.5
