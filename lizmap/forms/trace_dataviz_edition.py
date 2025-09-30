@@ -89,7 +89,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
             return tr('Y field is required.')
         if y_field in self.uniques:
             return tr('This Y field is already existing.')
-        return
+        return None
 
     def accept(self):
         message = self.validate()

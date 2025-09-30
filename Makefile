@@ -10,8 +10,14 @@ QGIS_VERSION ?= 3.40
 # Configure
 #
 
-ifeq ($(USE_UV), 1)
-UV_RUN ?= uv run
+# Check if uv is available
+$(eval UV_PATH=$(shell which uv))
+ifdef UV_PATH
+ifdef VIRTUAL_ENV
+# Always prefer active environment
+ACTIVE_VENV=--active
+endif
+UV_RUN=uv run $(ACTIVE_VENV)
 endif
 
 
@@ -69,7 +75,7 @@ check-uv-install:
 #
 
 test:
-	cd tests && $(UV_RUN) pytest -v
+	$(UV_RUN) pytest -v tests/
 
 #
 # Test using docker image

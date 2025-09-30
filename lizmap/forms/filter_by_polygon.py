@@ -1,4 +1,5 @@
 """Dialog for filter by polygon."""
+from typing import TYPE_CHECKING, Dict, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 
@@ -11,17 +12,20 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2021, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 CLASS = load_ui('ui_form_filter_by_polygon.ui')
 
 
 class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByPolygonDefinitions()
@@ -46,18 +50,17 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
         self.enable_primary_key_field()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         layer = self.layer.currentLayer()
         if not layer:
             return tr('A layer is mandatory.')
 
         mode = self.filter_mode.currentData()
         if mode == FilterMode.Editing.value['data'] and layer.providerType() != 'postgres':
-            msg = '{}\n{}'.format(
+            return '{}\n{}'.format(
                 tr('The mode is set on "Editing only" but the layer is not stored in PostgreSQL.'),
                 tr('PostgreSQL is the only type of layer supported with editing capabilities.'),
             )
-            return msg
 
         if layer.providerType() == 'postgres' and self.checkbox_use_centroid.isChecked():
             has_index, message = self.config.has_spatial_centroid_index(layer)
@@ -70,3 +73,5 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.primary_key.currentField():
             return tr('Field is mandatory.')
+
+        return None

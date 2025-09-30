@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import configparser
 import json
 import logging
@@ -10,7 +6,7 @@ import sys
 from base64 import b64encode
 from enum import IntEnum, auto
 from functools import partial
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple
 
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
@@ -58,6 +54,10 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
 from lizmap.toolbelt.version import version
 
+if TYPE_CHECKING:
+    from qgis.PyQt.QtWidgets import QWidget
+
+
 LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
 DEBUG = True
@@ -80,7 +80,7 @@ class UrlPage(QWizardPage):
 
     """ Server URL page. """
 
-    def __init__(self, url, parent=None):
+    def __init__(self, url: str, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("URL of the instance"))
 
@@ -154,17 +154,14 @@ class UrlPage(QWizardPage):
         if not url.scheme().startswith('http'):
             return False
 
-        if 'php' in url.path():
-            return False
-
-        return True
+        return 'php' not in url.path()
 
 
 class LoginPasswordPage(QWizardPage):
 
     """ Login and password for the server. """
 
-    def __init__(self, auth_id, parent=None):
+    def __init__(self, auth_id: str, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("Login and password of the instance"))
 
@@ -271,7 +268,7 @@ class NamePage(QWizardPage):
 
     """ Alias for the server. """
 
-    def __init__(self, name: str = '', parent=None):
+    def __init__(self, name: str = '', parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("Name of your instance"))
 
@@ -317,7 +314,7 @@ class MasterPasswordPage(QWizardPage):
 
     """ Save credentials in the QGIS password manager. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("QGIS Password manager"))
 
@@ -370,7 +367,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     """ Question for PostgreSQL connection. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         LOGGER.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
         self.setTitle(tr("PostgreSQL"))
@@ -457,7 +454,7 @@ class PostgresqlPage(QWizardPage):
 
     """ Wizard for the PostgreSQL connection. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("Adding a PostgreSQL connection"))
         self.setSubTitle("PostgreSQL database provided with the Lizmap instance")
@@ -577,7 +574,7 @@ class SuggestionNewFolderPage(QWizardPage):
 
     """ Question for the first folder. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("Create the first folder"))
         self.setSubTitle(tr("A folder can contain one or many QGIS projects"))
@@ -629,7 +626,7 @@ class CreateNewFolderDavPage(QWizardPage):
 
     """ Wizard for the first folder creation. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("New folder"))
 
@@ -718,7 +715,7 @@ class LizmapNewRepositoryPage(QWizardPage):
 
     """ Web-browser step for the Lizmap repository creation. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
         self.setTitle(tr("Create a Lizmap repository"))
 
@@ -793,7 +790,7 @@ class BaseWizard(QWizard):
 
     """ Base wizard class. """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional["QWidget"] = None):
         # noinspection PyArgumentList
         super().__init__(parent)
         self.setWindowTitle(tr("Lizmap Web Client instance"))
@@ -838,15 +835,21 @@ class BaseWizard(QWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}index.php/view/app/metadata'.format(base_url)
-        return url
+        return '{}index.php/view/app/metadata'.format(base_url)
 
 
 class ServerWizard(BaseWizard):
 
     """ Main wizard class. """
 
-    def __init__(self, parent=None, existing: list = None, url: str = '', auth_id: str = None, name: str = ''):
+    def __init__(
+        self,
+        parent: Optional["QWidget"] = None,
+        existing: Optional[list] = None,
+        url: str = '',
+        auth_id: Optional[str] = None,
+        name: str = '',
+    ):
         # noinspection PyArgumentList
         super().__init__(parent)
 
@@ -913,34 +916,30 @@ class ServerWizard(BaseWizard):
             self.currentPage().result_login_password.setText(message)
             return False
 
-        elif self.currentId() == WizardPages.MasterPasswordPage:
+        if self.currentId() == WizardPages.MasterPasswordPage:
             LOGGER.debug("Validate current page, going to save the auth")
             result = self.save_auth_id()
             LOGGER.debug("Saving to the authentication database is : {} valid".format("" if result else "not"))
             return result
 
-        elif self.currentId() == WizardPages.PostgresqlPage:
+        if self.currentId() == WizardPages.PostgresqlPage:
             skip_db_saving = self.field("skip_db")
             if not self.test_pg():
-                if skip_db_saving:
-                    # Second attempt, we skip
-                    return True
-                else:
-                    return False
+                # Second attempt, we skip
+                return skip_db_saving
 
             return self.save_pg()
 
         return super().validateCurrentPage()
 
     @staticmethod
-    def clean_data(data) -> str:
+    def clean_data(data: str) -> str:
         """ Clean input data from forms. """
         return data.strip()
 
     def current_url(self) -> str:
         """ Cleaned input URL. """
-        url = self.trailing_slash(self.clean_data(self.field('url')))
-        return url
+        return self.trailing_slash(self.clean_data(self.field('url')))
 
     def current_name(self) -> str:
         """ Cleaned input name. """
@@ -1035,7 +1034,7 @@ class ServerWizard(BaseWizard):
         LOGGER.debug("Server saved in the JSON file")
 
     @classmethod
-    def override_url(cls, base_url: str, metadata=True) -> Optional[str]:
+    def override_url(cls, base_url: str, metadata: bool = True) -> Optional[str]:
         """ Override URL if the file is specified. """
         ini = lizmap_user_folder().joinpath('urls.ini')
         if not ini.exists():
@@ -1065,15 +1064,13 @@ class ServerWizard(BaseWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}index.php/dataviz/service/'.format(base_url)
-        return url
+        return '{}index.php/dataviz/service/'.format(base_url)
 
     @staticmethod
     def url_server_info(base_url: str) -> str:
         """ Return the URL to the server information panel. """
         base_url = ServerWizard.trailing_slash(base_url)
-        url = '{}admin.php/admin/server_information'.format(base_url)
-        return url
+        return '{}admin.php/admin/server_information'.format(base_url)
 
     def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
         """ Check the URL and given login.
@@ -1101,11 +1098,11 @@ class ServerWizard(BaseWizard):
         error = request.get(net_req)
         if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
             return False, tr("Network error"), False
-        elif error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
+        if error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
             return False, tr("Server exception error") + ". " + tr('Please check the URL'), False
-        elif error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
+        if error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
             return False, tr("Timeout error"), False
-        elif error != QgsBlockingNetworkRequest.ErrorCode.NoError:
+        if error != QgsBlockingNetworkRequest.ErrorCode.NoError:
             return False, tr("Unknown error"), False
 
         response = request.reply().content()
@@ -1141,14 +1138,14 @@ class ServerWizard(BaseWizard):
                     message += "<br><br>"
                     message += tr('Right') + " : lizmap.admin.server.information.view"
                 return False, message, True
-            elif error == 'WRONG_CREDENTIALS':
+            if error == 'WRONG_CREDENTIALS':
                 message = tr(
                     "Either the login or the password is wrong. It must be your login you use in your web-browser.")
                 return False, message, True
 
         self.server_info = content
         self.is_lizmap_cloud = is_lizmap_cloud(content)
-        self.has_repository = True if len(content.get('repositories', [])) >= 1 else False
+        self.has_repository = len(content.get('repositories', [])) >= 1
         if any(item in version() for item in UNSTABLE_VERSION_PREFIX):
             # Debug for devs
             self.has_repository = False
@@ -1244,8 +1241,14 @@ class CreateFolderWizard(BaseWizard):
     """ Special wizard to create a remote folder. """
 
     def __init__(
-            self, parent=None, webdav_server: str = None, auth_id: str = None, url: str = None,
-            user: str = None, password: str = None):
+        self,
+        parent: Optional["QWidget"] = None,
+        webdav_server: Optional[str] = None,
+        auth_id: Optional[str] = None,
+        url: Optional[str] = None,
+        user: Optional[str] = None,
+        password: Optional[str] = None,
+    ):
         # noinspection PyArgumentList
         super().__init__(parent)
 

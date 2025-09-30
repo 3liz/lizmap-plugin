@@ -1,10 +1,6 @@
 """ Tools about version. """
 
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-from typing import Union
+from typing import Tuple, Union
 
 from qgis.core import Qgis
 
@@ -16,7 +12,7 @@ def qgis_version():
     return Qgis.versionInt()
 
 
-def version(remove_v_prefix=True) -> str:
+def version(remove_v_prefix: bool = True) -> str:
     """Return the version defined in metadata.txt."""
     v = metadata_config()["general"]["version"]
     if v.startswith("v") and remove_v_prefix:
@@ -24,7 +20,10 @@ def version(remove_v_prefix=True) -> str:
     return v
 
 
-def format_qgis_version(input_version: Union[int, str], increase_odd_number=True) -> tuple:
+def format_qgis_version(
+    input_version: Union[int, str],
+    increase_odd_number: bool = True,
+) -> Tuple[int, int, int]:
     """ Split a QGIS int version number into major, minor, bugfix.
 
      If increase_odd_number is True and if the minor version is a dev version, the next stable minor version is set.
