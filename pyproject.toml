@@ -44,8 +44,12 @@ lint = [
     "vulture",
 ]
 packaging = [
-    "qgis-plugin-ci >= 2.7.0",
+    "qgis-plugin-package-ci; python_full_version >= '3.12'",
 ]
+
+[tool.uv.sources]
+qgis-plugin-package-ci = { git = "https://github.com/3liz/qgis-plugin-package-ci.git" }
+
 
 #
 # Qgis plugin ci
