@@ -71,7 +71,10 @@ jobs:
         run: echo "RELEASE_VERSION=4.5.3" >> $GITHUB_ENV
 
       - name: Install QGIS Plugin CI
-        run: pip install --quiet -r requirements/packaging.txt
+        run: |
+            sudo apt-get update
+            sudo apt-get install qttools5-dev-tools
+            pip install --quiet -r requirements/packaging.txt
       
       - name: Fetch current changelog
         run: qgis-plugin-ci changelog ${{ env.RELEASE_VERSION }} >> release.md
@@ -101,7 +104,10 @@ jobs:
           cache-dependency-path: "requirements/packaging.txt"
 
       - name: Install QGIS Plugin CI
-        run: pip install --quiet -r requirements/packaging.txt
+        run: |
+            sudo apt-get update
+            sudo apt-get install qttools5-dev-tools
+            pip install --quiet -r requirements/packaging.txt
 
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
