@@ -15,17 +15,13 @@ class TestDefinitions(TestCase):
         # Check a non-existing release in Python source code
         # The release string can be provided the online JSON file
         # So in production, if the exception is raised, developer need to update the Python plugin
-        # No exception is raised in production for non developers.
-        with self.assertRaises(Exception):
-            LwcVersions.find("1.0.0", True)
-        self.assertIsInstance(LwcVersions.find("1.0.0"), LwcVersions)
+        assert LwcVersions.find("1.0.0") is None
 
-    def test_lwc_version_from_metadata(self):
-        """Test to retrieve LWC version from metadata."""
-        data = {"info": {"version": "3.7.0-alpha.2", "date": "2024-02-27"}}
-        self.assertEqual(LwcVersions.Lizmap_3_7, LwcVersions.find_from_metadata(data))
+    def test_version_info(self):
+        """Test version as a list."""
+        assert LwcVersions.Lizmap_3_10.version_info == (3, 10)
 
-    def test_version_comparaison(self):
+    def test_version_comparison(self):
         """Test we can test the version comparaison."""
         self.assertTrue(LwcVersions.Lizmap_3_6 == LwcVersions.Lizmap_3_6)
         self.assertTrue(LwcVersions.Lizmap_3_6 != LwcVersions.Lizmap_3_5)
@@ -42,10 +38,6 @@ class TestDefinitions(TestCase):
         self.assertTrue(LwcVersions.Lizmap_3_9 < LwcVersions.Lizmap_3_10)
         self.assertTrue(LwcVersions.Lizmap_3_10 >= LwcVersions.Lizmap_3_10)
         self.assertTrue(LwcVersions.Lizmap_3_10 <= LwcVersions.Lizmap_3_10)
-
-    def test_version_list(self):
-        """Test version as a list."""
-        self.assertListEqual([3, 10], LwcVersions.version_as_list(LwcVersions.Lizmap_3_10.value))
 
     def test_release_status(self):
         """Test to retrieve release status."""
