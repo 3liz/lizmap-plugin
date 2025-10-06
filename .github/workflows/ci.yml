@@ -28,7 +28,7 @@ jobs:
           cache-dependency-path: "requirements/dev.txt"
 
       - name: Install Python requirements
-        run: pip install -r requirements/dev.txt
+        run: pip install --quiet -r requirements/lint.txt
 
       - name: Run linter
         run: ruff check --preview --output-format=concise lizmap 
@@ -56,6 +56,7 @@ jobs:
 
   release-dry-run:
     runs-on: ubuntu-latest
+    if: github.repository_owner == '3liz'
     steps:
       - uses: actions/checkout@v5.0.0
 
@@ -68,30 +69,37 @@ jobs:
           cache-dependency-path: "requirements/packaging.txt"
 
       - name: Set env
-        run: echo "RELEASE_VERSION=4.5.3" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=latest" >> $GITHUB_ENV
 
-      - name: Install QGIS Plugin CI
+      - name: Install packaging CI
         run: |
-            sudo apt-get update
-            sudo apt-get install qttools5-dev-tools
+            sudo apt-get -qq update
+            sudo apt-get -qq install qttools5-dev-tools pyqt5-dev-tools
             pip install --quiet -r requirements/packaging.txt
       
       - name: Fetch current changelog
         run: qgis-plugin-ci changelog ${{ env.RELEASE_VERSION }} >> release.md
 
+      - name: Pull transifex translations
+        run: >-
+          qgis-transifex-ci -vv pull
+          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
+          --compile
+
       - name: Package and deploy the zip
         run: >-
-          qgis-plugin-ci -v
+          qgis-plugin-ci -vv
           release ${{ env.RELEASE_VERSION }}
+          --github-token ${{ secrets.BOT_HUB_TOKEN }}
+          --osgeo-username ${{ secrets.OSGEO_USERNAME }}
+          --osgeo-password ${{ secrets.OSGEO_PASSWORD }}
           --dry-run
-          --no-diff-check
 
   release:
     needs: [tests, lint]
 
     runs-on: ubuntu-latest
     if: github.repository_owner == '3liz' && contains(github.ref, 'refs/tags/')
-
     steps:
       - uses: actions/checkout@v5.0.0
 
@@ -103,10 +111,10 @@ jobs:
           cache: "pip"
           cache-dependency-path: "requirements/packaging.txt"
 
-      - name: Install QGIS Plugin CI
+      - name: Install  packaging CI
         run: |
-            sudo apt-get update
-            sudo apt-get install qttools5-dev-tools
+            sudo apt-get -qq update
+            sudo apt-get -qq install qttools5-dev-tools pyqt5-dev-tools
             pip install --quiet -r requirements/packaging.txt
 
       - name: Set env
@@ -121,17 +129,20 @@ jobs:
           bodyFile: release.md
           token: ${{ secrets.BOT_HUB_TOKEN }}
 
+      - name: Pull transifex translations
+        run: >-
+          qgis-transifex-ci -vv pull
+          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
+          --compile
+
       - name: Package and deploy the zip
         run: >-
-          qgis-plugin-ci
-          -v
+          qgis-plugin-ci -vv
           release ${{ env.RELEASE_VERSION }}
           --github-token ${{ secrets.BOT_HUB_TOKEN }}
-          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
           --osgeo-username ${{ secrets.OSGEO_USERNAME }}
           --osgeo-password ${{ secrets.OSGEO_PASSWORD }}
           --create-plugin-repo
-          --no-diff-check
       
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
