@@ -48,7 +48,7 @@ packaging = [
 ]
 
 [tool.uv.sources]
-qgis-plugin-package-ci = { git = "https://github.com/3liz/qgis-plugin-package-ci.git" }
+qgis-plugin-package-ci = { git = "https://github.com/3liz/qgis-plugin-package-ci.git", branch = "legacy-branch" }
 
 
 #

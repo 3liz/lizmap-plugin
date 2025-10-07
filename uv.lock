@@ -456,7 +456,7 @@ lint = [
     { name = "ruff" },
     { name = "vulture" },
 ]
-packaging = [{ name = "qgis-plugin-package-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-package-ci.git" }]
+packaging = [{ name = "qgis-plugin-package-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-package-ci.git?branch=legacy-branch" }]
 tests = [
     { name = "psycopg", extras = ["binary"] },
     { name = "pytest", specifier = ">=5.3" },
@@ -1072,7 +1072,7 @@ wheels = [
 [[package]]
 name = "qgis-plugin-package-ci"
 version = "3.0.0a0"
-source = { git = "https://github.com/3liz/qgis-plugin-package-ci.git#4089f7df9230ffdcb7a0a0cee195f912081c74a5" }
+source = { git = "https://github.com/3liz/qgis-plugin-package-ci.git?branch=legacy-branch#06e5edeffb4e94d8eedef5ef63a4879d524bfaf9" }
 dependencies = [
     { name = "gitpython", marker = "python_full_version >= '3.12'" },
     { name = "pygithub", marker = "python_full_version >= '3.12'" },
