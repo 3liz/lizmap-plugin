@@ -62,6 +62,7 @@ plugin_source = "lizmap"
 organization = "3liz-1"
 project = "lizmap-locales"
 resource = "lizmap_qgis_plugin"
+minimum_translation = 30.0
 
 #
 # Ruff
