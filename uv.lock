@@ -455,7 +455,7 @@ lint = [
     { name = "vulture" },
 ]
 packaging = [
-    { name = "qgis-plugin-package-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-package-ci.git?branch=testing" },
+    { name = "qgis-plugin-package-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-package-ci.git" },
     { name = "qgis-plugin-transifex-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-transifex-ci" },
 ]
 tests = [
@@ -1201,7 +1201,7 @@ wheels = [
 [[package]]
 name = "qgis-plugin-package-ci"
 version = "0.1.0a1"
-source = { git = "https://github.com/3liz/qgis-plugin-package-ci.git?branch=testing#74aa10144127bd67fe29a5582155d9c83758a554" }
+source = { git = "https://github.com/3liz/qgis-plugin-package-ci.git#74aa10144127bd67fe29a5582155d9c83758a554" }
 dependencies = [
     { name = "click", marker = "python_full_version >= '3.12'" },
     { name = "gitpython", marker = "python_full_version >= '3.12'" },
