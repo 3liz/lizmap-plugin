@@ -1,6 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 import logging
 import os
@@ -13,7 +10,7 @@ from qgis.gui import QgsCodeEditorHTML, QgsExpressionBuilderDialog
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon
 
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import as_boolean
 
 try:
     from qgis.PyQt.QtWebKit import QWebSettings
@@ -22,7 +19,8 @@ try:
 except ModuleNotFoundError:
     WEBKIT_AVAILABLE = False
 
-if to_bool(os.getenv("CI"), default_value=False):
+# TODO remove me: must work in GH actions
+if as_boolean(os.getenv("CI")):
     # Failing in Pycharm when launching tests, maybe because of the QApplication ?
     WEBKIT_AVAILABLE = False
 

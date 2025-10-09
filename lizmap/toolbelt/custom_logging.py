@@ -47,13 +47,10 @@ class QgsLogHandler(logging.Handler):
                 logged.
         """
         try:
-            QgsMessageLog.logMessage(
-                record.getMessage(), PLUGIN_NAME, qgis_level(record.levelname)
-            )
+            QgsMessageLog.logMessage(record.getMessage(), PLUGIN_NAME, qgis_level(record.levelname))
         except MemoryError:
             message = tr(
-                "Due to memory limitations on this machine, the plugin {} can not "
-                "handle the full log"
+                "Due to memory limitations on this machine, the plugin {} can not handle the full log"
             ).format(PLUGIN_NAME)
             print(message)
             QgsMessageLog.logMessage(message, PLUGIN_NAME, Qgis.MessageLevel.Critical)
@@ -98,9 +95,7 @@ def setup_logger(logger_name):
 
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
-    console_formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    console_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     console_handler.setFormatter(console_formatter)
     add_logging_handler_once(logger, console_handler)
 

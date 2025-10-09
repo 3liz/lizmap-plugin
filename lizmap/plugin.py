@@ -181,7 +181,7 @@ from qgis.core import QgsProjectServerValidator
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.server_dav import WebDav
 from lizmap.server_lwc import MAX_DAYS, ServerManager
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
 from lizmap.toolbelt.custom_logging import (
     add_logging_handler_once,
     setup_logger,
@@ -196,12 +196,17 @@ from lizmap.toolbelt.layer import (
 )
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.plugin import lizmap_user_folder
-from lizmap.toolbelt.resources import plugin_name, plugin_path, resources_path
+from lizmap.toolbelt.resources import (
+    load_icon,
+    plugin_name,
+    plugin_path,
+    resources_path,
+    window_icon,
+)
 from lizmap.toolbelt.strings import human_size, path_to_url, unaccent
 from lizmap.toolbelt.version import (
-    format_qgis_version,
     format_version_integer,
-    qgis_version,
+    qgis_version_info,
     version,
 )
 from lizmap.tooltip import Tooltip
@@ -233,7 +238,7 @@ class Lizmap:
         # 04/01/2022
         QgsSettings().remove('lizmap/instance_target_url_authid')
 
-        if to_bool(os.getenv("LIZMAP_NORMAL_MODE"), default_value=False):
+        if as_boolean(os.getenv("LIZMAP_NORMAL_MODE")):
             QgsSettings().setValue(Settings.key(Settings.BeginnerMode), False)
             QgsSettings().setValue(Settings.key(Settings.PreventPgService), False)
 
@@ -285,7 +290,7 @@ class Lizmap:
 
         if file_path:
             self.translator = QTranslator()
-            self.translator.load(file_path)
+            self.translator.load(str(file_path.absolute()))
             QCoreApplication.installTranslator(self.translator)
 
         lizmap_config = LizmapConfig(project=self.project)
@@ -308,7 +313,7 @@ class Lizmap:
             if not temp_dir.exists():
                 temp_dir.mkdir()
 
-            if not to_bool(os.getenv("CI"), default_value=False):
+            if not as_boolean(os.getenv("CI")):
                 file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
                 file_handler.setLevel(logging.DEBUG)
                 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -562,16 +567,6 @@ class Lizmap:
         # self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
         # self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
 
-        # map QGIS geometry type
-        # TODO lizmap 4, to remove
-        self.mapQgisGeometryType = {
-            0: 'point',
-            1: 'line',
-            2: 'polygon',
-            3: 'unknown',
-            4: 'none'
-        }
-
         # Disable checkboxes on the layer tab
         self.enable_check_box_in_layer_tab(False)
 
@@ -634,7 +629,7 @@ class Lizmap:
             self.dlg.button_upload_media,
         )
         for button in buttons:
-            button.setIcon(QIcon(resources_path('icons', 'upload.svg')))
+            button.setIcon(load_icon('upload.svg'))
             button.setText('')
             self.dlg.set_tooltip_webdav(button)
         self.dlg.button_upload_thumbnail.clicked.connect(self.upload_thumbnail)
@@ -665,7 +660,7 @@ class Lizmap:
         self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
 
-        osm_icon = QIcon(resources_path('icons', 'osm-32-32.png'))
+        osm_icon = load_icon('osm-32-32.png')
         self.dlg.button_osm_mapnik.clicked.connect(self.add_osm_mapnik)
         self.dlg.button_osm_mapnik.setIcon(osm_icon)
         self.dlg.button_osm_opentopomap.clicked.connect(self.add_osm_opentopomap)
@@ -762,7 +757,7 @@ class Lizmap:
         # Debug
         # self.server_manager.clean_cache(True)
 
-        current = format_qgis_version(qgis_version())
+        current = qgis_version_info(Qgis.versionInt())
         current = '{}.{}'.format(current[0], current[1])
         self.dlg.label_current_qgis.setText('<b>{}</b>'.format(current))
         text = self.dlg.qgis_and_lwc_versions_issue.text()
@@ -998,12 +993,12 @@ class Lizmap:
             # The CFG was already here, let's keep the previous one
             return
 
-        if self.current_path and new_path != self.current_path and not to_bool(os.getenv("CI"), default_value=False):
+        if self.current_path and new_path != self.current_path and not as_boolean(os.getenv("CI")):
             old_cfg = self.current_path.with_suffix('.qgs.cfg')
             if old_cfg.exists():
                 box = QMessageBox(self.dlg)
                 box.setIcon(QMessageBox.Icon.Question)
-                box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+                box.setWindowIcon(window_icon() )
                 box.setWindowTitle(tr('Project has been renamed'))
                 box.setText(tr(
                     'The previous project located at "{}" was associated to a Lizmap configuration. '
@@ -1178,12 +1173,13 @@ class Lizmap:
             if lzm_version['branch'] != current_version.value:
                 continue
 
+            # TODO: check type of returned value (int)
             qgis_min = lzm_version.get('qgis_min_version_recommended')
             qgis_max = lzm_version.get('qgis_max_version_recommended')
             if not (qgis_min or qgis_max):
                 break
 
-            if qgis_min <= qgis_version() < qgis_max:
+            if qgis_min <= Qgis.versionInt() < qgis_max:
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
             else:
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
@@ -1245,7 +1241,7 @@ class Lizmap:
         """Create action that will start plugin configuration"""
         LOGGER.debug("Plugin starting in the initGui")
 
-        icon = QIcon(resources_path('icons', 'icon.png'))
+        icon = window_icon()
         self.action = QAction(icon, 'Lizmap', self.iface.mainWindow())
 
         # connect the action to the run method
@@ -1287,7 +1283,7 @@ class Lizmap:
         self.dlg.button_abstract_html.clicked.connect(self.configure_html_abstract)
 
         # Group wizard
-        icon = QIcon(resources_path('icons', 'user_group.svg'))
+        icon = load_icon('user_group.svg')
         self.dlg.button_wizard_group_visibility_project.setText('')
         self.dlg.button_wizard_group_visibility_layer.setText('')
         self.dlg.button_wizard_group_visibility_project.setIcon(icon)
@@ -1686,7 +1682,7 @@ class Lizmap:
 
         box = QMessageBox(self.dlg)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+        box.setWindowIcon(window_icon() )
         box.setWindowTitle(tr('Online documentation'))
         box.setText(tr(
             'Different documentations are possible. Which online documentation would you like to open ?'
@@ -1746,7 +1742,7 @@ class Lizmap:
         if self.dlg.list_map_scales.text() != '':
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+            box.setWindowIcon(window_icon() )
             box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             box.setDefaultButton(QMessageBox.StandardButton.No)
             box.setWindowTitle(tr('Reset the scales'))
@@ -1868,7 +1864,7 @@ class Lizmap:
                 if item['wType'] in ('checkbox', 'radio'):
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
-                        item['widget'].setChecked(to_bool(json_options[key]))
+                        item['widget'].setChecked(ambiguous_to_bool(json_options[key]))
 
                 if item['wType'] == 'scale':
                     item['widget'].setShowCurrentScaleButton(True)
@@ -2235,7 +2231,7 @@ class Lizmap:
 
                         # checkboxes
                         if item['wType'] in ('checkbox', 'radio'):
-                            self.myDic[item_key][key] = to_bool(json_layers[json_key][key], False)
+                            self.myDic[item_key][key] = as_boolean(json_layers[json_key][key])
                         # spin box
                         elif item['wType'] == 'spinbox':
                             if json_layers[json_key][key] != '':
@@ -2258,7 +2254,7 @@ class Lizmap:
                 else:
                     if key == 'noLegendImage' and 'noLegendImage' in json_layers.get(json_key):
                         tmp = 'hide_at_startup'  # Default value
-                        if to_bool(json_layers[json_key].get('noLegendImage')):
+                        if ambiguous_to_bool(json_layers[json_key].get('noLegendImage')):
                             tmp = 'disabled'
                         self.myDic[item_key]['legend_image_option'] = tmp
 
@@ -2896,7 +2892,7 @@ class Lizmap:
             return
 
         # do nothing if no popup configured for this layer/group
-        if not to_bool(self.layerList[layer_or_group]['popup']):
+        if not ambiguous_to_bool(self.layerList[layer_or_group]['popup']):
             return
 
         # Set the content of the QTextEdit if needed
@@ -3002,7 +2998,7 @@ class Lizmap:
         if check and layer.mapTipTemplate() != '':
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')))
+            box.setWindowIcon(window_icon())
             box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
             box.setText(tr(
                 'A maptip already exists for this layer. This is going to override it. '
@@ -3171,7 +3167,7 @@ class Lizmap:
         # Layer ID as short name
         if lwc_version >= LwcVersions.Lizmap_3_6:
             use_layer_id, _ = self.project.readEntry('WMSUseLayerIDs', '/')
-            if to_bool(use_layer_id, False):
+            if as_boolean(use_layer_id):
                 self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.WmsUseLayerIds))
 
         if lwc_version >= LwcVersions.Lizmap_3_7 and with_gui:
@@ -3567,7 +3563,7 @@ class Lizmap:
                 current_version = version()
                 if current_version in DEV_VERSION_PREFIX:
                     current_version = next_git_tag()
-                min_required_version = format_qgis_version(min_required_version, increase_odd_number=False)
+                min_required_version = qgis_version_info(min_required_version, increase_odd_number=False)
                 min_required_version = '.'.join([str(i) for i in min_required_version])
                 if compareVersions(current_version, min_required_version) == 2:
                     self.dlg.check_results.add_error(Error(tr('Global'), checks.PluginDesktopVersion))
@@ -3735,7 +3731,7 @@ class Lizmap:
                 )
 
         metadata = {
-            'qgis_desktop_version': qgis_version(),
+            'qgis_desktop_version': Qgis.versionInt(),
             'lizmap_plugin_version_str': current_version,
             'lizmap_plugin_version': int(format_version_integer(current_version)),
             'lizmap_web_client_target_version': int(format_version_integer('{}.0'.format(lwc_version.value))),
@@ -3852,7 +3848,7 @@ class Lizmap:
 
                 # Add value to the option
                 if item['type'] == 'boolean':
-                    if not to_bool(input_value):
+                    if not ambiguous_to_bool(input_value):
                         if not item.get('always_export'):
                             continue
 
@@ -3981,7 +3977,7 @@ class Lizmap:
 
             # geometry type
             if geometry_type != -1:
-                layer_options["geometryType"] = self.mapQgisGeometryType[layer.geometryType()]
+                layer_options["geometryType"] = MappingQgisGeometryType[layer.geometryType()]
 
             # extent
             if layer:
@@ -3993,7 +3989,7 @@ class Lizmap:
                 if any(x != x for x in layer_options['extent']):
                     if layer.isSpatial():
                         # https://github.com/3liz/lizmap-plugin/issues/571
-                        if 33600 <= Qgis.QGIS_VERSION_INT < 33603:
+                        if 33600 <= Qgis.versionInt() < 33603:
                             msg = tr('A bug has been identified with QGIS 3.36.0 to 3.36.2 included, please change.')
                         else:
                             msg = ""
@@ -4107,7 +4103,7 @@ class Lizmap:
 
             # unset cacheExpiration if False
             cached = layer_options.get('cached')
-            if cached and not to_bool(cached):
+            if cached and not ambiguous_to_bool(cached):
                 del layer_options['cacheExpiration']
 
             # unset clientCacheExpiration if not needed
@@ -4117,7 +4113,7 @@ class Lizmap:
 
             # unset externalWms if False
             external_wms = layer_options.get('externalWmsToggle')
-            if external_wms and not to_bool(external_wms):
+            if external_wms and not ambiguous_to_bool(external_wms):
                 del layer_options['externalWmsToggle']
 
             # unset source project and repository if needed
@@ -4128,12 +4124,12 @@ class Lizmap:
                 del layer_options['sourceProject']
 
             # set popupSource to auto if set to lizmap and no lizmap conf found
-            if to_bool(layer_options['popup']) and layer_options['popupSource'] == 'lizmap' \
+            if ambiguous_to_bool(layer_options['popup']) and layer_options['popupSource'] == 'lizmap' \
                     and layer_options['popupTemplate'] == '':
                 layer_options['popupSource'] = 'auto'
 
             if layer_options.get("geometryType") in ('point', 'line', 'polygon'):
-                if layer_options.get('popupSource') == 'lizmap' and to_bool(layer_options.get('popup')):
+                if layer_options.get('popupSource') == 'lizmap' and ambiguous_to_bool(layer_options.get('popup')):
                     QMessageBox.warning(
                         self.dlg,
                         tr('Deprecated feature'),
@@ -4146,7 +4142,7 @@ class Lizmap:
                     )
 
             # Add external WMS options if needed
-            if isinstance(layer, QgsMapLayer) and to_bool(layer_options.get('externalWmsToggle', False)):
+            if isinstance(layer, QgsMapLayer) and as_boolean(layer_options.get('externalWmsToggle')):
                 # Only for layers stored in disk
                 if layer.providerType() == 'wms':
                     wms_params = get_layer_wms_parameters(layer)
@@ -4344,7 +4340,7 @@ class Lizmap:
             return False, message + base_message
 
         # Check relative/absolute path
-        if to_bool(self.project.readEntry('Paths', 'Absolute')[0]):
+        if ambiguous_to_bool(self.project.readEntry('Paths', 'Absolute')[0]):
             message = tr(
                 'The project layer paths must be set to relative. '
                 'Please change this options in the project settings.')
@@ -4662,7 +4658,7 @@ class Lizmap:
         if not qgis_exists:
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+            box.setWindowIcon(window_icon() )
             box.setWindowTitle(tr('The project is not published yet'))
             box.setText(tr(
                 'The project <b>"{}"</b> does not exist yet on the server <br>'
@@ -4718,7 +4714,7 @@ class Lizmap:
 
         box = QMessageBox(self.dlg)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+        box.setWindowIcon(window_icon() )
         box.setWindowTitle(tr('Create "media" directory on the server'))
         box.setText(tr(
             'Are you sure you want to create the "media" directory on the server <strong>{server}</strong> in the '
@@ -4816,7 +4812,7 @@ class Lizmap:
         if result:
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Information)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+            box.setWindowIcon(window_icon() )
             box.setWindowTitle(tr('Cache about the thumbnail'))
             box.setText(tr(
                 'The upload of the thumbnail is successful. You can open it in your <a href="{}">web-browser</a>.'
@@ -4863,7 +4859,7 @@ class Lizmap:
         """ Question to confirme deletion on the remote server. """
         box = QMessageBox(self.dlg)
         box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')) )
+        box.setWindowIcon(window_icon() )
         box.setWindowTitle(tr('Remove a remote file'))
         box.setText(tr('Are you sure you want to remove the remote file ?'))
         box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)

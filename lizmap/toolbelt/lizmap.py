@@ -1,7 +1,3 @@
-__copyright__ = "Copyright 2024, 3Liz"
-__license__ = "GPL version 3"
-__email__ = "info@3liz.org"
-
 import re
 
 from pathlib import Path
@@ -11,7 +7,7 @@ from qgis.core import QgsVectorLayer
 
 
 def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List[str]]:
-    """ Convert an HTML Lizmap popup to QGIS HTML Maptip.
+    """Convert an HTML Lizmap popup to QGIS HTML Maptip.
 
     If one or more field couldn't be found in the layer fields/alias, returned in errors.
     If all fields could be converted, an empty list is returned.
@@ -39,7 +35,7 @@ def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List
 
 
 def sidecar_media_dirs(file_path: Path) -> List[Path]:
-    """ Look for all side-car dirs in "media" directory.
+    """Look for all side-car dirs in "media" directory.
 
     Like a Lizmap theme or a JavaScript.
     """

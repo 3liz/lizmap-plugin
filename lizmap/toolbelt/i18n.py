@@ -1,19 +1,22 @@
-""" I18N tools."""
+"""I18N tools."""
 
-from os.path import join
+from pathlib import Path
+from typing import (
+    Optional,
+    Tuple,
+)
 
 from qgis.core import QgsSettings
-from qgis.PyQt.QtCore import QFileInfo, QLocale
+from qgis.PyQt.QtCore import QLocale
 from qgis.PyQt.QtWidgets import QApplication
 
 from lizmap.toolbelt.resources import resources_path
 
-__copyright__ = "Copyright 2024, 3Liz"
-__license__ = "GPL version 3"
-__email__ = "info@3liz.org"
 
-
-def setup_translation(file_pattern="{}.qm", folder=None):
+def setup_translation(
+    file_pattern: str = "{}.qm",
+    folder: Optional[Path] = None,
+) -> Tuple[str, Optional[Path]]:
     """Find the translation file according to locale.
 
     :param file_pattern: Custom file pattern to use to find QM files.
@@ -28,18 +31,18 @@ def setup_translation(file_pattern="{}.qm", folder=None):
     locale = QgsSettings().value("locale/userLocale", QLocale().name())
 
     if folder:
-        ts_file = QFileInfo(join(folder, file_pattern.format(locale)))
+        ts_file = folder.joinpath(file_pattern.format(locale))
     else:
-        ts_file = QFileInfo(resources_path("i18n", file_pattern.format(locale)))
+        ts_file = resources_path("i18n", file_pattern.format(locale))
     if ts_file.exists():
-        return locale, ts_file.absoluteFilePath()
+        return locale, ts_file
 
     if folder:
-        ts_file = QFileInfo(join(folder, file_pattern.format(locale[0:2])))
+        ts_file = folder.joinpath(file_pattern.format(locale[0:2]))
     else:
-        ts_file = QFileInfo(resources_path("i18n", file_pattern.format(locale[0:2])))
+        ts_file = resources_path("i18n", file_pattern.format(locale[0:2]))
     if ts_file.exists():
-        return locale, ts_file.absoluteFilePath()
+        return locale, ts_file
 
     return locale, None
 

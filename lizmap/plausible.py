@@ -1,6 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
 
 import json
 import os
@@ -20,7 +17,7 @@ from lizmap.definitions.definitions import (
 )
 from lizmap.definitions.lizmap_cloud import EXCLUDED_DOMAINS, WORKSHOP_DOMAINS
 from lizmap.saas import is_lizmap_cloud
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
 from lizmap.toolbelt.version import version
 
 MIN_SECONDS = 3600
@@ -48,7 +45,7 @@ class Plausible:
 
     def request_stat_event(self) -> bool:
         """ Request to send an event to the API. """
-        if not to_bool(os.getenv(ENV_SKIP_STATS)):
+        if not ambiguous_to_bool(os.getenv(ENV_SKIP_STATS)):
             # Disabled by environment variable
             return False
 
@@ -56,7 +53,7 @@ class Plausible:
             # At least one server in the table
             return False
 
-        if to_bool(os.getenv("CI"), default_value=False):
+        if as_boolean(os.getenv("CI")):
             # If running on CI, do not send stats
             return False
 

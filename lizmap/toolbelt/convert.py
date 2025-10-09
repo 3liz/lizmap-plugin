@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 from typing import Union
 
 from qgis.core import QgsLayerTreeGroup, QgsLayerTreeLayer, QgsLayerTreeNode
@@ -14,37 +10,25 @@ from qgis.PyQt import sip
 
 
 def cast_to_layer(node: QgsLayerTreeNode) -> QgsLayerTreeLayer:
-    """ Cast a legend node to a layer. """
-    if isinstance(node, QgsLayerTreeLayer):
-        return node
-
-    # noinspection PyTypeChecker
-    return sip.cast(node, QgsLayerTreeLayer)
+    """Cast a legend node to a layer."""
+    return node if isinstance(node, QgsLayerTreeLayer) else sip.cast(node, QgsLayerTreeLayer)
 
 
 def cast_to_group(node: QgsLayerTreeNode) -> QgsLayerTreeGroup:
-    """Cast a legend node to a group. """
-    if isinstance(node, QgsLayerTreeGroup):
-        return node
-
-    # noinspection PyTypeChecker
-    return sip.cast(node, QgsLayerTreeGroup)
+    """Cast a legend node to a group."""
+    return node if isinstance(node, QgsLayerTreeGroup) else sip.cast(node, QgsLayerTreeGroup)
 
 
-def to_bool(val: Union[str, int, float, bool, None], default_value: bool = True) -> bool:
-    """ Convert lizmap config value to boolean """
-    if isinstance(val, bool):
-        return val
+def as_boolean(val: Union[str, int, float, bool, None]) -> bool:
+    return val.lower() in ("yes", "true", "t", "1") if isinstance(val, str) else bool(val)
 
-    if val is None or val == '':
+
+# Preserve legacy compatibility
+def ambiguous_to_bool(val: Union[str, int, float, bool, None], default_value: bool = True) -> bool:
+    """Convert lizmap config value to boolean"""
+
+    # XXX WTF ?
+    if val is None or val == "":
         return default_value
 
-    if isinstance(val, str):
-        # For string, compare lower value to True string
-        return val.lower() in ('yes', 'true', 't', '1')
-
-    if not val:
-        # For value like False, 0, 0.0, None, empty list or dict returns False
-        return False
-
-    return default_value
+    return as_boolean(val)
