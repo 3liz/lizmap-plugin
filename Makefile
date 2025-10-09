@@ -33,8 +33,9 @@ REQUIREMENTS_GROUPS= \
 REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENTS_GROUPS))
 
 # Update only packaging dependencies
+# Waiting for https://github.com/astral-sh/uv/issues/12848
 update-packaging-dependencies::
-	uv sync -U --inexact --only-group packaging
+	uv lock -P qgis-plugin-package-ci -P qgis-plugin-transifex-ci
 
 update-packaging-dependencies:: update-requirements
 
@@ -64,10 +65,10 @@ lint-fix:
 	@ $(UV_RUN) ruff check --preview --fix $(LINT_TARGETS)
 
 format:
-	@ $(UV_RUN) format $(LINT_TARGETS) 
+	@ $(UV_RUN) ruff format $(LINT_TARGETS) 
 
 typecheck:
-	@ $(UV_RUN) mypy $(LINT_TARGETS)
+	$(UV_RUN)  mypy $(patsubst %, -p %, $(LINT_TARGETS))
 
 scan:
 	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)

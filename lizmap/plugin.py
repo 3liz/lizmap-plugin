@@ -68,6 +68,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor
 from qgis.utils import plugins as all_plugins
 
+from lizmap.config import LizmapConfig, MappingQgisGeometryType
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.dataviz import DatavizDefinitions, Theme
@@ -135,7 +136,6 @@ from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
-from lizmap.lizmap_api.config import LizmapConfig
 from lizmap.ogc_project_validity import OgcProjectValidity
 from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legend,
     ALLOW_PARENT_FOLDER,
