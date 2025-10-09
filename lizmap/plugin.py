@@ -1049,8 +1049,9 @@ class Lizmap:
         if self.webdav:
             self.check_webdav()
 
-        if current_metadata:
-            current_version = LwcVersions.find_from_metadata(current_metadata)
+        if current_metadata and current_metadata.get("info"):
+            current_version = LwcVersions.find(current_metadata["info"].get("version", "_"))
+            # FIXME: handle 'None' value
             self.dlg.refresh_helper_target_version(current_version)
 
         current_version = self.current_lwc_version()
@@ -3629,10 +3630,7 @@ class Lizmap:
         """ Get the JSON CFG content. """
 
         if lwc_version >= LwcVersions.Lizmap_3_6:
-            LOGGER.info(
-                'Lizmap Web Client target version {}, let\'s try to make the project valid.'.format(
-                    lwc_version.value)
-            )
+            LOGGER.info(f"Update project OGC validity for LWC version {lwc_version.value}")
             # Set shortnames if it's not set
             ogc_projet_validity = OgcProjectValidity(self.project)
             ogc_projet_validity.add_shortnames()
@@ -3641,11 +3639,6 @@ class Lizmap:
             validator = QgsProjectServerValidator()
             valid, _results = validator.validate(self.project)
             LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
-        else:
-            LOGGER.info(
-                "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
-                    lwc_version.value)
-            )
 
         if not self.check_project(lwc_version, with_gui, check_server, ignore_error):
             # Some blocking issues, we can not continue
@@ -3653,7 +3646,7 @@ class Lizmap:
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
-        LOGGER.info("Writing Lizmap configuration file for LWC version {}".format(lwc_version.value))
+        LOGGER.info(f"Writing Lizmap configuration file for LWC version {lwc_version.value}")
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
         if self.is_dev_version:
             next_version = next_git_tag()
