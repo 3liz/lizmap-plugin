@@ -24,7 +24,7 @@ from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name
 
@@ -1010,7 +1010,7 @@ class TableManager:
                         or definition['type'] == InputType.Color:
                         layer_data[key] = value
                     elif definition['type'] in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
-                        layer_data[key] = to_bool(value, False)
+                        layer_data[key] = as_boolean(value)
                     elif definition['type'] == InputType.File or definition['type'] == InputType.Json:
                         layer_data[key] = value
                     elif definition['type'] == InputType.List:
@@ -1075,7 +1075,7 @@ class TableManager:
                 continue
 
             # For editing, keep only PostgreSQL, follow up about #364, #361
-            if self.definitions.key() == 'editionLayers' and not to_bool(os.getenv("CI"), default_value=False):
+            if self.definitions.key() == 'editionLayers' and not as_boolean(os.getenv("CI")):
                 if not vector_layer:
                     # Lizmap plugin can now read incomplete configuration
                     continue

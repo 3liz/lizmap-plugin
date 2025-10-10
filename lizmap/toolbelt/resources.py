@@ -1,17 +1,25 @@
-""" Tools to work with resource files. """
+"""Tools to work with resource files."""
 
 import configparser
+import functools
 
-from os.path import abspath, dirname, join, pardir
+from importlib import resources
+from pathlib import Path
+from typing import (
+    TYPE_CHECKING,
+    Type,
+    Union,
+    cast,
+)
 
-from qgis.PyQt import uic
-
-__copyright__ = "Copyright 2024, 3Liz"
-__license__ = "GPL version 3"
-__email__ = "info@3liz.org"
+if TYPE_CHECKING:
+    from qgis.PyQt.QtGui import QIcon
 
 
-def plugin_path(*args):
+PACKAGE_NAME = "lizmap"
+
+
+def plugin_path(*args: Union[str, Path]) -> Path:
     """Get the path to plugin root folder.
 
     :param args List of path elements e.g. ['img', 'logos', 'image.png']
@@ -20,15 +28,11 @@ def plugin_path(*args):
     :return: Absolute path to the plugin path.
     :rtype: str
     """
-    path = dirname(__file__)
-    path = abspath(abspath(join(path, pardir)))
-    for item in args:
-        path = abspath(join(path, item))
-
-    return path
+    # Use the canonical way to get module resources path
+    return cast("Path", resources.files(PACKAGE_NAME)).joinpath(*args)
 
 
-def plugin_name():
+def plugin_name() -> str:
     """Return the plugin name according to metadata.txt.
 
     :return: The plugin name.
@@ -37,8 +41,8 @@ def plugin_name():
     return metadata_config()["general"]["name"]
 
 
-# FIXME: Do not reload each time (use @functools.cached)
-def metadata_config() -> configparser:
+@functools.cache
+def metadata_config() -> configparser.ConfigParser:
     """Get the INI config parser for the metadata file.
 
     :return: The config parser object.
@@ -46,33 +50,35 @@ def metadata_config() -> configparser:
     """
     path = plugin_path("metadata.txt")
     config = configparser.ConfigParser()
-    config.read(path, encoding='utf8')
+    config.read(path)
     return config
 
 
-def resources_path(*args):
-    """Get the path to our resources folder.
-
-    :param args List of path elements e.g. ['img', 'logos', 'image.png']
-    :type args: str
-
-    :return: Absolute path to the resources folder.
-    :rtype: str
-    """
-    path = abspath(abspath(join(plugin_path(), "resources")))
-    for item in args:
-        path = abspath(join(path, item))
-
-    return path
+def resources_path(*args: Union[str, Path]) -> str:
+    """Get the path to our resources folder."""
+    return str(plugin_path("resources", *args))
 
 
-def load_ui(*args):
-    """Get compile UI file.
+def load_icon(*args: Union[str, Path]) -> "QIcon":
+    from qgis.PyQt.QtGui import QIcon
+
+    return QIcon(resources_path("icons", *args))
+
+
+@functools.cache
+def window_icon() -> "QIcon":
+    return load_icon("icon.png")
+
+
+def load_ui(*args) -> Type:
+    """Get compiled UI file.
 
     :param args List of path elements e.g. ['img', 'logos', 'image.png']
     :type args: str
 
     :return: Compiled UI file.
     """
+    from qgis.PyQt import uic
+
     ui_class, _ = uic.loadUiType(resources_path("ui", *args))
     return ui_class

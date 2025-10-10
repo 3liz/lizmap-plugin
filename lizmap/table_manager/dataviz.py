@@ -31,7 +31,7 @@ from lizmap.definitions.definitions import ServerComboData
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import ServerWizard
 from lizmap.table_manager.base import TableManager
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name, resources_path
 from lizmap.toolbelt.strings import merge_strings
@@ -99,7 +99,7 @@ class TableManagerDataviz(TableManager):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return
 
-        # qgis_version() < 3.14
+        # qgis version < 3.14
         if isinstance(self.parent.dataviz_feature_picker, QLabel):
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
             return
@@ -167,8 +167,8 @@ class TableManagerDataviz(TableManager):
             "project": project,
             "plot_config": plot_config,
         }
-        if to_bool(plot_config.get('popup_display_child_plot', False)):
-            self.parent.dataviz_feature_picker.setAllowNull(not to_bool(plot_config.get('only_show_child', False)))
+        if as_boolean(plot_config.get('popup_display_child_plot')):
+            self.parent.dataviz_feature_picker.setAllowNull(not as_boolean(plot_config.get('only_show_child')))
             expression_filter = self.dataviz_expression_filter(plot_config['layerId'])
             if expression_filter:
                 json_data['exp_filter'] = expression_filter

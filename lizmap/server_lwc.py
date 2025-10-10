@@ -58,10 +58,10 @@ from lizmap.dialogs.server_wizard import (
     ServerWizard,
 )
 from lizmap.saas import is_lizmap_cloud, webdav_properties
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import ambiguous_to_bool
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
-from lizmap.toolbelt.version import format_qgis_version, qgis_version, version
+from lizmap.toolbelt.version import qgis_version_info, version
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -125,7 +125,7 @@ class ServerManager:
         self.check_dialog_validity = function_check_dialog_validity
 
         # QGIS desktop version tuple, eg (3, 22)
-        current = format_qgis_version(qgis_version())
+        current = qgis_version_info(Qgis.versionInt())
         self.qgis_desktop = (int(current[0]), int(current[1]))
 
         # Network
@@ -272,7 +272,7 @@ class ServerManager:
             # For developers, we bypass this check :)
             return True
 
-        if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+        if ambiguous_to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
             # For advanced users with an environment variable, we bypass as well
             return True
 
@@ -306,7 +306,7 @@ class ServerManager:
         if any(item in version() for item in DEV_VERSION_PREFIX):
             return True
 
-        if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+        if ambiguous_to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
             return True
 
         missing = False
@@ -1095,7 +1095,7 @@ class ServerManager:
                     split = server_version.split('.')
                     qgis_server = (int(split[0]), int(split[1]))
                     if qgis_server < qgis_desktop:
-                        if to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
+                        if ambiguous_to_bool(os.getenv("LIZMAP_ADVANCED_USER")):
                             # TODO if we can bypass this check for dev
                             pass
                         messages.insert(0, tr(
@@ -1206,7 +1206,7 @@ class ServerManager:
         is_dev = (
             any(
                 item in version() for item in UNSTABLE_VERSION_PREFIX
-            ) or to_bool(os.getenv("LIZMAP_ADVANCED_USER"))
+            ) or ambiguous_to_bool(os.getenv("LIZMAP_ADVANCED_USER"))
         )
         if is_dev:
             open_url = menu.addAction(tr("Open raw JSON file URL") + "…")

@@ -8,13 +8,13 @@ from lizmap.toolbelt.resources import metadata_config
 
 
 def lizmap_user_folder() -> Path:
-    """ Get the Lizmap user folder.
+    """Get the Lizmap user folder.
 
     If the folder does not exist, it will create it.
 
     On Linux: .local/share/QGIS/QGIS3/profiles/default/Lizmap
     """
-    path = abspath(join(QgsApplication.qgisSettingsDirPath(), 'Lizmap'))
+    path = abspath(join(QgsApplication.qgisSettingsDirPath(), "Lizmap"))
 
     if not QDir(path).exists():
         QDir().mkdir(path)
@@ -29,8 +29,8 @@ def lizmap_user_folder() -> Path:
 
 
 def user_settings() -> Path:
-    """ Path to the user file configuration. """
-    return lizmap_user_folder().joinpath('user_servers.json')
+    """Path to the user file configuration."""
+    return lizmap_user_folder().joinpath("user_servers.json")
 
 
 def plugin_date() -> QDateTime:

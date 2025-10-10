@@ -3,11 +3,11 @@ from pathlib import Path
 from qgis.core import QgsField, QgsVectorLayer
 from qgis.PyQt.QtCore import QVariant
 
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.strings import merge_strings, unaccent
-from lizmap.toolbelt.version import format_qgis_version, format_version_integer
+from lizmap.toolbelt.version import format_version_integer, qgis_version_info
 
 from .compat import TestCase
 
@@ -22,22 +22,18 @@ class TestTools(TestCase):
         layer = QgsVectorLayer(path + "|layername=lines", "lines", "ogr")
         self.assertTrue(is_database_layer(layer))
 
-    def test_format_qgis_version(self):
+    def test_qgis_version_info(self):
         """Test to get a correct QGIS version number."""
         # Normal
-        self.assertTupleEqual((3, 10, 0), format_qgis_version(31000))
+        self.assertTupleEqual((3, 10, 0), qgis_version_info(31000))
 
         # Increment to stable version
 
-        self.assertTupleEqual((3, 12, 0), format_qgis_version(31100))
+        self.assertTupleEqual((3, 12, 0), qgis_version_info(31100))
 
         # Zero in the middle
-        self.assertTupleEqual((3, 4, 10), format_qgis_version(30410))
-        self.assertTupleEqual((4, 3, 14), format_qgis_version(40314, increase_odd_number=False))
-
-        # As string, with long numbers
-        self.assertTupleEqual((10, 11, 10), format_qgis_version("10.11.10", increase_odd_number=False))
-        self.assertTupleEqual((10, 12, 10), format_qgis_version("10.11.10", increase_odd_number=True))
+        self.assertTupleEqual((3, 4, 10), qgis_version_info(30410))
+        self.assertTupleEqual((4, 3, 14), qgis_version_info(40314, increase_odd_number=False))
 
     def test_format_version_int(self):
         """Test to transform string version to int version."""
@@ -47,25 +43,43 @@ class TestTools(TestCase):
         self.assertEqual("030708", format_version_integer("3.7.8-alpha"))
         self.assertEqual("000000", format_version_integer("master"))
 
-    def test_to_bool(self):
+    def test_as_boolean(self):
         """Test the to_bool function."""
-        self.assertTrue(to_bool("trUe"))
-        self.assertTrue(to_bool("1"))
-        self.assertTrue(to_bool(-1))
-        self.assertTrue(to_bool(1))
-        self.assertTrue(to_bool(5))
-        self.assertTrue(to_bool(True))
-        self.assertTrue(to_bool(None, default_value=True))
-        self.assertTrue(to_bool(""))
-        self.assertTrue(to_bool("", default_value=True))
+        self.assertTrue(as_boolean("trUe"))
+        self.assertTrue(as_boolean("1"))
+        self.assertTrue(as_boolean(-1))
+        self.assertTrue(as_boolean(1))
+        self.assertTrue(as_boolean(5))
+        self.assertTrue(as_boolean(True))
+        self.assertFalse(as_boolean(""))
+        self.assertFalse(as_boolean(None))
 
-        self.assertFalse(to_bool("false"))
-        self.assertFalse(to_bool("FALSE"))
-        self.assertFalse(to_bool("", default_value=False))
-        self.assertFalse(to_bool("0"))
-        self.assertFalse(to_bool(0))
-        self.assertFalse(to_bool(False))
-        self.assertFalse(to_bool(None, default_value=False))
+        self.assertFalse(as_boolean("false"))
+        self.assertFalse(as_boolean("FALSE"))
+        self.assertFalse(as_boolean(""))
+        self.assertFalse(as_boolean("0"))
+        self.assertFalse(as_boolean(0))
+        self.assertFalse(as_boolean(False))
+
+    def test_ambiguous_to_bool(self):
+        """Test the to_bool function."""
+        self.assertTrue(ambiguous_to_bool("trUe"))
+        self.assertTrue(ambiguous_to_bool("1"))
+        self.assertTrue(ambiguous_to_bool(-1))
+        self.assertTrue(ambiguous_to_bool(1))
+        self.assertTrue(ambiguous_to_bool(5))
+        self.assertTrue(ambiguous_to_bool(True))
+        self.assertTrue(ambiguous_to_bool(None, default_value=True))
+        self.assertTrue(ambiguous_to_bool(""))
+        self.assertTrue(ambiguous_to_bool("", default_value=True))
+
+        self.assertFalse(ambiguous_to_bool("false"))
+        self.assertFalse(ambiguous_to_bool("FALSE"))
+        self.assertFalse(ambiguous_to_bool("", default_value=False))
+        self.assertFalse(ambiguous_to_bool("0"))
+        self.assertFalse(ambiguous_to_bool(0))
+        self.assertFalse(ambiguous_to_bool(False))
+        self.assertFalse(ambiguous_to_bool(None, default_value=False))
 
     def test_unaccent(self):
         """Test to unaccent a string."""

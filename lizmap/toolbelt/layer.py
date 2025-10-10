@@ -1,7 +1,3 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import os
 import urllib
 
@@ -18,38 +14,37 @@ from lizmap.definitions.definitions import LayerProperties
 
 
 def is_database_layer(layer: QgsMapLayer) -> bool:
-    """ Check if the layer is a database layer.
+    """Check if the layer is a database layer.
 
     It returns True for postgres, spatialite and gpkg files.
     """
-    if layer.providerType() in ('postgres', 'spatialite'):
+    if layer.providerType() in ("postgres", "spatialite"):
         return True
 
-    uri = QgsProviderRegistry.instance().decodeUri('ogr', layer.source())
-    extension = os.path.splitext(uri['path'])[1]
-    return extension.lower() == '.gpkg'
+    uri = QgsProviderRegistry.instance().decodeUri("ogr", layer.source())
+    extension = os.path.splitext(uri["path"])[1]
+    return extension.lower() == ".gpkg"
 
 
 def is_vector_pg(layer: QgsMapLayer, geometry_check: bool = False) -> bool:
-    """ Return boolean if the layer is stored in PG and is a vector with a geometry. """
-    return layer.type() == QgsMapLayer.LayerType.VectorLayer \
-        and layer.dataProvider().name() == "postgres" \
+    """Return boolean if the layer is stored in PG and is a vector with a geometry."""
+    return (
+        layer.type() == QgsMapLayer.LayerType.VectorLayer
+        and layer.dataProvider().name() == "postgres"
         and (not geometry_check or layer.isSpatial())
+    )
 
 
 def relative_path(max_parent: int) -> str:
-    """ Return the dot notation for a maximum parent folder. """
-    parent = ['..'] * max_parent
-    return '/'.join(parent)
+    """Return the dot notation for a maximum parent folder."""
+    parent = [".."] * max_parent
+    return "/".join(parent)
 
 
 def update_uri(layer: QgsMapLayer, uri: QgsDataSourceUri):
-    """ Set a new datasource URI on a layer. """
+    """Set a new datasource URI on a layer."""
     layer.setDataSource(
-        uri.uri(True),
-        layer.name(),
-        layer.dataProvider().name(),
-        layer.dataProvider().ProviderOptions()
+        uri.uri(True), layer.name(), layer.dataProvider().name(), layer.dataProvider().ProviderOptions()
     )
 
 
@@ -78,14 +73,14 @@ def get_layer_wms_parameters(layer):
     """
     uri = layer.dataProvider().dataSourceUri()
     # avoid WMTS layers (not supported yet in Lizmap Web Client)
-    if 'wmts' in uri or 'WMTS' in uri:
+    if "wmts" in uri or "WMTS" in uri:
         return None
 
     # Split WMS parameters
-    wms_params = dict([*p.split('='), ''][:2] for p in uri.split('&'))
+    wms_params = dict([*p.split("="), ""][:2] for p in uri.split("&"))
 
     # urldecode WMS url
-    wms_params['url'] = urllib.parse.unquote(wms_params['url']).replace('&&', '&').replace('==', '=')
+    wms_params["url"] = urllib.parse.unquote(wms_params["url"]).replace("&&", "&").replace("==", "=")
 
     return wms_params
 
