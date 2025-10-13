@@ -1,5 +1,7 @@
 """Dialog for time manager."""
 
+from typing import TYPE_CHECKING, Dict, Optional
+
 from qgis.core import (
     QgsExpression,
     QgsExpressionContext,
@@ -15,17 +17,19 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 CLASS = load_ui('ui_form_time_manager.ui')
+
+if TYPE_CHECKING:
+    from qgis.PyQt.QtWidgets import QWidget
 
 
 class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, version: LwcVersions = None):
+    def __init__(self,
+        parent: Optional["QWidget"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, version)
         self.setupUi(self)
         self.config = TimeManagerDefinitions()
@@ -103,8 +107,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
         exp = QgsExpression('to_string({})'.format(expression))
         exp.prepare(exp_context)
-        value = exp.evaluate(exp_context)
-        return value
+        return exp.evaluate(exp_context)
 
     def set_visible_min_max(self):
         """ Some widgets are hidden when the layer is stored in a database.
@@ -130,7 +133,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
     def end_field_changed(self):
         self.edit_max_value.setText('')
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -147,3 +150,5 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         if self.edit_min_value.isVisible():
             if self.edit_min_value.text() == '' or self.edit_max_value.text() == '':
                 return msg
+
+        return None

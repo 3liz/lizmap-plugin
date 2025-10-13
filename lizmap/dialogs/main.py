@@ -1,11 +1,7 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 import logging
 
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from qgis.core import (
     Qgis,
@@ -99,12 +95,21 @@ from lizmap.toolbelt.resources import load_ui, resources_path
 from lizmap.toolbelt.strings import human_size
 from lizmap.toolbelt.version import format_qgis_version, qgis_version
 
+if TYPE_CHECKING:
+    from qgis.PyQt.QtWidgets import QWidget
+
+
 FORM_CLASS = load_ui('ui_lizmap.ui')
 LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
-    def __init__(self, parent=None, is_dev_version=True, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["QWidget"] = None,
+        is_dev_version: bool = True,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
@@ -508,7 +513,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         QDesktopServices.openUrl(QUrl("https://docs.3liz.org/workshop/workshop/"))
 
     @staticmethod
-    def set_tooltip_webdav(button: QPushButton, date: str = None):
+    def set_tooltip_webdav(button: QPushButton, date: Optional[str] = None):
         """ Set tooltip about the upload on the WebDAV server. """
         msg = tr('Upload on the server')
         if date:
@@ -663,7 +668,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 if current_text.endswith(text):
                     self.combo_legend_option.setCurrentText(current_text.replace(text, ''))
 
-    def check_qgis_version(self, message_bar=False, widget=False) -> bool:
+    def check_qgis_version(self, message_bar: bool = False, widget: bool = False) -> bool:
         """ Compare QGIS desktop and server versions and display results if necessary. """
         self.warning_old_server.setVisible(False)
 
@@ -716,7 +721,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         return True
 
-    def current_server_info(self, info: ServerComboData):
+    def current_server_info(self, info: ServerComboData) -> Any:
         """ Return the current LWC server information from the server combobox. """
         return self.server_combo.currentData(info)
 
@@ -725,17 +730,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
         if metadata and metadata.get('info'):
-            return LwcVersions.find_from_metadata(metadata)
+            version_str = metadata["info"].get("versions")
+            if version_str:
+                return LwcVersions.find(version_str)
 
-        if not default_value:
-            return None
-
-        if self._lwc_version:
+        if default_value and self._lwc_version:
             return self._lwc_version
 
         return None
 
-    def current_repository(self, role=RepositoryComboData.Id) -> str:
+    def current_repository(self, role: RepositoryComboData = RepositoryComboData.Id) -> str:
         """ Fetch the current directory on the server if available. """
         if not self.repository_combo.isVisible():
             return ''
@@ -751,7 +755,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.server_combo.setItemData(index, tr('No metadata about this server'), Qt.ItemDataRole.ToolTipRole)
             return
 
-        target_version = LwcVersions.find_from_metadata(metadata)
+        target_version = LwcVersions.find(metadata["info"].get("version", "_"))
         if target_version:
             target_version = target_version.value
         else:
@@ -847,10 +851,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def display_message_bar(
             self,
             title: str,
-            message: str = None,
+            message: Optional[str] = None,
             level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
-            duration: int = None,
-            more_details: str = None,
+            duration: Optional[int] = None,
+            more_details: Optional[str] = None,
             open_logs: bool = False):
         """Display a message.
 

@@ -10,37 +10,52 @@ QGIS_VERSION ?= 3.40
 # Configure
 #
 
-ifeq ($(USE_UV), 1)
-UV_RUN ?= uv run
+# Check if uv is available
+$(eval UV_PATH=$(shell which uv))
+ifdef UV_PATH
+ifdef VIRTUAL_ENV
+# Always prefer active environment
+ACTIVE_VENV=--active
+endif
+UV_RUN=uv run $(ACTIVE_VENV)
 endif
 
 
-REQUIREMENTS= \
+REQUIREMENTS_GROUPS= \
 	dev \
 	tests \
+	lint \
 	packaging \
 	$(NULL)
 
-.PHONY: uv-required update-requirements
+.PHONY: update-requirements
+
+REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENTS_GROUPS))
+
+# Update only packaging dependencies
+update-packaging-dependencies::
+	uv sync -U --inexact --only-group packaging
+
+update-packaging-dependencies:: update-requirements
+
+update-requirements: $(REQUIREMENTS)
 
 # Require uv (https://docs.astral.sh/uv/) for extracting
 # infos from project's dependency-groups
-update-requirements: check-uv-install
-	@for group in $(REQUIREMENTS); do \
-		echo "Updating requirements for '$$group'"; \
-		uv export --format requirements.txt \
-			--no-annotate \
-			--no-editable \
-			--no-hashes \
-			--only-group $$group \
-			-q -o requirements/$$group.txt; \
-	done
+requirements/%.txt: uv.lock
+	@echo "Updating requirements for '$*'"; \
+	uv export --format requirements.txt \
+		--no-annotate \
+		--no-editable \
+		--no-hashes \
+		--only-group $* \
+		-q -o requirements/$*.txt;
 
 #
 # Static analysis
 #
 
-LINT_TARGETS=$(PYTHON_MODULE) $(EXTRA_LINT_TARGETS)
+LINT_TARGETS=$(PYTHON_MODULE) tests $(EXTRA_LINT_TARGETS)
 
 lint:
 	@ $(UV_RUN) ruff check --preview  --output-format=concise $(LINT_TARGETS)
@@ -69,7 +84,7 @@ check-uv-install:
 #
 
 test:
-	cd tests && $(UV_RUN) pytest -v
+	$(UV_RUN) pytest -v tests/
 
 #
 # Test using docker image

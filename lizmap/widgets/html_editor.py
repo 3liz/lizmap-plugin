@@ -63,7 +63,7 @@ def expression_from_qgis_to_html(match):
     return escape(match.group())
 
 
-def expression_from_html_to_qgis(match) -> str:
+def expression_from_html_to_qgis(match: re.Match) -> str:
     """ Method to unescape QGIS expression to be used in QGIS. """
     if not match:
         return ''
@@ -132,13 +132,17 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         self.stacked_expression.setVisible(True)
         self.stacked_expression.setCurrentWidget(self.page_expression_layer)
 
-    def html_content(self):
+    def html_content(self) -> str:
+        """ Returns the content as an HTML string. """
         if WEBKIT_AVAILABLE:
             html_content = self._js('tEditor.getHtml();')
         else:
             html_content = self.web_view.text()
-        return QGIS_EXPRESSION_TEXT.sub(expression_from_html_to_qgis, html_content or "")
-
+        # NOTE: html_content may be None
+        return QGIS_EXPRESSION_TEXT.sub(
+            expression_from_html_to_qgis,
+            html_content,
+        ) if html_content else ""
 
     def set_html_content(self, content: str):
         """ Set the HTML in the editor. """
@@ -176,16 +180,20 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             return
         self._insert_qgis_expression(dialog.expressionText())
 
-    def _js(self, command):
+    def _js(self, command: str) -> str:
+        """Internal function to execute JavaScript in the editor."""
         if WEB_ENGINE:  # QWebEngineView
             loop = QEventLoop()
             result_container = {}
+
             def _callback(result):
                 result_container['value'] = result
                 loop.quit()
+
             self.web_view.page().runJavaScript(command, _callback)
             loop.exec_()
             return result_container.get('value')
+
         elif WEBKIT_AVAILABLE:  # legacy QWebView
             return self.web_view.page().currentFrame().evaluateJavaScript(command)
         else:

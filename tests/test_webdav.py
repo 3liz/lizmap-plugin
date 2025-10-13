@@ -1,5 +1,7 @@
 """Test webdav protocol and custom HTTP requests."""
 
+import contextlib
+
 from dataclasses import dataclass
 from pathlib import Path
 from shutil import rmtree
@@ -72,10 +74,8 @@ def webdav(data: Path) -> Dav:
 
     yield dav
 
-    try:
+    with contextlib.suppress(RemoteResourceNotFound):
         dav.client.clean(dav.directory_name)
-    except RemoteResourceNotFound:
-        pass
 
     # Clean on local
     rmtree(dav.local_dir_path, ignore_errors=True)

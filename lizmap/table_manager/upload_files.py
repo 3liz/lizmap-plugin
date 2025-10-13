@@ -38,7 +38,7 @@ class TableFilesManager:
         for layer in self.parent.project.mapLayers().values():
 
             components = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
-            if 'path' not in components.keys():
+            if 'path' not in components:
                 # The layer is not file base.
                 continue
 

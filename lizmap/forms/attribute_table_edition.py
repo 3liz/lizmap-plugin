@@ -1,4 +1,5 @@
 """Dialog for attribute table edition."""
+from typing import TYPE_CHECKING, Dict, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.PyQt.QtGui import QIcon
@@ -12,17 +13,21 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
-__copyright__ = 'Copyright 2025, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 
-CLASS = load_ui('ui_form_attribute_table.ui')
+CLASS = load_ui("ui_form_attribute_table.ui")
 
 
 class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
 
-    def __init__(self, parent=None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: Optional["LizmapDialog"] = None,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = AttributeTableDefinitions()
@@ -68,6 +73,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.check_layer_wfs()
         self.enable_primary_key_field()
 
+    # TODO: Type me !
     def check_layer_wfs(self):
         """ When the layer has changed in the combobox, check if the layer is published as WFS. """
         layer = self.layer.currentLayer()
@@ -95,7 +101,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.has_custom_config.setChecked(layer_has_custom_attribute_table(layer))
         self.enable_primary_key_field()
 
-    def validate(self) -> str:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -107,3 +113,5 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.primary_key.currentField():
             return tr('Primary key field is mandatory.')
+
+        return None

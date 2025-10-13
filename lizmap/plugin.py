@@ -1,7 +1,4 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
+import contextlib
 import json
 import logging
 import os
@@ -30,6 +27,7 @@ from qgis.core import (  # QgsIconUtils,
     QgsMapLayer,
     QgsMapLayerModel,
     QgsMapLayerProxyModel,
+    QgsMasterLayoutInterface,
     QgsProject,
     QgsRasterLayer,
     QgsRectangle,
@@ -37,7 +35,7 @@ from qgis.core import (  # QgsIconUtils,
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.gui import QgsFileWidget
+from qgis.gui import QgisInterface, QgsFileWidget
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QEventLoop,
@@ -217,7 +215,7 @@ VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions
 
 class Lizmap:
 
-    def __init__(self, iface, lwc_version: LwcVersions = None):
+    def __init__(self, iface: QgisInterface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
         LOGGER.info("Plugin starting")
         self.iface = iface
@@ -1051,8 +1049,9 @@ class Lizmap:
         if self.webdav:
             self.check_webdav()
 
-        if current_metadata:
-            current_version = LwcVersions.find_from_metadata(current_metadata)
+        if current_metadata and current_metadata.get("info"):
+            current_version = LwcVersions.find(current_metadata["info"].get("version", "_"))
+            # FIXME: handle 'None' value
             self.dlg.refresh_helper_target_version(current_version)
 
         current_version = self.current_lwc_version()
@@ -1162,7 +1161,7 @@ class Lizmap:
                 found = True
 
         # Change in all table manager too
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             manager = self.layers_table[key].get('manager')
             if manager:
                 manager.set_lwc_version(current_version)
@@ -1791,7 +1790,7 @@ class Lizmap:
         self.dlg.minimum_scale.setValue(min_scale)
         self.dlg.maximum_scale.setValue(max_scale)
 
-    def read_cfg_file(self, skip_tables=False) -> dict:
+    def read_cfg_file(self, skip_tables: bool = False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
@@ -1808,7 +1807,7 @@ class Lizmap:
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
-                for key in self.layers_table.keys():
+                for key in self.layers_table:
                     if key in sjson:
                         self.layers_table[key]['jsonConfig'] = sjson[key]
                     else:
@@ -1855,7 +1854,7 @@ class Lizmap:
 
         else:
             LOGGER.info('Lizmap CFG does not exist for this project.')
-            for key in self.layers_table.keys():
+            for key in self.layers_table:
                 manager = self.layers_table[key].get('manager')
                 if manager:
                     manager.truncate()
@@ -1965,7 +1964,7 @@ class Lizmap:
         if self.project.fileName().lower().endswith('qgs'):
             # Manage lizmap_user project variable
             variables = self.project.customVariables()
-            if 'lizmap_user' in variables.keys() and not self.dlg.check_cfg_file_exists() and not skip_tables:
+            if 'lizmap_user' in variables and not self.dlg.check_cfg_file_exists() and not skip_tables:
                 # The variable 'lizmap_user' exists in the project as a variable
                 # But no CFG was found, maybe the project has been renamed.
                 message = tr(
@@ -2065,9 +2064,8 @@ class Lizmap:
         msg += ','.join(names)
         self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
 
-    def layer_renamed(self, node, name: str):
+    def layer_renamed(self, _, name: str):
         """ When a layer/group is renamed in the legend. """
-        _ = node
         if not self.dlg.check_cfg_file_exists():
             # Not a Lizmap project
             return
@@ -2075,9 +2073,15 @@ class Lizmap:
         # Temporary workaround for
         # https://github.com/3liz/lizmap-plugin/issues/498
         msg = tr(
-            "The layer '{}' has been renamed. The configuration in the Lizmap <b>Layers</b> tab only must be checked."
-        ).format(name)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
+            f"The layer '{name}' has been renamed. "
+            "The configuration in the Lizmap <b>Layers</b> tab only must be checked."
+        )
+        self.iface.messageBar().pushMessage(
+            'Lizmap',
+            msg,
+            level=Qgis.MessageLevel.Warning,
+            duration=DURATION_WARNING_BAR,
+        )
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
@@ -2114,7 +2118,7 @@ class Lizmap:
 
         LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
 
-    def layout_renamed(self, layout, new_name: str):
+    def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
         """ When a layout has been renamed in the project. """
         if not self.dlg.check_cfg_file_exists():
             return
@@ -2128,11 +2132,12 @@ class Lizmap:
 
         self.layers_table['layouts']['manager'].layout_removed(name)
 
-    def check_wfs_is_checked(self, layer: QgsVectorLayer):
+    def check_wfs_is_checked(self, layer: QgsVectorLayer) -> bool:
         """ Check if the layer is published as WFS. """
         if not is_layer_published_wfs(self.project, layer.id()):
             self.display_error(tr(
-                'The layers you have chosen for this tool must be checked in the "WFS Capabilities" option of the '
+                'The layers you have chosen for this tool must be checked in the '
+                '"WFS Capabilities" option of the '
                 'QGIS Server tab in the "Project Properties" dialog.'))
             return False
         return True
@@ -2486,11 +2491,9 @@ class Lizmap:
                                 self.external_wms_toggled()
                             else:
                                 self.dlg.cbExternalWms.setChecked(False)
-                                try:
+                                with contextlib.suppress(TypeError):
+                                    # Raise TypeError if the object was not connected
                                     self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
-                                except TypeError:
-                                    # The object was not connected
-                                    pass
 
             layer = self._current_selected_layer()  # It can be a layer or a group
 
@@ -2606,7 +2609,7 @@ class Lizmap:
         """ Disable the format combobox is the checkbox third party WMS is checked. """
         self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
 
-    def get_item_wms_capability(self, selected_item) -> Optional[bool]:
+    def get_item_wms_capability(self, selected_item: Dict) -> bool:
         """
         Check if an item in the tree is a layer
         and if it is a WMS layer
@@ -2615,11 +2618,8 @@ class Lizmap:
         is_layer = selected_item['type'] == 'layer'
         if is_layer:
             layer = self.get_qgis_layer_by_id(selected_item['id'])
-            if not layer:
-                return
-            if layer.providerType() in ['wms']:
-                if get_layer_wms_parameters(layer):
-                    wms_enabled = True
+            if layer and layer.providerType() in ['wms'] and get_layer_wms_parameters(layer):
+                wms_enabled = True
         return wms_enabled
 
     @staticmethod
@@ -2735,7 +2735,13 @@ class Lizmap:
         source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
         self._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
 
-    def _add_base_layer(self, source: str, name: str, attribution_url: str = None, attribution_name: str = None):
+    def _add_base_layer(
+        self,
+        source: str,
+        name: str,
+        attribution_url: Optional[str] = None,
+        attribution_name: Optional[str] = None,
+    ):
         """ Add a base layer to the "baselayers" group. """
         self.add_group_baselayers()
         raster = QgsRasterLayer(source, name, 'wms')
@@ -2768,8 +2774,7 @@ class Lizmap:
     def string_to_list(text):
         """ Format a string to a list. """
         data = text.split(',') if len(text) > 0 else []
-        data = [item.strip() for item in data]
-        return data
+        return [item.strip() for item in data]
 
     def save_value_layer_group_data(self, key: str):
         """ Save the new value from the UI in the global layer property self.layerList.
@@ -2953,11 +2958,11 @@ class Lizmap:
         """ Either a group or a layer name. """
         item = self.dlg.layer_tree.currentItem()
         if not item:
-            return
+            return None
 
         text = item.text(1)
         if text not in self.layerList:
-            return
+            return None
 
         return text
 
@@ -2966,15 +2971,14 @@ class Lizmap:
         lid = self._current_selected_item_in_config()
         if not lid:
             LOGGER.warning('No item selected in the Lizmap layer tree.')
-            return
+            return None
 
         layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
         if not layers:
             LOGGER.warning('Layers not found with searched text from the tree : {}'.format(lid))
-            return
+            return None
 
-        layer = layers[0]
-        return layer
+        return layers[0]
 
     def link_from_properties(self):
         """ Button set link from layer in the Lizmap configuration. """
@@ -3112,7 +3116,11 @@ class Lizmap:
             self.check_project(lwc_version)
 
     def check_project(
-            self, lwc_version: LwcVersions, with_gui: bool = True, check_server=True, ignore_error=False
+        self,
+        lwc_version: LwcVersions,
+        with_gui: bool = True,
+        check_server: bool = True,
+        ignore_error: bool = False,
     ) -> bool:
         """ Check the project against all rules defined. """
         # Import must be done after QTranslator
@@ -3491,11 +3499,11 @@ class Lizmap:
             self.dlg.enabled_simplify_geom(True)
 
         data = {}
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             manager: TableManager = self.layers_table[key].get('manager')
             if manager:
                 for layer_id, fields in manager.wfs_fields_used().items():
-                    if layer_id not in data.keys():
+                    if layer_id not in data:
                         data[layer_id] = []
                     for f in fields:
                         if f not in data[layer_id]:
@@ -3616,16 +3624,13 @@ class Lizmap:
         self,
         lwc_version: LwcVersions,
         with_gui: bool = True,
-        check_server=True,
-        ignore_error=False,
+        check_server: bool = True,
+        ignore_error: bool = False,
     ) -> Optional[Dict]:
         """ Get the JSON CFG content. """
 
         if lwc_version >= LwcVersions.Lizmap_3_6:
-            LOGGER.info(
-                'Lizmap Web Client target version {}, let\'s try to make the project valid.'.format(
-                    lwc_version.value)
-            )
+            LOGGER.info(f"Update project OGC validity for LWC version {lwc_version.value}")
             # Set shortnames if it's not set
             ogc_projet_validity = OgcProjectValidity(self.project)
             ogc_projet_validity.add_shortnames()
@@ -3634,11 +3639,6 @@ class Lizmap:
             validator = QgsProjectServerValidator()
             valid, _results = validator.validate(self.project)
             LOGGER.info(f"Project has been detected : {'VALID' if valid else 'NOT valid'} according to OGC validation.")
-        else:
-            LOGGER.info(
-                "Lizmap Web Client target version {}, we do not update the project for OGC validity.".format(
-                    lwc_version.value)
-            )
 
         if not self.check_project(lwc_version, with_gui, check_server, ignore_error):
             # Some blocking issues, we can not continue
@@ -3646,7 +3646,7 @@ class Lizmap:
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
 
-        LOGGER.info("Writing Lizmap configuration file for LWC version {}".format(lwc_version.value))
+        LOGGER.info(f"Writing Lizmap configuration file for LWC version {lwc_version.value}")
         current_version = self.global_options['metadata']['lizmap_plugin_version']['default']
         if self.is_dev_version:
             next_version = next_git_tag()
@@ -3876,7 +3876,7 @@ class Lizmap:
             if key == 'automatic_permalink':
                 liz2json["options"]['automatic_permalink'] = self.dlg.automatic_permalink.isChecked()
 
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             manager = self.layers_table[key].get('manager')
             if manager:
                 try:
@@ -3911,10 +3911,8 @@ class Lizmap:
                     # The print combobox is removed
                     # Let's remove from the CFG file
                     if lwc_version >= LwcVersions.Lizmap_3_7:
-                        try:
+                        with contextlib.suppress(KeyError):
                             del liz2json['options']['print']
-                        except KeyError:
-                            pass
                     else:
                         # We do not want to save this table if it's less than LWC 3.7
                         LOGGER.info("Skipping the 'layout' table because version is less than LWC 3.7")
@@ -4159,11 +4157,9 @@ class Lizmap:
                 else:
                     layer_options['externalWmsToggle'] = str(False)
 
-            if 'serverFrame' in layer_options.keys():
-                del layer_options['serverFrame']
+            layer_options.pop('serverFrame', None)
 
-            if 'popupFrame' in layer_options.keys():
-                del layer_options['popupFrame']
+            layer_options.pop('popupFrame', None)
 
             # Add layer options to the json object
             liz2json["layers"][v['name']] = layer_options
@@ -4175,8 +4171,7 @@ class Lizmap:
         use_native = self.dlg.use_native_scales.isChecked()
         if use_native:
             return [self.dlg.minimum_scale.value(), self.dlg.maximum_scale.value()]
-        else:
-            return [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
+        return [int(a) for a in self.dlg.list_map_scales.text().split(', ') if a.isdigit()]
 
     def minimum_scale_value(self) -> int:
         """ Return the minimum scale value. """
@@ -4248,11 +4243,9 @@ class Lizmap:
 
     def disconnect_map_scales_min_max(self):
         """ Disconnect the list of scales to min/max fields. """
-        try:
+        with contextlib.suppress(TypeError):
+            # Raise if it wasn't connected
             self.dlg.list_map_scales.editingFinished.disconnect(self.get_min_max_scales)
-        except TypeError:
-            # It wasn't connected
-            pass
 
     def native_scales_toggled(self):
         """ When the checkbox native scales is toggled. """
@@ -4453,10 +4446,12 @@ class Lizmap:
         )
 
     def save_cfg_file(
-            self,
-            lwc_version: LwcVersions = None,
-            save_project: bool = None,
-            with_gui: bool = True,
+        self,
+        lwc_version: Optional[LwcVersions] = None,
+        # TODO find better semantic
+        save_project: Optional[bool] = None,
+        # FIXME seems to be redondant with save_project == None
+        with_gui: bool = True,
     ) -> bool:
         """Save the CFG file.
 
@@ -5161,7 +5156,7 @@ class Lizmap:
             pass
 
     def reinit_default_properties(self):
-        for key in self.layers_table.keys():
+        for key in self.layers_table:
             self.layers_table[key]['jsonConfig'] = dict()
 
     def on_project_read(self):
@@ -5272,7 +5267,7 @@ class Lizmap:
         loop.exec()
 
     @staticmethod
-    def login_from_auth_id(auth_id) -> str:
+    def login_from_auth_id(auth_id: str) -> str:
         """ Login used in the QGIS password manager from an Auth ID. """
         # noinspection PyArgumentList
         auth_manager = QgsApplication.authManager()
@@ -5353,11 +5348,11 @@ class Lizmap:
             destination = self.dlg.name_training_folder.placeholderText()
 
         destination = unaccent(destination)
+        # TODO: Use maketrans()
         destination = destination.replace('-', '_')
         destination = destination.replace(' ', '_')
         destination = destination.replace("'", '_')
-        destination = destination.lower()
-        return destination
+        return destination.lower()
 
     def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
         """ Destination folder where to store the data. """
@@ -5367,14 +5362,14 @@ class Lizmap:
         else:
             file_path = self.dlg.path_training_folder_zip.filePath()
             if not file_path:
-                return
+                return None
 
             destination = self.destination_name()
             output = Path(file_path).joinpath(destination)
             QgsSettings().setValue(Settings.key(Settings.LizmapRepository), destination)
 
         if not output:
-            return
+            return None
 
         if not output.exists():
             output.mkdir()

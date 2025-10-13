@@ -1,5 +1,4 @@
 """Table manager."""
-import enum
 import inspect
 import json
 import logging
@@ -12,15 +11,18 @@ from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import (
+    QAbstractButton,
     QAbstractItemView,
     QDialog,
     QMessageBox,
     QTableWidgetItem,
+    QWidget,
 )
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.convert import to_bool
 from lizmap.toolbelt.i18n import tr
@@ -29,18 +31,21 @@ from lizmap.toolbelt.resources import plugin_name
 LOGGER = logging.getLogger(plugin_name())
 
 
-__copyright__ = 'Copyright 2022, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
-
 class TableManager:
 
     """ Class to manage a table with add, edit, remove, reorder rows. """
 
     def __init__(
-            self, parent, definitions: BaseDefinitions, edition: Optional[QDialog], table, remove_button, edit_button,
-            up_button, down_button):
+        self,
+        parent: LizmapDialog,
+        definitions: BaseDefinitions,
+        edition: Optional[QDialog],
+        table: QWidget,
+        remove_button: QAbstractButton,
+        edit_button: QAbstractButton,
+        up_button: QAbstractButton,
+        down_button: QAbstractButton,
+    ):
         """ Constructor. """
         self.parent = parent
         self.definitions = definitions
@@ -138,7 +143,6 @@ class TableManager:
                     if tooltip:
                         widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
                 default = general_config.get('default')
-                default: enum
                 if default:
                     index = widget.findData(default.value['data'])
                     widget.setCurrentIndex(index)
@@ -221,7 +225,7 @@ class TableManager:
         selection = self.table.selectedIndexes()
 
         if len(selection) <= 0:
-            return
+            return None
 
         row = selection[0].row()
 
@@ -232,7 +236,7 @@ class TableManager:
             # value is a boolean = False
             # We can't edit a layer which is invalid,
             # Maybe just the layer wasn't loaded in QGIS desktop because the file was missing
-            return
+            return None
 
         data = dict()
         for i, key in enumerate(self.keys):
@@ -332,12 +336,7 @@ class TableManager:
                             tr("Not possible to check the field type if the layer is not loaded in QGIS").format(value)
                         )
 
-            elif input_type == InputType.Fields:
-                cell.setText(value)
-                cell.setData(Qt.ItemDataRole.UserRole, value)
-                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
-
-            elif input_type == InputType.File:
+            elif input_type == InputType.Fields or input_type == InputType.File:
                 cell.setText(value)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
@@ -447,12 +446,7 @@ class TableManager:
                         icon = QIcon(":images/themes/default/mActionFilePrint.svg")
                     cell.setIcon(icon)
 
-            elif input_type == InputType.MultiLine:
-                cell.setText(value)
-                cell.setData(Qt.ItemDataRole.UserRole, value)
-                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
-
-            elif input_type == InputType.HtmlWysiwyg:
+            elif input_type == InputType.MultiLine or input_type == InputType.HtmlWysiwyg:
                 cell.setText(value)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
@@ -595,21 +589,14 @@ class TableManager:
                     # Do not put if not cell, it might be False
                     raise Exception('Cell has no data ({}, {})'.format(row, i))
 
-                if input_type == InputType.Layer:
-                    layer_data[key] = cell
-                elif input_type == InputType.Collection:
-                    layer_data[key] = cell
-                elif input_type == InputType.Layers:
-                    layer_data[key] = cell
-                elif input_type == InputType.Color:
-                    layer_data[key] = cell
-                elif input_type in (InputType.Field, InputType.PrimaryKeyField):
-                    layer_data[key] = cell
-                elif input_type == InputType.Fields:
-                    layer_data[key] = cell
-                elif input_type == InputType.File:
-                    layer_data[key] = cell
-                elif input_type == InputType.Json:
+                if input_type == InputType.Layer \
+                        or input_type == InputType.Collection \
+                        or input_type == InputType.Layers \
+                        or input_type == InputType.Color \
+                        or input_type in (InputType.Field, InputType.PrimaryKeyField) \
+                        or input_type == InputType.Fields \
+                        or input_type == InputType.File \
+                        or input_type == InputType.Json:
                     layer_data[key] = cell
                 elif input_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     if use_bool_type:
@@ -617,9 +604,7 @@ class TableManager:
                     else:
                         # Lizmap 4 #176
                         layer_data[key] = str(True) if cell else str(False)
-                elif input_type == InputType.SpinBox:
-                    layer_data[key] = cell
-                elif input_type == InputType.List:
+                elif input_type == InputType.SpinBox or input_type == InputType.List:
                     layer_data[key] = cell
                 elif input_type == InputType.Text:
                     json_array = self.definitions.layer_config[key].get('use_json')
@@ -628,9 +613,7 @@ class TableManager:
                         layer_data[key] = cell.split(separator)
                     else:
                         layer_data[key] = cell
-                elif input_type == InputType.MultiLine:
-                    layer_data[key] = cell
-                elif input_type == InputType.HtmlWysiwyg:
+                elif input_type == InputType.MultiLine or input_type == InputType.HtmlWysiwyg:
                     layer_data[key] = cell
                 else:
                     raise Exception('InputType "{}" not implemented'.format(input_type))
@@ -790,7 +773,7 @@ class TableManager:
 
         return data
 
-    def _from_json_legacy(self, data) -> list:
+    def _from_json_legacy(self, data: Dict) -> list:
         """Reformat the JSON data from 3.3 to 3.4 format.
 
         Used for atlas when all keys are stored in the main config scope.
@@ -807,8 +790,9 @@ class TableManager:
 
         return [layer]
 
+    # TODO: type me !
     @staticmethod
-    def _from_json_legacy_order(data):
+    def _from_json_legacy_order(data: Dict) -> Dict:
         """Used when there is a dictionary with the row number as a key.
 
         No keys will be removed.
@@ -820,6 +804,7 @@ class TableManager:
             for a_layer in layers.values():
                 if a_layer['order'] == row:
                     return a_layer
+            return None
 
         order = []
         for layer in data.values():
@@ -832,6 +817,7 @@ class TableManager:
 
         return new_data
 
+    # TODO: type me !
     @staticmethod
     def _from_json_legacy_capabilities(data):
         """Function used for the edition capabilities.
@@ -843,6 +829,7 @@ class TableManager:
             layer.pop('geometryType')
         return data
 
+    # TODO: type me !
     @staticmethod
     def _from_json_legacy_form_filter(data):
         """ Read form filter and transform it if needed. """
@@ -897,7 +884,7 @@ class TableManager:
             layer['traces'] = []
             for trace in legacy:
                 one_trace = dict()
-                for key in trace.keys():
+                for key in trace:
                     value = layer.get(key)
 
                     if value is not None:
@@ -964,9 +951,7 @@ class TableManager:
                                 self.definitions.key(), config_key, value))
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
-                elif widget_type in (InputType.Field, InputType.PrimaryKeyField):
-                    settings.append(Setting(widget, widget_type, value))
-                elif widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
+                elif widget_type in (InputType.Field, InputType.PrimaryKeyField) or widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     settings.append(Setting(widget, widget_type, value))
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(widget_type))
@@ -1019,19 +1004,14 @@ class TableManager:
                             # Let's try to keep the configuration
                             # valid_layer = False
                         layer_data[key] = value
-                    elif definition['type'] == InputType.Layers:
-                        layer_data[key] = value
-                    elif definition['type'] in (InputType.Field, InputType.PrimaryKeyField):
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.Fields:
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.Color:
+                    elif definition['type'] == InputType.Layers \
+                        or definition['type'] in (InputType.Field, InputType.PrimaryKeyField) \
+                        or definition['type'] == InputType.Fields \
+                        or definition['type'] == InputType.Color:
                         layer_data[key] = value
                     elif definition['type'] in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                         layer_data[key] = to_bool(value, False)
-                    elif definition['type'] == InputType.File:
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.Json:
+                    elif definition['type'] == InputType.File or definition['type'] == InputType.Json:
                         layer_data[key] = value
                     elif definition['type'] == InputType.List:
                         items = definition.get('items')
@@ -1057,15 +1037,7 @@ class TableManager:
                                     LOGGER.warning(msg)
                                     value = default_list_value
                             layer_data[key] = value
-                    elif definition['type'] == InputType.SpinBox:
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.Text:
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.MultiLine:
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.HtmlWysiwyg:
-                        layer_data[key] = value
-                    elif definition['type'] == InputType.Collection:
+                    elif definition['type'] == InputType.SpinBox or definition['type'] == InputType.Text or definition['type'] == InputType.MultiLine or definition['type'] == InputType.HtmlWysiwyg or definition['type'] == InputType.Collection:
                         layer_data[key] = value
                     else:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))
@@ -1152,7 +1124,7 @@ class TableManager:
             cell = self.table.item(row, index_layer)
             layer_id = cell.data(Qt.ItemDataRole.UserRole)
 
-            if layer_id not in layers.keys():
+            if layer_id not in layers:
                 layers[layer_id] = []
 
             if self.definitions.key() == 'editionLayers':

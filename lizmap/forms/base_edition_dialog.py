@@ -4,7 +4,7 @@ import json
 import re
 
 from collections import OrderedDict
-from typing import Optional
+from typing import Dict, Optional
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
@@ -19,14 +19,10 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
+from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
-
-__copyright__ = 'Copyright 2025, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
-
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
@@ -35,11 +31,17 @@ class BaseEditionDialog(QDialog):
 
     """ Class managing the edition form, either creation or editing. """
 
-    def __init__(self, parent: QDialog = None, unicity=None, lwc_version: LwcVersions = None):
+    def __init__(
+        self,
+        parent: LizmapDialog,
+        unicity: Optional[Dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
+    ):
         """ Constructor. """
         # parent is the main UI of the plugin
         # noinspection PyArgumentList
         super().__init__(parent)
+
         self.parent = parent
         self.config = None
         self.unicity = unicity
@@ -186,7 +188,7 @@ class BaseEditionDialog(QDialog):
 
         # For definition properties
         found = False
-        for lwc_version in self.lwc_versions.keys():
+        for lwc_version in self.lwc_versions:
             if found:
                 for layer_config in self.config.layer_config.values():
                     version = layer_config.get('version')
@@ -211,7 +213,7 @@ class BaseEditionDialog(QDialog):
 
         # For items in combobox
         found = False
-        for lwc_version in self.lwc_versions.keys():
+        for lwc_version in self.lwc_versions:
             if found:
                 for layer_config in self.config.layer_config.values():
                     widget_type = layer_config.get('type')
@@ -256,10 +258,9 @@ class BaseEditionDialog(QDialog):
         if is_layer_published_wfs(QgsProject.instance(), layer.id()):
             return None
 
-        msg = tr(
+        return tr(
             'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n'
             ' option of the QGIS Server tab in the "Project Properties" dialog.')
-        return msg
 
     def validate(self):
         """ Validate the form or not.
@@ -272,20 +273,19 @@ class BaseEditionDialog(QDialog):
                     if key == k:
                         if layer_config['type'] == InputType.Layer:
                             if layer_config['widget'].currentLayer().id() in self.unicity[key]:
-                                msg = tr(
+                                return tr(
                                     'A duplicated "{}"="{}" is already in the table.'.format(
                                         key, layer_config['widget'].currentLayer().name()))
-                                return msg
                         else:
                             raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
 
         if self.primary_key_valid is not None:
             if not self.primary_key_valid:
-                msg = tr(
-                    "The primary key defined in your datasource for the layer '{}' is not valid. The layer is stored "
+                return tr(
+                    "The primary key defined in your datasource for the layer '{}' "
+                    "is not valid. The layer is stored "
                     "in a database and must have a valid primary key defined in the project."
                 ).format(self.layer.currentLayer().name())
-                return msg
 
         for k, layer_config in self.config.layer_config.items():
             if layer_config['type'] in (InputType.Field, InputType.PrimaryKeyField):
@@ -299,8 +299,7 @@ class BaseEditionDialog(QDialog):
                     if widget.currentField() == '':
                         names = re.findall(r'.[^A-Z]*', k)
                         names = [n.lower().replace('_', ' ') for n in names]
-                        msg = tr('The field "{}" is mandatory.').format(' '.join(names))
-                        return msg
+                        return tr('The field "{}" is mandatory.').format(' '.join(names))
 
         return None
 
@@ -530,7 +529,7 @@ class BaseEditionDialog(QDialog):
                 ).format(json_metadata["info"]["version"]),
                 QMessageBox.StandardButton.Ok
             )
-            return None
+            return
         # End of duplicated
 
         # Object name "allowed_groups" used "edition" and "attribute table"

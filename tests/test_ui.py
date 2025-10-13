@@ -113,7 +113,7 @@ class TestUiLizmapDialog(TestCase):
     def _setup_empty_project(
         self,
         data: Path,
-        lwc_version=LwcVersions.latest(),
+        lwc_version: LwcVersions = LwcVersions.latest(),
     ) -> Lizmap:
         """Internal function to add a layer and a basic check."""
         project = QgsProject.instance()
@@ -226,7 +226,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual(output["layers"]["baselayers"]["abstract"], "")
         self.assertListEqual(output["layers"]["project-background-color"]["group_visibility"], [])
         self.assertEqual(output["layers"]["project-background-color"]["abstract"], "")
-        self.assertEqual(0, output["options"].get("default_background_color_index"))
+        self.assertEqual(output["options"].get("default_background_color_index"), 0)
 
         self.assertTrue(output["layers"]["lines"].get("children_lizmap_features_table"))
         self.assertEqual("False", output["layers"]["lines"].get("popupDisplayChildren"))
