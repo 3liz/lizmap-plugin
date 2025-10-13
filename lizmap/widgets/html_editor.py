@@ -138,6 +138,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             html_content = self._js('tEditor.getHtml();')
         else:
             html_content = self.web_view.text()
+
         # NOTE: html_content may be None
         return QGIS_EXPRESSION_TEXT.sub(
             expression_from_html_to_qgis,
