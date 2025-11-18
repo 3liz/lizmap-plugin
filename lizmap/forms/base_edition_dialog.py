@@ -23,7 +23,7 @@ from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.layer import is_database_layer
+from lizmap.widgets.primary_key_field import enable_primary_key_field
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
 
@@ -472,46 +472,11 @@ class BaseEditionDialog(QDialog):
         """ Enable or not the primary key widget.
 
         For a database based layer (PG, SQLite, GPKG) the widget is disabled."""
-        if not self.layer:
-            self.primary_key_valid = None
-            return
         if not self.primary_key:
             self.primary_key_valid = None
             return
 
-        tooltip = self.primary_key.toolTip()
-        extra_tooltip = tr('The primary key is defined by the dataprovider only for layer stored in a database.')
-        self.primary_key.setToolTip('{} {}'.format(tooltip, extra_tooltip))
-
-        layer = self.layer.currentLayer()
-        if not is_database_layer(layer):
-            self.primary_key.setEnabled(True)
-            self.primary_key.setAllowEmptyFieldName(False)
-            self.primary_key_valid = None
-            return
-
-        # We trust the datasource
-        # And we do not trust the legacy CFG
-        self.primary_key.setEnabled(False)
-        self.primary_key.setAllowEmptyFieldName(True)
-        pks = layer.primaryKeyAttributes()
-        if len(pks) == 0:
-            # Must be an issue for the user to validate the form, because the widget is disabled
-            # The datasource must be fixed
-            self.primary_key_valid = False
-            return
-
-        if len(pks) >= 2:
-            # As well, the user must add a PK and an unicity constraint
-            # Not possible to validate the form
-            self.primary_key_valid = False
-            return
-
-        # Single field as a primary key
-        # We do not trust the CFG anymore, let's go datasource
-        name = layer.fields().at(pks[0]).name()
-        self.primary_key.setField(name)
-        self.primary_key_valid = True
+        self.primary_key_valid = enable_primary_key_field(self.primary_key, self.layer.currentLayer())
 
     def open_wizard_dialog(self, helper: str):
         """ Internal function to open the wizard ACL. """
