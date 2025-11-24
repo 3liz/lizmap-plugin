@@ -84,6 +84,10 @@ class TestUiLizmapDialog(TestCase):
             "hide_at_startup", lizmap.myDic.get("legend_hidden_startup_layer_id").get("legend_image_option")
         )
 
+        # self.assertEqual(
+        #     'id', lizmap.myDic.get('legend_hidden_startup_layer_id').get('primary_key')
+        # )
+
         # For LWC 3.6
         output = lizmap.project_config_file(
             LwcVersions.Lizmap_3_6,
@@ -168,6 +172,11 @@ class TestUiLizmapDialog(TestCase):
         # Click the first line
         lizmap.dlg.layer_tree.setCurrentItem(lizmap.dlg.layer_tree.topLevelItem(0))
 
+        # Primary key
+        # self.assertTrue(lizmap.dlg.group_box_primary_key.isVisible())
+        self.assertTrue(lizmap.dlg.primary_key.isEnabled())
+        self.assertFalse(lizmap.dlg.primary_key.allowEmptyFieldName())
+
         # Fill the ACL field
         self.assertTrue(lizmap.dlg.list_group_visibility.isEnabled())
         acl_layer = "a_group_id"
@@ -219,6 +228,7 @@ class TestUiLizmapDialog(TestCase):
         )
 
         # Layers
+        self.assertEqual(output["layers"]["lines"]["primary_key"], 'id')
         self.assertListEqual(output["layers"]["lines"]["group_visibility"], [acl_layer])
         self.assertEqual(output["layers"]["lines"]["abstract"], html_abstract)
         # Predefined groups, still in the CFG
