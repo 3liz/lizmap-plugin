@@ -83,7 +83,7 @@ class TestWizardServer(TestCase):
         )
         self.assertEqual("", dialog.page(WizardPages.LoginPasswordPage).result_login_password.text())
 
-        dialog.currentPage().url_edit.setText("https://demo.snap.lizmap.com/lizmap_3_6")
+        dialog.currentPage().url_edit.setText("https://demo.snap.lizmap.com/lizmap_3_7")
         dialog.button(QWizard.WizardButton.NextButton).click()
 
         dialog.currentPage().login_edit.setText("admin_WRONG")

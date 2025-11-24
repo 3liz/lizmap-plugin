@@ -47,7 +47,7 @@ class TableFilesManager:
                 if not layer_path.exists():
                     # Let's skip, QGIS is already warning this layer
                     # Or the file might be a COG on Linux :
-                    # /vsicurl/https://demo.snap.lizmap.com/lizmap_3_6/cog/...
+                    # /vsicurl/https://demo.snap.lizmap.com/lizmap_3_7/cog/...
                     continue
             except OSError:
                 # Ticket https://github.com/3liz/lizmap-plugin/issues/541
