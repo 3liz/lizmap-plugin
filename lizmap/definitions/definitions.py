@@ -46,7 +46,7 @@ class LwcVersions(Enum):
     @staticmethod
     def oldest() -> "LwcVersions":
         """ Oldest version definition in the Python file, like LWC 3.1 """
-        next(iter(LwcVersions))
+        return next(iter(LwcVersions))
 
     @classmethod
     def find(cls, version_string: str) -> Optional["LwcVersions"]:
