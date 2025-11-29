@@ -37,7 +37,6 @@ __output__
 
 # QGIS-Plugin-CI
 lizmap.*.zip
-*.zip
 lizmap/i18n/lizmap_qgis_plugin_*.ts
 lizmap/i18n/lizmap_qgis_plugin_*.qm
 

@@ -261,6 +261,20 @@ class LizmapConfig:
                     "If not checked, the overview map will follow the scale of the main map with a smaller scale."
                 ) + " " + tr("New in Lizmap Web Client 3.5.3"),
                 'use_proper_boolean': True,
+            },
+            'dxfExportEnabled': {
+                'wType': 'checkbox',
+                'type': 'boolean',
+                'default': False,
+                'tooltip': tr("Enable or disable the DXF export functionality globally."),
+                'use_proper_boolean': True,
+            },
+            'allowedGroups': {
+                'wType': 'text',
+                'type': 'string',
+                'default': '',
+                'tooltip': tr("Comma-separated list of Lizmap group IDs allowed to export DXF. If empty, all users can export."),
+                'always_export': True,
             }
         }
 
