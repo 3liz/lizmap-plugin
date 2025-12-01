@@ -1,17 +1,19 @@
-
+import json
 import logging
 import os
 import re
-import json
 
 from html import escape, unescape
 
 from qgis.core import QgsApplication, QgsVectorLayer
 from qgis.gui import QgsCodeEditorHTML, QgsExpressionBuilderDialog
-from qgis.PyQt.QtCore import QUrl, QEventLoop
+from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QWidget
 
 from lizmap.toolbelt.convert import as_boolean
+from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui, resources_path
 
 WEBKIT_AVAILABLE = False
 try:
@@ -24,7 +26,7 @@ except ModuleNotFoundError:
     try:
         # Fallback to legacy QtWebKit
         from qgis.PyQt.QtWebKitWidgets import QWebView
-        from qgis.PyQt.QtWebKit import QWebSettings
+        from qgis.PyQt.QtWebKit import QWebSettings  # noqa: F401
         WebView = QWebView
         WEBKIT_AVAILABLE = True
         WEB_ENGINE = False
@@ -38,11 +40,6 @@ except ModuleNotFoundError:
 if as_boolean(os.getenv("CI")):
     # Failing in Pycharm when launching tests, maybe because of the QApplication ?
     WEBKIT_AVAILABLE = False
-
-from qgis.PyQt.QtWidgets import QWidget
-
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import load_ui, resources_path
 
 FORM_CLASS = load_ui('ui_html_editor.ui')
 
@@ -76,7 +73,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         self.setupUi(self)
 
         if WebView:
-            self.web_view = WebView(self)    
+            self.web_view = WebView(self)
         elif WEBKIT_AVAILABLE:
             self.web_view = QWebView()
         else:
@@ -111,7 +108,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         # noinspection PyArgumentList
         base_url = QUrl.fromLocalFile(resources_path('html', 'html_editor.html'))
         self.web_view.setHtml(html_content, base_url)
-        
+
         if not WEB_ENGINE and WebView:
             self.web_view.settings().setAttribute(QWebSettings.LocalContentCanAccessRemoteUrls, True)
             self.web_view.settings().setAttribute(QWebSettings.LocalContentCanAccessFileUrls, True)
@@ -193,7 +190,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             loop.exec_()
             return result_container.get('value')
 
-        elif WEBKIT_AVAILABLE:  # legacy QWebView
+        if WEBKIT_AVAILABLE:  # legacy QWebView
             return self.web_view.page().currentFrame().evaluateJavaScript(command)
-        else:
-            return None
+
+        return None

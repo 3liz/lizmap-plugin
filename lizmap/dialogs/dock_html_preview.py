@@ -44,7 +44,6 @@ except ModuleNotFoundError:
     try:
         # Fallback to legacy QtWebKit
         from qgis.PyQt.QtWebKitWidgets import QWebView
-        from qgis.PyQt.QtWebKit import QWebSettings
         WebView = QWebView
         WEBKIT_AVAILABLE = True
         WEB_ENGINE = False

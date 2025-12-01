@@ -89,7 +89,6 @@ from lizmap.definitions.definitions import (
     RepositoryComboData,
     ServerComboData,
 )
-from lizmap.definitions.dxf_export import DxfExportDefinitions
 from lizmap.definitions.edition import EditionDefinitions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
 from lizmap.definitions.filter_by_login import FilterByLoginDefinitions
@@ -129,7 +128,6 @@ from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
 from lizmap.forms.dataviz_edition import DatavizEditionDialog
-from lizmap.forms.dxf_export_edition import DxfExportEditionDialog
 from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
@@ -1407,11 +1405,9 @@ class Lizmap:
 
                     # Disconnect any existing connections to avoid multiple connections
                     # when dialog is reused between sessions
-                    try:
-                        self.dlg.checkbox_dxf_export_enabled.toggled.disconnect()
-                    except TypeError:
+                    with contextlib.suppress(TypeError):
                         # No connections exist yet
-                        pass
+                        self.dlg.checkbox_dxf_export_enabled.toggled.disconnect()
 
                     self.dlg.checkbox_dxf_export_enabled.toggled.connect(on_dxf_export_toggled)
                     continue
