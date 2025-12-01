@@ -99,7 +99,7 @@ class Severities:
             2, tr('Normal'), tr('This would be nice to have look'), 'blue', 2)
         self.low = Severity(
             3, tr('Low'), tr('Nice to do'), 'yellow', 2)
-        # Some severities can only done on runtime, QGIS version and/or Lizmap Cloud
+        # Some severities can only be done on runtime, QGIS version and/or Lizmap Cloud
         self.unknown = Severity(
             99, 'Unknown', 'Severity will be determined on runtime', 'green', 1)
         self.members.append(self.blocking)
@@ -345,35 +345,12 @@ class Checks:
             # QGIS Desktop in XML versus QGIS Server settings
             export_in_json=False,
         )
-        self.PkInt8 = Check(
-            'primary_key_bigint',
-            tr('Invalid bigint (integer8) field for QGIS Server as primary key'),
+        self.NotInt4Pk = Check(
+            'primary_key_not_int4',
+            tr('Invalid field for QGIS Server as primary key'),
             tr(
-                "Primary key should be an integer. If not fixed, expect layer to have some issues with some tools in "
-                "Lizmap Web Client: zoom to feature, filtering…"
-            ),
-            (
-                '<ul>'
-                '<li>{help}</li>'
-                '<li>{sql}</li>'
-                '</ul>'
-            ).format(
-                help=tr(
-                    "We highly recommend you to set a proper integer field as a primary key, but neither a bigint nor "
-                    "an integer8."
-                ),
-                sql=tr("For PostgreSQL, it's possible to cast a view with : ") + sql_example,
-            ),
-            Levels.Layer,
-            Severities().important,
-            QIcon(':/images/themes/default/mIconFieldInteger.svg'),
-        )
-        self.PkVarchar = Check(
-            'primary_key_varchar',
-            tr('Invalid varchar field for QGIS Server as primary key'),
-            tr(
-                "Primary key should be an integer. If not fixed, expect layer to have some issues with some tools in "
-                "Lizmap Web Client: zoom to feature, filtering…"
+                "Primary key should be an integer 'int4'. If not fixed, expect layer to have some issues with some "
+                "tools in Lizmap Web Client: zoom to feature, filtering…"
             ),
             (
                 '<ul>'
