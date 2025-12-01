@@ -347,7 +347,7 @@ class LizmapConfig:
             'children_lizmap_features_table': {
                 'wType': 'radio',
                 'type': 'boolean',
-                'default': True,
+                'default': False,
                 'use_proper_boolean': True,
             },
             'popupDisplayChildren': {
