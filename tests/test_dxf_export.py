@@ -9,7 +9,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidget
 
 from lizmap.table_manager.dxf_export import TableManagerDxfExport
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import ambiguous_to_bool
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
 from .compat import TestCase
@@ -155,7 +155,7 @@ class TestTableManagerDxfExport(TestCase):
 
         manager.load_wfs_layers(config)
         checkbox_item = table.item(0, 1)
-        # Should be unchecked because to_bool("False") == False
+        # Should be unchecked because ambiguous_to_bool("False") == False
         self.assertEqual(checkbox_item.checkState(), Qt.CheckState.Unchecked)
 
         # Test with string "True"
@@ -329,27 +329,27 @@ class TestTableManagerDxfExport(TestCase):
 
 
 class TestBooleanConversion(TestCase):
-    """Test the to_bool utility function used for converting config values."""
+    """Test the ambiguous_to_bool utility function used for converting config values."""
 
-    def test_to_bool_true_values(self):
+    def test_ambiguous_to_bool_true_values(self):
         """Test conversion of various true values."""
-        self.assertTrue(to_bool(True))
-        self.assertTrue(to_bool('True'))
-        self.assertTrue(to_bool('true'))
-        self.assertTrue(to_bool('TRUE'))
-        self.assertTrue(to_bool(1))
-        self.assertTrue(to_bool('1'))
+        self.assertTrue(ambiguous_to_bool(True))
+        self.assertTrue(ambiguous_to_bool('True'))
+        self.assertTrue(ambiguous_to_bool('true'))
+        self.assertTrue(ambiguous_to_bool('TRUE'))
+        self.assertTrue(ambiguous_to_bool(1))
+        self.assertTrue(ambiguous_to_bool('1'))
 
-    def test_to_bool_false_values(self):
+    def test_ambiguous_to_bool_false_values(self):
         """Test conversion of various false values."""
-        self.assertFalse(to_bool(False))
-        self.assertFalse(to_bool('False'))
-        self.assertFalse(to_bool('false'))
-        self.assertFalse(to_bool('FALSE'))
-        self.assertFalse(to_bool(0))
-        self.assertFalse(to_bool('0'))
-        self.assertFalse(to_bool('', default_value=False))
-        self.assertFalse(to_bool(None, default_value=False))
+        self.assertFalse(ambiguous_to_bool(False))
+        self.assertFalse(ambiguous_to_bool('False'))
+        self.assertFalse(ambiguous_to_bool('false'))
+        self.assertFalse(ambiguous_to_bool('FALSE'))
+        self.assertFalse(ambiguous_to_bool(0))
+        self.assertFalse(ambiguous_to_bool('0'))
+        self.assertFalse(ambiguous_to_bool('', default_value=False))
+        self.assertFalse(ambiguous_to_bool(None, default_value=False))
 
 
 class TestDxfExportIntegration(TestCase):

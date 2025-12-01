@@ -4,7 +4,7 @@ from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem
 
-from lizmap.toolbelt.convert import to_bool
+from lizmap.toolbelt.convert import ambiguous_to_bool
 from lizmap.widgets.project_tools import is_layer_published_wfs
 
 
@@ -42,7 +42,7 @@ class TableManagerDxfExport:
         enabled_layers = {}
         for layer_name, layer_data in layers_config.items():
             layer_id = layer_data.get('id')
-            enabled = to_bool(layer_data.get('dxfExportEnabled', True))  # Default to enabled, convert to bool
+            enabled = ambiguous_to_bool(layer_data.get('dxfExportEnabled', True))  # Default to enabled, convert to bool
             if layer_id:
                 enabled_layers[layer_id] = enabled
 
