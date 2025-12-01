@@ -29,13 +29,30 @@ from qgis.utils import iface
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import resources_path
 
-try:
-    from qgis.PyQt.QtWebKitWidgets import QWebView
-    WEBKIT_AVAILABLE = True
-except ModuleNotFoundError:
-    WEBKIT_AVAILABLE = False
-
 LOGGER = logging.getLogger('Lizmap')
+
+# Detect available Web widget
+WEBKIT_AVAILABLE = False
+WEB_ENGINE = False
+try:
+    # Prefer QWebEngine (modern)
+    from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+    WebView = QWebEngineView
+    WEBKIT_AVAILABLE = True
+    WEB_ENGINE = True
+except ModuleNotFoundError:
+    try:
+        # Fallback to legacy QtWebKit
+        from qgis.PyQt.QtWebKitWidgets import QWebView
+        from qgis.PyQt.QtWebKit import QWebSettings
+        WebView = QWebView
+        WEBKIT_AVAILABLE = True
+        WEB_ENGINE = False
+    except ModuleNotFoundError:
+        # Neither WebEngine nor WebKit is available
+        WebView = None
+        WEB_ENGINE = False
+        WEBKIT_AVAILABLE = False
 
 
 class HtmlPreview(QDockWidget):
@@ -46,25 +63,35 @@ class HtmlPreview(QDockWidget):
         super().__init__(parent, *__args)
         self.setObjectName("html_maptip_preview")
         self.setWindowTitle("Lizmap HTML Maptip Preview")
-
         self._server_url = None
 
+        # Main dock container
         self.dock = QWidget(parent)
         self.layout = QVBoxLayout(self.dock)
 
+        # Web view or fallback label
+        if WebView:
+            self.web_view = WebView(self.dock)
+        else:
+            self.web_view = QLabel(tr('You must install Qt Webkit to enable this feature.'))
+            self.web_view.setWordWrap(True)
+
+        self.layout.addWidget(self.web_view)
+
+        # Info label
         if not WEBKIT_AVAILABLE:
             self.label = QLabel(tr('You must install Qt Webkit to enable this feature.'))
         else:
             self.label = QLabel(tr("This only a preview of the HTML maptip. Lizmap will add more CSS classes."))
-
         self.label.setWordWrap(True)
         self.layout.addWidget(self.label)
 
         if not WEBKIT_AVAILABLE:
+            self.setWidget(self.dock)
             return
 
-        horizontal = QHBoxLayout(self.dock)
-
+        # Layer and feature selection
+        horizontal = QHBoxLayout()
         self.layer = QgsMapLayerComboBox(self.dock)
         horizontal.addWidget(self.layer)
 
@@ -73,38 +100,32 @@ class HtmlPreview(QDockWidget):
 
         self.layout.addLayout(horizontal)
 
-        horizontal = QHBoxLayout(self.dock)
-
+        # Refresh button and last update label
+        horizontal = QHBoxLayout()
         self.refresh = QPushButton(self.dock)
         self.refresh.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
-        # noinspection PyUnresolvedReferences
         self.refresh.clicked.connect(self.update_html)
         horizontal.addWidget(self.refresh)
 
-        self.label = QLabel()
-        horizontal.addWidget(self.label)
-
+        self.last_update_label = QLabel()
+        horizontal.addWidget(self.last_update_label)
         self.layout.addLayout(horizontal)
 
-        self.web_view = QWebView(self.dock)
+        # Size policy for web view
         size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(self.web_view.sizePolicy().hasHeightForWidth())
         self.web_view.setSizePolicy(size_policy)
-        self.layout.addWidget(self.web_view)
 
         self.setWidget(self.dock)
 
+        # Connect signals
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
-        # noinspection PyUnresolvedReferences
         self.layer.layerChanged.connect(self.current_layer_changed)
         self.current_layer_changed()
-        # noinspection PyUnresolvedReferences
         self.feature.featureChanged.connect(self.update_html)
         self.feature.setShowBrowserButtons(True)
-
-        # We don't have a better signal to listen to
         QgsProject.instance().dirtySet.connect(self.update_html)
 
         self.update_html()
@@ -113,14 +134,12 @@ class HtmlPreview(QDockWidget):
         """ Set the server URL according to the main dialog. """
         if not url:
             return
-
         if not url.endswith('/'):
             url += '/'
         self._server_url = url
 
     def css(self) -> str:
         """ Links to CSS style sheet according to the server. """
-        # Order is important
         assets = (
             'assets/css/bootstrap.min.css',
             'themes/default/css/main.css',
@@ -132,17 +151,11 @@ class HtmlPreview(QDockWidget):
     def current_layer_changed(self):
         """ When the layer has changed. """
         self.feature.setLayer(self.layer.currentLayer())
-        # Need to disconnect all layers before ?
-        # self.layer.currentLayer().repaintRequested.connect(self.update_html())
 
     # noinspection PyArgumentList
     def update_html(self):
         """ Update the HTML preview. """
-        # This function is called when the project is "setDirty",
-        # because it means maybe the vector layer properties has been "applied"
-
         if not self.isVisible():
-            # If the dock is not visible, we don't care
             return
 
         layer = self.layer.currentLayer()
@@ -150,8 +163,6 @@ class HtmlPreview(QDockWidget):
             return
 
         if iface.activeLayer() != layer:
-            # This function is called when the project is "setDirty",
-            # because it means maybe the vector layer properties has been "applied"
             return
 
         feature = self.feature.feature()
@@ -160,7 +171,7 @@ class HtmlPreview(QDockWidget):
 
         now = QDateTime.currentDateTime()
         now_str = now.toString(QLocale.c().timeFormat(QLocale.FormatType.ShortFormat))
-        self.label.setText(tr("Last update") + " " + now_str)
+        self.last_update_label.setText(tr("Last update") + " " + now_str)
 
         exp_context = QgsExpressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
@@ -178,4 +189,7 @@ class HtmlPreview(QDockWidget):
             maptip=html_string,
         )
 
-        self.web_view.setHtml(html_content, base_url)
+        if WebView:
+            self.web_view.setHtml(html_content, base_url)
+        else:
+            self.web_view.setText(html_content)
