@@ -348,8 +348,8 @@ class TestBooleanConversion(TestCase):
         self.assertFalse(to_bool('FALSE'))
         self.assertFalse(to_bool(0))
         self.assertFalse(to_bool('0'))
-        self.assertFalse(to_bool(''))
-        self.assertFalse(to_bool(None))
+        self.assertFalse(to_bool('', default_value=False))
+        self.assertFalse(to_bool(None, default_value=False))
 
 
 class TestDxfExportIntegration(TestCase):

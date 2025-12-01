@@ -18,3 +18,4 @@ class TestCase:
     assertTupleEqual = case.assertTupleEqual
     assertNotEqual = case.assertNotEqual
     assertIsNone = case.assertIsNone
+    assertIn = case.assertIn
