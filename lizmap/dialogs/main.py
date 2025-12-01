@@ -93,7 +93,7 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import relative_path
 from lizmap.toolbelt.resources import load_ui, resources_path
 from lizmap.toolbelt.strings import human_size
-from lizmap.toolbelt.version import format_qgis_version, qgis_version
+from lizmap.toolbelt.version import qgis_version_info
 
 if TYPE_CHECKING:
     from qgis.PyQt.QtWidgets import QWidget
@@ -672,7 +672,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Compare QGIS desktop and server versions and display results if necessary. """
         self.warning_old_server.setVisible(False)
 
-        current = format_qgis_version(qgis_version())
+        current = qgis_version_info(Qgis.versionInt())
         qgis_desktop = (current[0], current[1])
 
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
