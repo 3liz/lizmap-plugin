@@ -228,7 +228,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual(output["layers"]["project-background-color"]["abstract"], "")
         self.assertEqual(output["options"].get("default_background_color_index"), 0)
 
-        self.assertTrue(output["layers"]["lines"].get("children_lizmap_features_table"))
+        self.assertFalse(output["layers"]["lines"].get("children_lizmap_features_table"))
         self.assertEqual("False", output["layers"]["lines"].get("popupDisplayChildren"))
 
         # Test a false value as a string which shouldn't be there by default
