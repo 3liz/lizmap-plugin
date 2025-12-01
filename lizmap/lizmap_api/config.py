@@ -212,7 +212,7 @@ class LizmapConfig:
             'automatic_permalink': {
                 'wType': 'checkbox',
                 'type': 'boolean',
-                'default': True,
+                'default': False,
                 'use_proper_boolean': True,
                 'always_export': True,
             },

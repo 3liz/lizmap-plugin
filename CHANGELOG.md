@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Fix `children_lizmap_features_table` default value to `False`
+* Fix `automatic_permalink` default value to `False`
 
 ## 4.5.4 - 2025-09-22
 
