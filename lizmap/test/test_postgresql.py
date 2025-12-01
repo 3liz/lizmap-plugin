@@ -16,8 +16,8 @@ from qgis.core import (
 
 from lizmap.project_checker_tools import (
     auto_generated_primary_key_field,
-    valid_int4_primary_key,
     table_type,
+    valid_int4_primary_key,
 )
 
 # To run these tests:
