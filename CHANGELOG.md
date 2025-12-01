@@ -5,6 +5,7 @@
 * Raise to minimum QGIS 3.34
 * Fix `WMSAddWktGeometry` set as an integer instead of a boolean in .qgs
 * Refactor tests to run on QGIS 3.34, 340 and 3.44
+* Check just for in4 PK fields
 * Fix `children_lizmap_features_table` default value to `False`
 * Fix `automatic_permalink` default value to `False`
 
