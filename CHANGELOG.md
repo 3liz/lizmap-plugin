@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.5.6 - 2025-12-02
+
 * Fix Check for int4 PK fields
 
 ## 4.5.5 - 2025-12-01
