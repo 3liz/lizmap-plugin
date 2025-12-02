@@ -160,6 +160,7 @@ from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legen
 from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud, webdav_url
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
+from lizmap.table_manager.dxf_export import TableManagerDxfExport
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.widgets.check_project import Check, SourceField
@@ -504,6 +505,8 @@ class Lizmap:
         self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_map_theme
         self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
         self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
+        self.global_options['dxfExportEnabled']['widget'] = self.dlg.checkbox_dxf_export_enabled
+        self.global_options['allowedGroups']['widget'] = self.dlg.text_dxf_allowed_groups
         # Deprecated since LWC 3.7.0
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
@@ -825,6 +828,16 @@ class Lizmap:
                 'downButton': self.dlg.down_layout_form_button,
                 'manager': None,
             },
+            'dxfExport': {
+                'panel': Panels.DxfExport,
+                'tableWidget': self.dlg.table_dxf_export,
+                'addButton': self.dlg.add_dxf_export_layer,
+                'removeButton': self.dlg.remove_dxf_export_layer,
+                'editButton': self.dlg.edit_dxf_export_layer,
+                'upButton': self.dlg.up_dxf_export_layer,
+                'downButton': self.dlg.down_dxf_export_layer,
+                'manager': None,
+            },
             'loginFilteredLayers': {
                 'panel': Panels.FilteredLayers,
                 'tableWidget': self.dlg.table_login_filter,
@@ -1029,7 +1042,11 @@ class Lizmap:
             # For tests, return the version given in the constructor
             return self._version
 
-        return self.dlg.current_lwc_version()
+        version = self.dlg.current_lwc_version()
+        if version is None:
+            # Fallback to latest version if no server is configured
+            return LwcVersions.latest()
+        return version
 
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
@@ -1294,6 +1311,12 @@ class Lizmap:
         self.dlg.button_wizard_group_visibility_project.setToolTip(tooltip)
         self.dlg.button_wizard_group_visibility_layer.setToolTip(tooltip)
 
+        # DXF export group wizard
+        self.dlg.button_dxf_wizard_group.setText('')
+        self.dlg.button_dxf_wizard_group.setIcon(icon)
+        self.dlg.button_dxf_wizard_group.clicked.connect(self.open_wizard_group_dxf)
+        self.dlg.button_dxf_wizard_group.setToolTip(tr("Open the group wizard for DXF export"))
+
         # configure popup button
         self.dlg.btConfigurePopup.setText('')
         self.dlg.btConfigurePopup.setIcon(QIcon(":images/themes/default/console/iconSettingsConsole.svg"))
@@ -1357,6 +1380,38 @@ class Lizmap:
                 add_button = item.get('addButton')
                 if add_button:
                     add_button.clicked.connect(slot)
+
+                # Handle DXF Export separately - it uses a simplified table without dialogs
+                if key == 'dxfExport':
+                    manager = TableManagerDxfExport(item['tableWidget'])
+                    item['manager'] = manager
+                    # Hide all buttons - DXF export is auto-populated from WFS layers
+                    for button_key in ['addButton', 'removeButton', 'editButton', 'upButton', 'downButton']:
+                        if item.get(button_key):
+                            item[button_key].setVisible(False)
+
+                    # Connect global checkbox to enable/disable table and populate if needed
+                    def on_dxf_export_toggled(checked):
+                        if checked:
+                            # Enable table
+                            manager.table.setEnabled(True)
+                            # Only populate if table is currently empty
+                            # (avoid overwriting loaded config values)
+                            if manager.table.rowCount() == 0:
+                                manager.populate_from_project()
+                        else:
+                            # Disable table but keep the data (preserve user settings)
+                            manager.table.setEnabled(False)
+
+                    # Disconnect any existing connections to avoid multiple connections
+                    # when dialog is reused between sessions
+                    with contextlib.suppress(TypeError):
+                        # No connections exist yet
+                        self.dlg.checkbox_dxf_export_enabled.toggled.disconnect()
+
+                    self.dlg.checkbox_dxf_export_enabled.toggled.connect(on_dxf_export_toggled)
+                    continue
+
                 if key == 'atlas':
                     definition = AtlasDefinitions()
                     dialog = AtlasEditionDialog
@@ -1642,6 +1697,11 @@ class Lizmap:
         helper = tr("Setting groups for the project visibility.")
         self._open_wizard_group(self.dlg.inAcl, helper)
 
+    def open_wizard_group_dxf(self):
+        """ Open the group wizard for DXF export. """
+        helper = tr("Setting groups allowed to export DXF files.")
+        self._open_wizard_group(self.dlg.text_dxf_allowed_groups, helper)
+
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """ Open the group wizard and set the output in the line edit. """
         # Duplicated in base_edition_dialog.py, open_wizard_dialog()
@@ -1818,6 +1878,11 @@ class Lizmap:
                             manager.load_qgis_layouts(sjson.get(key, {}))
                             continue
 
+                        if key == 'dxfExport':
+                            # Pass full sjson so manager can read from layers section
+                            manager.load_wfs_layers(sjson)
+                            continue
+
                         if key in sjson:
                             manager.from_json(sjson[key])
                         else:
@@ -1862,9 +1927,12 @@ class Lizmap:
                     item['widget'].setToolTip(item.get('tooltip'))
 
                 if item['wType'] in ('checkbox', 'radio'):
+                    # Block signals while setting values to avoid triggering actions during config load
+                    item['widget'].blockSignals(True)
                     item['widget'].setChecked(item['default'])
                     if key in json_options:
                         item['widget'].setChecked(ambiguous_to_bool(json_options[key]))
+                    item['widget'].blockSignals(False)
 
                 if item['wType'] == 'scale':
                     item['widget'].setShowCurrentScaleButton(True)
@@ -1954,6 +2022,13 @@ class Lizmap:
 
         self.dlg.check_ign_french_free_key()
         self.dlg.follow_map_theme_toggled()
+
+        # Set DXF export table enabled state based on global checkbox
+        dxf_manager = self.layers_table.get('dxfExport', {}).get('manager')
+        if dxf_manager:
+            dxf_enabled = self.dlg.checkbox_dxf_export_enabled.isChecked()
+            dxf_manager.table.setEnabled(dxf_enabled)
+
         out = '' if json_file.exists() else 'out'
         LOGGER.info(f'Dialog has been loaded successful, with{out} Lizmap configuration file')
 
@@ -3906,6 +3981,11 @@ class Lizmap:
                         LOGGER.info("Skipping the 'layout' table because version is less than LWC 3.7")
                         continue
 
+                if key == 'dxfExport':
+                    # Store DXF export data to be processed during layer building loop
+                    # This avoids trying to write to liz2json['layers'] before layers are added
+                    continue
+
                 if manager.use_single_row() and manager.table.rowCount() == 1:
                     liz2json['options'].update(data)
                 else:
@@ -3942,6 +4022,20 @@ class Lizmap:
                 + tr('Sorry for the inconvenience.')
             )
             return None
+
+        # Get DXF export data to apply during layer building
+        # Always get the data if table has content, regardless of global enable state
+        # This preserves user settings when they temporarily disable DXF export globally
+        dxf_layer_settings = {}
+        dxf_manager = self.layers_table.get('dxfExport', {}).get('manager')
+        if dxf_manager:
+            dxf_data = dxf_manager.to_json()
+            # Build map from layer ID to enabled status
+            for layer_config in dxf_data.get('layers', []):
+                layer_id = layer_config.get('layerId')
+                enabled = layer_config.get('enabled', True)
+                if layer_id:
+                    dxf_layer_settings[layer_id] = enabled
 
         # gui user defined layers options
         for k, v in self.layerList.items():
@@ -4148,6 +4242,13 @@ class Lizmap:
             layer_options.pop('serverFrame', None)
 
             layer_options.pop('popupFrame', None)
+
+            # Add DXF export setting if applicable
+            # Write settings regardless of global enable state to preserve user choices
+            if k in dxf_layer_settings:
+                # Only add if this layer is published as WFS
+                if is_layer_published_wfs(self.project, k):
+                    layer_options['dxfExportEnabled'] = dxf_layer_settings[k]
 
             # Add layer options to the json object
             liz2json["layers"][v['name']] = layer_options
