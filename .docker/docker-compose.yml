@@ -9,3 +9,4 @@ services:
       # - DISPLAY=unix$DISPLAY
       - CI=True
       - DISPLAY=:99
+    network_mode: host

@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+* Fix Check for int4 PK fields
+
 ## 4.5.5 - 2025-12-01
 
-* Check just for in4 PK fields
+* Check just for int4 PK fields
 * Fix `children_lizmap_features_table` default value to `False`
 * Fix `automatic_permalink` default value to `False`
 

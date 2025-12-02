@@ -231,7 +231,7 @@ def valid_int4_primary_key(layer: QgsVectorLayer) -> bool:
         return False
 
     field = layer.fields().field(primary_key)
-    return field.typeName().lower() != 'int4'
+    return field.typeName().lower() in ('int4', 'int2')
 
 
 def _duplicated_layer_name_or_group(layer_tree: QgsLayerTreeNode, result: Dict) -> Dict[str, int]:
