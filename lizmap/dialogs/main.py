@@ -219,6 +219,19 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
+
+        # Expand/collapse all buttons
+        self.button_expand_all.setIcon(QIcon(resources_path('icons', 'mActionExpandTree.svg')))
+        self.button_expand_all.setText("")
+        self.button_expand_all.clicked.connect(self.layer_tree.expandAll)
+
+        self.button_collapse_all.setIcon(QIcon(resources_path('icons', 'mActionCollapseTree.svg')))
+        self.button_collapse_all.setText("")
+        self.button_collapse_all.clicked.connect(self.layer_tree.collapseAll)
+
+        # Layer search/filter
+        self.layer_search_input.textChanged.connect(self.filter_layer_tree)
+
         self.help_map_theme.setIcon(QIcon(":/images/themes/default/mActionHelpContents.svg"))
         self.help_map_theme.setText("")
         self.help_map_theme.clicked.connect(self.open_theme_help)
@@ -667,6 +680,38 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 current_text = self.combo_legend_option.currentText()
                 if current_text.endswith(text):
                     self.combo_legend_option.setCurrentText(current_text.replace(text, ''))
+
+    def filter_layer_tree(self, search_text: str):
+        """ Filter the layer tree based on search text. """
+        search_text = search_text.lower().strip()
+
+        def filter_item(item):
+            """ Recursively filter tree items. Returns True if item or any child matches. """
+            # Check if current item matches
+            item_text = item.text(0).lower()
+            matches = search_text in item_text if search_text else True
+
+            # Check children
+            child_matches = False
+            for i in range(item.childCount()):
+                child = item.child(i)
+                if filter_item(child):
+                    child_matches = True
+
+            # Show item if it matches or any child matches
+            should_show = matches or child_matches
+            item.setHidden(not should_show)
+
+            # Expand item if search is active and has visible children
+            if search_text and child_matches:
+                item.setExpanded(True)
+
+            return should_show
+
+        # Filter all top-level items
+        for i in range(self.layer_tree.topLevelItemCount()):
+            item = self.layer_tree.topLevelItem(i)
+            filter_item(item)
 
     def check_qgis_version(self, message_bar: bool = False, widget: bool = False) -> bool:
         """ Compare QGIS desktop and server versions and display results if necessary. """
