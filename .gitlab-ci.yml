@@ -32,12 +32,13 @@ package-zip:
   stage: package 📦
   image: $REGISTRY_URI/qgis-plugin-ci:latest
   script:
-    - >
-      qgis-plugin-ci
-      -v
-      package ${VERSION}
-      --plugin-repo-url https://packages.3liz.org/pub/lizmap-qgis-plugin/${STATUS}/
+    - >-
+      qgis-transifex-ci -vv pull
       --transifex-token ${TX_TOKEN}
+      --compile
+    - >-
+      qgis-plugin-ci -vv package ${VERSION}
+      --plugin-repo-url https://packages.3liz.org/pub/lizmap-qgis-plugin/${STATUS}/
   tags:
     - factory-plain
   artifacts:
