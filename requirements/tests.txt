@@ -19,5 +19,5 @@ six==1.17.0
 tomli==2.3.0 ; python_full_version < '3.11'
 typing-extensions==4.15.0 ; python_full_version < '3.13'
 tzdata==2025.2 ; sys_platform == 'win32'
-urllib3==2.5.0
+urllib3==2.6.0
 webdavclient3==3.14.6
