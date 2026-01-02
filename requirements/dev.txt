@@ -39,7 +39,7 @@ stevedore==5.5.0
 tomli==2.3.0 ; python_full_version < '3.11'
 typing-extensions==4.15.0
 tzdata==2025.2 ; sys_platform == 'win32'
-urllib3==2.5.0
+urllib3==2.6.0
 virtualenv==20.34.0
 vulture==2.14
 webdavclient3==3.14.6
