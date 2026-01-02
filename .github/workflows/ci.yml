@@ -81,19 +81,17 @@ jobs:
         run: qgis-plugin-ci changelog ${{ env.RELEASE_VERSION }} >> release.md
 
       - name: Pull transifex translations
-        run: >-
+        run: >
           qgis-transifex-ci -vv pull
           --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
           --compile
 
       - name: Package and deploy the zip
-        run: >-
-          qgis-plugin-ci -vv
-          release ${{ env.RELEASE_VERSION }}
-          --github-token ${{ secrets.BOT_HUB_TOKEN }}
-          --osgeo-username ${{ secrets.OSGEO_USERNAME }}
-          --osgeo-password ${{ secrets.OSGEO_PASSWORD }}
-          --dry-run
+        run: >
+          qgis-plugin-ci -vv release ${{ env.RELEASE_VERSION }} --dry-run
+          --github-token "${{ secrets.BOT_HUB_TOKEN }}"
+          --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
+          --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
 
   release:
     needs: [tests, lint]
@@ -130,19 +128,16 @@ jobs:
           token: ${{ secrets.BOT_HUB_TOKEN }}
 
       - name: Pull transifex translations
-        run: >-
-          qgis-transifex-ci -vv pull
+        run: >
+          qgis-transifex-ci -vv pull --compile
           --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
-          --compile
 
       - name: Package and deploy the zip
-        run: >-
-          qgis-plugin-ci -vv
-          release ${{ env.RELEASE_VERSION }}
-          --github-token ${{ secrets.BOT_HUB_TOKEN }}
-          --osgeo-username ${{ secrets.OSGEO_USERNAME }}
-          --osgeo-password ${{ secrets.OSGEO_PASSWORD }}
-          --create-plugin-repo
+        run: >
+          qgis-plugin-ci -vv release ${{ env.RELEASE_VERSION }} --create-plugin-repo
+          --github-token "${{ secrets.BOT_HUB_TOKEN }}"
+          --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
+          --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
       
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
