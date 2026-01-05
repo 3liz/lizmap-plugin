@@ -33,7 +33,7 @@ python-dateutil==2.9.0.post0
 pyyaml==6.0.3
 requests==2.32.5
 rich==14.1.0
-ruff==0.14.0
+ruff==0.14.10
 six==1.17.0
 stevedore==5.5.0
 tomli==2.3.0 ; python_full_version < '3.11'
