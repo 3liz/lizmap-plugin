@@ -33,7 +33,7 @@ REQUIREMENTS_GROUPS= \
 REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENTS_GROUPS))
 
 # Update only packaging dependencies
-# Waiting for https://github.com/astral-sh/uv/issues/12848
+# Waiting for https://github.com/astral-sh/uv/issues/13705
 update-packaging-dependencies::
 	uv lock -P qgis-plugin-package-ci -P qgis-plugin-transifex-ci
 
@@ -68,7 +68,7 @@ format:
 	@ $(UV_RUN) ruff format $(LINT_TARGETS) 
 
 typecheck:
-	$(UV_RUN)  mypy $(patsubst %, -p %, $(LINT_TARGETS))
+	$(UV_RUN)  mypy $(PYTHON_MODULE)
 
 scan:
 	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
