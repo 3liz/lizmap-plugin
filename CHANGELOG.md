@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.5.7 - 2026-01-06
+
+* Fix Check either non-existing PK or PK different from int4
+
 ## 4.5.6 - 2025-12-02
 
 * Fix Check for int4 PK fields
