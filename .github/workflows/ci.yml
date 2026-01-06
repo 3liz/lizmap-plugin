@@ -31,7 +31,7 @@ jobs:
         run: pip install --quiet -r requirements/lint.txt
 
       - name: Run linter
-        run: ruff check --preview --output-format=concise lizmap 
+        run: ruff check --preview --output-format=concise lizmap
 
       - name: Run security check
         run: bandit -r lizmap --severity-level=high
@@ -76,15 +76,14 @@ jobs:
             sudo apt-get -qq update
             sudo apt-get -qq install qttools5-dev-tools pyqt5-dev-tools
             pip install --quiet -r requirements/packaging.txt
-      
+
       - name: Fetch current changelog
         run: qgis-plugin-ci changelog ${{ env.RELEASE_VERSION }} >> release.md
 
       - name: Pull transifex translations
         run: >
-          qgis-transifex-ci -vv pull
-          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
-          --compile
+          qgis-transifex-ci -vv pull --compile
+          --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
 
       - name: Package and deploy the zip
         run: >
@@ -130,7 +129,7 @@ jobs:
       - name: Pull transifex translations
         run: >
           qgis-transifex-ci -vv pull --compile
-          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
+          --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
 
       - name: Package and deploy the zip
         run: >
@@ -138,7 +137,7 @@ jobs:
           --github-token "${{ secrets.BOT_HUB_TOKEN }}"
           --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
           --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
-      
+
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
