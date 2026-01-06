@@ -432,9 +432,9 @@ class TableManager:
 
                     atlas_layout = None
                     if layout.layoutType() == QgsMasterLayoutInterface.Type.PrintLayout:
-                        for _print_layout in manager.printLayouts():
-                            if _print_layout.name() == value:
-                                atlas_layout = _print_layout
+                        for print_layout in manager.printLayouts():
+                            if print_layout.name() == value:
+                                atlas_layout = print_layout
                                 break
 
                     if not atlas_layout:
