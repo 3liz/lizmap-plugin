@@ -108,10 +108,10 @@ jobs:
           qgis-plugin-ci
           -v
           release ${{ env.RELEASE_VERSION }}
-          --github-token ${{ secrets.BOT_HUB_TOKEN }}
-          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
-          --osgeo-username ${{ secrets.OSGEO_USERNAME }}
-          --osgeo-password ${{ secrets.OSGEO_PASSWORD }}
+          --github-token "${{ secrets.BOT_HUB_TOKEN }}"
+          --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
+          --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
+          --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
           --create-plugin-repo
 
       - name: Repository Dispatch

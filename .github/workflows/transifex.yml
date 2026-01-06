@@ -28,4 +28,4 @@ jobs:
         run: pip install -r requirements/packaging.txt
 
       - name: Push to Transifex
-        run: qgis-plugin-ci push-translation ${{ secrets.TRANSIFEX_TOKEN }}
+        run: qgis-plugin-ci push-translation "${{ secrets.TRANSIFEX_TOKEN }}"
