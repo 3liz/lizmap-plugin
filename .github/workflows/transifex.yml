@@ -28,8 +28,8 @@ jobs:
             sudo apt-get -qq update
             sudo apt-get -qq install qttools5-dev-tools pyqt5-dev-tools
             pip install --quiet -r requirements/packaging.txt
- 
+
       - name: Push to Transifex
         run: >-
           qgis-transifex-ci -vv push
-          --transifex-token ${{ secrets.TRANSIFEX_TOKEN }}
+          --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
