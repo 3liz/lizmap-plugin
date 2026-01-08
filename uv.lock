@@ -1579,7 +1579,7 @@ dependencies = [
 [[package]]
 name = "qgis-plugin-transifex-ci"
 version = "0.1.0a1"
-source = { git = "https://github.com/3liz/qgis-plugin-transifex-ci#132e3f00e4f4d3aea56ed667a02c8473ea3bdf75" }
+source = { git = "https://github.com/3liz/qgis-plugin-transifex-ci#707c17ef15533b402831dda87760a88fa7b570d8" }
 dependencies = [
     { name = "click", marker = "python_full_version >= '3.12'" },
     { name = "pydantic", marker = "python_full_version >= '3.12'" },
