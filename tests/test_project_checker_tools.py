@@ -16,8 +16,8 @@ from lizmap.project_checker_tools import (
     duplicated_layer_with_filter_legend,
     duplicated_rule_key_legend,
     french_geopf_authcfg_url_parameters,
-    trailing_layer_group_name,
     project_invalid_pk,
+    trailing_layer_group_name,
 )
 from lizmap.widgets.check_project import Error
 
