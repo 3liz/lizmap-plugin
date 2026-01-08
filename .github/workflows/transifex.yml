@@ -7,6 +7,7 @@ on:
     paths:
       - '**.py'
       - '**.ui'
+      - '.force-transifex-update'
 
 jobs:
   build:
