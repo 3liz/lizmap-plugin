@@ -39,6 +39,7 @@ __output__
 lizmap.*.zip
 lizmap/i18n/lizmap_qgis_plugin_*.ts
 lizmap/i18n/lizmap_qgis_plugin_*.qm
+lizmap/lizmap-locales.pro
 
 unittest.qgs
 tests/data/unit_test_plugin_*

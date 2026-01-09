@@ -31,6 +31,4 @@ jobs:
             pip install --quiet -r requirements/packaging.txt
 
       - name: Push to Transifex
-        run: >-
-          qgis-transifex-ci -vv push
-          --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
+        run: qgis-transifex-ci -vv push --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
