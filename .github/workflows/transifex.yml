@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - master
+      - transifex-debug
     paths:
       - '**.py'
       - '**.ui'
       - '.force-transifex-update'
+  workflow_dispatch:
 
 jobs:
   build:
