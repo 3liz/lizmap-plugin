@@ -1032,7 +1032,11 @@ class Lizmap:
             # For tests, return the version given in the constructor
             return self._version
 
-        return self.dlg.current_lwc_version()
+        version = self.dlg.current_lwc_version()
+        # If no server configured, default to latest version
+        if version is None:
+            return LwcVersions.latest()
+        return version
 
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
