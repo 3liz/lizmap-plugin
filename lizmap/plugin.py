@@ -523,6 +523,11 @@ class Lizmap:
         self.global_options['automatic_permalink']['widget'] = self.dlg.automatic_permalink
         self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.checkbox_wms_single_request_all_layers
         self.global_options['exclude_basemaps_from_single_wms']['widget'] = self.dlg.checkbox_exclude_basemaps_from_single_wms
+
+        # Connect single WMS checkbox to enable/disable the exclude basemaps option
+        self.dlg.checkbox_wms_single_request_all_layers.toggled.connect(self.on_single_wms_toggled)
+        self.on_single_wms_toggled(self.dlg.checkbox_wms_single_request_all_layers.isChecked())
+
         self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
         self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
         self.global_options['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
@@ -5074,6 +5079,13 @@ class Lizmap:
             self.dlg.cbAddEmptyBaselayer.setEnabled(True)
             self.dlg.cbStartupBaselayer.setEnabled(True)
             self.dlg.scales_warning.setVisible(visible)
+
+    def on_single_wms_toggled(self, checked: bool):
+        """
+        Enable or disable the exclude basemaps checkbox based on single WMS state.
+        The exclude option only makes sense when single WMS is enabled.
+        """
+        self.dlg.checkbox_exclude_basemaps_from_single_wms.setEnabled(checked)
 
     def on_baselayer_checkbox_change(self):
         """
