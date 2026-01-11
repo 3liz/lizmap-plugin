@@ -458,6 +458,8 @@ class Lizmap:
             self.dlg.checkbox_wms_single_request_all_layers,
             # Permalink, will be backported to 3.7, but wait a little before adding it to the 3.7 list
             self.dlg.automatic_permalink,
+            # Exclude basemaps from single WMS
+            self.dlg.checkbox_exclude_basemaps_from_single_wms,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_9] = [
             self.dlg.group_box_max_scale_zoom,
@@ -520,6 +522,7 @@ class Lizmap:
         self.global_options['hideProject']['widget'] = self.dlg.cbHideProject
         self.global_options['automatic_permalink']['widget'] = self.dlg.automatic_permalink
         self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.checkbox_wms_single_request_all_layers
+        self.global_options['exclude_basemaps_from_single_wms']['widget'] = self.dlg.checkbox_exclude_basemaps_from_single_wms
         self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
         self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
         self.global_options['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength

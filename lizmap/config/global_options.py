@@ -62,6 +62,7 @@ class GlobalOptionsDefinitions(TypedDict):
     hideProject: _Item
     automatic_permalink: _Item
     wms_single_request_for_all_layers: _Item
+    exclude_basemaps_from_single_wms: _Item
     tmTimeFrameSize: _Item
     tmTimeFrameType: _Item
     tmAnimationFrameLength: _Item
@@ -209,6 +210,17 @@ globalOptionDefinitions = {
         "type": "boolean",
         "default": False,
         "use_proper_boolean": True,
+    },
+    "exclude_basemaps_from_single_wms": {
+        "wType": "checkbox",
+        "type": "boolean",
+        "default": False,
+        "use_proper_boolean": True,
+        "tooltip": tr(
+            "When single WMS is enabled, exclude basemaps from the single WMS request. "
+            "This improves performance for Cloud-Optimized GeoTIFF (COG) basemaps by "
+            "preserving their native format instead of converting to PNG."
+        ),
     },
     "tmTimeFrameSize": {"wType": "spinbox", "type": "integer", "default": 10},
     "tmTimeFrameType": {
