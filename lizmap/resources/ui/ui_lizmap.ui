@@ -321,7 +321,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -763,8 +763,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>1629</height>
+                <width>797</width>
+                <height>1433</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -883,19 +883,12 @@ QListWidget::item::selected {
                  <property name="title">
                   <string>Map tools</string>
                  </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_4">
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="cbActivateMeasure">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Measure</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="2" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_14">
                       <item>
@@ -910,13 +903,23 @@ QListWidget::item::selected {
                       </item>
                      </layout>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QCheckBox" name="cbActivatePrint">
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="cbActivateZoomHistory">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Print</string>
+                       <string>Zoom history</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbActivateMeasure">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Measure</string>
                       </property>
                      </widget>
                     </item>
@@ -930,27 +933,56 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="cbActivateGeolocation">
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cbActivatePrint">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Automatic geolocation (Only available in HTTPS)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="cbActivateZoomHistory">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Zoom history</string>
+                       <string>Print</string>
                       </property>
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupbox_geolocation">
+                    <property name="title">
+                     <string>Automatic geolocation (Only available in HTTPS)</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_63">
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_13">
+                       <item row="0" column="0">
+                        <widget class="QCheckBox" name="checkbox_geolocation_precision">
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable geolocation precision&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="text">
+                          <string>Precision</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QCheckBox" name="checkbox_geolocation_direction">
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable geolocation precision&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="text">
+                          <string>Direction</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_30">
@@ -1456,8 +1488,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>497</width>
-                <height>172</height>
+                <width>811</width>
+                <height>817</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1553,8 +1585,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>477</width>
-                       <height>1134</height>
+                       <width>478</width>
+                       <height>1194</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2712,8 +2744,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>497</width>
-                <height>373</height>
+                <width>811</width>
+                <height>817</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4912,8 +4944,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>791</width>
-                <height>797</height>
+                <width>584</width>
+                <height>592</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_80">
@@ -5216,8 +5248,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>791</width>
-                <height>797</height>
+                <width>749</width>
+                <height>453</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_83">
@@ -5646,9 +5678,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbActivateMeasure</tabstop>
   <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateZoomHistory</tabstop>
-  <tabstop>cbActivateGeolocation</tabstop>
   <tabstop>activate_drawing_tools</tabstop>
   <tabstop>liExternalSearch</tabstop>
+  <tabstop>groupbox_geolocation</tabstop>
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>
