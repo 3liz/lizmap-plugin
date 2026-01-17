@@ -51,6 +51,8 @@ class GlobalOptionsDefinitions(TypedDict):
     # Deprecated, it has been removed in LWC 3.8
     zoomHistory: _Item
     geolocation: _Item
+    geolocationPrecision: _Item
+    geolocationDirection: _Item
     pointTolerance: _Item
     lineTolerance: _Item
     polygonTolerance: _Item
@@ -188,6 +190,8 @@ globalOptionDefinitions = {
     # Deprecated, it has been removed in LWC 3.8
     "zoomHistory": {"wType": "checkbox", "type": "boolean", "default": False},
     "geolocation": {"wType": "checkbox", "type": "boolean", "default": False},
+    "geolocationPrecision": {"wType": "checkbox", "type": "boolean", "default": True},
+    "geolocationDirection": {"wType": "checkbox", "type": "boolean", "default": False},
     "pointTolerance": {"wType": "spinbox", "type": "integer", "default": 25},
     "lineTolerance": {"wType": "spinbox", "type": "integer", "default": 10},
     "polygonTolerance": {"wType": "spinbox", "type": "integer", "default": 5},

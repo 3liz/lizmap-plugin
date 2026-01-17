@@ -464,6 +464,8 @@ class Lizmap:
             self.dlg.children_lizmap_features_table,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_10] = [
+            self.dlg.checkbox_geolocation_precision,
+            self.dlg.checkbox_geolocation_direction,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_11] = [
         ]
@@ -508,7 +510,9 @@ class Lizmap:
         self.global_options['print']['widget'] = self.dlg.cbActivatePrint
         self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
         self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
-        self.global_options['geolocation']['widget'] = self.dlg.cbActivateGeolocation
+        self.global_options['geolocation']['widget'] = self.dlg.groupbox_geolocation
+        self.global_options['geolocationPrecision']['widget'] = self.dlg.checkbox_geolocation_precision
+        self.global_options['geolocationDirection']['widget'] = self.dlg.checkbox_geolocation_direction
         self.global_options['pointTolerance']['widget'] = self.dlg.inPointTolerance
         self.global_options['lineTolerance']['widget'] = self.dlg.inLineTolerance
         self.global_options['polygonTolerance']['widget'] = self.dlg.inPolygonTolerance
