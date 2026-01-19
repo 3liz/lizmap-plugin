@@ -50,20 +50,21 @@ class Panels:
     AttributeTable = 4
     Editing = 5
     Layouts = 6
-    DxfExport = 7
-    FormFiltering = 8
-    Dataviz = 9
-    FilteredLayers = 10
-    Actions = 11
-    TimeManager = 12
-    Atlas = 13
-    LocateByLayer = 14
-    ToolTip = 15
-    Checks = 16
-    AutoFix = 17
-    Settings = 18
-    Upload = 19
-    Training = 20
+    Portfolio = 7
+    DxfExport = 8
+    FormFiltering = 9
+    Dataviz = 10
+    FilteredLayers = 11
+    Actions = 12
+    TimeManager = 13
+    Atlas = 14
+    LocateByLayer = 15
+    ToolTip = 16
+    Checks = 17
+    AutoFix = 18
+    Settings = 19
+    Upload = 20
+    Training = 21
 
 
 MAPPING_INDEX_DOC = {
@@ -88,6 +89,7 @@ MAPPING_INDEX_DOC = {
     Panels.Upload: None,
     Panels.Training: None,
     Panels.DxfExport: 'publish/lizmap_plugin/dxf_export.html',
+    Panels.Portfolio: 'publish/lizmap_plugin/portfolio.html',
 }
 
 
