@@ -135,6 +135,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Portfolio</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>DXF Export</string>
           </property>
          </item>
@@ -326,7 +331,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1503,8 +1508,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>811</width>
-                <height>817</height>
+                <width>585</width>
+                <height>209</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -2793,8 +2798,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>811</width>
-                <height>817</height>
+                <width>497</width>
+                <height>396</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3074,6 +3079,75 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <string>Enable the print button exporting the popup content</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_portfolio">
+          <layout class="QVBoxLayout" name="verticalLayout_portfolio">
+           <item>
+            <widget class="QLabel" name="label_portfolio_panel">
+             <property name="text">
+              <string>Configure portfolios for your project.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="table_portfolio"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_portfolio">
+             <item>
+              <widget class="QPushButton" name="add_portfolio_button">
+               <property name="text">
+                <string>+</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="remove_portfolio_button">
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="edit_portfolio_button">
+               <property name="text">
+                <string>edit</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="down_portfolio_button">
+               <property name="text">
+                <string>down</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="up_portfolio_button">
+               <property name="text">
+                <string>up</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_portfolio">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
