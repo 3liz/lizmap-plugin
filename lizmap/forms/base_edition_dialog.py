@@ -15,6 +15,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QPlainTextEdit,
 )
+from qgis.utils import iface
 
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
@@ -121,8 +122,16 @@ class BaseEditionDialog(QDialog):
                     widget.setSuffix(unit)
 
                 default = layer_config.get('default')
-                if unit:
+                if unit:  # TO FIX replaced by default
                     widget.setValue(default)
+
+            if widget is not None and layer_config['type'] == InputType.Scale:
+                widget.setShowCurrentScaleButton(True)
+                widget.setMapCanvas(iface.mapCanvas())
+                widget.setAllowNull(False)
+                default = layer_config.get('default')
+                if default:
+                    widget.setScale(default)
 
             if widget is not None and layer_config['type'] == InputType.Color:
                 if layer_config['default'] == '':
@@ -380,6 +389,8 @@ class BaseEditionDialog(QDialog):
                     definition['widget'].setCurrentIndex(index)
             elif definition['type'] == InputType.SpinBox:
                 definition['widget'].setValue(value)
+            elif definition['type'] == InputType.Scale:
+                definition['widget'].setScale(value)
             elif definition['type'] == InputType.Text:
                 definition['widget'].setText(value)
             elif definition['type'] == InputType.Json:
@@ -437,6 +448,8 @@ class BaseEditionDialog(QDialog):
                     value = definition['widget'].currentData()
             elif definition['type'] == InputType.SpinBox:
                 value = definition['widget'].value()
+            elif definition['type'] == InputType.Scale:
+                value = definition['widget'].scale()
             elif definition['type'] == InputType.Text:
                 value = definition['widget'].text().strip(' \t')
             elif definition['type'] == InputType.MultiLine:
