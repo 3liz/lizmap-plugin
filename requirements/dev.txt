@@ -49,6 +49,6 @@ tomli==2.3.0 ; python_full_version < '3.11'
 typing-extensions==4.15.0
 tzdata==2025.3 ; sys_platform == 'win32'
 urllib3==2.6.3
-virtualenv==20.36.0
+virtualenv==20.36.1
 vulture==2.14
 webdavclient3==3.14.6
