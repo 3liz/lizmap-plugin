@@ -1480,6 +1480,40 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </property>
                  <layout class="QGridLayout" name="gridLayout_15">
                   <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="layer_tree_toolbar">
+                    <item>
+                     <widget class="QToolButton" name="button_expand_all">
+                      <property name="toolTip">
+                       <string>Expand all layers/groups</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="button_collapse_all">
+                      <property name="toolTip">
+                       <string>Collapse all layers/groups</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="layer_search_input">
+                      <property name="placeholderText">
+                       <string>Filter layers...</string>
+                      </property>
+                      <property name="clearButtonEnabled">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
                    <widget class="QTreeWidget" name="layer_tree">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -1509,14 +1543,14 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </column>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <widget class="QCheckBox" name="cbHideGroupCheckbox">
                     <property name="text">
                      <string>Hide checkboxes for groups</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
+                  <item row="3" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_36">
                     <item>
                      <widget class="QCheckBox" name="activate_first_map_theme">
