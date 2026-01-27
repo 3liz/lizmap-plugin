@@ -82,7 +82,7 @@ jobs:
 
       - name: Pull transifex translations
         run: >
-          qgis-transifex-ci -vv pull --compile
+          qt-transifex -vv pull --compile
           --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
 
       - name: Package and deploy the zip
@@ -128,7 +128,7 @@ jobs:
 
       - name: Pull transifex translations
         run: >
-          qgis-transifex-ci -vv pull --compile
+          qt-transifex -vv pull --compile
           --transifex-token "${{ secrets.TRANSIFEX_TOKEN }}"
 
       - name: Package and deploy the zip
