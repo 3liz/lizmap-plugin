@@ -613,7 +613,7 @@ lint = [
 ]
 packaging = [
     { name = "qgis-plugin-package-ci", marker = "python_full_version >= '3.12'" },
-    { name = "qgis-plugin-transifex-ci", marker = "python_full_version >= '3.12'" },
+    { name = "qt-transifex", marker = "python_full_version >= '3.12'" },
 ]
 tests = [
     { name = "psycopg", version = "3.2.13", source = { registry = "https://pypi.org/simple" }, extra = ["binary"], marker = "python_full_version < '3.10'" },
@@ -644,7 +644,7 @@ lint = [
 ]
 packaging = [
     { name = "qgis-plugin-package-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-package-ci.git" },
-    { name = "qgis-plugin-transifex-ci", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qgis-plugin-transifex-ci" },
+    { name = "qt-transifex", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qt-transifex" },
 ]
 tests = [
     { name = "psycopg", extras = ["binary"] },
@@ -1577,9 +1577,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "qgis-plugin-transifex-ci"
-version = "0.1.0a1"
-source = { git = "https://github.com/3liz/qgis-plugin-transifex-ci#b3c5302e9dccccf4797f93684d23459561094d37" }
+name = "qt-transifex"
+version = "0.1.0"
+source = { git = "https://github.com/3liz/qt-transifex#bb242e3c78ba01d80ef677220f281ff1e995affe" }
 dependencies = [
     { name = "click", marker = "python_full_version >= '3.12'" },
     { name = "pydantic", marker = "python_full_version >= '3.12'" },

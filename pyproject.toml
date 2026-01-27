@@ -45,19 +45,19 @@ lint = [
 ]
 packaging = [
     "qgis-plugin-package-ci; python_full_version >= '3.12'",
-    "qgis-plugin-transifex-ci; python_full_version >= '3.12'",
+    "qt-transifex; python_full_version >= '3.12'",
 ]
 
 [tool.uv.sources]
 qgis-plugin-package-ci = { git = "https://github.com/3liz/qgis-plugin-package-ci.git" }
-qgis-plugin-transifex-ci =  { git = "https://github.com/3liz/qgis-plugin-transifex-ci" }
+qt-transifex =  { git = "https://github.com/3liz/qt-transifex" }
 
 [tool.package-ci]
 plugin_source = "lizmap"
 github_organization_slug = "3liz"
 project_slug = "lizmap-plugin"
 
-[tool.qgis-transifex-ci]
+[tool.qt-transifex]
 plugin_source = "lizmap"
 organization = "3liz-1"
 project = "lizmap-locales"
