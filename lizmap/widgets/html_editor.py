@@ -1,4 +1,3 @@
-
 import json
 import logging
 import os
@@ -26,7 +25,7 @@ try:
 except ModuleNotFoundError:
     try:
         # Fallback to legacy QtWebKit
-        from qgis.PyQt.QtWebKit import QWebSettings
+        from qgis.PyQt.QtWebKit import QWebSettings  # noqa: F401
         from qgis.PyQt.QtWebKitWidgets import QWebView
         WebView = QWebView
         WEBKIT_AVAILABLE = True
