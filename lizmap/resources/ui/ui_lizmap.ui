@@ -135,6 +135,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>DXF Export</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Form filter</string>
           </property>
          </item>
@@ -2993,6 +2998,129 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <string>Enable the print button exporting the popup content</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_dxf_export">
+          <layout class="QVBoxLayout" name="verticalLayout_dxf_export">
+           <item>
+            <widget class="QLabel" name="label_dxf_export_panel">
+             <property name="text">
+              <string>Configure which layers can be exported to DXF format and which user groups have access to this feature.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_dxf_global">
+             <property name="title">
+              <string>Global DXF Export Settings</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_dxf_global">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_dxf_export_enabled">
+                <property name="text">
+                 <string>Allow DXF export</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QCheckBox" name="checkbox_dxf_export_enabled">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_dxf_allowed_groups">
+                <property name="text">
+                 <string>Allowed groups</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_dxf_groups">
+                <item>
+                 <widget class="QLineEdit" name="text_dxf_allowed_groups"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="button_dxf_wizard_group">
+                  <property name="text">
+                   <string notr="true">WIZARD</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_dxf_layers_info">
+             <property name="text">
+              <string>The table below shows all WFS-enabled layers. Check which layers should be available for DXF export.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="table_dxf_export"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_dxf_buttons">
+             <item>
+              <widget class="QPushButton" name="add_dxf_export_layer">
+               <property name="text">
+                <string notr="true">+</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="remove_dxf_export_layer">
+               <property name="text">
+                <string notr="true">-</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="edit_dxf_export_layer">
+               <property name="text">
+                <string notr="true">edit</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="up_dxf_export_layer">
+               <property name="text">
+                <string notr="true">up</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="down_dxf_export_layer">
+               <property name="text">
+                <string notr="true">down</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_dxf">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>

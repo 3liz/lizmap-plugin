@@ -954,6 +954,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(Panels.Layouts).setIcon(icon)
         self.mOptionsListWidget.item(Panels.Layouts).setData(Qt.ItemDataRole.UserRole, 'layouts')
 
+        # DXF Export
+        icon = QIcon()
+        icon.addFile(resources_path('icons', '19-dxfexport-white.png'), mode=QIcon.Mode.Normal)
+        icon.addFile(resources_path('icons', '19-dxfexport-dark.png'), mode=QIcon.Mode.Selected)
+        self.mOptionsListWidget.item(Panels.DxfExport).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.DxfExport).setData(Qt.ItemDataRole.UserRole, 'dxf-export')
+
         # Filter data with form
         icon = QIcon()
         icon.addFile(resources_path('icons', 'filter-icon-white.png'), mode=QIcon.Mode.Normal)
