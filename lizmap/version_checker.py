@@ -111,7 +111,7 @@ class VersionChecker:
 
             # The is_dev flag is to raise an exception only for developers
             # if the Python source code is missing a version
-            lwc_version = LwcVersions.find(json_version['branch'], self.is_dev)
+            lwc_version = LwcVersions.find(json_version['branch'])
 
             qdate = QDate.fromString(
                 json_version['latest_release_date'],
