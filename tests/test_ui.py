@@ -235,7 +235,6 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["layers"]["lines"].get("externalWmsToggle"))
         self.assertIsNone(output["layers"]["lines"].get("metatileSize"))
 
-
     def test_default_options_values_3_6(self, data: Path):
         """Test default options values."""
         lizmap = self._setup_empty_project(data)
@@ -250,8 +249,8 @@ class TestUiLizmapDialog(TestCase):
 
         # map tools
         self.assertFalse(output["options"].get("measure"))
-        self.assertFalse(output["options"].get("print")) # The checkbox is removed since LWC 3.7.0
-        self.assertFalse(output["options"].get("zoomHistory")) # The checkbox is removed since LWC 3.8.0
+        self.assertFalse(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertFalse(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
         self.assertFalse(output["options"].get("geolocation"))
         self.assertFalse(output["options"].get("draw"))
         self.assertIsNone(output["options"].get("externalSearch"))
@@ -300,7 +299,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("datavizTemplate"))
         self.assertIsNone(output["options"].get("dataviz_drag_drop"))
         self.assertEqual("dock", output["options"].get("datavizLocation"))
-        self.assertIsNone(output["options"].get("theme")) # default value "dark" is not set
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
 
         # Time manager page
         self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
@@ -325,8 +324,8 @@ class TestUiLizmapDialog(TestCase):
 
         # map tools
         self.assertFalse(output["options"].get("measure"))
-        self.assertIsNone(output["options"].get("print")) # The checkbox is removed since LWC 3.7.0
-        self.assertFalse(output["options"].get("zoomHistory")) # The checkbox is removed since LWC 3.8.0
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertFalse(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
         self.assertFalse(output["options"].get("geolocation"))
         self.assertFalse(output["options"].get("draw"))
         self.assertIsNone(output["options"].get("externalSearch"))
@@ -375,7 +374,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("datavizTemplate"))
         self.assertIsNone(output["options"].get("dataviz_drag_drop"))
         self.assertEqual("dock", output["options"].get("datavizLocation"))
-        self.assertIsNone(output["options"].get("theme")) # default value "dark" is not set
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
 
         # Time manager page
         self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
@@ -400,8 +399,8 @@ class TestUiLizmapDialog(TestCase):
 
         # map tools
         self.assertFalse(output["options"].get("measure"))
-        self.assertIsNone(output["options"].get("print")) # The checkbox is removed since LWC 3.7.0
-        self.assertIsNone(output["options"].get("zoomHistory")) # The checkbox is removed since LWC 3.8.0
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertIsNone(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
         self.assertFalse(output["options"].get("geolocation"))
         self.assertFalse(output["options"].get("draw"))
         self.assertIsNone(output["options"].get("externalSearch"))
@@ -450,7 +449,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("datavizTemplate"))
         self.assertIsNone(output["options"].get("dataviz_drag_drop"))
         self.assertEqual("dock", output["options"].get("datavizLocation"))
-        self.assertIsNone(output["options"].get("theme")) # default value "dark" is not set
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
 
         # Time manager page
         self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
@@ -475,8 +474,8 @@ class TestUiLizmapDialog(TestCase):
 
         # map tools
         self.assertFalse(output["options"].get("measure"))
-        self.assertIsNone(output["options"].get("print")) # The checkbox is removed since LWC 3.7.0
-        self.assertIsNone(output["options"].get("zoomHistory")) # The checkbox is removed since LWC 3.8.0
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertIsNone(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
         self.assertFalse(output["options"].get("geolocation"))
         self.assertFalse(output["options"].get("draw"))
         self.assertIsNone(output["options"].get("externalSearch"))
@@ -525,7 +524,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("datavizTemplate"))
         self.assertIsNone(output["options"].get("dataviz_drag_drop"))
         self.assertEqual("dock", output["options"].get("datavizLocation"))
-        self.assertIsNone(output["options"].get("theme")) # default value "dark" is not set
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
 
         # Time manager page
         self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
