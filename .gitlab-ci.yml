@@ -39,7 +39,6 @@ build:
     expose_as: 'QGIS package'
     paths:
       - lizmap.${VERSION}.zip
-      - plugins.xml
 
 deploy:
   image: ${REGISTRY_URL}/factory-ci-runner:fabric-ci
@@ -52,4 +51,4 @@ deploy:
     - version
     - build
   script:
-    - upload_plugins ${PRODUCT_NAME} ${PRODUCT_NAME}.${VERSION}.zip ${STATUS}
+    - upload_plugins ${PRODUCT_NAME} lizmap.${VERSION}.zip ${STATUS}
