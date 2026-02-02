@@ -4,6 +4,7 @@ description = "Publish and share your QGIS maps on the Web via Lizmap Web Client
 authors = [
     { name = "3Liz", email = "info@3liz.com" }
 ]
+version = "4.5.8"
 requires-python = ">= 3.9"
 license = "GPL-2.0-only" 
 license-files = ["LICENSE"]
@@ -18,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-dynamic = ["version"]
 
 [project.urls]
 homepage = "https://docs.lizmap.com"
@@ -28,7 +28,6 @@ repository ="https://github.com/3liz/lizmap-plugin"
 
 [dependency-groups]
 dev = [
-    "pre-commit",
     {include-group = "tests"},
     {include-group = "lint"},
 ]

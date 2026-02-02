@@ -1,46 +1,39 @@
 variables:
-  GIT_SUBMODULE_STRATEGY: recursive
+  PRODUCT_NAME: lizmap_qgis_plugin
 
 stages:
-- tests 🎳
-- package 📦
-- deploy 🚀
+- version
+- build
+- deploy
+- release
 
 version:
-  only:
-    - master
-  except:
-    - tags
-  stage: tests 🎳
   image:
-    name: $REGISTRY_URI/infra/ci-tools:latest
-  script:
-    - version-helper
-  tags:
+    name: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci
+  tags: 
     - factory-plain
+  stage: version
+  script:
+    - version-helper > build.env
+    - cat build.env
   artifacts:
     reports:
       dotenv: build.env
 
-package-zip:
-  only:
-    - master
-  except:
-    - tags
-  dependencies:
-    - version
-  stage: package 📦
-  image: $REGISTRY_URI/qgis-plugin-ci:latest
-  script:
-    - >-
-      qgis-transifex-ci -vv pull
-      --transifex-token ${TX_TOKEN}
-      --compile
-    - >-
-      qgis-plugin-ci -vv package ${VERSION}
-      --plugin-repo-url https://packages.3liz.org/pub/lizmap-qgis-plugin/${STATUS}/
+
+build:
+  image: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci
   tags:
     - factory-plain
+  dependencies:
+    - version
+  stage: build
+  script:
+    - >-
+      qt-transifex -vv pull
+      --transifex-token ${TX_TOKEN}
+      --compile
+    - qgis-plugin-ci -vv package ${VERSION}
   artifacts:
     untracked: true
     expose_as: 'QGIS package'
@@ -48,19 +41,15 @@ package-zip:
       - lizmap.${VERSION}.zip
       - plugins.xml
 
-push-zip:
+deploy:
   image: ${REGISTRY_URL}/factory-ci-runner:fabric-ci
-  only:
-    - master
-  except:
-    - tags
-  dependencies:
-    - version
-    - package-zip
-  stage: deploy 🚀
-  script:
-    # Upload into the plugin directory
-    - upload_to_packages_server lizmap.${VERSION}.zip pub/lizmap-qgis-plugin/${STATUS}/
-    - upload_to_packages_server plugins.xml pub/lizmap-qgis-plugin/${STATUS}/
   tags:
     - fabric
+  stage: deploy
+  rules:
+    - if: $RELEASE_BRANCH == "true"
+  dependencies:
+    - version
+    - build
+  script:
+    - upload_plugins ${PRODUCT_NAME} ${PRODUCT_NAME}.${VERSION}.zip ${STATUS}
