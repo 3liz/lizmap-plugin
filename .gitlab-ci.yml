@@ -2,53 +2,45 @@ variables:
   PRODUCT_NAME: lizmap_qgis_plugin
 
 stages:
-- version
 - build
 - deploy
-- release
-
-version:
-  image:
-    name: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci
-  tags: 
-    - factory-plain
-  stage: version
-  script:
-    - version-helper > build.env
-    - cat build.env
-  artifacts:
-    reports:
-      dotenv: build.env
-
 
 build:
   image: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci
+  stage: build
   tags:
     - factory-plain
-  dependencies:
-    - version
-  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^(?:release-|v)?\d+\.\d+\.\d+(?:-.*)?$/'
+      variables:
+        VERSION_PRE: ""
+        STATUS: stable
+    - if: $RELEASE_BRANCH == "true"
+      variables:
+        PRERELEASE: "--pre"
+        STATUS: unstable
   script:
     - >-
       qt-transifex -vv pull
       --transifex-token ${TX_TOKEN}
       --compile
-    - qgis-plugin-ci -vv package ${VERSION}
+    - echo "Building plugin ${PRODUCT_NAME} STATUS=${STATUS}"
+    - yapt-pkg package $PRERELEASE
+    - echo "PACKAGE=`ls -1 *.zip`" > build.env
+    - echo "STATUS=$STATUS" >> build.env
+    - cat build.env
   artifacts:
-    untracked: true
-    expose_as: 'QGIS package'
+    reports:
+      dotenv: build.env
     paths:
-      - lizmap.${VERSION}.zip
+      - "*.zip"
 
 deploy:
   image: ${REGISTRY_URL}/factory-ci-runner:fabric-ci
   tags:
     - fabric
   stage: deploy
-  rules:
-    - if: $RELEASE_BRANCH == "true"
   dependencies:
-    - version
     - build
   script:
-    - upload_plugins ${PRODUCT_NAME} lizmap.${VERSION}.zip ${STATUS}
+    - upload_plugins ${PRODUCT_NAME} ${PACKAGE} ${STATUS}
