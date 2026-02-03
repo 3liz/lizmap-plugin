@@ -40,6 +40,8 @@ deploy:
   tags:
     - fabric
   stage: deploy
+    - if: '$CI_COMMIT_TAG =~ /^(?:release-|v)?\d+\.\d+\.\d+(?:-.*)?$/'
+    - if: $RELEASE_BRANCH == "true"
   dependencies:
     - build
   script:
