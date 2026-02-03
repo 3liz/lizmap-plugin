@@ -48,7 +48,7 @@ jobs:
         env:
             DRY_RUN_OPT: ${{ inputs.dry_run == true && '--dry-run' || '' }}
         run: >
-          ./yapt -v package --publish ${{ env.DRY_RUN_OPT }}
+          ./yapt-pkg -v package --publish ${{ env.DRY_RUN_OPT }}
           --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
           --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
 
