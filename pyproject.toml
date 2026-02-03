@@ -4,7 +4,7 @@ description = "Publish and share your QGIS maps on the Web via Lizmap Web Client
 authors = [
     { name = "3Liz", email = "info@3liz.com" }
 ]
-version = "4.5.8"
+version = "5.0.0"
 requires-python = ">= 3.9"
 license = "GPL-2.0-only" 
 license-files = ["LICENSE"]
