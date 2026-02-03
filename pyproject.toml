@@ -43,18 +43,14 @@ lint = [
     "vulture",
 ]
 packaging = [
-    "qgis-plugin-package-ci; python_full_version >= '3.12'",
     "qt-transifex; python_full_version >= '3.12'",
 ]
 
 [tool.uv.sources]
-qgis-plugin-package-ci = { git = "https://github.com/3liz/qgis-plugin-package-ci.git" }
 qt-transifex =  { git = "https://github.com/3liz/qt-transifex" }
 
-[tool.package-ci]
+[tool.yapt]
 plugin_source = "lizmap"
-github_organization_slug = "3liz"
-project_slug = "lizmap-plugin"
 
 [tool.qt-transifex]
 plugin_source = "lizmap"
