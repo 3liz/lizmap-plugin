@@ -7,6 +7,7 @@ stages:
 
 build:
   image: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci
+  stage: build
   tags:
     - factory-plain
   rules:
@@ -24,6 +25,7 @@ build:
       --transifex-token ${TX_TOKEN}
       --compile
     - echo "Building plugin ${PRODUCT_NAME} STATUS=${STATUS}"
+    - yapt-pkg package $PRERELEASE
     - echo "PACKAGE=`ls -1 *.zip`" > build.env
     - echo "STATUS=$STATUS" >> build.env
     - cat build.env
