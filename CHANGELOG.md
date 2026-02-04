@@ -8,6 +8,9 @@
 * Check just for int4 PK fields
 * Fix `children_lizmap_features_table` default value to `False`
 * Fix `automatic_permalink` default value to `False`
+* Feature: Add expand/collapse and search filter to Layers panel
+* Feature: DXF export+access control
+* Feature: Geolocation precision and direction control
 
 ## 4.5.3 - 2025-06-27
 
