@@ -60,9 +60,6 @@ or from GitHub repository:
 1. Clone the repo: `git clone --recursive git@github.com:3liz/lizmap-plugin.git lizmap`
 1. `mv lizmap ~/.local/share/QGIS/QGIS3/profiles/default/python/plugins`
 
-If it's from a previous GitHub repository:
-1. `git submodule update` to update the submodule.
-
 ### Documentation
 
 [English doc](https://docs.lizmap.com/current/en/)

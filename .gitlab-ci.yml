@@ -13,21 +13,18 @@ build:
   rules:
     - if: '$CI_COMMIT_TAG =~ /^(?:release-|v)?\d+\.\d+\.\d+(?:-.*)?$/'
       variables:
-        VERSION_PRE: ""
-        STATUS: stable
+        PRERELEASE: ""
     - if: $RELEASE_BRANCH == "true"
       variables:
         PRERELEASE: "--pre"
-        STATUS: unstable
   script:
     - >-
       qt-transifex -vv pull
       --transifex-token ${TX_TOKEN}
       --compile
-    - echo "Building plugin ${PRODUCT_NAME} STATUS=${STATUS}"
+    - echo "Building plugin ${PRODUCT_NAME}"
     - yapt-pkg package $PRERELEASE
     - echo "PACKAGE=`ls -1 *.zip`" > build.env
-    - echo "STATUS=$STATUS" >> build.env
     - cat build.env
   artifacts:
     reports:
@@ -46,4 +43,4 @@ deploy:
   dependencies:
     - build
   script:
-    - upload_plugins ${PRODUCT_NAME} ${PACKAGE} ${STATUS}
+    - upload_plugins ${PRODUCT_NAME} ${PACKAGE}
