@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Execute dry run
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  release-dry-run:
+    if: github.repository_owner == '3liz' && inputs.dry_run == true
+    uses: ./.github/workflows/release-package.yml
+    with:
+      dry_run: true
+    secrets:
+      transifex_token: ${{ secrets.TRANSIFEX_TOKEN }}
+
+  release:
+    if: ${{ github.repository_owner == '3liz' && contains(github.ref, 'refs/tags/') && inputs.dry_run == false }}
+    uses: ./.github/workflows/release-package.yml
+    with:
+      dry_run: false
+    secrets:
+      transifex_token: ${{ secrets.TRANSIFEX_TOKEN }}
+
+

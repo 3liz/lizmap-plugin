@@ -4,6 +4,7 @@ description = "Publish and share your QGIS maps on the Web via Lizmap Web Client
 authors = [
     { name = "3Liz", email = "info@3liz.com" }
 ]
+version = "5.0.0"
 requires-python = ">= 3.9"
 license = "GPL-2.0-only" 
 license-files = ["LICENSE"]
@@ -18,7 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-dynamic = ["version"]
 
 [project.urls]
 homepage = "https://docs.lizmap.com"
@@ -28,7 +28,6 @@ repository ="https://github.com/3liz/lizmap-plugin"
 
 [dependency-groups]
 dev = [
-    "pre-commit",
     {include-group = "tests"},
     {include-group = "lint"},
 ]
@@ -44,20 +43,16 @@ lint = [
     "vulture",
 ]
 packaging = [
-    "qgis-plugin-package-ci; python_full_version >= '3.12'",
-    "qgis-plugin-transifex-ci; python_full_version >= '3.12'",
+    "qt-transifex; python_full_version >= '3.12'",
 ]
 
 [tool.uv.sources]
-qgis-plugin-package-ci = { git = "https://github.com/3liz/qgis-plugin-package-ci.git" }
-qgis-plugin-transifex-ci =  { git = "https://github.com/3liz/qgis-plugin-transifex-ci" }
+qt-transifex =  { git = "https://github.com/3liz/qt-transifex" }
 
-[tool.package-ci]
+[tool.yapt]
 plugin_source = "lizmap"
-github_organization_slug = "3liz"
-project_slug = "lizmap-plugin"
 
-[tool.qgis-transifex-ci]
+[tool.qt-transifex]
 plugin_source = "lizmap"
 organization = "3liz-1"
 project = "lizmap-locales"

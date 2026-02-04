@@ -51,6 +51,8 @@ class GlobalOptionsDefinitions(TypedDict):
     # Deprecated, it has been removed in LWC 3.8
     zoomHistory: _Item
     geolocation: _Item
+    geolocationPrecision: _Item
+    geolocationDirection: _Item
     pointTolerance: _Item
     lineTolerance: _Item
     polygonTolerance: _Item
@@ -75,6 +77,8 @@ class GlobalOptionsDefinitions(TypedDict):
     atlasShowAtStartup: _Item
     atlasAutoPlay: _Item
     fixed_scale_overview_map: _Item
+    dxfExportEnabled: _Item
+    allowedGroups: _Item
 
 
 globalOptionDefinitions = {
@@ -189,6 +193,8 @@ globalOptionDefinitions = {
     # Deprecated, it has been removed in LWC 3.8
     "zoomHistory": {"wType": "checkbox", "type": "boolean", "default": False},
     "geolocation": {"wType": "checkbox", "type": "boolean", "default": False},
+    "geolocationPrecision": {"wType": "checkbox", "type": "boolean", "default": True},
+    "geolocationDirection": {"wType": "checkbox", "type": "boolean", "default": False},
     "pointTolerance": {"wType": "spinbox", "type": "integer", "default": 25},
     "lineTolerance": {"wType": "spinbox", "type": "integer", "default": 10},
     "polygonTolerance": {"wType": "spinbox", "type": "integer", "default": 5},
@@ -263,5 +269,22 @@ globalOptionDefinitions = {
         + " "
         + tr("New in Lizmap Web Client 3.5.3"),
         "use_proper_boolean": True,
+    },
+    "dxfExportEnabled": {
+        "wType": "checkbox",
+        "type": "boolean",
+        "default": False,
+        "tooltip": tr("Enable or disable the DXF export functionality globally."),
+        "use_proper_boolean": True,
+    },
+    "allowedGroups": {
+        "wType": "text",
+        "type": "string",
+        "default": "",
+        "tooltip": tr(
+            "Comma-separated list of Lizmap group IDs allowed to export DXF. "
+            "If empty, all users can export."
+        ),
+        "always_export": True,
     },
 }

@@ -135,6 +135,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>DXF Export</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Form filter</string>
           </property>
          </item>
@@ -321,7 +326,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -763,8 +768,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>720</width>
-                <height>1629</height>
+                <width>797</width>
+                <height>1433</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -893,19 +898,12 @@ QListWidget::item::selected {
                  <property name="title">
                   <string>Map tools</string>
                  </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_4">
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="cbActivateMeasure">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Measure</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="2" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_14">
                       <item>
@@ -920,13 +918,23 @@ QListWidget::item::selected {
                       </item>
                      </layout>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QCheckBox" name="cbActivatePrint">
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="cbActivateZoomHistory">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Print</string>
+                       <string>Zoom history</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbActivateMeasure">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="text">
+                       <string>Measure</string>
                       </property>
                      </widget>
                     </item>
@@ -940,27 +948,56 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="cbActivateGeolocation">
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cbActivatePrint">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Automatic geolocation (Only available in HTTPS)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="cbActivateZoomHistory">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="text">
-                       <string>Zoom history</string>
+                       <string>Print</string>
                       </property>
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <widget class="QGroupBox" name="groupbox_geolocation">
+                    <property name="title">
+                     <string>Automatic geolocation (Only available in HTTPS)</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                     <bool>false</bool>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_63">
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_13">
+                       <item row="0" column="0">
+                        <widget class="QCheckBox" name="checkbox_geolocation_precision">
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable geolocation precision&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="text">
+                          <string>Precision</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QCheckBox" name="checkbox_geolocation_direction">
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable geolocation precision&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="text">
+                          <string>Direction</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_30">
@@ -1466,8 +1503,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>497</width>
-                <height>172</height>
+                <width>811</width>
+                <height>817</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1490,6 +1527,40 @@ This is different to the map maximum extent (defined in QGIS project properties,
                  </property>
                  <layout class="QGridLayout" name="gridLayout_15">
                   <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="layer_tree_toolbar">
+                    <item>
+                     <widget class="QToolButton" name="button_expand_all">
+                      <property name="toolTip">
+                       <string>Expand all layers/groups</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="button_collapse_all">
+                      <property name="toolTip">
+                       <string>Collapse all layers/groups</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="layer_search_input">
+                      <property name="placeholderText">
+                       <string>Filter layers...</string>
+                      </property>
+                      <property name="clearButtonEnabled">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
                    <widget class="QTreeWidget" name="layer_tree">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -1519,14 +1590,14 @@ This is different to the map maximum extent (defined in QGIS project properties,
                     </column>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <widget class="QCheckBox" name="cbHideGroupCheckbox">
                     <property name="text">
                      <string>Hide checkboxes for groups</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
+                  <item row="3" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_36">
                     <item>
                      <widget class="QCheckBox" name="activate_first_map_theme">
@@ -1563,8 +1634,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>477</width>
-                       <height>1134</height>
+                       <width>478</width>
+                       <height>1194</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2722,8 +2793,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>497</width>
-                <height>373</height>
+                <width>811</width>
+                <height>817</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3003,6 +3074,129 @@ This is different to the map maximum extent (defined in QGIS project properties,
               <string>Enable the print button exporting the popup content</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_dxf_export">
+          <layout class="QVBoxLayout" name="verticalLayout_dxf_export">
+           <item>
+            <widget class="QLabel" name="label_dxf_export_panel">
+             <property name="text">
+              <string>Configure which layers can be exported to DXF format and which user groups have access to this feature.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_dxf_global">
+             <property name="title">
+              <string>Global DXF Export Settings</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_dxf_global">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_dxf_export_enabled">
+                <property name="text">
+                 <string>Allow DXF export</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QCheckBox" name="checkbox_dxf_export_enabled">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_dxf_allowed_groups">
+                <property name="text">
+                 <string>Allowed groups</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_dxf_groups">
+                <item>
+                 <widget class="QLineEdit" name="text_dxf_allowed_groups"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="button_dxf_wizard_group">
+                  <property name="text">
+                   <string notr="true">WIZARD</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_dxf_layers_info">
+             <property name="text">
+              <string>The table below shows all WFS-enabled layers. Check which layers should be available for DXF export.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="table_dxf_export"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_dxf_buttons">
+             <item>
+              <widget class="QPushButton" name="add_dxf_export_layer">
+               <property name="text">
+                <string notr="true">+</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="remove_dxf_export_layer">
+               <property name="text">
+                <string notr="true">-</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="edit_dxf_export_layer">
+               <property name="text">
+                <string notr="true">edit</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="up_dxf_export_layer">
+               <property name="text">
+                <string notr="true">up</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="down_dxf_export_layer">
+               <property name="text">
+                <string notr="true">down</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_dxf">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -4922,8 +5116,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>791</width>
-                <height>797</height>
+                <width>584</width>
+                <height>592</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_80">
@@ -5226,8 +5420,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>791</width>
-                <height>797</height>
+                <width>749</width>
+                <height>453</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_83">
@@ -5657,9 +5851,9 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbActivateMeasure</tabstop>
   <tabstop>cbActivatePrint</tabstop>
   <tabstop>cbActivateZoomHistory</tabstop>
-  <tabstop>cbActivateGeolocation</tabstop>
   <tabstop>activate_drawing_tools</tabstop>
   <tabstop>liExternalSearch</tabstop>
+  <tabstop>groupbox_geolocation</tabstop>
   <tabstop>inPointTolerance</tabstop>
   <tabstop>inLineTolerance</tabstop>
   <tabstop>inPolygonTolerance</tabstop>

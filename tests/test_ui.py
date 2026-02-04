@@ -235,6 +235,385 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["layers"]["lines"].get("externalWmsToggle"))
         self.assertIsNone(output["layers"]["lines"].get("metatileSize"))
 
+    def test_default_options_values_3_6(self, data: Path):
+        """Test default options values."""
+        lizmap = self._setup_empty_project(data)
+
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False, ignore_error=True)
+
+        # generic options
+        self.assertIsNone(output["options"].get("hideProject"))
+        self.assertFalse(output["options"].get("automatic_permalink"))
+        self.assertFalse(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertIsNone(output["options"].get("acl"))
+
+        # map tools
+        self.assertFalse(output["options"].get("measure"))
+        self.assertFalse(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertFalse(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
+        self.assertFalse(output["options"].get("geolocation"))
+        self.assertFalse(output["options"].get("draw"))
+        self.assertIsNone(output["options"].get("externalSearch"))
+        self.assertEqual(25, output["options"].get("pointTolerance"))
+        self.assertEqual(10, output["options"].get("lineTolerance"))
+        self.assertEqual(5, output["options"].get("polygonTolerance"))
+
+        # API keys
+        self.assertIsNone(output["options"].get("googleKey"))
+        self.assertIsNone(output["options"].get("bingKey"))
+        self.assertIsNone(output["options"].get("ignKey"))
+
+        # Scales
+        self.assertFalse(output["options"].get("use_native_zoom_levels"))
+        self.assertFalse(output["options"].get("hide_numeric_scale_value"))
+        self.assertEqual([10000, 25000, 50000, 100000, 250000, 500000], output["options"].get("mapScales"))
+        self.assertEqual(1, output["options"].get("minScale"))
+        self.assertEqual(1000000000, output["options"].get("maxScale"))
+        self.assertIsNone(output["options"].get("max_scale_points"))
+        self.assertIsNone(output["options"].get("max_scale_lines_polygons"))
+
+        # Map interface
+        self.assertFalse(output["options"].get("hideHeader"))
+        self.assertFalse(output["options"].get("hideMenu"))
+        self.assertFalse(output["options"].get("hideLegend"))
+        self.assertFalse(output["options"].get("hideOverview"))
+        self.assertFalse(output["options"].get("hideNavbar"))
+        self.assertEqual("dock", output["options"].get("popupLocation"))
+        self.assertTrue(output["options"].get("fixed_scale_overview_map"))
+
+        # Layers page
+        self.assertIsNone(output["options"].get("hideGroupCheckbox"))
+        self.assertIsNone(output["options"].get("activateFirstMapTheme"))
+
+        # Baselayers page
+        self.assertIsNone(output["options"].get("emptyBaselayer"))
+        self.assertIsNone(output["options"].get("startupBaselayer"))
+
+        # Attribute page
+        self.assertIsNone(output["options"].get("limitDataToBbox"))
+
+        # Layouts page
+        self.assertFalse(output["options"].get("default_popup_print"))
+
+        # Dataviz page
+        self.assertIsNone(output["options"].get("datavizTemplate"))
+        self.assertIsNone(output["options"].get("dataviz_drag_drop"))
+        self.assertEqual("dock", output["options"].get("datavizLocation"))
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
+
+        # Time manager page
+        self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
+        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
+        self.assertEqual(1000, output["options"].get("tmAnimationFrameLength"))
+
+        # Atlas page
+        self.assertIsNone(output["options"].get("atlasShowAtStartup"))
+        self.assertIsNone(output["options"].get("atlasAutoPlay"))
+
+    def test_default_options_values_3_7(self, data: Path):
+        """Test default options values."""
+        lizmap = self._setup_empty_project(data)
+
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_7, check_server=False, ignore_error=True)
+
+        # generic options
+        self.assertIsNone(output["options"].get("hideProject"))
+        self.assertFalse(output["options"].get("automatic_permalink"))
+        self.assertFalse(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertIsNone(output["options"].get("acl"))
+
+        # map tools
+        self.assertFalse(output["options"].get("measure"))
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertFalse(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
+        self.assertFalse(output["options"].get("geolocation"))
+        self.assertFalse(output["options"].get("draw"))
+        self.assertIsNone(output["options"].get("externalSearch"))
+        self.assertEqual(25, output["options"].get("pointTolerance"))
+        self.assertEqual(10, output["options"].get("lineTolerance"))
+        self.assertEqual(5, output["options"].get("polygonTolerance"))
+
+        # API keys
+        self.assertIsNone(output["options"].get("googleKey"))
+        self.assertIsNone(output["options"].get("bingKey"))
+        self.assertIsNone(output["options"].get("ignKey"))
+
+        # Scales
+        self.assertFalse(output["options"].get("use_native_zoom_levels"))
+        self.assertFalse(output["options"].get("hide_numeric_scale_value"))
+        self.assertEqual([10000, 25000, 50000, 100000, 250000, 500000], output["options"].get("mapScales"))
+        self.assertEqual(1, output["options"].get("minScale"))
+        self.assertEqual(1000000000, output["options"].get("maxScale"))
+        self.assertIsNone(output["options"].get("max_scale_points"))
+        self.assertIsNone(output["options"].get("max_scale_lines_polygons"))
+
+        # Map interface
+        self.assertFalse(output["options"].get("hideHeader"))
+        self.assertFalse(output["options"].get("hideMenu"))
+        self.assertFalse(output["options"].get("hideLegend"))
+        self.assertFalse(output["options"].get("hideOverview"))
+        self.assertFalse(output["options"].get("hideNavbar"))
+        self.assertEqual("dock", output["options"].get("popupLocation"))
+        self.assertTrue(output["options"].get("fixed_scale_overview_map"))
+
+        # Layers page
+        self.assertIsNone(output["options"].get("hideGroupCheckbox"))
+        self.assertIsNone(output["options"].get("activateFirstMapTheme"))
+
+        # Baselayers page
+        self.assertIsNone(output["options"].get("emptyBaselayer"))
+        self.assertIsNone(output["options"].get("startupBaselayer"))
+
+        # Attribute page
+        self.assertIsNone(output["options"].get("limitDataToBbox"))
+
+        # Layouts page
+        self.assertFalse(output["options"].get("default_popup_print"))
+
+        # Dataviz page
+        self.assertIsNone(output["options"].get("datavizTemplate"))
+        self.assertIsNone(output["options"].get("dataviz_drag_drop"))
+        self.assertEqual("dock", output["options"].get("datavizLocation"))
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
+
+        # Time manager page
+        self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
+        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
+        self.assertEqual(1000, output["options"].get("tmAnimationFrameLength"))
+
+        # Atlas page
+        self.assertIsNone(output["options"].get("atlasShowAtStartup"))
+        self.assertIsNone(output["options"].get("atlasAutoPlay"))
+
+    def test_default_options_values_3_8(self, data: Path):
+        """Test default options values."""
+        lizmap = self._setup_empty_project(data)
+
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_8, check_server=False, ignore_error=True)
+
+        # generic options
+        self.assertIsNone(output["options"].get("hideProject"))
+        self.assertFalse(output["options"].get("automatic_permalink"))
+        self.assertFalse(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertIsNone(output["options"].get("acl"))
+
+        # map tools
+        self.assertFalse(output["options"].get("measure"))
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertIsNone(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
+        self.assertFalse(output["options"].get("geolocation"))
+        self.assertFalse(output["options"].get("draw"))
+        self.assertIsNone(output["options"].get("externalSearch"))
+        self.assertEqual(25, output["options"].get("pointTolerance"))
+        self.assertEqual(10, output["options"].get("lineTolerance"))
+        self.assertEqual(5, output["options"].get("polygonTolerance"))
+
+        # API keys
+        self.assertIsNone(output["options"].get("googleKey"))
+        self.assertIsNone(output["options"].get("bingKey"))
+        self.assertIsNone(output["options"].get("ignKey"))
+
+        # Scales
+        self.assertFalse(output["options"].get("use_native_zoom_levels"))
+        self.assertFalse(output["options"].get("hide_numeric_scale_value"))
+        self.assertEqual([10000, 25000, 50000, 100000, 250000, 500000], output["options"].get("mapScales"))
+        self.assertEqual(1, output["options"].get("minScale"))
+        self.assertEqual(1000000000, output["options"].get("maxScale"))
+        self.assertIsNone(output["options"].get("max_scale_points"))
+        self.assertIsNone(output["options"].get("max_scale_lines_polygons"))
+
+        # Map interface
+        self.assertFalse(output["options"].get("hideHeader"))
+        self.assertFalse(output["options"].get("hideMenu"))
+        self.assertFalse(output["options"].get("hideLegend"))
+        self.assertFalse(output["options"].get("hideOverview"))
+        self.assertFalse(output["options"].get("hideNavbar"))
+        self.assertEqual("dock", output["options"].get("popupLocation"))
+        self.assertTrue(output["options"].get("fixed_scale_overview_map"))
+
+        # Layers page
+        self.assertIsNone(output["options"].get("hideGroupCheckbox"))
+        self.assertIsNone(output["options"].get("activateFirstMapTheme"))
+
+        # Baselayers page
+        self.assertIsNone(output["options"].get("emptyBaselayer"))
+        self.assertIsNone(output["options"].get("startupBaselayer"))
+
+        # Attribute page
+        self.assertIsNone(output["options"].get("limitDataToBbox"))
+
+        # Layouts page
+        self.assertFalse(output["options"].get("default_popup_print"))
+
+        # Dataviz page
+        self.assertIsNone(output["options"].get("datavizTemplate"))
+        self.assertIsNone(output["options"].get("dataviz_drag_drop"))
+        self.assertEqual("dock", output["options"].get("datavizLocation"))
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
+
+        # Time manager page
+        self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
+        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
+        self.assertEqual(1000, output["options"].get("tmAnimationFrameLength"))
+
+        # Atlas page
+        self.assertIsNone(output["options"].get("atlasShowAtStartup"))
+        self.assertIsNone(output["options"].get("atlasAutoPlay"))
+
+    def test_default_options_values_3_9(self, data: Path):
+        """Test default options values."""
+        lizmap = self._setup_empty_project(data)
+
+        output = lizmap.project_config_file(LwcVersions.Lizmap_3_9, check_server=False, ignore_error=True)
+
+        # generic options
+        self.assertIsNone(output["options"].get("hideProject"))
+        self.assertFalse(output["options"].get("automatic_permalink"))
+        self.assertFalse(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertIsNone(output["options"].get("acl"))
+
+        # map tools
+        self.assertFalse(output["options"].get("measure"))
+        self.assertIsNone(output["options"].get("print")) # The checkbox is removed since LWC 3.7.0
+        self.assertIsNone(output["options"].get("zoomHistory")) # The checkbox is removed since LWC 3.8.0
+        self.assertFalse(output["options"].get("geolocation"))
+        # self.assertIsNone(output["options"].get("geolocationPrecision")) # Added since LWC 3.10.0
+        # self.assertIsNone(output["options"].get("geolocationDirection")) # Added since LWC 3.10.0
+        self.assertFalse(output["options"].get("draw"))
+        self.assertIsNone(output["options"].get("externalSearch"))
+        self.assertEqual(25, output["options"].get("pointTolerance"))
+        self.assertEqual(10, output["options"].get("lineTolerance"))
+        self.assertEqual(5, output["options"].get("polygonTolerance"))
+
+        # API keys
+        self.assertIsNone(output["options"].get("googleKey"))
+        self.assertIsNone(output["options"].get("bingKey"))
+        self.assertIsNone(output["options"].get("ignKey"))
+
+        # Scales
+        self.assertFalse(output["options"].get("use_native_zoom_levels"))
+        self.assertFalse(output["options"].get("hide_numeric_scale_value"))
+        self.assertEqual([10000, 25000, 50000, 100000, 250000, 500000], output["options"].get("mapScales"))
+        self.assertEqual(1, output["options"].get("minScale"))
+        self.assertEqual(1000000000, output["options"].get("maxScale"))
+        self.assertIsNone(output["options"].get("max_scale_points"))
+        self.assertIsNone(output["options"].get("max_scale_lines_polygons"))
+
+        # Map interface
+        self.assertFalse(output["options"].get("hideHeader"))
+        self.assertFalse(output["options"].get("hideMenu"))
+        self.assertFalse(output["options"].get("hideLegend"))
+        self.assertFalse(output["options"].get("hideOverview"))
+        self.assertFalse(output["options"].get("hideNavbar"))
+        self.assertEqual("dock", output["options"].get("popupLocation"))
+        self.assertTrue(output["options"].get("fixed_scale_overview_map"))
+
+        # Layers page
+        self.assertIsNone(output["options"].get("hideGroupCheckbox"))
+        self.assertIsNone(output["options"].get("activateFirstMapTheme"))
+
+        # Baselayers page
+        self.assertIsNone(output["options"].get("emptyBaselayer"))
+        self.assertIsNone(output["options"].get("startupBaselayer"))
+
+        # Attribute page
+        self.assertIsNone(output["options"].get("limitDataToBbox"))
+
+        # Layouts page
+        self.assertFalse(output["options"].get("default_popup_print"))
+
+        # Dataviz page
+        self.assertIsNone(output["options"].get("datavizTemplate"))
+        self.assertIsNone(output["options"].get("dataviz_drag_drop"))
+        self.assertEqual("dock", output["options"].get("datavizLocation"))
+        self.assertIsNone(output["options"].get("theme")) # default value "dark" is not set
+
+        # Time manager page
+        self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
+        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
+        self.assertEqual(1000, output["options"].get("tmAnimationFrameLength"))
+
+        # Atlas page
+        self.assertIsNone(output["options"].get("atlasShowAtStartup"))
+        self.assertIsNone(output["options"].get("atlasAutoPlay"))
+
+    def test_default_options_latest(self, data: Path):
+        """Test default options values."""
+        lizmap = self._setup_empty_project(data)
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+
+        # generic options
+        self.assertIsNone(output["options"].get("hideProject"))
+        self.assertFalse(output["options"].get("automatic_permalink"))
+        self.assertFalse(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertIsNone(output["options"].get("acl"))
+
+        # map tools
+        self.assertFalse(output["options"].get("measure"))
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertIsNone(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
+        self.assertFalse(output["options"].get("geolocation"))
+        self.assertTrue(output["options"].get("geolocationPrecision")) # Added since LWC 3.10.0
+        self.assertFalse(output["options"].get("geolocationDirection")) # Added since LWC 3.10.0
+        self.assertFalse(output["options"].get("draw"))
+        self.assertIsNone(output["options"].get("externalSearch"))
+        self.assertEqual(25, output["options"].get("pointTolerance"))
+        self.assertEqual(10, output["options"].get("lineTolerance"))
+        self.assertEqual(5, output["options"].get("polygonTolerance"))
+
+        # API keys
+        self.assertIsNone(output["options"].get("googleKey"))
+        self.assertIsNone(output["options"].get("bingKey"))
+        self.assertIsNone(output["options"].get("ignKey"))
+
+        # Scales
+        self.assertFalse(output["options"].get("use_native_zoom_levels"))
+        self.assertFalse(output["options"].get("hide_numeric_scale_value"))
+        self.assertEqual([10000, 25000, 50000, 100000, 250000, 500000], output["options"].get("mapScales"))
+        self.assertEqual(1, output["options"].get("minScale"))
+        self.assertEqual(1000000000, output["options"].get("maxScale"))
+        self.assertIsNone(output["options"].get("max_scale_points"))
+        self.assertIsNone(output["options"].get("max_scale_lines_polygons"))
+
+        # Map interface
+        self.assertFalse(output["options"].get("hideHeader"))
+        self.assertFalse(output["options"].get("hideMenu"))
+        self.assertFalse(output["options"].get("hideLegend"))
+        self.assertFalse(output["options"].get("hideOverview"))
+        self.assertFalse(output["options"].get("hideNavbar"))
+        self.assertEqual("dock", output["options"].get("popupLocation"))
+        self.assertTrue(output["options"].get("fixed_scale_overview_map"))
+
+        # Layers page
+        self.assertIsNone(output["options"].get("hideGroupCheckbox"))
+        self.assertIsNone(output["options"].get("activateFirstMapTheme"))
+
+        # Baselayers page
+        self.assertIsNone(output["options"].get("emptyBaselayer"))
+        self.assertIsNone(output["options"].get("startupBaselayer"))
+
+        # Attribute page
+        self.assertIsNone(output["options"].get("limitDataToBbox"))
+
+        # Layouts page
+        self.assertFalse(output["options"].get("default_popup_print"))
+
+        # Dataviz page
+        self.assertIsNone(output["options"].get("datavizTemplate"))
+        self.assertIsNone(output["options"].get("dataviz_drag_drop"))
+        self.assertEqual("dock", output["options"].get("datavizLocation"))
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
+
+        # Time manager page
+        self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
+        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
+        self.assertEqual(1000, output["options"].get("tmAnimationFrameLength"))
+
+        # Atlas page
+        self.assertIsNone(output["options"].get("atlasShowAtStartup"))
+        self.assertIsNone(output["options"].get("atlasAutoPlay"))
+
     def test_max_scale_lwc_3_7(self, data: Path):
         """Test about maximum scale when zooming."""
         lizmap = self._setup_empty_project(data, LwcVersions.Lizmap_3_6)
@@ -366,7 +745,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual(1000, output["options"]["minScale"])
         self.assertEqual(500000, output["options"]["maxScale"])
 
-    def test_general_properties_true_values(self, data: Path):
+    def test_atlas_auto_play_true_values(self, data: Path):
         """Test some UI settings about boolean values."""
         lizmap = self._setup_empty_project(data)
 
@@ -388,8 +767,38 @@ class TestUiLizmapDialog(TestCase):
 
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-        # Test some strings as well as default value
-        self.assertEqual("dock", output["options"].get("popupLocation"))
-        self.assertEqual("seconds", output["options"].get("tmTimeFrameType"))
-        # Not working for now, maybe because of the table manager
-        # self.assertEqual("light", output['options'].get('theme'))
+    def test_geolocation_values(self, data: Path):
+        """Test geolocation UI settings."""
+        lizmap = self._setup_empty_project(data)
+
+        # Default geolocation checkboxes checked
+        self.assertFalse(lizmap.dlg.groupbox_geolocation.isChecked())
+        self.assertTrue(lizmap.dlg.checkbox_geolocation_precision.isChecked())
+        self.assertFalse(lizmap.dlg.checkbox_geolocation_direction.isChecked())
+
+        # Default geolocation checkboxes enabled
+        self.assertTrue(lizmap.dlg.groupbox_geolocation.isEnabled())
+        self.assertFalse(lizmap.dlg.checkbox_geolocation_precision.isEnabled())
+        self.assertFalse(lizmap.dlg.checkbox_geolocation_direction.isEnabled())
+
+        # Check geolocation checkbox to enable other checkboxes
+        lizmap.dlg.groupbox_geolocation.setChecked(True)
+        self.assertTrue(lizmap.dlg.checkbox_geolocation_precision.isEnabled())
+        self.assertTrue(lizmap.dlg.checkbox_geolocation_direction.isEnabled())
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # options
+        self.assertTrue(output["options"].get("geolocation"))
+        self.assertTrue(output["options"].get("geolocationPrecision"))
+        self.assertFalse(output["options"].get("geolocationDirection"))
+
+        # Check direction
+        lizmap.dlg.checkbox_geolocation_direction.setChecked(True)
+        # Uncheck precision
+        lizmap.dlg.checkbox_geolocation_precision.setChecked(False)
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # options
+        self.assertTrue(output["options"].get("geolocation"))
+        self.assertFalse(output["options"].get("geolocationPrecision"))
+        self.assertTrue(output["options"].get("geolocationDirection"))
