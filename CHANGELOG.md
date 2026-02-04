@@ -11,6 +11,7 @@
 * Feature: Add expand/collapse and search filter to Layers panel
 * Feature: DXF export+access control
 * Feature: Geolocation precision and direction control
+* Feature: Exclude basemaps from single wms control
 
 ## 4.5.3 - 2025-06-27
 
