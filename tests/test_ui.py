@@ -802,3 +802,35 @@ class TestUiLizmapDialog(TestCase):
         self.assertTrue(output["options"].get("geolocation"))
         self.assertFalse(output["options"].get("geolocationPrecision"))
         self.assertTrue(output["options"].get("geolocationDirection"))
+
+    def test_exclude_basemaps_from_single_wms_values(self, data: Path):
+        """Test exclude basemaps from single WMS UI settings."""
+        lizmap = self._setup_empty_project(data)
+
+        # Default checkbox states
+        self.assertFalse(lizmap.dlg.checkbox_wms_single_request_all_layers.isChecked())
+        self.assertFalse(lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.isChecked())
+
+        # Exclude basemaps checkbox should be disabled when single WMS is off
+        self.assertFalse(lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.isEnabled())
+
+        # Enable single WMS - exclude basemaps checkbox should become enabled
+        lizmap.dlg.checkbox_wms_single_request_all_layers.setChecked(True)
+        self.assertTrue(lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.isEnabled())
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # Single WMS enabled, exclude basemaps still unchecked
+        self.assertTrue(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertFalse(output["options"].get("exclude_basemaps_from_single_wms"))
+
+        # Enable exclude basemaps
+        lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.setChecked(True)
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # Both options enabled
+        self.assertTrue(output["options"].get("wms_single_request_for_all_layers"))
+        self.assertTrue(output["options"].get("exclude_basemaps_from_single_wms"))
+
+        # Disable single WMS - exclude basemaps checkbox should become disabled
+        lizmap.dlg.checkbox_wms_single_request_all_layers.setChecked(False)
+        self.assertFalse(lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.isEnabled())
