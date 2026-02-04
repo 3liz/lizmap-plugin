@@ -44,19 +44,20 @@ jobs:
           ./yapt-pkg changelog >> release.md
           cat release.md
 
-      - name: Package and deploy the zip
+      - name: Package and publish
         env:
             DRY_RUN_OPT: ${{ inputs.dry_run == true && '--dry-run' || '' }}
         run: >
           ./yapt-pkg -v package --publish ${{ env.DRY_RUN_OPT }}
           --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
           --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
+          --xml ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/
 
       - name: Create release on GitHub
         if: ${{ inputs.dry_run == false }}
         uses: ncipollo/release-action@v1.20.0
         with:
           bodyFile: release.md
-          artifacts: "*.zip"
+          artifacts: "*.zip,plugins.xml"
           token: ${{ secrets.BOT_HUB_TOKEN }}
 
