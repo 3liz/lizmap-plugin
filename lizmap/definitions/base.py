@@ -26,6 +26,7 @@ class InputType(Enum):
     SpinBox = 'SpinBox'  # QSpinbox
     Text = 'Text'  # QLineEdit
     MultiLine = 'MultiLine'  # QPlainTextEdit or QgsCodeEditorHTML
+    Scale = 'Scale'  # QgsScaleWidget
 
 
 class BaseDefinitions:
