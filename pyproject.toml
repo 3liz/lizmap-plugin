@@ -1,12 +1,12 @@
 [project]
 name = "Lizmap"
-description = "Publish and share your QGIS maps on the Web via Lizmap Web Client" 
+description = "Publish and share your QGIS maps on the Web via Lizmap Web Client"
 authors = [
     { name = "3Liz", email = "info@3liz.com" }
 ]
-version = "5.0.0"
+version = "5.0.0-alpha.1"
 requires-python = ">= 3.9"
-license = "GPL-2.0-only" 
+license = "GPL-2.0-only"
 license-files = ["LICENSE"]
 readme = "README.md"
 classifiers = [
@@ -39,7 +39,7 @@ tests = [
 lint = [
     "ruff",
     "mypy",
-    "bandit",    
+    "bandit",
     "vulture",
 ]
 packaging = [
