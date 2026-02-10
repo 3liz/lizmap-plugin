@@ -34,5 +34,5 @@ jobs:
       publish: ${{ inputs.publish }}
     secrets:
       transifex_token: ${{ secrets.TRANSIFEX_TOKEN }}
-
-
+      osgeo_username: ${{ secrets.OSGEO_USERNAME }}
+      osgeo_password: ${{ secrets.OSGEO_PASSWORD }}
