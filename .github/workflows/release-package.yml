@@ -6,6 +6,9 @@ on:
       dry_run:
         required: true
         type: boolean
+      publish:
+        required: true
+        type: boolean
     secrets:
       transifex_token: 
         required: true
@@ -47,8 +50,9 @@ jobs:
       - name: Package and publish
         env:
             DRY_RUN_OPT: ${{ inputs.dry_run == true && '--dry-run' || '' }}
+            PUBLISH_OPT: ${{ inputs.publish == true && '--publish' }}
         run: >
-          ./yapt-pkg -v package --publish ${{ env.DRY_RUN_OPT }}
+          ./yapt-pkg -v package ${{ env.PUBLISH_OPT }} ${{ env.DRY_RUN_OPT }}
           --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
           --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
           --xml ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/
