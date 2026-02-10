@@ -50,7 +50,7 @@ jobs:
       - name: Package and publish
         env:
             DRY_RUN_OPT: ${{ inputs.dry_run == true && '--dry-run' || '' }}
-            PUBLISH_OPT: ${{ inputs.publish == true && '--publish' }}
+            PUBLISH_OPT: ${{ inputs.publish == true && '--publish' || '' }}
         run: >
           ./yapt-pkg -v package ${{ env.PUBLISH_OPT }} ${{ env.DRY_RUN_OPT }}
           --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
