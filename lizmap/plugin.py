@@ -459,8 +459,6 @@ class Lizmap:
             self.dlg.checkbox_wms_single_request_all_layers,
             # Permalink, will be backported to 3.7, but wait a little before adding it to the 3.7 list
             self.dlg.automatic_permalink,
-            # Exclude basemaps from single WMS
-            self.dlg.checkbox_exclude_basemaps_from_single_wms,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_9] = [
             self.dlg.group_box_max_scale_zoom,
@@ -469,6 +467,16 @@ class Lizmap:
         self.lwc_versions[LwcVersions.Lizmap_3_10] = [
             self.dlg.checkbox_geolocation_precision,
             self.dlg.checkbox_geolocation_direction,
+            # Exclude basemaps from single WMS
+            self.dlg.checkbox_exclude_basemaps_from_single_wms,
+            # Export DXF panel
+            self.dlg.label_dxf_export_panel,
+            self.dlg.label_dxf_export_enabled,
+            self.dlg.checkbox_dxf_export_enabled,
+            self.dlg.label_dxf_allowed_groups,
+            self.dlg.text_dxf_allowed_groups,
+            self.dlg.button_dxf_wizard_group,
+            self.dlg.label_dxf_layers_info,
         ]
         self.lwc_versions[LwcVersions.Lizmap_3_11] = [
         ]
