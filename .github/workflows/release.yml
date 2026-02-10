@@ -36,3 +36,4 @@ jobs:
       transifex_token: ${{ secrets.TRANSIFEX_TOKEN }}
       osgeo_username: ${{ secrets.OSGEO_USERNAME }}
       osgeo_password: ${{ secrets.OSGEO_PASSWORD }}
+      release_token: ${{ secrets.BOT_HUB_TOKEN }}

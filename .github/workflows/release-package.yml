@@ -16,6 +16,8 @@ on:
         required: true
       osgeo_password:
         required: true
+      release_token:
+        required: false
 
 jobs:
   release-package:
@@ -67,5 +69,5 @@ jobs:
         with:
           bodyFile: release.md
           artifacts: "*.zip,plugins.xml"
-          token: ${{ secrets.BOT_HUB_TOKEN }}
+          token: ${{ secrets.release_token }}
 
