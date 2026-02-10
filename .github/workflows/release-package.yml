@@ -12,6 +12,10 @@ on:
     secrets:
       transifex_token: 
         required: true
+      osgeo_username:
+        required: true
+      osgeo_password:
+        required: true
 
 jobs:
   release-package:
@@ -53,8 +57,8 @@ jobs:
             PUBLISH_OPT: ${{ inputs.publish == true && '--publish' || '' }}
         run: >
           ./yapt-pkg -v package ${{ env.PUBLISH_OPT }} ${{ env.DRY_RUN_OPT }}
-          --osgeo-username "${{ secrets.OSGEO_USERNAME }}"
-          --osgeo-password "${{ secrets.OSGEO_PASSWORD }}"
+          --osgeo-username "${{ secrets.osgeo_username }}"
+          --osgeo-password "${{ secrets.osgeo_password }}"
           --xml ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/
 
       - name: Create release on GitHub

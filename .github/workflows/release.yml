@@ -23,6 +23,8 @@ jobs:
       publish: false 
     secrets:
       transifex_token: ${{ secrets.TRANSIFEX_TOKEN }}
+      osgeo_username: ${{ secrets.OSGEO_USERNAME }}
+      osgeo_password: ${{ secrets.OSGEO_PASSWORD }}
 
   release:
     if: ${{ github.repository_owner == '3liz' && contains(github.ref, 'refs/tags/') && inputs.dry_run == false }}
