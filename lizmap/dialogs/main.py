@@ -771,7 +771,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
         if metadata and metadata.get('info'):
-            version_str = metadata["info"].get("versions")
+            version_str = metadata["info"].get("version")
             if version_str:
                 return LwcVersions.find(version_str)
 
