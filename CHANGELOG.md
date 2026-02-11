@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 5.0.0-alpha.2 - 2026-02-11
+
+* Fix typo in metadata key for LWC version detection
+
 ## 5.0.0-alpha.1 - 2026-02-10
 
 * Raise to minimum QGIS 3.34
