@@ -194,6 +194,7 @@ from lizmap.toolbelt.layer import (
     layer_property,
     relative_path,
     remove_all_ghost_layers,
+    set_layer_property,
 )
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
 from lizmap.toolbelt.plugin import lizmap_user_folder
@@ -2276,11 +2277,11 @@ class Lizmap:
             self.myDic[item_key]['name'] = layer.name()
             # title and abstract
             self.myDic[item_key]['title'] = layer.name()
-            if layer.title():
-                self.myDic[item_key]['title'] = layer.title()
+            if layer_property(layer, LayerProperties.Title):
+                self.myDic[item_key]['title'] = layer_property(layer, LayerProperties.Title)
                 keep_metadata = True
-            if layer.abstract():
-                self.myDic[item_key]['abstract'] = layer.abstract()
+            if layer_property(layer, LayerProperties.Abstract):
+                self.myDic[item_key]['abstract'] = layer_property(layer, LayerProperties.Abstract)
                 keep_metadata = True
 
             if not self.myDic[item_key]['link']:
@@ -2839,10 +2840,10 @@ class Lizmap:
         self.project.addMapLayer(raster, False)  # False to not add it in the legend, only in the project
 
         if attribution_url:
-            raster.setAttributionUrl(attribution_url)
-            raster.setDataUrl(attribution_url)
+            set_layer_property(raster, LayerProperties.AttributionUrl, attribution_url)
+            set_layer_property(raster, LayerProperties.DataUrl, attribution_url)
         if attribution_name:
-            raster.setAttribution(attribution_name)
+            set_layer_property(raster, LayerProperties.Attribution, attribution_name)
         root_group = self.project.layerTreeRoot()
 
         groups = root_group.findGroups()
@@ -2933,10 +2934,10 @@ class Lizmap:
             return
 
         if key == 'title':
-            layer.setTitle(self.layerList[layer_or_group][key])
+            set_layer_property(layer, LayerProperties.Title, self.layerList[layer_or_group][key])
 
         if key == 'abstract':
-            layer.setAbstract(self.layerList[layer_or_group][key])
+            set_layer_property(layer, LayerProperties.Abstract, self.layerList[layer_or_group][key])
 
     def convert_html_maptip(self):
         """ Trying to convert a Lizmap popup to HTML popup. """
