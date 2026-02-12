@@ -17,7 +17,9 @@ from qgis.core import (
     QgsProject,
 )
 
+from lizmap.definitions.definitions import LayerProperties
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
+from lizmap.toolbelt.layer import layer_property, set_layer_property
 from lizmap.toolbelt.strings import random_string, unaccent
 
 LOGGER = logging.getLogger('Lizmap')
@@ -46,15 +48,12 @@ class OgcProjectValidity:
             if QgsLayerTree.isLayer(child):
                 child = cast_to_layer(child)
                 layer = self.project.mapLayer(child.layerId())
-                if Qgis.QGIS_VERSION_INT < 33800:
-                    short_name = layer.shortName()
-                else:
-                    short_name = layer.serverProperties().shortName()
+                short_name = layer_property(layer, LayerProperties.ShortName)
                 if not short_name or short_name in duplicated:
                     source = short_name if short_name else layer.name()
                     new_shortname = self.short_name(source, existing_shortnames)
                     existing_shortnames.append(new_shortname)
-                    layer.setShortName(new_shortname)
+                    set_layer_property(layer, LayerProperties.ShortName, new_shortname)
                     LOGGER.info(f"New shortname added on layer '{layer.name()}' : {new_shortname}")
                     self.new_shortnames_added.append(new_shortname)
             else:
@@ -95,11 +94,7 @@ class OgcProjectValidity:
                 child = cast_to_layer(child)
                 child: QgsLayerTreeLayer
                 layer = self.project.mapLayer(child.layerId())
-
-                if Qgis.QGIS_VERSION_INT < 33800:
-                    short_name = layer.shortName()
-                else:
-                    short_name = layer.serverProperties().shortName()
+                short_name = layer_property(layer, LayerProperties.ShortName)
 
                 if short_name:
                     existing_shortnames.append(short_name)

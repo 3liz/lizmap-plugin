@@ -121,7 +121,12 @@ class ReleaseStatus(Enum):
 
 @unique
 class LayerProperties(Enum):
+    ShortName = 'ShortName'
+    Title = 'Title'
+    Abstract = 'Abstract'
     DataUrl = 'DataUrl'
+    Attribution = 'Attribution'
+    AttributionUrl = 'AttributionUrl'
 
 
 @unique

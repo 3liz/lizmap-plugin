@@ -2,6 +2,7 @@ import os
 import urllib
 
 from qgis.core import (
+    Qgis,
     QgsDataSourceUri,
     QgsLayerTreeUtils,
     QgsMapLayer,
@@ -86,8 +87,52 @@ def get_layer_wms_parameters(layer):
 
 
 def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:
+    """ Get layer server property """
+    if item_property == LayerProperties.ShortName:
+        if Qgis.versionInt() < 33800:
+            return layer.shortName()
+        return layer.serverProperties().shortName()
+    if item_property == LayerProperties.Title:
+        if Qgis.versionInt() < 33800:
+            return layer.title()
+        return layer.serverProperties().title()
+    if item_property == LayerProperties.Abstract:
+        if Qgis.versionInt() < 33800:
+            return layer.abstract()
+        return layer.serverProperties().abstract()
     if item_property == LayerProperties.DataUrl:
-        return layer.dataUrl()
+        if Qgis.versionInt() < 33800:
+            return layer.dataUrl()
+        return layer.serverProperties().dataUrl()
+    raise NotImplementedError
+
+
+def set_layer_property(layer: QgsVectorLayer, item_property: LayerProperties, value: str | None):
+    """ Set layer server property """
+    if item_property == LayerProperties.ShortName:
+        if Qgis.versionInt() < 33800:
+            layer.setShortName(value)
+            return
+        layer.serverProperties().setShortName(value)
+        return
+    if item_property == LayerProperties.Title:
+        if Qgis.versionInt() < 33800:
+            layer.setTitle(value)
+            return
+        layer.serverProperties().setTitle(value)
+        return
+    if item_property == LayerProperties.Abstract:
+        if Qgis.versionInt() < 33800:
+            layer.setAbstract(value)
+            return
+        layer.serverProperties().setAbstract(value)
+        return
+    if item_property == LayerProperties.DataUrl:
+        if Qgis.versionInt() < 33800:
+            layer.setDataUrl(value)
+            return
+        layer.serverProperties().setDataUrl(value)
+        return
     raise NotImplementedError
 
 
