@@ -58,6 +58,12 @@ class LwcVersions(Enum):
         except ValueError:
             return None
 
+    @classmethod
+    def find_from_metadata(cls, metadata: dict):
+        """ Return the release status from metadata. """
+        version = metadata.get("info").get("version")
+        return LwcVersions.find(version)
+
     @cached_property
     def version_info(self) -> Tuple[int, int]:
         """ List from a version string. """
