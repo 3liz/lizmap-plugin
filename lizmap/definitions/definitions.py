@@ -59,7 +59,7 @@ class LwcVersions(Enum):
             return None
 
     @classmethod
-    def find_from_metadata(cls, metadata: dict):
+    def find_from_metadata(cls, metadata: dict) -> Optional["LwcVersions"]:
         """ Return the release status from metadata. """
         version = metadata.get("info").get("version")
         return LwcVersions.find(version)
