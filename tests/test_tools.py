@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from qgis.core import QgsField, QgsVectorLayer
-from qgis.PyQt.QtCore import QVariant
+from qgis.core import Qgis, QgsField, QgsVectorLayer
+from qgis.PyQt.QtCore import QMetaType, QVariant
 
 from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
 from lizmap.toolbelt.layer import is_database_layer
@@ -118,16 +118,25 @@ class TestTools(TestCase):
         self.assertTrue(layer.startEditing())
 
         # Normal field
-        field_1 = QgsField("name", QVariant.String)
+        if Qgis.versionInt() < 33800:
+            field_1 = QgsField("name", QVariant.String)
+        else:
+            field_1 = QgsField("name", QMetaType.Type.QString)
         layer.addAttribute(field_1)
 
         # Field with alias
-        field_2 = QgsField("longfield", QVariant.String)
+        if Qgis.versionInt() < 33800:
+            field_2 = QgsField("longfield", QVariant.String)
+        else:
+            field_2 = QgsField("longfield", QMetaType.Type.QString)
         field_2.setAlias("an alias")
         layer.addAttribute(field_2)
 
         # Field with underscore, accents, digit
-        field_3 = QgsField("îD_cödÊ_1", QVariant.String)
+        if Qgis.versionInt() < 33800:
+            field_3 = QgsField("îD_cödÊ_1", QVariant.String)
+        else:
+            field_3 = QgsField("îD_cödÊ_1", QMetaType.Type.QString)
         layer.addAttribute(field_3)
 
         self.assertTrue(layer.commitChanges())

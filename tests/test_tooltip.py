@@ -7,6 +7,7 @@ from textwrap import dedent
 import pytest
 
 from qgis.core import (
+    Qgis,
     QgsAttributeEditorContainer,
     QgsAttributeEditorField,
     QgsEditFormConfig,
@@ -20,7 +21,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExternalResourceWidget
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType, QVariant
 
 from lizmap.tooltip import Tooltip
 
@@ -178,7 +179,10 @@ class TestToolTip(TestCase):
 
         layer = QgsVectorLayer("Point", "temporary_points", "memory")
         provider = layer.dataProvider()
-        provider.addAttributes([QgsField("is_ok", QVariant.Bool)])
+        if Qgis.versionInt() < 33800:
+            provider.addAttributes([QgsField("is_ok", QVariant.Bool)])
+        else:
+            provider.addAttributes([QgsField("is_ok", QMetaType.Type.Bool)])
         layer.updateFields()
         sub_context = QgsExpressionContext()
         # noinspection PyCallByClass,PyArgumentList
