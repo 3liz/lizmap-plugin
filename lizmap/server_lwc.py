@@ -1131,8 +1131,8 @@ class ServerManager:
         """ Split a Lizmap Web Client version. """
         lizmap_version_split = lwc_version.split('.')
         items_bugfix = lizmap_version_split[2].split('-')
-        is_pre_package = len(items_bugfix) > 1
-        if not is_pre_package:
+
+        if not len(items_bugfix) > 1:
             # 3.5.2
             return (
                 int(lizmap_version_split[0]),
@@ -1149,13 +1149,40 @@ class ServerManager:
                 items_bugfix[1],
             )
 
-        # 3.5.2-pre.5204
+        items_build = lizmap_version_split[3].split('+')
+        if len(items_build) == 1:
+            items_build = lizmap_version_split[3].split('-')
+
+        if not len(items_build) > 1:
+            # 3.5.2-pre.5204
+            return (
+                int(lizmap_version_split[0]),
+                int(lizmap_version_split[1]),
+                int(items_bugfix[0]),
+                items_bugfix[1],
+                int(lizmap_version_split[3]),
+            )
+
+        if len(lizmap_version_split) == 4:
+            # 3.5.2-pre.5204+sha
+            return (
+                int(lizmap_version_split[0]),
+                int(lizmap_version_split[1]),
+                int(items_bugfix[0]),
+                items_bugfix[1],
+                int(items_build[0]),
+                items_build[1],
+            )
+
+        # 3.5.2-pre.5204+sha.5204
         return (
             int(lizmap_version_split[0]),
             int(lizmap_version_split[1]),
             int(items_bugfix[0]),
             items_bugfix[1],
-            int(lizmap_version_split[3]),
+            int(items_build[0]),
+            items_build[1],
+            int(lizmap_version_split[4]),
         )
 
     def display_action(self, row, level, message):

@@ -13,7 +13,24 @@ class TestVersionInfo(TestCase):
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2"), (3, 5, 2))
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre"), (3, 5, 2, "pre"))
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.5.2-pre.5204"), (3, 5, 2, "pre", 5204))
+        self.assertTupleEqual(
+            ServerManager.split_lizmap_version("3.5.2-alpha.1+sha"),
+            (3, 5, 2, "alpha", 1, "sha"),
+        )
+        self.assertTupleEqual(
+            ServerManager.split_lizmap_version("3.5.2-alpha.1+sha.5204"),
+            (3, 5, 2, "alpha", 1, "sha", 5204),
+        )
         self.assertTupleEqual(ServerManager.split_lizmap_version("3.8.0-rc.4"), (3, 8, 0, "rc", 4))
+        self.assertTupleEqual(
+            ServerManager.split_lizmap_version("5.0.0-alpha.3+pre"),
+            (5, 0, 0, "alpha", 3, "pre"),
+        )
+        # Bad semver version
+        self.assertTupleEqual(
+            ServerManager.split_lizmap_version("5.0.0-alpha.3-pre"),
+            (5, 0, 0, "alpha", 3, "pre"),
+        )
 
     def test_version_info_lizmap_status(self, data: Path):
         """Test version info according to LWC version.
