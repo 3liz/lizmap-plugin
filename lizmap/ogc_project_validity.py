@@ -58,7 +58,7 @@ class OgcProjectValidity:
                     self.new_shortnames_added.append(new_shortname)
             else:
                 child = cast_to_group(child)
-                if Qgis.QGIS_VERSION_INT < 34400:
+                if Qgis.versionInt() < 34400:
                     child_short_name = child.customProperty("wmsShortName")
                 else:
                     child_short_name = child.serverProperties().shortName()
@@ -67,7 +67,7 @@ class OgcProjectValidity:
                     new_shortname = self.short_name(child.name(), existing_shortnames)
                     existing_shortnames.append(new_shortname)
 
-                    if Qgis.QGIS_VERSION_INT < 34400:
+                    if Qgis.versionInt() < 34400:
                         child.setCustomProperty("wmsShortName", new_shortname)
                     else:
                         child.serverProperties().setShortName(new_shortname)
@@ -101,7 +101,7 @@ class OgcProjectValidity:
             else:
                 child = cast_to_group(child)
                 child: QgsLayerTreeGroup
-                if Qgis.QGIS_VERSION_INT < 34400:
+                if Qgis.versionInt() < 34400:
                     group_shortname = child.customProperty("wmsShortName")
                 else:
                     group_shortname = child.serverProperties().shortName()

@@ -33,7 +33,7 @@ class TableFilesManager:
         project_home = Path(self.parent.project.absolutePath())
         self.parent.label_current_folder.setText(f"<strong>{project_home}</strong>")
 
-        # QGIS_VERSION_INT 32200 :
+        # Qgis.versionInt() 32200 :
         # Use QgsOgrProviderMetadata::sidecarFilesForUri
         for layer in self.parent.project.mapLayers().values():
 

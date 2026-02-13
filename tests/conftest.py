@@ -19,7 +19,7 @@ def pytest_report_header(config):
     from osgeo import gdal
 
     return (
-        f"QGIS : {Qgis.QGIS_VERSION_INT}\n"
+        f"QGIS : {Qgis.versionInt()}\n"
         f"Python GDAL : {gdal.VersionInfo('VERSION_NUM')}\n"
         f"Python : {sys.version}\n"
         f"QT : {Qt.QT_VERSION_STR}"
