@@ -312,6 +312,71 @@ class TestTableManager(TestCase):
 
         self.assertDictEqual({}, table_manager.wfs_fields_used())
 
+    def test_layout_order_preservation(self, data: Path, layer: QgsVectorLayer):
+        """Test that layout order is preserved from config when loading."""
+        table = QTableWidget()
+        definitions = LayoutsDefinitions()
+
+        QgsProject.instance().read(str(data.joinpath("print.qgs")))
+
+        table_manager = TableManagerLayouts(None, definitions, None, table, None, None, None)
+
+        self.assertEqual(table_manager.table.rowCount(), 0)
+
+        # Create a config with layouts in a different order than QGIS returns them
+        # QGIS layouts in print.qgs are: "A4 Landscape", "Cadastre", "Local planning", "Economy"
+        # We'll specify a different order in the config
+        cfg = {
+            "list": [
+                {
+                    "layout": "Cadastre",
+                    "enabled": True,
+                    "formats_available": ("pdf",),
+                    "default_format": "pdf",
+                    "dpi_available": ("100",),
+                    "default_dpi": "100",
+                },
+                {
+                    "layout": "Local planning",
+                    "enabled": True,
+                    "formats_available": ("pdf",),
+                    "default_format": "pdf",
+                    "dpi_available": ("100",),
+                    "default_dpi": "100",
+                },
+                {
+                    "layout": "A4 Landscape",
+                    "enabled": False,
+                    "formats_available": ("pdf", "png"),
+                    "default_format": "pdf",
+                    "dpi_available": ("100", "300"),
+                    "default_dpi": "300",
+                },
+                # Note: "Economy" is not in the config, it should appear at the end
+            ]
+        }
+
+        table_manager.load_qgis_layouts(cfg)
+        self.assertEqual(table_manager.table.rowCount(), 4)
+
+        # Export and verify the order matches the config order, not QGIS order
+        data_output = table_manager.to_json(LwcVersions.latest())
+
+        # The list should be in the order: Cadastre, Local planning, A4 Landscape, Economy
+        # Economy should be at the end because it wasn't in the config
+        layout_names = [item["layout"] for item in data_output["list"]]
+        expected_order = ["Cadastre", "Local planning", "A4 Landscape", "Economy"]
+        self.assertEqual(layout_names, expected_order)
+
+        # Verify that the properties are preserved correctly
+        self.assertEqual(data_output["list"][0]["layout"], "Cadastre")
+        self.assertTrue(data_output["list"][0]["enabled"])
+        self.assertEqual(data_output["list"][2]["layout"], "A4 Landscape")
+        self.assertFalse(data_output["list"][2]["enabled"])
+        # Economy should have default values since it wasn't in the config
+        self.assertEqual(data_output["list"][3]["layout"], "Economy")
+        self.assertTrue(data_output["list"][3]["enabled"])
+
     def test_dataviz_definitions(self, layer: QgsVectorLayer):
         """Test dataviz collections keys."""
         table_manager = TableManager(None, DatavizDefinitions(), None, QTableWidget(), None, None, None, None)
