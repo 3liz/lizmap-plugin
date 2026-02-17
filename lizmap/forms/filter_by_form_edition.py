@@ -189,6 +189,9 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         if upstream:
             return upstream
 
+        if not self.title.text().strip():
+            return tr('The title is mandatory.')
+
         layer = self.layer.currentLayer()
         not_in_wfs = self.is_layer_in_wfs(layer)
         if not_in_wfs:
