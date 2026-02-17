@@ -1,7 +1,7 @@
 """Dialog for tooltip edition."""
 from typing import Dict, Optional
 
-from qgis.core import QgsMapLayerProxyModel
+from qgis.core import QgsMapLayerProxyModel, QgsWkbTypes
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
@@ -30,14 +30,14 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('template', self.html_template)
         self.config.add_layer_widget('displayGeom', self.display_geometry)
         self.config.add_layer_widget('colorGeom', self.color)
+        self.config.add_layer_widget('displayLayerStyle', self.display_layer_style)
 
         self.config.add_layer_label('layerId', self.label_layer)
         self.config.add_layer_label('fields', self.label_fields)
         self.config.add_layer_label('template', self.label_html_template)
         self.config.add_layer_label('displayGeom', self.label_display_geometry)
         self.config.add_layer_label('colorGeom', self.label_color)
-
-        # TODO when 3.8 will be the default, change the default tab according to the LWC version
+        self.config.add_layer_label('displayLayerStyle', self.label_display_layer_style)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
@@ -51,8 +51,17 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
         self.generate_table.clicked.connect(self.generate_table_clicked)
 
+        # Make "display" checkbox mutually exclusive
+        # We cannot use QButtonGroup because it forces at least one button to be checked,
+        # which is not the case here, so we manage the exclusivity manually in the slot.
+        self.display_layer_style.toggled.connect(self.toggleDisplayCheckbox)
+
         self.lwc_versions[LwcVersions.Lizmap_3_8] = [
             self.label_html_template,
+        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_10] = [
+            self.label_display_layer_style,
+            self.display_layer_style,
         ]
 
         self.setup_ui()
@@ -104,9 +113,16 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         if self.display_geometry.isChecked():
             self.color.setEnabled(True)
             self.color.setColor(QColor('blue'))
+            if self.display_layer_style.isChecked():
+                self.display_layer_style.setChecked(False)
         else:
             self.color.setEnabled(False)
             self.color.setToNull()
+
+    def toggleDisplayCheckbox(self):
+        if self.display_layer_style.isChecked():
+            if self.display_geometry.isChecked():
+                self.display_geometry.setChecked(False)
 
     def validate(self) -> Optional[str]:
         upstream = super().validate()
@@ -123,5 +139,14 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
 
         if not self.fields.selection() and not self.html_template.html_content():
             return tr('Either an HTML template or a field must be set.')
+
+        # Allow display layer style only for point
+        # LWC 3.10
+        # Could be changed in future version
+        if layer.geometryType() != QgsWkbTypes.PointGeometry:
+            return tr(
+                "At present, the option 'Display layer feature'"
+                " is only available for point layers."
+            )
 
         return None

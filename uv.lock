@@ -337,7 +337,7 @@ wheels = [
 
 [[package]]
 name = "lizmap"
-version = "5.0.0"
+version = "5.0.0a3+pre"
 source = { virtual = "." }
 
 [package.dev-dependencies]

@@ -10,7 +10,6 @@ from qgis.PyQt.QtWidgets import QTableWidget
 
 from lizmap.table_manager.dxf_export import TableManagerDxfExport
 from lizmap.toolbelt.convert import ambiguous_to_bool
-from lizmap.widgets.project_tools import is_layer_published_wfs
 
 from .compat import TestCase
 
@@ -50,8 +49,9 @@ class TestTableManagerDxfExport(TestCase):
 
     def test_initialization(self):
         """Test table manager initialization."""
+        # Initialize manager
         table = QTableWidget()
-        manager = TableManagerDxfExport(table)
+        TableManagerDxfExport(table)
 
         # Check table is configured correctly
         self.assertEqual(table.columnCount(), 2)
