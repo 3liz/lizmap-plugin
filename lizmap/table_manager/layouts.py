@@ -71,8 +71,26 @@ class TableManagerLayouts(TableManager):
         else:
             legacy_print_checkbox = False
 
-        # For all layouts in the project already loaded
-        for layout in QgsProject.instance().layoutManager().printLayouts():
+        # Build a lookup of QGIS layouts by name
+        qgis_layouts_by_name = {
+            layout.name(): layout
+            for layout in QgsProject.instance().layoutManager().printLayouts()
+        }
+
+        # Determine the display order: use saved order from config, then append any new layouts
+        if data and data.get(self.label_dictionary_list()):
+            cfg_order = [item.get('layout') for item in data.get(self.label_dictionary_list())]
+            # Keep only names that still exist in the project
+            ordered_names = [name for name in cfg_order if name in qgis_layouts_by_name]
+            # Append new layouts not in the saved config
+            for name in qgis_layouts_by_name:
+                if name not in ordered_names:
+                    ordered_names.append(name)
+        else:
+            ordered_names = list(qgis_layouts_by_name.keys())
+
+        for layout_name in ordered_names:
+            layout = qgis_layouts_by_name[layout_name]
             # TODO check for report ?
             LOGGER.debug("  * reading layout {}".format(layout.name()))
             row = self.table.rowCount()
