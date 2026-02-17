@@ -909,6 +909,7 @@ class TestTableManager(TestCase):
                 "template": '<p>[% "nom" %]</p>\n',
                 "displayGeom": "False",
                 "colorGeom": "",
+                "displayLayerStyle": "False",
                 "layerId": layer.id(),
                 "order": 0,
             }

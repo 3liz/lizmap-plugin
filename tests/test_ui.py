@@ -474,8 +474,8 @@ class TestUiLizmapDialog(TestCase):
 
         # map tools
         self.assertFalse(output["options"].get("measure"))
-        self.assertIsNone(output["options"].get("print")) # The checkbox is removed since LWC 3.7.0
-        self.assertIsNone(output["options"].get("zoomHistory")) # The checkbox is removed since LWC 3.8.0
+        self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
+        self.assertIsNone(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
         self.assertFalse(output["options"].get("geolocation"))
         # self.assertIsNone(output["options"].get("geolocationPrecision")) # Added since LWC 3.10.0
         # self.assertIsNone(output["options"].get("geolocationDirection")) # Added since LWC 3.10.0
@@ -526,7 +526,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("datavizTemplate"))
         self.assertIsNone(output["options"].get("dataviz_drag_drop"))
         self.assertEqual("dock", output["options"].get("datavizLocation"))
-        self.assertIsNone(output["options"].get("theme")) # default value "dark" is not set
+        self.assertIsNone(output["options"].get("theme"))  # default value "dark" is not set
 
         # Time manager page
         self.assertEqual(10, output["options"].get("tmTimeFrameSize"))
@@ -554,8 +554,8 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("print"))  # The checkbox is removed since LWC 3.7.0
         self.assertIsNone(output["options"].get("zoomHistory"))  # The checkbox is removed since LWC 3.8.0
         self.assertFalse(output["options"].get("geolocation"))
-        self.assertTrue(output["options"].get("geolocationPrecision")) # Added since LWC 3.10.0
-        self.assertFalse(output["options"].get("geolocationDirection")) # Added since LWC 3.10.0
+        self.assertTrue(output["options"].get("geolocationPrecision"))  # Added since LWC 3.10.0
+        self.assertFalse(output["options"].get("geolocationDirection"))  # Added since LWC 3.10.0
         self.assertFalse(output["options"].get("draw"))
         self.assertIsNone(output["options"].get("externalSearch"))
         self.assertEqual(25, output["options"].get("pointTolerance"))

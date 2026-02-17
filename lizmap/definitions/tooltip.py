@@ -46,6 +46,19 @@ class ToolTipDefinitions(BaseDefinitions):
             'default': '',
             'tooltip': tr('The color to use for displaying the geometry.')
         }
+        self._layer_config['displayLayerStyle'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Display layer features'),
+            'default': False,
+            'tooltip': tr(
+                'If checked, the layer features will be displayed in the map'
+                ' with a symbology as close as possible to the layer symbology.'
+                ' The conversion from QGIS symbology is not always perfect '
+                ' since it relies on the SLD standard.'
+                ' SVG and PNG files must be embedded in the symbology properties.'
+            ),
+            'version': LwcVersions.Lizmap_3_10,
+        }
 
     @staticmethod
     def primary_keys() -> tuple:

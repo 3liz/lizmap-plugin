@@ -79,7 +79,14 @@
           </widget>
          </item>
          <item>
-          <widget class="HtmlEditorWidget" name="html_template" native="true"/>
+          <widget class="HtmlEditorWidget" name="html_template" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>300</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -119,13 +126,6 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_color">
-       <property name="text">
-        <string>Color</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <widget class="QgsColorButton" name="color">
        <property name="sizePolicy">
@@ -133,6 +133,27 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_color">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_display_layer_style">
+       <property name="text">
+        <string>Display layer features</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="display_layer_style">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
@@ -175,15 +196,15 @@
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>
-   <class>ListFieldsSelection</class>
-   <extends>QListWidget</extends>
-   <header>lizmap.widgets.list_fields_selection</header>
-  </customwidget>
-  <customwidget>
    <class>HtmlEditorWidget</class>
    <extends>QWidget</extends>
    <header>lizmap.widgets.html_editor</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ListFieldsSelection</class>
+   <extends>QListWidget</extends>
+   <header>lizmap.widgets.list_fields_selection</header>
   </customwidget>
  </customwidgets>
  <resources/>
