@@ -2514,7 +2514,7 @@ class Lizmap:
         project_path = self.project.fileName()
         if not project_path:
             return ''
-        key_hash = hashlib.md5(project_path.encode('utf-8')).hexdigest()
+        key_hash = hashlib.sha256(project_path.encode('utf-8')).hexdigest()
         return f'lizmap/layer_tree_group_states/{key_hash}'
 
     def _save_layer_tree_group_states(self):
