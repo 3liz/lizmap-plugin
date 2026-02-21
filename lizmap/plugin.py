@@ -2525,7 +2525,7 @@ class Lizmap:
         self._collect_group_states(self.dlg.layer_tree.invisibleRootItem(), states)
         QgsSettings().setValue(self._layer_tree_state_key(), json.dumps(states))
 
-    def _collect_group_states(self, parent_item, states: dict):
+    def _collect_group_states(self, parent_item: QTreeWidgetItem, states: dict):
         """Recursively collect expanded state for group items."""
         for i in range(parent_item.childCount()):
             item = parent_item.child(i)
@@ -2547,7 +2547,7 @@ class Lizmap:
             return
         self._apply_group_states(self.dlg.layer_tree.invisibleRootItem(), states)
 
-    def _apply_group_states(self, parent_item, states: dict):
+    def _apply_group_states(self, parent_item: QTreeWidgetItem, states: dict):
         """Recursively apply expanded state to group items."""
         for i in range(parent_item.childCount()):
             item = parent_item.child(i)
