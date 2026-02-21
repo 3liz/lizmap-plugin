@@ -213,6 +213,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.inIgnKey.textChanged.connect(self.check_api_key_address)
         self.inGoogleKey.textChanged.connect(self.check_api_key_address)
 
+        self._ignore_layer_tree_state = False
+
         # Layer tree
         self.layer_tree.headerItem().setText(0, tr('List of layers'))
 
@@ -680,6 +682,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def filter_layer_tree(self, search_text: str):
         """ Filter the layer tree based on search text. """
         search_text = search_text.lower().strip()
+        self._ignore_layer_tree_state = bool(search_text)
 
         def filter_item(item):
             """ Recursively filter tree items. Returns True if item or any child matches. """
