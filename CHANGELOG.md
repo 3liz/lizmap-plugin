@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.5.8 - 2026-02-23
+
+* Fix: A vector layer can be spatial but having symbology disabled
+* Fix Project checker - non int4 pkey: Raise warning only for PostgreSQL layers
+
 ## 4.5.7 - 2026-01-06
 
 * Fix Check either non-existing PK or PK different from int4
