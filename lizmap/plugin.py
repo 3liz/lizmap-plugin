@@ -1,4 +1,5 @@
 import contextlib
+import hashlib
 import json
 import logging
 import os
@@ -596,6 +597,9 @@ class Lizmap:
 
         # Catch user interaction on layer tree and inputs
         self.dlg.layer_tree.itemSelectionChanged.connect(self.from_data_to_ui_for_layer_group)
+        self.dlg.layer_tree.itemExpanded.connect(self._on_layer_tree_group_state_changed)
+        self.dlg.layer_tree.itemCollapsed.connect(self._on_layer_tree_group_state_changed)
+        self.dlg.layer_search_input.textChanged.connect(self._on_layer_search_changed)
 
         self.dlg.scales_warning.set_text(tr(
             "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
@@ -2489,8 +2493,13 @@ class Lizmap:
         root = self.project.layerTreeRoot()
 
         # Recursively process layer tree nodes
-        self.process_node(root, None, json_layers)
-        self.dlg.layer_tree.expandAll()
+        self.dlg._ignore_layer_tree_state = True
+        try:
+            self.process_node(root, None, json_layers)
+            self.dlg.layer_tree.expandAll()          # default: all expanded
+            self._restore_layer_tree_group_states()  # override with saved states (if any)
+        finally:
+            self.dlg._ignore_layer_tree_state = False
 
         # Add the self.myDic to the global layerList dictionary
         self.layerList = self.myDic
@@ -2499,6 +2508,66 @@ class Lizmap:
 
         # The return is used in tests
         return json_layers
+
+    def _layer_tree_state_key(self) -> str:
+        """Return QgsSettings key for group expand states of the current project."""
+        project_path = self.project.fileName()
+        if not project_path:
+            return ''
+        key_hash = hashlib.sha256(project_path.encode('utf-8')).hexdigest()
+        return f'lizmap/layer_tree_group_states/{key_hash}'
+
+    def _save_layer_tree_group_states(self):
+        """Persist expanded/collapsed state of group items to QgsSettings."""
+        if not self._layer_tree_state_key():
+            return
+        states: dict = {}
+        self._collect_group_states(self.dlg.layer_tree.invisibleRootItem(), states)
+        QgsSettings().setValue(self._layer_tree_state_key(), json.dumps(states))
+
+    def _collect_group_states(self, parent_item: QTreeWidgetItem, states: dict):
+        """Recursively collect expanded state for group items."""
+        for i in range(parent_item.childCount()):
+            item = parent_item.child(i)
+            if item.text(2) == 'group':
+                states[item.text(1)] = item.isExpanded()
+                self._collect_group_states(item, states)
+
+    def _restore_layer_tree_group_states(self):
+        """Restore saved expanded/collapsed state to group items."""
+        key = self._layer_tree_state_key()
+        if not key:
+            return
+        stored = QgsSettings().value(key)
+        if stored is None:
+            return
+        try:
+            states = json.loads(stored)
+        except (json.JSONDecodeError, TypeError):
+            return
+        self._apply_group_states(self.dlg.layer_tree.invisibleRootItem(), states)
+
+    def _apply_group_states(self, parent_item: QTreeWidgetItem, states: dict):
+        """Recursively apply expanded state to group items."""
+        for i in range(parent_item.childCount()):
+            item = parent_item.child(i)
+            if item.text(2) == 'group':
+                group_id = item.text(1)
+                if group_id in states:
+                    item.setExpanded(states[group_id])
+                self._apply_group_states(item, states)
+
+    def _on_layer_tree_group_state_changed(self, item):
+        """Save group states when user manually expands or collapses a group."""
+        if not self.dlg._ignore_layer_tree_state:
+            self._save_layer_tree_group_states()
+
+    def _on_layer_search_changed(self, text: str):
+        """Restore group states when search filter is cleared."""
+        if not text.strip():
+            self.dlg._ignore_layer_tree_state = True
+            self._restore_layer_tree_group_states()
+            self.dlg._ignore_layer_tree_state = False
 
     def from_data_to_ui_for_layer_group(self):
         """ Restore layer/group values into each field when selecting a layer in the tree. """
