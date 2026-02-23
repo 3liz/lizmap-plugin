@@ -527,6 +527,10 @@ def duplicated_label_legend(project: QgsProject, filter_data: bool = True) -> Di
             continue
 
         renderer = layer.renderer()
+        if not renderer:
+            # https://github.com/3liz/lizmap-plugin/issues/591
+            # A vector layer can be spatial but having symbology disabled
+            continue
 
         # From QGIS source code :
         # https://github.com/qgis/QGIS/blob/71499aacf431d3ac244c9b75c3d345bdc53572fb/src/core/symbology/qgsrendererregistry.cpp#L33
