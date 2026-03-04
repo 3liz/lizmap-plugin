@@ -1932,7 +1932,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
                               <number>1</number>
                              </property>
                              <property name="maximum">
-                              <number>999</number>
+                              <number>9999</number>
                              </property>
                              <property name="value">
                               <number>10</number>
