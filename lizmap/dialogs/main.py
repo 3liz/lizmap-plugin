@@ -1002,6 +1002,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(Panels.Layouts).setIcon(icon)
         self.mOptionsListWidget.item(Panels.Layouts).setData(Qt.ItemDataRole.UserRole, 'layouts')
 
+        # Portfolio
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'portfolio-white.svg'), mode=QIcon.Mode.Normal)
+        icon.addFile(resources_path('icons', 'portfolio-dark.svg'), mode=QIcon.Mode.Selected)
+        self.mOptionsListWidget.item(Panels.Portfolio).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Portfolio).setData(Qt.ItemDataRole.UserRole, 'portfolio')
+
         # DXF Export
         icon = QIcon()
         icon.addFile(resources_path('icons', '19-dxfexport-white.png'), mode=QIcon.Mode.Normal)
