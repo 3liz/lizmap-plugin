@@ -152,6 +152,27 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <layout class="QHBoxLayout" name="snap_on_start_layout">
+        <item>
+         <widget class="QLabel" name="label_snap_on_start">
+          <property name="text">
+           <string>Activate snapping when editing starts</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="snap_on_start">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QLabel" name="label_layers_snapping">
         <property name="text">
          <string>Layers</string>

@@ -119,6 +119,13 @@ class EditionDefinitions(BaseDefinitions):
             'tooltip': tr('Snapping tolerance for intersections.'),
             'version': LwcVersions.Lizmap_3_4,
         }
+        self._layer_config['snap_on_start'] = {
+            'type': InputType.CheckBox,
+            'header': tr('Activate snapping when editing starts'),
+            'default': False,
+            'tooltip': tr('If snapping should be activated automatically when editing starts.'),
+            'version': LwcVersions.Lizmap_3_10,
+        }
         self._layer_config['provider'] = {
             'type': InputType.Text,
             'read_only': True,
