@@ -113,6 +113,7 @@ from lizmap.definitions.online_help import (
     online_cloud_help,
     online_lwc_help,
 )
+from lizmap.definitions.portfolio import PortfolioDefinitions
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -135,6 +136,7 @@ from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
 from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
+from lizmap.forms.portfolio_edition import PortfolioEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.ogc_project_validity import OgcProjectValidity
@@ -163,6 +165,7 @@ from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.dxf_export import TableManagerDxfExport
 from lizmap.table_manager.layouts import TableManagerLayouts
+from lizmap.table_manager.portfolio import TableManagerPortfolio
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.widgets.check_project import Check, SourceField
 from lizmap.widgets.project_tools import (
@@ -471,6 +474,8 @@ class Lizmap:
             self.dlg.checkbox_geolocation_direction,
             # Exclude basemaps from single WMS
             self.dlg.checkbox_exclude_basemaps_from_single_wms,
+            # Portfolio
+            self.dlg.label_portfolios_panel,
             # Export DXF panel
             self.dlg.label_dxf_export_panel,
             self.dlg.label_dxf_export_enabled,
@@ -851,6 +856,16 @@ class Lizmap:
                 'editButton': self.dlg.edit_layout_form_button,
                 'upButton': self.dlg.up_layout_form_button,
                 'downButton': self.dlg.down_layout_form_button,
+                'manager': None,
+            },
+            'portfolios': {
+                'panel': Panels.Portfolios,
+                'tableWidget': self.dlg.table_portfolios,
+                'addButton': self.dlg.add_portfolios_button,
+                'removeButton': self.dlg.remove_portfolios_button,
+                'editButton': self.dlg.edit_portfolios_button,
+                'upButton': self.dlg.up_portfolios_button,
+                'downButton': self.dlg.down_portfolios_button,
                 'manager': None,
             },
             'dxfExport': {
@@ -1452,6 +1467,9 @@ class Lizmap:
                 elif key == 'layouts':
                     definition = LayoutsDefinitions()
                     dialog = LayoutEditionDialog
+                elif key == 'portfolios':
+                    definition = PortfolioDefinitions()
+                    dialog = PortfolioEditionDialog
                 elif key == 'locateByLayer':
                     definition = LocateByLayerDefinitions()
                     dialog = LocateLayerEditionDialog
@@ -1501,6 +1519,18 @@ class Lizmap:
                         definition,
                         dialog,
                         item['tableWidget'],
+                        item['editButton'],
+                        item.get('upButton'),
+                        item.get('downButton'),
+                    )
+                elif key == 'portfolios':
+                    # noinspection PyTypeChecker
+                    item['manager'] = TableManagerPortfolio(
+                        self.dlg,
+                        definition,
+                        dialog,
+                        item['tableWidget'],
+                        item['removeButton'],
                         item['editButton'],
                         item.get('upButton'),
                         item.get('downButton'),
