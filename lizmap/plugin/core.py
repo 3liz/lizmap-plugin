@@ -66,6 +66,7 @@ from lizmap.definitions.online_help import (
     Panels,
     online_cloud_help,
 )
+from lizmap.definitions.portfolio import PortfolioDefinitions
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.definitions.tooltip import ToolTipDefinitions
@@ -84,6 +85,7 @@ from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
 from lizmap.forms.filter_by_polygon import FilterByPolygonEditionDialog
 from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
+from lizmap.forms.portfolio_edition import PortfolioEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legend,
@@ -93,6 +95,7 @@ from lizmap.saas import is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dxf_export import TableManagerDxfExport
 from lizmap.table_manager.layouts import TableManagerLayouts
+from lizmap.table_manager.portfolio import TableManagerPortfolio
 from lizmap.widgets.project_tools import (
     is_layer_published_wfs,
 )
@@ -415,6 +418,16 @@ class Lizmap(
                 "upButton": self.dlg.up_layout_form_button,
                 "downButton": self.dlg.down_layout_form_button,
                 "manager": None,
+            },
+            'portfolios': {
+                'panel': Panels.Portfolios,
+                'tableWidget': self.dlg.table_portfolios,
+                'addButton': self.dlg.add_portfolios_button,
+                'removeButton': self.dlg.remove_portfolios_button,
+                'editButton': self.dlg.edit_portfolios_button,
+                'upButton': self.dlg.up_portfolios_button,
+                'downButton': self.dlg.down_portfolios_button,
+                'manager': None,
             },
             "dxfExport": {
                 "panel": Panels.DxfExport,
@@ -806,6 +819,19 @@ class Lizmap(
                         item["editButton"],
                         item.get("upButton"),
                         item.get("downButton"),
+                    )
+                elif key == 'portfolios':
+                    definition = PortfolioDefinitions()
+                    dialog = PortfolioEditionDialog
+                    item['manager'] = TableManagerPortfolio(
+                        self.dlg,
+                        definition,
+                        dialog,
+                        item['tableWidget'],
+                        item['removeButton'],
+                        item['editButton'],
+                        item.get('upButton'),
+                        item.get('downButton'),
                     )
                 else:
                     if key == "atlas":
