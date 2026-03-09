@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 4.5.9 - 2026-03-09
+
+* Increase maximum value from 999 to 9999 for the popup maximum features
+
 ## 4.5.8 - 2026-02-23
 
 * Fix: A vector layer can be spatial but having symbology disabled
