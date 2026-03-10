@@ -51,6 +51,8 @@ def format_version_integer(version_string: str) -> str:
     for a in version_string.split("."):
         if "-" in a:
             a = a.split("-")[0]
+        if "+" in a:
+            a = a.split("+")[0]
         output += str(a.zfill(2))
 
     return output

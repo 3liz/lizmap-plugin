@@ -41,6 +41,8 @@ class TestTools(TestCase):
         self.assertEqual("040314", format_version_integer("4.3.14"))
         self.assertEqual("100912", format_version_integer("10.9.12"))
         self.assertEqual("030708", format_version_integer("3.7.8-alpha"))
+        self.assertEqual("05000003", format_version_integer("5.0.0-alpha.3+pre"))
+        self.assertEqual("010203", format_version_integer("1.2.3+build"))
         self.assertEqual("000000", format_version_integer("master"))
 
     def test_as_boolean(self):
