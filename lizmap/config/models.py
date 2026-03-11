@@ -1,10 +1,16 @@
 from types import MappingProxyType
 from typing import (
     Any,
-    NotRequired,
     Sequence,
     TypedDict,
 )
+
+# Works on Python 3.11+
+try:
+    from typing import NotRequired
+except ImportError:
+    # Fallback for Python < 3.11 (or if you want to ensure typing_extensions is used)
+    from typing_extensions import NotRequired
 
 from qgis.core import Qgis
 
