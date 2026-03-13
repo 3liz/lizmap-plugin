@@ -50,6 +50,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget('snap_vertices_tolerance', self.vertices_tolerance)
         self.config.add_layer_widget('snap_segments_tolerance', self.segments_tolerance)
         self.config.add_layer_widget('snap_intersections_tolerance', self.intersections_tolerance)
+        self.config.add_layer_widget('snap_on_start', self.snap_on_start)
         self.config.add_layer_widget('provider', self.provider)
 
         self.config.add_layer_label('layerId', self.label_layer)
@@ -60,6 +61,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label('deleteFeature', self.label_delete)
         self.config.add_layer_label('acl', self.label_allowed_groups)
         self.config.add_layer_label('snap_layers', self.label_layers_snapping)
+        self.config.add_layer_label('snap_on_start', self.label_snap_on_start)
         self.config.add_layer_label('provider', self.label_provider)
 
         self.layer.layerChanged.connect(self.layer_changed)
@@ -76,6 +78,10 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [
             self.button_wizard_group,
         ]
+        self.lwc_versions[LwcVersions.Lizmap_3_10] = [
+            self.snap_on_start,
+            self.label_snap_on_start,
+        ]
 
         # Wizard ACL group
         icon = QIcon(resources_path('icons', 'user_group.svg'))
@@ -85,6 +91,9 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.button_wizard_group.setToolTip(tr("Open the group wizard"))
 
         self.setup_ui()
+        # Default to checked for new layers; legacy layers without the key
+        # get False from the definition default during from_json loading.
+        self.snap_on_start.setChecked(True)
         self.check_layer_wfs()
         self.layer_changed()
 
