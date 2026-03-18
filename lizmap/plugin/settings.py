@@ -2,27 +2,12 @@
 import os
 
 from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsCoordinateReferenceSystem,
-    QgsEditFormConfig,
-    QgsExpression,
-    QgsLayerTree,
-    QgsLayerTreeGroup,
-    QgsMapLayer,
-    QgsMapLayerModel,
-    QgsMapLayerProxyModel,
-    QgsMasterLayoutInterface,
-    QgsProject,
-    QgsRasterLayer,
-    QgsRectangle,
     QgsSettings,
-    QgsVectorLayer,
-    QgsWkbTypes,
 )
 
 from ..definitions.qgis_settings import Settings
-from ..toolbelt.convert import ambiguous_to_bool, as_boolean
+from ..toolbelt.convert import as_boolean
+
 
 def configure_qgis_settings():
     # Keep it for a few months
@@ -67,5 +52,3 @@ def configure_qgis_settings():
     parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), defaultValue=None)
     if parent_folder is None:
         QgsSettings().setValue(Settings.key(Settings.NumberParentFolder), 2)
-
-

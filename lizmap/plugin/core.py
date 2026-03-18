@@ -196,7 +196,6 @@ from lizmap.toolbelt.resources import (
     load_icon,
     plugin_name,
     plugin_path,
-    resources_path,
     window_icon,
 )
 from lizmap.toolbelt.strings import human_size, path_to_url, unaccent
@@ -208,9 +207,10 @@ from lizmap.toolbelt.version import (
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
-from .settings import configure_qgis_settings
 from .lwc_versions import configure_lwc_versions
+from .options import global_options, layer_options
 from .scales import ScalesManager
+from .settings import configure_qgis_settings
 from .training import TrainingManager
 
 LOGGER = logging.getLogger(plugin_name())
@@ -324,47 +324,6 @@ class Lizmap:
             button.setVisible(locale[0:2].lower() == 'fr' or self.is_dev_version)
             button.setIcon(QIcon(':images/flags/fr.svg'))
 
-        self.layers_table = dict()
-
-        # List of ui widget for data driven actions and checking
-        self.global_options = lizmap_config.globalOptionDefinitions
-        self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
-
-        # List of ui widget for data driven actions and checking
-        self.layer_options_list = lizmap_config.layerOptionDefinitions
-        self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
-        self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
-        self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
-
-        # Fill the combobox from the Lizmap API
-        for combo_item in ('legend_image_option', 'popupSource', 'imageFormat', 'externalSearch'):
-
-            item_info = self.layer_options_list.get(combo_item)
-            if not item_info:
-                item_info = self.global_options.get(combo_item)
-
-            if not item_info:
-                # This should not happen
-                raise Exception('Unknown type for item_info')
-
-            for option in item_info['list']:
-                data, label, tooltip, icon = option
-                item_info['widget'].addItem(label, data)
-                index = item_info['widget'].findData(data)
-
-                if tooltip:
-                    # noinspection PyUnresolvedReferences
-                    item_info['widget'].setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
-
-                if icon:
-                    if isinstance(icon, str):
-                        # From QGIS resources file
-                        pass
-                    else:
-                        # It's a list, from the plugin
-                        icon = resources_path(*icon)
-                    item_info['widget'].setItemIcon(index, QIcon(icon))
-
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
         self.lwc_versions = configure_lwc_versions(self.dlg)
@@ -374,109 +333,15 @@ class Lizmap:
             self.dlg.label_safe_lizmap_cloud,
         ]
 
-        # Add widgets (not done in lizmap_var to avoid dependencies on ui)
-        self.global_options['fixed_scale_overview_map']['widget'] = self.dlg.checkbox_scale_overview_map
-        # Because of the logic with LWC 3.7, we are managing manually these widgets
-        # self.global_options['mapScales']['widget'] = self.dlg.list_map_scales
-        # self.global_options['minScale']['widget'] = self.dlg.minimum_scale
-        # self.global_options['maxScale']['widget'] = self.dlg.maximum_scale
-        self.global_options['max_scale_points']['widget'] = self.dlg.max_scale_points
-        self.global_options['max_scale_lines_polygons']['widget'] = self.dlg.max_scale_lines_polygons
-        self.global_options['hide_numeric_scale_value']['widget'] = self.dlg.hide_scale_value
-        self.global_options['acl']['widget'] = self.dlg.inAcl
-        self.global_options['initialExtent']['widget'] = self.dlg.widget_initial_extent
-        self.global_options['googleKey']['widget'] = self.dlg.inGoogleKey
-        self.global_options['googleHybrid']['widget'] = self.dlg.cbGoogleHybrid
-        self.global_options['googleSatellite']['widget'] = self.dlg.cbGoogleSatellite
-        self.global_options['googleTerrain']['widget'] = self.dlg.cbGoogleTerrain
-        self.global_options['googleStreets']['widget'] = self.dlg.cbGoogleStreets
-        self.global_options['osmMapnik']['widget'] = self.dlg.cbOsmMapnik
-        self.global_options['openTopoMap']['widget'] = self.dlg.cb_open_topo_map
-        self.global_options['bingKey']['widget'] = self.dlg.inBingKey
-        self.global_options['bingStreets']['widget'] = self.dlg.cbBingStreets
-        self.global_options['bingSatellite']['widget'] = self.dlg.cbBingSatellite
-        self.global_options['bingHybrid']['widget'] = self.dlg.cbBingHybrid
-        self.global_options['ignKey']['widget'] = self.dlg.inIgnKey
-        self.global_options['ignStreets']['widget'] = self.dlg.cbIgnStreets
-        self.global_options['ignSatellite']['widget'] = self.dlg.cbIgnSatellite
-        self.global_options['ignTerrain']['widget'] = self.dlg.cbIgnTerrain
-        self.global_options['ignCadastral']['widget'] = self.dlg.cbIgnCadastral
-        self.global_options['hideGroupCheckbox']['widget'] = self.dlg.cbHideGroupCheckbox
-        self.global_options['activateFirstMapTheme']['widget'] = self.dlg.activate_first_map_theme
-        self.global_options['popupLocation']['widget'] = self.dlg.liPopupContainer
-        self.global_options['draw']['widget'] = self.dlg.activate_drawing_tools
-        self.global_options['dxfExportEnabled']['widget'] = self.dlg.checkbox_dxf_export_enabled
-        self.global_options['allowedGroups']['widget'] = self.dlg.text_dxf_allowed_groups
-        # Deprecated since LWC 3.7.0
-        self.global_options['print']['widget'] = self.dlg.cbActivatePrint
-        self.global_options['measure']['widget'] = self.dlg.cbActivateMeasure
-        self.global_options['zoomHistory']['widget'] = self.dlg.cbActivateZoomHistory
-        self.global_options['geolocation']['widget'] = self.dlg.groupbox_geolocation
-        self.global_options['geolocationPrecision']['widget'] = self.dlg.checkbox_geolocation_precision
-        self.global_options['geolocationDirection']['widget'] = self.dlg.checkbox_geolocation_direction
-        self.global_options['pointTolerance']['widget'] = self.dlg.inPointTolerance
-        self.global_options['lineTolerance']['widget'] = self.dlg.inLineTolerance
-        self.global_options['polygonTolerance']['widget'] = self.dlg.inPolygonTolerance
-        self.global_options['hideHeader']['widget'] = self.dlg.cbHideHeader
-        self.global_options['hideMenu']['widget'] = self.dlg.cbHideMenu
-        self.global_options['hideLegend']['widget'] = self.dlg.cbHideLegend
-        self.global_options['hideOverview']['widget'] = self.dlg.cbHideOverview
-        self.global_options['hideNavbar']['widget'] = self.dlg.cbHideNavbar
-        self.global_options['hideProject']['widget'] = self.dlg.cbHideProject
-        self.global_options['automatic_permalink']['widget'] = self.dlg.automatic_permalink
-        self.global_options['wms_single_request_for_all_layers']['widget'] = self.dlg.checkbox_wms_single_request_all_layers
-        self.global_options['exclude_basemaps_from_single_wms']['widget'] = self.dlg.checkbox_exclude_basemaps_from_single_wms
+        self.layers_table = dict()
+
+        # Initialize global options
+        self.global_options = global_options(self.dlg, lizmap_config)
+        self.layer_options_list = layer_options(self.dlg, lizmap_config, self.global_options)
 
         # Connect single WMS checkbox to enable/disable the exclude basemaps option
         self.dlg.checkbox_wms_single_request_all_layers.toggled.connect(self.on_single_wms_toggled)
         self.on_single_wms_toggled(self.dlg.checkbox_wms_single_request_all_layers.isChecked())
-
-        self.global_options['tmTimeFrameSize']['widget'] = self.dlg.inTimeFrameSize
-        self.global_options['tmTimeFrameType']['widget'] = self.dlg.liTimeFrameType
-        self.global_options['tmAnimationFrameLength']['widget'] = self.dlg.inAnimationFrameLength
-        self.global_options['emptyBaselayer']['widget'] = self.dlg.cbAddEmptyBaselayer
-        self.global_options['startupBaselayer']['widget'] = self.dlg.cbStartupBaselayer
-        self.global_options['limitDataToBbox']['widget'] = self.dlg.cbLimitDataToBbox
-        self.global_options['datavizLocation']['widget'] = self.dlg.liDatavizContainer
-        self.global_options['datavizTemplate']['widget'] = self.dlg.dataviz_html_template
-        self.global_options['theme']['widget'] = self.dlg.combo_theme
-        self.global_options['atlasShowAtStartup']['widget'] = self.dlg.atlasShowAtStartup
-        self.global_options['atlasAutoPlay']['widget'] = self.dlg.atlasAutoPlay
-
-        self.layer_options_list = lizmap_config.layerOptionDefinitions
-        # Add widget information
-        self.layer_options_list['title']['widget'] = self.dlg.inLayerTitle
-        self.layer_options_list['abstract']['widget'] = self.dlg.teLayerAbstract
-        self.layer_options_list['link']['widget'] = self.dlg.inLayerLink
-        self.layer_options_list['minScale']['widget'] = None
-        self.layer_options_list['maxScale']['widget'] = None
-        self.layer_options_list['toggled']['widget'] = self.dlg.cbToggled
-        self.layer_options_list['group_visibility']['widget'] = self.dlg.list_group_visibility
-        self.layer_options_list['popup']['widget'] = self.dlg.checkbox_popup
-        self.layer_options_list['popupFrame']['widget'] = self.dlg.frame_layer_popup
-        self.layer_options_list['popupTemplate']['widget'] = None
-        self.layer_options_list['popupMaxFeatures']['widget'] = self.dlg.sbPopupMaxFeatures
-        self.layer_options_list['children_lizmap_features_table']['widget'] = self.dlg.children_lizmap_features_table
-        self.layer_options_list['popupDisplayChildren']['widget'] = self.dlg.popup_display_children
-        self.layer_options_list['popup_allow_download']['widget'] = self.dlg.checkbox_popup_allow_download
-        self.layer_options_list['groupAsLayer']['widget'] = self.dlg.cbGroupAsLayer
-        self.layer_options_list['baseLayer']['widget'] = self.dlg.cbLayerIsBaseLayer
-        self.layer_options_list['displayInLegend']['widget'] = self.dlg.cbDisplayInLegend
-        self.layer_options_list['singleTile']['widget'] = self.dlg.cbSingleTile
-        self.layer_options_list['cached']['widget'] = self.dlg.checkbox_server_cache
-        self.layer_options_list['serverFrame']['widget'] = self.dlg.server_cache_frame
-        self.layer_options_list['cacheExpiration']['widget'] = self.dlg.inCacheExpiration
-        self.layer_options_list['metatileSize']['widget'] = self.dlg.inMetatileSize
-        self.layer_options_list['clientCacheExpiration']['widget'] = self.dlg.inClientCacheExpiration
-        self.layer_options_list['externalWmsToggle']['widget'] = self.dlg.cbExternalWms
-        self.layer_options_list['sourceRepository']['widget'] = self.dlg.inSourceRepository
-        self.layer_options_list['sourceProject']['widget'] = self.dlg.inSourceProject
-
-        # Disabled because done earlier
-        # self.layer_options_list['legend_image_option']['widget'] = self.dlg.combo_legend_option
-        # self.layer_options_list['popupSource']['widget'] = self.dlg.liPopupSource
-        # self.layer_options_list['imageFormat']['widget'] = self.dlg.liImageFormat
-        # self.global_options['externalSearch']['widget'] = self.dlg.liExternalSearch
 
         # Disable checkboxes on the layer tab
         self.enable_check_box_in_layer_tab(False)
