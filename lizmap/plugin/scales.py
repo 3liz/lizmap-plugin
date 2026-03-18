@@ -4,7 +4,6 @@ This module provides the ScalesManager class which handles map scale
 operations using the delegate pattern.
 """
 import contextlib
-import logging
 
 from typing import (
     TYPE_CHECKING,
@@ -18,12 +17,12 @@ from qgis.PyQt.QtWidgets import (
 
 from ..definitions.definitions import LwcVersions
 from ..toolbelt.i18n import tr
-from ..toolbelt.resources import plugin_name
 
 if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
-LOGGER = logging.getLogger(plugin_name())
+
+from .. import logger
 
 
 class ScalesManager:
@@ -172,7 +171,7 @@ class ScalesManager:
 
     def get_min_max_scales(self):
         """ Get minimum/maximum scales from scales input field. """
-        LOGGER.info('Getting min/max scales')
+        logger.info('Getting min/max scales')
         in_map_scales = self.dlg.list_map_scales.text()
 
         map_scales = [int(a.strip(' \t')) for a in in_map_scales.split(',') if str(a.strip(' \t')).isdigit()]
