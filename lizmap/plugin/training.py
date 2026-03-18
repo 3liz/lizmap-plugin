@@ -13,52 +13,24 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
-    QgsCoordinateReferenceSystem,
-    QgsEditFormConfig,
-    QgsExpression,
     QgsFileDownloader,
-    QgsLayerTree,
-    QgsLayerTreeGroup,
-    QgsMapLayer,
-    QgsMapLayerModel,
-    QgsMapLayerProxyModel,
-    QgsMasterLayoutInterface,
     QgsProject,
-    QgsRasterLayer,
-    QgsRectangle,
     QgsSettings,
-    QgsVectorLayer,
-    QgsWkbTypes,
 )
-
 from qgis.gui import QgsFileWidget
-from qgis.utils import OverrideCursor
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
     QEventLoop,
-    QStorageInfo,
     Qt,
-    QTranslator,
     QUrl,
 )
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import (
-    QAction,
     QApplication,
-    QDialogButtonBox,
-    QFileDialog,
-    QLineEdit,
-    QMessageBox,
-    QPushButton,
-    QTreeWidgetItem,
-    QWidget,
 )
+from qgis.utils import OverrideCursor
 
-from ..definitions.definitions import ServerComboData
 from lizmap.definitions.lizmap_cloud import (
-    CLOUD_MAX_PARENT_FOLDER,
     CLOUD_NAME,
-    CLOUD_QGIS_MIN_RECOMMENDED,
     TRAINING_PROJECT,
     TRAINING_ZIP,
     WORKSHOP_DOMAINS,
@@ -67,9 +39,10 @@ from lizmap.definitions.lizmap_cloud import (
     WorkshopType,
 )
 
+from ..definitions.definitions import ServerComboData
 from ..definitions.online_help import Panels
 from ..definitions.qgis_settings import Settings
-from ..saas import check_project_ssl_postgis, is_lizmap_cloud, webdav_url
+from ..saas import webdav_url
 from ..toolbelt.i18n import tr
 
 if TYPE_CHECKING:
@@ -113,7 +86,6 @@ class TrainingManager:
         self.dlg.download_training_data_qgs.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.IndividualQgsFile))
         self.dlg.open_training_project_qgs.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.IndividualQgsFile))
         self.dlg.open_training_folder_qgs.clicked.connect(partial(self.open_training_folder_clicked, WorkshopType.IndividualQgsFile))
-
 
     def check_training_panel(self) -> None:
         """Check if the training panel should be visible or not."""
@@ -303,4 +275,3 @@ class TrainingManager:
         downloader.downloadCompleted.connect(self.download_completed)
         downloader.startDownload()
         loop.exec()
-

@@ -7,7 +7,6 @@ import re
 import tempfile
 import zipfile
 
-from collections import OrderedDict
 from functools import cached_property, partial
 from os.path import relpath
 from pathlib import Path
@@ -18,11 +17,9 @@ from pyplugin_installer.version_compare import compareVersions
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsAuthMethodConfig,
     QgsCoordinateReferenceSystem,
     QgsEditFormConfig,
     QgsExpression,
-    QgsFileDownloader,
     QgsLayerTree,
     QgsLayerTreeGroup,
     QgsMapLayer,
@@ -36,10 +33,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.gui import QgisInterface, QgsFileWidget
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QEventLoop,
     QStorageInfo,
     Qt,
     QTranslator,
@@ -101,9 +97,6 @@ from lizmap.definitions.lizmap_cloud import (
     CLOUD_QGIS_MIN_RECOMMENDED,
     TRAINING_PROJECT,
     TRAINING_ZIP,
-    WORKSHOP_DOMAINS,
-    WORKSHOP_FOLDER_ID,
-    WORKSHOP_FOLDER_PATH,
     WorkshopType,
 )
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
@@ -158,7 +151,7 @@ from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legen
     trailing_layer_group_name,
     use_estimated_metadata,
 )
-from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud, webdav_url
+from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.dxf_export import TableManagerDxfExport
@@ -215,6 +208,8 @@ from lizmap.toolbelt.version import (
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
+from .settings import configure_qgis_settings
+from .lwc_versions import configure_lwc_versions
 from .scales import ScalesManager
 from .training import TrainingManager
 
@@ -255,49 +250,8 @@ class Lizmap:
         # In production, this variable must be None
         self._version = lwc_version
 
-        # Keep it for a few months
-        # 2023/04/15
-        QgsSettings().remove('lizmap/instance_target_repository')
-        # 04/01/2022
-        QgsSettings().remove('lizmap/instance_target_url_authid')
-
-        if as_boolean(os.getenv("LIZMAP_NORMAL_MODE")):
-            QgsSettings().setValue(Settings.key(Settings.BeginnerMode), False)
-            QgsSettings().setValue(Settings.key(Settings.PreventPgService), False)
-
-        # Set some default settings when loading the plugin
-        beginner_mode = QgsSettings().value(Settings.key(Settings.BeginnerMode), defaultValue=None)
-        if beginner_mode is None:
-            QgsSettings().setValue(Settings.key(Settings.BeginnerMode), True)
-
-        prevent_ecw = QgsSettings().value(Settings.key(Settings.PreventEcw), defaultValue=None)
-        if prevent_ecw is None:
-            QgsSettings().setValue(Settings.key(Settings.PreventEcw), True)
-
-        prevent_auth_id = QgsSettings().value(Settings.key(Settings.PreventPgAuthDb), defaultValue=None)
-        if prevent_auth_id is None:
-            QgsSettings().setValue(Settings.key(Settings.PreventPgAuthDb), True)
-
-        prevent_service = QgsSettings().value(Settings.key(Settings.PreventPgService), defaultValue=None)
-        if prevent_service is None:
-            QgsSettings().setValue(Settings.key(Settings.PreventPgService), True)
-
-        force_pg_user_pass = QgsSettings().value(Settings.key(Settings.ForcePgUserPass), defaultValue=None)
-        if force_pg_user_pass is None:
-            QgsSettings().setValue(Settings.key(Settings.ForcePgUserPass), True)
-
-        prevent_other_drive = QgsSettings().value(Settings.key(Settings.PreventDrive), defaultValue=None)
-        if prevent_other_drive is None:
-            QgsSettings().setValue(Settings.key(Settings.PreventDrive), True)
-
-        allow_parent_folder = QgsSettings().value(Settings.key(Settings.AllowParentFolder), defaultValue=None)
-        if allow_parent_folder is None:
-            QgsSettings().setValue(Settings.key(Settings.AllowParentFolder), False)
-
-        parent_folder = QgsSettings().value(Settings.key(Settings.NumberParentFolder), defaultValue=None)
-        if parent_folder is None:
-            QgsSettings().setValue(Settings.key(Settings.NumberParentFolder), 2)
-
+        # Configure QGIS settings
+        configure_qgis_settings()
         # Connect the current project filepath
         self.current_path = None
         # noinspection PyUnresolvedReferences
@@ -413,95 +367,7 @@ class Lizmap:
 
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
-        self.lwc_versions = OrderedDict()
-        self.lwc_versions[LwcVersions.Lizmap_3_1] = []
-        self.lwc_versions[LwcVersions.Lizmap_3_2] = [
-            self.dlg.label_max_feature_popup,
-            self.dlg.label_dataviz,
-            self.dlg.label_atlas,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_3] = [
-            self.dlg.label_form_filter,
-            self.dlg.btQgisPopupFromForm,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_4] = [
-            self.dlg.label_atlas_34,
-            self.dlg.list_group_visibility,
-            self.dlg.activate_first_map_theme,
-            self.dlg.activate_drawing_tools,
-            # Actions
-            self.dlg.label_help_action,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_5] = [
-            self.dlg.liPopupSource.model().item(
-                self.dlg.liPopupSource.findData('form')
-            ),
-            self.dlg.label_filter_polygon,
-            self.dlg.filter_polygon_by_user,
-            self.dlg.checkbox_scale_overview_map,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_6] = [
-            self.dlg.checkbox_popup_allow_download,
-            self.dlg.cb_open_topo_map,
-            self.dlg.combo_legend_option.model().item(
-                self.dlg.combo_legend_option.findData('expand_at_startup')
-            ),
-            self.dlg.button_wizard_group_visibility_project,
-            self.dlg.button_wizard_group_visibility_layer,
-            self.dlg.label_helper_dataviz,
-            self.dlg.enable_dataviz_preview,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_7] = [
-            # Layout panel
-            self.dlg.checkbox_default_print,
-            self.dlg.label_layout_panel,
-            self.dlg.label_layout_panel_description,
-            self.dlg.edit_layout_form_button,
-            self.dlg.up_layout_form_button,
-            self.dlg.down_layout_form_button,
-            # Drag drop dataviz designer
-            self.dlg.label_dnd_dataviz_help,
-            self.dlg.button_add_dd_dataviz,
-            self.dlg.button_remove_dd_dataviz,
-            self.dlg.button_edit_dd_dataviz,
-            self.dlg.button_add_plot,
-            self.dlg.combo_plots,
-            # Base-layers
-            self.dlg.add_group_empty,
-            self.dlg.add_group_baselayers,
-            self.dlg.predefined_baselayers,
-            # New scopes in actions
-            self.dlg.label_action_scope_layer_project,
-            # Scales
-            self.dlg.use_native_scales,
-            self.dlg.hide_scale_value,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_8] = [
-            # Single WMS
-            self.dlg.checkbox_wms_single_request_all_layers,
-            # Permalink, will be backported to 3.7, but wait a little before adding it to the 3.7 list
-            self.dlg.automatic_permalink,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_9] = [
-            self.dlg.group_box_max_scale_zoom,
-            self.dlg.children_lizmap_features_table,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_10] = [
-            self.dlg.checkbox_geolocation_precision,
-            self.dlg.checkbox_geolocation_direction,
-            # Exclude basemaps from single WMS
-            self.dlg.checkbox_exclude_basemaps_from_single_wms,
-            # Export DXF panel
-            self.dlg.label_dxf_export_panel,
-            self.dlg.label_dxf_export_enabled,
-            self.dlg.checkbox_dxf_export_enabled,
-            self.dlg.label_dxf_allowed_groups,
-            self.dlg.text_dxf_allowed_groups,
-            self.dlg.button_dxf_wizard_group,
-            self.dlg.label_dxf_layers_info,
-        ]
-        self.lwc_versions[LwcVersions.Lizmap_3_11] = [
-        ]
+        self.lwc_versions = configure_lwc_versions(self.dlg)
 
         self.lizmap_cloud = [
             self.dlg.label_lizmap_search_grant,
@@ -5275,7 +5141,6 @@ class Lizmap:
             tr('Training'),
             tr('Is the training well prepared by the trainer ?') + " " + zip_file,
         )
-
 
     def download_completed(self):
         """ Show the success bar, for both kind of workshops. """
