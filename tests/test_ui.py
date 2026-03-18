@@ -65,23 +65,21 @@ class TestUiLizmapDialog(TestCase):
         config = lizmap.read_cfg_file(skip_tables=True)
         print("\n::test_legend_options::config", config)
 
-        lizmap.myDic = {}
-        lizmap.process_node(project.layerTreeRoot(), None, config)
-        lizmap.layerList = lizmap.myDic
+        lizmap.layer_tree_mngr.process_node(lizmap.layerList, project.layerTreeRoot(), None, config)
 
         self.assertEqual("5000", lizmap.dlg.minimum_scale.text())
         self.assertEqual("500000", lizmap.dlg.maximum_scale.text())
         self.assertEqual("5000, 250000, 500000", lizmap.dlg.list_map_scales.text())
 
-        self.assertEqual("disabled", lizmap.myDic.get("legend_disabled_layer_id").get("legend_image_option"))
+        self.assertEqual("disabled", lizmap.layerList.get("legend_disabled_layer_id").get("legend_image_option"))
 
         self.assertEqual(
             "expand_at_startup",
-            lizmap.myDic.get("legend_displayed_startup_layer_id").get("legend_image_option"),
+            lizmap.layerList.get("legend_displayed_startup_layer_id").get("legend_image_option"),
         )
 
         self.assertEqual(
-            "hide_at_startup", lizmap.myDic.get("legend_hidden_startup_layer_id").get("legend_image_option")
+            "hide_at_startup", lizmap.layerList.get("legend_hidden_startup_layer_id").get("legend_image_option")
         )
 
         # For LWC 3.6
@@ -122,11 +120,11 @@ class TestUiLizmapDialog(TestCase):
         project.setFileName(temporary_file_path())
 
         lizmap = Lizmap(get_iface(), lwc_version=lwc_version)
-        baselayers = lizmap._add_group_legend("baselayers", exclusive=True, parent=None, project=project)
-        lizmap._add_group_legend(
+        baselayers = lizmap.layer_tree_mngr._add_group_legend("baselayers", exclusive=True, parent=None, project=project)
+        lizmap.layer_tree_mngr._add_group_legend(
             "project-background-color", exclusive=False, parent=baselayers, project=project
         )
-        hidden = lizmap._add_group_legend("hidden", project=project)
+        hidden = lizmap.layer_tree_mngr._add_group_legend("hidden", project=project)
 
         # For testing, we add OSM as hidden layer
         hidden_raster = QgsRasterLayer(
@@ -145,9 +143,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertDictEqual({}, config)
 
         # Some process
-        lizmap.myDic = {}
-        lizmap.process_node(project.layerTreeRoot(), None, {})
-        lizmap.layerList = lizmap.myDic
+        lizmap.layer_tree_mngr.process_node(lizmap.layerList, project.layerTreeRoot(), None, {})
 
         return lizmap
 

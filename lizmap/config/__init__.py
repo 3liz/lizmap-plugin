@@ -1,6 +1,6 @@
 from .config import LizmapConfig
-from .global_options import GlobalOptionsDefinitions
-from .layer_options import LayerOptionDefinitions
+from .global_options import GlobalOptionsDefinitions, globalOptionDefinitions
+from .layer_options import LayerOptionDefinitions, layerOptionDefinitions
 from .models import MappingQgisGeometryType
 
 __all__ = (
@@ -8,4 +8,6 @@ __all__ = (
     "LayerOptionDefinitions",
     "LizmapConfig",
     "MappingQgisGeometryType",
+    "globalOptionDefinitions",
+    "layerOptionDefinitions",
 )

@@ -7,6 +7,7 @@ from qgis.testing.mocked import get_iface
 
 from lizmap.definitions.definitions import LayerProperties, LwcVersions
 from lizmap.plugin import Lizmap
+from lizmap.plugin.helpers import string_to_list
 from lizmap.toolbelt.layer import layer_property, set_layer_property
 
 from .compat import TestCase
@@ -51,11 +52,10 @@ class TestLayerTree(TestCase):
 
     def test_string_to_list(self):
         """Test about text to JSON list."""
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
-        self.assertListEqual(lizmap.string_to_list(""), [])
-        self.assertListEqual(lizmap.string_to_list("a"), ["a"])
-        self.assertListEqual(lizmap.string_to_list(" a "), ["a"])
-        self.assertListEqual(lizmap.string_to_list("a,b"), ["a", "b"])
+        self.assertListEqual(string_to_list(""), [])
+        self.assertListEqual(string_to_list("a"), ["a"])
+        self.assertListEqual(string_to_list(" a "), ["a"])
+        self.assertListEqual(string_to_list("a,b"), ["a", "b"])
 
     def test_layer_metadata(self, data: Path):
         """Test metadata coming from layer or from Lizmap."""
@@ -71,22 +71,22 @@ class TestLayerTree(TestCase):
         lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
 
         # New project so Lizmap is empty
-        config = lizmap.layers_config_file()
+        config = lizmap.layer_tree_mngr.layers_config_file()
         self.assertDictEqual(config, {})
 
         # No link for now, config = {}
-        lizmap.myDic = {}  # Must be called before process_node
-        lizmap.process_node(project.layerTreeRoot(), None, config)
-        self.assertEqual(lizmap.myDic[layer.id()]["link"], "")
+        myDic = {}  # Must be called before process_node
+        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, config)
+        self.assertEqual(myDic[layer.id()]["link"], "")
 
         # Set the link from QGIS properties, we should have it in the Lizmap config now
         if Qgis.versionInt() < 33800:
             layer.setDataUrl(qgis_config_url)
         else:
             layer.serverProperties().setDataUrl(qgis_config_url)
-        lizmap.myDic = {}  # Must be called before process_node
-        lizmap.process_node(project.layerTreeRoot(), None, config)
-        self.assertEqual(lizmap.myDic[layer.id()]["link"], qgis_config_url)
+        myDic = {}  # Must be called before process_node
+        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, config)
+        self.assertEqual(myDic[layer.id()]["link"], qgis_config_url)
 
         # Hard code a URL in the Lizmap config, not from layer properties
         hard_coded_config = {
@@ -124,26 +124,26 @@ class TestLayerTree(TestCase):
             layer.setDataUrl(qgis_config_url)
         else:
             layer.serverProperties().setDataUrl(qgis_config_url)
-        lizmap.myDic = {}  # Must be called before process_node
-        lizmap.process_node(project.layerTreeRoot(), None, hard_coded_config)
-        self.assertEqual(lizmap_config_url, lizmap.myDic[layer.id()]["link"])
+        myDic = {}  # Must be called before process_node
+        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
+        self.assertEqual(lizmap_config_url, myDic[layer.id()]["link"])
 
         # Remove the link from Lizmap config, it should be the QGIS one now
         if Qgis.versionInt() < 33800:
             layer.setDataUrl(qgis_config_url)
         else:
             layer.serverProperties().setDataUrl(qgis_config_url)
-        lizmap.myDic = {}  # Must be called before process_node
+        myDic = {}  # Must be called before process_node
         hard_coded_config[layer_name]["link"] = ""
-        lizmap.process_node(project.layerTreeRoot(), None, hard_coded_config)
-        self.assertEqual(qgis_config_url, lizmap.myDic[layer.id()]["link"])
+        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
+        self.assertEqual(qgis_config_url, myDic[layer.id()]["link"])
 
         # Remove the link from Lizmap config and from QGIS
         if Qgis.versionInt() < 33800:
             layer.setDataUrl("")
         else:
             layer.serverProperties().setDataUrl("")
-        lizmap.myDic = {}  # Must be called before process_node
+        myDic = {}  # Must be called before process_node
         hard_coded_config[layer_name]["link"] = ""
-        lizmap.process_node(project.layerTreeRoot(), None, hard_coded_config)
-        self.assertEqual("", lizmap.myDic[layer.id()]["link"])
+        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
+        self.assertEqual("", myDic[layer.id()]["link"])
