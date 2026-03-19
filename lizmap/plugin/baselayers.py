@@ -28,7 +28,6 @@ from ..toolbelt.resources import load_icon
 
 
 class LizmapProtocol(Protocol):
-
     dlg: "LizmapDialog"
     global_options: GlobalOptionsDefinitions
 
@@ -44,27 +43,25 @@ class LizmapProtocol(Protocol):
         name: str,
         attribution_url: Optional[str] = None,
         attribution_name: Optional[str] = None,
-    ):
-        ...
+    ): ...
 
 
 class BaseLayersManager(LizmapProtocol):
-
     def initialize_base_layers(self):
         self.crs_3857_base_layers_list = {
-            'osm-mapnik': self.dlg.cbOsmMapnik,
-            'opentopomap': self.dlg.cb_open_topo_map,
-            'google-street': self.dlg.cbGoogleStreets,
-            'google-satellite': self.dlg.cbGoogleSatellite,
-            'google-hybrid': self.dlg.cbGoogleHybrid,
-            'google-terrain': self.dlg.cbGoogleTerrain,
-            'bing-road': self.dlg.cbBingStreets,
-            'bing-aerial': self.dlg.cbBingSatellite,
-            'bing-hybrid': self.dlg.cbBingHybrid,
-            'ign-plan': self.dlg.cbIgnStreets,
-            'ign-photo': self.dlg.cbIgnSatellite,
-            'ign-scan': self.dlg.cbIgnTerrain,
-            'ign-cadastral': self.dlg.cbIgnCadastral,
+            "osm-mapnik": self.dlg.cbOsmMapnik,
+            "opentopomap": self.dlg.cb_open_topo_map,
+            "google-street": self.dlg.cbGoogleStreets,
+            "google-satellite": self.dlg.cbGoogleSatellite,
+            "google-hybrid": self.dlg.cbGoogleHybrid,
+            "google-terrain": self.dlg.cbGoogleTerrain,
+            "bing-road": self.dlg.cbBingStreets,
+            "bing-aerial": self.dlg.cbBingSatellite,
+            "bing-hybrid": self.dlg.cbBingHybrid,
+            "ign-plan": self.dlg.cbIgnStreets,
+            "ign-photo": self.dlg.cbIgnSatellite,
+            "ign-scan": self.dlg.cbIgnTerrain,
+            "ign-cadastral": self.dlg.cbIgnCadastral,
         }
 
         for item in self.crs_3857_base_layers_list.values():
@@ -75,8 +72,8 @@ class BaseLayersManager(LizmapProtocol):
 
         # Connect base-layer checkboxes
         self.base_layer_widget_list = {
-            'layer': self.dlg.cbLayerIsBaseLayer,
-            'empty': self.dlg.cbAddEmptyBaselayer
+            "layer": self.dlg.cbLayerIsBaseLayer,
+            "empty": self.dlg.cbAddEmptyBaselayer,
         }
         self.base_layer_widget_list.update(self.crs_3857_base_layers_list)
 
@@ -92,64 +89,65 @@ class BaseLayersManager(LizmapProtocol):
     def on_baselayer_checkbox_change(self):
         blist = on_baselayer_checkbox_change(self.dlg, self.layerList, self.base_layer_widget_list)
         # Fill self.globalOptions
-        self.global_options['startupBaselayer']['list'] = blist
+        self.global_options["startupBaselayer"]["list"] = blist
 
     def set_startup_baselayer_from_config(self):
         set_startup_baselayer_from_config(self.dlg)
 
     def configure_base_layers(self):
-        osm_icon = load_icon('osm-32-32.png')
+        osm_icon = load_icon("osm-32-32.png")
         self.dlg.button_osm_mapnik.clicked.connect(partial(add_osm_mapnik, self))
         self.dlg.button_osm_mapnik.setIcon(osm_icon)
         self.dlg.button_osm_opentopomap.clicked.connect(partial(add_osm_opentopomap, self))
         self.dlg.button_osm_opentopomap.setIcon(osm_icon)
         self.dlg.button_ign_orthophoto.clicked.connect(
-            partial(add_french_ign_layer, IgnLayers.IgnOrthophoto, self))
-        self.dlg.button_ign_plan.clicked.connect(
-            partial(add_french_ign_layer, IgnLayers.IgnPlan, self))
+            partial(add_french_ign_layer, IgnLayers.IgnOrthophoto, self)
+        )
+        self.dlg.button_ign_plan.clicked.connect(partial(add_french_ign_layer, IgnLayers.IgnPlan, self))
         self.dlg.button_ign_cadastre.clicked.connect(
-            partial(add_french_ign_layer, IgnLayers.IgnCadastre, self))
+            partial(add_french_ign_layer, IgnLayers.IgnCadastre, self)
+        )
 
 
 def add_osm_mapnik(proto: LizmapProtocol):
-    """ Add the OSM mapnik base layer. """
-    source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+    """Add the OSM mapnik base layer."""
+    source = "type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png"
     proto._add_base_layer(
-        source,
-        'OpenStreetMap',
-        'https://openstreetmap.org',
-        '© ' + tr('OpenStreetMap contributors'))
+        source, "OpenStreetMap", "https://openstreetmap.org", "© " + tr("OpenStreetMap contributors")
+    )
 
 
 def add_osm_opentopomap(proto: LizmapProtocol):
-    """ Add the OSM OpenTopoMap base layer. """
-    source = 'type=xyz&url=https://tile.opentopomap.org/{z}/{x}/{y}.png'
+    """Add the OSM OpenTopoMap base layer."""
+    source = "type=xyz&url=https://tile.opentopomap.org/{z}/{x}/{y}.png"
     proto._add_base_layer(
         source,
-        'OpenTopoMap',
-        'https://openstreetmap.org',
-        '© ' + tr('OpenStreetMap contributors') + ', SRTM, © OpenTopoMap (CC-BY-SA)')
+        "OpenTopoMap",
+        "https://openstreetmap.org",
+        "© " + tr("OpenStreetMap contributors") + ", SRTM, © OpenTopoMap (CC-BY-SA)",
+    )
 
 
 def add_french_ign_layer(layer: IgnLayer, proto: LizmapProtocol):
-    """ Add some French IGN layers. """
+    """Add some French IGN layers."""
     params = {
-        'crs': 'EPSG:3857',
-        'dpiMode': 7,
-        'format': layer.format,
-        'layers': layer.name,
-        'styles': 'normal',
-        'tileMatrixSet': 'PM',
-        'url': 'https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities',
+        "crs": "EPSG:3857",
+        "dpiMode": 7,
+        "format": layer.format,
+        "layers": layer.name,
+        "styles": "normal",
+        "tileMatrixSet": "PM",
+        "url": "https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities",
     }
     # Do not use urlencode
-    source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
-    proto._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
+    source = "&".join(["{}={}".format(k, v) for k, v in params.items()])
+    proto._add_base_layer(source, layer.title, "https://www.ign.fr/", "IGN France")
 
 
 #
 # Helpers
 #
+
 
 def on_baselayer_checkbox_change(
     dlg: "LizmapDialog",
@@ -178,17 +176,17 @@ def on_baselayer_checkbox_change(
     # Fill with checked base-layers
     # 1/ QGIS layers
     for k, v in layerList.items():
-        if not v['baseLayer']:
+        if not v["baseLayer"]:
             continue
-        combo.addItem(v['name'], v['name'])
-        blist.append(v['name'])
+        combo.addItem(v["name"], v["name"])
+        blist.append(v["name"])
         if data == k:
             idx = i
         i += 1
 
     # 2/ External base-layers
     for k, v in base_layer_widget_list.items():
-        if k != 'layer':
+        if k != "layer":
             if v.isChecked():
                 combo.addItem(k, k)
                 blist.append(k)
@@ -209,14 +207,14 @@ def set_startup_baselayer_from_config(dlg: "LizmapDialog"):
     if not dlg.check_cfg_file_exists():
         return
 
-    with open(dlg.cfg_file(), encoding='utf8') as f:
+    with open(dlg.cfg_file(), encoding="utf8") as f:
         json_file_reader = f.read()
 
     try:
         json_content = json.loads(json_file_reader)
-        json_options = json_content['options']
+        json_options = json_content["options"]
 
-        base_layer = json_options.get('startupBaselayer')
+        base_layer = json_options.get("startupBaselayer")
         if not base_layer:
             return
 
@@ -234,7 +232,7 @@ def check_visibility_crs_3857(
     crs_3857_base_layers_list: Dict,
     current_version: LwcVersions,
 ):
-    """ Check if we display the warning about scales.
+    """Check if we display the warning about scales.
 
     These checkboxes are deprecated starting from Lizmap Web Client 3.7.
     """
@@ -264,7 +262,7 @@ def check_visibility_crs_3857(
 
         if dlg.cbStartupBaselayer.count() == 1:
             # When only one item in the combobox but it's the 'empty' base layer
-            if dlg.cbStartupBaselayer.itemText(0) == 'empty':
+            if dlg.cbStartupBaselayer.itemText(0) == "empty":
                 dlg.cbStartupBaselayer.setEnabled(False)
 
     else:

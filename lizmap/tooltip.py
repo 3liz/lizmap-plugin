@@ -306,7 +306,7 @@ class Tooltip:
             return value.replace("'", "’")
 
         if isinstance(widget_config['map'], list):
-            values = dict()
+            values = {}
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
                     reverted = {escape_value(y): escape_value(x) for x, y in row.items()}

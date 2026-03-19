@@ -1094,7 +1094,7 @@ class TableCheck(QTableWidget):
 
         headers = Headers()
         for row in range(self.rowCount()):
-            data = dict()
+            data = {}
             for i, header in enumerate(headers.members):
                 data[header.data] = self.item(row, i).data(self.JSON)
             result.append(data)

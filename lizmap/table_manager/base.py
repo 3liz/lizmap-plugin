@@ -56,17 +56,18 @@ class TableManager:
         self.up_button = up_button
         self.down_button = down_button
 
-        self.lwc_versions = list()
-        self.lwc_versions.append(LwcVersions.Lizmap_3_1)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_2)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_3)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_4)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_5)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_6)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_7)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_8)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_9)
-        self.lwc_versions.append(LwcVersions.Lizmap_3_10)
+        self.lwc_versions = [
+            LwcVersions.Lizmap_3_1,
+            LwcVersions.Lizmap_3_2,
+            LwcVersions.Lizmap_3_3,
+            LwcVersions.Lizmap_3_4,
+            LwcVersions.Lizmap_3_5,
+            LwcVersions.Lizmap_3_6,
+            LwcVersions.Lizmap_3_7,
+            LwcVersions.Lizmap_3_8,
+            LwcVersions.Lizmap_3_9,
+            LwcVersions.Lizmap_3_10,
+        ]
 
         self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
         self.table.setColumnCount(len(self.keys))
@@ -180,11 +181,11 @@ class TableManager:
 
     def _primary_keys(self) -> dict:
         """ Fetch the list of values part of the primary key for each row. """
-        unicity_dict = dict()
+        unicity_dict = {}
         rows = self.table.rowCount()
 
         for key in self.definitions.primary_keys():
-            unicity_dict[key] = list()
+            unicity_dict[key] = []
 
             for i, config_key in enumerate(self.keys):
                 if config_key == key:
@@ -238,7 +239,7 @@ class TableManager:
             # Maybe just the layer wasn't loaded in QGIS desktop because the file was missing
             return None
 
-        data = dict()
+        data = {}
         for i, key in enumerate(self.keys):
             cell = self.table.item(row, i)
             value = cell.data(Qt.ItemDataRole.UserRole)
@@ -266,7 +267,7 @@ class TableManager:
             if self._layer and hasattr(value, '__call__'):
                 # Value is a for now a function, we need to evaluate it
                 sig = inspect.signature(value)
-                if 'plot_type' in [i for i in sig.parameters]:
+                if 'plot_type' in sig.parameters:
                     # TODO fixme for dataviz
                     value = value(self._layer, data.get('type'))
                 else:
@@ -540,10 +541,10 @@ class TableManager:
         if not version and self.parent:
             version = self.parent.current_lwc_version()
 
-        data = dict()
+        data = {}
 
-        if self.definitions.key() in ('filter_by_polygon', 'layouts' ):
-            data['config'] = dict()
+        if self.definitions.key() in ('filter_by_polygon', 'layouts'):
+            data['config'] = {}
             for config_key, general_config in self.definitions.general_config.items():
                 widget = general_config.get('widget')
                 if widget is None:
@@ -564,14 +565,14 @@ class TableManager:
                 else:
                     raise Exception('InputType global "{}" not implemented'.format(input_type))
 
-        data[self.label_dictionary_list()] = list()
+        data[self.label_dictionary_list()] = []
 
         rows = self.table.rowCount()
 
         export_legacy_single_row = self.definitions.use_single_row and rows == 1
 
         for row in range(rows):
-            layer_data = dict()
+            layer_data = {}
             for i, key in enumerate(self.keys):
                 input_type = self.definitions.layer_config[key]['type']
                 use_bool_type = self.definitions.layer_config[key].get('use_json', False)
@@ -640,7 +641,7 @@ class TableManager:
                     # TODO to make it future-proof by inspecting parameters etc
                     # We assume for now we use the QgsVectorLayer for the input and optional dataviz type
                     sig = inspect.signature(default_value)
-                    if 'plot_type' in [i for i in sig.parameters]:
+                    if 'plot_type' in sig.parameters:
                         # hack, only for dataviz UUID
                         layer_data[key] = default_value(vector_layer, layer_data['type'])
                     else:
@@ -797,7 +798,7 @@ class TableManager:
 
         No keys will be removed.
         """
-        new_data = dict()
+        new_data = {}
         new_data['layers'] = []
 
         def layer_from_order(layers, row):
@@ -883,7 +884,7 @@ class TableManager:
 
             layer['traces'] = []
             for trace in legacy:
-                one_trace = dict()
+                one_trace = {}
                 for key in trace:
                     value = layer.get(key)
 

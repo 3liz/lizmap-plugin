@@ -144,7 +144,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def primary_keys_collection(self) -> list:
         """Return the list of unique values in the collection."""
-        values = list()
+        values = []
         for row in range(self.traces.rowCount()):
             item = self.traces.item(row, 0)
             cell = item.data(Qt.ItemDataRole.UserRole)
@@ -153,12 +153,12 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def save_collection(self) -> list:
         """Save a collection into JSON"""
-        value = list()
+        value = []
         rows = self.traces.rowCount()
 
         collection_definition = self.config.layer_config['traces']
         for row in range(rows):
-            trace_data = dict()
+            trace_data = {}
             for i, sub_key in enumerate(collection_definition['items']):
 
                 input_type = self.config.layer_config[sub_key]['type']

@@ -1,4 +1,5 @@
 """Configure QGIS settings"""
+
 import os
 
 from qgis.core import (
@@ -12,9 +13,9 @@ from ..toolbelt.convert import as_boolean
 def configure_qgis_settings():
     # Keep it for a few months
     # 2023/04/15
-    QgsSettings().remove('lizmap/instance_target_repository')
+    QgsSettings().remove("lizmap/instance_target_repository")
     # 04/01/2022
-    QgsSettings().remove('lizmap/instance_target_url_authid')
+    QgsSettings().remove("lizmap/instance_target_url_authid")
 
     if as_boolean(os.getenv("LIZMAP_NORMAL_MODE")):
         QgsSettings().setValue(Settings.key(Settings.BeginnerMode), False)

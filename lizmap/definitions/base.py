@@ -57,7 +57,7 @@ class BaseDefinitions:
 
     @staticmethod
     def primary_keys() -> tuple:
-        return tuple()
+        return ()
 
     def add_layer_widget(self, key, widget):
         if key not in self._layer_config:

@@ -99,6 +99,7 @@ from lizmap.widgets.project_tools import (
 
 try:
     from lizmap.plugin_manager import QgisPluginManager
+
     QGIS_PLUGIN_MANAGER = True
 except ModuleNotFoundError:
     # In a standalone application
@@ -145,7 +146,7 @@ from .training import TrainingManager
 from .webdav import WebDavManager
 
 LOGGER = logging.getLogger(plugin_name())
-VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
+VERSION_URL = "https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json"
 # To try a local file
 # VERSION_URL = 'file:///home/etienne/.local/share/QGIS/QGIS3/profiles/default/Lizmap/released_versions.json'
 
@@ -161,7 +162,6 @@ class Lizmap(
     WebDavManager,
     ProjectManager,
 ):
-
     @property
     def lwc_version(self) -> LwcVersions:
         # From LwcVersionManager
@@ -189,7 +189,7 @@ class Lizmap(
 
         setup_logger(plugin_name())
 
-        locale, file_path = setup_translation('lizmap_qgis_plugin_{}.qm', plugin_path('i18n'))
+        locale, file_path = setup_translation("lizmap_qgis_plugin_{}.qm", plugin_path("i18n"))
         LOGGER.info("Language in QGIS : {}".format(locale))
 
         if file_path:
@@ -228,8 +228,8 @@ class Lizmap(
             self.dlg.button_ign_cadastre,
         )
         for button in french_buttons:
-            button.setVisible(locale[0:2].lower() == 'fr' or self.is_dev_version)
-            button.setIcon(QIcon(':images/flags/fr.svg'))
+            button.setVisible(locale[0:2].lower() == "fr" or self.is_dev_version)
+            button.setIcon(QIcon(":images/flags/fr.svg"))
 
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
@@ -239,7 +239,7 @@ class Lizmap(
             self.dlg.label_safe_lizmap_cloud,
         ]
 
-        self.layers_table = dict()
+        self.layers_table = {}
         # Connect single WMS checkbox to enable/disable the exclude basemaps option
         self.dlg.checkbox_wms_single_request_all_layers.toggled.connect(self.on_single_wms_toggled)
         self.on_single_wms_toggled(self.dlg.checkbox_wms_single_request_all_layers.isChecked())
@@ -260,23 +260,23 @@ class Lizmap(
             self.dlg.button_remove_action,
         )
         for button in remove_buttons:
-            button.setText('')
+            button.setText("")
             button.setIcon(QIcon(":/images/themes/default/mActionDeleteSelected.svg"))
             button.clicked.connect(partial(self.remove_remote_file, button))
         self.dlg.table_files.val_Changed.connect(self.remove_remote_layer_index)
         self.dlg.button_send_all_layers.clicked.connect(self.send_all_layers)
         self.dlg.button_check_all_layers.clicked.connect(self.refresh_all_layers)
-        self.dlg.button_refresh_all.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
-        self.dlg.button_refresh_all.setText('')
-        self.dlg.button_refresh_all.setToolTip('Refresh all dates from the server.')
+        self.dlg.button_refresh_all.setIcon(QIcon(QgsApplication.iconPath("mActionRefresh.svg")))
+        self.dlg.button_refresh_all.setText("")
+        self.dlg.button_refresh_all.setToolTip("Refresh all dates from the server.")
         self.dlg.button_refresh_all.clicked.connect(self.check_all_dates_dav)
 
         self.dlg.button_check_capabilities.setToolTip(
-            'If the server selected in this dropdown menu has not the correct version displayed under, or if some '
-            'server capabilities is missing.'
+            "If the server selected in this dropdown menu has not the correct version "
+            "displayed under, or if some server capabilities is missing."
         )
-        self.dlg.button_check_capabilities.setText('')
-        self.dlg.button_check_capabilities.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.dlg.button_check_capabilities.setText("")
+        self.dlg.button_check_capabilities.setIcon(QIcon(QgsApplication.iconPath("mActionRefresh.svg")))
         self.dlg.button_check_capabilities.clicked.connect(self.check_server_capabilities)
         # self.dlg.button_open_project.clicked.connect(self.open_web_browser_project)
 
@@ -289,16 +289,18 @@ class Lizmap(
         self.dlg.button_copy.clicked.connect(self.copy_versions_clicked)
         self.dlg.button_copy.setVisible(False)
 
-        self.dlg.label_lizmap_search_grant.setText(tr(
-            "About \"lizmap_search\", for an instance hosted on lizmap.com cloud solution, you must do the \"GRANT\" "
-            "command according to the <a href=\"{}\">documentation</a>."
-        ).format(online_cloud_help("postgresql.html").url()))
+        self.dlg.label_lizmap_search_grant.setText(
+            tr(
+                'About "lizmap_search", for an instance hosted on lizmap.com cloud solution, '
+                'you must do the "GRANT" command according to the <a href="{}">documentation</a>.'
+            ).format(online_cloud_help("postgresql.html").url())
+        )
         self.dlg.label_lizmap_search_grant.setOpenExternalLinks(True)
 
-        widget_source_popup = self.layer_options_list['popupSource']['widget']
+        widget_source_popup = self.layer_options_list["popupSource"]["widget"]
         widget_source_popup.currentIndexChanged.connect(self.enable_popup_source_button)
 
-        index = widget_source_popup.findData('form')
+        index = widget_source_popup.findData("form")
         form_popup = widget_source_popup.model().item(index)
 
         font = form_popup.font()
@@ -307,22 +309,22 @@ class Lizmap(
 
         # Connect widget signals to setLayerProperty method depending on widget type
         for key, item in self.layer_options_list.items():
-            if item.get('widget'):
-                control = item['widget']
+            if item.get("widget"):
+                control = item["widget"]
                 slot = partial(self.save_value_layer_group_data, key)
-                if item['wType'] in ('text', 'spinbox'):
+                if item["wType"] in ("text", "spinbox"):
                     control.editingFinished.connect(slot)
-                elif item['wType'] == 'textarea':
+                elif item["wType"] == "textarea":
                     control.textChanged.connect(slot)
-                elif item['wType'] == 'checkbox':
+                elif item["wType"] == "checkbox":
                     control.stateChanged.connect(slot)
-                elif item['wType'] == 'radio':
+                elif item["wType"] == "radio":
                     control.toggled.connect(slot)
-                elif item['wType'] == 'list':
+                elif item["wType"] == "list":
                     control.currentIndexChanged.connect(slot)
-                elif item['wType'] == 'layers':
+                elif item["wType"] == "layers":
                     control.layerChanged.connect(slot)
-                elif item['wType'] == 'fields':
+                elif item["wType"] == "fields":
                     control.fieldChanged.connect(slot)
 
         self.initialize_base_layers()
@@ -347,8 +349,8 @@ class Lizmap(
         # self.server_manager.clean_cache(True)
 
         current = qgis_version_info(Qgis.versionInt())
-        current = '{}.{}'.format(current[0], current[1])
-        self.dlg.label_current_qgis.setText('<b>{}</b>'.format(current))
+        current = "{}.{}".format(current[0], current[1])
+        self.dlg.label_current_qgis.setText("<b>{}</b>".format(current))
         text = self.dlg.qgis_and_lwc_versions_issue.text()
         self.dlg.qgis_and_lwc_versions_issue.setText(text.format(version=current))
         self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
@@ -356,136 +358,140 @@ class Lizmap(
         # tables of layers
         # Todo Lizmap 3.4, remove dict init here
         self.layers_table = {
-            'atlas': {
-                'panel': Panels.Atlas,
-                'tableWidget': self.dlg.table_atlas,
-                'removeButton': self.dlg.button_atlas_remove,
-                'addButton': self.dlg.button_atlas_add,
-                'editButton': self.dlg.button_atlas_edit,
-                'upButton': self.dlg.button_atlas_up,
-                'downButton': self.dlg.button_atlas_down,
-                'manager': None,
+            "atlas": {
+                "panel": Panels.Atlas,
+                "tableWidget": self.dlg.table_atlas,
+                "removeButton": self.dlg.button_atlas_remove,
+                "addButton": self.dlg.button_atlas_add,
+                "editButton": self.dlg.button_atlas_edit,
+                "upButton": self.dlg.button_atlas_up,
+                "downButton": self.dlg.button_atlas_down,
+                "manager": None,
             },
-            'locateByLayer': {
-                'panel': Panels.LocateByLayer,
-                'tableWidget': self.dlg.table_locate_by_layer,
-                'removeButton': self.dlg.remove_locate_layer_button,
-                'addButton': self.dlg.add_locate_layer_button,
-                'editButton': self.dlg.edit_locate_layer_button,
-                'upButton': self.dlg.up_locate_layer_button,
-                'downButton': self.dlg.down_locate_layer_button,
-                'manager': None,
+            "locateByLayer": {
+                "panel": Panels.LocateByLayer,
+                "tableWidget": self.dlg.table_locate_by_layer,
+                "removeButton": self.dlg.remove_locate_layer_button,
+                "addButton": self.dlg.add_locate_layer_button,
+                "editButton": self.dlg.edit_locate_layer_button,
+                "upButton": self.dlg.up_locate_layer_button,
+                "downButton": self.dlg.down_locate_layer_button,
+                "manager": None,
             },
-            'attributeLayers': {
-                'panel': Panels.AttributeTable,
-                'tableWidget': self.dlg.table_attribute_table,
-                'removeButton': self.dlg.remove_attribute_table_button,
-                'addButton': self.dlg.add_attribute_table_button,
-                'editButton': self.dlg.edit_attribute_table_button,
-                'upButton': self.dlg.up_attribute_table_button,
-                'downButton': self.dlg.down_attribute_table_button,
-                'manager': None,
+            "attributeLayers": {
+                "panel": Panels.AttributeTable,
+                "tableWidget": self.dlg.table_attribute_table,
+                "removeButton": self.dlg.remove_attribute_table_button,
+                "addButton": self.dlg.add_attribute_table_button,
+                "editButton": self.dlg.edit_attribute_table_button,
+                "upButton": self.dlg.up_attribute_table_button,
+                "downButton": self.dlg.down_attribute_table_button,
+                "manager": None,
             },
-            'tooltipLayers': {
-                'panel': Panels.ToolTip,
-                'tableWidget': self.dlg.table_tooltip,
-                'removeButton': self.dlg.remove_tooltip_button,
-                'addButton': self.dlg.add_tooltip_button,
-                'editButton': self.dlg.edit_tooltip_button,
-                'upButton': self.dlg.up_tooltip_button,
-                'downButton': self.dlg.down_tooltip_button,
-                'manager': None,
+            "tooltipLayers": {
+                "panel": Panels.ToolTip,
+                "tableWidget": self.dlg.table_tooltip,
+                "removeButton": self.dlg.remove_tooltip_button,
+                "addButton": self.dlg.add_tooltip_button,
+                "editButton": self.dlg.edit_tooltip_button,
+                "upButton": self.dlg.up_tooltip_button,
+                "downButton": self.dlg.down_tooltip_button,
+                "manager": None,
             },
-            'editionLayers': {
-                'panel': Panels.Editing,
-                'tableWidget': self.dlg.edition_table,
-                'removeButton': self.dlg.remove_edition_layer,
-                'addButton': self.dlg.add_edition_layer,
-                'editButton': self.dlg.edit_edition_layer,
-                'upButton': self.dlg.up_edition_layer,
-                'downButton': self.dlg.down_edition_layer,
-                'manager': None,
+            "editionLayers": {
+                "panel": Panels.Editing,
+                "tableWidget": self.dlg.edition_table,
+                "removeButton": self.dlg.remove_edition_layer,
+                "addButton": self.dlg.add_edition_layer,
+                "editButton": self.dlg.edit_edition_layer,
+                "upButton": self.dlg.up_edition_layer,
+                "downButton": self.dlg.down_edition_layer,
+                "manager": None,
             },
-            'layouts': {
-                'panel': Panels.Layouts,
-                'tableWidget': self.dlg.table_layout,
-                'editButton': self.dlg.edit_layout_form_button,
-                'upButton': self.dlg.up_layout_form_button,
-                'downButton': self.dlg.down_layout_form_button,
-                'manager': None,
+            "layouts": {
+                "panel": Panels.Layouts,
+                "tableWidget": self.dlg.table_layout,
+                "editButton": self.dlg.edit_layout_form_button,
+                "upButton": self.dlg.up_layout_form_button,
+                "downButton": self.dlg.down_layout_form_button,
+                "manager": None,
             },
-            'dxfExport': {
-                'panel': Panels.DxfExport,
-                'tableWidget': self.dlg.table_dxf_export,
-                'addButton': self.dlg.add_dxf_export_layer,
-                'removeButton': self.dlg.remove_dxf_export_layer,
-                'editButton': self.dlg.edit_dxf_export_layer,
-                'upButton': self.dlg.up_dxf_export_layer,
-                'downButton': self.dlg.down_dxf_export_layer,
-                'manager': None,
+            "dxfExport": {
+                "panel": Panels.DxfExport,
+                "tableWidget": self.dlg.table_dxf_export,
+                "addButton": self.dlg.add_dxf_export_layer,
+                "removeButton": self.dlg.remove_dxf_export_layer,
+                "editButton": self.dlg.edit_dxf_export_layer,
+                "upButton": self.dlg.up_dxf_export_layer,
+                "downButton": self.dlg.down_dxf_export_layer,
+                "manager": None,
             },
-            'loginFilteredLayers': {
-                'panel': Panels.FilteredLayers,
-                'tableWidget': self.dlg.table_login_filter,
-                'removeButton': self.dlg.remove_filter_login_layer_button,
-                'addButton': self.dlg.add_filter_login_layer_button,
-                'editButton': self.dlg.edit_filter_login_layer_button,
-                'manager': None,
+            "loginFilteredLayers": {
+                "panel": Panels.FilteredLayers,
+                "tableWidget": self.dlg.table_login_filter,
+                "removeButton": self.dlg.remove_filter_login_layer_button,
+                "addButton": self.dlg.add_filter_login_layer_button,
+                "editButton": self.dlg.edit_filter_login_layer_button,
+                "manager": None,
             },
-            'timemanagerLayers': {
-                'panel': Panels.TimeManager,
-                'tableWidget': self.dlg.time_manager_table,
-                'removeButton': self.dlg.remove_time_manager_layer,
-                'addButton': self.dlg.add_time_manager_layer,
-                'editButton': self.dlg.edit_time_manager_layer,
-                'upButton': self.dlg.up_time_manager_layer,
-                'downButton': self.dlg.down_time_manager_layer,
-                'manager': None,
+            "timemanagerLayers": {
+                "panel": Panels.TimeManager,
+                "tableWidget": self.dlg.time_manager_table,
+                "removeButton": self.dlg.remove_time_manager_layer,
+                "addButton": self.dlg.add_time_manager_layer,
+                "editButton": self.dlg.edit_time_manager_layer,
+                "upButton": self.dlg.up_time_manager_layer,
+                "downButton": self.dlg.down_time_manager_layer,
+                "manager": None,
             },
-            'datavizLayers': {
-                'panel': Panels.Dataviz,
-                'tableWidget': self.dlg.table_dataviz,
-                'removeButton': self.dlg.remove_dataviz_layer,
-                'addButton': self.dlg.add_dataviz_layer,
-                'editButton': self.dlg.edit_dataviz_layer,
-                'upButton': self.dlg.up_dataviz_layer,
-                'downButton': self.dlg.down_dataviz_layer,
-                'manager': None,
+            "datavizLayers": {
+                "panel": Panels.Dataviz,
+                "tableWidget": self.dlg.table_dataviz,
+                "removeButton": self.dlg.remove_dataviz_layer,
+                "addButton": self.dlg.add_dataviz_layer,
+                "editButton": self.dlg.edit_dataviz_layer,
+                "upButton": self.dlg.up_dataviz_layer,
+                "downButton": self.dlg.down_dataviz_layer,
+                "manager": None,
             },
-            'filter_by_polygon': {
-                'panel': Panels.FilteredLayers,
-                'tableWidget': self.dlg.table_filter_polygon,
-                'removeButton': self.dlg.remove_filter_polygon_button,
-                'addButton': self.dlg.add_filter_polygon_button,
-                'editButton': self.dlg.edit_filter_polygon_button,
-                'manager': None,
+            "filter_by_polygon": {
+                "panel": Panels.FilteredLayers,
+                "tableWidget": self.dlg.table_filter_polygon,
+                "removeButton": self.dlg.remove_filter_polygon_button,
+                "addButton": self.dlg.add_filter_polygon_button,
+                "editButton": self.dlg.edit_filter_polygon_button,
+                "manager": None,
             },
-            'formFilterLayers': {
-                'panel': Panels.FormFiltering,
-                'tableWidget': self.dlg.table_form_filter,
-                'removeButton': self.dlg.remove_filter_form_button,
-                'addButton': self.dlg.add_filter_form_button,
-                'editButton': self.dlg.edit_filter_form_button,
-                'upButton': self.dlg.up_filter_form_button,
-                'downButton': self.dlg.down_filter_form_button,
-                'manager': None,
-            }
+            "formFilterLayers": {
+                "panel": Panels.FormFiltering,
+                "tableWidget": self.dlg.table_form_filter,
+                "removeButton": self.dlg.remove_filter_form_button,
+                "addButton": self.dlg.add_filter_form_button,
+                "editButton": self.dlg.edit_filter_form_button,
+                "upButton": self.dlg.up_filter_form_button,
+                "downButton": self.dlg.down_filter_form_button,
+                "manager": None,
+            },
         }
 
         # Set some tooltips
         tooltip = tr(
-            'By default the layer is visible for all groups in Lizmap.\n'
-            'If a comma separated list of groups IDs is defined,\n'
-            'the layer will be visible only for these groups.\n'
-            'Use Lizmap Web Client group IDs and not labels.')
+            "By default the layer is visible for all groups in Lizmap.\n"
+            "If a comma separated list of groups IDs is defined,\n"
+            "the layer will be visible only for these groups.\n"
+            "Use Lizmap Web Client group IDs and not labels."
+        )
         self.dlg.label_group_visibility.setToolTip(tooltip)
         self.dlg.list_group_visibility.setToolTip(tooltip)
 
-        self.dlg.button_generate_html_table.setToolTip(tr(
-            "A default HTML table will be generated in the layer maptip. The layout will be very similar to the auto "
-            "popup, except that the display of a media must still be managed manually using HTML &lt;a&gt; or "
-            "&lt;img&gt; for instance."
-        ))
+        self.dlg.button_generate_html_table.setToolTip(
+            tr(
+                "A default HTML table will be generated in the layer maptip. "
+                "The layout will be very similar to the auto "
+                "popup, except that the display of a media must still be managed manually "
+                "using HTML &lt;a&gt; or &lt;img&gt; for instance."
+            )
+        )
 
         # Filter by polygon
         self.dlg.layer_filter_polygon.setFilters(QgsMapLayerProxyModel.Filter.PolygonLayer)
@@ -493,7 +499,7 @@ class Lizmap(
         self.dlg.field_filter_polygon.setLayer(self.dlg.layer_filter_polygon.currentLayer())
 
         # Server combo
-        server = QgsSettings().value('lizmap/instance_target_url', '')
+        server = QgsSettings().value("lizmap/instance_target_url", "")
         if server:
             index = self.dlg.server_combo.findData(server, ServerComboData.ServerUrl.value)
             if index:
@@ -518,14 +524,14 @@ class Lizmap(
 
     def configure_dev_version(self):
         # File handler for logging
-        temp_dir = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
+        temp_dir = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
         if not temp_dir.exists():
             temp_dir.mkdir()
 
         if not as_boolean(os.getenv("CI")):
             file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
             file_handler.setLevel(logging.DEBUG)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             file_handler.setFormatter(formatter)
             add_logging_handler_once(LOGGER, file_handler)
             LOGGER.debug(
@@ -535,25 +541,24 @@ class Lizmap(
 
         # All logs
         def write_log_message(message, tag, level):
-            """ Write all tabs from QGIS to files. """
-            temp_dir_log = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
-            with open(temp_dir_log.joinpath("all.log"), 'a') as log_file:
-                log_file.write(
-                    '{tag}({level}): {message}'.format(tag=tag, level=level, message=message)
-                )
+            """Write all tabs from QGIS to files."""
+            temp_dir_log = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
+            with open(temp_dir_log.joinpath("all.log"), "a") as log_file:
+                log_file.write("{tag}({level}): {message}".format(tag=tag, level=level, message=message))
 
         QgsApplication.messageLog().messageReceived.connect(write_log_message)
 
-        self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
-            self.version, current_git_hash(), next_git_tag()))
+        self.dlg.setWindowTitle(
+            "Lizmap branch {}, commit {}, next {}".format(self.version, current_git_hash(), next_git_tag())
+        )
 
     def target_server_changed(self):
-        """ When the server destination has changed in the selector. """
+        """When the server destination has changed in the selector."""
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
         current_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
         current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        QgsSettings().setValue('lizmap/instance_target_url', current_url)
-        QgsSettings().setValue('lizmap/instance_target_url_authid', current_authid)
+        QgsSettings().setValue("lizmap/instance_target_url", current_url)
+        QgsSettings().setValue("lizmap/instance_target_url_authid", current_authid)
         self.check_dialog_validity()
         self.dlg.refresh_combo_repositories()
         self.check_training_panel()
@@ -566,7 +571,7 @@ class Lizmap(
             self.dlg.refresh_helper_target_version(current_version)
 
         current_version = self.lwc_version
-        old_version = QgsSettings().value('lizmap/lizmap_web_client_version', type=str)
+        old_version = QgsSettings().value("lizmap/lizmap_web_client_version", type=str)
         if current_version != old_version:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)
@@ -574,7 +579,9 @@ class Lizmap(
         if self.dock_html_preview:
             # Change the URL for the CSS
             self.dock_html_preview: HtmlPreview
-            self.dock_html_preview.set_server_url(self.dlg.current_server_info(ServerComboData.ServerUrl.value))
+            self.dock_html_preview.set_server_url(
+                self.dlg.current_server_info(ServerComboData.ServerUrl.value)
+            )
 
         lizmap_cloud = is_lizmap_cloud(current_metadata)
         for item in self.lizmap_cloud:
@@ -582,15 +589,16 @@ class Lizmap(
 
         self.dlg.helper_list_group.setReadOnly(True)
         if current_metadata:
-            acl = current_metadata.get('acl')
+            acl = current_metadata.get("acl")
             if not acl:
                 # Running a version < 3.6.1
                 tooltip = tr("Your server does not support this feature, please upgrade.")
                 self.dlg.helper_list_group.setText("")
             else:
-                self.dlg.helper_list_group.setText(','.join(list(acl['groups'].keys())))
+                self.dlg.helper_list_group.setText(",".join(list(acl["groups"].keys())))
                 tooltip = (
-                    tr("It cannot be edited. Existing groups on the server : ") + self.dlg.server_combo.currentText()
+                    tr("It cannot be edited. Existing groups on the server : ")
+                    + self.dlg.server_combo.currentText()
                 )
 
             self.dlg.helper_list_group.setToolTip(tooltip)
@@ -603,29 +611,30 @@ class Lizmap(
             # In CI, to make tests happy
             return
 
-        repositories = current_metadata.get('repositories')
+        repositories = current_metadata.get("repositories")
         if not repositories:
             return
 
         # How-to is for server with less than 3 projects in total :)
         qgis_projects = 0
         for repo in repositories.values():
-            qgis_projects += len(repo['projects'])
+            qgis_projects += len(repo["projects"])
         self.dlg.publish_first_map.setVisible(qgis_projects < 3)
 
     def target_repository_changed(self):
-        """ When the repository destination has changed in the selector. """
+        """When the repository destination has changed in the selector."""
         # The new repository is only set when we save the CFG file
-        # Otherwise, it will make a mess with the signals about the last repository used and the server refreshed list
+        # Otherwise, it will make a mess with the signals about the last repository
+        # used and the server refreshed list
         if self.dlg.page_dataviz.isVisible():
-            self.layers_table['datavizLayers'].get('manager').preview_dataviz_dialog()
+            self.layers_table["datavizLayers"].get("manager").preview_dataviz_dialog()
 
     def initGui(self):
         """Create action that will start plugin configuration"""
         LOGGER.debug("Plugin starting in the initGui")
 
         icon = window_icon()
-        self.action = QAction(icon, 'Lizmap', self.iface.mainWindow())
+        self.action = QAction(icon, "Lizmap", self.iface.mainWindow())
 
         # connect the action to the run method
         # noinspection PyUnresolvedReferences
@@ -635,13 +644,13 @@ class Lizmap(
         self.dock_html_preview.set_server_url(self.dlg.current_server_info(ServerComboData.ServerUrl.value))
         self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.dock_html_preview)
         self.dock_html_preview.setVisible(False)
-        self.dlg.button_maptip_preview.setText('')
-        self.dlg.button_maptip_preview.setToolTip(tr('Open the HTML Lizmap maptip popup preview dock'))
+        self.dlg.button_maptip_preview.setText("")
+        self.dlg.button_maptip_preview.setToolTip(tr("Open the HTML Lizmap maptip popup preview dock"))
         self.dlg.button_maptip_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
         self.dlg.button_maptip_preview.clicked.connect(self.open_dock_preview_maptip)
 
         # Open the online help
-        self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
+        self.help_action = QAction(icon, "Lizmap", self.iface.mainWindow())
         self.iface.pluginHelpMenu().addAction(self.help_action)
         # noinspection PyUnresolvedReferences
         self.help_action.triggered.connect(helpers.show_help)
@@ -654,9 +663,15 @@ class Lizmap(
         # connect Lizmap signals and functions
 
         self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.dlg.close)
-        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(partial(self.save_cfg_file_cursor, False))
-        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(partial(self.save_cfg_file_cursor, True))
-        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Help).clicked.connect(self.show_help_question)
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(
+            partial(self.save_cfg_file_cursor, False)
+        )
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(
+            partial(self.save_cfg_file_cursor, True)
+        )
+        self.dlg.buttonBox.button(QDialogButtonBox.StandardButton.Help).clicked.connect(
+            self.show_help_question
+        )
 
         # Connect the left menu to the right panel
         self.dlg.mOptionsListWidget.currentRowChanged.connect(self.dlg.mOptionsStackedWidget.setCurrentIndex)
@@ -666,9 +681,9 @@ class Lizmap(
         self.dlg.button_abstract_html.clicked.connect(self.configure_html_abstract)
 
         # Group wizard
-        icon = load_icon('user_group.svg')
-        self.dlg.button_wizard_group_visibility_project.setText('')
-        self.dlg.button_wizard_group_visibility_layer.setText('')
+        icon = load_icon("user_group.svg")
+        self.dlg.button_wizard_group_visibility_project.setText("")
+        self.dlg.button_wizard_group_visibility_layer.setText("")
         self.dlg.button_wizard_group_visibility_project.setIcon(icon)
         self.dlg.button_wizard_group_visibility_layer.setIcon(icon)
         self.dlg.button_wizard_group_visibility_project.clicked.connect(self.open_wizard_group_project)
@@ -678,13 +693,13 @@ class Lizmap(
         self.dlg.button_wizard_group_visibility_layer.setToolTip(tooltip)
 
         # DXF export group wizard
-        self.dlg.button_dxf_wizard_group.setText('')
+        self.dlg.button_dxf_wizard_group.setText("")
         self.dlg.button_dxf_wizard_group.setIcon(icon)
         self.dlg.button_dxf_wizard_group.clicked.connect(self.open_wizard_group_dxf)
         self.dlg.button_dxf_wizard_group.setToolTip(tr("Open the group wizard for DXF export"))
 
         # configure popup button
-        self.dlg.btConfigurePopup.setText('')
+        self.dlg.btConfigurePopup.setText("")
         self.dlg.btConfigurePopup.setIcon(QIcon(":images/themes/default/console/iconSettingsConsole.svg"))
         self.dlg.btConfigurePopup.clicked.connect(self.configure_html_popup)
         self.dlg.convert_html_maptip.clicked.connect(self.convert_html_maptip)
@@ -693,11 +708,13 @@ class Lizmap(
         self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
 
         # Link button
-        self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
-        self.dlg.button_refresh_link.setText('')
-        self.dlg.button_refresh_link.setToolTip(tr('Set the link from the dataUrl property in the layer properties'))
+        self.dlg.button_refresh_link.setIcon(QIcon(QgsApplication.iconPath("mActionRefresh.svg")))
+        self.dlg.button_refresh_link.setText("")
+        self.dlg.button_refresh_link.setToolTip(
+            tr("Set the link from the dataUrl property in the layer properties")
+        )
         self.dlg.button_refresh_link.clicked.connect(self.link_from_properties)
-        self.dlg.button_browse_media.setToolTip(tr('Open the file browser'))
+        self.dlg.button_browse_media.setToolTip(tr("Open the file browser"))
         self.dlg.button_browse_media.clicked.connect(self.open_media_file_browser)
 
         # detect project closed
@@ -712,43 +729,43 @@ class Lizmap(
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():
-            control = item.get('removeButton')
+            control = item.get("removeButton")
             if control:
                 slot = partial(self.remove_selected_layer_from_table, key)
                 control.clicked.connect(slot)
                 # noinspection PyCallByClass,PyArgumentList
-                control.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-                control.setText('')
-                control.setToolTip(tr('Remove the selected layer from the list'))
+                control.setIcon(QIcon(QgsApplication.iconPath("symbologyRemove.svg")))
+                control.setText("")
+                control.setToolTip(tr("Remove the selected layer from the list"))
 
-            control = item.get('addButton')
+            control = item.get("addButton")
             if control:
-                control.setText('')
+                control.setText("")
                 # noinspection PyCallByClass,PyArgumentList
-                control.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-                control.setToolTip(tr('Add a new layer in the list'))
+                control.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
+                control.setToolTip(tr("Add a new layer in the list"))
 
-            control = item.get('editButton')
+            control = item.get("editButton")
             if control:
                 # If there is an edit button, it's the new generation of form
                 slot = partial(self.edit_layer, key)
                 control.clicked.connect(slot)
-                control.setText('')
+                control.setText("")
                 # noinspection PyCallByClass,PyArgumentList
-                control.setIcon(QIcon(QgsApplication.iconPath('symbologyEdit.svg')))
-                control.setToolTip(tr('Edit the current layer configuration'))
+                control.setIcon(QIcon(QgsApplication.iconPath("symbologyEdit.svg")))
+                control.setToolTip(tr("Edit the current layer configuration"))
 
                 slot = partial(self.add_new_layer, key)
-                add_button = item.get('addButton')
+                add_button = item.get("addButton")
                 if add_button:
                     add_button.clicked.connect(slot)
 
                 # Handle DXF Export separately - it uses a simplified table without dialogs
-                if key == 'dxfExport':
-                    manager = TableManagerDxfExport(item['tableWidget'])
-                    item['manager'] = manager
+                if key == "dxfExport":
+                    manager = TableManagerDxfExport(item["tableWidget"])
+                    item["manager"] = manager
                     # Hide all buttons - DXF export is auto-populated from WFS layers
-                    for button_key in ['addButton', 'removeButton', 'editButton', 'upButton', 'downButton']:
+                    for button_key in ["addButton", "removeButton", "editButton", "upButton", "downButton"]:
                         if item.get(button_key):
                             item[button_key].setVisible(False)
 
@@ -774,81 +791,81 @@ class Lizmap(
                     self.dlg.checkbox_dxf_export_enabled.toggled.connect(on_dxf_export_toggled)
                     continue
 
-                item['tableWidget'].horizontalHeader().setStretchLastSection(True)
+                item["tableWidget"].horizontalHeader().setStretchLastSection(True)
 
-                if key == 'datavizLayers':
+                if key == "datavizLayers":
                     self.dataviz_init_gui(item)
-                elif key == 'layouts':
+                elif key == "layouts":
                     definition = LayoutsDefinitions()
                     dialog = LayoutEditionDialog
-                    item['manager'] = TableManagerLayouts(
+                    item["manager"] = TableManagerLayouts(
                         self.dlg,
                         definition,
                         dialog,
-                        item['tableWidget'],
-                        item['editButton'],
-                        item.get('upButton'),
-                        item.get('downButton'),
+                        item["tableWidget"],
+                        item["editButton"],
+                        item.get("upButton"),
+                        item.get("downButton"),
                     )
                 else:
-                    if key == 'atlas':
+                    if key == "atlas":
                         definition = AtlasDefinitions()
                         dialog = AtlasEditionDialog
-                    elif key == 'attributeLayers':
+                    elif key == "attributeLayers":
                         definition = AttributeTableDefinitions()
                         dialog = AttributeTableEditionDialog
-                    elif key == 'editionLayers':
+                    elif key == "editionLayers":
                         definition = EditionDefinitions()
                         dialog = EditionLayerDialog
-                    elif key == 'locateByLayer':
+                    elif key == "locateByLayer":
                         definition = LocateByLayerDefinitions()
                         dialog = LocateLayerEditionDialog
-                    elif key == 'loginFilteredLayers':
+                    elif key == "loginFilteredLayers":
                         definition = FilterByLoginDefinitions()
                         dialog = FilterByLoginEditionDialog
-                    elif key == 'timemanagerLayers':
+                    elif key == "timemanagerLayers":
                         definition = TimeManagerDefinitions()
                         dialog = TimeManagerEditionDialog
-                    elif key == 'tooltipLayers':
+                    elif key == "tooltipLayers":
                         definition = ToolTipDefinitions()
                         dialog = ToolTipEditionDialog
-                    elif key == 'formFilterLayers':
+                    elif key == "formFilterLayers":
                         definition = FilterByFormDefinitions()
                         dialog = FilterByFormEditionDialog
-                    elif key == 'filter_by_polygon':
+                    elif key == "filter_by_polygon":
                         definition = FilterByPolygonDefinitions()
                         dialog = FilterByPolygonEditionDialog
                     else:
                         raise Exception(f"Unknown panel: '{key}'")
 
-                    item['manager'] = TableManager(
+                    item["manager"] = TableManager(
                         self.dlg,
                         definition,
                         dialog,
-                        item['tableWidget'],
-                        item['removeButton'],
-                        item['editButton'],
-                        item.get('upButton'),
-                        item.get('downButton'),
+                        item["tableWidget"],
+                        item["removeButton"],
+                        item["editButton"],
+                        item.get("upButton"),
+                        item.get("downButton"),
                     )
 
-                control = item.get('upButton')
+                control = item.get("upButton")
                 if control:
                     slot = partial(self.move_layer_up, key)
                     control.clicked.connect(slot)
-                    control.setText('')
+                    control.setText("")
                     # noinspection PyCallByClass,PyArgumentList
-                    control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowUp.svg')))
-                    control.setToolTip(tr('Move the layer up in the table'))
+                    control.setIcon(QIcon(QgsApplication.iconPath("mActionArrowUp.svg")))
+                    control.setToolTip(tr("Move the layer up in the table"))
 
-                control = item.get('downButton')
+                control = item.get("downButton")
                 if control:
                     slot = partial(self.move_layer_down, key)
                     control.clicked.connect(slot)
-                    control.setText('')
+                    control.setText("")
                     # noinspection PyCallByClass,PyArgumentList
-                    control.setIcon(QIcon(QgsApplication.iconPath('mActionArrowDown.svg')))
-                    control.setToolTip(tr('Move the layer down in the table'))
+                    control.setIcon(QIcon(QgsApplication.iconPath("mActionArrowDown.svg")))
+                    control.setToolTip(tr("Move the layer down in the table"))
 
         # Delete layers from table when deleted from registry
         # noinspection PyUnresolvedReferences
@@ -870,11 +887,12 @@ class Lizmap(
         self.iface.addWebToolBarIcon(self.action)
 
         self.dlg.button_reset_scales.clicked.connect(self.reset_scales)
-        self.dlg.button_reset_scales.setIcon(QIcon(':/images/themes/default/console/iconClearConsole.svg'))
+        self.dlg.button_reset_scales.setIcon(QIcon(":/images/themes/default/console/iconClearConsole.svg"))
 
         server_side = tr(
             "This value will be replaced on the server side when evaluating the expression thanks to "
-            "the QGIS server Lizmap plugin.")
+            "the QGIS server Lizmap plugin."
+        )
         # Register variable helps
         QgsExpression.addVariableHelpText(
             "lizmap_user",
@@ -882,7 +900,7 @@ class Lizmap(
                 tr("The current Lizmap login as a string."),
                 tr("It might be an empty string if the user is not connected."),
                 server_side,
-            )
+            ),
         )
         QgsExpression.addVariableHelpText(
             "lizmap_user_groups",
@@ -890,10 +908,11 @@ class Lizmap(
                 tr("The current groups of the logged user as an <strong>array</strong>."),
                 tr("It might be an empty array if the user is not connected."),
                 tr(
-                    "You might need to use functions in the <strong>Array</strong> expression category, such as "
-                    "<pre>array_to_string</pre> to convert it to a string."),
+                    "You might need to use functions in the <strong>Array</strong> expression category, "
+                    "such as <pre>array_to_string</pre> to convert it to a string."
+                ),
                 server_side,
-            )
+            ),
         )
         QgsExpression.addVariableHelpText("lizmap_repository", tr("The current repository ID on the server."))
 
@@ -901,7 +920,7 @@ class Lizmap(
         self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
 
     def check_dialog_validity(self) -> bool:
-        """ Check the global dialog validity if we have :
+        """Check the global dialog validity if we have :
          * at least one server
          * all servers with a login associated
          * LWC 3.5 doesn't check the status of QGIS server
@@ -915,7 +934,7 @@ class Lizmap(
         """
         # Check the current selected server in the combobox
         if not self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value):
-            msg = tr('Please add your Lizmap server in the table below.')
+            msg = tr("Please add your Lizmap server in the table below.")
             self.dlg.allow_navigation(False, msg)
             return False
 
@@ -926,9 +945,10 @@ class Lizmap(
 
         # Project is valid, now check the server table validity
         # Somehow in tests, we don't have the variable
-        if hasattr(self, 'server_manager') and not self.server_manager.check_validity_servers():
+        if hasattr(self, "server_manager") and not self.server_manager.check_validity_servers():
             msg = tr(
-                'You must have all Lizmap servers with a valid URL and a login provided before using the plugin.'
+                "You must have all Lizmap servers with a valid URL and a login provided before "
+                "using the plugin."
             )
             self.dlg.allow_navigation(False, msg)
             return False
@@ -936,14 +956,14 @@ class Lizmap(
         metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
         if not metadata:
             msg = tr(
-                'The selected server in the combobox must be reachable. The server has not been reachable for {number} '
-                'days.'
-            ).format(number=MAX_DAYS)
+                "The selected server in the combobox must be reachable. "
+                f"The server has not been reachable for {MAX_DAYS} days."
+            )
             self.dlg.allow_navigation(False, msg)
             return False
 
         if self.update_plugin:
-            msg = tr('Your plugin is outdated, please visit your QGIS plugin manager.')
+            msg = tr("Your plugin is outdated, please visit your QGIS plugin manager.")
             self.dlg.allow_navigation(False, msg)
             return False
 
@@ -951,16 +971,16 @@ class Lizmap(
         return True
 
     def add_new_layer(self, key):
-        self.layers_table[key]['manager'].add_new_row()
+        self.layers_table[key]["manager"].add_new_row()
 
     def move_layer_up(self, key):
-        self.layers_table[key]['manager'].move_layer_up()
+        self.layers_table[key]["manager"].move_layer_up()
 
     def move_layer_down(self, key):
-        self.layers_table[key]['manager'].move_layer_down()
+        self.layers_table[key]["manager"].move_layer_down()
 
     def edit_layer(self, key):
-        self.layers_table[key]['manager'].edit_existing_row()
+        self.layers_table[key]["manager"].edit_existing_row()
 
     def unload(self):
         """Remove the plugin menu item and icon."""
@@ -980,7 +1000,7 @@ class Lizmap(
             del self.help_action_cloud
 
     def open_wizard_group_layer(self):
-        """ Open the group wizard for the group/layer visibility. """
+        """Open the group wizard for the group/layer visibility."""
         current_item = self._current_selected_item_in_config()
         # The current selected item in the tree can be a layer or a group
         # https://github.com/3liz/lizmap-plugin/issues/437#issuecomment-1883485185
@@ -989,38 +1009,39 @@ class Lizmap(
         helper = tr("Setting groups visibility for the legend item '{}'").format(current_item)
         self._open_wizard_group(self.dlg.list_group_visibility, helper)
         # Trigger saving of the new value
-        self.save_value_layer_group_data('group_visibility')
+        self.save_value_layer_group_data("group_visibility")
 
     def open_wizard_group_project(self):
-        """ Open the group wizard for the project visibility. """
+        """Open the group wizard for the project visibility."""
         helper = tr("Setting groups for the project visibility.")
         self._open_wizard_group(self.dlg.inAcl, helper)
 
     def open_wizard_group_dxf(self):
-        """ Open the group wizard for DXF export. """
+        """Open the group wizard for DXF export."""
         helper = tr("Setting groups allowed to export DXF files.")
         self._open_wizard_group(self.dlg.text_dxf_allowed_groups, helper)
 
     def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
-        """ Open the group wizard and set the output in the line edit. """
+        """Open the group wizard and set the output in the line edit."""
         # Duplicated in base_edition_dialog.py, open_wizard_dialog()
         json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        acl = json_metadata.get('acl')
+        acl = json_metadata.get("acl")
         if not acl:
             QMessageBox.critical(
                 self.dlg,
-                tr('Upgrade your Lizmap instance'),
+                tr("Upgrade your Lizmap instance"),
                 tr(
-                    "Your current Lizmap instance, running version {}, is not providing the needed information. "
+                    "Your current Lizmap instance, running version {}, "
+                    "is not providing the needed information. "
                     "You should upgrade your Lizmap instance to at least 3.6.1 to use this wizard."
                 ).format(json_metadata["info"]["version"]),
-                QMessageBox.StandardButton.Ok
+                QMessageBox.StandardButton.Ok,
             )
             return None
         # End of duplicated
 
         current_acl = line_edit.text()
-        wizard_dialog = WizardGroupDialog(helper, current_acl, acl['groups'])
+        wizard_dialog = WizardGroupDialog(helper, current_acl, acl["groups"])
         if not wizard_dialog.exec():
             return None
 
@@ -1034,24 +1055,25 @@ class Lizmap(
         helpers.show_help_question(self.dlg)
 
     def set_initial_extent_from_project(self):
-        """ Set extent from QGIS server properties with the WMS advertised extent. """
+        """Set extent from QGIS server properties with the WMS advertised extent."""
         # The default extent widget does not have an input : QGIS server WMS properties
-        wms_extent = self.project.readListEntry('WMSExtent', '')[0]
+        wms_extent = self.project.readListEntry("WMSExtent", "")[0]
         if len(wms_extent) < 1:
             return
 
         wms_extent = [float(i) for i in wms_extent]
         extent = QgsRectangle(wms_extent[0], wms_extent[1], wms_extent[2], wms_extent[3])
         self.dlg.widget_initial_extent.setOutputExtentFromUser(
-            extent, self.iface.mapCanvas().mapSettings().destinationCrs())
-        LOGGER.info('Setting extent from the project')
+            extent, self.iface.mapCanvas().mapSettings().destinationCrs()
+        )
+        LOGGER.info("Setting extent from the project")
 
     def remove_selected_layer_from_table(self, key):
         """
         Remove a layer from the list of layers
         for which to have the "locate by layer" tool
         """
-        tw = self.layers_table[key]['tableWidget']
+        tw = self.layers_table[key]["tableWidget"]
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
@@ -1063,13 +1085,12 @@ class Lizmap(
             return
 
         for key, item in self.layers_table.items():
-
-            manager = self.layers_table[key].get('manager')
+            manager = self.layers_table[key].get("manager")
             if manager:
                 manager.layers_has_been_deleted(layer_ids)
                 continue
 
-            tw = self.layers_table[key]['tableWidget']
+            tw = self.layers_table[key]["tableWidget"]
 
             # Count lines
             tw_row_count = tw.rowCount()
@@ -1077,9 +1098,9 @@ class Lizmap(
                 continue
 
             # Get index of layerId column
-            if 'layerId' not in self.layers_table[key]['cols']:
+            if "layerId" not in self.layers_table[key]["cols"]:
                 continue
-            idx = self.layers_table[key]['cols'].index('layerId') + 1
+            idx = self.layers_table[key]["cols"].index("layerId") + 1
 
             # Remove layer if layerId match
             for row in range(tw_row_count):
@@ -1091,26 +1112,29 @@ class Lizmap(
         LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
 
     def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
-        """ When a layout has been renamed in the project. """
+        """When a layout has been renamed in the project."""
         if not self.dlg.check_cfg_file_exists():
             return
 
-        self.layers_table['layouts']['manager'].layout_renamed(layout, new_name)
+        self.layers_table["layouts"]["manager"].layout_renamed(layout, new_name)
 
     def layout_removed(self, name: str):
-        """ When a layout has been removed from the project. """
+        """When a layout has been removed from the project."""
         if not self.dlg.check_cfg_file_exists():
             return
 
-        self.layers_table['layouts']['manager'].layout_removed(name)
+        self.layers_table["layouts"]["manager"].layout_removed(name)
 
     def check_wfs_is_checked(self, layer: QgsVectorLayer) -> bool:
-        """ Check if the layer is published as WFS. """
+        """Check if the layer is published as WFS."""
         if not is_layer_published_wfs(self.project, layer.id()):
-            self.display_error(tr(
-                'The layers you have chosen for this tool must be checked in the '
-                '"WFS Capabilities" option of the '
-                'QGIS Server tab in the "Project Properties" dialog.'))
+            self.display_error(
+                tr(
+                    "The layers you have chosen for this tool must be checked in the "
+                    '"WFS Capabilities" option of the '
+                    'QGIS Server tab in the "Project Properties" dialog.'
+                )
+            )
             return False
         return True
 
@@ -1118,36 +1142,39 @@ class Lizmap(
         helpers.display_error(self.dlg, message)
 
     def convert_html_maptip(self):
-        """ Trying to convert a Lizmap popup to HTML popup. """
+        """Trying to convert a Lizmap popup to HTML popup."""
         layer_or_group = self._current_selected_item_in_config()
         if not layer_or_group:
             return
 
-        if 'popupTemplate' not in self.layerList[layer_or_group]:
+        if "popupTemplate" not in self.layerList[layer_or_group]:
             return
 
-        self.layerList[layer_or_group]['popup'] = True
-        text = self.layerList[layer_or_group]['popupTemplate']
+        self.layerList[layer_or_group]["popup"] = True
+        text = self.layerList[layer_or_group]["popupTemplate"]
 
         layer = self._current_selected_layer()
         html, errors = convert_lizmap_popup(text, layer)
         if errors:
             QMessageBox.warning(
                 self.dlg,
-                tr('Lizmap - Warning'),
+                tr("Lizmap - Warning"),
                 tr(
-                    'Some fields or alias could not be found in the layer. You must check the result manually '
-                    'about these values below :'
-                ) + '<br><br>' + ','.join(errors),
-                QMessageBox.StandardButton.Ok)
+                    "Some fields or alias could not be found in the layer. You must check "
+                    "the result manually about these values below :"
+                )
+                + "<br><br>"
+                + ",".join(errors),
+                QMessageBox.StandardButton.Ok,
+            )
 
         flag = self._set_maptip(layer, html)
         if flag:
-            index = self.layer_options_list['popupSource']['widget'].findData('qgis')
-            self.layer_options_list['popupSource']['widget'].setCurrentIndex(index)
+            index = self.layer_options_list["popupSource"]["widget"].findData("qgis")
+            self.layer_options_list["popupSource"]["widget"].setCurrentIndex(index)
 
     def configure_html_abstract(self):
-        """ Open the dialog for setting HTML for the abstract. """
+        """Open the dialog for setting HTML for the abstract."""
         if not self._current_selected_item_in_config():
             return
 
@@ -1166,25 +1193,27 @@ class Lizmap(
             return
 
         # do nothing if no popup configured for this layer/group
-        if not ambiguous_to_bool(self.layerList[layer_or_group]['popup']):
+        if not ambiguous_to_bool(self.layerList[layer_or_group]["popup"]):
             return
 
         # Set the content of the QTextEdit if needed
-        if 'popupTemplate' in self.layerList[layer_or_group]:
-            self.layerList[layer_or_group]['popup'] = True
-            text = self.layerList[layer_or_group]['popupTemplate']
+        if "popupTemplate" in self.layerList[layer_or_group]:
+            self.layerList[layer_or_group]["popup"] = True
+            text = self.layerList[layer_or_group]["popupTemplate"]
         else:
-            text = ''
+            text = ""
 
-        LOGGER.info('Opening the popup configuration')
+        LOGGER.info("Opening the popup configuration")
 
         layer = self._current_selected_layer()
-        data = self.layer_options_list['popupSource']['widget'].currentData()
-        if data == 'lizmap':
+        data = self.layer_options_list["popupSource"]["widget"].currentData()
+        if data == "lizmap":
             # Legacy
             # Lizmap HTML popup
             if isinstance(layer, QgsVectorLayer):
-                LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
+                LOGGER.warning(
+                    "The 'lizmap' popup is deprecated for vector layer. This will be removed soon."
+                )
 
             popup_dialog = LizmapPopupDialog(text)
             if not popup_dialog.exec():
@@ -1197,9 +1226,11 @@ class Lizmap(
             if not layer_or_group:
                 return
             # Write the content into the global object
-            self.layerList[layer_or_group]['popupTemplate'] = content
+            self.layerList[layer_or_group]["popupTemplate"] = content
             if isinstance(layer, QgsVectorLayer):
-                LOGGER.warning("The 'lizmap' popup is deprecated for vector layer. This will be removed soon.")
+                LOGGER.warning(
+                    "The 'lizmap' popup is deprecated for vector layer. This will be removed soon."
+                )
 
         else:
             # QGIS HTML maptip
@@ -1213,32 +1244,35 @@ class Lizmap(
             self._set_maptip(layer, html_editor.editor.html_content(), False)
 
     def link_from_properties(self):
-        """ Button set link from layer in the Lizmap configuration. """
+        """Button set link from layer in the Lizmap configuration."""
         layer = self._current_selected_layer()
         value = layer_property(layer, LayerProperties.DataUrl)
-        self.layer_options_list['link']['widget'].setText(value)
+        self.layer_options_list["link"]["widget"].setText(value)
 
     def open_media_file_browser(self):
-        """ Open the file picker for media. """
-        data_path, _ = QFileDialog.getOpenFileName(None, tr('Open media'), self.project.absolutePath())
+        """Open the file picker for media."""
+        data_path, _ = QFileDialog.getOpenFileName(None, tr("Open media"), self.project.absolutePath())
         if not data_path:
             return
         # TODO check
         # Maximum allowed parent folder
         # ../media or media/
         media_path = relpath(data_path, self.project.absolutePath())
-        self.layer_options_list['link']['widget'].setText(media_path)
+        self.layer_options_list["link"]["widget"].setText(media_path)
 
     def _set_maptip(self, layer: QgsVectorLayer, html_content: str, check: bool = True) -> bool:
-        """ Internal function to set the maptip on a layer. """
-        if check and layer.mapTipTemplate() != '':
+        """Internal function to set the maptip on a layer."""
+        if check and layer.mapTipTemplate() != "":
             box = QMessageBox(self.dlg)
             box.setIcon(QMessageBox.Icon.Question)
             box.setWindowIcon(window_icon())
-            box.setWindowTitle(tr('Existing maptip for layer {}').format(layer.title()))
-            box.setText(tr(
-                'A maptip already exists for this layer. This is going to override it. '
-                'Are you sure you want to continue ?'))
+            box.setWindowTitle(tr("Existing maptip for layer {}").format(layer.title()))
+            box.setText(
+                tr(
+                    "A maptip already exists for this layer. This is going to override it. "
+                    "Are you sure you want to continue ?"
+                )
+            )
             box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             box.setDefaultButton(QMessageBox.StandardButton.No)
             result = box.exec()
@@ -1248,15 +1282,15 @@ class Lizmap(
         layer.setMapTipTemplate(html_content)
         QMessageBox.information(
             self.dlg,
-            tr('Maptip'),
+            tr("Maptip"),
             tr('The maptip has been set in the layer "{}".').format(layer.name()),
-            QMessageBox.StandardButton.Ok
+            QMessageBox.StandardButton.Ok,
         )
         self.dock_html_preview.update_html()
         return True
 
     def html_table_from_layer(self):
-        """ Button set popup maptip from layer in the Lizmap configuration. """
+        """Button set popup maptip from layer in the Lizmap configuration."""
         layer = self._current_selected_layer()
         if not isinstance(layer, QgsVectorLayer):
             return
@@ -1269,7 +1303,7 @@ class Lizmap(
         self._set_maptip(layer, result, False)
 
     def maptip_from_form(self):
-        """ Button set popup maptip from DND form in the Lizmap configuration. """
+        """Button set popup maptip from DND form in the Lizmap configuration."""
         layer = self._current_selected_layer()
         if not isinstance(layer, QgsVectorLayer):
             return
@@ -1277,24 +1311,30 @@ class Lizmap(
         config = layer.editFormConfig()
         # noinspection PyUnresolvedReferences
         if config.layout() != QgsEditFormConfig.EditorLayout.TabLayout:
-            LOGGER.warning('Maptip : the layer is not using a drag and drop form.')
+            LOGGER.warning("Maptip : the layer is not using a drag and drop form.")
             QMessageBox.warning(
                 self.dlg,
-                tr('Lizmap - Warning'),
-                tr('The form for this layer is not a drag and drop layout.'),
-                QMessageBox.StandardButton.Ok)
+                tr("Lizmap - Warning"),
+                tr("The form for this layer is not a drag and drop layout."),
+                QMessageBox.StandardButton.Ok,
+            )
             return
 
         root = config.invisibleRootContainer()
         relation_manager = self.project.relationManager()
         html_content = Tooltip.create_popup_node_item_from_form(
-            layer, root, 0, [], '', relation_manager,
+            layer,
+            root,
+            0,
+            [],
+            "",
+            relation_manager,
             bootstrap_5=self.lwc_version >= LwcVersions.Lizmap_3_9,
         )
         html_content = Tooltip.create_popup(html_content)
 
         server_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        versions = ServerManager.split_lizmap_version(server_metadata['info']['version'])
+        versions = ServerManager.split_lizmap_version(server_metadata["info"]["version"])
         if versions[0:2] <= (3, 7):
             # LWC 3.7.X and older
             html_content += Tooltip.css()
@@ -1305,46 +1345,47 @@ class Lizmap(
         self._set_maptip(layer, html_content)
 
     def write_project_config_file(self, lwc_version: LwcVersions, with_gui: bool = True) -> bool:
-        """ Write a Lizmap configuration to the file. """
+        """Write a Lizmap configuration to the file."""
         liz2json = self.project_config_file(lwc_version, with_gui)
         if not liz2json:
             return False
 
-        json_file_content = json.dumps(
-            liz2json,
-            sort_keys=False,
-            indent=4
-        )
-        json_file_content += '\n'
+        json_file_content = json.dumps(liz2json, sort_keys=False, indent=4)
+        json_file_content += "\n"
 
         # Get the project data
         json_file = self.dlg.cfg_file()
-        with open(json_file, 'w', encoding='utf8') as cfg_file:
+        with open(json_file, "w", encoding="utf8") as cfg_file:
             cfg_file.write(json_file_content)
 
         LOGGER.info(
             'The Lizmap configuration file has been written to <a href="file://{path}">"{path}"</a>'.format(
                 path=json_file.absolute(),
-            ))
+            )
+        )
         self.clean_project()
         return True
 
     def copy_versions_clicked(self):
-        """ Copy all data in clipboard. """
+        """Copy all data in clipboard."""
         data = self.dlg.current_server_info(ServerComboData.MarkDown.value)
-        data += '\n' + self.dlg.safeguards_to_markdown()
-        data += '\n' + self.dlg.check_results.to_markdown_summarized()
+        data += "\n" + self.dlg.safeguards_to_markdown()
+        data += "\n" + self.dlg.check_results.to_markdown_summarized()
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(data)
         self.dlg.display_message_bar(
-            tr('Copied'), tr('Your versions have been copied in your clipboard.'), level=Qgis.MessageLevel.Success)
+            tr("Copied"),
+            tr("Your versions have been copied in your clipboard."),
+            level=Qgis.MessageLevel.Success,
+        )
 
     def save_cfg_file_cursor(self, close_dialog: bool):
-        """ Save CFG file with a waiting cursor. """
+        """Save CFG file with a waiting cursor."""
         if not self.dlg.check_cfg_file_exists():
-            # Convenient option for users, for new CFG file only : project trust, and add geometry to GetFeatureInfo
+            # Convenient option for users, for new CFG file only : project trust,
+            # and add geometry to GetFeatureInfo
             project_trust_layer_metadata(self.project, True)
-            self.project.writeEntryBool('WMSAddWktGeometry', '/', True)
+            self.project.writeEntryBool("WMSAddWktGeometry", "/", True)
 
             new_project = NewConfigDialog()
             new_project.exec()
@@ -1356,8 +1397,8 @@ class Lizmap(
             # Generation failed, error message without closing the dialog
             # noinspection PyUnresolvedReferences
             self.dlg.display_message_bar(
-                'Lizmap',
-                tr('An error occurred while generating the projet, please check logs'),
+                "Lizmap",
+                tr("An error occurred while generating the projet, please check logs"),
                 level=Qgis.MessageLevel.Critical,
                 duration=DURATION_SUCCESS_BAR,
             )
@@ -1379,10 +1420,8 @@ class Lizmap(
         if auto_send is None:
             # noinspection PyUnresolvedReferences
             self.dlg.display_message_bar(
-                'Lizmap',
-                tr(
-                    'The project has been generated in <a href="file://{path}">"{path}"</a>'
-                ).format(
+                "Lizmap",
+                tr('The project has been generated in <a href="file://{path}">"{path}"</a>').format(
                     path=self.dlg.cfg_file().parent.absolute(),
                 ),
                 level=Qgis.MessageLevel.Success,
@@ -1393,7 +1432,7 @@ class Lizmap(
         if auto_send:
             # noinspection PyUnresolvedReferences
             self.dlg.display_message_bar(
-                'Lizmap',
+                "Lizmap",
                 tr('Project <a href="{}">published !</a>'.format(url)),
                 level=Qgis.MessageLevel.Success,
                 duration=DURATION_SUCCESS_BAR,
@@ -1401,14 +1440,14 @@ class Lizmap(
             return
 
         self.dlg.display_message_bar(
-            'Lizmap',
-            tr('Project file generated, but the upload has failed'),
+            "Lizmap",
+            tr("Project file generated, but the upload has failed"),
             level=Qgis.MessageLevel.Warning,
             duration=DURATION_SUCCESS_BAR,
         )
 
     def check_server_capabilities(self):
-        """ If we are stuck on the dialog, let's try manually ..."""
+        """If we are stuck on the dialog, let's try manually ..."""
         self.check_webdav()
         self.check_training_panel()
         # Do NOT CALL target_server_changed
@@ -1426,7 +1465,7 @@ class Lizmap(
 
     def reinit_default_properties(self):
         for key in self.layers_table:
-            self.layers_table[key]['jsonConfig'] = dict()
+            self.layers_table[key]["jsonConfig"] = {}
 
     def on_project_read(self):
         """

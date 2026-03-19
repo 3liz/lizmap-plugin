@@ -1,4 +1,5 @@
 """Layer tree panel configuration"""
+
 import contextlib
 import hashlib
 import json
@@ -81,34 +82,32 @@ class LizmapProtocol(Protocol):
 
 
 class LayerTreeManager(LizmapProtocol):
-
     _layerList: Dict
 
     def layers_config_file(self) -> Dict:
-        """ Read the CFG file and returns the JSON content about 'layers'. """
+        """Read the CFG file and returns the JSON content about 'layers'."""
         if not self.dlg.check_cfg_file_exists():
             return {}
 
-        with open(self.dlg.cfg_file(), encoding='utf8') as f:
+        with open(self.dlg.cfg_file(), encoding="utf8") as f:
             json_file_reader = f.read()
 
         try:
             sjson = json.loads(json_file_reader)
-            return sjson['layers']
+            return sjson["layers"]
         except Exception:
             if self.is_dev_version:
                 raise
             message = tr(
-                'Errors encountered while reading the last layer tree state. '
-                'Please re-configure the options in the Layers tab completely'
+                "Errors encountered while reading the last layer tree state. "
+                "Please re-configure the options in the Layers tab completely"
             )
-            QMessageBox.critical(self.dlg, tr('Lizmap Error'), '', QMessageBox.StandardButton.Ok)
+            QMessageBox.critical(self.dlg, tr("Lizmap Error"), "", QMessageBox.StandardButton.Ok)
             self.dlg.log_panel.append(message, abort=True, style=Html.P)
             return {}
 
     # Called by LizmapDialog.__init__
     def initialize_layer_tree(self):
-
         self._layerList = {}
 
         # Disable checkboxes on the layer tab
@@ -121,23 +120,29 @@ class LayerTreeManager(LizmapProtocol):
         self.dlg.layer_search_input.textChanged.connect(self._on_layer_search_changed)
 
         # Group helper
-        self.dlg.add_group_hidden.setToolTip(tr(
-            'Add a group which will be hidden by default on Lizmap Web '
-            'Client. Some tables might be needed in the '
-            'QGIS projet but not needed for display on the map and in the legend.'
-        ))
-        self.dlg.add_group_baselayers.setToolTip(tr(
-            'Add a group called "baselayers", you can organize your layers inside, '
-            'it will be displayed in a dropdown menu.'
-        ))
-        self.dlg.add_group_empty.setToolTip(tr(
-            'Add a group which must stay empty. It will add an option in the base '
-            'layer dropdown menu and allow the default background color defined '
-            'in the project properties to be displayed.'
-        ))
-        self.dlg.add_group_overview.setToolTip(tr(
-            'Add some layers in this group to make an overview map at a lower scale.'
-        ))
+        self.dlg.add_group_hidden.setToolTip(
+            tr(
+                "Add a group which will be hidden by default on Lizmap Web "
+                "Client. Some tables might be needed in the "
+                "QGIS projet but not needed for display on the map and in the legend."
+            )
+        )
+        self.dlg.add_group_baselayers.setToolTip(
+            tr(
+                'Add a group called "baselayers", you can organize your layers inside, '
+                "it will be displayed in a dropdown menu."
+            )
+        )
+        self.dlg.add_group_empty.setToolTip(
+            tr(
+                "Add a group which must stay empty. It will add an option in the base "
+                "layer dropdown menu and allow the default background color defined "
+                "in the project properties to be displayed."
+            )
+        )
+        self.dlg.add_group_overview.setToolTip(
+            tr("Add some layers in this group to make an overview map at a lower scale.")
+        )
         self.dlg.add_group_hidden.clicked.connect(self.add_group_hidden)
         self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
         self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
@@ -149,13 +154,13 @@ class LayerTreeManager(LizmapProtocol):
         self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
 
     def new_added_layers(self, layers: List[QgsMapLayer]):
-        """ Reminder to open the plugin to update the CFG file. """
+        """Reminder to open the plugin to update the CFG file."""
         if not self.dlg.check_cfg_file_exists():
             # Not a Lizmap project
             return
 
         # Get layer IDs already in the CFG file
-        layer_ids = [f['id'] for f in self.layers_config_file().values()]
+        layer_ids = [f["id"] for f in self.layers_config_file().values()]
         names = []
         for layer in layers:
             if layer.id() not in layer_ids:
@@ -173,14 +178,16 @@ class LayerTreeManager(LizmapProtocol):
             msg = tr("A new layer has been detected into this Lizmap project.")
             prefix = tr("Layer")
 
-        logger.info("New layer(s) detected : {}".format(','.join(names)))
-        msg += ' ' + tr("Please open the plugin to update the Lizmap configuration file.") + ' '
-        msg += prefix + ' : '
-        msg += ','.join(names)
-        self.iface.messageBar().pushMessage('Lizmap', msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR)
+        logger.info("New layer(s) detected : {}".format(",".join(names)))
+        msg += " " + tr("Please open the plugin to update the Lizmap configuration file.") + " "
+        msg += prefix + " : "
+        msg += ",".join(names)
+        self.iface.messageBar().pushMessage(
+            "Lizmap", msg, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR
+        )
 
     def layer_renamed(self, _, name: str):
-        """ When a layer/group is renamed in the legend. """
+        """When a layer/group is renamed in the legend."""
         if not self.dlg.check_cfg_file_exists():
             # Not a Lizmap project
             return
@@ -192,7 +199,7 @@ class LayerTreeManager(LizmapProtocol):
             "The configuration in the Lizmap <b>Layers</b> tab only must be checked."
         )
         self.iface.messageBar().pushMessage(
-            'Lizmap',
+            "Lizmap",
             msg,
             level=Qgis.MessageLevel.Warning,
             duration=DURATION_WARNING_BAR,
@@ -214,7 +221,7 @@ class LayerTreeManager(LizmapProtocol):
         self.dlg._ignore_layer_tree_state = True
         try:
             self.process_node(myDic, root, None, json_layers)
-            self.dlg.layer_tree.expandAll()          # default: all expanded
+            self.dlg.layer_tree.expandAll()  # default: all expanded
             self._restore_layer_tree_group_states()  # override with saved states (if any)
         finally:
             self.dlg._ignore_layer_tree_state = False
@@ -232,39 +239,39 @@ class LayerTreeManager(LizmapProtocol):
         Used in the method populateLayerTree
         """
         # Type : group or layer
-        myDic[item_key]['type'] = item_type
+        myDic[item_key]["type"] = item_type
 
         # DEFAULT VALUES : generic default values for layers and group
-        myDic[item_key]['name'] = item_key
+        myDic[item_key]["name"] = item_key
         for key, item in self.layer_options_list.items():
-            myDic[item_key][key] = item['default']
-        myDic[item_key]['title'] = myDic[item_key]['name']
+            myDic[item_key][key] = item["default"]
+        myDic[item_key]["title"] = myDic[item_key]["name"]
 
         # DEFAULT VALUES : layers have got more precise data
         keep_metadata = False
-        if item_type == 'layer':
+        if item_type == "layer":
             layer = self.get_qgis_layer_by_id(item_key)
             # layer corrupted ?
             if not layer:
-                error_msg = tr(
-                    "The layer '{}' seems invalid. Check the layer configuration."
-                ).format(item_key)
+                error_msg = tr("The layer '{}' seems invalid. Check the layer configuration.").format(
+                    item_key
+                )
                 display_error(self.dlg, error_msg)
                 return
 
             # layer name
-            myDic[item_key]['name'] = layer.name()
+            myDic[item_key]["name"] = layer.name()
             # title and abstract
-            myDic[item_key]['title'] = layer.name()
+            myDic[item_key]["title"] = layer.name()
             if layer_property(layer, LayerProperties.Title):
-                myDic[item_key]['title'] = layer_property(layer, LayerProperties.Title)
+                myDic[item_key]["title"] = layer_property(layer, LayerProperties.Title)
                 keep_metadata = True
             if layer_property(layer, LayerProperties.Abstract):
-                myDic[item_key]['abstract'] = layer_property(layer, LayerProperties.Abstract)
+                myDic[item_key]["abstract"] = layer_property(layer, LayerProperties.Abstract)
                 keep_metadata = True
 
-            if not myDic[item_key]['link']:
-                myDic[item_key]['link'] = layer_property(layer, LayerProperties.DataUrl)
+            if not myDic[item_key]["link"]:
+                myDic[item_key]["link"] = layer_property(layer, LayerProperties.DataUrl)
 
             # hide non geo layers (csv, etc.)
             # if layer.type() == 0:
@@ -273,70 +280,70 @@ class LayerTreeManager(LizmapProtocol):
 
             # layer scale visibility
             if layer.hasScaleBasedVisibility():
-                myDic[item_key]['minScale'] = layer.maximumScale()
-                myDic[item_key]['maxScale'] = layer.minimumScale()
+                myDic[item_key]["minScale"] = layer.maximumScale()
+                myDic[item_key]["maxScale"] = layer.minimumScale()
             # toggled : check if layer is toggled in qgis legend
             # myDic[itemKey]['toggled'] = layer.self.iface.legendInterface().isLayerVisible(layer)
-            myDic[item_key]['toggled'] = False
+            myDic[item_key]["toggled"] = False
             # group as layer : always False obviously because it is already a layer
-            myDic[item_key]['groupAsLayer'] = False
+            myDic[item_key]["groupAsLayer"] = False
             # embedded layer ?
             from_project = self.project.layerIsEmbedded(item_key)
             if os.path.exists(from_project):
                 p_name = os.path.splitext(os.path.basename(from_project))[0]
-                myDic[item_key]['sourceProject'] = p_name
+                myDic[item_key]["sourceProject"] = p_name
 
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
-        if myDic[item_key]['name'] in json_layers:
-            json_key = myDic[item_key]['name']
-            logger.info('Reading configuration from dictionary for layer {}'.format(json_key))
+        if myDic[item_key]["name"] in json_layers:
+            json_key = myDic[item_key]["name"]
+            logger.info("Reading configuration from dictionary for layer {}".format(json_key))
             # loop through layer options to override
             for key, item in self.layer_options_list.items():
                 # override only for ui widgets
-                if item.get('widget'):
+                if item.get("widget"):
                     if key in json_layers[json_key]:
-
-                        if key == 'legend_image_option' and 'noLegendImage' in json_layers[json_key]:
-                            if myDic[item_key].get('legend_image_option'):
+                        if key == "legend_image_option" and "noLegendImage" in json_layers[json_key]:
+                            if myDic[item_key].get("legend_image_option"):
                                 # The key is already set before with noLegendImage
                                 logger.info(
-                                    "Skip key legend_image_option because it has been set previously with noLegendImage"
+                                    "Skip key legend_image_option because it has been set "
+                                    "previously with noLegendImage"
                                 )
                                 continue
 
                         # checkboxes
-                        if item['wType'] in ('checkbox', 'radio'):
+                        if item["wType"] in ("checkbox", "radio"):
                             myDic[item_key][key] = as_boolean(json_layers[json_key][key])
                         # spin box
-                        elif item['wType'] == 'spinbox':
-                            if json_layers[json_key][key] != '':
+                        elif item["wType"] == "spinbox":
+                            if json_layers[json_key][key] != "":
                                 myDic[item_key][key] = json_layers[json_key][key]
                         # text inputs
-                        elif item['wType'] in ('text', 'textarea'):
-                            if json_layers[json_key][key] != '':
-                                if item.get('isMetadata'):  # title and abstract
+                        elif item["wType"] in ("text", "textarea"):
+                            if json_layers[json_key][key] != "":
+                                if item.get("isMetadata"):  # title and abstract
                                     if not keep_metadata:
                                         myDic[item_key][key] = json_layers[json_key][key]
                                 else:
                                     myDic[item_key][key] = json_layers[json_key][key]
                         # lists
-                        elif item['wType'] == 'list':
+                        elif item["wType"] == "list":
                             # New way with data, label, tooltip and icon
-                            datas = [j[0] for j in item['list']]
+                            datas = [j[0] for j in item["list"]]
                             if json_layers[json_key][key] in datas:
                                 myDic[item_key][key] = json_layers[json_key][key]
 
                 else:
-                    if key == 'noLegendImage' and 'noLegendImage' in json_layers.get(json_key):
-                        tmp = 'hide_at_startup'  # Default value
-                        if ambiguous_to_bool(json_layers[json_key].get('noLegendImage')):
-                            tmp = 'disabled'
-                        myDic[item_key]['legend_image_option'] = tmp
+                    if key == "noLegendImage" and "noLegendImage" in json_layers.get(json_key):
+                        tmp = "hide_at_startup"  # Default value
+                        if ambiguous_to_bool(json_layers[json_key].get("noLegendImage")):
+                            tmp = "disabled"
+                        myDic[item_key]["legend_image_option"] = tmp
 
                     # logger.info('Skip key {} because no UI widget'.format(key))
 
                 # popupContent
-                if key == 'popupTemplate':
+                if key == "popupTemplate":
                     if key in json_layers[json_key]:
                         myDic[item_key][key] = json_layers[json_key][key]
 
@@ -356,45 +363,45 @@ class LayerTreeManager(LizmapProtocol):
             if QgsLayerTree.isGroup(child):
                 child = cast_to_group(child)
                 child_id = child.name()
-                child_type = 'group'
+                child_type = "group"
                 # noinspection PyCallByClass,PyArgumentList
-                child_icon = QIcon(QgsApplication.iconPath('mActionFolder.svg'))
+                child_icon = QIcon(QgsApplication.iconPath("mActionFolder.svg"))
             elif QgsLayerTree.isLayer(child):
                 child = cast_to_layer(child)
                 child_id = child.layerId()
-                child_type = 'layer'
+                child_type = "layer"
                 # noinspection PyArgumentList
                 child_icon = QgsMapLayerModel.iconForLayer(child.layer())
             else:
-                raise Exception('Unknown child type')
+                raise Exception("Unknown child type")
 
             # Select an existing item, select the header item or create the item
             if child_id in myDic:
                 # If the item already exists in myDic, select it
-                item = myDic[child_id]['item']
+                item = myDic[child_id]["item"]
 
-            elif child_id == '':
+            elif child_id == "":
                 # If the id is empty string, this is a root layer, select the headerItem
                 item = self.dlg.layer_tree.headerItem()
 
             else:
                 # else create the item and add it to the header item
                 # add the item to the dictionary
-                myDic[child_id] = {'id': child_id}
-                if child_type == 'group':
+                myDic[child_id] = {"id": child_id}
+                if child_type == "group":
                     # it is a group
-                    self.set_tree_item_data(myDic, 'group', child_id, json_layers)
+                    self.set_tree_item_data(myDic, "group", child_id, json_layers)
                 else:
                     # it is a layer
-                    self.set_tree_item_data(myDic, 'layer', child_id, json_layers)
+                    self.set_tree_item_data(myDic, "layer", child_id, json_layers)
 
                 predefined_group = PredefinedGroup.No.value
                 if parent_node is None:
-                    if myDic[child_id]['name'] == 'hidden':
+                    if myDic[child_id]["name"] == "hidden":
                         predefined_group = PredefinedGroup.Hidden.value
-                    if myDic[child_id]['name'] == 'baselayers':
+                    if myDic[child_id]["name"] == "baselayers":
                         predefined_group = PredefinedGroup.Baselayers.value
-                    if myDic[child_id]['name'].lower() == 'overview':
+                    if myDic[child_id]["name"].lower() == "overview":
                         predefined_group = PredefinedGroup.Overview.value
 
                 elif parent_node.data(0, Qt.ItemDataRole.UserRole + 1) == PredefinedGroup.Baselayers.value:
@@ -406,29 +413,25 @@ class LayerTreeManager(LizmapProtocol):
                     predefined_group = PredefinedGroup.Hidden.value
 
                 item = QTreeWidgetItem(
-                    [
-                        str(myDic[child_id]['name']),
-                        str(myDic[child_id]['id']),
-                        myDic[child_id]['type']
-                    ]
+                    [str(myDic[child_id]["name"]), str(myDic[child_id]["id"]), myDic[child_id]["type"]]
                 )
                 if predefined_group != PredefinedGroup.No.value:
-                    text = tr('Special group for Lizmap Web Client')
+                    text = tr("Special group for Lizmap Web Client")
                     if self.is_dev_version:
                         # For debug purpose only about groups
-                        text += f'. Data group ID {Qt.ItemDataRole.UserRole} : {predefined_group}'
-                    item.setToolTip(0, myDic[child_id]['name'] + ' - ' + text)
-                elif is_layer_wms_excluded(self.project, myDic[child_id]['name']):
+                        text += f". Data group ID {Qt.ItemDataRole.UserRole} : {predefined_group}"
+                    item.setToolTip(0, myDic[child_id]["name"] + " - " + text)
+                elif is_layer_wms_excluded(self.project, myDic[child_id]["name"]):
                     text = tr(
-                        'The layer is excluded from WMS service, in the '
+                        "The layer is excluded from WMS service, in the "
                         '"Project Properties" → "QGIS Server" → "WMS" → "Excluded Layers"'
                     )
-                    item.setToolTip(0, myDic[child_id]['name'] + ' - ' + text)
+                    item.setToolTip(0, myDic[child_id]["name"] + " - " + text)
                 else:
-                    item.setToolTip(0, myDic[child_id]['name'])
+                    item.setToolTip(0, myDic[child_id]["name"])
                 item.setIcon(0, child_icon)
                 item.setData(0, Qt.ItemDataRole.UserRole + 1, predefined_group)
-                myDic[child_id]['item'] = item
+                myDic[child_id]["item"] = item
 
                 # Move group or layer to its parent node
                 if not parent_node:
@@ -436,11 +439,11 @@ class LayerTreeManager(LizmapProtocol):
                 else:
                     parent_node.addChild(item)
 
-            if child_type == 'group':
+            if child_type == "group":
                 self.process_node(myDic, child, item, json_layers)
 
     def from_data_to_ui_for_layer_group(self):
-        """ Restore layer/group values into each field when selecting a layer in the tree. """
+        """Restore layer/group values into each field when selecting a layer in the tree."""
         # At the beginning, enable all widgets.
         self.dlg.panel_layer_all_settings.setEnabled(True)
         self.dlg.group_layer_metadata.setEnabled(True)
@@ -465,56 +468,58 @@ class LayerTreeManager(LizmapProtocol):
 
             # set options
             for key, val in self.layer_options_list.items():
-                if val.get('widget'):
+                if val.get("widget"):
+                    if val.get("tooltip"):
+                        val["widget"].setToolTip(val.get("tooltip"))
 
-                    if val.get('tooltip'):
-                        val['widget'].setToolTip(val.get('tooltip'))
-
-                    if val['wType'] in ('text', 'textarea'):
-                        if val['type'] == 'list':
+                    if val["wType"] in ("text", "textarea"):
+                        if val["type"] == "list":
                             data = selected_item[key]
                             if isinstance(data, str):
-                                # It should be a list, but it has been temporary a string during the dev process
+                                # It should be a list, but it has been temporary
+                                # a string during the dev process
                                 data = [data]
-                            text = ','.join(data)
+                            text = ",".join(data)
                         else:
                             text = selected_item[key]
-                        if val['wType'] == 'text':
-                            val['widget'].setText(text)
+                        if val["wType"] == "text":
+                            val["widget"].setText(text)
                         else:
                             # Abstract is the only textarea
-                            val['widget'].setPlainText(text)
-                    elif val['wType'] == 'spinbox':
-                        val['widget'].setValue(int(selected_item[key]))
-                    elif val['wType'] in ('checkbox', 'radio'):
-                        val['widget'].setChecked(selected_item[key])
-                        children = val.get('children')
+                            val["widget"].setPlainText(text)
+                    elif val["wType"] == "spinbox":
+                        val["widget"].setValue(int(selected_item[key]))
+                    elif val["wType"] in ("checkbox", "radio"):
+                        val["widget"].setChecked(selected_item[key])
+                        children = val.get("children")
                         if children:
-                            exclusive = val.get('exclusive', False)
+                            exclusive = val.get("exclusive", False)
                             if exclusive:
                                 is_enabled = not selected_item[key]
                             else:
                                 is_enabled = selected_item[key]
-                            self.layer_options_list[children]['widget'].setEnabled(is_enabled)
-                            if self.layer_options_list[children]['wType'] == 'checkbox' and not is_enabled:
-                                if self.layer_options_list[children]['widget'].isChecked():
-                                    self.layer_options_list[children]['widget'].setChecked(False)
+                            self.layer_options_list[children]["widget"].setEnabled(is_enabled)
+                            if self.layer_options_list[children]["wType"] == "checkbox" and not is_enabled:
+                                if self.layer_options_list[children]["widget"].isChecked():
+                                    self.layer_options_list[children]["widget"].setChecked(False)
 
-                    elif val['wType'] == 'list':
+                    elif val["wType"] == "list":
                         # New way with data, label, tooltip and icon
-                        index = val['widget'].findData(selected_item[key])
+                        index = val["widget"].findData(selected_item[key])
 
-                        if index < 0 and val.get('default'):
+                        if index < 0 and val.get("default"):
                             # Get back to default
-                            index = val['widget'].findData(val['default'])
+                            index = val["widget"].findData(val["default"])
 
-                        val['widget'].setCurrentIndex(index)
+                        val["widget"].setCurrentIndex(index)
 
                     # deactivate wms checkbox if not needed
-                    if key == 'externalWmsToggle':
+                    if key == "externalWmsToggle":
                         wms_enabled = self.get_item_wms_capability(selected_item)
                         logger.debug(
-                            f"Selected layer '{selected_item}' return value for WMS capability is '{wms_enabled}'")
+                            f"Selected layer '{selected_item}' return value for WMS capability "
+                            f"is '{wms_enabled}'"
+                        )
                         if wms_enabled is not None:
                             self.dlg.cbExternalWms.setEnabled(wms_enabled)
                             if wms_enabled:
@@ -537,7 +542,7 @@ class LayerTreeManager(LizmapProtocol):
             self.dlg.btConfigurePopup.setEnabled(has_geom)
             self.dlg.btQgisPopupFromForm.setEnabled(is_vector)
             self.dlg.button_generate_html_table.setEnabled(is_vector)
-            self.layer_options_list['popupSource']['widget'].setEnabled(is_vector)
+            self.layer_options_list["popupSource"]["widget"].setEnabled(is_vector)
 
             if self.lwc_version >= LwcVersions.Lizmap_3_7 and not self.dlg.cbLayerIsBaseLayer.isChecked():
                 # Starting from LWC 3.7, this checkbox is deprecated
@@ -545,9 +550,10 @@ class LayerTreeManager(LizmapProtocol):
 
             # For a group, there isn't the toggle option, #298, TEMPORARY DISABLED
             tooltip = tr(
-                "If the layer is displayed by default. On a layer, if the map theme is used, this checkbox does not "
-                "have any effect.")
-            self.layer_options_list['toggled']['widget'].setToolTip(tooltip)
+                "If the layer is displayed by default. On a layer, if the map theme "
+                "is used, this checkbox does not have any effect."
+            )
+            self.layer_options_list["toggled"]["widget"].setToolTip(tooltip)
             # try:
             #     # We always disconnect everything
             #     self.layer_options_list['groupAsLayer']['widget'].disconnect()
@@ -575,27 +581,26 @@ class LayerTreeManager(LizmapProtocol):
         else:
             # set default values for this layer/group
             for key, val in self.layer_options_list.items():
-                if val.get('widget'):
-                    if val['wType'] in ('text', 'textarea'):
-                        if isinstance(val['default'], (list, tuple)):
-                            text = ','.join(val['default'])
+                if val.get("widget"):
+                    if val["wType"] in ("text", "textarea"):
+                        if isinstance(val["default"], (list, tuple)):
+                            text = ",".join(val["default"])
                         else:
-                            text = val['default']
-                        if val['wType'] == 'text':
-                            val['widget'].setText(text)
+                            text = val["default"]
+                        if val["wType"] == "text":
+                            val["widget"].setText(text)
                         else:
                             # Abstract is the only textarea for now
                             # We shouldn't have any default value, but let's support it
-                            val['widget'].setPlainText(text)
-                    elif val['wType'] == 'spinbox':
-                        val['widget'].setValue(val['default'])
-                    elif val['wType'] in ('checkbox', 'radio'):
-                        val['widget'].setChecked(val['default'])
-                    elif val['wType'] == 'list':
-
+                            val["widget"].setPlainText(text)
+                    elif val["wType"] == "spinbox":
+                        val["widget"].setValue(val["default"])
+                    elif val["wType"] in ("checkbox", "radio"):
+                        val["widget"].setChecked(val["default"])
+                    elif val["wType"] == "list":
                         # New way with data, label, tooltip and icon
-                        index = val['widget'].findData(val['default'])
-                        val['widget'].setCurrentIndex(index)
+                        index = val["widget"].findData(val["default"])
+                        val["widget"].setCurrentIndex(index)
 
         self.enable_popup_source_button()
         self.dlg.follow_map_theme_toggled()
@@ -607,10 +612,10 @@ class LayerTreeManager(LizmapProtocol):
                 self.dlg.frame_layer_popup.setEnabled(False)
 
             elif self._current_item_predefined_group() in (
-                    PredefinedGroup.Overview.value,
-                    PredefinedGroup.Baselayers.value,
-                    PredefinedGroup.BackgroundColor.value,
-                    PredefinedGroup.Hidden.value,
+                PredefinedGroup.Overview.value,
+                PredefinedGroup.Baselayers.value,
+                PredefinedGroup.BackgroundColor.value,
+                PredefinedGroup.Hidden.value,
             ):
                 self.dlg.panel_layer_all_settings.setEnabled(False)
 
@@ -621,29 +626,29 @@ class LayerTreeManager(LizmapProtocol):
 
             if isinstance(layer, QgsVectorLayer):
                 if not layer.isSpatial():
-                    self.layer_options_list['toggled']['widget'].setEnabled(False)
+                    self.layer_options_list["toggled"]["widget"].setEnabled(False)
 
     def enable_check_box_in_layer_tab(self, value: bool):
         """Enable/Disable checkboxes and fields of the Layer tab."""
         for key, item in self.layer_options_list.items():
-            if item.get('widget') and key != 'sourceProject':
-                item['widget'].setEnabled(value)
+            if item.get("widget") and key != "sourceProject":
+                item["widget"].setEnabled(value)
         self.dlg.btConfigurePopup.setEnabled(value)
         self.dlg.btQgisPopupFromForm.setEnabled(value)
         self.dlg.button_generate_html_table.setEnabled(value)
 
     def external_wms_toggled(self):
-        """ Disable the format combobox is the checkbox third party WMS is checked. """
+        """Disable the format combobox is the checkbox third party WMS is checked."""
         self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""
-        data = self.layer_options_list['popupSource']['widget'].currentData()
-        self.dlg.btConfigurePopup.setVisible(data in ('lizmap', 'qgis'))
-        self.dlg.widget_qgis_maptip.setVisible(data == 'qgis')
-        self.dlg.button_maptip_preview.setVisible(data == 'qgis')
+        data = self.layer_options_list["popupSource"]["widget"].currentData()
+        self.dlg.btConfigurePopup.setVisible(data in ("lizmap", "qgis"))
+        self.dlg.widget_qgis_maptip.setVisible(data == "qgis")
+        self.dlg.button_maptip_preview.setVisible(data == "qgis")
 
-        if data == 'lizmap':
+        if data == "lizmap":
             layer = self._current_selected_layer()
             self.dlg.widget_deprecated_lizmap_popup.setVisible(isinstance(layer, QgsVectorLayer))
         else:
@@ -655,15 +660,15 @@ class LayerTreeManager(LizmapProtocol):
         and if it is a WMS layer
         """
         wms_enabled = False
-        is_layer = selected_item['type'] == 'layer'
+        is_layer = selected_item["type"] == "layer"
         if is_layer:
-            layer = self.get_qgis_layer_by_id(selected_item['id'])
-            if layer and layer.providerType() in ['wms'] and get_layer_wms_parameters(layer):
+            layer = self.get_qgis_layer_by_id(selected_item["id"])
+            if layer and layer.providerType() in ["wms"] and get_layer_wms_parameters(layer):
                 wms_enabled = True
         return wms_enabled
 
     def _current_item_predefined_group(self) -> Optional[PredefinedGroup]:
-        """ Get the current group type. """
+        """Get the current group type."""
         item = self.dlg.layer_tree.currentItem()
         if not item:
             return None
@@ -675,7 +680,7 @@ class LayerTreeManager(LizmapProtocol):
         return item.data(0, Qt.ItemDataRole.UserRole + 1)
 
     def _current_selected_item_in_config(self) -> Optional[str]:
-        """ Either a group or a layer name. """
+        """Either a group or a layer name."""
         item = self.dlg.layer_tree.currentItem()
         if not item:
             return None
@@ -687,15 +692,15 @@ class LayerTreeManager(LizmapProtocol):
         return text
 
     def _current_selected_layer(self) -> Optional[QgsMapLayer]:
-        """ Current selected map layer in the tree. """
+        """Current selected map layer in the tree."""
         lid = self._current_selected_item_in_config()
         if not lid:
-            logger.warning('No item selected in the Lizmap layer tree.')
+            logger.warning("No item selected in the Lizmap layer tree.")
             return None
 
         layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
         if not layers:
-            logger.warning('Layers not found with searched text from the tree : {}'.format(lid))
+            logger.warning("Layers not found with searched text from the tree : {}".format(lid))
             return None
 
         return layers[0]
@@ -706,9 +711,9 @@ class LayerTreeManager(LizmapProtocol):
         """Return QgsSettings key for group expand states of the current project."""
         project_path = self.project.fileName()
         if not project_path:
-            return ''
-        key_hash = hashlib.sha256(project_path.encode('utf-8')).hexdigest()
-        return f'lizmap/layer_tree_group_states/{key_hash}'
+            return ""
+        key_hash = hashlib.sha256(project_path.encode("utf-8")).hexdigest()
+        return f"lizmap/layer_tree_group_states/{key_hash}"
 
     def _save_layer_tree_group_states(self):
         """Persist expanded/collapsed state of group items to QgsSettings."""
@@ -722,7 +727,7 @@ class LayerTreeManager(LizmapProtocol):
         """Recursively collect expanded state for group items."""
         for i in range(parent_item.childCount()):
             item = parent_item.child(i)
-            if item.text(2) == 'group':
+            if item.text(2) == "group":
                 states[item.text(1)] = item.isExpanded()
                 self._collect_group_states(item, states)
 
@@ -744,7 +749,7 @@ class LayerTreeManager(LizmapProtocol):
         """Recursively apply expanded state to group items."""
         for i in range(parent_item.childCount()):
             item = parent_item.child(i)
-            if item.text(2) == 'group':
+            if item.text(2) == "group":
                 group_id = item.text(1)
                 if group_id in states:
                     item.setExpanded(states[group_id])
@@ -763,11 +768,11 @@ class LayerTreeManager(LizmapProtocol):
             self.dlg._ignore_layer_tree_state = False
 
     def get_qgis_layer_by_id(self, my_id: str) -> Optional[QgsMapLayer]:
-        """ Get a QgsMapLayer by its ID. """
+        """Get a QgsMapLayer by its ID."""
         return self.project.mapLayers().get(my_id, None)
 
     def save_value_layer_group_data(self, key: str):
-        """ Save the new value from the UI in the global layer property self._layerList.
+        """Save the new value from the UI in the global layer property self._layerList.
 
         Function called the corresponding UI widget has sent changed signal.
         """
@@ -779,97 +784,102 @@ class LayerTreeManager(LizmapProtocol):
         # get the definition for this property
         layer_option = self.layer_options_list[key]
         # modify the property for the selected item
-        if layer_option['wType'] == 'text':
-            text = layer_option['widget'].text()
-            if layer_option['type'] == 'list':
+        if layer_option["wType"] == "text":
+            text = layer_option["widget"].text()
+            if layer_option["type"] == "list":
                 text = string_to_list(text)
             self._layerList[layer_or_group_text][key] = text
             self.set_layer_metadata(layer_or_group_text, key)
-        elif layer_option['wType'] == 'textarea':
-            self._layerList[layer_or_group_text][key] = layer_option['widget'].toPlainText()
+        elif layer_option["wType"] == "textarea":
+            self._layerList[layer_or_group_text][key] = layer_option["widget"].toPlainText()
             self.set_layer_metadata(layer_or_group_text, key)
-        elif layer_option['wType'] == 'spinbox':
-            self._layerList[layer_or_group_text][key] = layer_option['widget'].value()
-        elif layer_option['wType'] in ('checkbox', 'radio'):
-            checked = layer_option['widget'].isChecked()
+        elif layer_option["wType"] == "spinbox":
+            self._layerList[layer_or_group_text][key] = layer_option["widget"].value()
+        elif layer_option["wType"] in ("checkbox", "radio"):
+            checked = layer_option["widget"].isChecked()
             self._layerList[layer_or_group_text][key] = checked
-            children = layer_option.get('children')
+            children = layer_option.get("children")
             if children:
-                exclusive = layer_option.get('exclusive', False)
+                exclusive = layer_option.get("exclusive", False)
                 if exclusive:
                     is_enabled = not checked
                 else:
                     is_enabled = checked
-                self.layer_options_list[children]['widget'].setEnabled(is_enabled)
-                if self.layer_options_list[children]['wType'] == 'checkbox' and not is_enabled:
-                    if self.layer_options_list[children]['widget'].isChecked():
-                        self.layer_options_list[children]['widget'].setChecked(False)
-        elif layer_option['wType'] == 'list':
+                self.layer_options_list[children]["widget"].setEnabled(is_enabled)
+                if self.layer_options_list[children]["wType"] == "checkbox" and not is_enabled:
+                    if self.layer_options_list[children]["widget"].isChecked():
+                        self.layer_options_list[children]["widget"].setChecked(False)
+        elif layer_option["wType"] == "list":
             # New way with data, label, tooltip and icon
-            datas = [j[0] for j in layer_option['list']]
-            self._layerList[layer_or_group_text][key] = datas[layer_option['widget'].currentIndex()]
+            datas = [j[0] for j in layer_option["list"]]
+            self._layerList[layer_or_group_text][key] = datas[layer_option["widget"].currentIndex()]
 
         # Deactivate the "exclude" widget if necessary
-        if 'exclude' in layer_option \
-                and layer_option['wType'] == 'checkbox' \
-                and layer_option['widget'].isChecked() \
-                and layer_option['exclude']['widget'].isChecked():
-            layer_option['exclude']['widget'].setChecked(False)
-            self._layerList[layer_or_group_text][layer_option['exclude']['key']] = False
+        if (
+            "exclude" in layer_option
+            and layer_option["wType"] == "checkbox"
+            and layer_option["widget"].isChecked()
+            and layer_option["exclude"]["widget"].isChecked()
+        ):
+            layer_option["exclude"]["widget"].setChecked(False)
+            self._layerList[layer_or_group_text][layer_option["exclude"]["key"]] = False
 
     def set_layer_metadata(self, layer_or_group: str, key: str):
         """Set the title/abstract/link QGIS metadata when the corresponding item is changed
         Used in setLayerProperty"""
-        if 'isMetadata' not in self.layer_options_list[key]:
+        if "isMetadata" not in self.layer_options_list[key]:
             return
 
         # modify the layer.title|abstract|link() if possible
-        if self._layerList[layer_or_group]['type'] != 'layer':
+        if self._layerList[layer_or_group]["type"] != "layer":
             return
 
         layer = self.get_qgis_layer_by_id(layer_or_group)
         if not isinstance(layer, QgsMapLayer):
             return
 
-        if key == 'title':
+        if key == "title":
             set_layer_property(layer, LayerProperties.Title, self._layerList[layer_or_group][key])
 
-        if key == 'abstract':
+        if key == "abstract":
             set_layer_property(layer, LayerProperties.Abstract, self._layerList[layer_or_group][key])
 
     def disable_legacy_empty_base_layer(self):
-        """ Legacy checkbox until it's removed. """
+        """Legacy checkbox until it's removed."""
         # We suppose we are in LWC >= 3.7 otherwise the button is blue
         if self.lwc_version >= LwcVersions.Lizmap_3_7:
             self.dlg.cbAddEmptyBaselayer.setChecked(False)
 
     def add_group_hidden(self):
-        """ Add the hidden group. """
+        """Add the hidden group."""
         self._add_group_legend(GroupNames.Hidden)
 
     def add_group_baselayers(self):
-        """ Add the baselayers group. """
+        """Add the baselayers group."""
         self._add_group_legend(GroupNames.BaseLayers)
         self.disable_legacy_empty_base_layer()
 
     def add_group_empty(self):
-        """ Add the default background color. """
+        """Add the default background color."""
         baselayers = self._add_group_legend(GroupNames.BaseLayers)
         self._add_group_legend(GroupNames.BackgroundColor, parent=baselayers)
         self.disable_legacy_empty_base_layer()
 
     def add_group_overview(self):
-        """ Add the overview group. """
-        label = 'overview'
+        """Add the overview group."""
+        label = "overview"
         if self.lwc_version < LwcVersions.Lizmap_3_7:
-            label = 'Overview'
+            label = "Overview"
         self._add_group_legend(label, exclusive=False)
 
     def _add_group_legend(
-            self, label: str, exclusive: bool = False, parent: QgsLayerTreeGroup = None,
-            project: QgsProject = None,
-        ) -> QgsLayerTreeGroup:
-        """ Add a group in the legend. """
+        self,
+        label: str,
+        exclusive: bool = False,
+        parent: QgsLayerTreeGroup = None,
+        project: QgsProject = None,
+    ) -> QgsLayerTreeGroup:
+        """Add a group in the legend."""
         if project is None:
             project = self.project
 
@@ -893,7 +903,7 @@ class LayerTreeManager(LizmapProtocol):
         label: str,
         index: bool = False,
     ) -> Optional[Union[QgsLayerTreeGroup, int]]:
-        """ Return the existing group in the legend if existing.
+        """Return the existing group in the legend if existing.
 
         It will either return the group itself if found, or its index.
         """
@@ -928,9 +938,9 @@ class LayerTreeManager(LizmapProtocol):
         attribution_url: Optional[str] = None,
         attribution_name: Optional[str] = None,
     ):
-        """ Add a base layer to the "baselayers" group. """
+        """Add a base layer to the "baselayers" group."""
         self.add_group_baselayers()
-        raster = QgsRasterLayer(source, name, 'wms')
+        raster = QgsRasterLayer(source, name, "wms")
         self.project.addMapLayer(raster, False)  # False to not add it in the legend, only in the project
 
         if attribution_url:
@@ -943,13 +953,13 @@ class LayerTreeManager(LizmapProtocol):
         groups = root_group.findGroups()
         for qgis_group in groups:
             qgis_group: QgsLayerTreeGroup
-            if qgis_group.name() == 'baselayers':
+            if qgis_group.name() == "baselayers":
                 node = qgis_group.addLayer(raster)
                 node.setExpanded(False)
                 break
 
         self.dlg.display_message_bar(
-            tr('New layer'),
+            tr("New layer"),
             tr('Please close and reopen the dialog to display your layer in the tab "{tab_name}".').format(
                 tab_name=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
             ),

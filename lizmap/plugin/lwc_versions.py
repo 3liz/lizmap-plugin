@@ -1,5 +1,5 @@
-""" Configure dialog depending on the LWC version
-"""
+"""Configure dialog depending on the LWC version"""
+
 import json
 
 from collections import OrderedDict
@@ -43,7 +43,7 @@ class LwcVersionManager(LizmapProtocol):
         self._lwc_versions = configure_lwc_versions(self.dlg)
 
     def current_lwc_version(self) -> LwcVersions:
-        """ Return the current selected LWC version from the server. """
+        """Return the current selected LWC version from the server."""
         if self._version:
             # For tests, return the version given in the constructor
             return self._version
@@ -56,16 +56,18 @@ class LwcVersionManager(LizmapProtocol):
         return version
 
     def lwc_version_changed(self):
-        """ When the version has changed in the selector, we update features with the blue background. """
+        """When the version has changed in the selector, we update features with the blue background."""
         # self.check_webdav()
         current_version = self.current_lwc_version()
         if not current_version:
-            logger.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
+            logger.info(
+                "No LWC version currently defined in the combobox, skipping LWC target version changed."
+            )
             self.dlg.refresh_helper_target_version(None)
             return
 
         logger.debug("Saving new value about the LWC target version : {}".format(current_version.value))
-        QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+        QgsSettings().setValue("lizmap/lizmap_web_client_version", str(current_version.value))
 
         self.dlg.refresh_helper_target_version(current_version)
 
@@ -96,7 +98,7 @@ class LwcVersionManager(LizmapProtocol):
                 # Remove some blue
                 for item in items:
                     if isinstance(item, QWidget):
-                        item.setStyleSheet('')
+                        item.setStyleSheet("")
                     elif isinstance(item, QStandardItem):
                         # QComboBox
                         item.setBackground(QBrush())
@@ -106,25 +108,25 @@ class LwcVersionManager(LizmapProtocol):
 
         # Change in all table manager too
         for key in self.layers_table:
-            manager = self.layers_table[key].get('manager')
+            manager = self.layers_table[key].get("manager")
             if manager:
                 manager.set_lwc_version(current_version)
 
         # Compare the LWC version with the current QGIS Desktop version and the release JSON file
-        version_file = lizmap_user_folder().joinpath('released_versions.json')
+        version_file = lizmap_user_folder().joinpath("released_versions.json")
         if not version_file.exists():
             return
 
-        with open(version_file, encoding='utf8') as json_file:
+        with open(version_file, encoding="utf8") as json_file:
             json_content = json.loads(json_file.read())
 
         for lzm_version in json_content:
-            if lzm_version['branch'] != current_version.value:
+            if lzm_version["branch"] != current_version.value:
                 continue
 
             # TODO: check type of returned value (int)
-            qgis_min = lzm_version.get('qgis_min_version_recommended')
-            qgis_max = lzm_version.get('qgis_max_version_recommended')
+            qgis_min = lzm_version.get("qgis_min_version_recommended")
+            qgis_max = lzm_version.get("qgis_max_version_recommended")
             if not (qgis_min or qgis_max):
                 break
 
@@ -156,9 +158,7 @@ def configure_lwc_versions(dlg: "LizmapDialog") -> OrderedDict:
         dlg.label_help_action,
     ]
     lwc_versions[LwcVersions.Lizmap_3_5] = [
-        dlg.liPopupSource.model().item(
-            dlg.liPopupSource.findData('form')
-        ),
+        dlg.liPopupSource.model().item(dlg.liPopupSource.findData("form")),
         dlg.label_filter_polygon,
         dlg.filter_polygon_by_user,
         dlg.checkbox_scale_overview_map,
@@ -166,9 +166,7 @@ def configure_lwc_versions(dlg: "LizmapDialog") -> OrderedDict:
     lwc_versions[LwcVersions.Lizmap_3_6] = [
         dlg.checkbox_popup_allow_download,
         dlg.cb_open_topo_map,
-        dlg.combo_legend_option.model().item(
-            dlg.combo_legend_option.findData('expand_at_startup')
-        ),
+        dlg.combo_legend_option.model().item(dlg.combo_legend_option.findData("expand_at_startup")),
         dlg.button_wizard_group_visibility_project,
         dlg.button_wizard_group_visibility_layer,
         dlg.label_helper_dataviz,
@@ -223,7 +221,6 @@ def configure_lwc_versions(dlg: "LizmapDialog") -> OrderedDict:
         dlg.button_dxf_wizard_group,
         dlg.label_dxf_layers_info,
     ]
-    lwc_versions[LwcVersions.Lizmap_3_11] = [
-    ]
+    lwc_versions[LwcVersions.Lizmap_3_11] = []
 
     return lwc_versions

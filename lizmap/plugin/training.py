@@ -3,6 +3,7 @@
 This module provides the TrainingManager class which handles training
 operations using the delegate pattern.
 """
+
 import tempfile
 import zipfile
 
@@ -69,22 +70,39 @@ class TrainingManager(LizmapProtocol):
     This class handles all training related functionality using the delegate
     pattern, providing a cleaner separation of concerns.
     """
+
     def initialize_training_dialog(self) -> None:
         self.dlg.name_training_folder.setPlaceholderText(current_login())
 
         # When a ZIP is provided for the training
         self.dlg.path_training_folder_zip.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
-        self.dlg.path_training_folder_zip.setDialogTitle(tr("Choose a folder to store the your data about the training"))
-        self.dlg.download_training_data_zip.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.ZipFile))
-        self.dlg.open_training_project_zip.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.ZipFile))
-        self.dlg.open_training_folder_zip.clicked.connect(partial(self.open_training_folder_clicked, WorkshopType.ZipFile))
+        self.dlg.path_training_folder_zip.setDialogTitle(
+            tr("Choose a folder to store the your data about the training")
+        )
+        self.dlg.download_training_data_zip.clicked.connect(
+            partial(self.download_training_data_clicked, WorkshopType.ZipFile)
+        )
+        self.dlg.open_training_project_zip.clicked.connect(
+            partial(self.open_training_project_clicked, WorkshopType.ZipFile)
+        )
+        self.dlg.open_training_folder_zip.clicked.connect(
+            partial(self.open_training_folder_clicked, WorkshopType.ZipFile)
+        )
 
         # When an individual QGS file is provided for the training
         self.dlg.path_training_folder_qgs.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
-        self.dlg.path_training_folder_qgs.setDialogTitle(tr("Choose a folder to store the your data about the training"))
-        self.dlg.download_training_data_qgs.clicked.connect(partial(self.download_training_data_clicked, WorkshopType.IndividualQgsFile))
-        self.dlg.open_training_project_qgs.clicked.connect(partial(self.open_training_project_clicked, WorkshopType.IndividualQgsFile))
-        self.dlg.open_training_folder_qgs.clicked.connect(partial(self.open_training_folder_clicked, WorkshopType.IndividualQgsFile))
+        self.dlg.path_training_folder_qgs.setDialogTitle(
+            tr("Choose a folder to store the your data about the training")
+        )
+        self.dlg.download_training_data_qgs.clicked.connect(
+            partial(self.download_training_data_clicked, WorkshopType.IndividualQgsFile)
+        )
+        self.dlg.open_training_project_qgs.clicked.connect(
+            partial(self.open_training_project_clicked, WorkshopType.IndividualQgsFile)
+        )
+        self.dlg.open_training_folder_qgs.clicked.connect(
+            partial(self.open_training_folder_clicked, WorkshopType.IndividualQgsFile)
+        )
 
     def check_training_panel(self) -> None:
         """Check if the training panel should be visible or not."""
@@ -135,7 +153,7 @@ class TrainingManager(LizmapProtocol):
         )
 
     def download_training_data_clicked(self, workshop_type: str = WorkshopType.ZipFile):
-        """ Download the hard coded ZIP. """
+        """Download the hard coded ZIP."""
         if workshop_type == WorkshopType.IndividualQgsFile:
             if not self.dlg.path_training_folder_qgs.filePath():
                 return
@@ -149,7 +167,8 @@ class TrainingManager(LizmapProtocol):
             self.dlg.display_message_bar(
                 CLOUD_NAME,
                 tr("WebDAV is not available on the instance '{}'").format(
-                    self.dlg.current_server_info(ServerComboData.ServerUrl.value)),
+                    self.dlg.current_server_info(ServerComboData.ServerUrl.value)
+                ),
                 level=Qgis.MessageLevel.Critical,
             )
 
@@ -158,7 +177,10 @@ class TrainingManager(LizmapProtocol):
             user_project = self.login_from_auth_id(auth_id)
             url_path = f"{url}/{WORKSHOP_FOLDER_PATH}/{user_project}.qgs"
             destination = str(
-                self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(f'{user_project}.qgs'))
+                self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(
+                    f"{user_project}.qgs"
+                )
+            )
         else:
             url_path = f"{url}/{TRAINING_ZIP}"
             destination = str(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP))
@@ -183,14 +205,14 @@ class TrainingManager(LizmapProtocol):
 
     @staticmethod
     def login_from_auth_id(auth_id: str) -> str:
-        """ Login used in the QGIS password manager from an Auth ID. """
+        """Login used in the QGIS password manager from an Auth ID."""
         auth_manager = QgsApplication.authManager()
         conf = QgsAuthMethodConfig()
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
-        return conf.config('username')
+        return conf.config("username")
 
     def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
-        """ Destination folder where to store the data. """
+        """Destination folder where to store the data."""
         if workshop_type == WorkshopType.IndividualQgsFile:
             output = Path(self.dlg.path_training_folder_qgs.filePath())
             QgsSettings().setValue(Settings.key(Settings.LizmapRepository), WORKSHOP_FOLDER_ID)
@@ -212,7 +234,7 @@ class TrainingManager(LizmapProtocol):
         return output
 
     def open_training_folder_clicked(self, workshop_type: str = WorkshopType.ZipFile):
-        """ Open the training folder set above. """
+        """Open the training folder set above."""
         file_path = self.training_folder_destination(workshop_type)
         if not file_path:
             return
@@ -221,7 +243,7 @@ class TrainingManager(LizmapProtocol):
         QDesktopServices.openUrl(QUrl(f"file://{file_path}"))
 
     def open_training_project_clicked(self, workshop_type: str = WorkshopType.ZipFile):
-        """ Open the training project in QGIS Desktop. """
+        """Open the training project in QGIS Desktop."""
         file_path = self.training_folder_destination(workshop_type)
         if workshop_type == WorkshopType.IndividualQgsFile:
             auth_id = self.dlg.current_server_info(ServerComboData.AuthId.value)
@@ -244,14 +266,14 @@ class TrainingManager(LizmapProtocol):
         item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
 
         variables = self.project.customVariables()
-        if 'lizmap_user' in list(variables.keys()):
-            del variables['lizmap_user']
-        if 'lizmap_user_groups' in list(variables.keys()):
-            del variables['lizmap_user_groups']
+        if "lizmap_user" in list(variables.keys()):
+            del variables["lizmap_user"]
+        if "lizmap_user_groups" in list(variables.keys()):
+            del variables["lizmap_user_groups"]
         self.project.setCustomVariables(variables)
 
     def download_completed_qgs(self):
-        """ Extract the downloaded QGS. """
+        """Extract the downloaded QGS."""
         # We start again about CFG file
         metadata = self.dlg.current_server_info(ServerComboData.JsonMetadata.value)
         url = webdav_url(metadata)
@@ -259,7 +281,10 @@ class TrainingManager(LizmapProtocol):
         user_project = self.login_from_auth_id(auth_id)
         url_path = f"{url}/{WORKSHOP_FOLDER_PATH}/{user_project}.qgs.cfg"
         destination = str(
-            self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(f'{user_project}.qgs.cfg'))
+            self.training_folder_destination(WorkshopType.IndividualQgsFile).joinpath(
+                f"{user_project}.qgs.cfg"
+            )
+        )
 
         downloader = QgsFileDownloader(
             QUrl(url_path),
@@ -276,34 +301,34 @@ class TrainingManager(LizmapProtocol):
         loop.exec()
 
     def download_error(self, errors):
-        """ Display error message about the download. """
+        """Display error message about the download."""
         QApplication.restoreOverrideCursor()
         self.dlg.display_message_bar(
             CLOUD_NAME,
-            tr("Error while downloading the project : {}").format(','.join(errors)),
-            level=Qgis.MessageLevel.Critical
+            tr("Error while downloading the project : {}").format(",".join(errors)),
+            level=Qgis.MessageLevel.Critical,
         )
         zip_file = f"The file qgis/{TRAINING_ZIP} was maybe not found on the server ?"
         QMessageBox.warning(
             self.dlg,
-            tr('Training'),
-            tr('Is the training well prepared by the trainer ?') + " " + zip_file,
+            tr("Training"),
+            tr("Is the training well prepared by the trainer ?") + " " + zip_file,
         )
 
     def download_completed(self):
-        """ Show the success bar, for both kind of workshops. """
+        """Show the success bar, for both kind of workshops."""
         QApplication.restoreOverrideCursor()
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.dlg.display_message_bar(
                 CLOUD_NAME,
                 tr("Download and extract OK about the training project"),
-                level=Qgis.MessageLevel.Success
+                level=Qgis.MessageLevel.Success,
             )
 
     def download_completed_zip(self):
-        """ Extract the downloaded zip. """
+        """Extract the downloaded zip."""
         file_path = self.training_folder_destination(WorkshopType.ZipFile)
-        with zipfile.ZipFile(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP), 'r') as zip_ref:
+        with zipfile.ZipFile(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP), "r") as zip_ref:
             zip_ref.extractall(str(file_path))
 
         cfg_file = file_path.joinpath(TRAINING_PROJECT + ".cfg")
@@ -313,18 +338,20 @@ class TrainingManager(LizmapProtocol):
 
         # Make the project more unique
         qgs_file = file_path.joinpath(TRAINING_PROJECT)
-        qgs_file.rename(Path(qgs_file.parent, qgs_file.stem + "_" + self.destination_name() + qgs_file.suffix))
+        qgs_file.rename(
+            Path(qgs_file.parent, qgs_file.stem + "_" + self.destination_name() + qgs_file.suffix)
+        )
         self.download_completed()
 
     def destination_name(self) -> str:
-        """ Return the destination cleaned name. """
+        """Return the destination cleaned name."""
         destination = self.dlg.name_training_folder.text()
         if not destination:
             destination = self.dlg.name_training_folder.placeholderText()
 
         destination = unaccent(destination)
         # TODO: Use maketrans()
-        destination = destination.replace('-', '_')
-        destination = destination.replace(' ', '_')
-        destination = destination.replace("'", '_')
+        destination = destination.replace("-", "_")
+        destination = destination.replace(" ", "_")
+        destination = destination.replace("'", "_")
         return destination.lower()

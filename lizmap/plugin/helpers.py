@@ -19,30 +19,26 @@ if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 
-def display_error(dlg: "LizmapDialog" , message: str):
-    QMessageBox.critical(
-        dlg,
-        tr('Lizmap Error'),
-        message,
-        QMessageBox.StandardButton.Ok)
+def display_error(dlg: "LizmapDialog", message: str):
+    QMessageBox.critical(dlg, tr("Lizmap Error"), message, QMessageBox.StandardButton.Ok)
 
 
 def string_to_list(text):
-    """ Format a string to a list. """
-    data = text.split(',') if len(text) > 0 else []
+    """Format a string to a list."""
+    data = text.split(",") if len(text) > 0 else []
     return [item.strip() for item in data]
 
 
 def current_login() -> str:
-    """ Current login on the OS. """
+    """Current login on the OS."""
     try:
         return os.getlogin()
     except OSError:
-        return 'repository'
+        return "repository"
 
 
 def show_help_question(dlg: "LizmapDialog"):
-    """ According to the Lizmap server, ask the user which online help to open. """
+    """According to the Lizmap server, ask the user which online help to open."""
     index = dlg.mOptionsListWidget.currentRow()
     page = MAPPING_INDEX_DOC.get(index)
     current_metadata = dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
@@ -52,11 +48,11 @@ def show_help_question(dlg: "LizmapDialog"):
 
     box = QMessageBox(dlg)
     box.setIcon(QMessageBox.Icon.Question)
-    box.setWindowIcon(window_icon() )
-    box.setWindowTitle(tr('Online documentation'))
-    box.setText(tr(
-        'Different documentations are possible. Which online documentation would you like to open ?'
-    ))
+    box.setWindowIcon(window_icon())
+    box.setWindowTitle(tr("Online documentation"))
+    box.setText(
+        tr("Different documentations are possible. Which online documentation would you like to open ?")
+    )
 
     if is_lizmap_cloud(current_metadata):
         cloud_help = QPushButton("Lizmap Hosting")
@@ -87,10 +83,10 @@ def show_help_question(dlg: "LizmapDialog"):
 
 
 def show_help(page=None):
-    """ Opens the HTML online help with default browser and language. """
+    """Opens the HTML online help with default browser and language."""
     QDesktopServices.openUrl(online_lwc_help(page))
 
 
 def show_help_cloud():
-    """ Opens the HTML online cloud help with default browser and language. """
+    """Opens the HTML online cloud help with default browser and language."""
     QDesktopServices.openUrl(online_cloud_help())

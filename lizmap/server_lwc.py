@@ -793,7 +793,7 @@ class ServerManager:
         """ Read the JSON file and return its content. """
         user_file = user_settings()
         if not user_file.exists():
-            return list()
+            return []
 
         with open(user_file) as json_file:
             json_content = json.loads(json_file.read())
