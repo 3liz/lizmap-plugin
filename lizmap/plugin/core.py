@@ -195,6 +195,7 @@ from .options import global_options, layer_options
 from .scales import ScalesManager
 from .settings import configure_qgis_settings
 from .training import TrainingManager
+from .webdav import WebDavManager
 
 if TYPE_CHECKING:
     from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
@@ -253,6 +254,10 @@ class Lizmap:
     def lwc_version(self) -> LwcVersions:
         return self.version_mngr.lwc_version
 
+    @property
+    def webdav(self) -> WebDav:
+        return self.webdav_mngr.webdav
+
     def __init__(self, iface: QgisInterface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
         LOGGER.info("Plugin starting")
@@ -291,10 +296,7 @@ class Lizmap:
         # In production, version is coming from the UI, according to the current server selected
         # In production, this variable must be None
         self.version_mngr = LwcVersionManager(self.dlg, lwc_version)
-
-        self.webdav = WebDav()
-        # Give the dialog only the first time
-        self.webdav.setup_webdav_dialog(self.dlg)
+        self.webdav_mngr = WebDavManager(self.dlg, self.project)
 
         self.dock_html_preview = None
         self.version_checker = None
@@ -626,7 +628,6 @@ class Lizmap:
             index = self.dlg.server_combo.findData(server, ServerComboData.ServerUrl.value)
             if index:
                 self.dlg.server_combo.setCurrentIndex(index)
-                # self.check_webdav()
         self.dlg.server_combo.currentIndexChanged.connect(self.target_server_changed)
         self.dlg.repository_combo.currentIndexChanged.connect(self.target_repository_changed)
         self.target_server_changed()
@@ -787,7 +788,6 @@ class Lizmap:
         if current_version != old_version:
             self.lwc_version_changed()
         self.dlg.check_qgis_version(widget=True)
-        # self.check_webdav()
 
         if self.dock_html_preview:
             # Change the URL for the CSS
@@ -833,7 +833,6 @@ class Lizmap:
 
     def target_repository_changed(self):
         """ When the repository destination has changed in the selector. """
-        # self.check_webdav()
         # The new repository is only set when we save the CFG file
         # Otherwise, it will make a mess with the signals about the last repository used and the server refreshed list
         if self.dlg.page_dataviz.isVisible():
@@ -843,52 +842,10 @@ class Lizmap:
         self.version_mngr.lwc_version_changed(self.layers_table)
 
     def check_webdav(self):
-        """ Check if we can enable or the webdav, according to the current selected server. """
         # I hope temporary, to force the version displayed
         self.dlg.refresh_helper_target_version(self.lwc_version)
+        self.webdav_mngr.check_webdav()
 
-        def disable_upload_panel():
-            self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(True)
-            if self.dlg.mOptionsListWidget.currentRow() == Panels.Upload:
-                self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
-
-        if not self.webdav:
-            self.dlg.webdav_frame.setVisible(False)
-            self.dlg.button_upload_thumbnail.setVisible(False)
-            self.dlg.button_upload_action.setVisible(False)
-            self.dlg.button_upload_media.setVisible(False)
-            self.dlg.button_create_media_remote.setVisible(False)
-            disable_upload_panel()
-            return
-
-        self.webdav.config_project()
-
-        # The dialog is already given.
-        # We can check if WebDAV is supported.
-        # LOGGER.critical("Second check : {}".format(self.webdav.setup_webdav_dialog()))
-        if self.webdav.setup_webdav_dialog():
-            # self.dlg.group_upload.setVisible(True)
-            # self.dlg.send_webdav.setEnabled(True)
-            # self.dlg.send_webdav.setVisible(True)
-            self.dlg.webdav_frame.setVisible(True)
-            self.dlg.button_upload_thumbnail.setVisible(True)
-            self.dlg.button_upload_action.setVisible(True)
-            self.dlg.button_upload_media.setVisible(True)
-            self.dlg.button_create_media_remote.setVisible(True)
-            self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(False)
-        else:
-            # self.dlg.group_upload.setVisible(False)
-            # self.dlg.send_webdav.setChecked(False)
-            # self.dlg.send_webdav.setEnabled(False)
-            # self.dlg.send_webdav.setVisible(False)
-            self.dlg.webdav_frame.setVisible(False)
-            self.dlg.button_upload_thumbnail.setVisible(False)
-            self.dlg.button_upload_action.setVisible(False)
-            self.dlg.button_upload_media.setVisible(False)
-            self.dlg.button_create_media_remote.setVisible(False)
-            disable_upload_panel()
-
-    # noinspection PyPep8Naming
     def initGui(self):
         """Create action that will start plugin configuration"""
         LOGGER.debug("Plugin starting in the initGui")
@@ -1168,7 +1125,6 @@ class Lizmap:
 
         # Let's fix the dialog to the first panel
         self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
-        # self.check_webdav()
 
     def check_dialog_validity(self) -> bool:
         """ Check the global dialog validity if we have :
@@ -1183,7 +1139,6 @@ class Lizmap:
 
         Returns True if all tabs are available.
         """
-        # self.check_webdav()
         # Check the current selected server in the combobox
         if not self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value):
             msg = tr('Please add your Lizmap server in the table below.')
@@ -1218,7 +1173,6 @@ class Lizmap:
             self.dlg.allow_navigation(False, msg)
             return False
 
-        # self.check_webdav()
         self.dlg.allow_navigation(True)
         return True
 
@@ -3912,5 +3866,4 @@ class Lizmap:
         self.dlg.send_webdav.setChecked(auto_send)
 
         self.dlg.exec()
-        # self.check_webdav()
         return True
