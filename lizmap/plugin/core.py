@@ -4,7 +4,6 @@ import logging
 import os
 import re
 import tempfile
-import zipfile
 
 from functools import cached_property, partial
 from os.path import relpath
@@ -13,7 +12,6 @@ from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
     Dict,
-    List,
     Optional,
     Tuple,
     cast,
@@ -51,7 +49,6 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtWidgets import (
     QAction,
-    QApplication,
     QDialogButtonBox,
     QFileDialog,
     QLineEdit,
@@ -72,8 +69,6 @@ from lizmap.definitions.definitions import (
     UNSTABLE_VERSION_PREFIX,
     GroupNames,
     Html,
-    IgnLayer,
-    IgnLayers,
     LayerProperties,
     LwcVersions,
     ReleaseStatus,
@@ -89,9 +84,6 @@ from lizmap.definitions.lizmap_cloud import (
     CLOUD_MAX_PARENT_FOLDER,
     CLOUD_NAME,
     CLOUD_QGIS_MIN_RECOMMENDED,
-    TRAINING_PROJECT,
-    TRAINING_ZIP,
-    WorkshopType,
 )
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.online_help import (
@@ -194,6 +186,7 @@ from lizmap.toolbelt.version import (
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
+from . import baselayers
 from .dataviz import DatavizManager
 from .helpers import display_error
 from .layer_tree import LayerTreeManager
@@ -228,7 +221,6 @@ class Lizmap:
         return TrainingManager(
             dlg=self.dlg,
             project=self.project,
-            download_error=self.download_error,
         )
 
     @cached_property
@@ -303,7 +295,6 @@ class Lizmap:
         self.webdav = WebDav()
         # Give the dialog only the first time
         self.webdav.setup_webdav_dialog(self.dlg)
-        # self.check_webdav()
 
         self.dock_html_preview = None
         self.version_checker = None
@@ -395,17 +386,8 @@ class Lizmap:
         self.dlg.button_create_media_remote.clicked.connect(self.create_media_dir_remote)
         self.dlg.button_create_media_local.clicked.connect(self.create_media_dir_local)
 
-        osm_icon = load_icon('osm-32-32.png')
-        self.dlg.button_osm_mapnik.clicked.connect(self.add_osm_mapnik)
-        self.dlg.button_osm_mapnik.setIcon(osm_icon)
-        self.dlg.button_osm_opentopomap.clicked.connect(self.add_osm_opentopomap)
-        self.dlg.button_osm_opentopomap.setIcon(osm_icon)
-        self.dlg.button_ign_orthophoto.clicked.connect(
-            partial(self.add_french_ign_layer, IgnLayers.IgnOrthophoto))
-        self.dlg.button_ign_plan.clicked.connect(
-            partial(self.add_french_ign_layer, IgnLayers.IgnPlan))
-        self.dlg.button_ign_cadastre.clicked.connect(
-            partial(self.add_french_ign_layer, IgnLayers.IgnCadastre))
+        # Base layers
+        baselayers.configure_base_layers(self.dlg, self.layer_tree_mngr)
 
         self.dlg.button_run_checks.clicked.connect(self.check_project_clicked)
         self.dlg.button_copy.clicked.connect(self.copy_versions_clicked)
@@ -1141,8 +1123,7 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
-        self.project.layersAdded.connect(self.new_added_layers)
-        self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
+        self.layer_tree_mngr.init_gui()
 
         # Layouts
         # Not connecting the "layoutAdded" signal, it's done when opening the Lizmap plugin
@@ -1661,12 +1642,6 @@ class Lizmap:
         tw.removeRow(tw.currentRow())
         LOGGER.info('Removing one row in table "{}"'.format(key))
 
-    def new_added_layers(self, layers: List[QgsMapLayer]):
-        self.layer_tree_mngr.new_added_layers(layers)
-
-    def layer_renamed(self, _, name: str):
-        self.layer_tree_mngr.layer_renamed(name)
-
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
         Remove layers from tables when deleted from layer registry
@@ -1734,39 +1709,6 @@ class Lizmap:
 
     def disable_legacy_empty_base_layer(self):
         self.layer_tree_mngr.disable_legacy_empty_base_layer()
-
-    def add_osm_mapnik(self):
-        """ Add the OSM mapnik base layer. """
-        source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-        self._add_base_layer(
-            source,
-            'OpenStreetMap',
-            'https://openstreetmap.org',
-            '© ' + tr('OpenStreetMap contributors'))
-
-    def add_osm_opentopomap(self):
-        """ Add the OSM OpenTopoMap base layer. """
-        source = 'type=xyz&url=https://tile.opentopomap.org/{z}/{x}/{y}.png'
-        self._add_base_layer(
-            source,
-            'OpenTopoMap',
-            'https://openstreetmap.org',
-            '© ' + tr('OpenStreetMap contributors') + ', SRTM, © OpenTopoMap (CC-BY-SA)')
-
-    def add_french_ign_layer(self, layer: IgnLayer):
-        """ Add some French IGN layers. """
-        params = {
-            'crs': 'EPSG:3857',
-            'dpiMode': 7,
-            'format': layer.format,
-            'layers': layer.name,
-            'styles': 'normal',
-            'tileMatrixSet': 'PM',
-            'url': 'https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities',
-        }
-        # Do not use urlencode
-        source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
-        self._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
 
     def _add_base_layer(
         self,
@@ -3877,51 +3819,11 @@ class Lizmap:
         self.lwc_version_changed()
 
     def check_visibility_crs_3857(self):
-        """ Check if we display the warning about scales.
-
-        These checkboxes are deprecated starting from Lizmap Web Client 3.7.
-        """
-        visible = False
-        for item in self.crs_3857_base_layers_list.values():
-            if item.isChecked():
-                visible = True
-
-        current_version = self.lwc_version
-        if not current_version:
-            # No server yet
-            return
-
-        if current_version >= LwcVersions.Lizmap_3_7:
-            # We start showing some deprecated warnings if needed
-            self.dlg.warning_base_layer_deprecated.setVisible(True)
-
-            if visible:
-                # At least one checkbox was used, we still need to enable widgets
-                self.dlg.gb_externalLayers.setEnabled(True)
-            else:
-                # It means no checkboxes were used
-                self.dlg.gb_externalLayers.setEnabled(False)
-
-            if not self.dlg.cbAddEmptyBaselayer.isChecked():
-                # Only when the checkbox wasn't used before
-                self.dlg.cbAddEmptyBaselayer.setEnabled(False)
-
-            if self.dlg.cbStartupBaselayer.count() == 0:
-                # When no item in the combobox
-                self.dlg.cbStartupBaselayer.setEnabled(False)
-
-            if self.dlg.cbStartupBaselayer.count() == 1:
-                # When only one item in the combobox but it's the 'empty' base layer
-                if self.dlg.cbStartupBaselayer.itemText(0) == 'empty':
-                    self.dlg.cbStartupBaselayer.setEnabled(False)
-
-        else:
-            # We do nothing ...
-            self.dlg.warning_base_layer_deprecated.setVisible(False)
-            self.dlg.gb_externalLayers.setEnabled(True)
-            self.dlg.cbAddEmptyBaselayer.setEnabled(True)
-            self.dlg.cbStartupBaselayer.setEnabled(True)
-            self.dlg.scales_warning.setVisible(visible)
+        baselayers.check_visibility_crs_3857(
+            self.dlg,
+            self.crs_3857_base_layers_list,
+            self.lwc_version,
+        )
 
     def on_single_wms_toggled(self, checked: bool):
         """
@@ -3931,79 +3833,16 @@ class Lizmap:
         self.dlg.checkbox_exclude_basemaps_from_single_wms.setEnabled(checked)
 
     def on_baselayer_checkbox_change(self):
-        """
-        Add or remove a base-layer in cbStartupBaselayer combobox
-        when user change state of any base-layer related checkbox
-        """
-        if not self.layerList:
-            return
-
-        # Combo to fill up with base-layer
-        combo = self.dlg.cbStartupBaselayer
-
-        # First get selected item
-        idx = combo.currentIndex()
-        data = combo.itemData(idx)
-
-        # Clear the combo
-        combo.clear()
-        i = 0
-        blist = []
-
-        # Fill with checked base-layers
-        # 1/ QGIS layers
-        for k, v in self.layerList.items():
-            if not v['baseLayer']:
-                continue
-            combo.addItem(v['name'], v['name'])
-            blist.append(v['name'])
-            if data == k:
-                idx = i
-            i += 1
-
-        # 2/ External base-layers
-        for k, v in self.base_layer_widget_list.items():
-            if k != 'layer':
-                if v.isChecked():
-                    combo.addItem(k, k)
-                    blist.append(k)
-                    if data == k:
-                        idx = i
-                    i += 1
-
-        # Set last chosen item
-        combo.setCurrentIndex(idx)
-
+        blist = baselayers.on_baselayer_checkbox_change(
+            self.dlg,
+            self.layerList,
+            self.base_layer_widget_list,
+        )
         # Fill self.globalOptions
         self.global_options['startupBaselayer']['list'] = blist
 
     def set_startup_baselayer_from_config(self):
-        """
-        Read lizmap current cfg configuration
-        and set the startup base-layer if found
-        """
-        if not self.dlg.check_cfg_file_exists():
-            return
-
-        with open(self.dlg.cfg_file(), encoding='utf8') as f:
-            json_file_reader = f.read()
-
-        # noinspection PyBroadException
-        try:
-            json_content = json.loads(json_file_reader)
-            json_options = json_content['options']
-
-            base_layer = json_options.get('startupBaselayer')
-            if not base_layer:
-                return
-
-            i = self.dlg.cbStartupBaselayer.findData(base_layer)
-            if i < 0:
-                return
-
-            self.dlg.cbStartupBaselayer.setCurrentIndex(i)
-        except Exception:
-            pass
+        baselayers.set_startup_baselayer_from_config(self.dlg)
 
     def reinit_default_properties(self):
         for key in self.layers_table:
@@ -4025,72 +3864,6 @@ class Lizmap:
 
     def check_training_panel(self):
         self.training_mngr.check_training_panel()
-
-    def download_training_data_clicked(self, workshop_type: str = WorkshopType.ZipFile):
-        self.training_mngr.download_training_data_clicked(workshop_type)
-
-    def download_error(self, errors):
-        """ Display error message about the download. """
-        QApplication.restoreOverrideCursor()
-        self.dlg.display_message_bar(
-            CLOUD_NAME,
-            tr("Error while downloading the project : {}").format(','.join(errors)),
-            level=Qgis.MessageLevel.Critical
-        )
-        zip_file = f"The file qgis/{TRAINING_ZIP} was maybe not found on the server ?"
-        QMessageBox.warning(
-            self.dlg,
-            tr('Training'),
-            tr('Is the training well prepared by the trainer ?') + " " + zip_file,
-        )
-
-    def download_completed(self):
-        """ Show the success bar, for both kind of workshops. """
-        QApplication.restoreOverrideCursor()
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            self.dlg.display_message_bar(
-                CLOUD_NAME,
-                tr("Download and extract OK about the training project"),
-                level=Qgis.MessageLevel.Success
-            )
-
-    def download_completed_zip(self):
-        """ Extract the downloaded zip. """
-        file_path = self.training_folder_destination(WorkshopType.ZipFile)
-        with zipfile.ZipFile(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP), 'r') as zip_ref:
-            zip_ref.extractall(str(file_path))
-
-        cfg_file = file_path.joinpath(TRAINING_PROJECT + ".cfg")
-        if cfg_file.exists():
-            # Never apply a CFG downloaded from the internet if it's present in the ZIP by mistake
-            cfg_file.unlink()
-
-        # Make the project more unique
-        qgs_file = file_path.joinpath(TRAINING_PROJECT)
-        qgs_file.rename(Path(qgs_file.parent, qgs_file.stem + "_" + self.destination_name() + qgs_file.suffix))
-        self.download_completed()
-
-    def destination_name(self) -> str:
-        """ Return the destination cleaned name. """
-        destination = self.dlg.name_training_folder.text()
-        if not destination:
-            destination = self.dlg.name_training_folder.placeholderText()
-
-        destination = unaccent(destination)
-        # TODO: Use maketrans()
-        destination = destination.replace('-', '_')
-        destination = destination.replace(' ', '_')
-        destination = destination.replace("'", '_')
-        return destination.lower()
-
-    def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
-        self.training_mngr.training_folder_destination(workshop_type)
-
-    def open_training_folder_clicked(self, workshop_type: str = WorkshopType.ZipFile):
-        self.training_mngr.open_training_folder_clicked(workshop_type)
-
-    def open_training_project_clicked(self, workshop_type: str = WorkshopType.ZipFile):
-        self.training_mngr.open_training_project_clicked(workshop_type)
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""

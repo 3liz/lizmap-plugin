@@ -4,10 +4,11 @@ This module provides the TrainingManager class which handles training
 operations using the delegate pattern.
 """
 import tempfile
+import zipfile
 
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     Qgis,
@@ -26,10 +27,12 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import (
     QApplication,
+    QMessageBox,
 )
 from qgis.utils import OverrideCursor
 
-from lizmap.definitions.lizmap_cloud import (
+from ..definitions.definitions import ServerComboData
+from ..definitions.lizmap_cloud import (
     CLOUD_NAME,
     TRAINING_PROJECT,
     TRAINING_ZIP,
@@ -38,12 +41,11 @@ from lizmap.definitions.lizmap_cloud import (
     WORKSHOP_FOLDER_PATH,
     WorkshopType,
 )
-
-from ..definitions.definitions import ServerComboData
 from ..definitions.online_help import Panels
 from ..definitions.qgis_settings import Settings
 from ..saas import webdav_url
 from ..toolbelt.i18n import tr
+from ..toolbelt.strings import unaccent
 
 if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
@@ -63,12 +65,10 @@ class TrainingManager:
         *,
         dlg: "LizmapDialog",
         project: QgsProject,
-        download_error: Callable,
     ):
         """Initialize the TrainingManager."""
         self.dlg = dlg
         self.project = project
-        self.download_error = download_error
 
     def initialize(self, current_login: str) -> None:
         self.dlg.name_training_folder.setPlaceholderText(current_login)
@@ -275,3 +275,57 @@ class TrainingManager:
         downloader.downloadCompleted.connect(self.download_completed)
         downloader.startDownload()
         loop.exec()
+
+    def download_error(self, errors):
+        """ Display error message about the download. """
+        QApplication.restoreOverrideCursor()
+        self.dlg.display_message_bar(
+            CLOUD_NAME,
+            tr("Error while downloading the project : {}").format(','.join(errors)),
+            level=Qgis.MessageLevel.Critical
+        )
+        zip_file = f"The file qgis/{TRAINING_ZIP} was maybe not found on the server ?"
+        QMessageBox.warning(
+            self.dlg,
+            tr('Training'),
+            tr('Is the training well prepared by the trainer ?') + " " + zip_file,
+        )
+
+    def download_completed(self):
+        """ Show the success bar, for both kind of workshops. """
+        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            self.dlg.display_message_bar(
+                CLOUD_NAME,
+                tr("Download and extract OK about the training project"),
+                level=Qgis.MessageLevel.Success
+            )
+
+    def download_completed_zip(self):
+        """ Extract the downloaded zip. """
+        file_path = self.training_folder_destination(WorkshopType.ZipFile)
+        with zipfile.ZipFile(Path(tempfile.gettempdir()).joinpath(TRAINING_ZIP), 'r') as zip_ref:
+            zip_ref.extractall(str(file_path))
+
+        cfg_file = file_path.joinpath(TRAINING_PROJECT + ".cfg")
+        if cfg_file.exists():
+            # Never apply a CFG downloaded from the internet if it's present in the ZIP by mistake
+            cfg_file.unlink()
+
+        # Make the project more unique
+        qgs_file = file_path.joinpath(TRAINING_PROJECT)
+        qgs_file.rename(Path(qgs_file.parent, qgs_file.stem + "_" + self.destination_name() + qgs_file.suffix))
+        self.download_completed()
+
+    def destination_name(self) -> str:
+        """ Return the destination cleaned name. """
+        destination = self.dlg.name_training_folder.text()
+        if not destination:
+            destination = self.dlg.name_training_folder.placeholderText()
+
+        destination = unaccent(destination)
+        # TODO: Use maketrans()
+        destination = destination.replace('-', '_')
+        destination = destination.replace(' ', '_')
+        destination = destination.replace("'", '_')
+        return destination.lower()

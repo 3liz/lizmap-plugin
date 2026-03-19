@@ -97,7 +97,6 @@ class LayerTreeManager:
         with open(self.dlg.cfg_file(), encoding='utf8') as f:
             json_file_reader = f.read()
 
-        # noinspection PyBroadException
         try:
             sjson = json.loads(json_file_reader)
             return sjson['layers']
@@ -112,7 +111,7 @@ class LayerTreeManager:
             self.dlg.log_panel.append(message, abort=True, style=Html.P)
             return {}
 
-    # Init gui
+    # Called by LizmapDialog.__init__
     def initialize(self):
         # Disable checkboxes on the layer tab
         self.enable_check_box_in_layer_tab(False)
@@ -145,6 +144,11 @@ class LayerTreeManager:
         self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
         self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
+
+    # Called by LizmapDialog.initGui()
+    def init_gui(self):
+        self.project.layersAdded.connect(self.new_added_layers)
+        self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
 
     def new_added_layers(self, layers: List[QgsMapLayer]):
         """ Reminder to open the plugin to update the CFG file. """
