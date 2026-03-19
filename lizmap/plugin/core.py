@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import (
     Dict,
     Optional,
-    Tuple,
 )
 
 from qgis.core import (
@@ -30,10 +29,8 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     Qt,
     QTranslator,
-    QUrl,
 )
 from qgis.PyQt.QtGui import (
-    QDesktopServices,
     QGuiApplication,
     QIcon,
 )
@@ -43,7 +40,6 @@ from qgis.PyQt.QtWidgets import (
     QFileDialog,
     QLineEdit,
     QMessageBox,
-    QPushButton,
 )
 from qgis.utils import OverrideCursor
 
@@ -52,11 +48,9 @@ from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
 from lizmap.definitions.definitions import (
     DURATION_SUCCESS_BAR,
-    DURATION_WARNING_BAR,
     UNSTABLE_VERSION_PREFIX,
     LayerProperties,
     LwcVersions,
-    RepositoryComboData,
     ServerComboData,
 )
 from lizmap.definitions.edition import EditionDefinitions
@@ -81,7 +75,6 @@ from lizmap.dialogs.html_maptip import HtmlMapTipDialog
 from lizmap.dialogs.lizmap_popup import LizmapPopupDialog
 from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.news import NewConfigDialog
-from lizmap.dialogs.server_wizard import CreateFolderWizard
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
@@ -131,7 +124,6 @@ from lizmap.toolbelt.resources import (
     plugin_path,
     window_icon,
 )
-from lizmap.toolbelt.strings import human_size, path_to_url
 from lizmap.toolbelt.version import (
     qgis_version_info,
     version,
@@ -212,12 +204,14 @@ class Lizmap(
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
         self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=lwc_version)
 
+        # Initialize global options
+        self.global_options = global_options(self.dlg, lizmap_config)
+        self.layer_options_list = layer_options(self.dlg, lizmap_config, self.global_options)
+
         # Must only be used in tests
         # In production, version is coming from the UI, according to the current server selected
         # In production, this variable must be None
         self.initialize_lwc_versions(lwc_version)
-
-        self.initialize_webdav()
 
         self.dock_html_preview = None
         self.version_checker = None
@@ -246,11 +240,6 @@ class Lizmap(
         ]
 
         self.layers_table = dict()
-
-        # Initialize global options
-        self.global_options = global_options(self.dlg, lizmap_config)
-        self.layer_options_list = layer_options(self.dlg, lizmap_config, self.global_options)
-
         # Connect single WMS checkbox to enable/disable the exclude basemaps option
         self.dlg.checkbox_wms_single_request_all_layers.toggled.connect(self.on_single_wms_toggled)
         self.on_single_wms_toggled(self.dlg.checkbox_wms_single_request_all_layers.isChecked())
@@ -282,10 +271,6 @@ class Lizmap(
         self.dlg.button_refresh_all.setToolTip('Refresh all dates from the server.')
         self.dlg.button_refresh_all.clicked.connect(self.check_all_dates_dav)
 
-        self.dlg.button_refresh_date_webdav.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
-        self.dlg.button_refresh_date_webdav.setText('')
-        self.dlg.button_refresh_date_webdav.setToolTip('The date time of the file on the server.')
-        self.dlg.button_refresh_date_webdav.clicked.connect(self.check_latest_update_webdav)
         self.dlg.button_check_capabilities.setToolTip(
             'If the server selected in this dropdown menu has not the correct version displayed under, or if some '
             'server capabilities is missing.'
@@ -294,24 +279,8 @@ class Lizmap(
         self.dlg.button_check_capabilities.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.dlg.button_check_capabilities.clicked.connect(self.check_server_capabilities)
         # self.dlg.button_open_project.clicked.connect(self.open_web_browser_project)
-        self.dlg.button_create_repository.clicked.connect(self.create_new_repository)
-        self.dlg.button_create_repository.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
-        self.dlg.button_create_media_remote.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
-        self.dlg.button_create_media_local.setIcon(QIcon(":/images/themes/default/mActionNewFolder.svg"))
-        buttons = (
-            self.dlg.button_upload_thumbnail, self.dlg.button_upload_action, self.dlg.button_upload_webdav,
-            self.dlg.button_upload_media,
-        )
-        for button in buttons:
-            button.setIcon(load_icon('upload.svg'))
-            button.setText('')
-            self.dlg.set_tooltip_webdav(button)
-        self.dlg.button_upload_thumbnail.clicked.connect(self.upload_thumbnail)
-        self.dlg.button_upload_action.clicked.connect(self.upload_action)
-        self.dlg.button_upload_webdav.clicked.connect(self.send_files)
-        self.dlg.button_upload_media.clicked.connect(self.upload_media)
-        self.dlg.button_create_media_remote.clicked.connect(self.create_media_dir_remote)
-        self.dlg.button_create_media_local.clicked.connect(self.create_media_dir_local)
+
+        self.initialize_webdav()
 
         # Base layers
         self.configure_base_layers()
@@ -588,8 +557,8 @@ class Lizmap(
         self.check_dialog_validity()
         self.dlg.refresh_combo_repositories()
         self.check_training_panel()
-        if self.webdav:
-            self.check_webdav()
+
+        self.check_webdav()
 
         if current_metadata and current_metadata.get("info"):
             current_version = LwcVersions.find(current_metadata["info"].get("version", "_"))
@@ -739,7 +708,7 @@ class Lizmap(
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
         self.dlg.btSetExtentFromProject.setIcon(QIcon(":images/themes/default/propertyicons/overlay.svg"))
         # Dataviz options
-        self.dataviz_mngr.set_options(self.global_options)
+        self.set_dataviz_options(self.global_options)
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():
@@ -1437,410 +1406,6 @@ class Lizmap(
             level=Qgis.MessageLevel.Warning,
             duration=DURATION_SUCCESS_BAR,
         )
-
-    def send_files(self) -> Tuple[bool, str]:
-        """ Send both files to the server, designed for UI interaction.
-
-        With a waiting cursor and sending messages to the message bar.
-        """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            result, _, url = self.send_webdav()
-        return result, url
-
-    def create_new_repository(self):
-        """ Open wizard to create a new remote repository. """
-        dialog = CreateFolderWizard(
-            self.dlg,
-            webdav_server=self.webdav.dav_server,
-            auth_id=self.webdav.auth_id,
-            url=self.webdav.server_url(),
-        )
-        dialog.exec()
-        self.dlg.refresh_versions_button.click()
-
-    # def open_web_browser_project(self):
-    #     """ Open the project in the web browser. """
-    #     url = self.webdav.project_url()
-    #     # noinspection PyArgumentList
-    #     QDesktopServices.openUrl(QUrl(url))
-
-    def send_webdav(self) -> Tuple[bool, str, str]:
-        """ Sync the QGS and CFG file over the webdav. """
-        folder = self.dlg.current_repository(RepositoryComboData.Path)
-        if not folder:
-            # Maybe we are on a new server ?
-            return False, '', ''
-
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            qgis_exists, error = self.webdav.check_exists_qgs()
-        if error:
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
-            return False, '', ''
-
-        server = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
-        if not qgis_exists:
-            box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(window_icon() )
-            box.setWindowTitle(tr('The project is not published yet'))
-            box.setText(tr(
-                'The project <b>"{}"</b> does not exist yet on the server <br>'
-                '<b>"{}"</b> '
-                'in the folder <b>"{}"</b>.'
-                '<br><br>'
-                'Do you want to publish it for the first time in this directory ?'
-            ).format(
-                self.project.baseName(), server, folder))
-            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-            box.setDefaultButton(QMessageBox.StandardButton.No)
-            result = box.exec()
-            if result == QMessageBox.StandardButton.No:
-                return False, '', ''
-
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            flag, error, url = self.webdav.send_all_project_files()
-        if not flag:
-            # Error while sending files
-            LOGGER.error(error)
-            self.iface.messageBar().pushMessage('Lizmap', error, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
-            return False, error, ''
-
-        LOGGER.debug("Webdav has been OK : {}".format(url))
-        self.check_latest_update_webdav()
-
-        if flag and qgis_exists:
-            # Everything went fine
-            return True, '', url
-
-        # Only the first time if the project didn't exist before
-        # noinspection PyArgumentList
-        QDesktopServices.openUrl(QUrl(url))
-        return True, '', url
-
-    def create_media_dir_remote(self):
-        """ Create the remote "media" directory. """
-        directory = self.dlg.current_repository(RepositoryComboData.Path)
-        if not directory:
-            return
-
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            result, msg = self.webdav.file_stats_media()
-        if result is not None:
-            self.dlg.display_message_bar(
-                'Lizmap',
-                tr('The "media" directory was already existing on the server. Please check with a file browser.'),
-                level=Qgis.MessageLevel.Info,
-                duration=DURATION_WARNING_BAR,
-                more_details=msg,
-            )
-            return
-
-        box = QMessageBox(self.dlg)
-        box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(window_icon() )
-        box.setWindowTitle(tr('Create "media" directory on the server'))
-        box.setText(tr(
-            'Are you sure you want to create the "media" directory on the server <strong>{server}</strong> in the '
-            'Lizmap repository <strong>{name}</strong> ?'
-        ).format(
-            server=self.dlg.server_combo.currentText(),
-            name=self.dlg.repository_combo.currentText()
-        ))
-        box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        box.setDefaultButton(QMessageBox.StandardButton.No)
-        result = box.exec()
-        if result == QMessageBox.StandardButton.No:
-            return
-
-        directory += 'media/'
-        result, msg = self.webdav.make_dir(directory)
-        if not result and msg:
-            self.dlg.display_message_bar('Lizmap', msg, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
-            return
-
-        self.dlg.display_message_bar(
-            'Lizmap',
-            tr('The "media" directory has been created'), level=Qgis.MessageLevel.Success, duration=DURATION_WARNING_BAR)
-
-    def create_media_dir_local(self):
-        """ Create the local "media" directory. """
-        media = Path(self.project.fileName()).parent.joinpath('media')
-        media.mkdir(exist_ok=True)
-        self.dlg.display_message_bar(
-            'Lizmap',
-            tr('The local <a href="file://{}">"media"</a> directory has been created').format(media),
-            level=Qgis.MessageLevel.Success,
-            duration=DURATION_WARNING_BAR,
-        )
-
-    def upload_media(self):
-        """ Upload the current media path on the server. """
-        current_path = self.dlg.inLayerLink.text()
-
-        # On Windows, it's like media\photo.png
-        # TODO check line below
-        # current_path = current_path.replace('\\', '/')
-
-        if not current_path.startswith('media/'):
-            self.dlg.display_message_bar(
-                'Lizmap',
-                tr('Path not starting by "media/"'),
-                level=Qgis.MessageLevel.Critical,
-                duration=DURATION_WARNING_BAR
-            )
-            return
-
-        current_file = Path(self.project.absolutePath()).joinpath(current_path)
-        if not current_file.exists():
-            self.dlg.display_message_bar(
-                'Lizmap',
-                tr('Path does not exist'),
-                level=Qgis.MessageLevel.Critical,
-                duration=DURATION_WARNING_BAR
-            )
-            return
-
-        if not current_file.is_file():
-            self.dlg.display_message_bar(
-                'Lizmap',
-                tr('Path is not a file'),
-                level=Qgis.MessageLevel.Critical,
-                duration=DURATION_WARNING_BAR
-            )
-            return
-
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            result, message = self.webdav.send_media(current_file)
-        if not result and message:
-            self.dlg.display_message_bar('Lizmap', message, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
-            return
-
-        msg = tr("File send")
-        self.dlg.display_message_bar(
-            'Lizmap',
-            f'<a href="{self.webdav.media_url(current_path)}">{msg}</a>',
-            level=Qgis.MessageLevel.Success,
-            duration=DURATION_WARNING_BAR,
-        )
-        return
-
-    def upload_thumbnail(self):
-        """ Upload the thumbnail on the server. """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            result, message = self.webdav.send_thumbnail()
-        if not result and message:
-            self.dlg.display_message_bar('Lizmap', message, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
-            return
-
-        if result:
-            box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Icon.Information)
-            box.setWindowIcon(window_icon() )
-            box.setWindowTitle(tr('Cache about the thumbnail'))
-            box.setText(tr(
-                'The upload of the thumbnail is successful. You can open it in your <a href="{}">web-browser</a>.'
-                ).format(message) + '<br><br>'
-                + tr(
-                'However, you might have some cache in your web-browser, for the next {number} hours. You should do a '
-                'CTRL + F5 (or CTRL + MAJ + R or similar) to force the refresh of the page without using the '
-                'web-browser cache.'
-            ).format(number=24))
-            box.setStandardButtons(QMessageBox.StandardButton.Ok)
-            box.setDefaultButton(QMessageBox.StandardButton.Ok)
-            box.exec()
-
-            file_stats, error = self.webdav.file_stats_thumbnail()
-            if error:
-                LOGGER.error(error)
-                return
-            self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, file_stats.last_modified_pretty)
-            self.dlg.line_thumbnail_date.setText(file_stats.last_modified_pretty)
-
-    def upload_action(self):
-        """ Upload the action file on the server. """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            result, error = self.webdav.send_action()
-        if not result and error:
-            self.dlg.display_message_bar('Lizmap', error, level=Qgis.MessageLevel.Critical, duration=DURATION_WARNING_BAR)
-            return
-
-        if result:
-            self.dlg.display_message_bar(
-                'Lizmap',
-                tr('Upload of the action file is successful.'),
-                level=Qgis.MessageLevel.Success,
-                duration=DURATION_WARNING_BAR
-            )
-            file_stats, error = self.webdav.file_stats_action()
-            if error:
-                LOGGER.error(error)
-                return
-            self.dlg.set_tooltip_webdav(self.dlg.button_upload_action, file_stats.last_modified_pretty)
-            self.dlg.line_action_date.setText(file_stats.last_modified_pretty)
-
-    def _question_remove_remote_file(self) -> bool:
-        """ Question to confirme deletion on the remote server. """
-        box = QMessageBox(self.dlg)
-        box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(window_icon() )
-        box.setWindowTitle(tr('Remove a remote file'))
-        box.setText(tr('Are you sure you want to remove the remote file ?'))
-        box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        box.setDefaultButton(QMessageBox.StandardButton.No)
-        result = box.exec()
-        return result == QMessageBox.StandardButton.No
-
-    def remove_remote_file(self, button: QPushButton):
-        """ Remove a remote file. """
-        if self._question_remove_remote_file():
-            return
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            if 'qgs' in button.objectName():
-                self.webdav.remove_qgs()
-                self.check_latest_update_webdav()
-            elif 'cfg' in button.objectName():
-                self.webdav.remove_cfg()
-                self._refresh_cfg()
-            elif 'action' in button.objectName():
-                self.webdav.remove_action()
-                self._refresh_action()
-            elif 'thumbnail' in button.objectName():
-                self.webdav.remove_thumbnail()
-                self._refresh_thumbnail()
-
-    def remove_remote_layer_index(self, row: int):
-        """ Remove a layer from the remote server. """
-        if self._question_remove_remote_file():
-            return
-        relative_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.RELATIVE_PATH)
-        self.webdav.remove_file(str(relative_path_layer))
-        self.refresh_single_layer(row)
-
-    def refresh_single_layer(self, row: int):
-        """ Refresh a single layer status. """
-        relative_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.RELATIVE_PATH)
-        # Refresh date and size from the server
-        result, error = self.webdav.file_stats(path_to_url(relative_path_layer))
-        if result:
-            self.dlg.table_files.file_status(row, result.last_modified_pretty, human_size(result.content_length))
-        elif result is None and not error:
-            self.dlg.table_files.file_status(row, tr('Error'), tr("Not found on the server"))
-        else:
-            self.dlg.table_files.file_status(row, tr('Error'), error)
-
-    def refresh_all_layers(self):
-        """ Refresh the status of all layers. """
-        for row in range(self.dlg.table_files.rowCount()):
-            self.dlg.table_files.file_status(row, tr("Work in progress"), tr("Work in progress"))
-
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            for row in range(self.dlg.table_files.rowCount()):
-                self.refresh_single_layer(row)
-
-    def send_all_layers(self):
-        """ Send all layers from the table on the server. """
-        for row in range(self.dlg.table_files.rowCount()):
-            self.dlg.table_files.file_status(row, tr("Work in progress"), tr("Work in progress"))
-
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            for row in range(self.dlg.table_files.rowCount()):
-                relative_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.RELATIVE_PATH)
-                absolute_path_layer = self.dlg.table_files.item(row, 1).data(self.dlg.table_files.ABSOLUTE_PATH)
-
-                # Create recursive directories
-                self.webdav.make_dirs_recursive(relative_path_layer, exists_ok=True)
-
-                # Upload the layer path
-                self.webdav.put_file(absolute_path_layer, relative_path_layer)
-
-                # Refresh date and size from the server
-                result, error = self.webdav.file_stats(path_to_url(relative_path_layer))
-                if result:
-                    self.dlg.table_files.file_status(row, result.last_modified_pretty, human_size(result.content_length))
-                elif result is None and not error:
-                    self.dlg.table_files.file_status(row, tr('Error'), tr("Not found on the server"))
-                else:
-                    self.dlg.table_files.file_status(row, tr('Error'), error)
-
-    def _refresh_cfg(self):
-        """ Refresh CFG. """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            directory = self.dlg.current_repository()
-            self.dlg.line_cfg_date.setText("")
-            result, error = self.webdav.file_stats_cfg()
-            if result:
-                self.dlg.line_cfg_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
-            elif result is None and not error:
-                self.dlg.line_cfg_date.setText(tr(
-                    "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
-            else:
-                self.dlg.line_cfg_date.setText(error)
-
-    def _refresh_thumbnail(self):
-        """ Refresh thumbnail. """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            directory = self.dlg.current_repository()
-            self.dlg.line_thumbnail_date.setText("")
-            result, error = self.webdav.file_stats_thumbnail()
-            if result:
-                self.dlg.line_thumbnail_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
-                self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, result.last_modified_pretty)
-            elif result is None and not error:
-                self.dlg.line_thumbnail_date.setText(tr(
-                    "Project thumbnail {name} not found in {folder}").format(
-                    name=self.project.baseName(),
-                    folder=directory)
-                )
-            else:
-                self.dlg.line_thumbnail_date.setText(error)
-
-    def _refresh_action(self):
-        """ Refresh action. """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            self.dlg.line_action_date.setText("")
-            result, error = self.webdav.file_stats_action()
-            if result:
-                self.dlg.line_action_date.setText(result.last_modified_pretty)
-                self.dlg.set_tooltip_webdav(self.dlg.button_upload_action, result.last_modified_pretty)
-            else:
-                self.dlg.line_action_date.setText(error)
-
-    def check_all_dates_dav(self):
-        """ Check all dates on the Web DAV server. """
-        self.check_latest_update_webdav()
-        self._refresh_cfg()
-        self._refresh_thumbnail()
-        self._refresh_action()
-
-        # Media
-        self.dlg.line_media_date.setText("")
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            result, error = self.webdav.file_stats_media()
-            if result:
-                self.dlg.line_media_date.setText(result.last_modified_pretty)
-            else:
-                self.dlg.line_media_date.setText(error)
-
-    def check_latest_update_webdav(self):
-        """ Check the latest date about QGS file on the server. """
-        with OverrideCursor(Qt.CursorShape.WaitCursor):
-            self.dlg.line_qgs_date.setText("")
-            result, error = self.webdav.file_stats_qgs()
-            if result:
-                url = self.webdav.project_url()
-                self.dlg.webdav_last_update.setText(f'<a href="{url}">{result.last_modified_pretty}</a>')
-                self.dlg.webdav_last_update.setOpenExternalLinks(True)
-                self.dlg.set_tooltip_webdav(self.dlg.button_upload_webdav, result.last_modified_pretty)
-                self.dlg.line_qgs_date.setText(f"{result.last_modified_pretty} : {human_size(result.content_length)}")
-            elif result is None and not error:
-                directory = self.dlg.current_repository()
-                self.dlg.line_qgs_date.setText(tr(
-                    "Project {name} not found in {folder}").format(name=self.project.baseName(), folder=directory))
-            else:
-                self.dlg.webdav_last_update.setText(tr("Error"))
-                self.dlg.webdav_last_update.setToolTip(error)
-                self.dlg.line_qgs_date.setText(error)
-                LOGGER.error(error)
 
     def check_server_capabilities(self):
         """ If we are stuck on the dialog, let's try manually ..."""
