@@ -187,8 +187,8 @@ from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
 from . import baselayers
+from . import helpers
 from .dataviz import DatavizManager
-from .helpers import display_error
 from .layer_tree import LayerTreeManager
 from .lwc_versions import LwcVersionManager
 from .options import global_options, layer_options
@@ -431,33 +431,12 @@ class Lizmap:
                 elif item['wType'] == 'fields':
                     control.fieldChanged.connect(slot)
 
-        self.crs_3857_base_layers_list = {
-            'osm-mapnik': self.dlg.cbOsmMapnik,
-            'opentopomap': self.dlg.cb_open_topo_map,
-            'google-street': self.dlg.cbGoogleStreets,
-            'google-satellite': self.dlg.cbGoogleSatellite,
-            'google-hybrid': self.dlg.cbGoogleHybrid,
-            'google-terrain': self.dlg.cbGoogleTerrain,
-            'bing-road': self.dlg.cbBingStreets,
-            'bing-aerial': self.dlg.cbBingSatellite,
-            'bing-hybrid': self.dlg.cbBingHybrid,
-            'ign-plan': self.dlg.cbIgnStreets,
-            'ign-photo': self.dlg.cbIgnSatellite,
-            'ign-scan': self.dlg.cbIgnTerrain,
-            'ign-cadastral': self.dlg.cbIgnCadastral,
-        }
-        for item in self.crs_3857_base_layers_list.values():
-            slot = self.check_visibility_crs_3857
-            item.stateChanged.connect(slot)
-        self.check_visibility_crs_3857()
+        self.baselayers_mngr = baselayers.BaseLayersManager(
+            self.dlg,
+            self.version_mngr,
+        )
 
-        # Connect base-layer checkboxes
-        self.base_layer_widget_list = {
-            'layer': self.dlg.cbLayerIsBaseLayer,
-            'empty': self.dlg.cbAddEmptyBaselayer
-        }
-        self.base_layer_widget_list.update(self.crs_3857_base_layers_list)
-        for item in self.base_layer_widget_list.values():
+        for item in self.baselayers_mngr.base_layer_widget_list.values():
             slot = self.on_baselayer_checkbox_change
             item.stateChanged.connect(slot)
 
@@ -815,7 +794,7 @@ class Lizmap:
             self.dlg.label_helper_list_group.setToolTip(tooltip)
 
         # For deprecated features in LWC 3.7 about base layers
-        self.check_visibility_crs_3857()
+        self.baselayers_mngr.check_visibility_crs_3857()
 
         if not current_metadata:
             # In CI, to make tests happy
@@ -1260,60 +1239,7 @@ class Lizmap:
         line_edit.setText(text)
 
     def show_help_question(self):
-        """ According to the Lizmap server, ask the user which online help to open. """
-        index = self.dlg.mOptionsListWidget.currentRow()
-        page = MAPPING_INDEX_DOC.get(index)
-        current_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
-        if not is_lizmap_cloud(current_metadata) and not page:
-            self.show_help()
-            return
-
-        box = QMessageBox(self.dlg)
-        box.setIcon(QMessageBox.Icon.Question)
-        box.setWindowIcon(window_icon() )
-        box.setWindowTitle(tr('Online documentation'))
-        box.setText(tr(
-            'Different documentations are possible. Which online documentation would you like to open ?'
-        ))
-
-        if is_lizmap_cloud(current_metadata):
-            cloud_help = QPushButton("Lizmap Hosting")
-            box.addButton(cloud_help, QMessageBox.ButtonRole.NoRole)
-
-        if page:
-            text = self.dlg.mOptionsListWidget.item(index).text()
-            current_page = QPushButton(tr("Page '{}' in the plugin").format(text))
-            box.addButton(current_page, QMessageBox.ButtonRole.NoRole)
-        else:
-            current_page = None
-
-        lwc_help = QPushButton("Lizmap Web Client")
-        box.addButton(lwc_help, QMessageBox.ButtonRole.YesRole)
-        box.setStandardButtons(QMessageBox.StandardButton.Cancel)
-
-        result = box.exec()
-
-        if result == QMessageBox.StandardButton.Cancel:
-            return
-
-        if box.clickedButton() == lwc_help:
-            self.show_help()
-        elif box.clickedButton() == current_page:
-            self.show_help(page)
-        else:
-            self.show_help_cloud()
-
-    @staticmethod
-    def show_help(page=None):
-        """ Opens the HTML online help with default browser and language. """
-        # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_lwc_help(page))
-
-    @staticmethod
-    def show_help_cloud():
-        """ Opens the HTML online cloud help with default browser and language. """
-        # noinspection PyArgumentList
-        QDesktopServices.openUrl(online_cloud_help())
+        helpers.show_help_question(self.dlg)
 
     def enable_check_box_in_layer_tab(self, value: bool):
         self.layer_tree_mngr.enable_check_box_in_layer_tab(value)
@@ -1564,7 +1490,7 @@ class Lizmap:
 
         # Fill base-layer startup
         self.on_baselayer_checkbox_change()
-        self.set_startup_baselayer_from_config()
+        self.baselayers_mngr.set_startup_baselayer_from_config()
         self.dlg.default_lizmap_folder()
 
         # The return is used in tests
@@ -1656,7 +1582,7 @@ class Lizmap:
         return True
 
     def display_error(self, message: str):
-        display_error(self.dlg, message)
+        helpers.display_error(self.dlg, message)
 
     def populate_layer_tree(self) -> Dict:
         return self.layer_tree_mngr.populate_layer_tree()
@@ -3772,13 +3698,6 @@ class Lizmap:
         self.dlg.refresh_helper_target_version(current_version)
         self.lwc_version_changed()
 
-    def check_visibility_crs_3857(self):
-        baselayers.check_visibility_crs_3857(
-            self.dlg,
-            self.crs_3857_base_layers_list,
-            self.lwc_version,
-        )
-
     def on_single_wms_toggled(self, checked: bool):
         """
         Enable or disable the exclude basemaps checkbox based on single WMS state.
@@ -3787,16 +3706,9 @@ class Lizmap:
         self.dlg.checkbox_exclude_basemaps_from_single_wms.setEnabled(checked)
 
     def on_baselayer_checkbox_change(self):
-        blist = baselayers.on_baselayer_checkbox_change(
-            self.dlg,
-            self.layerList,
-            self.base_layer_widget_list,
-        )
+        blist = self.baselayers_mngr.on_baselayer_checkbox_change(self.layerList)
         # Fill self.globalOptions
         self.global_options['startupBaselayer']['list'] = blist
-
-    def set_startup_baselayer_from_config(self):
-        baselayers.set_startup_baselayer_from_config(self.dlg)
 
     def reinit_default_properties(self):
         for key in self.layers_table:

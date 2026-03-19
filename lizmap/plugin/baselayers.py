@@ -23,11 +23,60 @@ from .. import logger
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import load_icon
 from .layer_tree import LayerTreeManager
+from .lwc_versions import LwcVersionManager
+
+
+class BaseLayersManager:
+
+    def __init__(self, dlg: "LizmapDialog", version_mngr: LwcVersionManager):
+        self.dlg = dlg
+        self.version_mngr = version_mngr
+        self.crs_3857_base_layers_list = {
+            'osm-mapnik': self.dlg.cbOsmMapnik,
+            'opentopomap': self.dlg.cb_open_topo_map,
+            'google-street': self.dlg.cbGoogleStreets,
+            'google-satellite': self.dlg.cbGoogleSatellite,
+            'google-hybrid': self.dlg.cbGoogleHybrid,
+            'google-terrain': self.dlg.cbGoogleTerrain,
+            'bing-road': self.dlg.cbBingStreets,
+            'bing-aerial': self.dlg.cbBingSatellite,
+            'bing-hybrid': self.dlg.cbBingHybrid,
+            'ign-plan': self.dlg.cbIgnStreets,
+            'ign-photo': self.dlg.cbIgnSatellite,
+            'ign-scan': self.dlg.cbIgnTerrain,
+            'ign-cadastral': self.dlg.cbIgnCadastral,
+        }
+
+        for item in self.crs_3857_base_layers_list.values():
+            slot = self.check_visibility_crs_3857
+            item.stateChanged.connect(slot)
+
+        self.check_visibility_crs_3857()
+
+        # Connect base-layer checkboxes
+        self.base_layer_widget_list = {
+            'layer': self.dlg.cbLayerIsBaseLayer,
+            'empty': self.dlg.cbAddEmptyBaselayer
+        }
+        self.base_layer_widget_list.update(self.crs_3857_base_layers_list)
+
+    def check_visibility_crs_3857(self):
+        check_visibility_crs_3857(
+            self.dlg,
+            self.crs_3857_base_layers_list,
+            self.version_mngr.lwc_version,
+        )
+
+    def on_baselayer_checkbox_change(self, layerList: Dict) -> List:
+        return on_baselayer_checkbox_change(self.dlg, layerList, self.base_layer_widget_list)
+     
+    def set_startup_baselayer_from_config(self):
+        set_startup_baselayer_from_config(self.dlg)
+
 
 #
 # Base layers
 #
-
 
 def configure_base_layers(dlg: "LizmapDialog", layer_mngr: LayerTreeManager):
     osm_icon = load_icon('osm-32-32.png')
