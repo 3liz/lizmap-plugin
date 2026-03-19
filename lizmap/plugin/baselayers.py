@@ -186,13 +186,12 @@ def on_baselayer_checkbox_change(
 
     # 2/ External base-layers
     for k, v in base_layer_widget_list.items():
-        if k != "layer":
-            if v.isChecked():
-                combo.addItem(k, k)
-                blist.append(k)
-                if data == k:
-                    idx = i
-                i += 1
+        if k != "layer" and v.isChecked():
+            combo.addItem(k, k)
+            blist.append(k)
+            if data == k:
+                idx = i
+            i += 1
 
     # Set last chosen item
     combo.setCurrentIndex(idx)
@@ -260,10 +259,9 @@ def check_visibility_crs_3857(
             # When no item in the combobox
             dlg.cbStartupBaselayer.setEnabled(False)
 
-        if dlg.cbStartupBaselayer.count() == 1:
-            # When only one item in the combobox but it's the 'empty' base layer
-            if dlg.cbStartupBaselayer.itemText(0) == "empty":
-                dlg.cbStartupBaselayer.setEnabled(False)
+        # When only one item in the combobox but it's the 'empty' base layer
+        if dlg.cbStartupBaselayer.count() == 1 and dlg.cbStartupBaselayer.itemText(0) == "empty":
+            dlg.cbStartupBaselayer.setEnabled(False)
 
     else:
         # We do nothing ...

@@ -630,10 +630,9 @@ class TableManager:
 
                 # By default, some functions might be called everytime : feature count, min/max values of a field
                 update = self.definitions.layer_config[key].get('update_on_saving', True)
-                if key not in layer_data or layer_data[key] is None or layer_data[key] == '':
-                    if not update:
-                        # Only the first time if the value wasn't set, we compute the value anyway
-                        update = True
+                if not update and (key not in layer_data or layer_data[key] is None or layer_data[key] == ''):
+                    # Only the first time if the value wasn't set, we compute the value anyway
+                    update = True
 
                 if default_value is not None and hasattr(default_value, '__call__') and is_read_only and update:
                     # Value is a for now a function, we need to evaluate it
@@ -647,15 +646,15 @@ class TableManager:
                     else:
                         layer_data[key] = default_value(vector_layer)
 
-                    if isinstance(layer_data[key], bool):
-                        if not self.definitions.layer_config[key].get('use_json', False):
-                            # Ticket #176 about true boolean
-                            layer_data[key] = str(True) if layer_data[key] else str(False)
+                    if isinstance(layer_data[key], bool) \
+                        and not self.definitions.layer_config[key].get('use_json', False):
+                        # Ticket #176 about true boolean
+                        layer_data[key] = str(True) if layer_data[key] else str(False)
 
-            if self.definitions.key() == 'datavizLayers':
-                if layer_data['type'] == GraphType.Box.value['data']:
-                    if layer_data['aggregation'] == AggregationType.No.value['data']:
-                        layer_data['aggregation'] = ''
+            if self.definitions.key() == 'datavizLayers' \
+                and layer_data['type'] == GraphType.Box.value['data'] \
+                and layer_data['aggregation'] == AggregationType.No.value['data']:
+                layer_data['aggregation'] = ''
 
             if self.definitions.key() == 'editionLayers':
                 capabilities_keys = [
@@ -679,42 +678,40 @@ class TableManager:
                 vector_layer = self.project.mapLayer(layer_data['layerId'])
                 layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
 
-            if self.definitions.key() == 'datavizLayers':
-                if version <= LwcVersions.Lizmap_3_3:
-                    traces = layer_data.pop('traces')
-                    for j, trace in enumerate(traces):
-                        for key in trace:
-                            definition = self.definitions.layer_config[key]
-                            if j == 0:
-                                json_key = definition['plural'].format('')
-                                if json_key.endswith('_'):
-                                    # If the plural is at the end
-                                    json_key = json_key[:-1]
-                            else:
-                                json_key = definition['plural'].format(j + 1)
+            if version <= LwcVersions.Lizmap_3_3 and self.definitions.key() == 'datavizLayers':
+                traces = layer_data.pop('traces')
+                for j, trace in enumerate(traces):
+                    for key in trace:
+                        definition = self.definitions.layer_config[key]
+                        if j == 0:
+                            json_key = definition['plural'].format('')
+                            if json_key.endswith('_'):
+                                # If the plural is at the end
+                                json_key = json_key[:-1]
+                        else:
+                            json_key = definition['plural'].format(j + 1)
 
-                            layer_data[json_key] = trace[key]
+                        layer_data[json_key] = trace[key]
 
-            if self.definitions.key() == 'formFilterLayers':
-                if version < LwcVersions.Lizmap_3_7:
-                    # We need to change keys to write in the legacy format
-                    if layer_data.get('type') == 'numeric':
-                        if layer_data.get('end_field'):
-                            # Incompatible with this format, but we don't remove it just in case
-                            LOGGER.error(
-                                "A end_field is defined for the form filter. This is not compatible for this version "
-                                "of Lizmap Web Client"
-                            )
-                        if layer_data.get('start_field'):
-                            layer_data['field'] = layer_data.get('start_field')
-                            del layer_data['start_field']
-                    elif layer_data.get('type') == 'date':
-                        if layer_data.get('start_field'):
-                            layer_data['min_date'] = layer_data.get('start_field')
-                            del layer_data['start_field']
-                        if layer_data.get('end_field'):
-                            layer_data['max_date'] = layer_data.get('end_field')
-                            del layer_data['end_field']
+            if version < LwcVersions.Lizmap_3_7 and self.definitions.key() == 'formFilterLayers':
+                # We need to change keys to write in the legacy format
+                if layer_data.get('type') == 'numeric':
+                    if layer_data.get('end_field'):
+                        # Incompatible with this format, but we don't remove it just in case
+                        LOGGER.error(
+                            "A end_field is defined for the form filter. "
+                            "This is not compatible for this version of Lizmap Web Client"
+                        )
+                    if layer_data.get('start_field'):
+                        layer_data['field'] = layer_data.get('start_field')
+                        del layer_data['start_field']
+                elif layer_data.get('type') == 'date':
+                    if layer_data.get('start_field'):
+                        layer_data['min_date'] = layer_data.get('start_field')
+                        del layer_data['start_field']
+                    if layer_data.get('end_field'):
+                        layer_data['max_date'] = layer_data.get('end_field')
+                        del layer_data['end_field']
 
             if export_legacy_single_row:
                 if self.definitions.key() == 'atlas':
@@ -835,12 +832,10 @@ class TableManager:
     def _from_json_legacy_form_filter(data):
         """ Read form filter and transform it if needed. """
         for layer in data.get('layers'):
-            if layer.get('type') == 'numeric':
-
-                if layer.get('field'):
-                    # We upgrade from < 3.7 to 3.7 format
-                    layer['start_field'] = layer['field']
-                    del layer['field']
+            if layer.get('type') == 'numeric' and layer.get('field'):
+                # We upgrade from < 3.7 to 3.7 format
+                layer['start_field'] = layer['field']
+                del layer['field']
 
             if layer.get('type') == 'date':
                 if layer.get('min_date'):

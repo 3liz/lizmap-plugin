@@ -1044,9 +1044,8 @@ class ServerWizard(BaseWizard):
         # We can either have [https://ilovecookie.org/] or [https://ilovecookie.org] in the urls.ini
         config = configparser.ConfigParser()
         config.read(ini)
-        if base_url not in config.sections():
-            if base_url[0:-1] not in config.sections():
-                return None
+        if base_url not in config.sections() and base_url[0:-1] not in config.sections():
+            return None
 
         LOGGER.info("Found a server override for server <a href='{0}'>{0}</a>".format(base_url))
 

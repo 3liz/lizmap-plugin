@@ -161,16 +161,15 @@ class ConfigFileManager(LizmapProtocol):
                         else:
                             item["widget"].setText(str(json_options[key]))
 
-                if item["wType"] == "extent":
-                    if key in json_options:
-                        extent = QgsRectangle(
-                            json_options[key][0],
-                            json_options[key][1],
-                            json_options[key][2],
-                            json_options[key][3],
-                        )
-                        item["widget"].setOriginalExtent(extent, self.project.crs())
-                        item["widget"].setOutputExtentFromOriginal()
+                if item["wType"] == "extent" and key in json_options:
+                    extent = QgsRectangle(
+                        json_options[key][0],
+                        json_options[key][1],
+                        json_options[key][2],
+                        json_options[key][3],
+                    )
+                    item["widget"].setOriginalExtent(extent, self.project.crs())
+                    item["widget"].setOutputExtentFromOriginal()
 
                 if item["wType"] == "wysiwyg":
                     item["widget"].set_html_content(str(item["default"]))
@@ -218,20 +217,16 @@ class ConfigFileManager(LizmapProtocol):
 
         # Set layer combobox
         for key, item in self.global_options.items():
-            if item.get("widget"):
-                if item["wType"] == "layers":
-                    if key in json_options:
-                        for lyr in self.project.mapLayers().values():
-                            if lyr.id() == json_options[key]:
-                                item["widget"].setLayer(lyr)
-                                break
+            if "widget" in item and item["wType"] == "layers" and key in json_options:
+                for lyr in self.project.mapLayers().values():
+                    if lyr.id() == json_options[key]:
+                        item["widget"].setLayer(lyr)
+                        break
 
         # Then set field combobox
         for key, item in self.global_options.items():
-            if item.get("widget"):
-                if item["wType"] == "fields":
-                    if key in json_options:
-                        item["widget"].setField(str(json_options[key]))
+            if "widget" in item and item["wType"] == "fields" and key in json_options:
+                item["widget"].setField(str(json_options[key]))
 
         self.dlg.check_ign_french_free_key()
         self.dlg.follow_map_theme_toggled()
@@ -362,25 +357,24 @@ class ConfigFileManager(LizmapProtocol):
             )
             return False
 
-        if not self.is_dev_version:
-            if not self.server_manager.check_lwc_version(lwc_version.value):
-                QMessageBox.critical(
-                    self.dlg,
-                    tr("Lizmap Target Version"),
-                    "{}\n\n{}\n\n{}".format(
-                        tr(
-                            "Your Lizmap Web Client target version {version} has not been "
-                            "found in the server table."
-                        ).format(version=lwc_version.value),
-                        tr(
-                            "Either check your Lizmap Web Client target version in the first "
-                            "panel of the plugin or check you have provided the correct server URL."
-                        ),
-                        stop_process,
+        if not self.is_dev_version and not self.server_manager.check_lwc_version(lwc_version.value):
+            QMessageBox.critical(
+                self.dlg,
+                tr("Lizmap Target Version"),
+                "{}\n\n{}\n\n{}".format(
+                    tr(
+                        "Your Lizmap Web Client target version {version} has not been "
+                        "found in the server table."
+                    ).format(version=lwc_version.value),
+                    tr(
+                        "Either check your Lizmap Web Client target version in the first "
+                        "panel of the plugin or check you have provided the correct server URL."
                     ),
-                    QMessageBox.StandardButton.Ok,
-                )
-                return False
+                    stop_process,
+                ),
+                QMessageBox.StandardButton.Ok,
+            )
+            return False
 
         # global project option checking
         is_valid, message = self.check_global_project_options()

@@ -92,61 +92,57 @@ class BaseEditionDialog(QDialog):
                 if widget:
                     widget.setToolTip(tooltip)
 
-            if layer_config['type'] in (InputType.List, InputType.CheckBoxAsDropdown):
-                if widget is not None:
-                    items = layer_config.get('items')
-                    if items:
-                        for item in items:
-                            icon = item.value.get('icon')
-                            if icon:
-                                widget.addItem(QIcon(icon), item.value['label'], item.value['data'])
-                            else:
-                                widget.addItem(item.value['label'], item.value['data'])
-                            index = widget.findData(item.value['data'])
-                            tooltip = item.value.get('tooltip')
-                            if tooltip:
-                                widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
-                        default = layer_config.get('default')
-                        if default and not isinstance(default, (list, tuple)):
-                            index = widget.findData(default.value['data'])
-                            widget.setCurrentIndex(index)
+            if layer_config['type'] in (InputType.List, InputType.CheckBoxAsDropdown) and widget is not None:
+                items = layer_config.get('items')
+                if items:
+                    for item in items:
+                        icon = item.value.get('icon')
+                        if icon:
+                            widget.addItem(QIcon(icon), item.value['label'], item.value['data'])
+                        else:
+                            widget.addItem(item.value['label'], item.value['data'])
+                        index = widget.findData(item.value['data'])
+                        tooltip = item.value.get('tooltip')
+                        if tooltip:
+                            widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
+                    default = layer_config.get('default')
+                    if default and not isinstance(default, (list, tuple)):
+                        index = widget.findData(default.value['data'])
+                        widget.setCurrentIndex(index)
 
             if layer_config['type'] == InputType.CheckBox:
                 default_value = layer_config['default']
                 if widget is not None and not hasattr(default_value, '__call__'):
                     widget.setChecked(default_value)
 
-            if layer_config['type'] == InputType.SpinBox:
-                if widget is not None:
-                    unit = layer_config.get('unit')
-                    if unit:
-                        widget.setSuffix(unit)
+            if widget is not None and layer_config['type'] == InputType.SpinBox:
+                unit = layer_config.get('unit')
+                if unit:
+                    widget.setSuffix(unit)
 
-                    default = layer_config.get('default')
-                    if unit:
-                        widget.setValue(default)
+                default = layer_config.get('default')
+                if unit:
+                    widget.setValue(default)
 
-            if layer_config['type'] == InputType.Color:
-                if widget is not None:
-                    if layer_config['default'] == '':
-                        widget.setShowNull(True)
-                        widget.setToNull()
-                    else:
-                        widget.setDefaultColor(QColor(layer_config['default']))
-                        widget.setToDefaultColor()
+            if widget is not None and layer_config['type'] == InputType.Color:
+                if layer_config['default'] == '':
+                    widget.setShowNull(True)
+                    widget.setToNull()
+                else:
+                    widget.setDefaultColor(QColor(layer_config['default']))
+                    widget.setToDefaultColor()
 
-            if layer_config.get('read_only'):
-                if widget is not None:
-                    if layer_config['type'] == InputType.Text:
-                        widget.setReadOnly(True)
-                    elif layer_config['type'] == InputType.CheckBox:
-                        # Some UX issues #338
-                        # The disabled is not possible somehow ?
-                        # The tooltip is not showing
-                        widget.setText(tr('Read only, check the tooltip on the label'))
-                        widget.setStyleSheet("font: italic;")
-                        widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-                        widget.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+            if widget is not None and layer_config.get('read_only'):
+                if layer_config['type'] == InputType.Text:
+                    widget.setReadOnly(True)
+                elif layer_config['type'] == InputType.CheckBox:
+                    # Some UX issues #338
+                    # The disabled is not possible somehow ?
+                    # The tooltip is not showing
+                    widget.setText(tr('Read only, check the tooltip on the label'))
+                    widget.setStyleSheet("font: italic;")
+                    widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+                    widget.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
             if not layer_config.get('visible', True):
                 if widget is not None:
@@ -279,13 +275,12 @@ class BaseEditionDialog(QDialog):
                         else:
                             raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
 
-        if self.primary_key_valid is not None:
-            if not self.primary_key_valid:
-                return tr(
-                    "The primary key defined in your datasource for the layer '{}' "
-                    "is not valid. The layer is stored "
-                    "in a database and must have a valid primary key defined in the project."
-                ).format(self.layer.currentLayer().name())
+        if self.primary_key_valid is not None and not self.primary_key_valid:
+            return tr(
+                "The primary key defined in your datasource for the layer '{}' "
+                "is not valid. The layer is stored "
+                "in a database and must have a valid primary key defined in the project."
+            ).format(self.layer.currentLayer().name())
 
         for k, layer_config in self.config.layer_config.items():
             if layer_config['type'] in (InputType.Field, InputType.PrimaryKeyField):
@@ -295,11 +290,10 @@ class BaseEditionDialog(QDialog):
                     # Dataviz does not have widget for Y, Z
                     continue
 
-                if not widget.allowEmptyFieldName():
-                    if widget.currentField() == '':
-                        names = re.findall(r'.[^A-Z]*', k)
-                        names = [n.lower().replace('_', ' ') for n in names]
-                        return tr('The field "{}" is mandatory.').format(' '.join(names))
+                if not widget.allowEmptyFieldName() and widget.currentField() == '':
+                    names = re.findall(r'.[^A-Z]*', k)
+                    names = [n.lower().replace('_', ' ') for n in names]
+                    return tr('The field "{}" is mandatory.').format(' '.join(names))
 
         return None
 

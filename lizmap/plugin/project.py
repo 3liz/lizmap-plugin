@@ -446,16 +446,13 @@ class ProjectManager(LizmapProtocol):
                         input_value = str(input_value)
 
                 # Add value to the option
-                if item["type"] == "boolean":
-                    if not ambiguous_to_bool(input_value):
-                        if not item.get("always_export"):
-                            continue
+                if item["type"] == "boolean" and not ambiguous_to_bool(input_value) \
+                    and not item.get("always_export"):
+                    continue
 
-                if item["type"] in ("list", "string"):
-                    if not input_value:
-                        # Empty list or string
-                        if not item.get("always_export"):
-                            continue
+                # Empty list or string
+                if item["type"] in ("list", "string") and not input_value and not item.get("always_export"):
+                    continue
 
                 liz2json["options"][key] = input_value
 
@@ -683,9 +680,8 @@ class ProjectManager(LizmapProtocol):
                         property_value = int(property_value)
                     except Exception:
                         property_value = 1
-                elif val["type"] in ("boolean", "radio"):
-                    if not val.get("use_proper_boolean"):
-                        property_value = str(property_value)
+                elif val["type"] in ("boolean", "radio") and not val.get("use_proper_boolean"):
+                    property_value = str(property_value)
 
                 if key == "link":
                     # TODO check media or ../media
@@ -781,21 +777,20 @@ class ProjectManager(LizmapProtocol):
             ):
                 layer_options["popupSource"] = "auto"
 
-            if layer_options.get("geometryType") in ("point", "line", "polygon"):
-                if layer_options.get("popupSource") == "lizmap" and ambiguous_to_bool(
-                    layer_options.get("popup")
-                ):
-                    QMessageBox.warning(
-                        self.dlg,
-                        tr("Deprecated feature"),
-                        tr(
-                            'The layer "{}" is vector layer and the popup is a "Lizmap HTML". '
-                            "This kind of popup is deprecated for vector layer, you should switch "
-                            "to another kind of popup, for instance to "
-                            'a "QGIS HTML maptip". This will be removed in a future version of Lizmap.'
-                        ).format(layer_options["name"]),
-                        QMessageBox.StandardButton.Ok,
-                    )
+            if layer_options.get("geometryType") in ("point", "line", "polygon") \
+                and layer_options.get("popupSource") == "lizmap" \
+                and ambiguous_to_bool(layer_options.get("popup")):
+                QMessageBox.warning(
+                    self.dlg,
+                    tr("Deprecated feature"),
+                    tr(
+                        'The layer "{}" is vector layer and the popup is a "Lizmap HTML". '
+                        "This kind of popup is deprecated for vector layer, you should switch "
+                        "to another kind of popup, for instance to "
+                        'a "QGIS HTML maptip". This will be removed in a future version of Lizmap.'
+                    ).format(layer_options["name"]),
+                    QMessageBox.StandardButton.Ok,
+                )
 
             # Add external WMS options if needed
             if isinstance(layer, QgsMapLayer) and as_boolean(layer_options.get("externalWmsToggle")):
@@ -815,10 +810,10 @@ class ProjectManager(LizmapProtocol):
 
             # Add DXF export setting if applicable
             # Write settings regardless of global enable state to preserve user choices
-            if k in dxf_layer_settings:
-                # Only add if this layer is published as WFS
-                if is_layer_published_wfs(self.project, k):
-                    layer_options["dxfExportEnabled"] = dxf_layer_settings[k]
+
+            # Only add if this layer is published as WFS
+            if k in dxf_layer_settings and is_layer_published_wfs(self.project, k):
+                layer_options["dxfExportEnabled"] = dxf_layer_settings[k]
 
             # Add layer options to the json object
             liz2json["layers"][v["name"]] = layer_options

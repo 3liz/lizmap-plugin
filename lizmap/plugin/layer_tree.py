@@ -302,14 +302,15 @@ class LayerTreeManager(LizmapProtocol):
                 # override only for ui widgets
                 if item.get("widget"):
                     if key in json_layers[json_key]:
-                        if key == "legend_image_option" and "noLegendImage" in json_layers[json_key]:
-                            if myDic[item_key].get("legend_image_option"):
-                                # The key is already set before with noLegendImage
-                                logger.info(
-                                    "Skip key legend_image_option because it has been set "
-                                    "previously with noLegendImage"
-                                )
-                                continue
+                        if key == "legend_image_option" \
+                            and "noLegendImage" in json_layers[json_key] \
+                            and myDic[item_key].get("legend_image_option"):
+                            # The key is already set before with noLegendImage
+                            logger.info(
+                                "Skip key legend_image_option because it has been set "
+                                "previously with noLegendImage"
+                            )
+                            continue
 
                         # checkboxes
                         if item["wType"] in ("checkbox", "radio"):
@@ -343,9 +344,8 @@ class LayerTreeManager(LizmapProtocol):
                     # logger.info('Skip key {} because no UI widget'.format(key))
 
                 # popupContent
-                if key == "popupTemplate":
-                    if key in json_layers[json_key]:
-                        myDic[item_key][key] = json_layers[json_key][key]
+                if key == "popupTemplate" and key in json_layers[json_key]:
+                    myDic[item_key][key] = json_layers[json_key][key]
 
     def process_node(
         self,
@@ -499,9 +499,9 @@ class LayerTreeManager(LizmapProtocol):
                             else:
                                 is_enabled = selected_item[key]
                             self.layer_options_list[children]["widget"].setEnabled(is_enabled)
-                            if self.layer_options_list[children]["wType"] == "checkbox" and not is_enabled:
-                                if self.layer_options_list[children]["widget"].isChecked():
-                                    self.layer_options_list[children]["widget"].setChecked(False)
+                            if not is_enabled and self.layer_options_list[children]["wType"] == "checkbox" \
+                                and self.layer_options_list[children]["widget"].isChecked():
+                                self.layer_options_list[children]["widget"].setChecked(False)
 
                     elif val["wType"] == "list":
                         # New way with data, label, tooltip and icon
@@ -573,10 +573,9 @@ class LayerTreeManager(LizmapProtocol):
 
             # Checkbox display children features
             self.dlg.relation_stacked_widget.setCurrentWidget(self.dlg.page_no_relation)
-            if is_vector:
-                if len(self.project.relationManager().referencedRelations(layer)) >= 1:
-                    # We display options
-                    self.dlg.relation_stacked_widget.setCurrentWidget(self.dlg.page_display_relation)
+            if is_vector and len(self.project.relationManager().referencedRelations(layer)) >= 1:
+                # We display options
+                self.dlg.relation_stacked_widget.setCurrentWidget(self.dlg.page_display_relation)
 
         else:
             # set default values for this layer/group
@@ -624,9 +623,8 @@ class LayerTreeManager(LizmapProtocol):
             if is_layer_wms_excluded(self.project, layer.name()):
                 self.dlg.panel_layer_all_settings.setEnabled(False)
 
-            if isinstance(layer, QgsVectorLayer):
-                if not layer.isSpatial():
-                    self.layer_options_list["toggled"]["widget"].setEnabled(False)
+            if isinstance(layer, QgsVectorLayer) and not layer.isSpatial():
+                self.layer_options_list["toggled"]["widget"].setEnabled(False)
 
     def enable_check_box_in_layer_tab(self, value: bool):
         """Enable/Disable checkboxes and fields of the Layer tab."""
@@ -806,9 +804,9 @@ class LayerTreeManager(LizmapProtocol):
                 else:
                     is_enabled = checked
                 self.layer_options_list[children]["widget"].setEnabled(is_enabled)
-                if self.layer_options_list[children]["wType"] == "checkbox" and not is_enabled:
-                    if self.layer_options_list[children]["widget"].isChecked():
-                        self.layer_options_list[children]["widget"].setChecked(False)
+                if not is_enabled and self.layer_options_list[children]["wType"] == "checkbox" \
+                    and self.layer_options_list[children]["widget"].isChecked():
+                    self.layer_options_list[children]["widget"].setChecked(False)
         elif layer_option["wType"] == "list":
             # New way with data, label, tooltip and icon
             datas = [j[0] for j in layer_option["list"]]

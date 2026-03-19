@@ -120,9 +120,8 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
             self.color.setToNull()
 
     def toggleDisplayCheckbox(self):
-        if self.display_layer_style.isChecked():
-            if self.display_geometry.isChecked():
-                self.display_geometry.setChecked(False)
+        if self.display_layer_style.isChecked() and self.display_geometry.isChecked():
+            self.display_geometry.setChecked(False)
 
     def validate(self) -> Optional[str]:
         upstream = super().validate()

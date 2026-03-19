@@ -61,15 +61,14 @@ class Tooltip:
         a = ''
         h = ''
 
-        if isinstance(node, QgsAttributeEditorElement):
-            # for text widgets
-            # TODO Qgis.versionInt() 3.32 change to "Qgis.AttributeEditorType.TextElement"
-            if node.type() == 6:
-                label = node.name()
-                expression = node.toDomElement(QDomDocument()).text()
+        # for text widgets
+        # TODO Qgis.versionInt() 3.32 change to "Qgis.AttributeEditorType.TextElement"
+        if isinstance(node, QgsAttributeEditorElement) and node.type() == 6:
+            label = node.name()
+            expression = node.toDomElement(QDomDocument()).text()
 
-                a += '\n' + SPACES * level
-                a += Tooltip._generate_text_label(label, expression)
+            a += '\n' + SPACES * level
+            a += Tooltip._generate_text_label(label, expression)
 
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:

@@ -1046,13 +1046,17 @@ class ServerManager:
                         # People upgrading to a major version but keeping a .0 version have skills to upgrade to
                         # a .1 version
                         messages.append(tr("Running a .0 version, upgrade to the latest bugfix release"))
-                    elif bugfix != 0 and status in (ReleaseStatus.ReleaseCandidate, ReleaseStatus.Stable, ReleaseStatus.SecurityBugfixOnly, ReleaseStatus.Retired):
+                    elif not lizmap_cloud and bugfix != 0 and status in (
+                            ReleaseStatus.ReleaseCandidate,
+                            ReleaseStatus.Stable,
+                            ReleaseStatus.SecurityBugfixOnly,
+                            ReleaseStatus.Retired,
+                        ):
                         # Even if the branch is retired, we encourage people upgrading to the latest
-                        if not lizmap_cloud:
-                            # Only advertise if it's not a customer
-                            messages.append(
-                                tr(
-                                    'Not latest bugfix release, {version} is available'
+                        # Only advertise if it's not a customer
+                        messages.append(
+                            tr(
+                                'Not latest bugfix release, {version} is available'
                                 ).format(version=json_version['latest_release_version']))
 
                     if is_pre_package:

@@ -94,13 +94,11 @@ def project_safeguards_checks(
                 # We can continue
                 continue
 
-            if not datasource.service():
-                if datasource.host().endswith(CLOUD_DOMAIN) or force_pg_user_pass:
-                    if not datasource.username() or not datasource.password():
-                        results[SourceLayer(layer.name(), layer.id())] = checks.PgForceUserPass
-
-                    # We can continue
-                    continue
+            if not datasource.service() and (datasource.host().endswith(CLOUD_DOMAIN) or force_pg_user_pass):
+                if not datasource.username() or not datasource.password():
+                    results[SourceLayer(layer.name(), layer.id())] = checks.PgForceUserPass
+                # We can continue
+                continue
 
         # Only vector/raster file based
 
@@ -146,11 +144,10 @@ def project_safeguards_checks(
             if '..' in relative_path:
                 results[SourceLayer(layer.name(), layer.id())] = checks.PreventParentFolder
 
-        if isinstance(layer, QgsRasterLayer):
-            # Only file based raster
-            if not layer.dataProvider().hasPyramids():
-                if layer.width() * layer.height() >= RASTER_COUNT_CELL:
-                    results[SourceLayer(layer.name(), layer.id())] = checks.RasterWithoutPyramid
+        # Only file based raster
+        if isinstance(layer, QgsRasterLayer) and not layer.dataProvider().hasPyramids() \
+            and layer.width() * layer.height() >= RASTER_COUNT_CELL:
+            results[SourceLayer(layer.name(), layer.id())] = checks.RasterWithoutPyramid
 
     return results
 

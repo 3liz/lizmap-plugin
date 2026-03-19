@@ -90,7 +90,6 @@ ignore = [
     "ANN401", # Dynamically typed expressions (Any)
     "COM812",
     "SIM108",  # Use of ternary operator
-    "SIM102",  # Use a single if
     # TODO: Temporary ignore linter errors until
     # they are fixed
     "T201",
