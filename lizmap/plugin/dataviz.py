@@ -37,7 +37,7 @@ class DatavizManager(LizmapProtocol):
     def initialize_dataviz(self):
         self.drag_drop_dataviz = None
 
-    def set_davaviz_options(self, global_options: GlobalOptionsDefinitions):
+    def set_dataviz_options(self, global_options: GlobalOptionsDefinitions):
         for item in Theme:
             global_options['theme']['widget'].addItem(item.value["label"], item.value["data"])
         index = global_options['theme']['widget'].findData(Theme.Light.value["data"])

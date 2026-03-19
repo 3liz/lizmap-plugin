@@ -644,12 +644,12 @@ class Lizmap(
         self.help_action = QAction(icon, 'Lizmap', self.iface.mainWindow())
         self.iface.pluginHelpMenu().addAction(self.help_action)
         # noinspection PyUnresolvedReferences
-        self.help_action.triggered.connect(self.show_help)
+        self.help_action.triggered.connect(helpers.show_help)
 
         self.help_action_cloud = QAction(icon, CLOUD_NAME, self.iface.mainWindow())
         self.iface.pluginHelpMenu().addAction(self.help_action_cloud)
         # noinspection PyUnresolvedReferences
-        self.help_action.triggered.connect(self.show_help_cloud)
+        self.help_action.triggered.connect(helpers.show_help_cloud)
 
         # connect Lizmap signals and functions
 
@@ -778,7 +778,7 @@ class Lizmap(
 
                 if key == 'datavizLayers':
                     self.dataviz_init_gui(item)
-                if key == 'layouts':
+                elif key == 'layouts':
                     definition = LayoutsDefinitions()
                     dialog = LayoutEditionDialog
                     item['manager'] = TableManagerLayouts(
@@ -819,7 +819,7 @@ class Lizmap(
                         definition = FilterByPolygonDefinitions()
                         dialog = FilterByPolygonEditionDialog
                     else:
-                        raise Exception('Unknown panel.')
+                        raise Exception(f"Unknown panel: '{key}'")
 
                     item['manager'] = TableManager(
                         self.dlg,
