@@ -1,10 +1,13 @@
 
+
 from typing import (
     TYPE_CHECKING,
     Protocol,
 )
 
-from qgis.core import QgsProject
+from qgis.core import (
+    QgsProject,
+)
 
 from ..definitions.definitions import LwcVersions
 from ..definitions.online_help import Panels
